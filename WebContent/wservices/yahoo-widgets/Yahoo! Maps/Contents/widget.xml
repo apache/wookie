@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <name>Yahoo! Maps</name>
+  <version>1.1.2</version>
+  <identifier>com.yahoo.widget.maps</identifier>
+  <image usage="dock" src="Resources/maps_inactive.png"/>
+  <author name="Rob Marquardt" organization="Yahoo! Inc." href="http://www.yahoo.com"/>
+  <copyright>(c) 2003-2007 Yahoo! Inc.</copyright>
+  <description>Yahoo! Maps Widget</description>
+  <platform minVersion="4.0"/>
+</metadata>

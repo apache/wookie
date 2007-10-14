@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.4"
+	xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<display-name>10C Widget Server</display-name>
+
+	<listener>
+		<listener-class>
+			org.tencompetence.widgetservice.server.ContextListener
+		</listener-class>
+	</listener>
+
+	<!-- use filter when we can get it to just aply to the admin section -->
+	<!--  
+		<filter>
+		<filter-name>HeaderFooterFilter</filter-name>	
+		<filter-class>org.tencompetence.widgetservice.server.HeaderFooterFilter</filter-class>
+		</filter>
+		
+		<filter>
+		<filter-name>SessionFilter</filter-name>
+		<filter-class>org.tencompetence.widgetservice.SessionFilter</filter-class>
+		</filter>
+		
+		<filter-mapping>
+		<filter-name>SessionFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		</filter-mapping>
+	-->
+
+	<filter>
+		<filter-name>MainFilter</filter-name>
+		<filter-class>
+			org.tencompetence.widgetservice.server.MainFilter
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>MainFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
+
+	<listener>
+		<listener-class>
+			org.directwebremoting.servlet.EfficientShutdownServletContextAttributeListener
+		</listener-class>
+	</listener>
+	<listener>
+		<listener-class>
+			org.directwebremoting.servlet.EfficientShutdownServletContextListener
+		</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>dwr-invoker</servlet-name>
+		<servlet-class>
+			org.directwebremoting.servlet.DwrServlet
+		</servlet-class>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>true</param-value>
+		</init-param>
+
+		<init-param>
+			<param-name>activeReverseAjaxEnabled</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>
+				initApplicationScopeCreatorsAtStartup
+			</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>maxWaitAfterWrite</param-name>
+			<param-value>500</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+		<servlet>
+		<description></description>
+		<display-name>ForumWidgetServlet</display-name>
+		<servlet-name>ForumWidgetServlet</servlet-name>
+		<servlet-class>
+			org.tencompetence.widgetservice.widgets.forum.ForumWidgetServlet
+		</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<description></description>
+		<display-name>ProxyServlet</display-name>
+		<servlet-name>ProxyServlet</servlet-name>
+		<servlet-class>
+			org.tencompetence.widgetservice.proxy.ProxyServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet>
+		<description></description>
+		<display-name>WidgetAdminServlet</display-name>
+		<servlet-name>WidgetAdminServlet</servlet-name>
+		<servlet-class>
+			org.tencompetence.widgetservice.WidgetAdminServlet
+		</servlet-class>
+	</servlet>
+	<servlet>
+		<description></description>
+		<display-name>WidgetServiceServlet</display-name>
+		<servlet-name>WidgetServiceServlet</servlet-name>
+		<servlet-class>
+			org.tencompetence.widgetservice.WidgetServiceServlet
+		</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ProxyServlet</servlet-name>
+		<url-pattern>/proxy/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>WidgetAdminServlet</servlet-name>
+		<url-pattern>/admin/WidgetAdminServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>WidgetServiceServlet</servlet-name>
+		<url-pattern>/WidgetServiceServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>ForumWidgetServlet</servlet-name>
+		<url-pattern>/forum</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>dwr-invoker</servlet-name>
+		<url-pattern>/dwr/*</url-pattern>
+	</servlet-mapping>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+
+
+	<!--****************** SECURITY SECTION ************************-->
+	<!--  uncomment to enable password protection on admin pages
+		
+		<security-constraint>
+		
+		<web-resource-collection>
+		<web-resource-name>Widget Admin Section</web-resource-name>
+		<url-pattern>/admin/*</url-pattern>
+		</web-resource-collection>
+		
+		<auth-constraint>
+		<role-name>widgetadmin</role-name>
+		</auth-constraint>
+		</security-constraint>	
+		<login-config>
+		<auth-method>DIGEST</auth-method> 
+		<realm-name>Authentication Required</realm-name> 
+		</login-config>
+		<security-role>
+		<description></description>
+		<role-name>widgetadmin</role-name>
+		</security-role>
+	-->
+
+</web-app>

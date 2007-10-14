@@ -1,0 +1,271 @@
+body {
+	margin: 0px;
+}
+
+#info {
+	position: absolute;
+	right: 15px;
+	bottom: 18px;
+	width: 13px;
+	height: 13px;
+	left: 355px;
+	top: 9px;
+}
+
+#back {
+	display: none;
+}
+
+#backImg {
+	position: absolute;
+	display: block;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	width: 372px;
+	top: 0px;
+	height: 296px;
+}
+
+.backDevelopedWith {
+	position: absolute;
+	top: 67px;
+	left: 43px;
+	right: 43px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#top {
+	background-image: url(Images/top2.png);
+	height: 31px;
+	width: 372px;
+}
+
+#bottom {
+	background-image: url(Images/bottom2.png);
+	height: 8px;
+	width: 372px;
+}
+
+.search {
+	margin-top: 6px;
+	margin-left: 75px;
+}
+
+#contents {
+	border-left-width: 3px;
+	border-left-style: solid;
+	border-left-color: rgb(65, 65, 65);
+	border-right-width: 3px;
+	border-right-style: solid;
+	border-right-color: rgb(65, 65, 65);
+	background-color: rgb(238, 238, 238);
+	height: 257px;
+	width: 366px;
+}
+
+a {
+	color: rgb(51, 51, 51);
+}
+
+.title {
+	font-family: Geneva;
+	font-size: 12px;
+	font-weight: bold;
+	color: rgb(51, 51, 51);
+}
+
+.desc {
+	font-size: 11px;
+	color: rgb(102, 102, 102);
+}
+
+.info {
+	font-size: 11px;
+}
+
+.item_table {
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: rgb(102, 102, 102);
+	padding-top: 4px;
+	padding-bottom: 4px;
+	cursor: pointer;
+}
+
+.item_table:hover {
+	background-color: rgb(255, 255, 255);
+	cursor: pointer;
+}
+
+.image_cell {
+	padding-right: 4px;
+	padding-left: 2px;
+}
+
+#movie {
+	position: absolute;
+	width: 150px;
+	height: 100px;
+	left: 72px;
+	top: 149px;
+}
+
+#img {
+	position: absolute;
+	width: 12px !important;
+	height: 7px !important;
+	top: 12px;
+	cursor: pointer;
+	left: 339px;
+}
+
+#searchfield {
+	position: absolute;
+	top: 4px;
+	left: 77px;
+	width: 237px;
+}
+
+#popup {
+	position: absolute;
+	width: 160px;
+	left: 106px;
+	top: 51px;
+}
+
+#text {
+	position: absolute;
+	width: 333px;
+	height: 26px;
+	color: rgb(255, 255, 255);
+	font-family: HelveticaNeue-Bold;
+	font-size: 10pt;
+	text-align: center;
+	left: 20px;
+	top: 29px;
+}
+
+#img1 {
+	width: 16px !important;
+	height: 16px !important;
+	position: absolute;
+	top: 7px;
+	left: 318px;
+	cursor: pointer;
+}
+
+#img3 {
+	width: 65px !important;
+	height: 25px !important;
+	position: absolute;
+	left: 153px;
+	top: 94px;
+}
+
+#rectangleShape {
+	position: absolute;
+	top: 0px;
+	height: 31px;
+	width: 61px;
+	left: 11px;
+}
+
+#text4 {
+	position: absolute;
+	font-size: 10pt;
+	font-family: HelveticaNeue-Bold;
+	left: 91px;
+	top: 124px;
+	color: rgb(208, 208, 208);
+}
+
+#text4:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+#text5 {
+	position: absolute;
+	font-size: 10pt;
+	width: 331px;
+	color: rgb(199, 199, 199);
+	font-family: HelveticaNeue-Bold;
+	text-align: center;
+	height: 34px;
+	left: 20px;
+	top: 148px;
+}
+
+#text5:hover {
+	cursor: pointer;
+}
+
+#text6 {
+	position: absolute;
+	font-family: Helvetica Neue;
+	color: rgb(255, 255, 255);
+	font-size: 8pt;
+	left: 20px;
+	top: 265px;
+}
+
+#text8 {
+	position: absolute;
+	height: 14px;
+	width: 331px;
+	text-align: center;
+	color: rgb(255, 0, 0);
+	font-family: HelveticaNeue-Bold;
+	font-size: 10pt;
+	left: 20px;
+	top: 191px;
+}
+
+#text8:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+#text9 {
+	position: absolute;
+	width: 331px;
+	height: 33px;
+	color: rgb(204, 204, 204);
+	text-align: center;
+	font-size: 9pt;
+	font-family: HelveticaNeue;
+	top: 219px;
+	left: 20px;
+}
+
+#text9:hover {
+	cursor: pointer;
+}
+
+#CollapsiblePanel1 {
+	width: 374px;
+}
+
+#resize {
+	-apple-dashboard-region: dashboard-region(control rectangle    );
+}
+
+#done {
+	position: absolute;
+	left: 294px;
+	top: 254px;
+}
+
+#scrollArea {
+	position: absolute;
+	color: black;
+	font-family: Helvetica Neue;
+	font-size: 10pt;
+	left: 4px;
+	top: 35px;
+	width: 364px;
+	height: 253px;
+}
+

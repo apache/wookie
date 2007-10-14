@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+  <title>Default Chat Widget</title>
+  <script type='text/javascript' src='/wookie/dwr/engine.js'> </script>
+  <script type='text/javascript' src='/wookie/dwr/interface/widget.js'> </script>
+  <script type='text/javascript' src='/wookie/dwr/util.js'> </script>
+  <script type='text/javascript' src='chat.js'> </script>  
+  <link rel="stylesheet" href="chat.css" type="text/css"/>
+   
+</head>
+<body onload="init()"> 
+	<div id="chatroom">		
+		<div id="chatlog"></div>
+		<div>
+			<div id="memberslegend">online users</div>	
+			<div id="members"></div>
+		</div>			
+		<div id="input">
+		    <div id="joined">
+		    	<input id="text" size="30" onkeypress="dwr.util.onReturn(event, sendMessage)"/>
+		    	<input type="button" value="Send" onclick="sendMessage()"/>&nbsp;
+		    </div>
+		</div>		
+	</div>
+</body>
+</html>

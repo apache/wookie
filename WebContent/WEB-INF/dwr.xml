@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://getahead.org/dwr/dwr20.dtd">
+
+<dwr>
+  <allow>
+    <create creator="new" javascript="widget" scope="application">
+      <param name="class" value="org.tencompetence.widgetservice.ajaxmodel.impl.WidgetAPIImpl"/>
+      <include method="preferenceForKey"/>
+      <include method="setPreferenceForKey"/>
+      <include method="setSharedDataForKey"/>
+      <include method="sharedDataForKey"/>
+      <include method="appendSharedDataForKey"/>
+      <include method="lock"/>
+      <include method="unlock"/>
+      <include method="system"/>
+      <include method="openURL"/>
+    </create>
+    
+    <create creator="new" javascript="forum" scope="application">
+      <param name="class" value="org.tencompetence.widgetservice.widgets.forum.impl.DefaultForumServiceImpl"/>
+      <include method="getNodeTree"/>   
+      <include method="newPost"/>       
+      <include method="getPost"/>
+    </create>    
+    <convert converter="bean" match="org.tencompetence.widgetservice.widgets.forum.PostNode"/>
+    
+     <create creator="new" javascript="JavascriptChat" scope="application">
+          <param name="class" value="org.tencompetence.widgetservice.widgets.chat.JavascriptChat"/>
+        </create>
+        <create creator="new" javascript="JavaChat" scope="application">
+          <param name="class" value="org.tencompetence.widgetservice.widgets.chat.JavaChat"/>
+        </create>
+    <convert converter="bean" match="org.tencompetence.widgetservice.widgets.chat.Message"/>
+  </allow>
+</dwr>

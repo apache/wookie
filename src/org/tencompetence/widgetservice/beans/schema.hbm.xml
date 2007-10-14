@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+	package="org.tencompetence.widgetservice.beans">
+
+	<class name="Widget" table="WIDGET">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="widgetName" column="widget_name" type="string" />
+		<property name="url" column="url" type="string" />
+		<property name="height" column="height" />
+		<property name="width" column="width" />
+		<property name="maximize" type="true_false" />
+		<set name="widgetTypes" inverse="true">
+			<key column="widget_id" not-null="true" />
+			<one-to-many class="WidgetType" />
+		</set>
+	</class>
+
+	<class name="WidgetType" table="WIDGETTYPE">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />
+		<property name="widgetContext" column="widget_context" type="string" />
+	</class>
+
+
+	<class name="WidgetDefault" table="WIDGETDEFAULT">
+		<id name="widgetContext" type="string">
+			<generator class="assigned" />
+		</id>
+		<property name="widgetId" />
+	</class>
+
+
+	<class name="WidgetInstance" table="WIDGETINSTANCE">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>		
+		<property name="userId" not-null="true"/>				
+		<property name="runId" not-null="true"/>
+		<property name="envId" not-null="true"/>
+		<property name="serviceId" not-null="true"/>				
+		<property name="nonce"/>
+		<property name="idKey" not-null="true"/>		
+		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />		
+		<property name="updated" type="true_false" />
+		<property name="shown" type="true_false" />
+		<property name="hidden" type="true_false" />
+	</class>
+
+	<class name="SharedData" table="SHAREDDATA">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>		
+		<property name="sharedDataKey" column="sharedDataKey" index="sharedDataIndex" />				
+		<property name="dkey" />
+		<property name="dvalue" type="text" length="2147483647"/>
+	</class>
+	
+	<class name="Preference" table="PREFERENCE">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<many-to-one name="widgetInstance" class="WidgetInstance" column="widget_instance_id" not-null="true" />
+		<property name="dkey" />
+		<property name="dvalue" type="text" length="2147483647"/>
+	</class>
+		
+	<class name="Whitelist" table="WHITELIST">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>		
+		<property name="fUrl" />		
+	</class>
+	
+	<class name="Post" table="POST">
+		<id name="id" column="id">
+            <generator class="native"/>
+        </id>        
+        <property name="userId" column="user_id"></property>        
+        <property name="parentId" column="parent_id"></property>        
+        <property name="content" column="content"></property>
+        <property name="title" column="title"></property>
+        <property name="publishDate" column="publish_date"></property>
+        <property name="updateDate" column="update_date"></property>             
+     </class>  
+		
+</hibernate-mapping>

@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <style type="text/css">
+            body {
+                font-family: Segoe UI;
+                width:200px;
+                height:80px;
+            }
+        </style>
+        <script language="javascript">
+            System.Gadget.onSettingsClosing = settingsClosing;
+            function loadSettings() {
+                var shuffleSetting = System.Gadget.Settings.read("shuffle");
+                var repeatSetting = System.Gadget.Settings.read("repeat");
+                var autoStartSetting = System.Gadget.Settings.read("autoStart")
+                
+                document.getElementById("shuffle").checked = shuffleSetting == "" || shuffleSetting == "true";
+                document.getElementById("repeat").checked = repeatSetting == "" || repeatSetting == "true";
+                document.getElementById("autoStart").checked = autoStartSetting == "" || autoStartSetting == "true";
+            }
+        	
+            function settingsClosing(event)
+            {
+                if (event.closeAction == event.Action.commit)
+                {
+                    System.Gadget.Settings.write("shuffle", document.getElementById("shuffle").checked ? "true" : "false");
+                    System.Gadget.Settings.write("repeat", document.getElementById("repeat").checked ? "true" : "false");
+                    System.Gadget.Settings.write("autoStart", document.getElementById("autoStart").checked ? "true" : "false");
+                }
+            }
+    </script>
+
+    </head>
+    <body onload="loadSettings()">
+        <input type="checkbox" id="autoStart" /><label for="autoStart">Start playing on startup</label><br />
+        <input type="checkbox" id="shuffle" /><label for="shuffle">Shuffle</label><br />
+        <input type="checkbox" id="repeat" /><label for="repeat">Repeat</label>
+    </body>
+</html>

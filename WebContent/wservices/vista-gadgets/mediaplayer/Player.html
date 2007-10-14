@@ -1,0 +1,484 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <style type="text/css">
+            body {
+                width: 130px;
+                height: 130px;
+                font-family: Segoe UI;
+                font-size: 11px;
+                margin: 0px;
+                padding: 0px;
+            }
+            
+            div.mediaInfo {
+                width:120px;
+                height:90px;
+                overflow:hidden;
+                text-overflow:ellipsis;
+                white-space:nowrap;
+                position:absolute;
+                left:5px;
+                top:4px;
+                font-family:Segoe UI;
+                color:#ffffff;
+                font-size:11px;
+            }
+            
+            div.infoText {
+                overflow:hidden;
+                text-overflow:ellipsis;
+                white-space:nowrap;
+                font-size:10px;
+                filter:progid:DXImageTransform.Microsoft.Glow(Color=black,Strength=2);
+            }
+        </style>
+        <script language="javascript" src="player.js"></script>
+        <script language="javascript" type="text/javascript" src="animation.js"></script>
+        <script language="javascript" type="text/javascript">
+            var hideTrackInfoTimeout;
+            var hasAlbumArt = false;
+            var goingPrevious = false;
+            var updateTimeInterval = 0;
+            var hideVolumeTimeout = 0;
+            var dragging = false;
+            var overTrack = false;
+            
+            function stop() {
+                player.controls.stop();
+            }
+
+            function play() {
+                player.controls.play();
+            }
+
+            function next() {
+                player.controls.next();
+            }
+
+            function previous() {
+                goingPrevious = true;
+                player.controls.previous();
+            }
+            
+            function pause() {
+                player.controls.pause();
+            }
+            
+            function onLoad() {
+                System.Gadget.Flyout.file = "Playlist.html";
+                System.Gadget.settingsUI = "Settings.html";
+                System.Gadget.onSettingsClosed = loadSettings;
+                                
+                player.uiMode = "none";
+                player.windowlessVideo = true;
+                
+                loadSettings();
+
+                var nowPlaying;
+                if (player.playlistCollection.getByName( "Gadget Now Playing" ).count == 0) {
+                    nowPlaying = player.playlistCollection.newPlaylist( "Gadget Now Playing" );
+                    if (player.playlistCollection.getByName( "All Music" ).count == 1) {
+                        var allMusic = player.playlistCollection.getByName( "All Music" ).item( 0 );
+                        for (var i = 0; i < allMusic.count; i++) {
+                            nowPlaying.appendItem( allMusic.item( i ) );
+                        }
+                    }
+                } else {
+                    nowPlaying = player.playlistCollection.getByName( "Gadget Now Playing" ).item( 0 );
+                }
+                
+                player.currentPlaylist = nowPlaying;
+                loadSettings();
+                
+                updateVolumeDisplay();
+            }
+            
+            function getAuthorString( media ) {
+                var authorCount = media.getAttributeCountByType( "Author", "" );
+                var authorString = "";
+                for (var i = 0; i < authorCount; i++) {
+                    authorString += media.getItemInfoByType( "Author", "", i );
+                    if (i + 1 < authorCount) authorString += ";";
+                }
+                
+                return authorString;
+            }
+            
+            function getTimeString( time ) {
+                var hours = Math.floor( time / 3600 );
+                var minutes = Math.floor( (time % 3600) / 60 );
+                var seconds = Math.floor( time % 60 );
+                
+                var timeString = "";
+                if (time >= 3600) timeString = hours + ":";
+                timeString += (hours > 0 && minutes < 10 ? "0" : "" ) + minutes + ":" + (seconds < 10 ? "0" : "" ) + seconds;
+                
+                return timeString;
+            }
+            
+            function openPlaylist() {
+                System.Gadget.Flyout.show = !System.Gadget.Flyout.show;
+            }
+            
+            function setTrackPercent( percent ) {
+                trackFill.style.width = Math.round( percent * 100 ) + "%";
+                trackThumb.style.left = Math.round( percent * (trackThumb.offsetParent.offsetWidth - trackThumb.offsetWidth)) + "px";
+                mediaTime.innerHTML = 
+                        getTimeString( Math.round( player.currentMedia.duration * percent ) ) + " / " +
+                        getTimeString( player.currentMedia.duration );
+            }
+            
+            function updateTime() {
+                if (dragging) return;
+                var trackFill = document.getElementById("trackFill");
+                var trackThumb = document.getElementById("trackThumb");
+                var mediaTime = document.getElementById("mediaTime");
+                
+                var percent = 0;
+                if (player.currentMedia) {
+                    mediaTime.innerHTML = 
+                        getTimeString( player.controls.currentPosition ) + " / " +
+                        getTimeString( player.currentMedia.duration );
+                        
+                    
+                    percent = player.controls.currentPosition / player.currentMedia.duration;
+                } else {
+                    mediaTime.innerHTML = "";
+                }
+                
+                if (!dragging) {
+                    setTrackPercent( percent );
+                }
+            }
+            
+            function onTrackOver() {
+                overTrack = true;
+                var trackThumb = document.getElementById("trackThumb");
+                if (!trackThumb.animator) trackThumb.animator = new Animator( trackThumb );
+                trackThumb.animator.fadeIn( 0.2 );
+            }
+            
+            function onTrackOut() {
+                overTrack = false;
+                
+                if (dragging) {
+                    window.event.cancelBubble = true;
+                    return;
+                }
+                
+                var trackThumb = document.getElementById("trackThumb");
+                if (!trackThumb.animator) trackThumb.animator = new Animator( trackThumb );
+                trackThumb.animator.fadeOut( 0.4 );
+            }
+            
+            function getPercentFromX( x ) {
+                var track = document.getElementById("track");
+                var trackThumb = document.getElementById("trackThumb");
+                return Math.min( 1, Math.max( 0, (x - track.offsetLeft - 6) / (track.offsetWidth - trackThumb.offsetWidth) ) );
+            }
+            
+            function onTrackUp() {
+                dragging = false;
+                player.controls.currentPosition = getPercentFromX( window.event.clientX ) * player.currentMedia.duration;
+                updateTime();
+            }
+            
+            function onTrackThumbDown() {
+                dragging = true;
+            }
+            
+            function onMouseUp() {
+                if (dragging) {
+                    dragging = false;
+                    
+                    player.controls.currentPosition = getPercentFromX( window.event.clientX ) * player.currentMedia.duration;
+                    updateTime();
+                    if (!overTrack) onTrackOut();
+                }
+            }
+            
+            function onMouseMove() {
+                if (!dragging) return;
+                
+                setTrackPercent( getPercentFromX( window.event.clientX ) );
+            }
+            
+            function onBackgroundOut() {
+                if (dragging) {
+                    dragging = false;
+                    updateTime();
+                    onTrackOut();
+                }
+            }
+            
+            function onVolumeOver() {
+                if (document.getElementById( "volume_popup" ).style.visibility == "visible") return;
+                var volumeHover = document.getElementById( "volume_hover" );
+                volumeHover.src = "images/volume_hover.png";
+                volumeHover.style.visibility = "visible";
+            }
+            
+            function onVolumeOut() {
+                if (document.getElementById( "volume_popup" ).style.visibility == "visible") return;
+                var volumeHover = document.getElementById( "volume_hover" );
+                volumeHover.src = "images/volume_hover.png";
+                volumeHover.style.visibility = "hidden";
+            }
+            
+            function onVolumeDown() {
+                if (document.getElementById( "volume_popup" ).style.visibility == "visible") return;
+                var volumeHover = document.getElementById( "volume_hover" );
+                volumeHover.src = "images/volume_down.png";
+                volumeHover.style.visibility = "visible";
+            }
+            
+            function onVolumeUp() {
+                if (document.getElementById( "volume_popup" ).style.visibility == "visible") return;
+                var volumeHover = document.getElementById( "volume_hover" );
+                volumeHover.src = "images/volume_hover.png";
+                volumeHover.style.visibility = "visible";
+            }
+            
+            function onVolumeClick() {
+                if (document.getElementById( "volume_popup" ).style.visibility == "hidden")
+                    showVolumePopup();
+                else
+                    hideVolumePopup();
+            }
+            
+            function updateVolumeDisplay() {
+                var volume = player.settings.volume;
+                var volumeThumb = document.getElementById( "volumeThumb" );
+                document.getElementById("volumeTrackFill").style.width = volume + "%";
+                volumeThumb.style.left = Math.round( (volume * 0.01) * (volumeThumb.offsetParent.offsetWidth - volumeThumb.offsetWidth)) + "px";
+                
+                var mute = document.getElementById( "mute" );
+                mute.src = player.settings.mute ? "images/mute_down.png" : "images/mute.png";
+
+                var volumeImg = document.getElementById("volume");
+                if (player.settings.mute) {
+                    volumeImg.src = "images/volume_muted.png";
+                } else if (volume == 0) {
+                    volumeImg.src = "images/volume_0.png";
+                } else if (volume <= 33) {
+                    volumeImg.src = "images/volume_33.png";
+                } else if (volume <= 66) {
+                    volumeImg.src = "images/volume_66.png";
+                } else {
+                    volumeImg.src = "images/volume_100.png";
+                }
+            }
+            
+            function showVolumePopup() {
+                updateVolumeDisplay();
+                
+                var volumePopup = document.getElementById( "volume_popup" );
+                volumePopup.style.visibility = "visible";
+                
+                var volumeHover = document.getElementById( "volume_hover" );
+                volumeHover.src = "images/volume_down.png";
+                volumeHover.style.visibility = "visible";
+            }
+
+            function hideVolumePopup() {
+                var volumePopup = document.getElementById( "volume_popup" );
+                volumePopup.style.visibility = "hidden";
+
+                var volumeHover = document.getElementById( "volume_hover" );
+                volumeHover.style.visibility = "hidden";
+            }
+            
+            function getVolumeFromX( x ) {
+                var volumePopup = document.getElementById( "volume_popup" );
+                var volumeTrack = document.getElementById("volumeTrack");
+                var volumeThumb = document.getElementById("volumeThumb");
+                return Math.min( 1, Math.max( 0, (x - volumeTrack.offsetLeft - volumePopup.offsetLeft - 6) / (volumeTrack.offsetWidth - volumeThumb.offsetWidth) ) ) * 100;
+            }
+            
+            function onVolumeTrackMove() {
+                if (window.event.button) {
+                    player.settings.volume = getVolumeFromX( window.event.clientX );
+                    System.Gadget.Settings.write("volume", player.settings.volume);
+                    updateVolumeDisplay();
+                }
+            }
+            
+            function onMuteClick() {
+                player.settings.mute = !player.settings.mute;
+                System.Gadget.Settings.write("mute", player.settings.mute ? "true" : "false" );
+                updateVolumeDisplay();
+            }
+            
+            function setHideVolumeTimeout() {
+                if (hideVolumeTimeout > 0) clearTimeout( hideVolumeTimeout );
+                hideVolumeTimeout = setTimeout( onHideVolumeTimeout, 1000 );
+            }
+            
+            function clearHideVolumeTimeout() {
+                if (hideVolumeTimeout > 0) clearTimeout( hideVolumeTimeout );
+                hideVolumeTimeout = 0;
+            }
+            
+            function onHideVolumeTimeout() {
+                hideVolumePopup();
+                hideVolumeTimeout = 0;
+            }
+        </script>
+
+        <script language="javascript" for="player" event="currentItemChange()">
+            if (window.lastMedia && player.currentMedia.isIdentical( window.lastMedia )) return;
+
+            var mediaName = document.getElementById("mediaName");
+            var mediaAlbum = document.getElementById("mediaAlbum");
+            var mediaGenre = document.getElementById("mediaGenre");
+            var mediaArtist = document.getElementById("mediaArtist");
+            var mediaYear = document.getElementById("mediaYear");
+            var mediaInfoDiv = document.getElementById("mediaInfoDiv");
+            var mediaInfo = document.getElementById("mediaInfo");
+            var albumArt = document.getElementById("albumArt");
+                
+            var mediaInfoAnimHelper = document.getElementById( "mediaInfoAnimHelper" );
+            
+            while (mediaInfoAnimHelper.hasChildNodes()) mediaInfoAnimHelper.removeChild( mediaInfoAnimHelper.firstChild );
+            
+            var mediaInfoCopy = mediaInfo.cloneNode( true );
+            mediaInfoCopy.id = null;
+            for (var i = 0; i < mediaInfoCopy.childNodes.length; i++) {
+                try {
+                    mediaInfoCopy.childNodes[i].id = null;
+                } catch (e) {}
+            }
+            
+            mediaInfoAnimHelper.appendChild( mediaInfoCopy );
+            
+            if (player.currentMedia) {
+                mediaName.innerHTML = player.currentMedia.name;
+                mediaAlbum.innerHTML = player.currentMedia.getItemInfo( "WM/AlbumTitle" );
+                mediaGenre.innerHTML = player.currentMedia.getItemInfo( "WM/Genre" );
+                mediaArtist.innerHTML = getAuthorString( player.currentMedia );
+                mediaYear.innerHTML = player.currentMedia.getItemInfo( "WM/Year" );
+                mediaInfoDiv.title = player.currentMedia.name + "\r\n" +
+                                     player.currentMedia.getItemInfo( "WM/AlbumTitle" ) + "\r\n" +
+                                     getAuthorString( player.currentMedia ) + "\r\n" +
+                                     player.currentMedia.getItemInfo( "WM/Year" );
+                
+                updateTime();
+                clearInterval( updateTimeInterval );
+                updateTimeInterval = setInterval( updateTime, 1000 );
+                                                                
+                if (player.currentMedia.getAttributeCountByType("WM/Picture", "") > 0) {
+                    albumArt.src = player.currentMedia.getItemInfoByType("WM/Picture", "", 0).URL;
+                    hasAlbumArt = true;
+                } else {
+                    var url = player.currentMedia.sourceURL;
+                    url = url.substr( 0, url.lastIndexOf( '\\' ) + 1 ) + "AlbumArtSmall.jpg";
+                    var fso = new ActiveXObject( "Scripting.FileSystemObject" );
+                    if (fso.FileExists( url )) {
+                        albumArt.src = url;
+                    } else {
+                        albumArt.src = "images/noalbumart.png";
+                    }
+                }
+                
+                if (System.Gadget.Flyout.show)
+                    System.Gadget.Flyout.document.parentWindow.onCurrentItemChange();
+            } else {
+                albumArt.src = "images/noalbumart.png";
+            }
+            
+            mediaInfo.style.visibility = "visible";
+
+            if (!mediaInfoDiv.animator) mediaInfoDiv.animator = new Animator( mediaInfoDiv );
+            if (!player.animator) player.animator = new Animator( player );
+            if (!window.lastMedia) {
+                mediaInfo.style.left = "0px";
+                mediaInfoDiv.scrollLeft = 0;
+                mediaInfoDiv.animator.fadeIn( 1.0 );
+            } else if (goingPrevious) {
+                mediaInfo.style.left = "0px";
+                mediaInfoCopy.style.left = "120px";
+
+                mediaInfoDiv.scrollLeft = 120;
+                mediaInfoDiv.animator.scrollTo( 0, 0, 0.5 );
+                
+                player.style.visibility = "hidden";
+                player.animator.fadeIn( 2.0 );
+            } else {
+                mediaInfo.style.left = "120px";
+                mediaInfoCopy.style.left = "0px";
+
+                mediaInfoDiv.scrollLeft = 0;
+                mediaInfoDiv.animator.scrollTo( 0, 120, 0.5 );
+
+                player.style.visibility = "hidden";
+                player.animator.fadeIn( 2.0 );
+            }
+            
+            goingPrevious = false;
+            window.lastMedia = player.currentMedia;
+        </script>
+        
+        <script language="javascript" for="player" event="playStateChange( state )">
+            var showPrev = false;
+            var showPlay = false;
+            var showPause = false;
+            var showNext = false;
+            switch (state) {
+                case 1:
+                case 2:
+                case 10:
+                    showPrev = showPlay = showNext = true;
+                    break;
+                case 3:
+                    showPrev = showPause = showNext = true;
+                    break;
+            }
+            document.getElementById( "prev" ).style.display = showPrev ? "block" : "none";
+            document.getElementById( "play" ).style.display = showPlay ? "block" : "none";
+            document.getElementById( "pause" ).style.display = showPause ? "block" : "none";
+            document.getElementById( "next" ).style.display = showNext ? "block" : "none";
+        </script>
+    </head>
+    <body onload="onLoad()" onmouseup="onMouseUp()" onmousemove="onMouseMove()">
+        <g:background src="images/background.png" width="130" height="130"  onmouseout="onBackgroundOut()"/>
+       <object id="player" classid="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6" width="120" height="90" style="position:absolute;top:4px;left:5px;"></object>
+        <div class="mediaInfo" style="left:5px;top:4px;visibility:hidden" id="mediaInfoDiv">
+            <div style="width:240px;height:90px;" id="mediaInfoAnimHelper"></div>
+            <div id="mediaInfo" style="position:absolute;left:0px;top:0px;visibility:hidden;">
+                <img id="albumArt" border="0" alt="" style="position:absolute;top:2px;left:2px;width:48px;height:48px;-ms-interpolation-mode:bicubic;border:1px solid black;z-index:100"/>
+                <div id="mediaAlbum" class="infoText" style="position:absolute;left:52px;top:0px;width:64px;">test</div>
+                <div id="mediaArtist" class="infoText" style="position:absolute;left:52px;top:12px;width:64px;"></div>
+                <div id="mediaGenre" class="infoText" style="position:absolute;left:52px;top:24px;width:64px;"></div>
+                <div id="mediaYear" class="infoText" style="position:absolute;left:52px;top:36px;width:64px;"></div>
+                <div id="mediaName" class="infoText" style="position:absolute;left:1px;top:52px;width:114px;font-size:11px;"></div>
+                <div id="mediaTime" class="infoText" style="position:absolute;left:1px;top:66px;width:114px;"></div>
+            </div>
+        </div>
+        <div id="track" style="position:absolute;top:94px;left:5px;width:120px;height:7px;cursor:pointer" onmouseover="onTrackOver()" onmouseout="onTrackOut()" onclick="" onmouseup="onTrackUp()">
+            <div style="position:absolute;width:120px;height:3px;overflow:hidden;top:2px;left:0px">
+                <div id="trackFill" style="background:url(images/trackBarFill.png);width:0;height:3px;overflow:hidden;"></div>
+            </div>
+            <img id="trackThumb" src="images/trackThumb.gif" style="position:absolute;top:0px;left:0px;visibility:hidden;" onmousedown="this.src='images/trackThumb_down.gif';onTrackThumbDown()" onmouseover="this.src='images/trackThumb_hover.gif'" onmouseout="this.src='images/trackThumb.gif'" onmouseup="this.src='images/trackThumb_hover.gif'"/>
+        </div>
+        <div style="position:absolute;left:5px;top:100px;width:120;height:24px">
+            <img id="playlist" title="Show Library" src="images/playlist.png" onclick="openPlaylist()" onmouseover="this.src='images/playlist_hover.png'" onmouseout="this.src='images/playlist.png'" onmousedown="this.src='images/playlist_down.png'" onmouseup="this.src='images/playlist_hover.png'" style="position:absolute;top:5px;left:9px"/>
+            <img id="prev" title="Previous" src="images/prev.png" onclick="previous()" onmouseover="this.src='images/prev_hover.png'" onmouseout="this.src='images/prev.png'" onmousedown="this.src='images/prev_down.png'" onmouseup="this.src='images/prev_hover.png'" style="position:absolute;top:5px;left:24px;display:none"/>
+            <img id="play" title="Play" src="images/play.png" onclick="play()" onmouseover="this.src='images/play_hover.png'" onmouseout="this.src='images/play.png'" onmousedown="this.src='images/play_down.png'" onmouseup="this.src='images/play_hover.png'" style="position:absolute;top:0px;left:48px;display:none"/>
+            <img id="pause" title="Pause" src="images/pause.png" onclick="pause()" onmouseover="this.src='images/pause_hover.png'" onmouseout="this.src='images/pause.png'" onmousedown="this.src='images/pause_down.png'" onmouseup="this.src='images/pause_hover.png'" style="position:absolute;top:0px;left:48px;display:none"/>
+            <img id="next" title="Next" src="images/next.png" onclick="next()" onmouseover="this.src='images/next_hover.png'" onmouseout="this.src='images/next.png'" onmousedown="this.src='images/next_down.png'" onmouseup="this.src='images/next_hover.png'" style="position:absolute;top:5px;left:70px;display:none"/>
+            <img id="volume_hover" title="Volume" src="images/volume_hover.png" style="position:absolute;top:6px;left:98px;visibility:hidden"/>
+            <img id="volume" title="Volume" src="images/volume_100.png" style="position:absolute;top:7px;left:99px;" onmouseover="onVolumeOver()" onmouseout="onVolumeOut()" onclick="onVolumeClick()" onmousedown="onVolumeDown()" onmouseup="onVolumeUp()"/>
+        </div>
+        <div id="volume_popup" style="position:absolute;left:9px;top:105px;width:95px;height:15px;background:url(images/volume_popup.png);visibility:hidden" onmouseover="clearHideVolumeTimeout()" onmouseout="setHideVolumeTimeout()">
+            <div id="volumeTrack" style="position:absolute;top:1px;left:5px;width:72px;height:13px;cursor:pointer;" onmousemove="onVolumeTrackMove()" onmousedown="onVolumeTrackMove()">
+                <div style="position:absolute;top:4px;left:0px;width:72px;height:3px;overflow:hidden;">
+                    <div id="volumeTrackFill" style="background:url(images/volume_fill.png);width:60%;height:3px;overflow:hidden;"></div>
+                </div>
+                <img id="volumeThumb" src="images/trackThumb.gif" style="position:absolute;top:2px;left:0px;" onmousedown="this.src='images/trackThumb_down.gif';" onmouseover="this.src='images/trackThumb_hover.gif'" onmouseout="this.src='images/trackThumb.gif'" onmouseup="this.src='images/trackThumb_hover.gif'"/>
+            </div>
+            <img id="mute" style="position:absolute;left:78;top:1px;" src="images/mute.png" onmouseover="if (!player.settings.mute) this.src='images/mute_hover.png'" onmouseout="if (!player.settings.mute) this.src='images/mute.png'" onmousedown="this.src='images/mute_down.png'" onmouseup="if (!player.settings.mute) this.src='images/mute_hover.png'" onclick="onMuteClick()"/>
+        </div>
+        <div id="debug" style="position:absolute;top:0px;left:0px;background:black;color:white"></div>
+    </body>
+</html>

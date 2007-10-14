@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <style type="text/css" title="AppleStyle">
+        @import "YouTube.css";
+    </style>
+    <script type='text/javascript' src='/wookie/dwr/engine.js'> </script>
+  	<script type='text/javascript' src='/wookie/dwr/interface/widget.js'> </script>
+  	<script type='text/javascript' src='/wookie/dwr/util.js'> </script>
+    
+    <script type="text/javascript" src="/wookie/shared/mac-resources/WidgetResources/AppleClasses/AppleAnimator.js" charset="utf-8"></script>    
+    <script type="text/javascript" src="/wookie/shared/mac-resources/WidgetResources/AppleClasses/AppleInfoButton.js" charset="utf-8"></script>
+    <script type="text/javascript" src="localizedStrings.js" charset="utf-8"></script>
+    <script type="text/javascript" src="Parts/utilities.js" charset="utf-8"></script>
+    
+    <script type="text/javascript" src="Parts/Text.js" charset="utf-8"></script>
+    <script type="text/javascript" src="Parts/InfoButton.js" charset="utf-8"></script>
+    <script type="text/javascript" src="effects.js" charset="utf-8"></script>
+    <script type="text/javascript" src="functions.js" charset="utf-8"></script>
+	<script type="text/javascript" src="Stretcher.js"></script>
+    
+	<script type="text/javascript" src="/wookie/shared/mac-resources/WidgetResources/AppleClasses/AppleScrollbar.js" charset="utf-8"></script>
+	<script type="text/javascript" src="/wookie/shared/mac-resources/WidgetResources/AppleClasses/AppleScrollArea.js" charset="utf-8"></script>
+	<script type="text/javascript" src="Parts/ScrollArea.js" charset="utf-8"></script>
+	<script type="text/javascript" src="Parts/Shape.js" charset="utf-8"></script>
+	
+	
+	<script type="text/javascript" src="/wookie/shared/mac-resources/WidgetResources/AppleClasses/AppleButton.js" charset="utf-8"></script>
+	<script type="text/javascript" src="Parts/GlassButton.js" charset="utf-8"></script>
+	
+	<script type="text/javascript" src="Parts/setup.js" charset="utf-8"></script>
+	
+	<script type="text/javascript" src="YouTube.js" charset="utf-8"></script>
+	
+</head>
+<body onload="load();" style="" id="body">
+<table width="100%" cellpadding="0" border="0" cellspacing="0" id="video_container" style="position: absolute; left: -4px; top: -3px; text-align: center; z-index: 1001; display: none; ">
+	<tbody>
+		<tr height="33px">
+<td width="28px" style=" font-size:14px;background-image:url(Images/videoplayer/top_left.png);cursor:pointer;" onclick="closeVideo()">
+<img src="Images/close.png" style="position: relative; top:4px; left:4px;">
+</td>
+<td style="background-image: url(Images/videoplayer/top.png); cursor:pointer; background-color:#000;" align="right">
+			<img src="Images/gotovid.png" id="goto_image" value="" onclick="openSite('http://youtube.com/watch?v='+this.value)">
+		</td>
+<td width="39px" style="background-image:url(Images/videoplayer/top_right.png)"></td>
+</tr>
+	<tr>
+<td style="background-image: url(Images/videoplayer/left.png);"></td>
+<td id="video" align="center" valign="middle" style="background-color: #000;"></td>
+<td style="background-image: url(Images/videoplayer/right.png);"></td>
+</tr>
+	<tr>
+<td style="background-image: url(Images/videoplayer/bottom_left.png)"> </td>
+<td style="background-image: url(Images/videoplayer/bottom.png)"> </td>
+<td>
+<img id="resize" onmousedown="mouseDown(event)" src="Images/videoplayer/bottom_right.png">
+</td>
+</tr>
+	</tbody>
+</table>
+
+
+
+
+	<div id="front" style="z-index: 1; ">
+		<div id="info" onclick="event.stopPropagation(); event.preventDefault();">
+			<div style="position: absolute; top: 0px; left: 0px; width: 13px; height: 13px; opacity: 0.25; visibility: hidden; background-image: url(Images/black_rollie.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; "></div>
+		<img width="13" height="13" alt="Info" style="position: absolute; top: 0px; left: 0px; opacity: 0; " src="http://localhost:8081/wookie/shared/mac-resources/WidgetResources/ibutton/white_i.png">
+		<div style="position: absolute; top: 0px; left: 0px; width: 13px; height: 13px; opacity: 0.25; visibility: hidden; background-image: url(Images/black_rollie.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; "></div>
+		<img width="13" height="13" alt="Info" style="position: absolute; top: 0px; left: 0px; opacity: 0; " src="http://localhost:8081/wookie/shared/mac-resources/WidgetResources/ibutton/white_i.png">
+		<div style="position: absolute; top: 0px; left: 0px; width: 13px; height: 13px; opacity: 0.25; visibility: hidden; background-image: url(Images/black_rollie.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; "></div>
+		<img width="13" height="13" alt="Info" style="position: absolute; top: 0px; left: 0px; opacity: 0; " src="http://localhost:8081/wookie/shared/mac-resources/WidgetResources/ibutton/white_i.png">
+		<div style="position: absolute; top: 0px; left: 0px; width: 13px; height: 13px; opacity: 0.25; visibility: hidden; background-image: url(Images/black_rollie.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; "></div>
+		<img width="13" height="13" alt="Info" style="position: absolute; top: 0px; left: 0px; opacity: 0; " src="http://localhost:8081/wookie/shared/mac-resources/WidgetResources/ibutton/white_i.png">
+		<div style="position: absolute; top: 0px; left: 0px; width: 13px; height: 13px; opacity: 0.25; visibility: hidden; background-image: url(Images/black_rollie.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; "></div>
+		<img width="13" height="13" alt="Info" style="position: absolute; top: 0px; left: 0px; opacity: 0; " src="http://localhost:8081/wookie/shared/mac-resources/WidgetResources/ibutton/white_i.png">
+		<div style="position: absolute; top: 0px; left: 0px; width: 13px; height: 13px; opacity: 0.25; visibility: hidden; background-image: url(Images/black_rollie.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; "></div>
+		<img width="13" height="13" alt="Info" style="position: absolute; top: 0px; left: 0px; opacity: 0; " src="http://localhost:8081/wookie/shared/mac-resources/WidgetResources/ibutton/white_i.png">
+		<div style="position: absolute; top: 0px; left: 0px; width: 13px; height: 13px; opacity: 0.25; visibility: hidden; background-image: url(Images/black_rollie.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; "></div>
+		<img width="13" height="13" alt="Info" style="position: absolute; top: 0px; left: 0px; opacity: 0; " src="http://localhost:8081/wookie/shared/mac-resources/WidgetResources/ibutton/white_i.png">
+		<div style="position: absolute; top: 0px; left: 0px; width: 13px; height: 13px; opacity: 0.25; visibility: hidden; background-image: url(Images/black_rollie.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; "></div>
+		<img width="13" height="13" alt="Info" style="position: absolute; top: 0px; left: 0px; opacity: 0; " src="http://localhost:8081/wookie/shared/mac-resources/WidgetResources/ibutton/white_i.png">
+		<div style="position: absolute; top: 0px; left: 0px; width: 13px; height: 13px; opacity: 0.25; visibility: hidden; background-image: url(Images/black_rollie.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; "></div>
+		<img width="13" height="13" alt="Info" style="position: absolute; top: 0px; left: 0px; opacity: 0; " src="http://localhost:8081/wookie/shared/mac-resources/WidgetResources/ibutton/white_i.png">
+		<div style="position: absolute; top: 0px; left: 0px; width: 13px; height: 13px; opacity: 0.25; visibility: hidden; background-image: url(Images/black_rollie.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; "></div>
+		<img width="13" height="13" alt="Info" style="position: absolute; top: 0px; left: 0px; opacity: 0; " src="http://localhost:8081/wookie/shared/mac-resources/WidgetResources/ibutton/white_i.png">
+		<div style="position: absolute; top: 0px; left: 0px; width: 13px; height: 13px; opacity: 0.25; visibility: hidden; background-image: url(Images/black_rollie.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; "></div>
+		<img width="13" height="13" alt="Info" style="position: absolute; top: 0px; left: 0px; opacity: 0; " src="http://localhost:8081/wookie/shared/mac-resources/WidgetResources/ibutton/white_i.png">
+		<div style="position: absolute; top: 0px; left: 0px; width: 13px; height: 13px; opacity: 0.25; visibility: hidden; background-image: url(Images/black_rollie.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; "></div>
+		<img width="13" height="13" alt="Info" style="position: absolute; top: 0px; left: 0px; opacity: 0; " src="http://localhost:8081/wookie/shared/mac-resources/WidgetResources/ibutton/white_i.png">
+		<div style="position: absolute; top: 0px; left: 0px; width: 13px; height: 13px; opacity: 0.25; visibility: hidden; background-image: url(Images/black_rollie.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; "></div>
+		<img width="13" height="13" alt="Info" style="position: absolute; top: 0px; left: 0px; opacity: 0; " src="http://localhost:8081/wookie/shared/mac-resources/WidgetResources/ibutton/white_i.png">
+		</div>
+		<div id="CollapsiblePanel1" status="down" style="">
+			<div class="CollapsiblePanelTab" id="top" style="">
+
+			<img src="Images/arrowdown.png" id="img" onmousedown="toggle()">
+			<input type="search" value="" placeholder="Begin Your Search" results="10" id="searchfield" onchange="search(this.value)">
+			<img src="Images/refresh.png" onclick="refresh()" id="img1">
+			</div>
+			<div class="CollapsiblePanelContent" id="contents" style="">
+				
+			<div id="scrollArea">
+	
+
+				
+			
+				
+			
+				
+			
+				
+			
+				
+			<div id="content" class="content" style="position: absolute; left: 0px; top: 0px; right: 22px; bottom: 0px; overflow: hidden; "></div>
+				
+			</div>
+			</div>
+			<div id="bottom" style="font-size:9px;color:#fff;" align="right">
+				<span style="position:relative;right:15px;bottom:1.5px;cursor:pointer" onclick="openSite('http://conexn.com');">Conexn Media</span>
+			</div>
+		</div>
+	<div id="rectangleShape" style="cursor:pointer;" onclick="openSite('http://youtube.com/');">
+		<div style="left: 0px; right: 0px; width: auto; height: 31px; ">
+<div style="position: absolute; display: inline-block; background-image: url(Images/rectangleShape_left.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; height: 31px; width: 1px; "></div>
+<div style="position: absolute; display: inline-block; background-repeat: repeat-x; background-image: url(Images/rectangleShape_middle.png); line-height: 31px; height: 31px; left: 1px; right: 1px; overflow: hidden; width: auto; white-space: nowrap; "></div>
+<div style="position: absolute; display: inline-block; background-image: url(Images/rectangleShape_right.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; height: 31px; width: 1px; right: 0px; "></div>
+</div>
+	
+	
+	
+	<div style="left: 0px; right: 0px; width: auto; height: 31px; ">
+	
+	
+	
+		<div style="position: absolute; display: inline-block; background-image: url(Images/rectangleShape_left.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; height: 31px; width: 1px; "></div>
+	
+	
+	
+	<div style="position: absolute; display: inline-block; background-repeat: repeat-x; background-image: url(Images/rectangleShape_middle.png); line-height: 31px; height: 31px; left: 1px; right: 1px; overflow: hidden; width: auto; white-space: nowrap; "></div>
+	
+	
+	
+	<div style="position: absolute; display: inline-block; background-image: url(Images/rectangleShape_right.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; height: 31px; width: 1px; right: 0px; "></div>
+	
+	
+	
+	</div>
+	<div style="left: 0px; right: 0px; width: auto; height: 31px; ">
+		<div style="position: absolute; display: inline-block; background-image: url(Images/rectangleShape_left.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; height: 31px; width: 1px; "></div>
+	<div style="position: absolute; display: inline-block; background-repeat: repeat-x; background-image: url(Images/rectangleShape_middle.png); line-height: 31px; height: 31px; left: 1px; right: 1px; overflow: hidden; width: auto; white-space: nowrap; "></div>
+	<div style="position: absolute; display: inline-block; background-image: url(Images/rectangleShape_right.png); background-repeat: no-repeat; background-attachment: initial; background-position-x: 0%; background-position-y: 0%; background-color: initial; height: 31px; width: 1px; right: 0px; "></div>
+	</div>
+	</div>
+
+	</div>
+    <div id="back">
+	   <img id="backImg" src="Images/back.png" alt="">
+    	
+        
+    <select id="popup"> 		<option value="mr">Most Recent</option> 		<option value="mp">Most Viewed</option> 		<option value="tr">Top Rated</option> 		<option value="md">Most Discussed</option> 		<option value="mf">Top Favorites</option> 		<option value="mrd">Most Linked</option> 		<option value="rf">Recently Featured</option> 		<option value="ms">Most Responded</option> 	</select>
+    <div id="text">Select which category will be displayed as a default:</div>
+    <img src="Images/logo 1.png" id="img3">
+    <div id="text4" onclick="openSite('http://conexn.com/');">Created By: Chris Beauchamp</div>
+    <div id="text5" onclick="openSite('http://conexn.com/widgets/view.php?widget=youtube');">Click here to make a comment or request new features</div>
+    <div id="text6">Version 1.0</div>
+    <div id="text8" style="display:none">New Version Available!</div>
+    <div id="text9">Sample Ad Text Here</div>
+    
+    <div id="done"></div>
+    </div>
+
+<script>
+var CollapsiblePanel1 = new Spry.Widget.CollapsiblePanel("CollapsiblePanel1", {contentIsOpen:false, enableAnimation:true});
+</script>                    
+
+</body>
+</html>

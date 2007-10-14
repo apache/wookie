@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<gadget>
+    <name>Media Player</name>
+    <namespace>JonathanMarston.WindowsMediaPlayer</namespace>
+    <version>1.1</version>
+    <author name="Jonathan Marston">
+        <info url="www.microsoftgadgets.com" />
+    </author>
+    <copyright>&#169; 2007 Jonathan Marston</copyright>
+    <description>A basic media player gadget that ties into your Windows Media Player library</description>
+    <icons>
+        <icon src="images/background.png" />
+    </icons>
+    <hosts>
+        <host name="sidebar">
+            <base type="HTML" apiVersion="1.0.0" src="Player.html" />
+            <permissions>Full</permissions>
+            <platform minPlatformVersion="1.0" />
+	    <defaultImage src="images/background.png"/>
+        </host>
+    </hosts>
+</gadget>
