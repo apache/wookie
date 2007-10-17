@@ -11,24 +11,6 @@
 		</listener-class>
 	</listener>
 
-	<!-- use filter when we can get it to just aply to the admin section -->
-	<!--  
-		<filter>
-		<filter-name>HeaderFooterFilter</filter-name>	
-		<filter-class>org.tencompetence.widgetservice.server.HeaderFooterFilter</filter-class>
-		</filter>
-		
-		<filter>
-		<filter-name>SessionFilter</filter-name>
-		<filter-class>org.tencompetence.widgetservice.SessionFilter</filter-class>
-		</filter>
-		
-		<filter-mapping>
-		<filter-name>SessionFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-		</filter-mapping>
-	-->
-
 	<filter>
 		<filter-name>MainFilter</filter-name>
 		<filter-class>
@@ -39,8 +21,6 @@
 		<filter-name>MainFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
-
 
 	<listener>
 		<listener-class>
