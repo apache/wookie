@@ -1,7 +1,8 @@
 Setting up this project
 -----------------------
 You will need mysql database v 5+
-* In the scripts folder there is a sql script file which should allow you to rebuild the DB.
+* In the scripts folder there is an sql script file which will create the DB (create_database.sql)
+* In the scripts folder there is also sql script file which should allow you to populate the DB.(db_dump.sql) 		
 * The db user should have the credentials "root", "admin"
 * The coppercore runtime package (CCRT), which can be found here (http://coppercore.org)
 
