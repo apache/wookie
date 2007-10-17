@@ -23,13 +23,5 @@
       <include method="getPost"/>
     </create>    
     <convert converter="bean" match="org.tencompetence.widgetservice.widgets.forum.PostNode"/>
-    
-     <create creator="new" javascript="JavascriptChat" scope="application">
-          <param name="class" value="org.tencompetence.widgetservice.widgets.chat.JavascriptChat"/>
-        </create>
-        <create creator="new" javascript="JavaChat" scope="application">
-          <param name="class" value="org.tencompetence.widgetservice.widgets.chat.JavaChat"/>
-        </create>
-    <convert converter="bean" match="org.tencompetence.widgetservice.widgets.chat.Message"/>
   </allow>
 </dwr>
