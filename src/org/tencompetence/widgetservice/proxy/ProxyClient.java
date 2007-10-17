@@ -1,3 +1,29 @@
+/*
+ * Copyright (c) 2007, Consortium Board TENCompetence
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the TENCompetence nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY CONSORTIUM BOARD TENCOMPETENCE ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL CONSORTIUM BOARD TENCOMPETENCE BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 package org.tencompetence.widgetservice.proxy;
 
 import java.io.IOException;
@@ -17,6 +43,12 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
+/**
+ * A class using HttpClient to handle HTTP requests & manipulate the responses
+ *
+ * @author Paul Sharples
+ * @version $Id: ProxyClient.java,v 1.2 2007-10-17 23:11:10 ps3com Exp $
+ */
 public class ProxyClient {
 	
 	public String ctype;
@@ -39,37 +71,22 @@ public class ProxyClient {
 		}
 	    
 	    private String sendXmlData(String xmlData, EntityEnclosingMethod method) throws Exception {
-
 			// Tell the method to automatically handle authentication.
 			method.setDoAuthentication(true);
-
-			
 				try {
 					method.setRequestEntity(new StringRequestEntity(xmlData, "text/xml", "UTF8"));//$NON-NLS-1$  //$NON-NLS-2$
-				} catch (UnsupportedEncodingException e) {
+				}
+				catch (UnsupportedEncodingException e) {
 					throw new Exception(e);
 				}
-
-				// Specify content type and encoding
-				// If content encoding is not explicitly specified
-				// ISO-8859-1 is assumed
-				//method.setRequestHeader("Content-type", "text/xml; charset=UTF8"); //$NON-NLS-1$  //$NON-NLS-2$			
-			
-
 			return executeMethod(method);
 		}
 		
 	    
 	    private String executeMethod(HttpMethod method) throws Exception {
-
 			// Execute the method.
-			try {
-
-				
+			try {				
 				HttpClient client = new HttpClient();
-
-		
-				
 				// Add user language to http request in order to notify server of user's language
 				Locale locale = Locale.getDefault();
 				method.setRequestHeader("Accept-Language", locale.getLanguage()); //$NON-NLS-1$ 
@@ -80,19 +97,21 @@ public class ProxyClient {
 					// for now we are only expecting Strings
 					return method.getResponseBodyAsString();
 
-				} else if (statusCode == HttpStatus.SC_UNAUTHORIZED)
+				}
+				else if (statusCode == HttpStatus.SC_UNAUTHORIZED)
 					throw new Exception("ERROR_INVALID_PASSWORD"); 						
 				else if (statusCode == HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED)
 					throw new Exception("ERROR_PROXY"); 									
 				else {
 					throw new Exception("Method failed: " + method.getStatusLine() + ' ' + method.getURI() + ' ' + method.getStatusText() + method.getResponseBodyAsString()); //$NON-NLS-1$
 				}
-			} catch (IOException e) {
+			} 
+			catch (IOException e) {
 				throw new Exception("ERROR_CONNECT", e);
-			} finally {
+			} 
+			finally {
 				// Release the connection.
 				method.releaseConnection();
-				
 			}
 		}
 	    
@@ -100,12 +119,6 @@ public class ProxyClient {
 			try {
 				// Create an instance of HttpClient.
 				HttpClient client = new HttpClient();
-				
-				// set the clients proxy values if needed
-				//ConnectionsPrefsManager.setProxySettings(client);
-				
-			
-
 				// Provide custom retry handler is necessary
 				method.getParams()
 						.setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(1, false));
@@ -119,10 +132,7 @@ public class ProxyClient {
 				if (statusCode == HttpStatus.SC_OK) {
 					Header hType = method.getResponseHeader("Content-type");
 					ctype = hType.getValue();
-					System.out.println("content type= " + ctype); //$NON-NLS-1$
-					// for now we are only expecting Strings
 					return method.getResponseBodyAsString();
-					
 				} 
 				else if (statusCode == HttpStatus.SC_UNAUTHORIZED)
 					throw new Exception("Passed credentials are not correct"); //$NON-NLS-1$						
@@ -131,77 +141,16 @@ public class ProxyClient {
 				else
 					throw new Exception(
 							"Method failed: " + method.getStatusLine() + ' ' + method.getURI() + ' ' + method.getStatusText()); //$NON-NLS-1$
-			} catch (HttpException e) {
+			} 
+			catch (HttpException e) {
 				throw new Exception(e);
-			} catch (IOException e) {
+			} 
+			catch (IOException e) {
 				throw new Exception(e);
-			} finally {
+			} 
+			finally {
 				// Release the connection.
 				method.releaseConnection();
 			}
 		}
-/*		
-		private String sendXmlData(String xmlData, EntityEnclosingMethod method, Part[] parts) throws Exception {
-			try {
-				// Create an instance of HttpClient.
-				HttpClient client = new HttpClient();
-				// Tell the method to automatically handle authentication.
-				method.setDoAuthentication(true);
-				
-				if(parts!=null){
-					method.setRequestEntity( new MultipartRequestEntity(parts, method.getParams()) ); 
-				}
-				else{
-				
-		
-					// Request content will be retrieved directly
-					// from the input stream
-					// Per default, the request content needs to be buffered
-					// in order to determine its length.
-					// Request body buffering can be avoided when
-					// content length is explicitly specified
-					method.setRequestEntity(new StringRequestEntity(xmlData, "text/xml", "UTF8")); //$NON-NLS-1$  //$NON-NLS-2$
-		
-					// Specify content type and encoding
-					// If content encoding is not explicitly specified
-					// ISO-8859-1 is assumed
-					method.setRequestHeader("Content-type", "text/xml; charset=UTF8"); //$NON-NLS-1$  //$NON-NLS-2$
-					// post.setRequestHeader("Content-type", "text/xml;
-					// charset=ISO-8859-1");
-		
-					// Provide custom retry handler is necessary
-					method.getParams()
-							.setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
-				}
-				// Execute the method.
-				int statusCode = client.executeMethod(method);
-
-				if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
-					// Read the response body.
-					byte[] responseBody = method.getResponseBody();
-
-					// Deal with the response.
-					// Use caution: ensure correct character encoding and is not
-					// binary data
-					return new String(responseBody);
-
-				} 
-				else if (statusCode == HttpStatus.SC_UNAUTHORIZED)
-					throw new Exception("Passed credentials are not correct"); //$NON-NLS-1$
-				else if (statusCode == HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED)
-					throw new Exception("Proxy authentication required. This can be set in the preferences."); //$NON-NLS-1$									
-				else if (statusCode == HttpStatus.SC_CONFLICT)
-					throw new Exception("Resource already exists on server"); //$NON-NLS-1$
-				else
-					throw new Exception("Method failed: " + method.getStatusLine() + ' ' + method.getURI()); //$NON-NLS-1$
-			} catch (HttpException e) {
-				throw new Exception(e);
-			} catch (IOException e) {
-				throw new Exception(e);
-			} finally {
-				// Release the connection.
-				method.releaseConnection();
-			}
-		}
-		*/
 }

@@ -1,3 +1,29 @@
+/*
+ * Copyright (c) 2007, Consortium Board TENCompetence
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the TENCompetence nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY CONSORTIUM BOARD TENCOMPETENCE ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL CONSORTIUM BOARD TENCOMPETENCE BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 package org.tencompetence.widgetservice.manager;
 
 import java.util.List;
@@ -11,21 +37,41 @@ import org.tencompetence.widgetservice.beans.WidgetType;
 import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedException;
 import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
 import org.tencompetence.widgetservice.util.hibernate.DBManagerInterface;
+
 /**
  * WidgetAdminManager
  * 
+ * This class is responsible for administrative functions such as adding new widget types
+ * and setting which widget is to be the default
+ * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminManager.java,v 1.1 2007-10-14 10:58:25 ps3com Exp $
+ * @version $Id: WidgetAdminManager.java,v 1.2 2007-10-17 23:11:12 ps3com Exp $
  */
 public class WidgetAdminManager extends WidgetServiceManager {
 	
 	static Logger _logger = Logger.getLogger(WidgetAdminManager.class.getName());
-					
+	
+	/**
+	 * Add a new widget to the system - without the widget type
+	 * @param widgetName - the name of this widget
+	 * @param url - the url which it resides
+	 * @param height - the height at which it is supposed to be displayed
+	 * @param width - the width at which it is supposed to be displayed
+	 */
 	public void addNewWidget(String widgetName, String url, int height, int width) {
 		addNewWidget(widgetName, url, height, width, null);
 	}
 	
-			
+	
+	/**
+	 * Add a new widget to the system
+	 * @param widgetName - the name of this widget
+	 * @param url - the url which it resides
+	 * @param height - the height at which it is supposed to be displayed
+	 * @param width - the width at which it is supposed to be displayed
+	 * @param widgetTypes - a string array containing the types this widget can perform as
+	 * @return - the new key created for this widget
+	 */
 	@SuppressWarnings("unchecked")
 	public int addNewWidget(String widgetName, String url, int height, int width, String[] widgetTypes) {
 			int newWidgetIdx = -1;
@@ -37,8 +83,7 @@ public class WidgetAdminManager extends WidgetServiceManager {
 				widget.setUrl(url);
 				widget.setHeight(height);
 				widget.setWidth(width);
-				dbManager.saveObject(widget);
-				// Widget widgetObj = (Widget)session.merge(widget);	       	        
+				dbManager.saveObject(widget);	       	        
 				WidgetType widgetType;
 				if (widgetTypes!=null){
 					for(int i=0;i<widgetTypes.length;i++){
@@ -52,17 +97,14 @@ public class WidgetAdminManager extends WidgetServiceManager {
 				newWidgetIdx = widget.getId();
 			} 
 			catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				_logger.error(e.getMessage());
 			}
-	        //session.getTransaction().commit();
-	        //HibernateUtil.closeSession();
 	        return newWidgetIdx;	       
 	    }
 
 	/**
 	 * Get all widgets from widget table
-	 * @return
+	 * @return - an array of widgets
 	 */
 	public Widget[] getAllWidgets() {
 		final DBManagerInterface dbManager = DBManagerFactory.getDBManager();
@@ -73,7 +115,7 @@ public class WidgetAdminManager extends WidgetServiceManager {
 	
 	/**
 	 * Get all of the default widgets from the DefaultWidgets table
-	 * @return
+	 * @return - an array of default widgets
 	 */
 	public WidgetDefault[] getAllDefaultWidgets() {
 		final DBManagerInterface dbManager = DBManagerFactory.getDBManager();
@@ -83,9 +125,9 @@ public class WidgetAdminManager extends WidgetServiceManager {
 	}
 	
 	/**
-	 * Get all widgets of a particular type - eg - chat
-	 * @param typeToSearch
-	 * @return
+	 * Get all widgets of a particular type - e.g. - chat
+	 * @param typeToSearch - a widget type
+	 * @return - returns an array of widgets
 	 */
 	public Widget[] getWidgetsByType(String typeToSearch) throws WidgetTypeNotSupportedException {
 		final DBManagerInterface dbManager = DBManagerFactory.getDBManager();			
@@ -104,8 +146,8 @@ public class WidgetAdminManager extends WidgetServiceManager {
 
 	/**
 	 * Sets a given widget to be the default for a given context - i.e. chat or discussion etc...
-	 * @param key
-	 * @param widgetType
+	 * @param key - the key of the widget to set as defult
+	 * @param widgetType - the type of widget
 	 */
 	public void setDefaultWidget(int key, String widgetType){
 		final DBManagerInterface dbManager = DBManagerFactory.getDBManager();	
@@ -128,16 +170,18 @@ public class WidgetAdminManager extends WidgetServiceManager {
 				wd.setWidgetId(key);		
 				dbManager.saveGenericObject(wd);
 			}
-			//session.getTransaction().commit();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} 
+        catch (Exception e) {
+			_logger.error(e.getMessage());
 		}
 	}
 	
 	
 	
-		
+	/**
+	 * Prints the details of all widgets
+	 * @param magr - a widgetAdminManager instance
+	 */	
 	@SuppressWarnings("unchecked")
 	public void printOutAllWidgets(WidgetAdminManager magr){				
 		Widget[] widgets = magr.getAllWidgets();
@@ -157,7 +201,10 @@ public class WidgetAdminManager extends WidgetServiceManager {
 		    }		    
 	}
 	
-	
+	/**
+	 * Testing main method
+	 * @param args
+	 */
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		WidgetAdminManager manager = new WidgetAdminManager();
@@ -177,24 +224,15 @@ public class WidgetAdminManager extends WidgetServiceManager {
 			}
 		} 
 		catch (WidgetTypeNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_logger.error(e.getMessage());
 		}
-		/*
-		Widget w = manager.getDefaultWidgetByType("testing");
-		if(w==null){
-			_logger.debug("tis null");
-		}
-		else{
-			_logger.debug(w.getWidgetName());
-		}
-		
-		*/
-		
-		//HibernateUtil.getSessionFactory().close();
-		//HibernateUtil.closeSession();
 	}
 	
+	/**
+	 * Setup some default data
+	 * @param mgr
+	 * @param defaultPath
+	 */
 	public void setUpDefaultData(WidgetAdminManager mgr, String defaultPath){
 		if (defaultPath.equals(null)){
 			defaultPath = "http://localhost:8080/wookie/services/default/";
@@ -243,12 +281,10 @@ public class WidgetAdminManager extends WidgetServiceManager {
 			addNewPreference(wi,"gender","male");
 		} 
 		catch (WidgetTypeNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_logger.error(e.getMessage());
 		}
 		catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_logger.error(e.getMessage());
 		}
 					
 	}

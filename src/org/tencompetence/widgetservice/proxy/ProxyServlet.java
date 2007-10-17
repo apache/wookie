@@ -1,3 +1,29 @@
+/*
+ * Copyright (c) 2007, Consortium Board TENCompetence
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the TENCompetence nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY CONSORTIUM BOARD TENCOMPETENCE ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL CONSORTIUM BOARD TENCOMPETENCE BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 package org.tencompetence.widgetservice.proxy;
 
 import java.io.IOException;
@@ -15,6 +41,13 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.tencompetence.widgetservice.manager.WidgetProxyManager;
 
+/**
+ * A web proxy servlet which will translate calls for content and return them as if they came from
+ * this domain
+ * @author Paul Sharples
+ * @version $Id
+ *
+ */
 public class ProxyServlet extends HttpServlet implements Servlet {
 
 	private static final long serialVersionUID = 1L;
@@ -73,26 +106,28 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 					ProxyClient p = new ProxyClient();
 					if(httpMethod.equals("get")){
 						res = p.get(bean.getNewUrl().toExternalForm());
-						_logger.debug("@@@@GET called");
+						_logger.debug("GET called");
 					}
 					else{
-						res = p.post("TODO - some data goes here", bean.getNewUrl().toExternalForm());
-						_logger.debug("@@@@POST called");
+						res = p.post("TODO", bean.getNewUrl().toExternalForm());
+						_logger.debug("POST called");
 					}
 					//TODO - find all the links etc & make them absolute - to make request come thru this servlet
 					response.setContentType(p.ctype);
-					_logger.debug("*****result of proxy call*****\n"+res+"*****************************\n");
 					out.print(res);
 				}			
 			}
 		}
 		catch (Exception e) {
-			_logger.error("**get method***");
-			// TODO Auto-generated catch block
-			e.printStackTrace();	
+			_logger.error(e.getMessage());	
 		}
 	}
 	
+	/**
+	 * 
+	 * A class used to model a url both with and without a proxy address attached to it
+	 *
+	 */
 	private class ProxyURLBean {	
 		
 		private URL _originatingUrl = null;
@@ -145,7 +180,7 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			} 
 			catch (Exception ex) {
 				_errorFound = true;
-				_errorStr = "<error2>URL error on request. " + ex.getMessage() + "</error>";	
+				_errorStr = "<error>URL error on request. " + ex.getMessage() + "</error>";	
 			}
 		}
 

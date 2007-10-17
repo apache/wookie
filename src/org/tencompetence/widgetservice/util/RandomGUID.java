@@ -91,6 +91,9 @@ import java.util.Random;
  *
  * - Marc
  */
+/**
+* @version $Id: RandomGUID.java,v 1.2 2007-10-17 23:11:10 ps3com Exp $
+*/
 public class RandomGUID {
 	
 	public String valueBeforeMD5 = "";
