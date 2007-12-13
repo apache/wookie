@@ -50,7 +50,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
  * and setting which widget is to be the default
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminManager.java,v 1.1 2007-12-13 20:31:33 ps3com Exp $
+ * @version $Id: WidgetAdminManager.java,v 1.2 2007-12-13 21:53:00 ps3com Exp $
  */
 public class WidgetAdminManager extends WidgetServiceManager implements IWidgetAdminManager {
 	
@@ -574,6 +574,12 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 			dbManager.rollbackTransaction();
 			_logger.error(e.getMessage());			
 		}			
+	}
+
+
+	public String getWidgetGuid(int dbKey) {
+		Widget widget = getWidget(dbKey);
+		return widget.getGuid();
 	}
 
 }

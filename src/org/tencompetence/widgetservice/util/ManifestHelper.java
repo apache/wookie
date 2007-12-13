@@ -123,5 +123,22 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 		}
 		return result;
 	}
+	  
+	 public static boolean removeWidgetResources(HttpServletRequest request, Configuration properties, String folder){
+		folder = convertIdToFolderName(folder);
+		String uploadPath = properties.getString("widget.widgetfolder");
+		ServletContext context = request.getSession().getServletContext();		
+		String serverPath = context.getRealPath(uploadPath + File.separator + folder) ;		
+		File pFolder = new File(convertPathToPlatform(serverPath));
+		try {
+			_logger.debug("Deleting folder:"+pFolder.getCanonicalFile().toString());
+			FileUtils.deleteFolder(pFolder);
+		} 
+		catch (Exception ex) {
+			_logger.error(ex);						
+		}
+		return true;
+	 }
+	 
 
 }

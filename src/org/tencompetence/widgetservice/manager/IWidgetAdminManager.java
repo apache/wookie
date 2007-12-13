@@ -120,4 +120,6 @@ public interface IWidgetAdminManager {
 	public abstract void setWidgetTypesForWidget(int dbKey,
 			String[] widgetTypes, boolean maximize);
 
+	public abstract String getWidgetGuid(int parseInt);
+
 }

@@ -52,7 +52,7 @@ import org.tencompetence.widgetservice.util.ZipUtils;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.3 2007-12-13 20:31:33 ps3com Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.4 2007-12-13 21:53:00 ps3com Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -171,7 +171,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 					break;
 				}
 				case REMOVEWIDGET: {
-					removeWidget(session, request, manager);										
+					removeWidget(session, request, properties, manager);										
 					listOperation(session, manager, false);					
 					doForward(request, response, fListWidgetsForDeletePage);
 					break;
@@ -311,14 +311,19 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		}				
 	}
 	
-	private void removeWidget(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager) {
+	private void removeWidget(HttpSession session, HttpServletRequest request, Configuration properties, IWidgetAdminManager manager) {
 		String widgetId = request.getParameter("widgetId");
+		String guid = manager.getWidgetGuid(Integer.parseInt(widgetId));
 		if(manager.removeWidgetAndReferences(Integer.parseInt(widgetId))){
-			// TODO - calculate the file path and remove the physical resources	
-			session.setAttribute("message_value", "Widget was successfully deleted.");
+			if(ManifestHelper.removeWidgetResources(request, properties, guid)){			
+				session.setAttribute("message_value", "The widget and its resource was successfully deleted.");			
+			}
+			else{
+				session.setAttribute("error_value", "There was a problem deleting the widget resources.");
+			}
 		}
 		else{
-			session.setAttribute("error_value", "There was a problem deleting the widget.");
+			session.setAttribute("error_value", "There was a problem removing the widget from the system.");
 		}
 	}		
 	
