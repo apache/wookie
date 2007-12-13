@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -41,14 +40,13 @@ import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
 /**
  * A class using HttpClient to handle HTTP requests & manipulate the responses
  *
  * @author Paul Sharples
- * @version $Id: ProxyClient.java,v 1.3 2007-12-13 20:31:33 ps3com Exp $
+ * @version $Id: ProxyClient.java,v 1.4 2007-12-13 21:22:04 ps3com Exp $
  */
 public class ProxyClient {
 	

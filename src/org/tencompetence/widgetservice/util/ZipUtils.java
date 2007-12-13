@@ -19,7 +19,7 @@ import java.util.zip.ZipOutputStream;
  *
  * @author Phillip Beauvoir
  * @author Paul Sharples
- * @version $Id: ZipUtils.java,v 1.1 2007-12-13 20:31:33 ps3com Exp $
+ * @version $Id: ZipUtils.java,v 1.2 2007-12-13 21:22:03 ps3com Exp $
  */
 public final class ZipUtils {
 	
@@ -335,6 +335,7 @@ public final class ZipUtils {
 	 * @return
 	 * @throws IOException
 	 */
+	@SuppressWarnings("unchecked")
 	public static String[] getZipFileEntryNames(File zipFile) throws IOException {
 		ZipInputStream zIn = null;
 		ZipEntry zipEntry;

@@ -39,7 +39,7 @@ import java.util.Date;
  *
  * @author Phillip Beauvoir
  * @author Paul Sharples
- * @version $Id: GeneralUtils.java,v 1.2 2007-10-17 23:11:10 ps3com Exp $
+ * @version $Id: GeneralUtils.java,v 1.3 2007-12-13 21:22:03 ps3com Exp $
  */
 public final class GeneralUtils  {
 	
@@ -121,6 +121,7 @@ public final class GeneralUtils  {
 	 * @param jarFile The file of the jar
 	 * @return The class or null if could not be created
 	 */
+	@SuppressWarnings("unchecked")
 	public static Class getClassFromJar(String className, File jarFile) {
 		try {
 			URL url = jarFile.toURL();
@@ -139,6 +140,7 @@ public final class GeneralUtils  {
 	 * @param jarFile The file of the jar
 	 * @return An instance of the class or null if it could not be created
 	 */
+	@SuppressWarnings("unchecked")
 	public static Object getClassInstanceFromJar(String className, File jarFile) {
 		Object o = null;
 		
