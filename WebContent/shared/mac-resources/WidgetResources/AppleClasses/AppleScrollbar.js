@@ -502,15 +502,15 @@ function AppleVerticalScrollbar(scrollbar)
 	this.autohide = true;
 	this.hidden = true;
 	this.size = 19; // width
-	this.trackStartPath = "AppleClasses/Images/scroll_track_vtop.png";
+	this.trackStartPath = "Images/scroll_track_vtop.png";
 	this.trackStartLength = 18; // height
-	this.trackMiddlePath = "AppleClasses/Images/scroll_track_vmid.png";
-	this.trackEndPath = "AppleClasses/Images/scroll_track_vbottom.png";
+	this.trackMiddlePath = "Images/scroll_track_vmid.png";
+	this.trackEndPath = "Images/scroll_track_vbottom.png";
 	this.trackEndLength = 18; // height
-	this.thumbStartPath = "AppleClasses/Images/scroll_thumb_vtop.png";
+	this.thumbStartPath = "Images/scroll_thumb_vtop.png";
 	this.thumbStartLength = 9; // height
-	this.thumbMiddlePath = "AppleClasses/Images/scroll_thumb_vmid.png";
-	this.thumbEndPath = "AppleClasses/Images/scroll_thumb_vbottom.png";
+	this.thumbMiddlePath = "Images/scroll_thumb_vmid.png";
+	this.thumbEndPath = "Images/scroll_thumb_vbottom.png";
 	this.thumbEndLength = 9; // height
 
 	/* Internal objects */
@@ -653,15 +653,15 @@ function AppleHorizontalScrollbar(scrollbar)
 	this.autohide = true;
 	this.hidden = true;
 	this.size = 19; // height
-	this.trackStartPath = "AppleClasses/Images/scroll_track_hleft.png";
+	this.trackStartPath = "Images/scroll_track_hleft.png";
 	this.trackStartLength = 18; // width
-	this.trackMiddlePath = "AppleClasses/Images/scroll_track_hmid.png";
-	this.trackEndPath = "AppleClasses/Images/scroll_track_hright.png";
+	this.trackMiddlePath = "Images/scroll_track_hmid.png";
+	this.trackEndPath = "Images/scroll_track_hright.png";
 	this.trackEndLength = 18; // width
-	this.thumbStartPath = "AppleClasses/Images/scroll_thumb_hleft.png";
+	this.thumbStartPath = "Images/scroll_thumb_hleft.png";
 	this.thumbStartLength = 9; // width
-	this.thumbMiddlePath = "AppleClasses/Images/scroll_thumb_hmid.png";
-	this.thumbEndPath = "AppleClasses/Images/scroll_thumb_hright.png";
+	this.thumbMiddlePath = "Images/scroll_thumb_hmid.png";
+	this.thumbEndPath = "Images/scroll_thumb_hright.png";
 	this.thumbEndLength = 9; // width
 	
 	/* Internal objects */
