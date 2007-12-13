@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Please upload your widget archive file</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="style.css" rel="stylesheet" type="text/css">
+<script language="JavaScript">
+<!--
+function openStatus(){
+  if (document.upform.uploadfile.value.length > 0){
+     window.open('upload.htm','UploadStatus','scrollbars=no,status=no,width=450,height=80');
+     document.upform.submit();
+  }
+  else {
+    alert("You must first select a valid zip file to attach");
+  }
+}
+//-->
+</script>
+</head>
+
+<body>
+
+<table width="800" height="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr align="center" valign="middle">
+    <td height="40" align="center" valign="middle" class="legend">
+        <h2>Widget Server Administration</h2>
+    </td>
+  </tr>
+    <tr>
+    <td height="40" align="center" class="legend"><a href="index.jsp" class="hypercolourwhite">menu</a></td>
+  </tr>
+  <tr>  	
+    <td valign="top" bgcolor="#FFFFFF" class="tbody">
+	<h3>Upload a new Widget Archive</h3>	
+	<p>Use the 'browse' button below to find a valid zip file containing a new widget. Press the 'Publish' button to upload and then import the widget into the system.</p>
+
+		<form method="post" action="/wookie/admin/WidgetAdminServlet?operation=UPLOADWIDGET" name="upform" enctype="multipart/form-data">
+		  <table border="0" cellspacing="1" cellpadding="1" align="center">
+		    <tr height="150px"><td>  </td></tr>
+		        <tr>
+		      <td align="left" nowrap><font size="-1" face="Verdana, Arial, Helvetica, sans-serif"><b>Select
+		        a widget archive (zip) to upload: </b></font></td>
+		    </tr>
+		    <tr>
+		      <td align="left"><font size="-1" face="Verdana, Arial, Helvetica, sans-serif">
+		        <input type="file" name="uploadfile" size="50">
+		        </font></td>
+		    </tr>		
+		    <tr>
+		      <td align="left">				
+		        <input type="button" name="Submit" value="Publish" onClick="openStatus()">
+		        <input type="reset" name="Reset" value="Clear">
+		      </td>
+		    </tr>
+		  </table>
+		 </form>
+
+	</td>
+	</tr>
+		  
+  <tr>
+    <td height="40" align="center" class="legend"><a href="index.jsp" class="hypercolourwhite">menu</a></td>
+  </tr>
+</table>
+
+
+</body>
+</html>

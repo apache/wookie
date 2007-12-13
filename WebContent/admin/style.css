@@ -1,0 +1,68 @@
+body {
+font-family: Arial, Helvetica, sans-serif;
+	color: #333;
+	line-height: 1.166;
+	margin: 0;
+	padding: 0;
+	background-color: #ffffff;
+	font-size: 100%;
+	background-attachment: fixed;	
+}
+
+
+h2 {
+	
+	font-size: 16px;
+	
+}
+.legend {
+	background-color: #333333;
+	color: #FFFFFF;
+	border: #666666;
+
+}
+.tbody {
+	color: #333;
+	line-height: 1.166;
+	margin: 0;
+	padding: 0;
+	background: #CCC url("../shared/images/bg_gradient.gif") repeat-x;
+	font-size: 14px;
+	background-attachment: fixed;
+}
+h3 {
+	font-size: 14px;
+	background-color: #F0F0F0;
+	font-style: normal;
+	font-weight: bold;
+
+}
+
+a:link {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	text-decoration: none;	
+}
+a:hover {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	text-decoration: none;	
+}
+a:visited {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	text-decoration: none;
+}
+a:active {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	text-decoration: none;
+}
+
+.hypercolour {
+	color: #993399;
+}
+
+.hypercolourwhite {
+	color: #ffffff;
+}
