@@ -39,7 +39,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
-import org.tencompetence.widgetservice.manager.WidgetProxyManager;
+import org.tencompetence.widgetservice.manager.IWidgetProxyManager;
+import org.tencompetence.widgetservice.manager.impl.WidgetProxyManager;
 
 /**
  * A web proxy servlet which will translate calls for content and return them as if they came from
@@ -70,7 +71,7 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 	private void dealWithRequest(HttpServletRequest request, HttpServletResponse response, String httpMethod){
 		try {
 			PrintWriter out = response.getWriter();		
-			WidgetProxyManager proxyManager = new WidgetProxyManager();
+			IWidgetProxyManager proxyManager = new WidgetProxyManager();
 
 			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties");
 			boolean shouldFilter = properties.getBoolean("widget.filter");
@@ -102,7 +103,7 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 					}
 				}			
 				if(cFlag){
-					String res = "";
+					String res = "";					
 					ProxyClient p = new ProxyClient();
 					if(httpMethod.equals("get")){
 						res = p.get(bean.getNewUrl().toExternalForm());

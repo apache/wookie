@@ -42,14 +42,17 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.log4j.Logger;
 
 /**
  * A class using HttpClient to handle HTTP requests & manipulate the responses
  *
  * @author Paul Sharples
- * @version $Id: ProxyClient.java,v 1.2 2007-10-17 23:11:10 ps3com Exp $
+ * @version $Id: ProxyClient.java,v 1.3 2007-12-13 20:31:33 ps3com Exp $
  */
 public class ProxyClient {
+	
+	static Logger _logger = Logger.getLogger(ProxyClient.class.getName());
 	
 	public String ctype;
 
@@ -120,27 +123,30 @@ public class ProxyClient {
 				// Create an instance of HttpClient.
 				HttpClient client = new HttpClient();
 				// Provide custom retry handler is necessary
+				/*
+				 //TODO: the line below was causing an error under jboss (not tomcat)
 				method.getParams()
 						.setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(1, false));
-
+						*/
 				// Tell the method to automatically handle authentication.
 				method.setDoAuthentication(true);
-
 				// Execute the method.
 				int statusCode = client.executeMethod(method);
-
 				if (statusCode == HttpStatus.SC_OK) {
 					Header hType = method.getResponseHeader("Content-type");
 					ctype = hType.getValue();
 					return method.getResponseBodyAsString();
 				} 
-				else if (statusCode == HttpStatus.SC_UNAUTHORIZED)
-					throw new Exception("Passed credentials are not correct"); //$NON-NLS-1$						
-				else if (statusCode == HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED)
-					throw new Exception("Proxy authentication required. This can be set in the preferences."); //$NON-NLS-1$									
-				else
-					throw new Exception(
+				else if (statusCode == HttpStatus.SC_UNAUTHORIZED){	
+					throw new Exception("Passed credentials are not correct"); //$NON-NLS-1$
+				}
+				else if (statusCode == HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED){
+					throw new Exception("Proxy authentication required. This can be set in the preferences."); //$NON-NLS-1$
+				}
+				else{
+					throw new Exception(							
 							"Method failed: " + method.getStatusLine() + ' ' + method.getURI() + ' ' + method.getStatusText()); //$NON-NLS-1$
+				}
 			} 
 			catch (HttpException e) {
 				throw new Exception(e);
@@ -148,7 +154,7 @@ public class ProxyClient {
 			catch (IOException e) {
 				throw new Exception(e);
 			} 
-			finally {
+			finally {				
 				// Release the connection.
 				method.releaseConnection();
 			}

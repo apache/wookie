@@ -38,7 +38,8 @@ import org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI;
 import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
-import org.tencompetence.widgetservice.manager.WidgetAPIManager;
+import org.tencompetence.widgetservice.manager.IWidgetAPIManager;
+import org.tencompetence.widgetservice.manager.impl.WidgetAPIManager;
 
 /**
  * Implementation of the widget API.  This class models the the javascript implementation of
@@ -64,7 +65,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	
 	static Logger _logger = Logger.getLogger(WidgetAPIImpl.class.getName());
 	
-	private WidgetAPIManager manager = new WidgetAPIManager();			
+	private IWidgetAPIManager manager = new WidgetAPIManager();			
 	private WidgetInstance widgetInstance = null;
 	
 	public WidgetAPIImpl(){}
@@ -184,7 +185,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	@SuppressWarnings("unchecked")
 	public String setSharedDataForKey(String id_key, String key, String value) {		
 		try {
-			_logger.error("setSharedDataForKey: "+ id_key+ "\tkey:" + key + "\tvalue:" + value);
+			_logger.debug("setSharedDataForKey: "+ id_key+ "\tkey:" + key + "\tvalue:" + value);
 			widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
 				manager.updateSharedDataEntry(widgetInstance, key, value, false);

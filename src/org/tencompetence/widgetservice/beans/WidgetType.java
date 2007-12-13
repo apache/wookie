@@ -27,10 +27,10 @@
 package org.tencompetence.widgetservice.beans;
 
 /**
- * WidgetType
+ * WidgetType - what type of service a particular widget can be
  * 
  * @author Paul Sharples
- * @version $Id: WidgetType.java,v 1.2 2007-10-17 23:11:11 ps3com Exp $
+ * @version $Id: WidgetType.java,v 1.3 2007-12-13 20:31:33 ps3com Exp $
  */
 public class WidgetType extends AbstractKeyBean {
 

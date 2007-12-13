@@ -37,7 +37,7 @@ import javax.servlet.ServletResponse;
 
 import org.apache.log4j.Logger;
 import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
-import org.tencompetence.widgetservice.util.hibernate.DBManagerInterface;
+import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 
 /**
  * Filter to set DB transactions
@@ -56,7 +56,7 @@ public class MainFilter implements Filter {
 	throws IOException, ServletException {
 		try {
 			/** Get a DBManager for this thread. */
-			final DBManagerInterface dbManager = DBManagerFactory.getDBManager();				
+			final IDBManager dbManager = DBManagerFactory.getDBManager();				
 			dbManager.beginTransaction();
 			chain.doFilter(request, response);		
 			dbManager.commitTransaction();		

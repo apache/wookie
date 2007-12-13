@@ -37,13 +37,14 @@ import java.util.List;
  */
 public class PostNode {
 	
-	private int id;
+	private int id;	
 	private String userId;
 	private int parentId;
 	private String content;
 	private String title;
 	private Date publishDate;	
 	private Date updateDate;
+	private String sharedDataKey;
 
 	private List<PostNode> posts;
 	
@@ -97,6 +98,14 @@ public class PostNode {
 
 	public List<PostNode> getFPosts() {
 		return posts;
+	}
+
+	public String getSharedDataKey() {
+		return sharedDataKey;
+	}
+
+	public void setSharedDataKey(String sharedDataKey) {
+		this.sharedDataKey = sharedDataKey;
 	}
 
 }

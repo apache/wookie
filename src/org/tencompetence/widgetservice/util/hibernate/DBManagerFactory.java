@@ -31,7 +31,7 @@ import org.tencompetence.widgetservice.util.hibernate.impl.DBManagerImpl;
 /**
  * @author sheyenrath
  *
- * @version $Id: DBManagerFactory.java,v 1.2 2007-10-17 23:11:12 ps3com Exp $
+ * @version $Id: DBManagerFactory.java,v 1.3 2007-12-13 20:31:33 ps3com Exp $
  */
 public class DBManagerFactory {
 
@@ -40,7 +40,7 @@ public class DBManagerFactory {
 	/**
 	 * @return DBManagerImplementation
 	 */
-	public static DBManagerInterface getDBManager() {
+	public static IDBManager getDBManager() {
 
 		DBManagerImpl manager = (DBManagerImpl) threadSession.get();
 		// Create a new DbManager, if this Thread has none yet

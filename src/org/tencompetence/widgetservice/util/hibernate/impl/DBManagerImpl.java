@@ -36,15 +36,15 @@ import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.tencompetence.widgetservice.beans.AbstractKeyBean;
-import org.tencompetence.widgetservice.util.hibernate.DBManagerInterface;
+import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 import org.tencompetence.widgetservice.util.hibernate.HibernateUtil;
 
 /**
  * @author sheyenrath
  *
- * @version $Id: DBManagerImpl.java,v 1.2 2007-10-17 23:11:12 ps3com Exp $
+ * @version $Id: DBManagerImpl.java,v 1.3 2007-12-13 20:31:33 ps3com Exp $
  */
-public class DBManagerImpl implements DBManagerInterface {
+public class DBManagerImpl implements IDBManager {
 
 	/**
 	 * The session.
@@ -52,7 +52,7 @@ public class DBManagerImpl implements DBManagerInterface {
 	private Session session = null;
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.DBManagerInterface#beginTransaction()
+	 * @see org.tencompetence.tencs.business.database.IDBManager#beginTransaction()
 	 */
 	public void beginTransaction() {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
@@ -60,7 +60,7 @@ public class DBManagerImpl implements DBManagerInterface {
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.DBManagerInterface#commitTransaction()
+	 * @see org.tencompetence.tencs.business.database.IDBManager#commitTransaction()
 	 */
 	public void commitTransaction() {
 		if (session.isOpen()) {
@@ -69,14 +69,14 @@ public class DBManagerImpl implements DBManagerInterface {
 	}
 	
 	/** (non-Javadoc)
-	 * @see org.tencompetence.tencs.business.database.DBManagerInterface#rollbackTransaction()
+	 * @see org.tencompetence.tencs.business.database.IDBManager#rollbackTransaction()
 	 */
 	public void rollbackTransaction() {
 		session.getTransaction().rollback();
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.DBManagerInterface#closeSession()
+	 * @see org.tencompetence.tencs.business.database.IDBManager#closeSession()
 	 */
 	public void closeSession() {
 		session.flush();
@@ -84,14 +84,14 @@ public class DBManagerImpl implements DBManagerInterface {
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.DBManagerInterface#createCriteria(java.lang.Class)
+	 * @see org.tencompetence.tencs.business.database.IDBManager#createCriteria(java.lang.Class)
 	 */
 	public <T extends AbstractKeyBean> Criteria createCriteria(final Class<? extends AbstractKeyBean> baseClass) {
 		return session.createCriteria(baseClass);
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.DBManagerInterface#createQuery(java.lang.String)
+	 * @see org.tencompetence.tencs.business.database.IDBManager#createQuery(java.lang.String)
 	 */
 	public Query createQuery(final String query) {
 		return session.createQuery(query);
@@ -102,7 +102,7 @@ public class DBManagerImpl implements DBManagerInterface {
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.DBManagerInterface#getObject(java.lang.Class, java.lang.Integer)
+	 * @see org.tencompetence.tencs.business.database.IDBManager#getObject(java.lang.Class, java.lang.Integer)
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends AbstractKeyBean> T getObject(final Class<T> baseClass,
@@ -117,7 +117,7 @@ public class DBManagerImpl implements DBManagerInterface {
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.DBManagerInterface#getObject(java.lang.Class, java.util.List)
+	 * @see org.tencompetence.tencs.business.database.IDBManager#getObject(java.lang.Class, java.util.List)
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends AbstractKeyBean> T getObject(final Class<T> baseClass,
@@ -136,7 +136,7 @@ public class DBManagerImpl implements DBManagerInterface {
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.DBManagerInterface#getObjects(java.lang.Class, java.util.List)
+	 * @see org.tencompetence.tencs.business.database.IDBManager#getObjects(java.lang.Class, java.util.List)
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends AbstractKeyBean> List<T> getObjects(final Class<T> baseClass,
@@ -151,7 +151,7 @@ public class DBManagerImpl implements DBManagerInterface {
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.DBManagerInterface#updateObject(java.lang.Class, java.lang.Object)
+	 * @see org.tencompetence.tencs.business.database.IDBManager#updateObject(java.lang.Class, java.lang.Object)
 	 */
 	public <T extends AbstractKeyBean> void updateObject(final Class<T> baseClass,
 			final AbstractKeyBean changedObject) throws Exception {
@@ -172,7 +172,7 @@ public class DBManagerImpl implements DBManagerInterface {
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.DBManagerInterface#saveObject(org.tencompetence.tencs.business.database.beans.DBAbstractBean)
+	 * @see org.tencompetence.tencs.business.database.IDBManager#saveObject(org.tencompetence.tencs.business.database.beans.DBAbstractBean)
 	 */
 	public Serializable saveObject(final AbstractKeyBean obj) throws Exception {
 		
@@ -195,7 +195,7 @@ public class DBManagerImpl implements DBManagerInterface {
 	}
 
 	/**
-	 * @see org.tencompetence.tencs.business.database.DBManagerInterface#deleteObject(org.tencompetence.tencs.business.database.beans.DBAbstractBean)
+	 * @see org.tencompetence.tencs.business.database.IDBManager#deleteObject(org.tencompetence.tencs.business.database.beans.DBAbstractBean)
 	 */
 	public void deleteObject(final AbstractKeyBean obj) throws Exception {
 		

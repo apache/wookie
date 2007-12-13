@@ -24,14 +24,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.tencompetence.widgetservice.manager;
+package org.tencompetence.widgetservice.manager.impl;
 
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.tencompetence.widgetservice.beans.Whitelist;
+import org.tencompetence.widgetservice.manager.IWidgetProxyManager;
 import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
-import org.tencompetence.widgetservice.util.hibernate.DBManagerInterface;
+import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 
 /**
  * A class to manage the whitelist available to the proxy service
@@ -39,12 +40,15 @@ import org.tencompetence.widgetservice.util.hibernate.DBManagerInterface;
  * @version $Id
  *
  */
-public class WidgetProxyManager {
+public class WidgetProxyManager implements IWidgetProxyManager {
 	
 	static Logger _logger = Logger.getLogger(WidgetProxyManager.class.getName());
 	
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetProxyManager#getWhiteList()
+	 */
 	public synchronized Whitelist[] getWhiteList(){
-		DBManagerInterface dbManager = null;
+		IDBManager dbManager = null;
 		try {
 			dbManager = DBManagerFactory.getDBManager();
 			List<?> sqlReturnList = dbManager.createQuery("from Whitelist").list();		
@@ -58,6 +62,9 @@ public class WidgetProxyManager {
 		}	
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetProxyManager#isAllowed(java.lang.String)
+	 */
 	public boolean isAllowed(String aUrl){					
 		for (Whitelist whiteList : getWhiteList()){
 			// TODO - make this better then just comparing the beginning...

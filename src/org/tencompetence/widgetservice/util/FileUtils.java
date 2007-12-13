@@ -41,7 +41,7 @@ import java.util.Vector;
  *
  * @author Phillip Beauvoir
  * @author Paul Sharples
- * @version $Id: FileUtils.java,v 1.2 2007-10-17 23:11:10 ps3com Exp $
+ * @version $Id: FileUtils.java,v 1.3 2007-12-13 20:31:33 ps3com Exp $
  */
 public final class FileUtils  {
 	
@@ -253,7 +253,7 @@ public final class FileUtils  {
 	
 	/**
 	 * @return The path to the jar that is currently executing.
-	 */
+	 */	
 	public static String getJarFilePath (Class aClass) {
 		// ugly hack to get name of jarfile
 		//Class myClass = aClass.getClass();

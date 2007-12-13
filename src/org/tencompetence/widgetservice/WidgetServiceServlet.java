@@ -40,14 +40,15 @@ import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.exceptions.InvalidWidgetCallException;
 import org.tencompetence.widgetservice.exceptions.SystemUnavailableException;
 import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedException;
-import org.tencompetence.widgetservice.manager.WidgetServiceManager;
+import org.tencompetence.widgetservice.manager.IWidgetServiceManager;
+import org.tencompetence.widgetservice.manager.impl.WidgetServiceManager;
 import org.tencompetence.widgetservice.util.HashGenerator;
 import org.tencompetence.widgetservice.util.RandomGUID;
 
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.2 2007-10-17 23:11:10 ps3com Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.3 2007-12-13 20:31:33 ps3com Exp $ 
  *
  */
  public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -109,13 +110,13 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 			out.println(returnErrorDoc(ex.getMessage()));
 		}
 				
-		WidgetServiceManager wsm = new WidgetServiceManager();	
+		IWidgetServiceManager wsm = new WidgetServiceManager();	
 		widgetInstance = wsm.getwidgetInstance(userId, runId, envId, serviceId, serviceType);
 		
 		if(widgetInstance!=null){
 			// generate a key, url etc
 			//doForward(request, response, _okPage);
-			formatReturnDoc(request, response, widgetInstance);
+			formatReturnDoc(request, response, widgetInstance.getWidget(), widgetInstance.getIdKey());
 		}
 		else{
 			try {
@@ -135,15 +136,21 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 				
 				widgetInstance = wsm.addNewWidgetInstance(userId, runId, envId, serviceId, widget, nonce, hashKey);
 				_logger.debug("new widgetinstance added");
-				formatReturnDoc(request, response, widgetInstance);
+				formatReturnDoc(request, response, widgetInstance.getWidget(), widgetInstance.getIdKey());
 			} 
 			catch (WidgetTypeNotSupportedException ex) {
-				// TODO - widget not supported	
+				// widget not supported	
 				// Here we will return a key to a holding page - ie no widget found
-				_logger.debug("WidgetTypeNotSupportedException:"+ex.getMessage());				
-				response.setContentType(CONTENT_TYPE);
-				PrintWriter out = response.getWriter();
-				out.println(returnErrorDoc(ex.getMessage()));
+				try {
+					Widget unsupportedWidget = wsm.getDefaultWidgetByType("unsupported");
+					formatReturnDoc(request, response, unsupportedWidget, "0000");
+				} 
+				catch (WidgetTypeNotSupportedException e) {	
+					_logger.debug("WidgetTypeNotSupportedException:"+ex.getMessage());				
+					response.setContentType(CONTENT_TYPE);
+					PrintWriter out = response.getWriter();
+					out.println(returnErrorDoc(ex.getMessage()));
+				}												
 			}
 			catch (SystemUnavailableException ex) {
 				_logger.debug("System Unavailable:"+ex.getMessage());				
@@ -154,24 +161,24 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		}
 	}  	
 	
-	private void formatReturnDoc(HttpServletRequest request, HttpServletResponse response, WidgetInstance widgetInstance) throws IOException{
+	private void formatReturnDoc(HttpServletRequest request, HttpServletResponse response, Widget widget, String key) throws IOException{
 		URL urlWidget =  new URL(request.getScheme() ,
 				request.getServerName() ,
-				request.getServerPort() , widgetInstance.getWidget().getUrl());
+				request.getServerPort() , widget.getUrl());
 		
 		response.setContentType(CONTENT_TYPE);
 		PrintWriter out = response.getWriter();
 		out.println(XMLDECLARATION);			
 		out.println("<widgetdata>");					
 		out.print("<url>");
-		out.print(urlWidget + "?idkey=" + widgetInstance.getIdKey() 
+		out.print(urlWidget + "?idkey=" + key 
 				+ "&amp;url=" + urlWidgetAPIServer.toExternalForm()  
 				+ "&amp;proxy=" + urlWidgetProxyServer.toExternalForm() 
 		);
 		out.println("</url>");
-		out.println("<height>"+widgetInstance.getWidget().getHeight()+"</height>");
-		out.println("<width>"+widgetInstance.getWidget().getWidth()+"</width>");
-		out.println("<maximize>"+widgetInstance.getWidget().isMaximize()+"</maximize>");
+		out.println("<height>"+widget.getHeight()+"</height>");
+		out.println("<width>"+widget.getWidth()+"</width>");
+		out.println("<maximize>"+widget.isMaximize()+"</maximize>");
 		out.println("</widgetdata>");
 	}
 	

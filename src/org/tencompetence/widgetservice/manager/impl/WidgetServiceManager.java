@@ -24,17 +24,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.tencompetence.widgetservice.manager;
+package org.tencompetence.widgetservice.manager.impl;
 
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.tencompetence.widgetservice.beans.Preference;
+import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedException;
+import org.tencompetence.widgetservice.manager.IWidgetServiceManager;
 import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
-import org.tencompetence.widgetservice.util.hibernate.DBManagerInterface;
+import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 
 /**
  * A class to manage widget instances
@@ -42,18 +46,16 @@ import org.tencompetence.widgetservice.util.hibernate.DBManagerInterface;
  * @version $Id
  *
  */
-public class WidgetServiceManager extends WidgetAPIManager {
+public class WidgetServiceManager extends WidgetAPIManager implements IWidgetServiceManager {
 
 	static Logger _logger = Logger.getLogger(WidgetServiceManager.class.getName());
 		
-	/**
-	 * Get the default widget for the type specified by by the parameter
-	 * @param typeToSearch
-	 * @return a Widget or NULL meaning it has not been set
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getDefaultWidgetByType(java.lang.String)
 	 */
 	public Widget getDefaultWidgetByType(String typeToSearch) throws WidgetTypeNotSupportedException {
-		final DBManagerInterface dbManager = DBManagerFactory.getDBManager();
-		String sqlQuery = "SELECT widget.id, widget.widget_name, widget.url, widget.height, widget.width, widget.maximize "
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		String sqlQuery = "SELECT widget.id, widget.widget_name, widget.url, widget.height, widget.width, widget.maximize, widget.guid "
 						+ "FROM Widget widget, WidgetDefault widgetdefault "
 						+ "WHERE widget.id = widgetdefault.widgetId "
 						+ "AND widgetdefault.widgetContext='" + typeToSearch + "'";		
@@ -65,17 +67,78 @@ public class WidgetServiceManager extends WidgetAPIManager {
 		return widget;		 
 	}
 	
-	/**
-	 * Check if a widgetinstance exists in the DB
-	 * @param userId - userId to check
-	 * @param runId - runId to check
-	 * @param envId - environmentId to check
-	 * @param serviceId - serviceId to check
-	 * @param serviceContext - the widget context
-	 * @return
+
+
+	
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getwidgetInstancesForWidget(org.tencompetence.widgetservice.beans.Widget)
+	 */
+	public WidgetInstance[] getwidgetInstancesForWidget(Widget widget){			
+		IDBManager dbManager = null;
+		try {
+			dbManager = DBManagerFactory.getDBManager();
+			final Criteria crit = dbManager.createCriteria(WidgetInstance.class);						
+			crit.add( Restrictions.eq( "widget", widget ) );								
+			final List<WidgetInstance> sqlReturnList =  dbManager.getObjects(WidgetInstance.class, crit);
+			WidgetInstance[] instances = sqlReturnList.toArray(new WidgetInstance[sqlReturnList.size()]);		
+			return instances;
+		} 
+		catch (Exception ex) {
+			dbManager.rollbackTransaction();
+			_logger.error(ex.getMessage());
+			return null;
+		}		 
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#deletePreferenceInstancesForWidgetInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
+	 */
+	public void deletePreferenceInstancesForWidgetInstance(WidgetInstance instance){				
+		IDBManager dbManager = null;
+		try {
+			dbManager = DBManagerFactory.getDBManager();
+			final Criteria crit = dbManager.createCriteria(Preference.class);						
+			crit.add( Restrictions.eq( "widgetInstance", instance) );			
+			final List<Preference> sqlReturnList =  dbManager.getObjects(Preference.class, crit);
+			Preference[] preference = sqlReturnList.toArray(new Preference[sqlReturnList.size()]);	
+			for(Preference sData : preference){
+				dbManager.deleteObject(sData);
+			}				
+		} 
+		catch (Exception ex) {
+			dbManager.rollbackTransaction();
+			_logger.error(ex.getMessage());			
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#deleteSharedDataInstancesForWidgetInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
+	 */
+	public void deleteSharedDataInstancesForWidgetInstance(WidgetInstance instance){				
+		IDBManager dbManager = null;
+		try {
+			dbManager = DBManagerFactory.getDBManager();
+			final Criteria crit = dbManager.createCriteria(SharedData.class);
+			String sharedDataKey = instance.getRunId() + "-" + instance.getEnvId() + "-" + instance.getServiceId();			
+			crit.add( Restrictions.eq( "sharedDataKey", sharedDataKey ) );			
+			final List<SharedData> sqlReturnList =  dbManager.getObjects(SharedData.class, crit);
+			SharedData[] sharedData = sqlReturnList.toArray(new SharedData[sqlReturnList.size()]);	
+			for(SharedData sData : sharedData){
+				dbManager.deleteObject(sData);
+			}			
+		} 
+		catch (Exception ex) {
+			dbManager.rollbackTransaction();
+			_logger.error(ex.getMessage());			
+		}
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#widgetInstanceExists(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public boolean widgetInstanceExists(String userId, String runId, String envId, String serviceId, String serviceContext){
-		final DBManagerInterface dbManager = DBManagerFactory.getDBManager();
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
 		String sqlQuery =   "select " +
 							"count(*) "
@@ -95,17 +158,11 @@ public class WidgetServiceManager extends WidgetAPIManager {
 				
 	}
 	
-	/**
-	 * Get a widgetinstance from the DB
-	 * @param userId - userId to check
-	 * @param runId - runId to check
-	 * @param envId - environmentId to check
-	 * @param serviceId - serviceId to check
-	 * @param serviceContext - the widget context
-	 * @return
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getwidgetInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public WidgetInstance getwidgetInstance(String userId, String runId, String envId, String serviceId, String serviceContext){
-		final DBManagerInterface dbManager = DBManagerFactory.getDBManager();
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
 		String sqlQuery =   "select widgetinstance " 							
 							+ "from WidgetInstance widgetinstance, WidgetType widgettype "
@@ -128,14 +185,12 @@ public class WidgetServiceManager extends WidgetAPIManager {
 	}
 	
 
-	/**
-	 * Method to add a new instance to the widget instances table
-	 * @param type
-	 * @throws WidgetTypeNotSupportedException 
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#addNewWidgetInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.tencompetence.widgetservice.beans.Widget, java.lang.String, java.lang.String)
 	 */
 	public WidgetInstance addNewWidgetInstance(String userId, String runId, String envId,
 			String serId, Widget widget, String nonce, String idKey) {		
-			final DBManagerInterface dbManager = DBManagerFactory.getDBManager();
+			final IDBManager dbManager = DBManagerFactory.getDBManager();
 			WidgetInstance widgetInstance = new WidgetInstance();
 			try {
 				widgetInstance.setUserId(userId);
@@ -162,12 +217,5 @@ public class WidgetServiceManager extends WidgetAPIManager {
 			}		
 			return widgetInstance;
 	}
-	
-	public static void main(String[] args) {
-		WidgetServiceManager manager = new WidgetServiceManager();
-		System.out.println("found:"+manager.widgetInstanceExists("paul", "0", "env001", "ser001", "chat"));
-	}
-	
-	
 	
 }

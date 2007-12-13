@@ -34,7 +34,7 @@ import java.util.List;
  *
  */
 public interface IForumService {
-	public List<PostNode> getNodeTree();
-	public boolean newPost(String parent, String username, String title, String content);
-	public PostNode getPost(String postId);
+	public List<PostNode> getNodeTree(String id_key);
+	public boolean newPost(String id_key, String parent, String username, String title, String content);
+	public PostNode getPost(String id_key, String postId);
 }

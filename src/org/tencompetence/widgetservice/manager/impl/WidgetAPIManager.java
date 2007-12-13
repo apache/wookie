@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.tencompetence.widgetservice.manager;
+package org.tencompetence.widgetservice.manager.impl;
 
 import java.util.List;
 
@@ -34,8 +34,9 @@ import org.hibernate.criterion.Restrictions;
 import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
+import org.tencompetence.widgetservice.manager.IWidgetAPIManager;
 import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
-import org.tencompetence.widgetservice.util.hibernate.DBManagerInterface;
+import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 
 /**
  * API manager - manages DB calls for widget API
@@ -43,20 +44,17 @@ import org.tencompetence.widgetservice.util.hibernate.DBManagerInterface;
  * @version $Id
  *
  */
-public class WidgetAPIManager {
+public class WidgetAPIManager implements IWidgetAPIManager {
 	
 	boolean showProcess = false;
 	
 	static Logger _logger = Logger.getLogger(WidgetAPIManager.class.getName());
 	
-	/**
-	 * Check that a request is valid by getting the hashed key and seeing if it exists in the DB
-	 * @param key
-	 * @return
-	 * @throws Exception 
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#checkUserKey(java.lang.String)
 	 */
 	public WidgetInstance checkUserKey(String key){
-		DBManagerInterface dbManager = null;
+		IDBManager dbManager = null;
 		try {
 			if (key == null) {
 				return null;
@@ -80,15 +78,11 @@ public class WidgetAPIManager {
 		}		
 	}
 
-	/**
-	 * Returns all sharedData records related to this instance
-	 * 
-	 * @param instance - a widget instance
-	 * @return - shared data for a this instance
-	 * @throws Exception 
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#getSharedDataForInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
 	 */
 	public synchronized SharedData[] getSharedDataForInstance(WidgetInstance instance){
-		DBManagerInterface dbManager = null;
+		IDBManager dbManager = null;
 		try {
 			dbManager = DBManagerFactory.getDBManager();
 			final Criteria crit = dbManager.createCriteria(SharedData.class);
@@ -105,16 +99,12 @@ public class WidgetAPIManager {
 		}
 	}
 		
-	/**
-	 * Add or update...
-	 * @param widgetInstance
-	 * @param name
-	 * @param value
-	 * @throws Exception 
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#updateSharedDataEntry(org.tencompetence.widgetservice.beans.WidgetInstance, java.lang.String, java.lang.String, boolean)
 	 */
 	public synchronized void updateSharedDataEntry(WidgetInstance widgetInstance, String name, String value, boolean append){
 		if(showProcess){_logger.debug("############ Start updateshareddataentry called "+ Thread.currentThread().getName() +"############## name="+name+"value="+value);}
-		DBManagerInterface dbManager = null;
+		IDBManager dbManager = null;
 		try {
 			dbManager = DBManagerFactory.getDBManager();
 			boolean found=false;
@@ -149,16 +139,12 @@ public class WidgetAPIManager {
         if(showProcess){ _logger.debug("############ End updateshareddataentry called "+ Thread.currentThread().getName() +"############## name="+name+"value="+value);}
 	}
 	
-	/**
-	 * Add a new shared data entry to the DB
-	 * @param instance
-	 * @param name
-	 * @param value
-	 * @throws Exception
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#addNewSharedDataEntry(org.tencompetence.widgetservice.beans.WidgetInstance, java.lang.String, java.lang.String)
 	 */
 	public synchronized void addNewSharedDataEntry(WidgetInstance instance, String name, String value) throws Exception{
 		if(showProcess){_logger.debug("############ Start addNewSharedDataEntry called "+ Thread.currentThread().getName() +"############## name="+name+"value="+value);}
-		DBManagerInterface dbManager = null;
+		IDBManager dbManager = null;
 		
 		try {
 			dbManager = DBManagerFactory.getDBManager();
@@ -177,14 +163,11 @@ public class WidgetAPIManager {
 	}
 
 
-	/**
-	 * Returns all preference records found which match a given WidgetInstance
-	 * @param id
-	 * @return - an array of preferences
-	 * @throws Exception 
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#getPreferenceForInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
 	 */
 	public Preference[] getPreferenceForInstance(WidgetInstance id) throws Exception{
-		final DBManagerInterface dbManager = DBManagerFactory.getDBManager();		
+		final IDBManager dbManager = DBManagerFactory.getDBManager();		
 		Criteria crit = dbManager.createCriteria(Preference.class);		
 		crit.add( Restrictions.eq( "widgetInstance", id ) );		
 		final List<WidgetInstance> sqlReturnList =  dbManager.getObjects(WidgetInstance.class, crit);					
@@ -192,15 +175,11 @@ public class WidgetAPIManager {
 		return prefs;
 	}
 	
-	/**
-	 * Add or update...
-	 * @param widgetInstance
-	 * @param name
-	 * @param value
-	 * @throws Exception 
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#updatePreference(org.tencompetence.widgetservice.beans.WidgetInstance, java.lang.String, java.lang.String)
 	 */
 	public void updatePreference(WidgetInstance widgetInstance, String name, String value) throws Exception{
-		final DBManagerInterface dbManager = DBManagerFactory.getDBManager();
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
         boolean found=false;
         for (Preference preference :getPreferenceForInstance(widgetInstance)){
         	if(preference.getDkey().equals(name)){
@@ -221,15 +200,11 @@ public class WidgetAPIManager {
         }       
 	}
 	
-	/**
-	 * Add a new preference for a widget instance
-	 * @param widgetInstance
-	 * @param name
-	 * @param value
-	 * @throws Exception
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#addNewPreference(org.tencompetence.widgetservice.beans.WidgetInstance, java.lang.String, java.lang.String)
 	 */	
 	public void addNewPreference(WidgetInstance widgetInstance, String name, String value) throws Exception{
-		final DBManagerInterface dbManager = DBManagerFactory.getDBManager();	
+		final IDBManager dbManager = DBManagerFactory.getDBManager();	
 		Preference pref = new Preference();
 		pref.setWidgetInstance(widgetInstance);
 		pref.setDkey(name);

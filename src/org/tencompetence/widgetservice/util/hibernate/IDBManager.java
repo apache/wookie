@@ -37,9 +37,9 @@ import org.tencompetence.widgetservice.beans.AbstractKeyBean;
 /**
  * @author sheyenrath
  *
- * @version $Id: DBManagerInterface.java,v 1.2 2007-10-17 23:11:12 ps3com Exp $
+ * @version $Id: IDBManager.java,v 1.1 2007-12-13 20:31:33 ps3com Exp $
  */
-public interface DBManagerInterface {
+public interface IDBManager {
 
 	/**
 	 * Create start a transaction.

@@ -44,7 +44,16 @@ public class Post extends AbstractKeyBean {
 	private String title;
 	private Date publishDate;	
 	private Date updateDate;
+	private String sharedDataKey;
 	
+	public String getSharedDataKey() {
+		return sharedDataKey;
+	}
+
+	public void setSharedDataKey(String sharedDataKey) {
+		this.sharedDataKey = sharedDataKey;
+	}
+
 	public String getUserId() {
 		return userId;
 	}

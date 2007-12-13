@@ -26,11 +26,14 @@
  */
 package org.tencompetence.widgetservice;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -38,7 +41,10 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.tencompetence.widgetservice.beans.WidgetDefault;
-import org.tencompetence.widgetservice.manager.WidgetAdminManager;
+import org.tencompetence.widgetservice.manager.IWidgetAdminManager;
+import org.tencompetence.widgetservice.manager.impl.WidgetAdminManager;
+import org.tencompetence.widgetservice.util.ManifestHelper;
+import org.tencompetence.widgetservice.util.ZipUtils;
 
 /**
  * Servlet implementation class for Servlet: WidgetAdminServlet
@@ -46,21 +52,36 @@ import org.tencompetence.widgetservice.manager.WidgetAdminManager;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.2 2007-10-17 23:11:10 ps3com Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.3 2007-12-13 20:31:33 ps3com Exp $ 
  *
  */
-public class WidgetAdminServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
-	 	 	
-	private static final long serialVersionUID = -3026022301561798524L;	
-	// Get the logger
-	static Logger _logger = Logger.getLogger(WidgetAdminServlet.class.getName());
-	// jsp page handles
-	private static final String _mainPage = "/admin/index.jsp";
-	private static final String _messagePage = "/admin/message.jsp";
-	private static final String _addPage = "/admin/addnew.jsp";
-	private static final String _listWidgetsPage = "/admin/listall.jsp";		
+public class WidgetAdminServlet extends HttpServlet implements Servlet {
+	
 	// our list of allowed operations
-	private enum Operation {LIST, ADD, SET_DEFAULT, UPDATE, DELETE, RETRIEVE};	
+	private enum Operation {
+		ADDNEWSERVICE, ADDNEWWHITELISTENTRY, LISTSERVICES, LISTSERVICESFORADDITION, 
+		LISTWIDGETS, REMOVESERVICE, REMOVESINGLEWIDGETTYPE, REMOVEWHITELISTENTRY, REMOVEWIDGET,  
+		REVISETYPES, SETDEFAULTWIDGET, SETWIDGETTYPES, UPLOADWIDGET, VIEWWHITELIST
+	}	
+	 	 	
+	// Get the logger
+	static Logger _logger = Logger.getLogger(WidgetAdminServlet.class.getName());	
+	
+	// jsp page handles
+	private static final String fAddNewServicesPage = "/admin/addnewservice.jsp";	
+	private static final String faddToWhiteListPage = "/admin/addtowhitelist.jsp";
+	private static final String fListServicesPage = "/admin/listservices.jsp";
+	private static final String fListWidgetsForDeletePage = "/admin/listallfordelete.jsp";	
+	private static final String fListWidgetsPage = "/admin/listall.jsp";
+	private static final String fMainPage = "/admin/index.jsp";
+	private static final String fRemoveServicesPage = "/admin/removeservice.jsp";
+	private static final String fremoveWhiteListPage = "/admin/removewhitelist.jsp";	
+	private static final String fUpLoadResultsPage = "/admin/uploadresults.jsp";
+	private static final String fViewWhiteListPage = "/admin/viewwhitelist.jsp";
+	
+	
+	private static final long serialVersionUID = -3026022301561798524L;;	
+			
 	
     /*
 	 * (non-Java-doc)
@@ -71,6 +92,37 @@ public class WidgetAdminServlet extends javax.servlet.http.HttpServlet implement
 		super();
 	}   	
 	
+
+	private void addNewService(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager) {
+		String serviceName = request.getParameter("newservice");
+		if(manager.addNewService(serviceName)){	
+			session.setAttribute("message_value", "New Service Type was added.");
+		}
+		else{ 
+			session.setAttribute("error_value", "There was a problem adding the new service.");
+		}
+	}
+
+
+
+
+	private void addWhiteListEntry(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager) {
+		String uri = request.getParameter("newuri");
+		if(manager.addWhiteListEntry(uri)){
+			session.setAttribute("message_value", "New uri was added.");
+		}
+		else{
+			session.setAttribute("error_value", "There was a problem adding the entry.");
+		}
+	}
+
+
+	private void doForward(HttpServletRequest request, HttpServletResponse response, String jsp) throws ServletException, IOException{
+		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(jsp);
+		dispatcher.forward(request, response);
+	}
+
+
 	/*
 	 * (non-Java-doc)
 	 * 
@@ -78,11 +130,13 @@ public class WidgetAdminServlet extends javax.servlet.http.HttpServlet implement
 	 *      HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		WidgetAdminManager manager = new WidgetAdminManager();
+		IWidgetAdminManager manager = new WidgetAdminManager();
 		Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties");
 		HttpSession session = request.getSession(true);
 		session.setAttribute("error_value", null);
 		session.setAttribute("message_value", null);
+		session.setAttribute("widget_defaults", null);
+		session.setAttribute("widgets", null);
 		
 		String task = request.getParameter("operation");
 		Operation op=null;
@@ -92,89 +146,115 @@ public class WidgetAdminServlet extends javax.servlet.http.HttpServlet implement
 			try {op = Operation.valueOf(task);} 
 			catch (IllegalArgumentException e) {
 				op=null;
-				session.setAttribute("error_value", "No such operation allowed");// need to i18n this
+				session.setAttribute("error_value", "No such operation allowed");
 			}
 		}	
 		if(op!=null){
 			switch (op) {
-				case LIST: {
-					listOperation(session, manager);						
-					doForward(request, response, _listWidgetsPage);
+				case ADDNEWWHITELISTENTRY: {
+					addWhiteListEntry(session, request, manager);					
+					listWhiteListOperation(session, manager);
+					doForward(request, response, faddToWhiteListPage);
 					break;
 				}
-				case RETRIEVE: {
-					retrieveServices(session, properties);
-					doForward(request, response, _addPage);						
+				case VIEWWHITELIST: {
+					listWhiteListOperation(session, manager);
+					if(request.getParameter("param").equalsIgnoreCase("list")){											
+						doForward(request, response, fViewWhiteListPage);
+					}
+					else if(request.getParameter("param").equalsIgnoreCase("add")){					
+						doForward(request, response, faddToWhiteListPage);
+					}
+					else if(request.getParameter("param").equalsIgnoreCase("remove")){					
+						doForward(request, response, fremoveWhiteListPage);						
+					}
 					break;
 				}
-				case ADD: {
-					addOperation(session, request, manager);
-					doForward(request, response, _messagePage);
+				case REMOVEWIDGET: {
+					removeWidget(session, request, manager);										
+					listOperation(session, manager, false);					
+					doForward(request, response, fListWidgetsForDeletePage);
 					break;
 				}
-				case SET_DEFAULT:
+				case REVISETYPES: {
+					reviseTypes(session, request, manager);					
+					doForward(request, response, fUpLoadResultsPage);
+					break;
+				}
+				case ADDNEWSERVICE: {
+					addNewService(session, request, manager);	
+					retrieveServices(session, manager);
+					doForward(request, response, fAddNewServicesPage);
+					break;
+				}
+				case UPLOADWIDGET: {
+					uploadOperation(request, properties, manager, session);						
+					doForward(request, response, fUpLoadResultsPage);
+					break;
+				}
+				case LISTWIDGETS: {
+					if(request.getParameter("param").equalsIgnoreCase("remove")){
+						listOperation(session, manager, false);					
+						doForward(request, response, fListWidgetsForDeletePage);
+					}
+					else{
+						listOperation(session, manager, true);					
+						doForward(request, response, fListWidgetsPage);						
+					}
+					break;
+				}
+				case LISTSERVICES: {
+					retrieveServices(session, manager);
+					if(request.getParameter("param").equalsIgnoreCase("list")){											
+						doForward(request, response, fListServicesPage);
+					}
+					else if(request.getParameter("param").equalsIgnoreCase("add")){					
+						doForward(request, response, fAddNewServicesPage);
+					}
+					else if(request.getParameter("param").equalsIgnoreCase("remove")){					
+						doForward(request, response, fRemoveServicesPage);
+					}
+					break;
+				}
+				case SETWIDGETTYPES: {
+					updateWidgetTypes(session, request, manager);
+					listOperation(session, manager, true);											
+					doForward(request, response, fListWidgetsPage);
+					break;
+				}				
+				case REMOVESERVICE:{
+					removeServiceOperation(session, request, manager);
+					doForward(request, response, fRemoveServicesPage);
+					break;
+			    }
+				case REMOVEWHITELISTENTRY: {
+					removeWhiteListEntry(session, request, manager);										
+					listWhiteListOperation(session, manager);
+					doForward(request, response, fremoveWhiteListPage);
+					break;
+				}
+				case REMOVESINGLEWIDGETTYPE:{
+					removeSingleWidgetTypeOperation(session, request, manager);
+					doForward(request, response, fListWidgetsPage);
+					break;
+			    }
+				case SETDEFAULTWIDGET:{
 					setDefaultWidgetOperation(session, request, manager);
-					doForward(request, response, _listWidgetsPage);
+					doForward(request, response, fListWidgetsPage);
 					break;
+			    }
 				default: {
 					session.setAttribute("error_value", "No operation could be ascertained");// need to i18n this
-					doForward(request, response, _mainPage);
+					doForward(request, response, fMainPage);
 				}
 			}						
 		} 
 		else {
-			doForward(request, response, _mainPage);
+			doForward(request, response, fMainPage);
 		}
-	}  	
-	
-	
-	private void retrieveServices(HttpSession session, Configuration properties){
-		// get em all
-		session.setAttribute("services", properties.getStringArray("widget.service"));					
-	}
-	
-	private void listOperation(HttpSession session, WidgetAdminManager manager){
-		// list em all
-		int count = 0;
-		session.setAttribute("widgets", manager.getAllWidgets());				
-		Hashtable<String, Integer> defaultHash = new Hashtable<String, Integer>();
-		for(WidgetDefault defaultWidget :manager.getAllDefaultWidgets()){
-			defaultHash.put(defaultWidget.getWidgetContext(), defaultWidget.getWidgetId());
-			count++;
-		}		
-		session.setAttribute("widget_defaults", defaultHash);
-	}
-	
-	private void addOperation(HttpSession session, HttpServletRequest request, WidgetAdminManager manager) throws IOException{
-	    String output = "";
-	    String description = request.getParameter("description");
-	    String url = request.getParameter("url");
-	    String[] widgetTypes = request.getParameterValues("widgetTypes");
-	    String height = request.getParameter("height");
-	    String width = request.getParameter("width");	    	    
-	    output+="<br>description:"+description+"<br>";
-	    output+="<br>url:"+url+"<br>";
-	    output+="<br>height:"+height+"<br>";
-	    output+="<br>width:"+width+"<br>";	  
-	    manager.addNewWidget(description, url, Integer.parseInt(height), Integer.parseInt(width), widgetTypes);
-		session.setAttribute("message_value", "Widget was successfully added"); 
-		session.setAttribute("message_value", output);
-	}
-	
-	private void setDefaultWidgetOperation(HttpSession session, HttpServletRequest request, WidgetAdminManager manager){
-		String widgetId = request.getParameter("widgetId");
-		String widgetType = request.getParameter("widgetType");		
-		manager.setDefaultWidget(Integer.parseInt(widgetId), widgetType);
-		listOperation(session, manager);
 	}
 
-	
-	
-	private void doForward(HttpServletRequest request, HttpServletResponse response, String jsp) throws ServletException, IOException{
-		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(jsp);
-		dispatcher.forward(request, response);
-	}
-	
+
 	/*
 	 * (non-Java-doc)
 	 * 
@@ -183,7 +263,157 @@ public class WidgetAdminServlet extends javax.servlet.http.HttpServlet implement
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
+	}
+	
+	private void listOperation(HttpSession session, IWidgetAdminManager manager, boolean getDefaults){
+		retrieveWidgets(session, manager);	
+		if(getDefaults){
+			Hashtable<String, Integer> defaultHash = new Hashtable<String, Integer>();
+			for(WidgetDefault defaultWidget :manager.getAllDefaultWidgets()){
+				defaultHash.put(defaultWidget.getWidgetContext(), defaultWidget.getWidgetId());				
+			}		
+			session.setAttribute("widget_defaults", defaultHash);
+		}
+	}
+
+	private void listWhiteListOperation(HttpSession session, IWidgetAdminManager manager) {
+		session.setAttribute("whitelist", manager.getWhiteList());
+	}  	
+		
+	private void removeServiceOperation(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager) {		
+		String serviceId = request.getParameter("serviceId");
+		if(manager.removeServiceAndReferences(Integer.parseInt(serviceId))){
+			session.setAttribute("message_value", "Service was successfully removed."); 				
+		}
+		else{
+			session.setAttribute("error_value", "A problem occured removing this service.");
+		}
+		retrieveServices(session, manager);
+	}
+	
+	private void removeSingleWidgetTypeOperation(HttpSession session,
+			HttpServletRequest request, IWidgetAdminManager manager) {
+		String widgetId = request.getParameter("widgetId");
+		String widgetType = request.getParameter("widgetType");	
+		manager.removeSingleWidgetType(Integer.parseInt(widgetId), widgetType);
+		//
+		session.setAttribute("widgets", null);
+		listOperation(session, manager, true);		
+	}
+	
+	private void removeWhiteListEntry(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager) {
+		String entryId = request.getParameter("entryId");
+		if(manager.removeWhiteListEntry(Integer.parseInt(entryId))){
+			session.setAttribute("message_value", "Entry was successfully removed."); 				
+		}
+		else{
+			session.setAttribute("error_value", "A problem occured removing this entry.");
+		}				
+	}
+	
+	private void removeWidget(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager) {
+		String widgetId = request.getParameter("widgetId");
+		if(manager.removeWidgetAndReferences(Integer.parseInt(widgetId))){
+			// TODO - calculate the file path and remove the physical resources	
+			session.setAttribute("message_value", "Widget was successfully deleted.");
+		}
+		else{
+			session.setAttribute("error_value", "There was a problem deleting the widget.");
+		}
+	}		
+	
+	private void retrieveServices(HttpSession session, IWidgetAdminManager manager){						
+		session.setAttribute("services", manager.getAllServices());						
+	}
+	
+	private void retrieveWidgets(HttpSession session, IWidgetAdminManager manager){
+		session.setAttribute("widgets", manager.getAllWidgets());
+	}
+
+	
+	
+	private void reviseTypes(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager) {
+		retrieveServices(session, manager);
+		session.setAttribute("hasValidated", Boolean.valueOf(true));
+		session.setAttribute("closeWindow", Boolean.valueOf(false));
+		String dbkey = request.getParameter("dbkey");
+		boolean isMaxable = manager.isWidgetMaximized(Integer.parseInt(dbkey));
+		session.setAttribute("isMaxable", Boolean.valueOf(isMaxable));
+		session.setAttribute("dbkey", Integer.parseInt(dbkey));
+	}
+	
+	private void setDefaultWidgetOperation(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager){
+		String widgetId = request.getParameter("widgetId");
+		String widgetType = request.getParameter("widgetType");		
+		manager.setDefaultWidget(Integer.parseInt(widgetId), widgetType);
+		listOperation(session, manager, true);
+	}
+	
+	private void updateWidgetTypes(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager) throws IOException{
+		boolean canMax = false;
+	   
+	    String maximize = request.getParameter("max");
+	    if(maximize!=null){
+	    	canMax = Boolean.valueOf(maximize);
+	    }
+	    int dbKey = Integer.parseInt(request.getParameter("dbkey"));
+	    String[] widgetTypes = request.getParameterValues("widgetTypes");
+	    manager.setWidgetTypesForWidget(dbKey, widgetTypes, canMax);
+		session.setAttribute("message_value", "Widget types were successfully set"); 		
 	}  
+	
+	
+	private void uploadOperation(HttpServletRequest request, Configuration properties, IWidgetAdminManager manager, HttpSession session) {	
+		session.setAttribute("hasValidated", Boolean.valueOf(false));
+		session.setAttribute("closeWindow", Boolean.valueOf(true));
+		try {						
+			File zipFile = ManifestHelper.dealWithUploadFile(request, properties);						
+			if(zipFile.exists()){
+				if(ZipUtils.hasZipEntry(zipFile, ManifestHelper.MANIFEST_FILE)){
+					String[] results = ManifestHelper.dealWithManifest(ZipUtils.extractZipEntry(zipFile, ManifestHelper.MANIFEST_FILE));
+					// check if the start file exists
+					if(ZipUtils.hasZipEntry(zipFile, results[1])){
+						if(results[0]!=""){
+							File newWidgetFolder = ManifestHelper.createUnpackedWidgetFolder(request, properties, results[0]);
+							ZipUtils.unpackZip(zipFile, newWidgetFolder);							
+							String relativeUrl = (ManifestHelper.getURLForWidget(properties, results[0], results[1]));
+							// check to see if this widget already exists in the DB - using the ID (guid) key from the manifest
+							if(!manager.doesWidgetAlreadyExistInSystem(results[0])){							
+								int dbkey = manager.addNewWidget(results[4], relativeUrl, results[0], Integer.parseInt(results[2]), Integer.parseInt(results[3]), new String[]{});
+								session.setAttribute("message_value", "Widget '"+ results[4] +"' was successfully imported into the system.");
+								retrieveServices(session, manager);
+								session.setAttribute("hasValidated", Boolean.valueOf(true));																	
+								session.setAttribute("dbkey", dbkey);
+								boolean isMaxable = manager.isWidgetMaximized(dbkey);
+								session.setAttribute("isMaxable", Boolean.valueOf(isMaxable));
+							}	
+							else{
+								session.setAttribute("message_value", "Widget '"+ results[4] +"' was successfully updated in the system.");
+							}
+						}
+						else{							
+							session.setAttribute("error_value", "The id of this widget cannot be empty - please modifiy the manifest xml attribute 'id' of the widget element and try again.");
+						}
+					}
+					else{						
+						session.setAttribute("error_value","Referenced start page not found in zip file");
+					}
+				}
+				else{					
+					session.setAttribute("error_value","Unable to find manifest file in uploaded content.");
+				}
+			}
+			else{				
+				session.setAttribute("error_value","No file found uploaded to server");
+			}						
+		} 		 
+		catch (Exception ex) {
+			_logger.error(ex);			
+			session.setAttribute("errors", ex.getMessage());
+		}
+	}
+
+
 	
 }
  

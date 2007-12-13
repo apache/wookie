@@ -12,6 +12,7 @@
 		</id>
 		<property name="widgetName" column="widget_name" type="string" />
 		<property name="url" column="url" type="string" />
+		<property name="guid" column="guid" type="string" />
 		<property name="height" column="height" />
 		<property name="width" column="width" />
 		<property name="maximize" type="true_false" />
@@ -27,6 +28,13 @@
 		</id>
 		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />
 		<property name="widgetContext" column="widget_context" type="string" />
+	</class>
+	
+	<class name="WidgetService" table="WIDGETSERVICE">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>		
+		<property name="serviceName" column="service_name" type="string" not-null="true"/>
 	</class>
 
 
@@ -82,13 +90,14 @@
 	<class name="Post" table="POST">
 		<id name="id" column="id">
             <generator class="native"/>
-        </id>        
+        </id>               
         <property name="userId" column="user_id"></property>        
         <property name="parentId" column="parent_id"></property>        
         <property name="content" column="content"></property>
         <property name="title" column="title"></property>
         <property name="publishDate" column="publish_date"></property>
-        <property name="updateDate" column="update_date"></property>             
+        <property name="updateDate" column="update_date"></property>
+        <property name="sharedDataKey" column="sharedDataKey" index="sharedDataKeyIndex" />             
      </class>  
 		
 </hibernate-mapping>

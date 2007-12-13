@@ -26,10 +26,15 @@
  */
 package org.tencompetence.widgetservice.widgets.forum.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.tencompetence.widgetservice.widgets.forum.ForumManager;
+import org.tencompetence.widgetservice.beans.WidgetInstance;
+import org.tencompetence.widgetservice.manager.IWidgetAPIManager;
+import org.tencompetence.widgetservice.manager.impl.WidgetAPIManager;
+import org.tencompetence.widgetservice.widgets.forum.IForumManager;
 import org.tencompetence.widgetservice.widgets.forum.IForumService;
 import org.tencompetence.widgetservice.widgets.forum.PostNode;
 
@@ -50,30 +55,102 @@ import org.tencompetence.widgetservice.widgets.forum.PostNode;
 public class DefaultForumServiceImpl implements IForumService {
 	
 	static Logger _logger = Logger.getLogger(DefaultForumServiceImpl.class.getName());
+	// string to return when no credential key is supplied by js call
+	public static final String UNAUTHORISED_MESSAGE = "Unauthorised";		
 	
 	private static final long serialVersionUID = 1L;
 	
 	
-	public List<PostNode> getNodeTree() {
-		ForumManager manager = new ForumManager();
-		return manager.getNodeTree();
-	}
-
-
-	public boolean newPost(String parent, String username, String title, String content){
-		ForumManager manager = new ForumManager();
-		if(manager.newPost(parent, username, title, content)){
-			return true;
+	public List<PostNode> getNodeTree(String id_key) {
+		System.out.println("DefaultForumServiceImpl: key is"+id_key);
+		if(id_key==null){		
+			return getErrorList(UNAUTHORISED_MESSAGE);			
+		}				
+		try {
+			// check if instance is valid
+			WidgetInstance widgetInstance = checkUserKey(id_key);
+			if(widgetInstance!=null){
+				IForumManager fManager = new ForumManager();
+				String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();	
+				return fManager.getNodeTree(sharedDataKey);
+			}
+			else{
+				return getErrorList(UNAUTHORISED_MESSAGE);		
+			}
 		}
-		else{
-			return false;
-		}		
+		catch (Exception ex) {			
+			_logger.error("Error getting the treenodes in the discussion", ex);
+			return getErrorList("General Error");	
+		}	
 	}
 	
-	public PostNode getPost(String postId){
-		_logger.debug("getPost("+postId+")");
-		ForumManager manager = new ForumManager();
-		return manager.getPost(Integer.parseInt(postId));		
+	
+	public PostNode getPost(String id_key, String postId){
+		if(id_key==null){		
+			return getErrorPost(UNAUTHORISED_MESSAGE);			
+		}					
+		try {
+			// check if instance is valid
+			WidgetInstance widgetInstance = checkUserKey(id_key);
+			if(widgetInstance!=null){
+				IForumManager fManager = new ForumManager();
+				String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();	
+				return fManager.getPost(sharedDataKey, Integer.parseInt(postId));	
+			}
+			else{
+				return getErrorPost(UNAUTHORISED_MESSAGE);		
+			}
+		}
+		catch (Exception ex) {			
+			_logger.error("Error getting a post in the dicussion", ex);
+			return getErrorPost("General Error");	
+		}			
 	}
 	 
+	public boolean newPost(String id_key, String parent, String username, String title, String content){
+		if(id_key==null){		
+			return false;			
+		}		
+		try {
+			// check if instance is valid
+			WidgetInstance widgetInstance = checkUserKey(id_key);
+			if(widgetInstance!=null){
+				IForumManager fManager = new ForumManager();
+				String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();
+					if(fManager.newPost(sharedDataKey, parent, username, title, content)){
+						return true;
+					}
+					else{
+						return false;
+					}	
+			}
+			else{
+				return false;		
+			}
+		}
+		catch (Exception ex) {			
+			_logger.error("Error adding a new post to the discussion", ex);
+			return false;	
+		}				
+	}
+	
+	
+	private WidgetInstance checkUserKey(String id_key){
+		IWidgetAPIManager manager = new WidgetAPIManager();					
+		return manager.checkUserKey(id_key);		
+	}
+	
+	private List<PostNode> getErrorList(String reason) {
+		List<PostNode> errorList = null;
+		errorList = new ArrayList<PostNode>();		
+		errorList.add(getErrorPost(reason));
+		return errorList;
+	}
+		
+	private PostNode getErrorPost(String reason){
+		Date date = new Date();
+		return new PostNode(-1, reason, -1, reason, reason, date, date);
+	}
+
+
 }

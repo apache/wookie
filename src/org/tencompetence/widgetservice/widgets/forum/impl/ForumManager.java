@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.tencompetence.widgetservice.widgets.forum;
+package org.tencompetence.widgetservice.widgets.forum.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +38,9 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.tencompetence.widgetservice.beans.Post;
 import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
-import org.tencompetence.widgetservice.util.hibernate.DBManagerInterface;
+import org.tencompetence.widgetservice.util.hibernate.IDBManager;
+import org.tencompetence.widgetservice.widgets.forum.IForumManager;
+import org.tencompetence.widgetservice.widgets.forum.PostNode;
 
 /**
  * The forum manager class.  Methods needed by the forum widget
@@ -48,21 +50,21 @@ import org.tencompetence.widgetservice.util.hibernate.DBManagerInterface;
  * @version $Id
  *
  */
-public class ForumManager {
+public class ForumManager implements IForumManager {
 	
 	static Logger _logger = Logger.getLogger(ForumManager.class.getName());
 	
-	/**
-	 * Build the tree using PostNodes
-	 * @return
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.widgets.forum.IForumManager#getNodeTree(java.lang.String)
 	 */
-	public List<PostNode> getNodeTree() {				
-		DBManagerInterface dbManager = null;
+	public List<PostNode> getNodeTree(String sharedKey) {				
+		IDBManager dbManager = null;
 		try {
 			List<PostNode> list = new ArrayList<PostNode>();
 			LinkedHashMap<Integer, PostNode> postLookupTable = new LinkedHashMap<Integer, PostNode>();
 			dbManager = DBManagerFactory.getDBManager();
 			final Criteria crit = dbManager.createCriteria(Post.class);
+			crit.add(Restrictions.eq("sharedDataKey", sharedKey));
 			crit.addOrder( Order.desc("publishDate"));
 			final List<Post> sqlReturnList =  dbManager.getObjects(Post.class, crit);
 			Post[] posts = sqlReturnList.toArray(new Post[sqlReturnList.size()]);
@@ -93,16 +95,15 @@ public class ForumManager {
 		}
 	}
 	
-	/**
-	 * retrieve a post by given ID
-	 * @param postId
-	 * @return - the correct postnode
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.widgets.forum.IForumManager#getPost(java.lang.String, int)
 	 */
-	public PostNode getPost(int postId){
-		DBManagerInterface dbManager = null;
+	public PostNode getPost(String sharedKey, int postId){
+		IDBManager dbManager = null;
 		try {
 			dbManager = DBManagerFactory.getDBManager();
 			final Criteria crit = dbManager.createCriteria(Post.class);
+			crit.add(Restrictions.eq("sharedDataKey", sharedKey));
 			crit.add(Restrictions.eq("id", postId));
 			final List<Post> sqlReturnList =  dbManager.getObjects(Post.class, crit);
 			if (sqlReturnList.size() != 1) {
@@ -122,16 +123,11 @@ public class ForumManager {
 		return null;
 	}
 
-	/**
-	 * Add a new post to the given parent post
-	 * @param parent
-	 * @param username
-	 * @param title
-	 * @param content
-	 * @return
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.widgets.forum.IForumManager#newPost(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public boolean newPost(String parent, String username, String title, String content){
-		final DBManagerInterface dbManager = DBManagerFactory.getDBManager();
+	public boolean newPost(String sharedDataKey, String parent, String username, String title, String content){
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		Post post = new Post();
 		try {
 			post.setParentId(Integer.parseInt(parent));
@@ -139,6 +135,7 @@ public class ForumManager {
 			post.setContent(content);
 			post.setUserId(username);
 			post.setPublishDate(new Date());
+			post.setSharedDataKey(sharedDataKey);
 			dbManager.saveObject(post);
 			return true;
 		} 
