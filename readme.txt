@@ -1,5 +1,26 @@
 Setting up this project
 -----------------------
+
+Deployment to JBoss 4.0.4 - ccrt version of JBoss
+--------------------------------------------------
+Java 1.5 extension do not work in this version of JBoss
+Fix: go to   "ccrt\jboss-4.0.4.GA\server\default\deploy\jbossweb-tomcat55.sar\conf"
+and edit "web.xml"
+find the following...
+
+<!--Uncomment to use jdk1.5 features in jsp pages
+
+      <init-param>
+         <param-name>compilerSourceVM</param-name>
+         <param-value>1.5</param-value>
+      </init-param>
+-->
+
+Uncomment it.
+
+See http://jira.jboss.com/jira/browse/JBWEB-87
+----------------------------------------------------------------
+
 You will need mysql database v 5+
 * In the scripts folder there is an sql script file which will create the DB (create_database.sql)
 * In the scripts folder there is also sql script file which should allow you to populate the DB.(db_dump.sql) 		

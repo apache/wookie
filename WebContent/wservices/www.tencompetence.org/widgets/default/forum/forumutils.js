@@ -38,8 +38,8 @@ function init() {
 		}					
 		// this line tells DWR to use call backs (i.e. will call onsharedupdate() when an event is recevied for shared data
 	 	dwr.engine.setActiveReverseAjax(true);
-	 	widget.preferenceForKey(instanceid_key, "LDUsername", setLocalUsername);	
-		forum.getNodeTree(getTreeData);
+	 	widget.preferenceForKey(instanceid_key, "LDUsername", setLocalUsername);		 	
+		forum.getNodeTree(instanceid_key, getTreeData);
 }
 
 function getTreeData(param){
@@ -56,7 +56,7 @@ function getTreeData(param){
 function buildTree(postlist){				
 	forumText+="<ul>";
 	for (var data in postlist) {
-    		forumText+= "<li><b><a href=\"#\" onclick=\"forum.getPost('"+postlist[data].id+"', openPost)\";>" + 
+    		forumText+= "<li><b><a href=\"#\" onclick=\"forum.getPost('"+instanceid_key+"','"+postlist[data].id+"', openPost)\";>" + 
     		dwr.util.escapeHtml(postlist[data].title) + "</a></b><i>&nbsp;&nbsp;" +    		
     		dwr.util.escapeHtml("added "+formatDate(postlist[data].publishDate)) +"&nbsp;by " +
     		dwr.util.escapeHtml(postlist[data].userId) + "&nbsp;" +		 
@@ -70,7 +70,7 @@ function buildTree(postlist){
 function openPost(openPost){
 	if(openPost==null){
 		alert("Record no longer exists in Database, probably deleted by another user");
-		forum.getNodeTree(getTreeData);
+		forum.getNodeTree(instanceid_key, getTreeData);
 	}
 	else{	
 		var toolsStr="";
@@ -78,7 +78,7 @@ function openPost(openPost){
 		dwr.util.setValue("content", viewPostStr, { escapeHtml:false });
 		currentPost = openPost;
 		toolsStr +="&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		toolsStr +="<a href=\"#\" onclick=\"getReplyToPostLayout()\"><img border=\"0\" src=\"/wookie/shared/images/go.gif\">&nbsp;Reply</a>&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree(getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/cancel.gif\">&nbsp;Cancel</a>";
+		toolsStr +="<a href=\"#\" onclick=\"getReplyToPostLayout()\"><img border=\"0\" src=\"/wookie/shared/images/go.gif\">&nbsp;Reply</a>&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"', getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/cancel.gif\">&nbsp;Cancel</a>";
 		dwr.util.setValue("foot", toolsStr, { escapeHtml:false });
 	}	
 }
@@ -94,7 +94,7 @@ function getReplyToPostLayout(){
 	var postNewTopicContent="";
 	postNewTopicContent+="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";	
   	postNewTopicContent+="<a href=\"#\" onclick=\"postIt("+currentPost.id+")\"><img border=\"0\" src=\"/wookie/shared/images/go.gif\">&nbsp;Post</a>";  	
-  	postNewTopicContent+="&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree(getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/cancel.gif\">&nbsp;Cancel</a>";
+  	postNewTopicContent+="&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"',getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/cancel.gif\">&nbsp;Cancel</a>";
 	dwr.util.setValue("foot", postNewTopicContent, { escapeHtml:false });
 	//currentPost=null;
 }
@@ -105,7 +105,7 @@ function postNewTopic(parentPostId){
 	var postNewTopicContent="";
 	postNewTopicContent+="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
   	postNewTopicContent+="<a href=\"#\" onclick=\"postIt("+parentPostId+")\"><img border=\"0\" src=\"/wookie/shared/images/go.gif\">&nbsp;Post</a>";  	
-  	postNewTopicContent+="&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree(getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/cancel.gif\">&nbsp;Cancel</a>";
+  	postNewTopicContent+="&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"',getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/cancel.gif\">&nbsp;Cancel</a>";
 	dwr.util.setValue("foot", postNewTopicContent, { escapeHtml:false });
 }
 
@@ -180,13 +180,13 @@ function postIt(param){
 		alert("Empty posts are not allowed");
 		return;
 	}
-	forum.newPost(param,username,title,content, outcomeOfPost);
+	forum.newPost(instanceid_key, param, username, title, content, outcomeOfPost);
 }
 
 function outcomeOfPost(param){
 	var outcomeContent="";
 	var toolsContent="";
-	var linkText = " Click <a href=\"#\" onclick=\"forum.getNodeTree(getTreeData);\">here</a> to continue"
+	var linkText = " Click <a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"',getTreeData);\">here</a> to continue"
 	outcomeContent+="<div>"
 	if (param==true){
 		outcomeContent+="<p>Post was successfully added."+linkText+"</p>"
