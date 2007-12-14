@@ -1,3 +1,5 @@
+**** These instructions are now out of date - need to update them 14/12/2007
+
 Setting up this project
 -----------------------
 
