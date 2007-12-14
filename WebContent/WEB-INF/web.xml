@@ -41,7 +41,7 @@
 		</servlet-class>
 		<init-param>
 			<param-name>debug</param-name>
-			<param-value>true</param-value>
+			<param-value>false</param-value>
 		</init-param>
 
 		<init-param>
@@ -129,9 +129,9 @@
 	</welcome-file-list>
 
 
-	<!--****************** SECURITY SECTION ************************-->
-	<!--  uncomment to enable password protection on admin pages
-		
+	<!--****************** SECURITY SECTION ************************
+	  uncomment to enable password protection on admin pages
+	-->		
 		<security-constraint>
 		
 		<web-resource-collection>
@@ -144,13 +144,13 @@
 		</auth-constraint>
 		</security-constraint>	
 		<login-config>
-		<auth-method>DIGEST</auth-method> 
+		<auth-method>BASIC</auth-method>
 		<realm-name>Authentication Required</realm-name> 
 		</login-config>
 		<security-role>
 		<description></description>
 		<role-name>widgetadmin</role-name>
 		</security-role>
-	-->
+	
 
 </web-app>
