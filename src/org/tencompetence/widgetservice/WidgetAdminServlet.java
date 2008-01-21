@@ -52,7 +52,7 @@ import org.tencompetence.widgetservice.util.ZipUtils;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.4 2007-12-13 21:53:00 ps3com Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.5 2008-01-21 15:46:49 ps3com Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -137,7 +137,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		session.setAttribute("message_value", null);
 		session.setAttribute("widget_defaults", null);
 		session.setAttribute("widgets", null);
-		
+		session.setAttribute("version", properties.getString("widget.version"));
 		String task = request.getParameter("operation");
 		Operation op=null;
 		// sanity check...		
