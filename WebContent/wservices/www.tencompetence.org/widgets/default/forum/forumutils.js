@@ -37,7 +37,8 @@ function init() {
 			}
 		}					
 		// this line tells DWR to use call backs (i.e. will call onsharedupdate() when an event is recevied for shared data
-	 	dwr.engine.setActiveReverseAjax(true);
+		// below - commented out - is this needed when there is no need to poll the server?
+	 	//dwr.engine.setActiveReverseAjax(true);
 	 	widget.preferenceForKey(instanceid_key, "LDUsername", setLocalUsername);		 	
 		forum.getNodeTree(instanceid_key, getTreeData);
 }
@@ -48,7 +49,7 @@ function getTreeData(param){
 	buildTree(param);
 	dwr.util.setValue("content", forumText, { escapeHtml:false });
 	
-	var toolsStr= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#\" onclick=\"postNewTopic(0)\"><img border=\"0\" src=\"/wookie/shared/images/plus.gif\">&nbsp;Post new Topic</a>";
+	var toolsStr= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#\" onclick=\"postNewTopic(0)\"><img border=\"0\" src=\"/wookie/shared/images/plus.gif\">&nbsp;Post new Topic</a>&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"', getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/refresh.gif\">&nbsp;Refresh</a>";
 	
 	dwr.util.setValue("foot", toolsStr, { escapeHtml:false });
 }
@@ -83,11 +84,9 @@ function openPost(openPost){
 	}	
 }
 
-function getReplyToPostLayout(){
-	//openPost = currentPost;	
+function getReplyToPostLayout(){	
 	var replyStr="";
 	replyStr+=getViewPostLayout(currentPost)
-	//replyStr+="<hr>";
 	replyStr+=getNewPostLayout(currentPost.id);
 	dwr.util.setValue("content", replyStr, { escapeHtml:false });
 	
@@ -96,7 +95,6 @@ function getReplyToPostLayout(){
   	postNewTopicContent+="<a href=\"#\" onclick=\"postIt("+currentPost.id+")\"><img border=\"0\" src=\"/wookie/shared/images/go.gif\">&nbsp;Post</a>";  	
   	postNewTopicContent+="&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"',getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/cancel.gif\">&nbsp;Cancel</a>";
 	dwr.util.setValue("foot", postNewTopicContent, { escapeHtml:false });
-	//currentPost=null;
 }
 
 function postNewTopic(parentPostId){
@@ -117,35 +115,30 @@ function getViewPostLayout(openPost){
 	openPostStr+="			<span>"+openPost.content+"</span>";
 	openPostStr+="		</span>";
 	openPostStr+="</fieldset>";
-	
-/*
-	
-	openPostStr+="<div>";
-	openPostStr+="<p>Title: ";
-	openPostStr+=openPost.title
-	openPostStr+="</p>";
-	openPostStr+="<p>Postee: ";
-  	openPostStr+=openPost.userId;
-	openPostStr+="</p>";
-	openPostStr+="<p>Posted at: ";
-  	openPostStr+=formatDate(openPost.publishDate);
-	openPostStr+="</p>";
-	openPostStr+="<p>Message: ";
-  	openPostStr+=openPost.content;
-	openPostStr+="</p>";
-	openPostStr+="</div>";
-	*/
 	return openPostStr;
 }
 
 function getNewPostLayout(parentPostId){
-	var postNewTopicContent="";
-	
+	var titleText;
+	var reText="";
+	if(parentPostId==0){
+		titleText = "Post";
+	}
+	else{
+		titleText = "Reply";
+		if(currentPost.title.substr(0,3)!="Re:"){
+			reText = "Re:" + currentPost.title;
+		}
+		else{
+			reText = currentPost.title;
+		}
+	}
+	var postNewTopicContent="";	
 	postNewTopicContent+="<fieldset id=\"wf_GuardianInformati\" class=\"\">";
-	postNewTopicContent+="	<legend>Compose Reply</legend>";
+	postNewTopicContent+="	<legend>Compose "+titleText+"</legend>";
 	postNewTopicContent+="		<span class=\"oneField\">";
 	postNewTopicContent+="			<label for=\"wf_Email\" class=\"preField\">Title</label>";
-	postNewTopicContent+="			<input type=\"text\" id=\"title\" name=\"title\" value=\"\" size=\"50\" class=\"validate-email\">";
+	postNewTopicContent+="			<input type=\"text\" id=\"title\" name=\"title\" value=\""+reText+"\" size=\"50\" class=\"validate-email\">";
 	postNewTopicContent+="			<br>";
 	postNewTopicContent+="		</span>";
 	postNewTopicContent+="		<span class=\"oneField\">";
@@ -154,18 +147,6 @@ function getNewPostLayout(parentPostId){
 	postNewTopicContent+="			<br>";
 	postNewTopicContent+="		</span>";
 	postNewTopicContent+="</fieldset>";
-	
-	/*
-	postNewTopicContent+="<div id=\"newpost\">";	
-  	postNewTopicContent+="<p>Title: ";
-    postNewTopicContent+="<input id=\"title\" name=\"title\" type=\"text\" size=\"40\" maxlength=\"80\">";
-  	postNewTopicContent+="</p>";  	
-	postNewTopicContent+="<p>Message: ";
-  	postNewTopicContent+="<textarea id=\"textcontent\" name=\"content\"></textarea>";
-	postNewTopicContent+="</p>";
-	postNewTopicContent+="</div>";
-	*/
-	
 	return postNewTopicContent;
 }
 
