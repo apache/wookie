@@ -78,5 +78,17 @@ Note: Do not start CopperCore until you have followed all of the instruction in 
 	--------------------------------
 
 	TODO - finish this off
+	
+(F) Setting up your WTP project to run the admin password facility from Eclipse
+
+	For your tomcat enabled web project in Eclipse you will need to update the generated server.xml file for the widget 
+	web app configuration.  If you look under the "Servers" project -> <YOUR SERVER TO RUN THE WEB APP FROM>, you will find the server.xml file
+	You will need to add two entries to enable the admin username/password.
+	
+	<role rolename="widgetadmin"/>
+	<user password="java" roles="widgetadmin" username="java"/>
+	
+	..otherwise you will not be able to login to the admin section of the widget server unlesss you remove the authentication
+	defined in the web.xml file.	
   
 Problems - email P.Sharples@bolton.ac.uk
