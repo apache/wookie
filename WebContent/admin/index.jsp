@@ -1,7 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<% String version = (String)session.getAttribute("version");%>
 <html>
 <head>
-<title>Widget Server Administration</title>
+<title>Widget Server Administration <%=version%></title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <link href="style.css" rel="stylesheet" type="text/css">
 </head>
