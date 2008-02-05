@@ -3,14 +3,37 @@
 	xmlns="http://java.sun.com/xml/ns/j2ee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	
 	<display-name>10C Widget Server</display-name>
-
+	<!--
+	Note: This has been commented out because JBoss doesn't like it.
+	<resource-ref>
+        <description>The database connection.</description>
+        <res-ref-name>jdbc/widgetdb</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
+	-->
+	
 	<listener>
 		<listener-class>
 			org.tencompetence.widgetservice.server.ContextListener
 		</listener-class>
 	</listener>
-
+	
+	<listener>
+		<listener-class>
+			org.directwebremoting.servlet.EfficientShutdownServletContextAttributeListener
+		</listener-class>
+	</listener>
+	
+	<listener>
+		<listener-class>
+			org.directwebremoting.servlet.EfficientShutdownServletContextListener
+		</listener-class>
+	</listener>
+	
 	<filter>
 		<filter-name>MainFilter</filter-name>
 		<filter-class>
@@ -23,17 +46,6 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 		
-	<listener>
-		<listener-class>
-			org.directwebremoting.servlet.EfficientShutdownServletContextAttributeListener
-		</listener-class>
-	</listener>
-	<listener>
-		<listener-class>
-			org.directwebremoting.servlet.EfficientShutdownServletContextListener
-		</listener-class>
-	</listener>
-
 	<servlet>
 		<servlet-name>dwr-invoker</servlet-name>
 		<servlet-class>
@@ -43,33 +55,27 @@
 			<param-name>debug</param-name>
 			<param-value>false</param-value>
 		</init-param>
-
 		<init-param>
 			<param-name>activeReverseAjaxEnabled</param-name>
 			<param-value>true</param-value>
 		</init-param>
-		
 		<init-param>
-  		<param-name>org.directwebremoting.extend.ServerLoadMonitor</param-name>
-  		<param-value>org.directwebremoting.impl.PollingServerLoadMonitor</param-value>
-	</init-param>
-		
+  			<param-name>org.directwebremoting.extend.ServerLoadMonitor</param-name>
+  			<param-value>org.directwebremoting.impl.PollingServerLoadMonitor</param-value>
+		</init-param>		
 		<init-param>
 			<param-name>
 				initApplicationScopeCreatorsAtStartup
 			</param-name>
 			<param-value>true</param-value>
-		</init-param>
- 		
+		</init-param> 		
 		<init-param>
 			<param-name>maxWaitAfterWrite</param-name>
 			<param-value>500</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	
-		
-	
+				
 	<servlet>
 		<description></description>
 		<display-name>ProxyServlet</display-name>
@@ -98,22 +104,21 @@
 		<load-on-startup>2</load-on-startup>
 	</servlet>
 
-
 	<servlet-mapping>
 		<servlet-name>ProxyServlet</servlet-name>
 		<url-pattern>/proxy/*</url-pattern>
 	</servlet-mapping>
+	
 	<servlet-mapping>
 		<servlet-name>WidgetAdminServlet</servlet-name>
 		<url-pattern>/admin/WidgetAdminServlet</url-pattern>
 	</servlet-mapping>
+	
 	<servlet-mapping>
 		<servlet-name>WidgetServiceServlet</servlet-name>
 		<url-pattern>/WidgetServiceServlet</url-pattern>
 	</servlet-mapping>
-	
-	
-	
+		
 	<servlet-mapping>
 		<servlet-name>dwr-invoker</servlet-name>
 		<url-pattern>/dwr/*</url-pattern>
@@ -128,29 +133,27 @@
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
 
-
 	<!--****************** SECURITY SECTION ************************
 	  uncomment to enable password protection on admin pages
-	-->		
-		<security-constraint>
-		
-		<web-resource-collection>
-		<web-resource-name>Widget Admin Section</web-resource-name>
-		<url-pattern>/admin/*</url-pattern>
-		</web-resource-collection>
-		
-		<auth-constraint>
-		<role-name>widgetadmin</role-name>
-		</auth-constraint>
+	-->
+		<security-constraint>		
+			<web-resource-collection>
+				<web-resource-name>Widget Admin Section</web-resource-name>
+				<url-pattern>/admin/*</url-pattern>
+			</web-resource-collection>		
+			<auth-constraint>
+				<role-name>widgetadmin</role-name>
+			</auth-constraint>
 		</security-constraint>	
+		
 		<login-config>
-		<auth-method>BASIC</auth-method>
-		<realm-name>Authentication Required</realm-name> 
+			<auth-method>BASIC</auth-method>
+			<realm-name>Authentication Required</realm-name> 
 		</login-config>
+		
 		<security-role>
-		<description></description>
-		<role-name>widgetadmin</role-name>
-		</security-role>
-	
+			<description></description>
+			<role-name>widgetadmin</role-name>
+		</security-role>		
 
 </web-app>
