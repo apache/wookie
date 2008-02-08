@@ -10,7 +10,10 @@
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>
-		<property name="widgetName" column="widget_name" type="string" />
+		<property name="widgetTitle" column="widget_title" type="string" />
+		<property name="widgetDescription" column="widget_description" type="string" />
+		<property name="widgetAuthor" column="widget_author" type="string" />
+		<property name="widgetIconLocation" column="widget_icon_location" type="string" />
 		<property name="url" column="url" type="string" />
 		<property name="guid" column="guid" type="string" />
 		<property name="height" column="height" />
@@ -21,7 +24,7 @@
 			<one-to-many class="WidgetType" />
 		</set>
 	</class>
-
+	
 	<class name="WidgetType" table="WIDGETTYPE">
 		<id name="id" column="id">
 			<generator class="native" />
