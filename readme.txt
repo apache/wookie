@@ -4,6 +4,8 @@ This codebase was compiled against Coppercore version v3.1 released 30/03/2007. 
 Also used was a snapshot of SLeD version 3 from the original UKOU sourceforge location (taken 13/12/2007)
 The setup used for the codebase was Eclipse 3.3, using WTP for the widget project. (http://www.eclipse.org/)
 Note: Do not start CopperCore until you have followed all of the instruction in this section, or you may experience problems.
+Note: For some projects (org.tencompetence.widgetservice for example) you will need to define a Tomcat 5.5. server instance in eclipse WTP called "Apache Tomcat v5.5" (should be the default for tomcat 5.5.)
+Note: For some projects (org.tencompetence.jboss.mbean.db for example) you must define a JBOSS_HOME variable within eclipse which points to the CCRT/jboss-4.0.4.GA folder.
 
 (A) Create a (parent) folder on your hard drive for java projects (i.e. C:\java_projects)
 	- You will have sub-folders under here which will house each eclipse projects.
@@ -73,9 +75,12 @@ Note: Do not start CopperCore until you have followed all of the instruction in 
 	
 	org.tencompetence.widgetservice
 	-------------------------------
+	You will need to define a Tomcat 5.5. server instance in eclipse WTP called "Apache Tomcat v5.5" (should be the default name for tomcat 5.5.), otherwise you may
+	see that the project has missing dependencies.
 	
 	org.tencompetence.jboss.mbean.db
 	--------------------------------
+	If you have checked this project out, you must define a JBOSS_HOME variable within eclipse which points to the CCRT/jboss-4.0.4.GA folder.
 
 	TODO - finish this off
 	
@@ -88,7 +93,7 @@ Note: Do not start CopperCore until you have followed all of the instruction in 
 	<role rolename="widgetadmin"/>
 	<user password="java" roles="widgetadmin" username="java"/>
 	
-	..otherwise you will not be able to login to the admin section of the widget server unlesss you remove the authentication
+	..otherwise you will not be able to login to the admin section of the widget server unless you remove the authentication
 	defined in the web.xml file.	
   
 Problems - email P.Sharples@bolton.ac.uk
