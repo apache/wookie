@@ -34,13 +34,16 @@ import java.util.Set;
  * Widget - a simple bean to model a widgets attributes
  * 
  * @author Paul Sharples
- * @version $Id: Widget.java,v 1.3 2007-12-13 20:31:33 ps3com Exp $
+ * @version $Id: Widget.java,v 1.4 2008-02-08 09:41:39 ps3com Exp $
  */
 public class Widget extends AbstractKeyBean {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String widgetName;
+	private String widgetTitle;
+	private String widgetDescription;
+	private String widgetAuthor;
+	private String widgetIconLocation;
 	private String url;
 	private String guid;
 	private int height;
@@ -87,14 +90,6 @@ public class Widget extends AbstractKeyBean {
 	    this.widgetTypes = widgetTypes;
 	}
 
-	public String getWidgetName() {
-		return widgetName;
-	}
-
-	public void setWidgetName(String widgetName) {
-		this.widgetName = widgetName;
-	}
-
 
 	public boolean isMaximize() {
 		return maximize;
@@ -113,6 +108,46 @@ public class Widget extends AbstractKeyBean {
 
 	public void setGuid(String guid) {
 		this.guid = guid;
+	}
+
+
+	public String getWidgetTitle() {
+		return widgetTitle;
+	}
+
+
+	public void setWidgetTitle(String widgetTitle) {
+		this.widgetTitle = widgetTitle;
+	}
+
+
+	public String getWidgetDescription() {
+		return widgetDescription;
+	}
+
+
+	public void setWidgetDescription(String widgetDescription) {
+		this.widgetDescription = widgetDescription;
+	}
+
+
+	public String getWidgetAuthor() {
+		return widgetAuthor;
+	}
+
+
+	public void setWidgetAuthor(String widgetAuthor) {
+		this.widgetAuthor = widgetAuthor;
+	}
+
+
+	public String getWidgetIconLocation() {
+		return widgetIconLocation;
+	}
+
+
+	public void setWidgetIconLocation(String widgetIconLocation) {
+		this.widgetIconLocation = widgetIconLocation;
 	}
 	
 }
