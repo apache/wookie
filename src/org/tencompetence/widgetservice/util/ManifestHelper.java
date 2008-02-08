@@ -24,7 +24,7 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 	static Logger _logger = Logger.getLogger(ManifestHelper.class.getName());
 
 	public static String[] dealWithManifest(String xmlText) throws JDOMException, IOException {
-		String title = "";
+		String title, description, author, iconPath;
 		SAXBuilder builder = new SAXBuilder();
 		Element root = builder.build(new StringReader(xmlText)).getRootElement();
 		if(root.getName().equalsIgnoreCase(WIDGET_ELEMENT)){
@@ -32,6 +32,7 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 			String start = root.getAttributeValue(START_ATTRIBUTE);
 			String height = root.getAttributeValue(HEIGHT_ATTRIBUTE);
 			String width = root.getAttributeValue(WIDTH_ATTRIBUTE);
+			
 			Element titleElement = root.getChild(TITLE_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
 			if(titleElement==null){
 				title = "Unnamed Widget";
@@ -39,9 +40,34 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 			else{
 				title = titleElement.getText();
 			}
+			
+			Element descElement = root.getChild(DESCRIPTION_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));									
+			if(descElement==null){
+				description = "No Description";
+			}
+			else{
+				description = descElement.getText();
+			}
+			
+			Element authorElement = root.getChild(AUTHOR_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));									
+			if(authorElement==null){
+				author = "Anonymous";
+			}
+			else{
+				author = authorElement.getText();
+			}
+			
+			Element iconElement = root.getChild(ICON_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));									
+			if(iconElement==null){
+				iconPath = "";
+			}
+			else{
+				iconPath = iconElement.getText();
+			}
+			
 			builder = null;
 			root = null;
-			return new String[]{id, start, height, width, title};
+			return new String[]{id, start, height, width, title, description, author, iconPath};
 		}
 		else{
 			builder = null;
