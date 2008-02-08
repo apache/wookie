@@ -50,7 +50,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
  * and setting which widget is to be the default
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminManager.java,v 1.2 2007-12-13 21:53:00 ps3com Exp $
+ * @version $Id: WidgetAdminManager.java,v 1.3 2008-02-08 09:49:08 ps3com Exp $
  */
 public class WidgetAdminManager extends WidgetServiceManager implements IWidgetAdminManager {
 	
@@ -79,21 +79,24 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#addNewWidget(java.lang.String, java.lang.String, java.lang.String, int, int)
 	 */
-	public void addNewWidget(String widgetName, String url, String guid, int height, int width) {
-		addNewWidget(widgetName, url, guid, height, width, null);
+	public void addNewWidget(String widgetTitle, String widgetDescription, String widgetAuthor, String widgetIconLocation, String url, String guid, int height, int width) {
+		addNewWidget(widgetTitle, widgetDescription, widgetAuthor, widgetIconLocation, url, guid, height, width, null);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#addNewWidget(java.lang.String, java.lang.String, java.lang.String, int, int, java.lang.String[])
 	 */
 	@SuppressWarnings("unchecked")
-	public int addNewWidget(String widgetName, String url, String guid, int height, int width, String[] widgetTypes) {
+	public int addNewWidget(String widgetTitle, String widgetDescription, String widgetAuthor, String widgetIconLocation, String url, String guid, int height, int width, String[] widgetTypes) {
 			int newWidgetIdx = -1;
 			final IDBManager dbManager = DBManagerFactory.getDBManager();
 	        Widget widget;
 			try {
 				widget = new Widget();
-				widget.setWidgetName(widgetName);
+				widget.setWidgetTitle(widgetTitle);
+				widget.setWidgetDescription(widgetDescription);
+				widget.setWidgetAuthor(widgetAuthor);
+				widget.setWidgetIconLocation(widgetIconLocation);
 				widget.setUrl(url);
 				widget.setGuid(guid);
 				widget.setHeight(height);
@@ -271,7 +274,8 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 	 */
 	public Widget[] getWidgetsByType(String typeToSearch) throws WidgetTypeNotSupportedException {
 		final IDBManager dbManager = DBManagerFactory.getDBManager();			
-		String sqlQuery = "SELECT widget.id, widget.widget_name, widget.url, widget.maximize, widget.guid, widget.height, widget.width, widgettype.widget_context "
+		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_description, widget_author, widget_icon_location, widget.url, widget.maximize, widget.guid, " +
+								"widget.height, widget.width, widgettype.widget_context "
 						+ "FROM Widget widget, WidgetType widgettype "
 						+ "WHERE widget.id = widgettype.widget_id "
 						+ "AND widgettype.widget_context='" + typeToSearch + "'";		
@@ -351,7 +355,7 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 		    for (int i = 0; i < widgets.length; i++) {
 		        Widget theWidget = (Widget) widgets[i];		        
 		        _logger.debug(
-		        				   "\n\t Name: " + theWidget.getWidgetName() +
+		        				   "\n\t Name: " + theWidget.getWidgetTitle() +
 		        				   "\n\t URL: " + theWidget.getUrl() +
 		                           "\n\t Height: " + theWidget.getHeight() +		          
 		                           "\n\t width: " + theWidget.getWidth() + "\n\t Types:");
