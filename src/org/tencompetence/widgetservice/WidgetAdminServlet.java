@@ -52,7 +52,7 @@ import org.tencompetence.widgetservice.util.ZipUtils;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.5 2008-01-21 15:46:49 ps3com Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.6 2008-02-08 09:47:08 ps3com Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -380,11 +380,33 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 					if(ZipUtils.hasZipEntry(zipFile, results[1])){
 						if(results[0]!=""){
 							File newWidgetFolder = ManifestHelper.createUnpackedWidgetFolder(request, properties, results[0]);
-							ZipUtils.unpackZip(zipFile, newWidgetFolder);							
-							String relativeUrl = (ManifestHelper.getURLForWidget(properties, results[0], results[1]));
+							ZipUtils.unpackZip(zipFile, newWidgetFolder);
+							// get the url to the start page
+							String relativestartUrl = (ManifestHelper.getURLForWidget(properties, results[0], results[1]));
+							String relativeIconUrl=null;
+							// get the url path to the icon file
+							if (!results[7].startsWith("http://")){
+								relativeIconUrl = (ManifestHelper.getURLForWidget(properties, results[0], results[7]));								
+							}
+							else{
+								relativeIconUrl = results[7];
+							}
 							// check to see if this widget already exists in the DB - using the ID (guid) key from the manifest
-							if(!manager.doesWidgetAlreadyExistInSystem(results[0])){							
-								int dbkey = manager.addNewWidget(results[4], relativeUrl, results[0], Integer.parseInt(results[2]), Integer.parseInt(results[3]), new String[]{});
+							if(!manager.doesWidgetAlreadyExistInSystem(results[0])){	
+								
+								
+								//results: id, start, height, width, title, description, author, iconPath								
+//											0    1     2        3      4       5           6        7     
+								//int dbkey = manager.addNewWidget(results[4], results[5], results[6], relativeIconUrl, relativestartUrl, results[0], Integer.parseInt(results[2]), Integer.parseInt(results[3]), new String[]{});
+								
+								//String widgetTitle, String widgetDescription, String widgetAuthor, String widgetIconLocation, String url,
+								//String guid, int height, int width, String[] widgetType
+								
+								/*
+								int dbkey = manager.addNewWidget(results[7], results[6], results[5], results[4], relativestartUrl, results[0], 
+										Integer.parseInt(results[2]), Integer.parseInt(results[3]), new String[]{});
+								*/
+								int dbkey = manager.addNewWidget(results[4], results[5], results[6], relativeIconUrl, relativestartUrl, results[0], Integer.parseInt(results[2]), Integer.parseInt(results[3]), new String[]{});
 								session.setAttribute("message_value", "Widget '"+ results[4] +"' was successfully imported into the system.");
 								retrieveServices(session, manager);
 								session.setAttribute("hasValidated", Boolean.valueOf(true));																	
