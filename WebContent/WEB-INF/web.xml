@@ -103,10 +103,25 @@
 		</servlet-class>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
+	
+	<servlet>
+		<description></description>
+		<display-name>WidgetAdvertiseServlet</display-name>
+		<servlet-name>WidgetAdvertiseServlet</servlet-name>
+		<servlet-class>
+			org.tencompetence.widgetservice.WidgetAdvertiseServlet
+		</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>ProxyServlet</servlet-name>
 		<url-pattern>/proxy/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>WidgetAdvertiseServlet</servlet-name>
+		<url-pattern>/advertise</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
