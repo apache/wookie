@@ -55,7 +55,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	 */
 	public Widget getDefaultWidgetByType(String typeToSearch) throws WidgetTypeNotSupportedException {
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		String sqlQuery = "SELECT widget.id, widget.widget_name, widget.url, widget.height, widget.width, widget.maximize, widget.guid "
+		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid "
 						+ "FROM Widget widget, WidgetDefault widgetdefault "
 						+ "WHERE widget.id = widgetdefault.widgetId "
 						+ "AND widgetdefault.widgetContext='" + typeToSearch + "'";		
