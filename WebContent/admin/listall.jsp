@@ -62,7 +62,7 @@ var answer = confirm("Are you sure you wish to remove the service type...\n\n<" 
 			Widget widget = (Widget) widgets[i];
 	%>		 
 			<table border=1 width="798" bordercolor="#ffffff">      
-		        <tr><td width=70>Title</td><td><%=widget.getWidgetName()%></td></tr>
+		        <tr><td width=70>Title</td><td><%=widget.getWidgetTitle()%></td></tr>
 		        <tr><td>Url</td><td><%=widget.getUrl()%></td></tr>
 		        <tr><td>Guid</td><td><%=widget.getGuid()%></td></tr>
 		        <tr><td>Height</td><td><%=widget.getHeight()%></td></tr>
@@ -79,14 +79,14 @@ var answer = confirm("Are you sure you wish to remove the service type...\n\n<" 
 		               	if(widgetHashDefaults.containsKey(widgetTypes[j].getWidgetContext())){
 		               		// if it does contain this service then is it this widget that is default?
 		        	        	if(widgetHashDefaults.get(widgetTypes[j].getWidgetContext()).equals(widget.getId())){ //###
-		        					%>(<font color="red"><%=widgetTypes[j].getWidgetContext()%></font><a href="javascript:confirmDeleteServiceType('<%=widget.getId()%>','<%=widget.getWidgetName()%>','<%=widgetTypes[j].getWidgetContext()%>');"><img src="../shared/images/cancel.gif" width="16" height="16" border="0"></a>)<%
+		        					%>(<font color="red"><%=widgetTypes[j].getWidgetContext()%></font><a href="javascript:confirmDeleteServiceType('<%=widget.getId()%>','<%=widget.getWidgetTitle()%>','<%=widgetTypes[j].getWidgetContext()%>');"><img src="../shared/images/cancel.gif" width="16" height="16" border="0"></a>)<%
 		        				}
 		        				else{
-				        			%>(<a href="javascript:confirmDefaultWidgetupdate('<%=widget.getId()%>','<%=widget.getWidgetName()%>','<%=widgetTypes[j].getWidgetContext()%>');"><%=widgetTypes[j].getWidgetContext()%></a><a href="javascript:confirmDeleteServiceType('<%=widget.getId()%>','<%=widget.getWidgetName()%>','<%=widgetTypes[j].getWidgetContext()%>');"><img src="../shared/images/cancel.gif" width="16" height="16" border="0"></a>)<%
+				        			%>(<a href="javascript:confirmDefaultWidgetupdate('<%=widget.getId()%>','<%=widget.getWidgetTitle()%>','<%=widgetTypes[j].getWidgetContext()%>');"><%=widgetTypes[j].getWidgetContext()%></a><a href="javascript:confirmDeleteServiceType('<%=widget.getId()%>','<%=widget.getWidgetTitle()%>','<%=widgetTypes[j].getWidgetContext()%>');"><img src="../shared/images/cancel.gif" width="16" height="16" border="0"></a>)<%
 			        			}
 		        		}
 		        		else{
-			        		%>(<a href="javascript:confirmDefaultWidgetupdate('<%=widget.getId()%>','<%=widget.getWidgetName()%>','<%=widgetTypes[j].getWidgetContext()%>');"><%=widgetTypes[j].getWidgetContext()%></a><a href="javascript:confirmDeleteServiceType('<%=widget.getId()%>','<%=widget.getWidgetName()%>','<%=widgetTypes[j].getWidgetContext()%>');"><img src="../shared/images/cancel.gif" width="16" height="16" border="0"></a>)<%
+			        		%>(<a href="javascript:confirmDefaultWidgetupdate('<%=widget.getId()%>','<%=widget.getWidgetTitle()%>','<%=widgetTypes[j].getWidgetContext()%>');"><%=widgetTypes[j].getWidgetContext()%></a><a href="javascript:confirmDeleteServiceType('<%=widget.getId()%>','<%=widget.getWidgetTitle()%>','<%=widgetTypes[j].getWidgetContext()%>');"><img src="../shared/images/cancel.gif" width="16" height="16" border="0"></a>)<%
 		        		}	
 		        }
 		        %>

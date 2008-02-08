@@ -51,10 +51,10 @@ var answer = confirm("Are you sure you want to delete this widget?\n\n"+widgetNa
 			Widget widget = (Widget) widgets[i];
 	%>		 
 			<table border=1 width="798" bordercolor="#ffffff">      
-		        <tr><td width=70>Title</td><td><%=widget.getWidgetName()%></td></tr>
+		        <tr><td width=70>Title</td><td><%=widget.getWidgetTitle()%></td></tr>
 		        <tr><td>Url</td><td><%=widget.getUrl()%></td></tr>
 		        <tr><td>Guid</td><td><%=widget.getGuid()%></td></tr>		        
-		        <tr><td colspan="2" align="center"><a href="javascript: confirmDeleteWidget('<%=widget.getId()%>','<%=widget.getWidgetName()%>');"><img src="../shared/images/cancel.gif" width="16" height="16" border="0">&nbsp;Delete this widget</a></td></tr>
+		        <tr><td colspan="2" align="center"><a href="javascript: confirmDeleteWidget('<%=widget.getId()%>','<%=widget.getWidgetTitle()%>');"><img src="../shared/images/cancel.gif" width="16" height="16" border="0">&nbsp;Delete this widget</a></td></tr>
 		     </table>
 		     <br>
 		     
