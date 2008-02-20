@@ -49,7 +49,7 @@ function getTreeData(param){
 	buildTree(param);
 	dwr.util.setValue("content", forumText, { escapeHtml:false });
 	
-	var toolsStr= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#\" onclick=\"postNewTopic(0)\"><img border=\"0\" src=\"/wookie/shared/images/plus.gif\">&nbsp;Post new Topic</a>&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"', getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/refresh.gif\">&nbsp;Refresh</a>";
+	var toolsStr= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#\" onclick=\"postNewTopic(-1)\"><img border=\"0\" src=\"/wookie/shared/images/plus.gif\">&nbsp;Post new Topic</a>&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"', getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/refresh.gif\">&nbsp;Refresh</a>";
 	
 	dwr.util.setValue("foot", toolsStr, { escapeHtml:false });
 }
@@ -119,9 +119,10 @@ function getViewPostLayout(openPost){
 }
 
 function getNewPostLayout(parentPostId){
+
 	var titleText;
 	var reText="";
-	if(parentPostId==0){
+	if(parentPostId==-1){
 		titleText = "Post";
 	}
 	else{
