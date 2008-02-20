@@ -77,7 +77,7 @@ public class ForumManager implements IForumManager {
 			for(Entry<Integer, PostNode> entry : postLookupTable.entrySet()) {
 				PostNode post = entry.getValue();
 				// Has a Post as a Parent
-				if(post.getParentId()!=0) {
+				if(post.getParentId()!=-1) {
 					PostNode parentPost = postLookupTable.get(post.getParentId());
 					parentPost.getPosts().add(post);	               
 				}
