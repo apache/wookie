@@ -65,6 +65,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	
 	static Logger _logger = Logger.getLogger(WidgetAPIImpl.class.getName());
 	
+	//TODO - does this need to be moved locally like in a normal servlet?
 	private IWidgetAPIManager manager = new WidgetAPIManager();			
 	private WidgetInstance widgetInstance = null;
 	
@@ -263,11 +264,48 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	// need to identify who the admin person is from the UOL
 	// and somehow get it from the widget..
 	public String lock(String id_key) {
-		return "";
+		widgetInstance = manager.checkUserKey(id_key);
+		if(widgetInstance!=null){	
+			// lock the instance
+			WebContext wctx = WebContextFactory.get();
+	        String currentPage = wctx.getCurrentPage();
+	        ScriptBuffer script = new ScriptBuffer();
+	        script.appendScript("widget.onLock(").appendScript(");");
+	        // Loop over all the users on the current page
+	        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
+	        for (Iterator<?> it = pages.iterator(); it.hasNext();)
+	        {
+	            ScriptSession otherSession = (ScriptSession) it.next();
+	            otherSession.addScript(script);
+	        }
+	        return "";
+		
+		}
+		else{
+			return UNAUTHORISED_MESSAGE;
+		}		
 	}
 	
 	public String unlock(String id_key) {
-		return "";
+		widgetInstance = manager.checkUserKey(id_key);
+		if(widgetInstance!=null){			
+			WebContext wctx = WebContextFactory.get();
+	        String currentPage = wctx.getCurrentPage();
+	        ScriptBuffer script = new ScriptBuffer();
+	        script.appendScript("widget.onUnLock(").appendScript(");");
+	        // Loop over all the users on the current page
+	        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
+	        for (Iterator<?> it = pages.iterator(); it.hasNext();)
+	        {
+	            ScriptSession otherSession = (ScriptSession) it.next();
+	            otherSession.addScript(script);
+	        }
+	        return "";
+		
+		}
+		else{
+			return UNAUTHORISED_MESSAGE;
+		}	
 	}
 
 	public String contextPropertyForKey(String id_key, String key) {

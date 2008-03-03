@@ -63,6 +63,7 @@
 		<property name="updated" type="true_false" />
 		<property name="shown" type="true_false" />
 		<property name="hidden" type="true_false" />
+		<property name="locked" type="true_false" />
 	</class>
 
 	<class name="SharedData" table="SHAREDDATA">

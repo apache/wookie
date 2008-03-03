@@ -30,7 +30,7 @@ package org.tencompetence.widgetservice.beans;
  * WidgetInstance - a simple bean to model an actual widgets instance attributes
  * 
  * @author Paul Sharples
- * @version $Id: WidgetInstance.java,v 1.2 2007-10-17 23:11:12 ps3com Exp $
+ * @version $Id: WidgetInstance.java,v 1.3 2008-03-03 16:22:14 ps3com Exp $
  */
 public class WidgetInstance extends AbstractKeyBean {
 
@@ -45,6 +45,7 @@ public class WidgetInstance extends AbstractKeyBean {
 		private boolean updated;
 		private boolean shown;
 		private boolean hidden;
+		private boolean locked;
 		private Widget widget;
 
 		public WidgetInstance(){}
@@ -128,6 +129,16 @@ public class WidgetInstance extends AbstractKeyBean {
 
 		public void setServiceId(String serviceId) {
 			this.serviceId = serviceId;
+		}
+
+
+		public boolean isLocked() {
+			return locked;
+		}
+
+
+		public void setLocked(boolean locked) {
+			this.locked = locked;
 		}
 
 }

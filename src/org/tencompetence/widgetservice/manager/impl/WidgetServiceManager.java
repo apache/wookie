@@ -204,6 +204,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 				widgetInstance.setHidden(false);
 				widgetInstance.setShown(true);
 				widgetInstance.setUpdated(false);
+				widgetInstance.setLocked(false);
 				dbManager.saveObject(widgetInstance);	
 				// we'll put the username of the LD user as a pref for later if needed
 				Preference pref = new Preference();
