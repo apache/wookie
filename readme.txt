@@ -87,7 +87,7 @@ Note: For some projects (org.tencompetence.jboss.mbean.db for example) you must 
 (F) Setting up your WTP project to run the admin password facility from Eclipse
 
 	For your tomcat enabled web project in Eclipse you will need to update the generated server.xml file for the widget 
-	web app configuration.  If you look under the "Servers" project -> <YOUR SERVER TO RUN THE WEB APP FROM>, you will find the server.xml file
+	web app configuration.  If you look under the "Servers" project -> <YOUR SERVER TO RUN THE WEB APP FROM>, you will find the tomcat-users.xml file
 	You will need to add two entries to enable the admin username/password.
 	
 	<role rolename="widgetadmin"/>
