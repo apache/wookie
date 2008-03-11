@@ -33,6 +33,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.SharedData;
+import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.manager.IWidgetAPIManager;
 import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
@@ -48,7 +49,7 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 	
 	boolean showProcess = false;
 	
-	static Logger _logger = Logger.getLogger(WidgetAPIManager.class.getName());
+	public static Logger _logger = Logger.getLogger(WidgetAPIManager.class.getName());
 	
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#checkUserKey(java.lang.String)
@@ -77,7 +78,7 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 			return null;
 		}		
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#getSharedDataForInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
 	 */
@@ -138,6 +139,91 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 		} 
         if(showProcess){ _logger.debug("############ End updateshareddataentry called "+ Thread.currentThread().getName() +"############## name="+name+"value="+value);}
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#lockWidgetInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
+	 */
+	public synchronized void lockWidgetInstance(WidgetInstance instance){
+		//doLock(instance, true);
+		updateSharedDataEntry(instance, "isLocked", "true", false);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#unlockWidgetInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
+	 */
+	public synchronized void unlockWidgetInstance(WidgetInstance instance){
+		//doLock(instance, false);
+		updateSharedDataEntry(instance, "isLocked", "false", false);
+	}
+	
+	public synchronized boolean isInstanceLocked(WidgetInstance widgetInstance){
+			try {
+				if(getSharedDataValue(widgetInstance, "isLocked") == null){
+					//addNewSharedDataEntry(widgetInstance, "isLocked", "false");
+					return false;
+				}
+				else{
+					return Boolean.valueOf(getSharedDataValue(widgetInstance, "isLocked"));
+				}
+			} 
+			catch (Exception e) {
+				_logger.error(e.getMessage());
+				return false;
+			}			
+	}
+	
+	public String getSharedDataValue(WidgetInstance widgetInstance, String key){
+		String sharedDataValue = null;
+		for(SharedData sharedData : getSharedDataForInstance(widgetInstance)){
+			if(sharedData.getDkey().equals(key)){
+				sharedDataValue = sharedData.getDvalue();
+				break;
+			}
+		}	
+		return sharedDataValue;
+	}
+	
+	/*
+	protected synchronized void doLock(WidgetInstance instance, boolean flag){
+		//TODO - update all widget instances to lock/unlock based on key
+		String sharedDataKey = instance.getRunId() + "-" + instance.getEnvId() + "-" + instance.getServiceId();
+		
+		
+		IDBManager dbManager = null;
+		dbManager = DBManagerFactory.getDBManager();
+		instance.setLocked(flag);
+		try {
+			dbManager.saveObject(instance);
+		} 
+		catch (Exception e) {
+			dbManager.rollbackTransaction();
+			_logger.error(e.getMessage());
+		}
+	}
+	
+	// this gets all other widgetinstances that use the same widget in same run, env, serv -etc
+	// these will differ by username, so we are getting all the users instances in a given service
+	public WidgetInstance[] getSiblingInstancesFromInstance(WidgetInstance widgetInstance){			
+		IDBManager dbManager = null;
+		try {
+			dbManager = DBManagerFactory.getDBManager();
+			final Criteria crit = dbManager.createCriteria(WidgetInstance.class);						
+			crit.add( Restrictions.eq( "runId", widgetInstance.getRunId() ) );	
+			crit.add( Restrictions.eq( "envId", widgetInstance.getEnvId() ) );
+			crit.add( Restrictions.eq( "serviceId", widgetInstance.getServiceId() ) );	
+			final List<WidgetInstance> sqlReturnList =  dbManager.getObjects(WidgetInstance.class, crit);
+			WidgetInstance[] instances = sqlReturnList.toArray(new WidgetInstance[sqlReturnList.size()]);		
+			return instances;
+		} 
+		catch (Exception ex) {
+			dbManager.rollbackTransaction();
+			_logger.error(ex.getMessage());
+			return null;
+		}		 
+	}
+	*/
 	
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#addNewSharedDataEntry(org.tencompetence.widgetservice.beans.WidgetInstance, java.lang.String, java.lang.String)

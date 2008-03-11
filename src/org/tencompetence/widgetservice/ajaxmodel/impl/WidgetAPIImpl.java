@@ -62,12 +62,9 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	
 	// string to return when no preference key is supplied by js call
 	public static final String NOKEY_MESSAGE = "No matching key found";
+	public static final String LOCKED_MESSAGE = "Widget Instance is locked by another user";
 	
 	static Logger _logger = Logger.getLogger(WidgetAPIImpl.class.getName());
-	
-	//TODO - does this need to be moved locally like in a normal servlet?
-	private IWidgetAPIManager manager = new WidgetAPIManager();			
-	private WidgetInstance widgetInstance = null;
 	
 	public WidgetAPIImpl(){}
 
@@ -83,8 +80,9 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		if(key==null)return NOKEY_MESSAGE;		
 		String preferenceText = null;		
 		try {
+			IWidgetAPIManager manager = new WidgetAPIManager();
 			// check if instance is valid
-			widgetInstance = manager.checkUserKey(id_key);
+			WidgetInstance widgetInstance = manager.checkUserKey(id_key);			
 			if(widgetInstance!=null){
 				boolean found = false;
 				// find the correct preference...
@@ -123,8 +121,10 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		if(key==null) return NOKEY_MESSAGE;
 		String sharedDataValue = null;				
 		try {
-			widgetInstance = manager.checkUserKey(id_key);
+			IWidgetAPIManager manager = new WidgetAPIManager();
+			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
+				/*
 				boolean found = false;
 								
 				for(SharedData sharedData : manager.getSharedDataForInstance(widgetInstance)){
@@ -133,10 +133,11 @@ public class WidgetAPIImpl implements IWidgetAPI {
 						found = true;
 						break;
 					}
-				}				
-				if(!found){
-					_logger.debug("No key found in getshareddata call:" + key);
-					sharedDataValue = null;
+				}	
+			*/	
+				sharedDataValue = manager.getSharedDataValue(widgetInstance, key);
+				if(sharedDataValue == null){
+					_logger.debug("No key found in getshareddata call:" + key);		
 				}
 			}
 			else{
@@ -159,7 +160,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	 */
 	public String setPreferenceForKey(String id_key, String key, String value) {		
 		try {
-			widgetInstance = manager.checkUserKey(id_key);
+			IWidgetAPIManager manager = new WidgetAPIManager();
+			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
 				manager.updatePreference(widgetInstance, key, value);
 				_logger.debug("setpreferenceForKey set " + key + "  to  " + value);
@@ -187,25 +189,31 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String setSharedDataForKey(String id_key, String key, String value) {		
 		try {
 			_logger.debug("setSharedDataForKey: "+ id_key+ "\tkey:" + key + "\tvalue:" + value);
-			widgetInstance = manager.checkUserKey(id_key);
+			IWidgetAPIManager manager = new WidgetAPIManager();
+			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
-				manager.updateSharedDataEntry(widgetInstance, key, value, false);
-			
-				WebContext wctx = WebContextFactory.get();
-		        String currentPage = wctx.getCurrentPage();
-
-		        ScriptBuffer script = new ScriptBuffer();
-		        script.appendScript("widget.onSharedUpdate(")
-		            //  .appendData(sharedDataForKey(id_key, key))		        
-		              .appendScript(");");
-
-		        // Loop over all the users on the current page
-		        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
-		        for (Iterator<?> it = pages.iterator(); it.hasNext();)
-		        {
-		            ScriptSession otherSession = (ScriptSession) it.next();
-		            otherSession.addScript(script);
-		        }
+				if(!manager.isInstanceLocked(widgetInstance)){
+					manager.updateSharedDataEntry(widgetInstance, key, value, false);
+				
+					WebContext wctx = WebContextFactory.get();
+			        String currentPage = wctx.getCurrentPage();
+	
+			        ScriptBuffer script = new ScriptBuffer();
+			        script.appendScript("widget.onSharedUpdate(")
+			            //  .appendData(sharedDataForKey(id_key, key))		        
+			              .appendScript(");");
+	
+			        // Loop over all the users on the current page
+			        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
+			        for (Iterator<?> it = pages.iterator(); it.hasNext();)
+			        {
+			            ScriptSession otherSession = (ScriptSession) it.next();
+			            otherSession.addScript(script);
+			        }
+				}
+				else {
+					return LOCKED_MESSAGE;
+				}
 				
 			}
 			else{
@@ -229,32 +237,42 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String appendSharedDataForKey(String id_key, String key, String value) {
 		try {
 			_logger.debug("appendSharedDataForKey: "+ id_key+ "\tkey:" + key + "\tvalue:" + value);
-			widgetInstance = manager.checkUserKey(id_key);
+			IWidgetAPIManager manager = new WidgetAPIManager();
+			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
-				manager.updateSharedDataEntry(widgetInstance, key, value, true);
-
-				WebContext wctx = WebContextFactory.get();
-		        String currentPage = wctx.getCurrentPage();
-
-		        ScriptBuffer script = new ScriptBuffer();
-		        script.appendScript("widget.onSharedUpdate(")
-		             //  .appendData(sharedDataForKey(id_key, key))	
-		              .appendScript(");");
-
-		        // Loop over all the users on the current page
-		        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
-		        for (Iterator<?> it = pages.iterator(); it.hasNext();)
-		        {
-		            ScriptSession otherSession = (ScriptSession) it.next();
-		            otherSession.addScript(script);
-		        }
+				if(!manager.isInstanceLocked(widgetInstance)){
+					manager.updateSharedDataEntry(widgetInstance, key, value, true);
+	
+					WebContext wctx = WebContextFactory.get();
+			        String currentPage = wctx.getCurrentPage();
+	
+			        ScriptBuffer script = new ScriptBuffer();
+			        script.appendScript("widget.onSharedUpdate(")
+			             //  .appendData(sharedDataForKey(id_key, key))	
+			              .appendScript(");");
+	
+			        // Loop over all the users on the current page
+			        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
+			        for (Iterator<?> it = pages.iterator(); it.hasNext();)
+			        {
+			            ScriptSession otherSession = (ScriptSession) it.next();
+			            otherSession.addScript(script);
+			        }
+			        _logger.debug("appendSharedDataForKey: 1");
+				}
+				else {
+					_logger.debug("appendSharedDataForKey: 2");
+					return LOCKED_MESSAGE;
+				}
 			
 			}
 			else{
+				_logger.debug("appendSharedDataForKey: 3");
 				return UNAUTHORISED_MESSAGE;
 			}
 		} 
 		catch (Exception ex) {
+			_logger.debug("appendSharedDataForKey: 4");
 			_logger.error("appendSharedDataForKey failed", ex);
 		}
 		return "";
@@ -262,19 +280,21 @@ public class WidgetAPIImpl implements IWidgetAPI {
 
 	// TODO this is what the admin or moderator does
 	// need to identify who the admin person is from the UOL
-	// and somehow get it from the widget..
+	// and somehow get it from the widget.. (CopperCore does not have this info at present)
 	public String lock(String id_key) {
-		widgetInstance = manager.checkUserKey(id_key);
-		if(widgetInstance!=null){	
+		IWidgetAPIManager manager = new WidgetAPIManager();
+		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+		if(widgetInstance!=null){
 			// lock the instance
+			_logger.debug("lock caled by " + widgetInstance.getUserId());
+			manager.lockWidgetInstance(widgetInstance);	
 			WebContext wctx = WebContextFactory.get();
 	        String currentPage = wctx.getCurrentPage();
 	        ScriptBuffer script = new ScriptBuffer();
-	        script.appendScript("widget.onLock(").appendScript(");");
+	        script.appendScript("widget.onLocked(").appendScript(");");
 	        // Loop over all the users on the current page
 	        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
-	        for (Iterator<?> it = pages.iterator(); it.hasNext();)
-	        {
+	        for (Iterator<?> it = pages.iterator(); it.hasNext();){
 	            ScriptSession otherSession = (ScriptSession) it.next();
 	            otherSession.addScript(script);
 	        }
@@ -287,16 +307,18 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	}
 	
 	public String unlock(String id_key) {
-		widgetInstance = manager.checkUserKey(id_key);
-		if(widgetInstance!=null){			
+		IWidgetAPIManager manager = new WidgetAPIManager();
+		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+		if(widgetInstance!=null){
+			_logger.debug("unlock caled by " + widgetInstance.getUserId());
+			manager.unlockWidgetInstance(widgetInstance);	
 			WebContext wctx = WebContextFactory.get();
 	        String currentPage = wctx.getCurrentPage();
 	        ScriptBuffer script = new ScriptBuffer();
-	        script.appendScript("widget.onUnLock(").appendScript(");");
+	        script.appendScript("widget.onUnlocked(").appendScript(");");
 	        // Loop over all the users on the current page
 	        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
-	        for (Iterator<?> it = pages.iterator(); it.hasNext();)
-	        {
+	        for (Iterator<?> it = pages.iterator(); it.hasNext();){
 	            ScriptSession otherSession = (ScriptSession) it.next();
 	            otherSession.addScript(script);
 	        }

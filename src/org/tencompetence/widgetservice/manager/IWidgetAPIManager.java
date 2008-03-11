@@ -72,4 +72,12 @@ public interface IWidgetAPIManager {
 	public void addNewPreference(WidgetInstance widgetInstance, String name,
 			String value) throws Exception;
 
+	public void lockWidgetInstance(WidgetInstance instance);
+
+	public void unlockWidgetInstance(WidgetInstance instance);
+
+	public String getSharedDataValue(WidgetInstance widgetInstance, String key);
+
+	public boolean isInstanceLocked(WidgetInstance widgetInstance);
+
 }
