@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+  <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
   <title>Default Chat Widget</title>
   <script type='text/javascript' src='/wookie/dwr/engine.js'> </script>
@@ -18,11 +19,12 @@
 			<div id="members"></div>
 		</div>			
 		<div id="input">
-		    <div id="joined">
-		    	<input id="text" size="30" onkeypress="dwr.util.onReturn(event, sendMessage)"/>
-		    	<input type="button" value="Send" onclick="sendMessage()"/>&nbsp;
-		    </div>
+		    <div id="joined"></div>
 		</div>		
 	</div>
 </body>
+<!-- fix forIE cashing - must go here even though its in the wrong place
+<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+</HEAD>
+-->
 </html>
