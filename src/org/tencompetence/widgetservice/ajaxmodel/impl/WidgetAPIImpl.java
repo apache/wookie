@@ -123,18 +123,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		try {
 			IWidgetAPIManager manager = new WidgetAPIManager();
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
-			if(widgetInstance!=null){
-				/*
-				boolean found = false;
-								
-				for(SharedData sharedData : manager.getSharedDataForInstance(widgetInstance)){
-					if(sharedData.getDkey().equals(key)){
-						sharedDataValue = sharedData.getDvalue();
-						found = true;
-						break;
-					}
-				}	
-			*/	
+			if(widgetInstance!=null){			
 				sharedDataValue = manager.getSharedDataValue(widgetInstance, key);
 				if(sharedDataValue == null){
 					_logger.debug("No key found in getshareddata call:" + key);		
@@ -150,13 +139,9 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		return sharedDataValue;
 	}
 	
-	/**
-	 * Sets a string preference value in the DB, obtained
-	 * from the given "key" 
-	 * @param id_key - the unique instance id key for a widget instance
-	 * @param key - key for the value to change
- 	 * @param key - the value to change to
-	 * @return - a string value marking status or an error message
+	/*
+	 * (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#setPreferenceForKey(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public String setPreferenceForKey(String id_key, String key, String value) {		
 		try {
@@ -193,15 +178,14 @@ public class WidgetAPIImpl implements IWidgetAPI {
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
 				if(!manager.isInstanceLocked(widgetInstance)){
+					String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();
 					manager.updateSharedDataEntry(widgetInstance, key, value, false);
 				
 					WebContext wctx = WebContextFactory.get();
 			        String currentPage = wctx.getCurrentPage();
 	
 			        ScriptBuffer script = new ScriptBuffer();
-			        script.appendScript("widget.onSharedUpdate(")
-			            //  .appendData(sharedDataForKey(id_key, key))		        
-			              .appendScript(");");
+			        script.appendScript("widget.onSharedUpdate(\"").appendScript(sharedDataKey).appendScript("\");");
 	
 			        // Loop over all the users on the current page
 			        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
@@ -241,15 +225,14 @@ public class WidgetAPIImpl implements IWidgetAPI {
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
 				if(!manager.isInstanceLocked(widgetInstance)){
+					String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();
 					manager.updateSharedDataEntry(widgetInstance, key, value, true);
 	
 					WebContext wctx = WebContextFactory.get();
 			        String currentPage = wctx.getCurrentPage();
 	
 			        ScriptBuffer script = new ScriptBuffer();
-			        script.appendScript("widget.onSharedUpdate(")
-			             //  .appendData(sharedDataForKey(id_key, key))	
-			              .appendScript(");");
+			        script.appendScript("widget.onSharedUpdate(\"").appendScript(sharedDataKey).appendScript("\");");
 	
 			        // Loop over all the users on the current page
 			        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
@@ -257,11 +240,9 @@ public class WidgetAPIImpl implements IWidgetAPI {
 			        {
 			            ScriptSession otherSession = (ScriptSession) it.next();
 			            otherSession.addScript(script);
-			        }
-			        _logger.debug("appendSharedDataForKey: 1");
+			        }			       
 				}
 				else {
-					_logger.debug("appendSharedDataForKey: 2");
 					return LOCKED_MESSAGE;
 				}
 			
@@ -271,8 +252,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 				return UNAUTHORISED_MESSAGE;
 			}
 		} 
-		catch (Exception ex) {
-			_logger.debug("appendSharedDataForKey: 4");
+		catch (Exception ex) {			
 			_logger.error("appendSharedDataForKey failed", ex);
 		}
 		return "";
@@ -281,17 +261,18 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	// TODO this is what the admin or moderator does
 	// need to identify who the admin person is from the UOL
 	// and somehow get it from the widget.. (CopperCore does not have this info at present)
+
 	public String lock(String id_key) {
 		IWidgetAPIManager manager = new WidgetAPIManager();
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 		if(widgetInstance!=null){
-			// lock the instance
+			String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();
 			_logger.debug("lock caled by " + widgetInstance.getUserId());
 			manager.lockWidgetInstance(widgetInstance);	
 			WebContext wctx = WebContextFactory.get();
 	        String currentPage = wctx.getCurrentPage();
 	        ScriptBuffer script = new ScriptBuffer();
-	        script.appendScript("widget.onLocked(").appendScript(");");
+	        script.appendScript("widget.onLocked(\"").appendScript(sharedDataKey).appendScript("\");");
 	        // Loop over all the users on the current page
 	        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
 	        for (Iterator<?> it = pages.iterator(); it.hasNext();){
@@ -306,46 +287,70 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		}		
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#unlock(java.lang.String)
+	 */
 	public String unlock(String id_key) {
 		IWidgetAPIManager manager = new WidgetAPIManager();
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 		if(widgetInstance!=null){
+			String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();
 			_logger.debug("unlock caled by " + widgetInstance.getUserId());
 			manager.unlockWidgetInstance(widgetInstance);	
 			WebContext wctx = WebContextFactory.get();
 	        String currentPage = wctx.getCurrentPage();
 	        ScriptBuffer script = new ScriptBuffer();
-	        script.appendScript("widget.onUnlocked(").appendScript(");");
+	        script.appendScript("widget.onUnlocked(\"").appendScript(sharedDataKey).appendScript("\");");
 	        // Loop over all the users on the current page
-	        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
-	        for (Iterator<?> it = pages.iterator(); it.hasNext();){
+	        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);	        
+	        for (Iterator<?> it = pages.iterator(); it.hasNext();){	        	
 	            ScriptSession otherSession = (ScriptSession) it.next();
-	            otherSession.addScript(script);
+	            otherSession.addScript(script);	            	            
 	        }
-	        return "";
-		
+	        return "";		
 		}
 		else{
 			return UNAUTHORISED_MESSAGE;
 		}	
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#contextPropertyForKey(java.lang.String, java.lang.String)
+	 */
 	public String contextPropertyForKey(String id_key, String key) {
-		return null;
+		return "Not available";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#setContextPropertyForKey(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	public String setContextPropertyForKey(String id_key, String key, String value) {
-		return null;
+		return "Not available";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#setUserPropertyForKey(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	public String setUserPropertyForKey(String id_key, String key, String value) {
-		return null;
+		return "Not available";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#userPropertyForKey(java.lang.String, java.lang.String)
+	 */
 	public String userPropertyForKey(String id_key, String key) {
-		return null;
+		return "Not available";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#openURL(java.lang.String)
+	 */
 	public String openURL(String url) {
 		_logger.debug("openurl called with        "+ url );
 		WebContext wctx = WebContextFactory.get();
@@ -356,7 +361,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
         wctx.getScriptSession().addScript(script);
         return "";
 	}
-
+	
 	public String system(String id_key, String arg1) {
 		_logger.debug("system called with " + arg1 );
 		return "Not available";
