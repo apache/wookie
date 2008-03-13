@@ -2,16 +2,55 @@
 ****************   DEFAULT FORUM WIDGET **************
 ******************************************************
 */
+var isDebug = false;
 var instanceid_key;
 var proxyUrl="";
 var widgetAPIUrl="";
 var username="";
 var forumText="";
 var currentPost=null;
+var isLocked = false;
+var sharedDataKey = null;
+
+var activeToolsStr = null; // note this string needs to be set once the instanceid_key has been set in the init() method
+var adminActiveToolsStr ="&nbsp;&nbsp;<a href=\"#\" onclick=\"lockforum()\"><img border=\"0\" src=\"/wookie/shared/images/lock.gif\" alt=\"Lock this widget\">&nbsp;Lock the forum</a>";
+
+var inactiveToolsStr = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>This widget has been locked</b>&nbsp;";
+var adminInactiveToolsStr= "<a href=\"#\" onclick=\"unlockforum()\"><img border=\"0\" src=\"/wookie/shared/images/unlock.gif\" alt=\"Unlock this widget\"></a>";
+
+function isAdminUser(){
+	if (username.indexOf("staff")!=-1){
+		return true;
+	}
+	else if(username.indexOf("teacher")!=-1){
+		return true;
+	}
+	return false;
+}
 
 // set the local username
 function setLocalUsername(p){
 	username = p;	 
+	if(isAdminUser()){
+		activeToolsStr+=adminActiveToolsStr;
+		inactiveToolsStr +=adminInactiveToolsStr;
+	}
+	widget.preferenceForKey(instanceid_key, "sharedDataKey", initSharedKey);
+}
+
+function initSharedKey(sharedKey){
+	sharedDataKey = sharedKey;
+	widget.sharedDataForKey(instanceid_key, "isLocked", setupInput);
+}
+
+
+function setupInput(isLockedValue){
+	if(isLockedValue!="true"){		
+		handleUnlocked(sharedDataKey); 
+	}
+	else{
+		handleLocked(sharedDataKey);
+	}	
 }
 
 // on start up set some values & init with the server
@@ -38,19 +77,27 @@ function init() {
 		}					
 		// this line tells DWR to use call backs (i.e. will call onsharedupdate() when an event is recevied for shared data
 		// below - commented out - is this needed when there is no need to poll the server?
-	 	//dwr.engine.setActiveReverseAjax(true);
-	 	widget.preferenceForKey(instanceid_key, "LDUsername", setLocalUsername);		 	
-		forum.getNodeTree(instanceid_key, getTreeData);
+	 	dwr.engine.setActiveReverseAjax(true);	 		
+	 	// have to set this string AFTER the instanceid_key has been set above
+	 	activeToolsStr = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#\" onclick=\"postNewTopic(-1)\"><img border=\"0\" src=\"/wookie/shared/images/plus.gif\">&nbsp;Post new topic</a>&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"', getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/refresh.gif\">&nbsp;Refresh</a>";
+	 	widget.preferenceForKey(instanceid_key, "LDUsername", setLocalUsername);	 	
+		
 }
 
 function getTreeData(param){
+
 // wipe the current list before rebuilding it
 	forumText="";
 	buildTree(param);
 	dwr.util.setValue("content", forumText, { escapeHtml:false });
-	
-	var toolsStr= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#\" onclick=\"postNewTopic(-1)\"><img border=\"0\" src=\"/wookie/shared/images/plus.gif\">&nbsp;Post new Topic</a>&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"', getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/refresh.gif\">&nbsp;Refresh</a>";
-	
+		
+	var toolsStr = "";
+	if (isLocked){
+		toolsStr = inactiveToolsStr;
+	}
+	else{
+		toolsStr = activeToolsStr;
+	}
 	dwr.util.setValue("foot", toolsStr, { escapeHtml:false });
 }
 
@@ -79,7 +126,10 @@ function openPost(openPost){
 		dwr.util.setValue("content", viewPostStr, { escapeHtml:false });
 		currentPost = openPost;
 		toolsStr +="&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		toolsStr +="<a href=\"#\" onclick=\"getReplyToPostLayout()\"><img border=\"0\" src=\"/wookie/shared/images/go.gif\">&nbsp;Reply</a>&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"', getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/cancel.gif\">&nbsp;Cancel</a>";
+		if(!isLocked){
+			toolsStr +="<a href=\"#\" onclick=\"getReplyToPostLayout()\"><img border=\"0\" src=\"/wookie/shared/images/go.gif\">&nbsp;Reply</a>&nbsp;";
+		}
+		toolsStr +="<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"', getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/cancel.gif\">&nbsp;Cancel</a>";				
 		dwr.util.setValue("foot", toolsStr, { escapeHtml:false });
 	}	
 }
@@ -195,3 +245,40 @@ function formatDate(d){
 	if (curr_sec.length == 1){curr_sec = "0" + curr_sec;}				
 	return t_date+"/"+t_mon+"/"+t_year+" "+ t_hour + ":" + curr_min + ":" + curr_sec
 }
+
+function handleLocked(sdkey){
+ if(sdkey == sharedDataKey){
+ //if (isDebug) alert("handle Locked");
+	isActive = false;		
+    dwr.util.setValue("foot", inactiveToolsStr, { escapeHtml:false });    
+    // todo: make sure the posts are not editable
+    isLocked = true;
+    forum.getNodeTree(instanceid_key, getTreeData);
+ }
+}
+
+function handleUnlocked(sdkey){	
+ if(sdkey == sharedDataKey){
+	if (isDebug) alert("start handle Unlocked");
+	isActive = true;
+	isLocked = false;
+	dwr.util.setValue("foot", activeToolsStr, { escapeHtml:false }); 
+	forum.getNodeTree(instanceid_key, getTreeData); 
+    if (isDebug) alert("end handle Unlocked");
+  } 
+}
+
+function lockforum(){
+	if(isActive){	
+		isActive = false;		
+	}
+	widget.lock(instanceid_key);
+}
+
+function unlockforum(){
+	isActive = true;	
+	widget.unlock(instanceid_key);	
+}
+
+widget.onLocked = handleLocked;
+widget.onUnlocked = handleUnlocked;

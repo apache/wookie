@@ -20,7 +20,9 @@ var chatSeparator = "<chat>";
 var memberSeparator = "<member>";
 var userList="";
 var thisUserUnlocked = false;
+var thisUserClearedLog = false;
 var isAdmin = false;
+var sharedDataKey = null;
 
 var inputactivediv = "<input id=\"text\" size=\"30\" onkeypress=\"dwr.util.onReturn(event, sendMessage)\"/>";
 	inputactivediv += "<input type=\"button\" value=\"Send\" onclick=\"sendMessage()\"/>&nbsp;";	
@@ -34,6 +36,7 @@ var adminUnlockText = "<a href=\"#\" onclick=\"unlockchat()\"><img border=\"0\" 
 function confirmClearChat(){
 var answer = confirm("Are you sure you want to clear the chat log?\n\nBy choosing 'OK', you will be removing all of the current chat log data. This operation is irreversible once you click 'OK'");
 	if (answer){
+		thisUserClearedLog = true;
 		widget.setSharedDataForKey(instanceid_key, "defaultChatLog", "");
 	}
 	else{}
@@ -46,17 +49,13 @@ if (isDebug) alert("start doInitPresence");
 	if(presenceList==null||presenceList.indexOf(currentUser)==-1){	
 		// add this user to chat
 		widget.appendSharedDataForKey(instanceid_key, "defaultChatPresence", memberSeparator + username + memberSeparator);
-		widget.appendSharedDataForKey(instanceid_key, "defaultChatLog", chatSeparator + "<User " + username + " has joined the chatroom>" + chatSeparator);    	
-	if (isDebug) alert("doInitPresence 1:" +instanceid_key +" : "+username);
-	
+		widget.appendSharedDataForKey(instanceid_key, "defaultChatLog", chatSeparator + "<User " + username + " has joined the chatroom>" + chatSeparator);    		
 	}
 	else{
 		// get existing chat data
 		widget.sharedDataForKey(instanceid_key, "defaultChatPresence", refreshMemberList);
-		widget.sharedDataForKey(instanceid_key, "defaultChatLog", refreshchatlog);	
-	if (isDebug) alert("doInitPresence 2");
-	}
-if (isDebug) alert("end doInitPresence");	
+		widget.sharedDataForKey(instanceid_key, "defaultChatLog", refreshchatlog);			
+	}	
 }
 
 // set the local username
@@ -66,6 +65,11 @@ function setLocalUsername(p){
 		inputactivediv+=adminLockText;
 		inputinactivediv+=adminUnlockText;
 	}
+	widget.preferenceForKey(instanceid_key, "sharedDataKey", initSharedKey);
+}
+
+function initSharedKey(sharedKey){
+	sharedDataKey = sharedKey;
 	widget.sharedDataForKey(instanceid_key, "isLocked", setupInput);
 }
 
@@ -81,12 +85,11 @@ function isAdminUser(){
 
 function setupInput(isLockedValue){
 	if(isLockedValue!="true"){		
-		handleUnlocked(); 
+		handleUnlocked(sharedDataKey); 
 	}
 	else{
-		handleLocked();
-	}
-		
+		handleLocked(sharedDataKey);
+	}		
 }
 
 // on start up set some values & init with the server
@@ -132,8 +135,6 @@ function cleanup() {
 	}
 }
 
-
-
 // send a new message
 function sendMessage() {
  	var text = dwr.util.getValue("text");
@@ -173,27 +174,38 @@ function refreshMemberList(members){
     dwr.util.setValue("members", memberList, { escapeHtml:false });
 }
 
-// Note: Not currently used - but it is possible for the server to pass a parameter 
-// back to this method from, for example onsharedupdate().
-// was this "messages" parameter causing a problem?
-function handleSharedUpdate(messages){
-if (isDebug) alert("handle sharedupdate");
+function handleSharedUpdate(sdkey){
+if (isDebug) alert("handlesharedUpdate" + sdkey + "    :      " + sharedDataKey );
+ // only respond to other shared instances - ignore others
+ if(sdkey == sharedDataKey){
+
+	if (isDebug) alert("handle sharedupdate");
+	if(thisUserClearedLog == true){
+		thisUserClearedLog = false;
+		widget.appendSharedDataForKey(instanceid_key, "defaultChatLog", chatSeparator + "<User " + username + " has cleared the chat log>" + chatSeparator);
+	}	
 	// update the chat presence list
 	widget.sharedDataForKey(instanceid_key, "defaultChatPresence", refreshMemberList);
 	// update the chat log
 	widget.sharedDataForKey(instanceid_key, "defaultChatLog", refreshchatlog);
+ }
 }
 
-function handleLocked(){
-if (isDebug) alert("handle Locked");
+function handleLocked(sdkey){
+if (isDebug) alert("handleLocked" + sdkey + "    :      " + sharedDataKey );
+ if(sdkey == sharedDataKey){
+	//if (isDebug) 
+ 	if (isDebug) alert("handle Locked");
 	isActive = false;		
     dwr.util.setValue("joined", inputinactivediv, { escapeHtml:false });
     widget.sharedDataForKey(instanceid_key, "defaultChatLog", refreshchatlog);	    
-   // dwr.engine.setActiveReverseAjax(false);
+ }
 }
 
-function handleUnlocked(){	
-if (isDebug) alert("start handle Unlocked");
+function handleUnlocked(sdkey){	
+if (isDebug) alert("handleUnlocked" + sdkey + "    :      " + sharedDataKey );
+ if(sdkey == sharedDataKey){ 
+	if (isDebug) alert("start handle Unlocked");
 	isActive = true;
 	if(thisUserUnlocked){
 		thisUserUnlocked = false;
@@ -202,8 +214,8 @@ if (isDebug) alert("start handle Unlocked");
 	// get the shared data for the presencelist
 	widget.sharedDataForKey(instanceid_key, "defaultChatPresence", doInitPresence);	
     dwr.util.setValue("joined", inputactivediv, { escapeHtml:false });   
-   // dwr.engine.setActiveReverseAjax(true);
     if (isDebug) alert("end handle Unlocked"); 
+ }
 }
 
 function lockchat(){
