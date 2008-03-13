@@ -34,6 +34,15 @@ package org.tencompetence.widgetservice.ajaxmodel;
  */
 public interface IWidgetAPI {	
 	public String preferenceForKey(String id_key, String key);
+	
+	/**
+	 * Sets a string preference value in the DB, obtained
+	 * from the given "key" 
+	 * @param id_key - the unique instance id key for a widget instance
+	 * @param key - key for the value to change
+ 	 * @param key - the value to change to
+	 * @return - a string value marking status or an error message
+	 */
 	public String setPreferenceForKey(String id_key, String key, String value);
 	public String sharedDataForKey(String id_key, String key);
 	public String setSharedDataForKey(String id_key, String key, String value);
