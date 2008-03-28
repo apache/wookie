@@ -19,14 +19,16 @@
 -- Table structure for table `post`
 --
 
+USE widgetdb;
+
 DROP TABLE IF EXISTS `post`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `post` (
-  `id` int(10) unsigned NOT NULL auto_increment,
+  `id` int(11) unsigned NOT NULL auto_increment,
   `user_id` varchar(80) NOT NULL,
-  `parent_id` int(10) default '0',
-  `title` varchar(1024) NOT NULL,
+  `parent_id` int(11) default '0',
+  `title` varchar(255) NOT NULL,
   `content` mediumtext,
   `publish_date` datetime NOT NULL,
   `update_date` datetime default NULL,
