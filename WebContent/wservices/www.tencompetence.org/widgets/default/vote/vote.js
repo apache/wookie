@@ -166,7 +166,7 @@ function doValidation(){
 }
 
 function showNotReadyYet(){
-	var notReadytext = "<div id='legendDiv'>This vote tool has not yet been setup</div>";
+	var notReadytext = "<div id='legendDiv'>This vote instance has not yet been initialised by the teacher.</div>";
 	dwr.util.setValue("maincanvas", notReadytext, { escapeHtml:false });
 }
 
