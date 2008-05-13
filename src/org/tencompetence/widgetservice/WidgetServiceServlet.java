@@ -48,7 +48,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.3 2007-12-13 20:31:33 ps3com Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.4 2008-05-13 13:52:48 ps3com Exp $ 
  *
  */
  public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -75,23 +75,86 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// set the proxy url.
-		if(urlWidgetProxyServer==null){
-		urlWidgetProxyServer = new URL(request.getScheme() ,
-				request.getServerName() ,
-				request.getServerPort() , "/wookie/proxy");
+		String requestId = request.getParameter("requestid");
+		if(requestId.equals("getwidget")){
+			doGetWidget(request, response);
 		}
-		_logger.debug(urlWidgetProxyServer.toString());
-		//set the service url.
-		if(urlWidgetAPIServer==null){
-			urlWidgetAPIServer = new URL(request.getScheme() ,
-					request.getServerName() ,
-					request.getServerPort() , "/wookie/dwr/interface/widget.js");
+		else if(requestId.equals("stopwidget")){
+			doStopWidget(request, response);
+		}
+		else if(requestId.equals("resumewidget")){
+			doResumeWidget(request, response);
+		}
+		else if(requestId.equals("setpublicproperty")){
+			doSetProperty(request, response, false);
+		}
+		
+		else if(requestId.equals("setpersonalproperty")){
+			doSetProperty(request, response, true );
+		}
+		else {
+			returnErrorDoc("No valid requestid was found.");
+		}
+	}
+	
+	private void doStopWidget(HttpServletRequest request, HttpServletResponse response){
+		String userId = request.getParameter("userid");
+		String runId = request.getParameter("runid");
+		String envId = request.getParameter("environmentid");
+		String serviceId = request.getParameter("serviceid");
+		String serviceType= request.getParameter("servicetype");
+		_logger.error("*** stop widget called ****");
+		_logger.error("*** "+ userId + " ****");
+		_logger.error("***************************");
+	}
+	
+	private void doResumeWidget(HttpServletRequest request, HttpServletResponse response){
+		String userId = request.getParameter("userid");
+		String runId = request.getParameter("runid");
+		String envId = request.getParameter("environmentid");
+		String serviceId = request.getParameter("serviceid");
+		String serviceType= request.getParameter("servicetype");
+		_logger.error("*** resume widget called ****");
+		_logger.error("*** "+ userId + " ****");
+		_logger.error("***************************");
+	}
+	
+	/**
+	 * 
+	 * @param request
+	 * @param response
+	 * @param isPersonalProperty - If the boolean is set to true, then a preference will be set otherwise its shareddata
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	private void doSetProperty (HttpServletRequest request, HttpServletResponse response, boolean isPersonalProperty) throws ServletException, IOException {
+		String userId = request.getParameter("userid");
+		String runId = request.getParameter("runid");
+		String envId = request.getParameter("environmentid");
+		String serviceId = request.getParameter("serviceid");
+		String serviceType= request.getParameter("servicetype");
+		String propertyName = request.getParameter("propertyname");
+		String propertyValue = request.getParameter("propertyvalue");
+		
+		IWidgetServiceManager wsm = new WidgetServiceManager();	
+		WidgetInstance instance = wsm.getwidgetInstance(userId, runId, envId, serviceId, serviceType);
+		if(instance != null){
+			try {
+				if(isPersonalProperty){
+					wsm.updatePreference(instance, propertyName, propertyValue);
+				}
+				else{
+					wsm.updateSharedDataEntry(instance, propertyName, propertyValue, false);
+				}
+			} 
+			catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		_logger.debug(urlWidgetAPIServer.toString());
+		}
+	}
 		
-		WidgetInstance widgetInstance;
-		
+	private void doGetWidget(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String userId = request.getParameter("userid");
 		String runId = request.getParameter("runid");
 		String envId = request.getParameter("environmentid");
@@ -108,7 +171,25 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 			response.setContentType(CONTENT_TYPE);
 			PrintWriter out = response.getWriter();
 			out.println(returnErrorDoc(ex.getMessage()));
+			return;
 		}
+		
+		// set the proxy url.
+		if(urlWidgetProxyServer==null){
+		urlWidgetProxyServer = new URL(request.getScheme() ,
+				request.getServerName() ,
+				request.getServerPort() , "/wookie/proxy");
+		}
+		_logger.debug(urlWidgetProxyServer.toString());
+		//set the service url.
+		if(urlWidgetAPIServer==null){
+			urlWidgetAPIServer = new URL(request.getScheme() ,
+					request.getServerName() ,
+					request.getServerPort() , "/wookie/dwr/interface/widget.js");
+			}
+		_logger.debug(urlWidgetAPIServer.toString());
+		
+		WidgetInstance widgetInstance;
 				
 		IWidgetServiceManager wsm = new WidgetServiceManager();	
 		widgetInstance = wsm.getwidgetInstance(userId, runId, envId, serviceId, serviceType);
