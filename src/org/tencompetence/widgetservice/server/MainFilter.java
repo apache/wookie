@@ -55,6 +55,8 @@ public class MainFilter implements Filter {
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) 
 	throws IOException, ServletException {
 		try {
+			request.setCharacterEncoding("UTF-8");
+			response.setContentType("text/xml;charset=\"UTF-8\"");
 			/** Get a DBManager for this thread. */
 			final IDBManager dbManager = DBManagerFactory.getDBManager();				
 			dbManager.beginTransaction();
@@ -67,7 +69,7 @@ public class MainFilter implements Filter {
 		}
 	}
 
-	public void init(FilterConfig arg0) throws ServletException {
+	public void init(FilterConfig arg0) throws ServletException {		
 	}
 
 }
