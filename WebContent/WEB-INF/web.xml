@@ -5,8 +5,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 	
 	<display-name>10C Widget Server</display-name>
-	<!--
-	Note: This has been commented out because JBoss doesn't like it.
+	
 	<resource-ref>
         <description>The database connection.</description>
         <res-ref-name>jdbc/widgetdb</res-ref-name>
@@ -14,7 +13,7 @@
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
-	-->
+	
 	
 	<listener>
 		<listener-class>
