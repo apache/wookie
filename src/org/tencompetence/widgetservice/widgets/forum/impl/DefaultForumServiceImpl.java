@@ -49,7 +49,7 @@ import org.tencompetence.widgetservice.widgets.forum.PostNode;
  *   forum.getNodeTree();
  * 
  * @author Paul Sharples
- * @version $Id
+ * @version $Id: DefaultForumServiceImpl.java,v 1.4 2008-05-13 13:57:22 ps3com Exp $
  *
  */
 public class DefaultForumServiceImpl implements IForumService {
@@ -61,8 +61,7 @@ public class DefaultForumServiceImpl implements IForumService {
 	private static final long serialVersionUID = 1L;
 	
 	
-	public List<PostNode> getNodeTree(String id_key) {
-		System.out.println("DefaultForumServiceImpl: key is"+id_key);
+	public List<PostNode> getNodeTree(String id_key) {		
 		if(id_key==null){		
 			return getErrorList(UNAUTHORISED_MESSAGE);			
 		}				
