@@ -4,7 +4,7 @@ import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedException;
 
-public interface IWidgetServiceManager {
+public interface IWidgetServiceManager extends IWidgetAPIManager {
 
 	/**
 	 * Get the default widget for the type specified by by the parameter
