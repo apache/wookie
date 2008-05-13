@@ -206,15 +206,17 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 				widgetInstance.setUpdated(false);
 				widgetInstance.setLocked(false);
 				dbManager.saveObject(widgetInstance);	
+				/*
 				// we'll put the username of the LD user as a pref for later if needed
 				Preference pref = new Preference();
 				pref.setWidgetInstance(widgetInstance);
 				pref.setDkey("LDUsername");
 				pref.setDvalue(userId);
 				dbManager.saveObject(pref);	
+				*/
 				// add in the sharedDataKey as a preference so that a widget can know
 				// what sharedData event to listen to later
-				pref = new Preference();
+				Preference pref = new Preference();
 				pref.setWidgetInstance(widgetInstance);
 				pref.setDkey("sharedDataKey");				
 				pref.setDvalue(widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId());
