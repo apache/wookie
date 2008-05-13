@@ -1,11 +1,53 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-  <title>Widget type not supported</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Widget type not supported</title>
+<script type='text/javascript' src='en.lproj/localizedStrings.js'> </script>
+<script type='text/javascript' src='bu.lproj/localizedStrings.js'> </script>
+<script>
+var currentLanguage = "en";
+
+function getLocalizedString(key) {
+	try {
+		var evalString = currentLanguage + "_" + "localizedStrings['"+key+"'];";
+		var ret = eval(evalString);
+		if (ret === undefined)
+			ret = key;
+		return ret;
+	}
+	catch (ex) {
+	}
+	return key;
+}
+
+function doLanguageUpdate(la){
+	currentLanguage = la;
+	init();
+}
+
+function init(){
+	document.title = getLocalizedString('Widget type not supported');
+	var mainText = "<h3>"+ getLocalizedString('Widget Server') +"</div></h3>";
+	mainText += "<p>"+ getLocalizedString('Sorry, but the widget server does not support this type of widget') +"</p>";
+	document.getElementById('maindiv').innerHTML = mainText
+}
+
+  </script>
  </head>
-<body> 	
-<h3>Widget server</h3>
-<p>Sorry, but the widget server does not support this type of widget</p>
+<body onload="init()">
+	<div id="wrapper">
+		<div id="langDiv">
+		<form name="form1" method="post" action="">
+  			<select name="lang" id="select_lang" onchange="doLanguageUpdate(this.options[this.selectedIndex].value);">
+    			<option value="bu">bu</option>
+			    <option value="en" selected>en</option>
+    			<option value="fr">fr</option>
+			    <option value="nl">nl</option>
+  			</select>
+		</form>
+		</div>
+		<div id="maindiv"></div>
+	</div>
 </body>
 </html>

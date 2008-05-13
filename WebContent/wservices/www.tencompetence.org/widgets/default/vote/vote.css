@@ -19,6 +19,10 @@ body{
  color: #000000;
 } 
 
+div#lang_opts {
+	display: inline;
+}
+
 div#maincanvas
 {
   width: 500px;
@@ -48,6 +52,15 @@ div#questionDiv
 div#responseDiv
 {
   height: 150px;
+  overflow: auto; 
+  background-color: #e4e4e4;
+  padding: 10px;
+  border: 1px solid black; 
+}
+
+div#responseDivFull
+{
+  height: 220px;
   overflow: auto; 
   background-color: #e4e4e4;
   padding: 10px;
@@ -88,5 +101,10 @@ span.from
 span.alert
 {
   font-style: italic;
+}
+
+a {
+	text-decoration: none;
+	color: #800040;
 }
 

@@ -4,6 +4,8 @@
 ******************************************************
 */
 var isDebug = false;
+var currentLanguage = "en";
+var supportedLanguages = new Array("bu","en","fr","nl");
 var instanceid_key;
 var proxyUrl;
 var widgetAPIUrl;
@@ -13,51 +15,58 @@ var thisUserUnlocked = false;
 var isAdmin = false;
 var isQuestionSet = false;
 var answerSeparator = "<answer>";
-//var countSeparator = "<count>";
 var question = null;
 var answers = null;
 var lastVote = 0;
+var responseCount=0; // count amount of formfields
+var responseArr = new Array();
 
 
-function genHex(){
-colors = new Array(14)
-colors[0]="0"
-colors[1]="1"
-colors[2]="2"
-colors[3]="3"
-colors[4]="4"
-colors[5]="5"
-colors[5]="6"
-colors[6]="7"
-colors[7]="8"
-colors[8]="9"
-colors[9]="a"
-colors[10]="b"
-colors[11]="c"
-colors[12]="d"
-colors[13]="e"
-colors[14]="f"
-
-digit = new Array(5)
-color=""
-for (i=0;i<6;i++){
-digit[i]=colors[Math.round(Math.random()*14)]
-color = color+digit[i]
-}
-return color;
+// on start up set some values & init with the server
+function init() {
+	if(!isActive){
+		// This gets the id_key and assigns it to instanceid_key
+		// This page url will be called with e.g. idkey=4j45j345jl353n5lfg09cw03f05
+		// so grab that key to use as authentication against the server
+		var query = window.location.search.substring(1);
+		var pairs = query.split("&");
+		for (var i=0;i<pairs.length;i++){
+			var pos = pairs[i].indexOf('=');
+			if (pos >= 0){				
+				var argname = pairs[i].substring(0,pos);
+				if(argname=="idkey"){
+					instanceid_key = pairs[i].substring(pos+1);
+				}
+				if(argname=="proxy"){
+					proxyUrl = pairs[i].substring(pos+1);
+				}
+				if(argname=="serviceapi"){
+					widgetAPIUrl = pairs[i].substring(pos+1);
+				}				
+			}
+		}	
+		isActive = true;
+		// this line tells DWR to use call backs (i.e. will call onsharedupdate() when an event is recevied for shared data
+	 	dwr.engine.setActiveReverseAjax(true);
+	 	widget.preferenceForKey(instanceid_key, "LDUsername", setLocalUsername);	 	
+ 	}
 }
 
 // set the local username
 function setLocalUsername(p){
 	username = p;	
+	widget.preferenceForKey(instanceid_key, "conference-manager", getConferenceManagerRole);
+}
+
+function getConferenceManagerRole(p){
+	if(p == "true") isAdmin = true;
+	widget.preferenceForKey(instanceid_key, "moderator", getModeratorRole);
+}
+
+function getModeratorRole(p){	
+	if(p == "true") isAdmin = true;
 	widget.sharedDataForKey(instanceid_key, "isSet", doSetup);
-}	 
-
-
-// #########################setting up the vote setion #################################
-
-var responseCount=0; // count amount of formfields
-var responseArr = new Array();
+}	
 
 function doSetup(isSet){
     if(isSet == null){
@@ -72,7 +81,53 @@ function doSetup(isSet){
 		widget.preferenceForKey(instanceid_key, "hasVoted", showOrVoteScreen);
 	
 	}
+} 
+
+function isAdminUser(){
+	return isAdmin;
 }
+
+function doLanguageUpdate(la){
+	currentLanguage = la;	
+	isActive = false;
+	responseCount=0; //reset responses
+	init();
+}
+
+function getLocalizedString(key) {
+	try {
+		var evalString = currentLanguage + "_" + "localizedStrings['"+key+"'];";		
+		var ret = eval(evalString);
+		if (ret === undefined)
+			ret = key;
+		return ret;
+	}
+	catch (ex) {
+	}
+	return key;
+}
+
+function getLangOpts(){
+	var langOptionStr = "<select name=\"select_lang\" id=\"select_lang\" onchange=\"doLanguageUpdate(this.options[this.selectedIndex].value);\">" ;
+ 	var optStr; 
+ 	for (alang in supportedLanguages){
+ 		if(supportedLanguages[alang] == currentLanguage){
+	 		optStr = "<option value=\"" + supportedLanguages[alang] + "\" selected>" + supportedLanguages[alang] + "</option>";
+	 	}
+	 	else{
+ 			optStr = "<option value=\"" + supportedLanguages[alang] + "\">" + supportedLanguages[alang] + "</option>";
+ 		}
+ 		langOptionStr += optStr;
+	}
+	langOptionStr += "</select>";
+	return langOptionStr;
+}
+
+// #########################setting up the vote setion #################################
+
+
+
+
 
 function showOrVoteScreen(hasVoted){
 // show questions
@@ -89,25 +144,13 @@ function showOrVoteScreen(hasVoted){
 	}
 }
 
-function findObj(n, d) { //v4.0
-	var p,i,x; if(!d) d=document;
-	if((p=n.indexOf("?"))>0&&parent.frames.length) {
-		d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);
-	}
-	if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++)
-		x=d.forms[i][n];
-		for(i=0;!x&&d.layers&&i<d.layers.length;i++)
-			x=findObj(n,d.layers[i].document);
-		if(!x && document.getElementById) x=document.getElementById(n); return x;
-}
-
 
 function createNewInput(){
 	for(var k=1;k<=responseCount;k++){
 		responseArr[k-1] =  findObj("response"+k).value;
 	}
 	responseCount++
-	findObj("dynForm").innerHTML+="Response "+responseCount+"<input type='text'  size='50' maxlength='100' id='response" + responseCount + "'><br>";
+	findObj("dynForm").innerHTML += getLocalizedString('Response')+ " "+responseCount+"<input type='text'  size='50' maxlength='100' id='response" + responseCount + "'><br>";
 	for(k=1;k<responseCount;k++){
   		findObj("response"+k).value = responseArr[k-1];
 	}
@@ -120,36 +163,37 @@ function doValidation(){
 			
 	var q = findObj("questionfield").value;
 	if (q.length < 1){
-		alert("Step one: You have not set a question");
+		alert(getLocalizedString('Step one: You have not set a question'));
 		return;
 	}
 
 	for(var j=1;j<=responseCount;j++){
 		rText =  findObj("response"+j).value;
 		if(rText != ""){
-			responses += "Response "+ j + ":  " + rText;
+			responses += getLocalizedString('Response') + " "+ j + ":  " + rText;
 			responseXML+= answerSeparator + rText;
 			// here we set all the number of votes of these to be zero			
 			validResponseCount++;
 		}
 		else{
-			responses += "Response "+ j + ":  " + "<is empty so wont be added>";
+			responses += getLocalizedString('Response') + " "+ j + ":  " + "<" + getLocalizedString('Response is empty so will not be added') + ">";
 
 		}
 		responses += "\n";
 	}
 
 	if(validResponseCount < 2){
-			alert("Step two: You need at least two responses");
+			alert(getLocalizedString('Step two: You need at least two responses'));
 			return;
 	}
 
-	var answer =  confirm("Are you sure you have finished & want to set the vote?\n\nChoose 'OK' to finish and make the vote available.\nChoose 'Cancel' to carry on editing.\n\n"
-		+ "Question: " + q + "\n" +responses);
+	var confStr = getLocalizedString('Are you sure you have finished and want to set the vote?');
+	confStr += "\n\n" + getLocalizedString('Choose OK to finish and make the vote available');
+	confStr += "\n" + getLocalizedString('Choose Cancel to carry on editing') + "\n";
+	
+	var answer =  confirm(confStr + getLocalizedString('Question') + ": " + q + "\n" +responses);
 
 	if (answer){
-		//submit the form
-		//alert("question:" + q + "\n" + "Answers:" + responseXML);
 		widget.setSharedDataForKey(instanceid_key, "question", q);
 		widget.setSharedDataForKey(instanceid_key, "answers", responseXML);
 		widget.setSharedDataForKey(instanceid_key, "isSet", "true");
@@ -166,15 +210,17 @@ function doValidation(){
 }
 
 function showNotReadyYet(){
-	var notReadytext = "<div id='legendDiv'>This vote instance has not yet been initialised by the teacher.</div>";
+	var notReadytext = "<div id='legendDiv'>" + getLocalizedString('This vote instance has not yet been initialised') + "</div>";
+	notReadytext += "<div id='responseDivFull'></div>";
+	notReadytext += "<div id='submitDiv'><div align=\"left\" id=\"lang_opts\">" + getLangOpts() + "</div></div>";
 	dwr.util.setValue("maincanvas", notReadytext, { escapeHtml:false });
 }
 
 function createQuestions(){
-	var authorVoteText = "<div id='legendDiv'>Setup vote widget</div>";
-	authorVoteText += "<div id='questionDiv'>Step One: Enter the question here:&nbsp;<input type='text' size='50' maxlength='100' id='questionfield'></div>";
-	authorVoteText += "<div id='responseDiv'>Step Two: Create the responses:&nbsp;(click&nbsp;<a href='#' onClick='createNewInput()'>here</a>&nbsp;to add more response fields)<div id='dynForm'></div></div>";
-	authorVoteText += "<div id='submitDiv'>Step Three: Click&nbsp;<a href='#' onClick='doValidation()'>here</a>&nbsp;to check and finish</div>";
+	var authorVoteText = "<div id='legendDiv'>" + getLocalizedString('Setup vote widget') + "</div>";
+	authorVoteText += "<div id='questionDiv'>" + getLocalizedString('Step One: Enter the question here') + ":&nbsp;<input type='text' size='50' maxlength='100' id='questionfield'></div>";
+	authorVoteText += "<div id='responseDiv'>" + getLocalizedString('Step Two: Create the responses') + ":&nbsp;(<a href='#' onClick='createNewInput()'>" + getLocalizedString('Click here to add more response fields') + "</a>)<div id='dynForm'></div></div>";
+	authorVoteText += "<div id='submitDiv'><div align=\"left\" id=\"lang_opts\">" + getLangOpts() + "&nbsp;</div><a href='#' onClick='doValidation()'>" + getLocalizedString('Step Three: Click here to check and finish') + "</a></div>";
 	dwr.util.setValue("maincanvas", authorVoteText, { escapeHtml:false });
 }
 
@@ -202,7 +248,7 @@ function setupVoteDisplayStageThree(pAnswers){
     	}
     }
     answerText += "</form></div>";    
-    var submitText= questionText+ answerText + "<div id='submitDiv'>Click&nbsp;<a href='#' onClick='doVote()'>here</a>&nbsp;to vote</div>";		
+    var submitText= questionText+ answerText + "<div id='submitDiv'><div align=\"left\" id=\"lang_opts\">" + getLangOpts() + "&nbsp;</div><a href='#' onClick='doVote()'>" + getLocalizedString('Click here to vote') + "</a></div>";		
 	dwr.util.setValue("maincanvas", submitText, { escapeHtml:false });
 	var respDiv = dwr.util.byId('responseDiv');
 	respDiv.style.height = "200px"; 
@@ -212,12 +258,12 @@ function doVote(){
 	var respValue = checkradioform();
 	//check that the user has chosen a response
 	if(respValue == -1){
-		alert("Please select a response.");
+		alert(getLocalizedString('Please select a response'));
 		return;
 	}
 	else{
 		// stop user clicking again
-		var submitPressedText = "Click here to vote";
+		var submitPressedText = getLocalizedString('Click here to vote');
 		dwr.util.setValue("submitDiv", submitPressedText, { escapeHtml:false });
 		// update the response count
 		lastVote = respValue;
@@ -255,6 +301,7 @@ function showVoteDisplayStageTwo(pQuestion){
 
 function showVoteDisplayStageThree(pAnswers){
 	answers = pAnswers;
+	var submitDiv = null;
 	var questionText = "<div id='questionDiv'><img border='0' src='/wookie/shared/images/vote.png'>"+question+"</div>";
 	var answerText = "<div id='responseDiv'><form name='responseform'><table border='0'>";	
 	var answerArray = pAnswers.split(answerSeparator);	
@@ -269,8 +316,10 @@ function showVoteDisplayStageThree(pAnswers){
     		answerText += "<td width='70px'><div id='sresponse"+count+"'></div></td></tr>";
     	}
     }
-    answerText += "</table></form></div>";    
-    var endText= questionText+ answerText;		
+    answerText += "</table></form></div>";  
+    submitDiv = "<div id='submitDiv'><div align=\"left\" id=\"lang_opts\">" + getLangOpts() + "&nbsp;</div><a href='#' onClick='showVoteDisplayStageOne()'><img border=\"0\" src=\"/wookie/shared/images/refresh.gif\">&nbsp;" + getLocalizedString('Refresh') + "</a></div>";
+      
+    var endText= questionText+ answerText + submitDiv;		
 	dwr.util.setValue("maincanvas", endText, { escapeHtml:false });
 	
 	for(var k=1;k<=count;k++){		
@@ -284,7 +333,7 @@ function showVoteDisplayStageThree(pAnswers){
 
 
 function getResults(server, index){	
-	var textResults = "<div>&nbsp;("+server+" votes)</div>";
+	var textResults = "<div>&nbsp;("+server+" " + getLocalizedString('votes') + ")</div>";
 	dwr.util.setValue("sresponse"+index, textResults, { escapeHtml:false });
 	var mcallMetaData = { 
   			callback:updatePercentages, 
@@ -311,80 +360,17 @@ function updatePercentages(total, oneResponse){
 	var bar = dwr.util.byId('bar'+temp[1]); 
 	bar.style.width = res+"%";								 
 	var respDiv = dwr.util.byId('responseDiv');
-	respDiv.style.height = "250px"; 
+	//respDiv.style.height = "250px"; 
+	respDiv.style.height = "180px";
 	
 }
 
-function roundNumber(num, dec) {
-	var result = Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
-	return result;
-}
-
-//#############
-
-function checkradioform(){	
-	// Loop from zero to the one minus the number of radio button selections
-	for (counter = 0; counter < document.responseform.answer.length; counter++){
-	// If a radio button has been selected it will return true
-	// (If not it will return false)
-		if (document.responseform.answer[counter].checked){
-			return document.responseform.answer[counter].value;
-		}
-	}	
-	return -1;
-}
-
 //########################################################
-
-
-function isAdminUser(){
-	if (username.indexOf("staff")!=-1){
-		return true;
-	}
-	else if(username.indexOf("teacher")!=-1){
-		return true;
-	}
-	return false;
-}
-
-// on start up set some values & init with the server
-function init() {
-	if(!isActive){
-		// This gets the id_key and assigns it to instanceid_key
-		// This page url will be called with e.g. idkey=4j45j345jl353n5lfg09cw03f05
-		// so grab that key to use as authentication against the server
-		var query = window.location.search.substring(1);
-		var pairs = query.split("&");
-		for (var i=0;i<pairs.length;i++){
-			var pos = pairs[i].indexOf('=');
-			if (pos >= 0){				
-				var argname = pairs[i].substring(0,pos);
-				if(argname=="idkey"){
-					instanceid_key = pairs[i].substring(pos+1);
-					//alert("idkey="+instanceid_key);
-				}
-				if(argname=="proxy"){
-					proxyUrl = pairs[i].substring(pos+1);
-					//alert("proxy="+proxyUrl);
-				}
-				if(argname=="serviceapi"){
-					widgetAPIUrl = pairs[i].substring(pos+1);
-					//alert("serviceapi="+widgetAPIUrl);
-				}				
-			}
-		}	
-		isActive = true;
-		// this line tells DWR to use call backs (i.e. will call onsharedupdate() when an event is recevied for shared data
-	 	dwr.engine.setActiveReverseAjax(true);
-	 	widget.preferenceForKey(instanceid_key, "LDUsername", setLocalUsername);	 	
- 	}
-}
 
 function cleanup() {
 	if(isActive){	
 	}
 }
-
 
 // Note: Not currently used - but it is possible for the server to pass a parameter 
 // back to this method from, for example onsharedupdate().
@@ -405,6 +391,63 @@ if (isDebug) alert("start handle Unlocked");
 		thisUserUnlocked = false;		
 	}	
     if (isDebug) alert("end handle Unlocked"); 
+}
+
+function findObj(n, d) { //v4.0
+	var p,i,x; if(!d) d=document;
+	if((p=n.indexOf("?"))>0&&parent.frames.length) {
+		d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);
+	}
+	if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++)
+		x=d.forms[i][n];
+		for(i=0;!x&&d.layers&&i<d.layers.length;i++)
+			x=findObj(n,d.layers[i].document);
+		if(!x && document.getElementById) x=document.getElementById(n); return x;
+}
+
+function checkradioform(){	
+	// Loop from zero to the one minus the number of radio button selections
+	for (counter = 0; counter < document.responseform.answer.length; counter++){
+	// If a radio button has been selected it will return true
+	// (If not it will return false)
+		if (document.responseform.answer[counter].checked){
+			return document.responseform.answer[counter].value;
+		}
+	}	
+	return -1;
+}
+
+function roundNumber(num, dec) {
+	var result = Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
+	return result;
+}
+
+function genHex(){
+	colors = new Array(14)
+	colors[0]="0"
+	colors[1]="1"
+	colors[2]="2"
+	colors[3]="3"
+	colors[4]="4"
+	colors[5]="5"
+	colors[5]="6"
+	colors[6]="7"
+	colors[7]="8"
+	colors[8]="9"
+	colors[9]="a"
+	colors[10]="b"
+	colors[11]="c"
+	colors[12]="d"
+	colors[13]="e"
+	colors[14]="f"
+
+	digit = new Array(5)
+	color=""
+	for (i=0;i<6;i++){
+		digit[i]=colors[Math.round(Math.random()*14)]
+		color = color+digit[i]
+	}
+	return color;
 }
 
 // handleUpdate is our local implementation of onSharedUpdate
