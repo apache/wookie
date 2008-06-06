@@ -32,6 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +40,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
+import org.tencompetence.widgetservice.beans.WidgetInstance;
+import org.tencompetence.widgetservice.manager.IWidgetAPIManager;
 import org.tencompetence.widgetservice.manager.IWidgetProxyManager;
+import org.tencompetence.widgetservice.manager.impl.WidgetAPIManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetProxyManager;
 
 /**
@@ -52,8 +56,9 @@ import org.tencompetence.widgetservice.manager.impl.WidgetProxyManager;
 public class ProxyServlet extends HttpServlet implements Servlet {
 
 	private static final long serialVersionUID = 1L;
+	public static final String UNAUTHORISED_MESSAGE = "Unauthorised";
 	
-	static Logger _logger = Logger.getLogger(ProxyServlet.class.getName());
+	static Logger fLogger = Logger.getLogger(ProxyServlet.class.getName());
 	
 	public void init(){}
 
@@ -67,61 +72,122 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 		dealWithRequest(request, response, "get");			
 	}
-	
+		
 	private void dealWithRequest(HttpServletRequest request, HttpServletResponse response, String httpMethod){
 		try {
-			PrintWriter out = response.getWriter();		
-			IWidgetProxyManager proxyManager = new WidgetProxyManager();
-
+			PrintWriter out = response.getWriter();	
+			
 			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties");
-			boolean shouldFilter = properties.getBoolean("widget.filter");
-
-			ProxyURLBean bean = new ProxyURLBean(request);		
-			if(bean.isErrorFound()){
-				out.print(bean.getErrorStr());
-				_logger.error("Error parsing url");
-				return;
+			boolean shouldFilter = properties.getBoolean("widget.proxy.usewhitelist");
+			boolean checkDomain =  properties.getBoolean("widget.proxy.checkdomain");
+			
+			if(isValidUser(request, checkDomain)){
+														
+				IWidgetProxyManager proxyManager = new WidgetProxyManager();
+				
+				ProxyURLBean bean = new ProxyURLBean(request);		
+				if(bean.isErrorFound()){
+					out.print(bean.getErrorStr());
+					fLogger.error("Error parsing url");
+					return;
+				}
+				// no errors
+				else{	
+					fLogger.debug("URL to be proxied="+bean.getNewUrl().toExternalForm());
+					boolean cFlag = true;
+					// should we filter urls?
+					if (shouldFilter){
+						// set this to false until found
+						cFlag=false;
+						// check if url is in the white list from DB...
+						if(proxyManager.isAllowed(bean.getNewUrl().toExternalForm())){
+							fLogger.debug("is allowed");
+							cFlag = true;				
+						}
+						// not in white list, so block
+						else{
+							out.print("<error>URL Blocked</error>");
+							fLogger.debug("URL" + bean.getNewUrl().toExternalForm() + "Blocked");
+							return;
+						}
+					}			
+					if(cFlag){
+						String res = "";
+						String proxyUserName = request.getParameter("username");
+						String proxyPassword = request.getParameter("password");
+						ProxyClient proxyclient = new ProxyClient();
+						if(proxyUserName != null){
+							if(proxyPassword != null){								
+								proxyclient.setProxyAuthConfig(proxyUserName, proxyPassword);
+							}
+						}										
+						if(httpMethod.equals("get")){
+							res = proxyclient.get(bean.getNewUrl().toExternalForm(), properties);
+							fLogger.debug("GET called");
+						}
+						else{
+							res = proxyclient.post(bean.getNewUrl().toExternalForm(),"XMLDATA-TODO", properties);
+							fLogger.debug("POST called");
+						}
+						//TODO - find all the links etc & make them absolute - to make request come thru this servlet
+						response.setContentType(proxyclient.getCType());
+						fLogger.error("replay:"+res);
+						out.print(res);
+					}			
+				}
+			
 			}
-			// no errors
-			else{	
-				_logger.debug("URL to be proxied="+bean.getNewUrl().toExternalForm());
-				boolean cFlag = true;
-				// should we filter urls?
-				if (shouldFilter){
-					// set this to false until found
-					cFlag=false;
-					// check if url is in the white list from DB...
-					if(proxyManager.isAllowed(bean.getNewUrl().toExternalForm())){
-						_logger.debug("is allowed");
-						cFlag = true;				
-					}
-					// not in white list, so block
-					else{
-						out.print("<error>URL Blocked</error>");
-						_logger.debug("URL" + bean.getNewUrl().toExternalForm() + "Blocked");
-						return;
-					}
-				}			
-				if(cFlag){
-					String res = "";					
-					ProxyClient p = new ProxyClient();
-					if(httpMethod.equals("get")){
-						res = p.get(bean.getNewUrl().toExternalForm());
-						_logger.debug("GET called");
-					}
-					else{
-						res = p.post("TODO", bean.getNewUrl().toExternalForm());
-						_logger.debug("POST called");
-					}
-					//TODO - find all the links etc & make them absolute - to make request come thru this servlet
-					response.setContentType(p.ctype);
-					out.print(res);
-				}			
+			else{
+				// unauthorised or different domain request
+				out.print("<error>"+UNAUTHORISED_MESSAGE+"</error>");
 			}
+			
 		}
-		catch (Exception e) {
-			_logger.error(e.getMessage());	
+		catch (Exception ex) {
+			try {
+				PrintWriter out = response.getWriter();	
+				fLogger.error(ex.getMessage());
+				out.print("<error>"+ex.getMessage()+"</error>");
+			} 
+			catch (IOException e) {
+				// give up!
+				fLogger.error(ex.getMessage());			}
 		}
+	}
+	
+	
+	private boolean isValidUser(HttpServletRequest request, boolean checkDomain){
+		if(isSameDomain(request, checkDomain) && isValidWidgetInstance(request)){
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean isSameDomain(HttpServletRequest request, boolean checkDomain){
+		if(!checkDomain) return true;
+		String remoteHost = request.getRemoteHost();
+		String serverHost = request.getServerName();
+		fLogger.debug("remote host:"+remoteHost);
+		fLogger.debug("server host:"+ serverHost);
+		if(remoteHost.equals(serverHost)){
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean isValidWidgetInstance(HttpServletRequest request){
+		String instanceId = request.getParameter("instanceid_key");
+		if(instanceId == null) return false;
+		IWidgetAPIManager manager = new WidgetAPIManager();
+		// check if instance is valid
+		WidgetInstance widgetInstance = manager.checkUserKey(instanceId);			
+		if(widgetInstance!=null){
+			return true;
+		}
+		else{
+			return false;
+		}
+		
 	}
 	
 	/**
@@ -131,10 +197,10 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 	 */
 	private class ProxyURLBean {	
 		
-		private URL _originatingUrl = null;
-		private URL _newUrl;
-		private String _errorStr;
-		private boolean _errorFound = false;
+		private URL fOriginatingUrl = null;
+		private URL fNewUrl;
+		private String fErrorStr;
+		private boolean fErrorFound = false;
 				
 		public ProxyURLBean(HttpServletRequest request){			
 			doParse(request);
@@ -151,8 +217,8 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			}
 			// the request didn't contain any params
 			else{	
-				_errorFound = true;
-				_errorStr = "<error>Unable to obtain url from args</error>";
+				fErrorFound = true;
+				fErrorStr = "<error>Unable to obtain url from args</error>";
 				return;
 			}
 			
@@ -161,44 +227,46 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 				proxiedEndPointURL = new URL(request.getScheme() ,
 							request.getServerName() ,
 							request.getServerPort() , file);
-				_originatingUrl = proxiedEndPointURL;
+				fOriginatingUrl = proxiedEndPointURL;
 			} 
 			catch (MalformedURLException ex) {
-				_errorFound = true;
-				_errorStr = "<error>URL error on proxy. " + ex.getMessage() + "</error>";
+				fErrorFound = true;
+				fErrorStr = "<error>URL error on proxy. " + ex.getMessage() + "</error>";
 				return;
 			}	
 												
-			// find where the url parameter is
-			int idx = proxiedEndPointURL.toString().indexOf("?url=");
+			// find where the url parameter is ..
+			int idx = proxiedEndPointURL.toString().indexOf("url=");
 			if(idx>-1){
 			  // reconstruct the path to be proxied by removing the reference to this servlet
-				endPointURL=proxiedEndPointURL.toString().substring(idx+5,proxiedEndPointURL.toString().length());
+				endPointURL=proxiedEndPointURL.toString().substring(idx+4,proxiedEndPointURL.toString().length());
 			}												
 			try {
-				
-				_newUrl = new URL(endPointURL);
+				fNewUrl = new URL(endPointURL);
 			} 
 			catch (Exception ex) {
-				_errorFound = true;
-				_errorStr = "<error>URL error on request. " + ex.getMessage() + "</error>";	
+				fErrorFound = true;
+				fErrorStr = "<error>URL error on request. " + ex.getMessage() + "</error>";					
 			}
 		}
 
 		public URL getOriginatingUrl() {
-			return _originatingUrl;
+			return fOriginatingUrl;
 		}
 
 		public URL getNewUrl() {
-			return _newUrl;
+			
+			return fNewUrl;
 		}
 
 		public String getErrorStr() {
-			return _errorStr;
+			return fErrorStr;
 		}
 
 		public boolean isErrorFound() {
-			return _errorFound;
+			fLogger.error("orig:"+fOriginatingUrl);
+			fLogger.error("new:"+fNewUrl);
+			return fErrorFound;
 		}
 		
 	}
