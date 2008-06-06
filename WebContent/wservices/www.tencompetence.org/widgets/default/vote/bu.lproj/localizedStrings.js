@@ -30,7 +30,7 @@ bu_localizedStrings["Choose OK to finish and make the vote available"]
 = "Моля, изберете  OK за край и за активиране на гласуването ";
 
 bu_localizedStrings["Choose Cancel to carry on editing"] 
-= "Изберете "Откажи", за да редактирате гласуването";
+= "Изберете \"Откажи\", за да редактирате гласуването";
 
 bu_localizedStrings["This vote instance has not yet been initialised"] 
 = "Темата за гласуване още не е достъпна";
