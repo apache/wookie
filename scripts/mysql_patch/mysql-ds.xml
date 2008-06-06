@@ -7,6 +7,7 @@
 <!-- ===================================================================== -->
 
 <datasources>
+<!--
 	<local-tx-datasource>
 	      <jndi-name>jdbc/widgetdb</jndi-name>
 	      <connection-url>jdbc:mysql://localhost:3306/widgetdb?useUnicode=true&amp;characterEncoding=UTF-8</connection-url>
@@ -15,8 +16,9 @@
 	      <password>java</password>  
 	      <metadata>    
 	          <type-mapping>mySQL</type-mapping>      
-		</metadata>
+		</metadata>		
   	</local-tx-datasource>
+  	-->
 	<local-tx-datasource>
 		<jndi-name>Publication</jndi-name>
 		<connection-url>jdbc:mysql://localhost:3306/ld_publication</connection-url>
