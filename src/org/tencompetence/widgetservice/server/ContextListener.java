@@ -34,12 +34,13 @@ import org.apache.log4j.Logger;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.tencompetence.widgetservice.util.hibernate.HibernateUtil;
 /**
  * ContextListener - does some init work and makes certain things are available 
  * to resources under this context
  * 
  * @author Paul Sharples
- * @version $Id: ContextListener.java,v 1.2 2007-10-17 23:11:10 ps3com Exp $ 
+ * @version $Id: ContextListener.java,v 1.3 2008-06-06 10:50:39 ps3com Exp $ 
  *
  */
 public class ContextListener implements ServletContextListener {
@@ -53,6 +54,8 @@ public class ContextListener implements ServletContextListener {
 	static Logger _logger = Logger.getLogger(ContextListener.class.getName());
 	
 	public void contextInitialized(ServletContextEvent event) {
+		// start hibernate now, not on first request
+		HibernateUtil.getSessionFactory();
 		try {
 			ServletContext context = event.getServletContext();
 			/* 
@@ -67,5 +70,7 @@ public class ContextListener implements ServletContextListener {
 		}					
 	}
 
-	public void contextDestroyed(ServletContextEvent event){}
+	public void contextDestroyed(ServletContextEvent event){
+		HibernateUtil.getSessionFactory().close(); // Free all resources
+	}
 }
