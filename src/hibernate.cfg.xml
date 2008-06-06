@@ -4,14 +4,9 @@
         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 
 <hibernate-configuration>
-
     <session-factory>
-
         <!-- Database connection settings -->                             
         <property name="connection.datasource"><![CDATA[java:comp/env/jdbc/widgetdb]]></property>
-
-        <!-- JDBC connection pool (use the built-in) -->
-        <property name="connection.pool_size">1</property>
 
         <!-- SQL dialect -->
         <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
