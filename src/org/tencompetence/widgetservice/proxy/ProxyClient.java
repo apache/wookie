@@ -28,7 +28,6 @@ package org.tencompetence.widgetservice.proxy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -36,10 +35,8 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
@@ -50,14 +47,13 @@ import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
 /**
  * A class using HttpClient to handle HTTP requests & manipulate the responses
  *
  * @author Paul Sharples
- * @version $Id: ProxyClient.java,v 1.5 2008-06-06 10:48:11 ps3com Exp $
+ * @version $Id: ProxyClient.java,v 1.6 2008-06-20 14:12:15 ps3com Exp $
  */
 public class ProxyClient {
 	
@@ -93,7 +89,7 @@ public class ProxyClient {
 			// Prepare HTTP post
 			PostMethod post = new PostMethod(uri);
 			System.out.println("POST to " + uri); //$NON-NLS-1$
-			System.out.println(xmlData);
+			//System.out.println(xmlData);
 
 			return sendXmlData(xmlData, post, properties);
 		}
@@ -136,18 +132,16 @@ public class ProxyClient {
 				
 				// Add user language to http request in order to notify server of user's language
 				Locale locale = Locale.getDefault();
-				;
+				
 				method.setRequestHeader("Accept-Language", locale.getLanguage()); //$NON-NLS-1$ 
 				
 				int statusCode = client.executeMethod(method);
 
 				if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
 					
-					Header hType = method.getResponseHeader("Content-type");
-					fLogger.error("7");
+					Header hType = method.getResponseHeader("Content-type");					
 					fContentType = hType.getValue();
-					// for now we are only expecting Strings
-					fLogger.error("proxy::"+method.getResponseBodyAsString());
+					// for now we are only expecting Strings					
 					return method.getResponseBodyAsString();
 					//return readFully(new InputStreamReader(method.getResponseBodyAsStream(), "UTF-8"));
 				}

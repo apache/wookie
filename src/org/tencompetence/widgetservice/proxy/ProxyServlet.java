@@ -32,7 +32,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -130,8 +129,7 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 							fLogger.debug("POST called");
 						}
 						//TODO - find all the links etc & make them absolute - to make request come thru this servlet
-						response.setContentType(proxyclient.getCType());
-						fLogger.error("replay:"+res);
+						response.setContentType(proxyclient.getCType());						
 						out.print(res);
 					}			
 				}
@@ -264,8 +262,8 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 		}
 
 		public boolean isErrorFound() {
-			fLogger.error("orig:"+fOriginatingUrl);
-			fLogger.error("new:"+fNewUrl);
+			fLogger.debug("orig:"+fOriginatingUrl);
+			fLogger.debug("new:"+fNewUrl);
 			return fErrorFound;
 		}
 		
