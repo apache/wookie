@@ -13,6 +13,8 @@
       <include method="lock"/>
       <include method="unlock"/>
       <include method="system"/>
+      <include method="hide"/>
+      <include method="show"/>
       <include method="openURL"/>
     </create>
     
