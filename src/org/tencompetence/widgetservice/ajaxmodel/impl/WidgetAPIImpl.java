@@ -281,10 +281,10 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		return "";
 	}
 
-	// TODO this is what the admin or moderator does
-	// need to identify who the admin person is from the UOL
-	// and somehow get it from the widget.. (CopperCore does not have this info at present)
-
+	/*
+	 * (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#lock(java.lang.String)
+	 */
 	public String lock(String id_key) {
 		IWidgetAPIManager manager = new WidgetAPIManager();
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
@@ -319,7 +319,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 		if(widgetInstance!=null){
 			String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();
-			_logger.debug("unlock caled by " + widgetInstance.getUserId());
+			_logger.debug("unlock called by " + widgetInstance.getUserId());
 			manager.unlockWidgetInstance(widgetInstance);	
 			WebContext wctx = WebContextFactory.get();
 	        String currentPage = wctx.getCurrentPage();
@@ -337,7 +337,47 @@ public class WidgetAPIImpl implements IWidgetAPI {
 			return UNAUTHORISED_MESSAGE;
 		}	
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#hide(java.lang.String)
+	 */
+	public String hide(String id_key){
+		IWidgetAPIManager manager = new WidgetAPIManager();
+		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+		if(widgetInstance!=null){
+			WebContext wctx = WebContextFactory.get();
+	        ScriptBuffer script = new ScriptBuffer();      
+	        script.appendScript("window.onHide(")	        	
+	        .appendScript(");");       
+	        wctx.getScriptSession().addScript(script);
+	        return "";
+		}
+		else{
+			return UNAUTHORISED_MESSAGE;
+		}	
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#show(java.lang.String)
+	 */
+	public String show(String id_key){
+		IWidgetAPIManager manager = new WidgetAPIManager();
+		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+		if(widgetInstance!=null){
+			WebContext wctx = WebContextFactory.get();
+	        ScriptBuffer script = new ScriptBuffer();      
+	        script.appendScript("window.onShow(")	        	
+	        .appendScript(");");       
+	        wctx.getScriptSession().addScript(script);
+	        return "";
+		}
+		else{
+			return UNAUTHORISED_MESSAGE;
+		}	
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#contextPropertyForKey(java.lang.String, java.lang.String)

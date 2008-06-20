@@ -26,13 +26,15 @@
  */
 package org.tencompetence.widgetservice.ajaxmodel;
 
+
 /**
  * Definition of the widget API.  
  * @author Paul Sharples
- * @version $Id
+ * @version $Id: IWidgetAPI.java,v 1.4 2008-06-20 11:06:09 ps3com Exp $
  *
  */
 public interface IWidgetAPI {	
+	
 	public String preferenceForKey(String id_key, String key);
 	
 	/**
@@ -55,4 +57,6 @@ public interface IWidgetAPI {
 	public String unlock(String id_key);
 	public String openURL(String url);	
 	public String system(String idkey, String arg1, String arg2);
+	public String hide(String id_key);
+	public String show(String id_key);
 }
