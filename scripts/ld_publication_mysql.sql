@@ -2,170 +2,108 @@ drop database if exists ld_publication;
 create database if not exists ld_publication DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 use ld_publication;
 
-create table scodata(scokey varchar(128) NOT NULL,
+create table scodata(scokey varchar(250) NOT NULL,
 	xmldoc longtext,
 	PRIMARY KEY  (`scokey`)
 )
 ;
 
-
 create table event (
-	pk serial not null,
+	pk INTEGER auto_increment not null,
 	uolid int not null ,
 	triggerid varchar (256) null,
 	type varchar (32) not null,
 	classname varchar (32) not null,
-	componentid varchar (256) not null
+	componentid varchar (256) not null,
+	PRIMARY KEY  (`pk`)
 )
 ;
 
 
 
 create table propertydefinition (
-	pk serial not null ,
+	pk INTEGER auto_increment not null ,
 	datatype varchar (32)  not null ,
 	scope int not null ,
 	href varchar (512)  null ,
-	defaultvalue longtext  null ,
-	definedby int not null
+	defaultvalue text  null ,
+	definedby int not null ,
+	PRIMARY KEY  (`pk`)
 )
 ;
 
 
 create table propertylookup (
-	uolid int not null ,
+	uolid INTEGER not null ,
 	propid varchar (250)  not null ,
-	propdefforeignpk bigint unsigned not null
-) 
+	propdefforeignpk INTEGER not null ,
+	PRIMARY KEY  (`uolid`,`propid`),
+ CONSTRAINT `FKC5E6A8DB4215462E` FOREIGN KEY (`propdefforeignpk`) REFERENCES `propertydefinition` (`pk`)
+)
 ;
+
 
 create table propertyvalue (
-	pk serial not null ,
-	propdefforeignpk bigint unsigned not null ,
+	pk INTEGER auto_increment not null ,
+	propdefforeignpk int not null ,
 	userid varchar (64)  null ,
 	runid int null ,
-	propvalue longtext  null
+	propvalue text  null ,
+	PRIMARY KEY  (`pk`)
 )
 ;
 
+
 create table roleinstance (
-	roleinstanceid serial not null ,
+	roleinstanceid INTEGER auto_increment not null ,
 	roleid varchar (256)  not null ,
-	runid bigint unsigned not null
+	runid int not null ,
+	PRIMARY KEY  (`roleinstanceid`)
 )
 ;
+
 
 create table roleparticipation (
 	userid varchar (64)  not null ,
-	roleinstanceid bigint unsigned not null
+	roleinstanceid int not null ,
+	PRIMARY KEY  (`userid`,`roleinstanceid`)
 ) 
 ;
 
 
 create table run (
-	runid serial not null ,
-	uolid bigint unsigned not null ,
+	runid INTEGER auto_increment not null ,
+	uolid int not null ,
 	name varchar (1024)  null ,
-	starttime timestamp not null 
+	starttime timestamp not null ,
+	PRIMARY KEY  (`runid`)
 ) 
 ;
 
 create table runparticipation (
 	userid varchar (64)  not null ,
-	runid bigint unsigned not null ,
-	activerole int null
+	runid int not null ,
+	activerole int null ,
+	PRIMARY KEY  (`userid`,`runid`)
 ) 
 ;
 
 create table unitoflearning (
-	id serial not null ,
+	id INTEGER auto_increment not null ,
 	uri varchar (512)  not null ,
 	title varchar (1024)  null ,
 	rolesid varchar (256)  null ,
-	contenturi varchar (256)  null 
+	contenturi varchar (256)  null ,
+	PRIMARY KEY  (`id`)
 ) 
 ;
 
 create table lduser (
-	userid varchar (64)  not null
+	userid varchar (64)  not null ,
+	PRIMARY KEY  (`userid`)
 ) 
 ;
 
-
-
-alter table event add
-	constraint pk_event primary key
-	(
-		pk
-	)  
-;
-
-alter table propertydefinition  add
-	constraint pk__propertydefinition primary key   
-	(
-		pk
-	);
-
-
-alter table propertylookup  add
-	constraint pk__propertylookup primary key   
-	(
-		uolid,
-		propid
-	) 
-;
-
-alter table propertyvalue  add
-	constraint pk_propertyvalue primary key   
-	(
-		pk
-	) 
-;
-
-alter table roleinstance  add
-	constraint pk_roleinstance primary key   
-	(
-		roleinstanceid
-	) 
-;
-
-alter table roleparticipation  add
-	constraint pk_roleparticipation primary key   
-	(
-		userid,
-		roleinstanceid
-	)
-;
-
-
-alter table run  add
-	constraint pk_run primary key
-	(
-	  runid
-	) 
-;
-
-alter table runparticipation  add
-	constraint pk_runparticipation primary key
-	(
-		userid,
-		runid
-	) 
-;
-
-alter table unitoflearning  add
-	constraint pk_unitoflearning primary key   
-	(
-		id
-	) 
-;
-
-alter table lduser  add
-	constraint pk_users primary key
-	(
-		userid
-	) 
-;
 
 create  index ix_event_uolid on event(uolid)
 ;
@@ -222,6 +160,14 @@ create  index ix_runparticipation_userid on runparticipation(userid)
 ;
 
 
+alter table propertylookup add
+	constraint fk__propertylookup__propertydefinition foreign key
+	(
+		propdefforeignpk
+	) references propertydefinition (
+		pk
+	) on delete cascade
+;
 
 alter table propertyvalue add
 	constraint fk__propertyvalue__propertydefinition foreign key
@@ -229,7 +175,7 @@ alter table propertyvalue add
 		propdefforeignpk
 	) references propertydefinition (
 		pk
-	) on delete cascade
+	) on delete cascade 
 ;
 
 alter table roleinstance add
