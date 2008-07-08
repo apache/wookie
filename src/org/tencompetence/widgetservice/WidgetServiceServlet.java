@@ -48,7 +48,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.4 2008-05-13 13:52:48 ps3com Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.5 2008-07-08 12:56:46 ps3com Exp $ 
  *
  */
  public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -87,8 +87,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		}
 		else if(requestId.equals("setpublicproperty")){
 			doSetProperty(request, response, false);
-		}
-		
+		}		
 		else if(requestId.equals("setpersonalproperty")){
 			doSetProperty(request, response, true );
 		}
@@ -103,9 +102,15 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		String envId = request.getParameter("environmentid");
 		String serviceId = request.getParameter("serviceid");
 		String serviceType= request.getParameter("servicetype");
-		_logger.error("*** stop widget called ****");
-		_logger.error("*** "+ userId + " ****");
-		_logger.error("***************************");
+		
+		IWidgetServiceManager wsm = new WidgetServiceManager();	
+		WidgetInstance widgetInstance = wsm.getwidgetInstance(userId, runId, envId, serviceId, serviceType);		
+		if(widgetInstance!=null){
+			wsm.lockWidgetInstance(widgetInstance);
+		}
+		_logger.debug("*** stop widget called ****");
+		_logger.debug("*** "+ userId + " ****");
+		_logger.debug("***************************");
 	}
 	
 	private void doResumeWidget(HttpServletRequest request, HttpServletResponse response){
@@ -114,9 +119,14 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		String envId = request.getParameter("environmentid");
 		String serviceId = request.getParameter("serviceid");
 		String serviceType= request.getParameter("servicetype");
-		_logger.error("*** resume widget called ****");
-		_logger.error("*** "+ userId + " ****");
-		_logger.error("***************************");
+		IWidgetServiceManager wsm = new WidgetServiceManager();	
+		WidgetInstance widgetInstance = wsm.getwidgetInstance(userId, runId, envId, serviceId, serviceType);		
+		if(widgetInstance!=null){
+			wsm.unlockWidgetInstance(widgetInstance);
+		}
+		_logger.debug("*** resume widget called ****");
+		_logger.debug("*** "+ userId + " ****");
+		_logger.debug("***************************");
 	}
 	
 	/**
@@ -147,9 +157,8 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 					wsm.updateSharedDataEntry(instance, propertyName, propertyValue, false);
 				}
 			} 
-			catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			catch (Exception ex) {
+				_logger.error("error on doSetProperty", ex);
 			}
 		}
 	}
