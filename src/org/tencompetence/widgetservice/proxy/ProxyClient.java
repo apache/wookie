@@ -53,7 +53,7 @@ import org.apache.log4j.Logger;
  * A class using HttpClient to handle HTTP requests & manipulate the responses
  *
  * @author Paul Sharples
- * @version $Id: ProxyClient.java,v 1.6 2008-06-20 14:12:15 ps3com Exp $
+ * @version $Id: ProxyClient.java,v 1.7 2008-07-08 14:39:52 ps3com Exp $
  */
 public class ProxyClient {
 	
@@ -80,31 +80,31 @@ public class ProxyClient {
 		fContentType = cType;
 	}
 	
-		public String get(String url, Configuration properties) throws Exception {
-			System.out.println("GET from " + url); //$NON-NLS-1$
-			return fetchData(new GetMethod(url), properties);
-		}
+	public String get(String url, Configuration properties) throws Exception {
+		fLogger.debug("GET from " + url); //$NON-NLS-1$
+		return fetchData(new GetMethod(url), properties);
+	}
 	    
-	    public String post(String uri, String xmlData, Configuration properties) throws Exception {
-			// Prepare HTTP post
-			PostMethod post = new PostMethod(uri);
-			System.out.println("POST to " + uri); //$NON-NLS-1$
-			//System.out.println(xmlData);
+	public String post(String uri, String xmlData, Configuration properties) throws Exception {
+		// Prepare HTTP post
+		PostMethod post = new PostMethod(uri);
+		fLogger.debug("POST to " + uri); //$NON-NLS-1$
+		//System.out.println(xmlData);
 
-			return sendXmlData(xmlData, post, properties);
+		return sendXmlData(xmlData, post, properties);
+	}
+
+	private String sendXmlData(String xmlData, EntityEnclosingMethod method, Configuration properties) throws Exception {
+		// Tell the method to automatically handle authentication.
+		method.setDoAuthentication(true);
+		try {
+			method.setRequestEntity(new StringRequestEntity(xmlData, "text/xml", "UTF8"));//$NON-NLS-1$  //$NON-NLS-2$
 		}
-	    
-	    private String sendXmlData(String xmlData, EntityEnclosingMethod method, Configuration properties) throws Exception {
-			// Tell the method to automatically handle authentication.
-			method.setDoAuthentication(true);
-				try {
-					method.setRequestEntity(new StringRequestEntity(xmlData, "text/xml", "UTF8"));//$NON-NLS-1$  //$NON-NLS-2$
-				}
-				catch (UnsupportedEncodingException e) {
-					throw new Exception(e);
-				}
-			return executeMethod(method, properties);
+		catch (UnsupportedEncodingException e) {
+			throw new Exception(e);
 		}
+		return executeMethod(method, properties);
+	}
 		
 	    
 	    private String executeMethod(HttpMethod method, Configuration properties) throws Exception {
