@@ -48,7 +48,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.5 2008-07-08 12:56:46 ps3com Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.6 2008-07-23 14:16:04 ps3com Exp $ 
  *
  */
  public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -74,29 +74,35 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestId = request.getParameter("requestid");
-		if(requestId.equals("getwidget")){
-			doGetWidget(request, response);
-		}
-		else if(requestId.equals("stopwidget")){
-			doStopWidget(request, response);
-		}
-		else if(requestId.equals("resumewidget")){
-			doResumeWidget(request, response);
-		}
-		else if(requestId.equals("setpublicproperty")){
-			doSetProperty(request, response, false);
-		}		
-		else if(requestId.equals("setpersonalproperty")){
-			doSetProperty(request, response, true );
-		}
-		else {
-			returnErrorDoc("No valid requestid was found.");
+	protected void doGet(HttpServletRequest request, HttpServletResponse response){
+		try {
+			String requestId = request.getParameter("requestid");
+			if(requestId.equals("getwidget")){
+				doGetWidget(request, response);
+			}
+			else if(requestId.equals("stopwidget")){
+				doStopWidget(request, response);
+			}
+			else if(requestId.equals("resumewidget")){
+				doResumeWidget(request, response);
+			}
+			else if(requestId.equals("setpublicproperty")){
+				doSetProperty(request, response, false);
+			}		
+			else if(requestId.equals("setpersonalproperty")){
+				doSetProperty(request, response, true );
+			}
+			else {
+				returnDoc(response, "No valid requestid was found.", "error");
+			}
+		
+		} 
+		catch (Exception ex) {					
+			_logger.error("Error in doGet():", ex);
 		}
 	}
 	
-	private void doStopWidget(HttpServletRequest request, HttpServletResponse response){
+	private void doStopWidget(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		String userId = request.getParameter("userid");
 		String runId = request.getParameter("runid");
 		String envId = request.getParameter("environmentid");
@@ -107,13 +113,17 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		WidgetInstance widgetInstance = wsm.getwidgetInstance(userId, runId, envId, serviceId, serviceType);		
 		if(widgetInstance!=null){
 			wsm.lockWidgetInstance(widgetInstance);
+			returnDoc(response,"completed", "message");
+		}
+		else{
+			returnDoc(response,"Widget instance does not exist", "error");
 		}
 		_logger.debug("*** stop widget called ****");
 		_logger.debug("*** "+ userId + " ****");
 		_logger.debug("***************************");
 	}
 	
-	private void doResumeWidget(HttpServletRequest request, HttpServletResponse response){
+	private void doResumeWidget(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		String userId = request.getParameter("userid");
 		String runId = request.getParameter("runid");
 		String envId = request.getParameter("environmentid");
@@ -123,6 +133,10 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		WidgetInstance widgetInstance = wsm.getwidgetInstance(userId, runId, envId, serviceId, serviceType);		
 		if(widgetInstance!=null){
 			wsm.unlockWidgetInstance(widgetInstance);
+			returnDoc(response,"completed", "message");
+		}
+		else{
+			returnDoc(response,"Widget instance does not exist", "error");
 		}
 		_logger.debug("*** resume widget called ****");
 		_logger.debug("*** "+ userId + " ****");
@@ -155,11 +169,16 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 				}
 				else{
 					wsm.updateSharedDataEntry(instance, propertyName, propertyValue, false);
-				}
+				}				
+				returnDoc(response,"completed", "message");							
 			} 
-			catch (Exception ex) {
+			catch (Exception ex) {			
+				returnDoc(response,"could not set property for " + propertyName, "error");			
 				_logger.error("error on doSetProperty", ex);
 			}
+		}
+		else{
+			returnDoc(response,"Widget instance does not exist", "error");
 		}
 	}
 		
@@ -177,9 +196,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		} 
 		catch (InvalidWidgetCallException ex) {
 			_logger.debug("InvalidWidgetCallException:"+ex.getMessage());				
-			response.setContentType(CONTENT_TYPE);
-			PrintWriter out = response.getWriter();
-			out.println(returnErrorDoc(ex.getMessage()));
+			returnDoc(response,ex.getMessage(), "error");
 			return;
 		}
 		
@@ -237,16 +254,13 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 				} 
 				catch (WidgetTypeNotSupportedException e) {	
 					_logger.debug("WidgetTypeNotSupportedException:"+ex.getMessage());				
-					response.setContentType(CONTENT_TYPE);
-					PrintWriter out = response.getWriter();
-					out.println(returnErrorDoc(ex.getMessage()));
+					returnDoc(response,ex.getMessage(), "error");
 				}												
 			}
 			catch (SystemUnavailableException ex) {
 				_logger.debug("System Unavailable:"+ex.getMessage());				
-				response.setContentType(CONTENT_TYPE);
-				PrintWriter out = response.getWriter();				
-				out.println(returnErrorDoc(ex.getMessage()));
+								
+				returnDoc(response, ex.getMessage(), "error");
 			}
 		}
 	}  	
@@ -272,15 +286,23 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		out.println("</widgetdata>");
 	}
 	
-	private String returnErrorDoc(String message){
+	
+	
+	private void returnDoc(HttpServletResponse response, String message, String tagName) throws IOException {
+		//_logger.error("returnDoc called: "+ message + tagName);
 		StringBuffer envelope = new StringBuffer();	
+		response.setContentType(CONTENT_TYPE);
+		PrintWriter out = response.getWriter();
 		envelope.append(XMLDECLARATION);					
-		envelope.append("<error>");
+		envelope.append("<"+tagName+">");
 		envelope.append(message);
-		envelope.append("</error>");
-		_logger.debug("Call to getWidget failed:" + message);
-		return envelope.toString();
+		envelope.append("</"+tagName+">");
+		//_logger.debug("Call to getWidget failed:" + message);		
+		out.println(envelope.toString());
+		//out.flush();
 	}	
+	
+	
 	
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
