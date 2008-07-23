@@ -14,10 +14,11 @@ var currentPost=null;
 var isLocked = false;
 var sharedDataKey = null;
 var isAdmin = false;
-
+var isdActive=false;
 
 // on start up set some values & init with the server
 function init() {
+if (isDebug) debug("<function init start>");
 		// This gets the id_key and assigns it to instanceid_key
 		// This page url will be called with e.g. idkey=4j45j345jl353n5lfg09cw03f05
 		// so grab that key to use as authentication against the server
@@ -41,6 +42,7 @@ function init() {
 		// this line tells DWR to use call backs (i.e. will call onsharedupdate() when an event is recevied for shared data
 		// below - commented out - is this needed when there is no need to poll the server?
 	 	dwr.engine.setActiveReverseAjax(true);	 		
+	 	if (isDebug) debug("<function init start 2>");
 	 	widget.preferenceForKey(instanceid_key, "LDUsername", setLocalUsername);	 	
 		
 }
@@ -51,26 +53,31 @@ function isAdminUser(){
 
 // set the local username
 function setLocalUsername(p){
+	if (isDebug) debug("<function setLocalUsername start>| param="+p);
 	username = p;	 
 	widget.preferenceForKey(instanceid_key, "conference-manager", getConferenceManagerRole);
 }
 
 function getConferenceManagerRole(p){
+	if (isDebug) debug("<function setConferenceManagerRole start>| param="+p);
 	if(p == "true") isAdmin = true;
 	widget.preferenceForKey(instanceid_key, "moderator", getModeratorRole);
 }
 
 function getModeratorRole(p){	
+	if (isDebug) debug("<function setModeratorRole start>| param="+p);
 	if(p == "true") isAdmin = true;
 	widget.preferenceForKey(instanceid_key, "sharedDataKey", initSharedKey);
 }
 
 function initSharedKey(sharedKey){
+	if (isDebug) debug("<function initsharedkey start>| param="+sharedKey);
 	sharedDataKey = sharedKey;
 	widget.sharedDataForKey(instanceid_key, "isLocked", setupInput);
 }
 
 function setupInput(isLockedValue){
+	if (isDebug) debug("<function setupinput start>| param="+isLockedValue);
 	if(isLockedValue!="true"){		
 		handleUnlocked(sharedDataKey); 
 	}
@@ -307,7 +314,7 @@ function formatDate(d){
 
 function handleLocked(sdkey){
  if(sdkey == sharedDataKey){
-	isActive = false;	
+	isdActive = false;	
 	var resStr = getInactiveToolsStr();	
     dwr.util.setValue("foot", resStr, { escapeHtml:false });    
     isLocked = true;
@@ -317,25 +324,25 @@ function handleLocked(sdkey){
 
 function handleUnlocked(sdkey){	
  if(sdkey == sharedDataKey){
-	if (isDebug) alert("start handle Unlocked");
-	isActive = true;
+	if (isDebug) debug("<start handle unlocked> ");
+	isdActive = true;
 	isLocked = false;
 	var resStr = getActiveToolsStr();
 	dwr.util.setValue("foot", resStr, { escapeHtml:false }); 
 	forum.getNodeTree(instanceid_key, getTreeData); 
-    if (isDebug) alert("end handle Unlocked");
+    if (isDebug) debug("<end handle unlocked> ");
   } 
 }
 
 function lockforum(){
-	if(isActive){	
-		isActive = false;		
+	if(isdActive){	
+		isdActive = false;		
 	}
 	widget.lock(instanceid_key);
 }
 
 function unlockforum(){
-	isActive = true;	
+	isdActive = true;	
 	widget.unlock(instanceid_key);	
 }
 

@@ -26,13 +26,8 @@
  */
 package org.tencompetence.widgetservice.ajaxmodel.impl;
 
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.Collection;
 import java.util.Iterator;
-
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.directwebremoting.ScriptBuffer;
@@ -41,7 +36,6 @@ import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI;
 import org.tencompetence.widgetservice.beans.Preference;
-import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.manager.IWidgetAPIManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetAPIManager;
@@ -70,6 +64,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public static final String LOCKED_MESSAGE = "Widget Instance is locked by another user";
 	
 	static Logger _logger = Logger.getLogger(WidgetAPIImpl.class.getName());
+	
+
 	
 	public WidgetAPIImpl(){}
 
@@ -110,8 +106,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		} 
 		catch (Exception ex) {			
 			_logger.error("Error getting preferences", ex);
-		}
-		//_logger.error("\npreferenceText:"+preferenceText+"\n");
+		}		
 		return preferenceText;	
 	}
 
@@ -144,7 +139,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		catch (Exception ex) {
 			_logger.error("Error getting shared data", ex);
 		}
-		//_logger.error("\n*getshareddata********\n"+sharedDataValue+"\n*********\n");
+		//_logger.error("*getshareddata:"+key+"\t********\n"+sharedDataValue+"\n*********\n");
+		//TODO
 		return sharedDataValue;
 	}
 	
@@ -160,7 +156,6 @@ public class WidgetAPIImpl implements IWidgetAPI {
 			if(widgetInstance!=null){
 				manager.updatePreference(widgetInstance, key, value);
 				_logger.debug("setpreferenceForKey set " + key + "  to  " + value);
-				
 			}
 			else{
 				return UNAUTHORISED_MESSAGE;
@@ -183,7 +178,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	@SuppressWarnings("unchecked")
 	public String setSharedDataForKey(String id_key, String key, String value) {		
 		try {
-			//_logger.debug("setSharedDataForKey: "+ id_key+ "\tkey:" + key + "\tvalue:" + value);
+			//_logger.error("setSharedDataForKey: "+ id_key+ "\tkey:" + key + "\tvalue:" + value);
+			//TODO
 			IWidgetAPIManager manager = new WidgetAPIManager();
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
@@ -216,7 +212,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		catch (Exception ex) {
 			_logger.error("setSharedDataForKey failed", ex);
 		}
-		return "";
+		return "okay";
 	}
 
 	/**
@@ -228,27 +224,14 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	 * @return - a string value marking status or an error message
 	 */
 	public String appendSharedDataForKey(String id_key, String key, String value) {
-		try {
-			/*
-			WebContextFactory.get().getHttpServletRequest().setCharacterEncoding("UTF-8");
-			HttpServletResponse res = WebContextFactory.get().getHttpServletResponse();
-			res.setContentType("text/plain; charset=UTF-8");
-			Writer out = res.getWriter();
-			_logger.debug("***@@@@@");
-			
-			out.write(value);
-			*/
-			/*
-			PrintWriter out = new PrintWriter(
-					  new OutputStreamWriter(res.getOutputStream(), "UTF8"), true);
-					  */
-			//_logger.debug("appendSharedDataForKey: "+ id_key+ "\tkey:" + key + "\tvalue:" + value);
+		try {			
 			IWidgetAPIManager manager = new WidgetAPIManager();
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
 				if(!manager.isInstanceLocked(widgetInstance)){
 					String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();
 					//_logger.error("\n*appendshareddata********\n"+key+"***"+value+"\n*********\n");
+					//TODO
 					manager.updateSharedDataEntry(widgetInstance, key, value, true);
 	
 					WebContext wctx = WebContextFactory.get();
@@ -258,12 +241,18 @@ public class WidgetAPIImpl implements IWidgetAPI {
 			        script.appendScript("widget.onSharedUpdate(\"").appendScript(sharedDataKey).appendScript("\");");
 	
 			        // Loop over all the users on the current page
+			        //TODO - on high load the "otherSession.addScript(script)" call can throw illegalmodificationexception
 			        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
-			        for (Iterator<?> it = pages.iterator(); it.hasNext();)
-			        {
-			            ScriptSession otherSession = (ScriptSession) it.next();
-			            otherSession.addScript(script);
-			        }			       
+			        //Collection<?> pages = Collections.synchronizedCollection(wctx.getScriptSessionsByPage(currentPage));
+			       // synchronized(pages){			        
+				        for (Iterator<?> it = pages.iterator(); it.hasNext();){
+				            ScriptSession otherSession = (ScriptSession) it.next();	
+				           // synchronized(otherSession){
+				            	otherSession.addScript(script);
+				           // }
+				        }
+			        //}
+			        			       
 				}
 				else {
 					return LOCKED_MESSAGE;
@@ -271,14 +260,13 @@ public class WidgetAPIImpl implements IWidgetAPI {
 			
 			}
 			else{
-				_logger.debug("appendSharedDataForKey: 3");
 				return UNAUTHORISED_MESSAGE;
 			}
 		} 
 		catch (Exception ex) {			
 			_logger.error("appendSharedDataForKey failed", ex);
 		}
-		return "";
+		return "okay";
 	}
 
 	/*
@@ -290,7 +278,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 		if(widgetInstance!=null){
 			String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();
-			_logger.debug("lock called by " + widgetInstance.getUserId());
+			//_logger.error("lock called by " + widgetInstance.getUserId());
+			//TODO
 			manager.lockWidgetInstance(widgetInstance);	
 			WebContext wctx = WebContextFactory.get();
 	        String currentPage = wctx.getCurrentPage();
@@ -319,7 +308,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 		if(widgetInstance!=null){
 			String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();
-			_logger.debug("unlock called by " + widgetInstance.getUserId());
+			//_logger.error("unlock called by " + widgetInstance.getUserId());
+			//TODO
 			manager.unlockWidgetInstance(widgetInstance);	
 			WebContext wctx = WebContextFactory.get();
 	        String currentPage = wctx.getCurrentPage();

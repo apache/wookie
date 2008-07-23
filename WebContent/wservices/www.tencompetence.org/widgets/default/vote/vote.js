@@ -299,6 +299,13 @@ function showVoteDisplayStageTwo(pQuestion){
 	widget.sharedDataForKey(instanceid_key, "answers", showVoteDisplayStageThree);
 }
 
+
+function newClosure(someNum, someRef) {
+  return function(x) {    	
+          getResults(x, someNum);
+    }     
+}
+
 function showVoteDisplayStageThree(pAnswers){
 	answers = pAnswers;
 	var submitDiv = null;
@@ -321,28 +328,72 @@ function showVoteDisplayStageThree(pAnswers){
       
     var endText= questionText+ answerText + submitDiv;		
 	dwr.util.setValue("maincanvas", endText, { escapeHtml:false });
-	
-	for(var k=1;k<=count;k++){		
-		var callMetaData = { 
-  			callback:getResults, 
-  			args: k // specify an argument to pass to the callback and exceptionHandler
-		};
-		widget.sharedDataForKey(instanceid_key, "response"+k, callMetaData);
+		
+	for(var k=1;k<=count;k++){	
+		/* 		
+		  ############ Description of this section of code ####################
+		  Firstly, the problem occurs with using a version of DWR pre 3.0.
+		  
+		  You need to define & setup the function which will call 'getResults()' so that it gets 
+		  the correct index from this loop.  In effect you are creating the function instance on the next line initialised 
+		  with this loop index - 'k'.  The widget.sharedDataForKey call then calls this function instance as a callback from dwr.
+		  If we didnt do this, then each call to 'getResults()' would pass the incorrect loop index -ie the final one
+		  once it has completed.
+		  
+		  The closures described here for pre DWR 3.0(http://directwebremoting.org/dwr/browser/extradata) do not work for
+		  situations where the data to be passed includes a looping variable.
+		  
+		  The approach here also does not work (http://nicklothian.com/blog/2007/05/18/dwr-callback-closures-inside-loops/)
+		  		  
+		  Example 5 here -(http://blog.morrisjohns.com/javascript_closures_for_dummies.html)
+		  also shows how NOT to do this. 
+		  Example 7 shows a similar problem, but not using loops.  It is this method of instance closures
+		  that makes this call work for looping indexes - i.e. 'k' here, so study Example 7.
+		  #####################################################################
+		 */
+		closure = newClosure(k, {somevar : 'closure'+k});	// create the instance, passing the k index as argument
+		widget.sharedDataForKey(instanceid_key, "response"+k, closure);		// hand this instance as a callback to be executed once the shareddataforkey has completed
 	}
 }
 
 
-function getResults(server, index){	
+function getResults(server, index){
 	var textResults = "<div>&nbsp;("+server+" " + getLocalizedString('votes') + ")</div>";
 	dwr.util.setValue("sresponse"+index, textResults, { escapeHtml:false });
+	/*
 	var mcallMetaData = { 
   			callback:updatePercentages, 
   			args: server+"#"+index  // specify an argument to pass to the callback and exceptionHandler  			
 		};
+	*/
+	
+	var mcallbackProxy = function(dataFromServer) {
+	  updatePercentages(dataFromServer, server+"#"+index);
+	};
+			
+	var mcallMetaData = { callback:mcallbackProxy };
+	
 	widget.sharedDataForKey(instanceid_key, "totalvotes", mcallMetaData);
 }
 
+
+
+/*
+function returnObjById( id )
+{
+    if (document.getElementById)
+        var returnVar = document.getElementById(id);
+    else if (document.all)
+        var returnVar = document.all[id];
+    else if (document.layers)
+        var returnVar = document.layers[id];
+    return returnVar;
+}
+*/
+
 function updatePercentages(total, oneResponse){
+	
+	
 	var temp = new Array();
 	temp = oneResponse.split('#');
 	var tot = parseInt(total);	
@@ -357,9 +408,17 @@ function updatePercentages(total, oneResponse){
 	}
 		
 	dwr.util.setValue("percentDiv"+temp[1], res+"%", { escapeHtml:false });
-	var bar = dwr.util.byId('bar'+temp[1]); 
+	
+	
+	var w = document.getElementById('bar1');
+
+	//alert("this reposne="+temp[0] + "\tbar"+temp[1]);
+	
+	var bar = dwr.util.byId('bar'+temp[1]); //####################################################
+	//var bar =  document.getElementById('bar'+temp[1]);
 	bar.style.width = res+"%";								 
 	var respDiv = dwr.util.byId('responseDiv');
+	//var respDiv = document.getElementById('responseDiv');
 	//respDiv.style.height = "250px"; 
 	respDiv.style.height = "180px";
 	

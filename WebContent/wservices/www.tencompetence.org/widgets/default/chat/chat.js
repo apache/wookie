@@ -12,7 +12,7 @@ The chat log is done the same way...
 */
 var currentLanguage = "en";
 var supportedLanguages = new Array("bu","en","fr","nl");
-var isDebug = false;
+
 var instanceid_key;
 var proxyUrl;
 var widgetAPIUrl;
@@ -25,6 +25,8 @@ var thisUserUnlocked = false;
 var thisUserClearedLog = false;
 var isAdmin = false;
 var sharedDataKey = null;
+
+var isDebug = false;
 	
 	
 // on start up set some values & init with the server
@@ -174,7 +176,7 @@ function confirmClearChat(){
 
 // initialise the presence & log
 function doInitPresence(presenceList){
-if (isDebug) alert("start doInitPresence");
+if (isDebug) debug("start doInitPresence");
 	var currentUser = memberSeparator + username + memberSeparator;		
 	if(presenceList==null||presenceList.indexOf(currentUser)==-1){	
 		// add this user to chat
@@ -188,26 +190,38 @@ if (isDebug) alert("start doInitPresence");
 	}	
 }
 
+
+
 function cleanup() {
 	if(isActive){	
+		if (isDebug) debug("<function cleanup> start");
 		isActive = false;
 		var currentUser = memberSeparator + username + memberSeparator;		
 		var removed = userList.replace(currentUser,"");
 		widget.setSharedDataForKey(instanceid_key, "defaultChatPresence",removed);	
-		widget.appendSharedDataForKey(instanceid_key, "defaultChatLog", chatSeparator + "<" + username + " " + getLocalizedString('has left the chatroom') + ">" + chatSeparator);																							
+		widget.appendSharedDataForKey(instanceid_key, "defaultChatLog", chatSeparator + "<" + username + " " + getLocalizedString('has left the chatroom') + ">" + chatSeparator);
+		if(!BrowserDetect.isBrowser('Firefox')){
+			alert("You have now logged out of this chat session");
+		}
+		if (isDebug) debug("<function cleanup> end");																							
 	}
 }
 
+
 // send a new message
 function sendMessage() {
- 	var text = dwr.util.getValue("text");
+if (isDebug) debug("<function start> sendMessage()");
+	var text = dwr.util.getValue("text");
+	if (isDebug) debug("<code>sendMessage(): text=" + text ); 	
  	dwr.util.setValue("text", "");
  	// append this message to the shared data on the server
  	widget.appendSharedDataForKey(instanceid_key, "defaultChatLog", chatSeparator + username + ": " + text + chatSeparator);
+if (isDebug) debug("<function end> sendMessage()");     	
 }
 
 // update the chat log
 function refreshchatlog(messages){
+if (isDebug) debug("<function start> refreshchatlog(): param:messages=" + messages);
 	var chatlog = "";
 	var messageArray = messages.split(chatSeparator);
 	for (var data in messageArray) {
@@ -216,10 +230,12 @@ function refreshchatlog(messages){
     }
     // now set the chatlog to the new set of divs
     dwr.util.setValue("chatlog", chatlog, { escapeHtml:false });
+if (isDebug) debug("<function end> refreshchatlog()");    
 }
 
 // update the presence list
 function refreshMemberList(members){
+if (isDebug) debug("<function start> refreshMemberList(): param:memebers=" + members);
 	userList = members;
 	var memberList = "";
 	var memberArray = members.split(memberSeparator);
@@ -235,15 +251,17 @@ function refreshMemberList(members){
     }
     // now set the presence list
     dwr.util.setValue("members", memberList, { escapeHtml:false });
+if (isDebug) debug("<function end> refreshMemberList()");    
 }
 
 function handleSharedUpdate(sdkey){
-if (isDebug) alert("handlesharedUpdate" + sdkey + "    :      " + sharedDataKey );
+if (isDebug) debug("<function start> handleSharedUpdate(): param:sdkey=" + sdkey);
  // only respond to other shared instances - ignore others
  if(sdkey == sharedDataKey){
 
-	if (isDebug) alert("handle sharedupdate");
+	if (isDebug) debug("<code>handleSharedUpdate(): sharedupdate call is for this widget");
 	if(thisUserClearedLog == true){
+		if (isDebug) debug("<code>handleSharedUpdate(): this user cleared the chatlog");
 		thisUserClearedLog = false;
 		widget.appendSharedDataForKey(instanceid_key, "defaultChatLog", chatSeparator + "<" + username + " " + getLocalizedString('has cleared the chat log') + ">" + chatSeparator);																					
 	}	
@@ -252,31 +270,36 @@ if (isDebug) alert("handlesharedUpdate" + sdkey + "    :      " + sharedDataKey 
 	// update the chat log
 	widget.sharedDataForKey(instanceid_key, "defaultChatLog", refreshchatlog);
  }
+ if (isDebug) debug("<function end> handleSharedUpdate()"); 
 }
 
+
+
+
 function handleLocked(sdkey){
-if (isDebug) alert("handleLocked" + sdkey + "    :      " + sharedDataKey );
+if (isDebug) debug("<function start> handleLocked(): param:sdkey=" + sdkey);
  if(sdkey == sharedDataKey){ 
- 	if (isDebug) alert("handle Locked");
+ 	if (isDebug) debug("<code>handleLocked(): unlock call is for this widget");
 	isActive = false;		
     dwr.util.setValue("joined", getInputInactiveDiv(), { escapeHtml:false });
     widget.sharedDataForKey(instanceid_key, "defaultChatLog", refreshchatlog);	    
  }
+if (isDebug) debug("<function end> handleLocked()");  
 }
 
 function handleUnlocked(sdkey){	
-if (isDebug) alert("handleUnlocked" + sdkey + "    :      " + sharedDataKey );
+if (isDebug) debug("<function start> handleUnlocked(): param:sdkey=" + sdkey);
  if(sdkey == sharedDataKey){ 
-	if (isDebug) alert("start handle Unlocked");
+	if (isDebug) debug("<code> handleUnlocked(): unlock call is for this widget");
 	isActive = true;
-	if(thisUserUnlocked){
+	if(thisUserUnlocked){		
 		thisUserUnlocked = false;
 		widget.appendSharedDataForKey(instanceid_key, "defaultChatLog", chatSeparator + "<" + username + " " + getLocalizedString('has unlocked the chatroom') + ">" + chatSeparator);																		
 	}	
 	// get the shared data for the presencelist
 	widget.sharedDataForKey(instanceid_key, "defaultChatPresence", doInitPresence);	
     dwr.util.setValue("joined", getInputActiveDiv(), { escapeHtml:false });   
-    if (isDebug) alert("end handle Unlocked"); 
+    if (isDebug) debug("<function end> handleUnlocked()"); 
  }
 }
 
