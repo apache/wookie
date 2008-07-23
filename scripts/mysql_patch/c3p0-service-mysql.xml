@@ -26,9 +26,9 @@
 		<!-- <attribute name="InitialPoolSize">3</attribute> -->
 		<!-- <attribute name="MaxAdministrativeTaskTime">0</attribute> -->
 		<!-- <attribute name="MaxConnectionAge">0</attribute> -->
-		<!-- <attribute name="MaxIdleTime">0</attribute> -->
+		<attribute name="MaxIdleTime">20</attribute>
 		<!-- <attribute name="MaxIdleTimeExcessConnections">0</attribute> -->
-		<!-- <attribute name="MaxPoolSize">15</attribute> -->
+		<attribute name="MaxPoolSize">100</attribute>
 		<!-- <attribute name="MaxStatements">0</attribute> -->
 		<!-- <attribute name="MaxStatementsPerConnection">0</attribute> -->
 		<!-- <attribute name="MinPoolSize">0</attribute> -->
