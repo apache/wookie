@@ -9,7 +9,7 @@
 	<resource-ref>
         <description>The database connection.</description>
         <res-ref-name>jdbc/widgetdb</res-ref-name>
-        <res-type>com.mchange.v2.c3p0.ComboPooledDataSource</res-type>
+        <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
@@ -58,6 +58,7 @@
 			<param-name>activeReverseAjaxEnabled</param-name>
 			<param-value>true</param-value>
 		</init-param>
+		 
 		<init-param>
   			<param-name>org.directwebremoting.extend.ServerLoadMonitor</param-name>
   			<param-value>org.directwebremoting.impl.PollingServerLoadMonitor</param-value>
@@ -67,11 +68,13 @@
 				initApplicationScopeCreatorsAtStartup
 			</param-name>
 			<param-value>true</param-value>
-		</init-param> 		
+		</init-param> 
+			
 		<init-param>
 			<param-name>maxWaitAfterWrite</param-name>
 			<param-value>500</param-value>
 		</init-param>
+		
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 				
