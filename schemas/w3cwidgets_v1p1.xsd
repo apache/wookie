@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://http://www.w3.org/ns/widgets"
+	targetNamespace="http://http://www.w3.org/ns/widgets" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance"
+	elementFormDefault="qualified" version="Widgets W3C 1.0"
+	attributeFormDefault="unqualified">
+
+	<xs:annotation>
+		<xs:documentation>
+			XSD Data File Information
+			-------------------------
+			Author: Paul Sharples
+			
+			Date: 21st November, 2008
+			Version: 1.1
+			Status: Second release
+			Description: Widget Server manifest format. 
+			Based on the draft w3c spec found at:
+			http://dev.w3.org/2006/waf/widgets
+        </xs:documentation>
+	</xs:annotation>
+
+	<xs:element name="widget" type="widgetType" />
+	<xs:element name="author" type="authorType" />
+	<xs:element name="icon" type="iconType" />
+	<xs:element name="access" type="accessType" />
+	<xs:element name="content" type="contentType" />
+	<xs:element name="update" type="updateType" />
+	<xs:element name="feature" type="featureType" />
+
+	<xs:complexType name="widgetType">
+		<xs:sequence minOccurs="0">
+			<xs:element name="name" type="xs:string" maxOccurs="1"
+				minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>
+						The name element represent the human-readable
+						name for a widget resource that can be used, for
+						example, in an
+						application menu or in other
+						contexts.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string" maxOccurs="1"
+				minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>
+						The description element represents a
+						human-readable description of the widget.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="icon" maxOccurs="unbounded" minOccurs="0" />
+			<xs:element ref="access" maxOccurs="1" minOccurs="0" />
+			<xs:element ref="author" maxOccurs="1" minOccurs="0" />
+			<xs:element name="licence" type="xs:string" maxOccurs="1"
+				minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Licence Text</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="content" maxOccurs="1" minOccurs="0"></xs:element>
+			<xs:element ref="update" maxOccurs="1" minOccurs="0"></xs:element>
+			<xs:element ref="feature" maxOccurs="unbounded" minOccurs="0"></xs:element>
+		</xs:sequence>
+
+		<xs:attribute name="uid" type="xs:anyURI">
+			<xs:annotation>
+				<xs:documentation>
+					Optional. A valid URI that denotes a unique
+					identifier for the widget.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="version" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>
+					Optional. A valid version-tag that specifies the
+					version of the widget.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="height">
+			<xs:annotation>
+				<xs:documentation>
+					Optional. A valid non-negative integer greater
+					than
+					0 that controls the initial height dimensions of the
+					instantiated widget in CSS pixels [CSS21]. When the
+					value is
+					missing, the widget user agent will assume
+					the value 300.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:int">
+					<xs:minInclusive value="0"></xs:minInclusive>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="width">
+			<xs:annotation>
+				<xs:documentation>
+					Optional. A valid non-negative integer greater
+					than
+					0 that controls the initial width dimensions of the
+					instantiated widget in CSS pixels [CSS21]. When the
+					value is
+					missing, the widget user agent will assume
+					the value 150.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:int">
+					<xs:minInclusive value="0"></xs:minInclusive>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="mode">
+			<xs:annotation>
+				<xs:documentation>
+					Optional. A keyword attribute whose value is
+					either
+					window, fullscreen, or default (see the Window Modes
+					section
+					for definitions of each kind of window
+					mode). When the value is
+					missing, the widget user
+					agent will assume the value default.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="window"></xs:enumeration>
+					<xs:enumeration value="fullscreen"></xs:enumeration>
+					<xs:enumeration value="default"></xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="authorType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="href" type="xs:anyURI"></xs:attribute>
+				<xs:attribute name="email" type="xs:string"></xs:attribute>
+				<xs:attribute name="img" type="xs:string"></xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="featureType">
+		<xs:attribute name="name" type="xs:anyURI" use="required"></xs:attribute>
+		<xs:attribute name="required" type="xs:boolean"></xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="accessType">
+		<xs:attribute name="network" type="xs:boolean"></xs:attribute>
+		<xs:attribute name="plugins" type="xs:boolean"></xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="updateType">
+		<xs:attribute name="href" type="xs:anyURI" use="required"></xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="contentType">
+		<xs:attribute name="src" type="xs:string" use="required"></xs:attribute>
+		<xs:attribute name="type">
+			<xs:simpleType>
+				<xs:restriction base="xs:string" />
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="charset">
+			<xs:simpleType>
+				<xs:restriction base="xs:string" />
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="iconType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="src" type="xs:string" use="required"></xs:attribute>
+				<xs:attribute name="width">
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minInclusive value="0"></xs:minInclusive>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="height">
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minInclusive value="0"></xs:minInclusive>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+</xs:schema>
