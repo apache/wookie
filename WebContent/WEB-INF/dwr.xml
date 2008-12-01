@@ -3,7 +3,7 @@
 
 <dwr>
   <allow>
-    <create creator="new" javascript="widget" scope="application">
+    <create creator="new" javascript="WidgetImpl" scope="application">
       <param name="class" value="org.tencompetence.widgetservice.ajaxmodel.impl.WidgetAPIImpl"/>
       <include method="preferenceForKey"/>
       <include method="setPreferenceForKey"/>

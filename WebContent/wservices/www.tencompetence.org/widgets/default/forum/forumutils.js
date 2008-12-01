@@ -3,11 +3,7 @@
 ******************************************************
 */
 var isDebug = false;
-var currentLanguage = "en";
-var supportedLanguages = new Array("bu","en","fr","nl");
 var instanceid_key;
-var proxyUrl="";
-var widgetAPIUrl="";
 var username="";
 var forumText="";
 var currentPost=null;
@@ -16,36 +12,15 @@ var sharedDataKey = null;
 var isAdmin = false;
 var isdActive=false;
 
+
 // on start up set some values & init with the server
 function init() {
-if (isDebug) debug("<function init start>");
-		// This gets the id_key and assigns it to instanceid_key
-		// This page url will be called with e.g. idkey=4j45j345jl353n5lfg09cw03f05
-		// so grab that key to use as authentication against the server
-		var query = window.location.search.substring(1);
-		var pairs = query.split("&");
-		for (var i=0;i<pairs.length;i++){
-			var pos = pairs[i].indexOf('=');
-			if (pos >= 0){				
-				var argname = pairs[i].substring(0,pos);
-				if(argname=="idkey"){
-					instanceid_key = pairs[i].substring(pos+1);					
-				}
-				if(argname=="proxy"){
-					proxyUrl = pairs[i].substring(pos+1);
-				}
-				if(argname=="serviceapi"){
-					widgetAPIUrl = pairs[i].substring(pos+1);
-				}				
-			}
-		}					
-		// this line tells DWR to use call backs (i.e. will call onsharedupdate() when an event is recevied for shared data
-		// below - commented out - is this needed when there is no need to poll the server?
-	 	dwr.engine.setActiveReverseAjax(true);	 		
-	 	if (isDebug) debug("<function init start 2>");
-	 	widget.preferenceForKey(instanceid_key, "LDUsername", setLocalUsername);	 	
-		
+if (isDebug) DebugHelper.debug("<function init start>");				
+ 	instanceid_key = Widget.getInstanceKey();
+ 	if (isDebug) DebugHelper.debug("<function init start 2>");
+ 	Widget.preferenceForKey("Username", setLocalUsername);	 			
 }
+
 
 function isAdminUser(){
 	return isAdmin;
@@ -53,31 +28,38 @@ function isAdminUser(){
 
 // set the local username
 function setLocalUsername(p){
-	if (isDebug) debug("<function setLocalUsername start>| param="+p);
-	username = p;	 
-	widget.preferenceForKey(instanceid_key, "conference-manager", getConferenceManagerRole);
+	if (isDebug) DebugHelper.debug("<function setLocalUsername start>| param="+p);
+	if(username == ""){
+		if(p == "null"){
+			username = "User "+ Math.floor((Math.random() * 900) + 100);
+		}
+		else {
+			username = p;
+		}
+	}	 
+	Widget.preferenceForKey("conference-manager", getConferenceManagerRole);
 }
 
 function getConferenceManagerRole(p){
-	if (isDebug) debug("<function setConferenceManagerRole start>| param="+p);
+	if (isDebug) DebugHelper.debug("<function setConferenceManagerRole start>| param="+p);
 	if(p == "true") isAdmin = true;
-	widget.preferenceForKey(instanceid_key, "moderator", getModeratorRole);
+	Widget.preferenceForKey("moderator", getModeratorRole);
 }
 
 function getModeratorRole(p){	
-	if (isDebug) debug("<function setModeratorRole start>| param="+p);
+	if (isDebug) DebugHelper.debug("<function setModeratorRole start>| param="+p);
 	if(p == "true") isAdmin = true;
-	widget.preferenceForKey(instanceid_key, "sharedDataKey", initSharedKey);
+	Widget.preferenceForKey("sharedDataKey", initSharedKey);
 }
 
 function initSharedKey(sharedKey){
-	if (isDebug) debug("<function initsharedkey start>| param="+sharedKey);
+	if (isDebug) DebugHelper.debug("<function initsharedkey start>| param="+sharedKey);
 	sharedDataKey = sharedKey;
-	widget.sharedDataForKey(instanceid_key, "isLocked", setupInput);
+	Widget.sharedDataForKey("isLocked", setupInput);
 }
 
 function setupInput(isLockedValue){
-	if (isDebug) debug("<function setupinput start>| param="+isLockedValue);
+	if (isDebug) DebugHelper.debug("<function setupinput start>| param="+isLockedValue);
 	if(isLockedValue!="true"){		
 		handleUnlocked(sharedDataKey); 
 	}
@@ -86,53 +68,19 @@ function setupInput(isLockedValue){
 	}	
 }
 
-function doLanguageUpdate(la){
-	currentLanguage = la;	
-	init();
-}
-
-function getLocalizedString(key) {
-	try {
-		var evalString = currentLanguage + "_" + "localizedStrings['"+key+"'];";		
-		var ret = eval(evalString);
-		if (ret === undefined)
-			ret = key;
-		return ret;
-	}
-	catch (ex) {
-	}
-	return key;
-}
-
-function getLangOpts(){
-	var langOptionStr = "<select name=\"select_lang\" id=\"select_lang\" onchange=\"doLanguageUpdate(this.options[this.selectedIndex].value);\">" ;
- 	var optStr; 
- 	for (alang in supportedLanguages){
- 		if(supportedLanguages[alang] == currentLanguage){
-	 		optStr = "<option value=\"" + supportedLanguages[alang] + "\" selected>" + supportedLanguages[alang] + "</option>";
-	 	}
-	 	else{
- 			optStr = "<option value=\"" + supportedLanguages[alang] + "\">" + supportedLanguages[alang] + "</option>";
- 		}
- 		langOptionStr += optStr;
-	}
-	langOptionStr += "</select>";
-	return langOptionStr;
-}
-
 function getAdminInactiveToolsStr(){
-	var adminInactiveToolsStr = "<a href=\"#\" onclick=\"unlockforum()\"><img border=\"0\" src=\"/wookie/shared/images/unlock.gif\" alt=\"" + getLocalizedString('Unlock this widget') + "\"></a>";
+	var adminInactiveToolsStr = "<a href=\"#\" onclick=\"unlockforum()\"><img border=\"0\" src=\"/wookie/shared/images/unlock.gif\" alt=\"" + LanguageHelper.getLocalizedString('Unlock this widget') + "\"></a>";
 	return adminInactiveToolsStr;
 }
 
 function getAdminActiveToolsStr(){
 	var adminActiveToolsStr = "&nbsp;&nbsp;";
-	adminActiveToolsStr += "<a href=\"#\" onclick=\"lockforum()\"><img border=\"0\" src=\"/wookie/shared/images/lock.gif\" alt=\"" + getLocalizedString('Lock this widget') + "\">&nbsp;" + getLocalizedString('Lock this widget') + "</a>";
+	adminActiveToolsStr += "<a href=\"#\" onclick=\"lockforum()\"><img border=\"0\" src=\"/wookie/shared/images/lock.gif\" alt=\"" + LanguageHelper.getLocalizedString('Lock this widget') + "\">&nbsp;" + LanguageHelper.getLocalizedString('Lock this widget') + "</a>";
 	return adminActiveToolsStr;
 }
 
 function getInactiveToolsStr(){
-	var inactiveToolsStr = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>" + getLocalizedString('This widget has been locked') + "</b>&nbsp;";
+	var inactiveToolsStr = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>" + LanguageHelper.getLocalizedString('This widget has been locked') + "</b>&nbsp;";
 	if(isAdminUser()){
 		inactiveToolsStr += getAdminInactiveToolsStr();
 	}
@@ -140,13 +88,18 @@ function getInactiveToolsStr(){
 }
 
 function getActiveToolsStr(){
-	var activeToolsStr = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + getLangOpts();
-	activeToolsStr += "<a href=\"#\" onclick=\"postNewTopic(-1)\"><img border=\"0\" src=\"/wookie/shared/images/plus.gif\">&nbsp;" + getLocalizedString('Post new topic') + "</a>";
-	activeToolsStr += "&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"', getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/refresh.gif\">&nbsp;" + getLocalizedString('Refresh') + "</a>";
+	var activeToolsStr = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + LanguageHelper.getLangOpts(getActiveToolsStrUpdated);
+	activeToolsStr += "<a href=\"#\" onclick=\"postNewTopic(-1)\"><img border=\"0\" src=\"/wookie/shared/images/plus.gif\">&nbsp;" + LanguageHelper.getLocalizedString('Post new topic') + "</a>";
+	activeToolsStr += "&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"', getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/refresh.gif\">&nbsp;" + LanguageHelper.getLocalizedString('Refresh') + "</a>";
 	if(isAdminUser()){
 		activeToolsStr += getAdminActiveToolsStr();
 	}	
 	return activeToolsStr;
+}
+
+function getActiveToolsStrUpdated(){
+	var resStr = getActiveToolsStr();
+	dwr.util.setValue("foot", resStr, { escapeHtml:false }); 
 }
 
 function getTreeData(param){
@@ -182,7 +135,7 @@ function buildTree(postlist){
 // we ask the server for this in case its been deleted & we try to add a child.
 function openPost(openPost){
 	if(openPost==null){
-		alert(getLocalizedString('Record no longer exists in Database, probably deleted by another user'));
+		alert(LanguageHelper.getLocalizedString('Record no longer exists in Database, probably deleted by another user'));
 		forum.getNodeTree(instanceid_key, getTreeData);
 	}
 	else{	
@@ -192,9 +145,9 @@ function openPost(openPost){
 		currentPost = openPost;
 		toolsStr +="&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		if(!isLocked){
-			toolsStr +="<a href=\"#\" onclick=\"getReplyToPostLayout()\"><img border=\"0\" src=\"/wookie/shared/images/go.gif\">&nbsp;" + getLocalizedString('Reply') + "</a>&nbsp;";
+			toolsStr +="<a href=\"#\" onclick=\"getReplyToPostLayout()\"><img border=\"0\" src=\"/wookie/shared/images/go.gif\">&nbsp;" + LanguageHelper.getLocalizedString('Reply') + "</a>&nbsp;";
 		}
-		toolsStr +="<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"', getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/cancel.gif\">&nbsp;" + getLocalizedString('Cancel') + "</a>";				
+		toolsStr +="<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"', getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/cancel.gif\">&nbsp;" + LanguageHelper.getLocalizedString('Cancel') + "</a>";				
 		dwr.util.setValue("foot", toolsStr, { escapeHtml:false });
 	}	
 }
@@ -207,8 +160,8 @@ function getReplyToPostLayout(){
 	
 	var postNewTopicContent="";
 	postNewTopicContent+="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";	
-  	postNewTopicContent+="<a href=\"#\" onclick=\"postIt("+currentPost.id+")\"><img border=\"0\" src=\"/wookie/shared/images/go.gif\">&nbsp;" + getLocalizedString('Post') + "</a>";  	
-  	postNewTopicContent+="&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"',getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/cancel.gif\">&nbsp;" + getLocalizedString('Cancel') + "</a>";
+  	postNewTopicContent+="<a href=\"#\" onclick=\"postIt("+currentPost.id+")\"><img border=\"0\" src=\"/wookie/shared/images/go.gif\">&nbsp;" + LanguageHelper.getLocalizedString('Post') + "</a>";  	
+  	postNewTopicContent+="&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"',getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/cancel.gif\">&nbsp;" + LanguageHelper.getLocalizedString('Cancel') + "</a>";
 	dwr.util.setValue("foot", postNewTopicContent, { escapeHtml:false });
 }
 
@@ -217,15 +170,15 @@ function postNewTopic(parentPostId){
 	dwr.util.setValue("content", newPostStr, { escapeHtml:false });
 	var postNewTopicContent="";
 	postNewTopicContent+="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-  	postNewTopicContent+="<a href=\"#\" onclick=\"postIt("+parentPostId+")\"><img border=\"0\" src=\"/wookie/shared/images/go.gif\">&nbsp;" + getLocalizedString('Post') + "</a>";  	
-  	postNewTopicContent+="&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"',getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/cancel.gif\">&nbsp;" + getLocalizedString('Cancel') + "</a>";
+  	postNewTopicContent+="<a href=\"#\" onclick=\"postIt("+parentPostId+")\"><img border=\"0\" src=\"/wookie/shared/images/go.gif\">&nbsp;" + LanguageHelper.getLocalizedString('Post') + "</a>";  	
+  	postNewTopicContent+="&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"',getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/cancel.gif\">&nbsp;" + LanguageHelper.getLocalizedString('Cancel') + "</a>";
 	dwr.util.setValue("foot", postNewTopicContent, { escapeHtml:false });
 }
 
 function getViewPostLayout(openPost){
 	var openPostStr="";
 	openPostStr+="<fieldset id=\"wf_ParticipantInform-sessur\" class=\"repeat\">";
-	openPostStr+="	<legend>"+openPost.userId+" " + getLocalizedString('wrote on') + " " + formatDate(openPost.publishDate)+"</legend>";
+	openPostStr+="	<legend>"+openPost.userId+" " + LanguageHelper.getLocalizedString('wrote on') + " " + formatDate(openPost.publishDate)+"</legend>";
 	openPostStr+="		<span class=\"oneField\">";
 	openPostStr+="			<span>" + openPost.content + "</span>";
 	openPostStr+="		</span>";
@@ -238,10 +191,10 @@ function getNewPostLayout(parentPostId){
 	var titleText;
 	var reText="";
 	if(parentPostId==-1){
-		titleText = getLocalizedString('Post');
+		titleText = LanguageHelper.getLocalizedString('Post');
 	}
 	else{
-		titleText = getLocalizedString('Reply');
+		titleText = LanguageHelper.getLocalizedString('Reply');
 		if(currentPost.title.substr(0,3)!="Re:"){
 			reText = "Re:" + currentPost.title;
 		}
@@ -249,17 +202,17 @@ function getNewPostLayout(parentPostId){
 			reText = currentPost.title;
 		}
 	}
-	var compoText = getLocalizedString('Compose');
+	var compoText = LanguageHelper.getLocalizedString('Compose');
 	var postNewTopicContent="";	
 	postNewTopicContent+="<fieldset id=\"wf_GuardianInformati\" class=\"\">";
 	postNewTopicContent+="	<legend>" + compoText + " " + titleText + "</legend>";
 	postNewTopicContent+="		<span class=\"oneField\">";
-	postNewTopicContent+="			<label for=\"wf_Email\" class=\"preField\">"+getLocalizedString('Title')+"</label>";
+	postNewTopicContent+="			<label for=\"wf_Email\" class=\"preField\">"+LanguageHelper.getLocalizedString('Title')+"</label>";
 	postNewTopicContent+="			<input type=\"text\" id=\"title\" name=\"title\" value=\""+reText+"\" size=\"50\" class=\"validate-email\">";
 	postNewTopicContent+="			<br>";
 	postNewTopicContent+="		</span>";
 	postNewTopicContent+="		<span class=\"oneField\">";
-	postNewTopicContent+="			<label for=\"wf_Address\" class=\"preField\">"+getLocalizedString('Message')+"</label>";
+	postNewTopicContent+="			<label for=\"wf_Address\" class=\"preField\">"+LanguageHelper.getLocalizedString('Message')+"</label>";
 	postNewTopicContent+="			<textarea id=\"textcontent\" name=\"textcontent\" class=\"required\" cols=\"38\" rows=\"5\"></textarea>";
 	postNewTopicContent+="			<br>";
 	postNewTopicContent+="		</span>";
@@ -271,11 +224,11 @@ function postIt(param){
 	var title = document.getElementById("title").value;
 	var content = document.getElementById("textcontent").value;
 	if(title.length<1){
-		alert(getLocalizedString('You must specify a Title for this post'));
+		alert(LanguageHelper.getLocalizedString('You must specify a Title for this post'));
 		return;
 	}
 	if(content.length<1){
-		alert(getLocalizedString('Empty posts are not allowed'));
+		alert(LanguageHelper.getLocalizedString('Empty posts are not allowed'));
 		return;
 	}
 	forum.newPost(instanceid_key, param, username, title, content, outcomeOfPost);
@@ -284,14 +237,14 @@ function postIt(param){
 function outcomeOfPost(param){
 	var outcomeContent="";
 	var toolsContent="";
-	var linkText = " <a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"',getTreeData);\">" + getLocalizedString('Click here to continue') + "</a>"
+	var linkText = " <a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"',getTreeData);\">" + LanguageHelper.getLocalizedString('Click here to continue') + "</a>"
 	outcomeContent+="<div>"
 	if (param==true){
-		outcomeContent+="<p>" + getLocalizedString('Post was successfully added')+ linkText+"</p>"
+		outcomeContent+="<p>" + LanguageHelper.getLocalizedString('Post was successfully added')+ linkText+"</p>"
 		
 	}
 	else{
-		outcomeContent+="<p>" + getLocalizedString('Unable to add new post')+ linkText+"</p>"
+		outcomeContent+="<p>" + LanguageHelper.getLocalizedString('Unable to add new post')+ linkText+"</p>"
 	}
 	outcomeContent+="</div>"	
 	dwr.util.setValue("content", outcomeContent, { escapeHtml:false });
@@ -324,13 +277,13 @@ function handleLocked(sdkey){
 
 function handleUnlocked(sdkey){	
  if(sdkey == sharedDataKey){
-	if (isDebug) debug("<start handle unlocked> ");
+	if (isDebug) DebugHelper.debug("<start handle unlocked> ");
 	isdActive = true;
 	isLocked = false;
 	var resStr = getActiveToolsStr();
 	dwr.util.setValue("foot", resStr, { escapeHtml:false }); 
 	forum.getNodeTree(instanceid_key, getTreeData); 
-    if (isDebug) debug("<end handle unlocked> ");
+    if (isDebug) DebugHelper.debug("<end handle unlocked> ");
   } 
 }
 
@@ -338,13 +291,13 @@ function lockforum(){
 	if(isdActive){	
 		isdActive = false;		
 	}
-	widget.lock(instanceid_key);
+	Widget.lock();
 }
 
 function unlockforum(){
 	isdActive = true;	
-	widget.unlock(instanceid_key);	
+	Widget.unlock();	
 }
 
-widget.onLocked = handleLocked;
-widget.onUnlocked = handleUnlocked;
+Widget.onLocked = handleLocked;
+Widget.onUnlocked = handleUnlocked;
