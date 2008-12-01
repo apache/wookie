@@ -48,7 +48,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.6 2008-07-23 14:16:04 ps3com Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.7 2008-12-01 19:16:41 ps3com Exp $ 
  *
  */
  public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -62,7 +62,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 	private static final String CONTENT_TYPE = "text/xml;charset=\"UTF-8\""; 
 	
 	private static URL urlWidgetProxyServer = null;
-	private static URL urlWidgetAPIServer = null;
+	//private static URL urlWidgetAPIServer = null;
 	
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#HttpServlet()
@@ -208,13 +208,14 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		}
 		_logger.debug(urlWidgetProxyServer.toString());
 		//set the service url.
+		/*
 		if(urlWidgetAPIServer==null){
 			urlWidgetAPIServer = new URL(request.getScheme() ,
 					request.getServerName() ,
 					request.getServerPort() , "/wookie/dwr/interface/widget.js");
 			}
 		_logger.debug(urlWidgetAPIServer.toString());
-		
+		*/
 		WidgetInstance widgetInstance;
 				
 		IWidgetServiceManager wsm = new WidgetServiceManager();	
@@ -276,7 +277,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		out.println("<widgetdata>");					
 		out.print("<url>");
 		out.print(urlWidget + "?idkey=" + key 
-				+ "&amp;url=" + urlWidgetAPIServer.toExternalForm()  
+				//+ "&amp;url=" + urlWidgetAPIServer.toExternalForm()  
 				+ "&amp;proxy=" + urlWidgetProxyServer.toExternalForm() 
 		);
 		out.println("</url>");

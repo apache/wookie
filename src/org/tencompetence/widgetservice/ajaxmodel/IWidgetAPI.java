@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Consortium Board TENCompetence
+ * Copyright (c) 2008, Consortium Board TENCompetence
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,12 +30,76 @@ package org.tencompetence.widgetservice.ajaxmodel;
 /**
  * Definition of the widget API.  
  * @author Paul Sharples
- * @version $Id: IWidgetAPI.java,v 1.4 2008-06-20 11:06:09 ps3com Exp $
+ * @version $Id: IWidgetAPI.java,v 1.5 2008-12-01 19:17:25 ps3com Exp $
  *
  */
 public interface IWidgetAPI {	
 	
+	/**
+	 * Appends a string to the string contained in the shared data value in the DB, obtained
+	 * from the given "key" 
+	 * @param id_key - the unique instance id key for a widget instance
+	 * @param key - key for the value to change
+ 	 * @param key - the value to change to
+	 * @return - a string value marking status or an error message
+	 */
+	public String appendSharedDataForKey(String id_key, String key, String value);	
+	
+	/**
+	 * ? not implemented yet
+	 * @param id_key
+	 * @param key
+	 * @return
+	 */
+	public String contextPropertyForKey(String id_key, String key);
+	
+	/**
+	 * Call to hide a widget instance based on the instance_key
+	 * @param id_key
+	 * @return
+	 */
+	public String hide(String id_key);
+	
+	/**
+	 * Call to lock a widget instance
+	 * @param id_key
+	 * @return
+	 */
+	public String lock(String id_key);
+	
+	/**
+	 * Open a url in a window
+	 * @param url
+	 * @return
+	 */
+	@Deprecated
+	public String openURL(String url);
+	
+	/**
+	 * Returns a string preference value from the DB, obtained
+	 * from the given "key" 
+	 * @param id_key - the unique instance id key for a widget instance
+	 * @param key - key for the value to retrieve
+	 * @return - a string value found in the DB or an error message
+	 */
 	public String preferenceForKey(String id_key, String key);
+	
+	/**
+	 * pass a url to the proxy servlet & return the results to the JS object
+	 * @param id_key
+	 * @param url
+	 * @return
+	 */
+	public String proxify(String id_key, String url);
+	
+	/**
+	 * ? not implemented yet
+	 * @param id_key
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public String setContextPropertyForKey(String id_key, String key, String value);
 	
 	/**
 	 * Sets a string preference value in the DB, obtained
@@ -46,17 +110,56 @@ public interface IWidgetAPI {
 	 * @return - a string value marking status or an error message
 	 */
 	public String setPreferenceForKey(String id_key, String key, String value);
-	public String sharedDataForKey(String id_key, String key);
+	
+	/**
+	 * Sets a string shared data value in the DB, obtained
+	 * from the given "key" 
+	 * @param id_key - the unique instance id key for a widget instance
+	 * @param key - key for the value to change
+ 	 * @param key - the value to change to
+	 * @return - a string value marking status or an error message
+	 */
 	public String setSharedDataForKey(String id_key, String key, String value);
-	public String appendSharedDataForKey(String id_key, String key, String value);
-	public String userPropertyForKey(String id_key, String key);
+	
+	/**
+	 * ? not implemented yet
+	 * @param id_key
+	 * @param key
+	 * @param value
+	 * @return
+	 */
 	public String setUserPropertyForKey(String id_key, String key, String value);
-	public String contextPropertyForKey(String id_key, String key);
-	public String setContextPropertyForKey(String id_key, String key, String value);
-	public String lock(String id_key);
-	public String unlock(String id_key);
-	public String openURL(String url);	
-	public String system(String idkey, String arg1, String arg2);
-	public String hide(String id_key);
+	
+	/**
+	 * Returns a string value from the DB, obtained
+	 * from the given "key". This is a shared data value
+	 * between widgets using the same data 
+	 * @param id_key - the unique instance id key for a widget instance
+	 * @param key - key for the value to retrieve
+	 * @return - a string value found in the DB or an error message
+	 */
+	public String sharedDataForKey(String id_key, String key);	
+	
+	/**
+	 * show a widget instance based on the id_key
+	 * @param id_key
+	 * @return
+	 */
 	public String show(String id_key);
+	
+	/**
+	 * Unlock a widget instance based on the id_key
+	 * @param id_key
+	 * @return
+	 */
+	public String unlock(String id_key);
+	
+	/**
+	 * ? not implemented yet
+	 * @param id_key
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public String userPropertyForKey(String id_key, String key);
 }
