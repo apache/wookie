@@ -311,3 +311,19 @@ from         roleinstance inner join
                       roleparticipation on roleinstance.roleinstanceid = roleparticipation.roleinstanceid
 
 ;
+
+
+
+create table userinfo(id serial not null, firstname varchar(64),lastname varchar(64), 
+userid varchar(64) references lduser ON DELETE CASCADE, 
+password varchar(64), emailid varchar(64),  skype_name VARCHAR(64) null, active boolean NOT NULL DEFAULT FALSE);
+
+create table uolowner(id serial not null, uolid int references unitoflearning ON DELETE CASCADE, 
+ownerid varchar(64) references lduser ON DELETE CASCADE);
+
+
+create table runowner(id serial not null, runid int references run ON DELETE CASCADE, 
+ownerid varchar(64) references lduser ON DELETE CASCADE);
+
+INSERT INTO lduser (userid) VALUES ('ccadmin');
+INSERT INTO userinfo (userid, password) VALUES ('ccadmin','adminpassword');
