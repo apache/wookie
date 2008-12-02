@@ -28,6 +28,7 @@ package org.tencompetence.widgetservice.manager.impl;
 
 import java.util.List;
 import java.util.Set;
+import java.util.Hashtable;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -42,6 +43,7 @@ import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedExceptio
 import org.tencompetence.widgetservice.manager.IWidgetAdminManager;
 import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
 import org.tencompetence.widgetservice.util.hibernate.IDBManager;
+import org.tencompetence.widgetservice.util.*;
 
 /**
  * WidgetAdminManager
@@ -50,7 +52,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
  * and setting which widget is to be the default
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminManager.java,v 1.3 2008-02-08 09:49:08 ps3com Exp $
+ * @version $Id: WidgetAdminManager.java,v 1.4 2008-12-02 17:11:20 kris_popat Exp $
  */
 public class WidgetAdminManager extends WidgetServiceManager implements IWidgetAdminManager {
 	
@@ -79,28 +81,28 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#addNewWidget(java.lang.String, java.lang.String, java.lang.String, int, int)
 	 */
-	public void addNewWidget(String widgetTitle, String widgetDescription, String widgetAuthor, String widgetIconLocation, String url, String guid, int height, int width) {
-		addNewWidget(widgetTitle, widgetDescription, widgetAuthor, widgetIconLocation, url, guid, height, width, null);
+	public void addNewWidget( String widgetIconLocation, String url, Hashtable<String, String> widgetData ) {
+		addNewWidget(widgetIconLocation, url, widgetData, null);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#addNewWidget(java.lang.String, java.lang.String, java.lang.String, int, int, java.lang.String[])
 	 */
 	@SuppressWarnings("unchecked")
-	public int addNewWidget(String widgetTitle, String widgetDescription, String widgetAuthor, String widgetIconLocation, String url, String guid, int height, int width, String[] widgetTypes) {
+	public int addNewWidget(String widgetIconLocation, String url, Hashtable<String,String> widgetData, String[] widgetTypes) {
 			int newWidgetIdx = -1;
 			final IDBManager dbManager = DBManagerFactory.getDBManager();
 	        Widget widget;
 			try {
 				widget = new Widget();
-				widget.setWidgetTitle(widgetTitle);
-				widget.setWidgetDescription(widgetDescription);
-				widget.setWidgetAuthor(widgetAuthor);
+				widget.setWidgetTitle(widgetData.get(ManifestHelper.NAME_ELEMENT));
+				widget.setWidgetDescription(widgetData.get(ManifestHelper.DESCRIPTION_ELEMENT));
+				widget.setWidgetAuthor(widgetData.get(ManifestHelper.AUTHOR_ELEMENT));
 				widget.setWidgetIconLocation(widgetIconLocation);
 				widget.setUrl(url);
-				widget.setGuid(guid);
-				widget.setHeight(height);
-				widget.setWidth(width);
+				widget.setGuid(widgetData.get(ManifestHelper.UID_ATTRIBUTE));
+				widget.setHeight(Integer.parseInt(widgetData.get(ManifestHelper.HEIGHT_ATTRIBUTE)));
+				widget.setWidth(Integer.parseInt(widgetData.get(ManifestHelper.WIDTH_ATTRIBUTE)));
 				dbManager.saveObject(widget);	       	        
 				WidgetType widgetType;
 				if (widgetTypes!=null){
@@ -265,7 +267,6 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 			_logger.error(e.getMessage());
 			return null;
 		}
-
 	}
 	
 

@@ -36,7 +36,7 @@ import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedExceptio
  * Interface for admin functions
  * 
  * @author Paul Sharples
- * @version $Id: IWidgetAdminManager.java,v 1.3 2008-02-08 09:44:55 ps3com Exp $
+ * @version $Id: IWidgetAdminManager.java,v 1.4 2008-12-02 17:11:20 kris_popat Exp $
  *
  */
 public interface IWidgetAdminManager {
@@ -50,8 +50,7 @@ public interface IWidgetAdminManager {
 	 * @param height - the height at which it is supposed to be displayed
 	 * @param width - the width at which it is supposed to be displayed
 	 */
-	void addNewWidget(String widgetTitle, String widgetDescription, String widgetAuthor, String widgetIconLocation, String url,
-			String guid, int height, int width);
+	void addNewWidget(String widgetIconLocation, String url, java.util.Hashtable<String, String> widgetData );
 
 	/**
 	 * Add a new widget to the system
@@ -62,9 +61,7 @@ public interface IWidgetAdminManager {
 	 * @param widgetTypes - a string array containing the types this widget can perform as
 	 * @return - the new key created for this widget
 	 */
-	@SuppressWarnings("unchecked")
-	int addNewWidget(String widgetTitle, String widgetDescription, String widgetAuthor, String widgetIconLocation, String url,
-			String guid, int height, int width, String[] widgetTypes);
+	int addNewWidget(String widgetIconLocation, String url, java.util.Hashtable<String,String> widgetData, String[] widgetTypes);
 
 	boolean addWhiteListEntry(String uri);
 

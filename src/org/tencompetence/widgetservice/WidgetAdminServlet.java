@@ -52,7 +52,7 @@ import org.tencompetence.widgetservice.util.ZipUtils;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.6 2008-02-08 09:47:08 ps3com Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.7 2008-12-02 17:11:20 kris_popat Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -375,24 +375,34 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 			File zipFile = ManifestHelper.dealWithUploadFile(request, properties);						
 			if(zipFile.exists()){
 				if(ZipUtils.hasZipEntry(zipFile, ManifestHelper.MANIFEST_FILE)){
-					String[] results = ManifestHelper.dealWithManifest(ZipUtils.extractZipEntry(zipFile, ManifestHelper.MANIFEST_FILE));
+					Hashtable<String,String> results = ManifestHelper.dealWithManifest(ZipUtils.extractZipEntry(zipFile, ManifestHelper.MANIFEST_FILE));
 					// check if the start file exists
-					if(ZipUtils.hasZipEntry(zipFile, results[1])){
-						if(results[0]!=""){
-							File newWidgetFolder = ManifestHelper.createUnpackedWidgetFolder(request, properties, results[0]);
+					String src = results.get(ManifestHelper.SOURCE_ATTRIBUTE);
+					if(ZipUtils.hasZipEntry(zipFile, src)){
+						String uid = results.get(ManifestHelper.UID_ATTRIBUTE);
+						if( uid != null && uid != ""){
+							File newWidgetFolder = ManifestHelper.createUnpackedWidgetFolder(request, properties, uid);
 							ZipUtils.unpackZip(zipFile, newWidgetFolder);
 							// get the url to the start page
-							String relativestartUrl = (ManifestHelper.getURLForWidget(properties, results[0], results[1]));
+							String relativestartUrl = (ManifestHelper.getURLForWidget(properties, uid, src));
 							String relativeIconUrl=null;
 							// get the url path to the icon file
-							if (!results[7].startsWith("http://")){
-								relativeIconUrl = (ManifestHelper.getURLForWidget(properties, results[0], results[7]));								
+							
+							// this is a hack!
+							String iconURL = results.get(ManifestHelper.ICON_SOURCE+"_1");
+							if (iconURL == null ) {
+								relativeIconUrl = "";
 							}
-							else{
-								relativeIconUrl = results[7];
+							else {
+								if (!iconURL.startsWith("http://")){
+									relativeIconUrl = (ManifestHelper.getURLForWidget(properties, uid, iconURL));								
+								}
+								else{
+									relativeIconUrl = iconURL;
+								}
 							}
 							// check to see if this widget already exists in the DB - using the ID (guid) key from the manifest
-							if(!manager.doesWidgetAlreadyExistInSystem(results[0])){	
+							if(!manager.doesWidgetAlreadyExistInSystem(uid)){	
 								
 								
 								//results: id, start, height, width, title, description, author, iconPath								
@@ -406,8 +416,8 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 								int dbkey = manager.addNewWidget(results[7], results[6], results[5], results[4], relativestartUrl, results[0], 
 										Integer.parseInt(results[2]), Integer.parseInt(results[3]), new String[]{});
 								*/
-								int dbkey = manager.addNewWidget(results[4], results[5], results[6], relativeIconUrl, relativestartUrl, results[0], Integer.parseInt(results[2]), Integer.parseInt(results[3]), new String[]{});
-								session.setAttribute("message_value", "Widget '"+ results[4] +"' was successfully imported into the system.");
+								int dbkey = manager.addNewWidget(relativeIconUrl, relativestartUrl, results, new String[]{});
+								session.setAttribute("message_value", "Widget '"+ results.get(ManifestHelper.NAME_ELEMENT) +"' was successfully imported into the system.");
 								retrieveServices(session, manager);
 								session.setAttribute("hasValidated", Boolean.valueOf(true));																	
 								session.setAttribute("dbkey", dbkey);
@@ -415,7 +425,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 								session.setAttribute("isMaxable", Boolean.valueOf(isMaxable));
 							}	
 							else{
-								session.setAttribute("message_value", "Widget '"+ results[4] +"' was successfully updated in the system.");
+								session.setAttribute("message_value", "Widget '"+ results.get(ManifestHelper.NAME_ELEMENT) +"' was successfully updated in the system.");
 							}
 						}
 						else{							

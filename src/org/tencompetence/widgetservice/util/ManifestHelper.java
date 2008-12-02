@@ -137,7 +137,7 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 				manifestValues.put(ICON_SOURCE+"_"+i, iconSrc);
 				if ( iconWidth != null ) manifestValues.put(ICON_WIDTH+"_"+i, iconWidth);
 				if ( iconHeight != null ) manifestValues.put(ICON_HEIGHT+"_"+i, iconHeight);
-				
+				i++;
 			}
 			
 			// feature elements ---------------------------------------------------------------------------
@@ -151,6 +151,7 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 				String featureRequired = aFeature.getAttributeValue(REQUIRED_ATTRIBUTE);
 				manifestValues.put(FEATURE_NAME+"_"+i, featureName);
 				if ( featureRequired != null ) manifestValues.put(FEATURE_REQUIRED+"_"+i, featureRequired);
+				i++;
 			}
 			
 			builder = null;
