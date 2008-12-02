@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Hashtable;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -20,27 +22,42 @@ import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 
 public class ManifestHelper implements IW3CXMLConfiguration {
+	
+	public static final String ICON_SOURCE = "icon_src";
+	public static final String ICON_HEIGHT = "icon_height";
+	public static final String ICON_WIDTH = "icon_width";
+	public static final String ICON_NAME = "icon_name";
+	
+	public static final String FEATURE_NAME = "feature_name";
+	public static final String FEATURE_REQUIRED = "feature_required";
 
 	static Logger _logger = Logger.getLogger(ManifestHelper.class.getName());
 
-	public static String[] dealWithManifest(String xmlText) throws JDOMException, IOException {
-		String title, description, author, iconPath;
+	public static Hashtable<String,String> dealWithManifest(String xmlText) throws JDOMException, IOException {
+		String name, description, author, startFile;
 		SAXBuilder builder = new SAXBuilder();
 		Element root = builder.build(new StringReader(xmlText)).getRootElement();
 		if(root.getName().equalsIgnoreCase(WIDGET_ELEMENT)){
-			String id = root.getAttributeValue(ID_ATTRIBUTE);
-			String start = root.getAttributeValue(START_ATTRIBUTE);
-			String height = root.getAttributeValue(HEIGHT_ATTRIBUTE);
-			String width = root.getAttributeValue(WIDTH_ATTRIBUTE);
+			Hashtable<String,String> manifestValues = new Hashtable<String,String>();
+			manifestValues.put(UID_ATTRIBUTE, root.getAttributeValue(UID_ATTRIBUTE));
+			manifestValues.put(VERSION_ATTRIBUTE, root.getAttributeValue(VERSION_ATTRIBUTE));
+			manifestValues.put(HEIGHT_ATTRIBUTE, root.getAttributeValue(HEIGHT_ATTRIBUTE));
+			manifestValues.put(WIDTH_ATTRIBUTE, root.getAttributeValue(WIDTH_ATTRIBUTE));
+			manifestValues.put(MODE_ATTRIBUTE, root.getAttributeValue(MODE_ATTRIBUTE));
 			
-			Element titleElement = root.getChild(TITLE_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
-			if(titleElement==null){
-				title = "Unnamed Widget";
+			
+			// name element --------------------------------------------------------------------------------
+			Element nameElement = root.getChild(NAME_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
+			if(nameElement==null){
+				name = "Unnamed Widget";
 			}
 			else{
-				title = titleElement.getText();
+				name = nameElement.getText();
 			}
+			manifestValues.put(NAME_ELEMENT, name);
 			
+			
+			// description element -------------------------------------------------------------------------
 			Element descElement = root.getChild(DESCRIPTION_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));									
 			if(descElement==null){
 				description = "No Description";
@@ -48,26 +65,97 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 			else{
 				description = descElement.getText();
 			}
+			manifestValues.put(DESCRIPTION_ELEMENT, description);
 			
+		
+			// author element ------------------------------------------------------------------------------
+			// specific author attributes
+			String authorImage=null, authorHref=null, authorEmail=null;
 			Element authorElement = root.getChild(AUTHOR_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));									
 			if(authorElement==null){
 				author = "Anonymous";
 			}
 			else{
 				author = authorElement.getText();
+				authorImage = authorElement.getAttributeValue(IMG_ATTRIBUTE);
+				authorHref = authorElement.getAttributeValue(HREF_ATTRIBUTE);
+				authorEmail = authorElement.getAttributeValue(EMAIL_ATTRIBUTE);
+			}
+			manifestValues.put(AUTHOR_ELEMENT, author);
+			if ( authorImage != null ) manifestValues.put(NAME_ATTRIBUTE, authorImage);
+			if ( authorHref != null ) manifestValues.put(HREF_ATTRIBUTE, authorHref);
+			if ( authorEmail != null ) manifestValues.put(EMAIL_ATTRIBUTE, authorEmail);
+			
+			
+			// access element ---------------------------------------------------------------------------
+			Element accessElement = root.getChild(ACCESS_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
+			if ( accessElement != null ) {
+				String network = accessElement.getAttributeValue(NETWORK_ATTRIBUTE);
+				if ( network != null ) manifestValues.put(NETWORK_ATTRIBUTE, network);
+				String plugins = accessElement.getAttributeValue(PLUGINS_ATTRIBUTE);
+				if ( plugins != null ) manifestValues.put(PLUGINS_ATTRIBUTE, plugins);
 			}
 			
-			Element iconElement = root.getChild(ICON_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));									
-			if(iconElement==null){
-				iconPath = "";
+			
+			// content element --------------------------------------------------------------------------
+			// content specific values
+			String contentType=null, contentCharset=null;
+			Element contentElement = root.getChild(CONTENT_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
+			if ( contentElement == null ) {
+				startFile = "index.html";
 			}
-			else{
-				iconPath = iconElement.getText();
+			else {
+				startFile = contentElement.getAttributeValue(SOURCE_ATTRIBUTE);
+				if ( startFile == null ) startFile = "index.html";
+				contentType = contentElement.getAttributeValue(TYPE_ATTRIBUTE);
+				contentCharset = contentElement.getAttributeValue(CHARSET_ATTRIBUTE);
+			}
+			manifestValues.put(SOURCE_ATTRIBUTE, startFile);
+			if ( contentType != null ) manifestValues.put(TYPE_ATTRIBUTE, contentType);
+			if ( contentCharset != null ) manifestValues.put(CHARSET_ATTRIBUTE, contentCharset);
+			
+			
+			// licence element ---------------------------------------------------------------------------
+			Element licenceElement = root.getChild(LICENCE_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE) );
+			if ( licenceElement != null ) {
+				manifestValues.put(LICENCE_ELEMENT, licenceElement.getText());
+			}
+			
+			
+			// icon elements -----------------------------------------------------------------------------
+			// possibility of multiple icons, keys will be indexed for retrieval eg. "icon_name_1", "icon_source_1" etc...
+			List<?> icons = root.getChildren(ICON_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
+			ListIterator<?> i_iter = icons.listIterator();
+			while ( i_iter.hasNext() ) {
+				int i = 1;
+				Element anIcon = (Element)i_iter.next();
+				String iconName = anIcon.getText();
+				String iconSrc = anIcon.getAttributeValue(SOURCE_ATTRIBUTE);
+				String iconWidth = anIcon.getAttributeValue(WIDTH_ATTRIBUTE);
+				String iconHeight = anIcon.getAttributeValue(HEIGHT_ATTRIBUTE);
+				manifestValues.put(ICON_NAME+"_"+i, iconName);
+				manifestValues.put(ICON_SOURCE+"_"+i, iconSrc);
+				if ( iconWidth != null ) manifestValues.put(ICON_WIDTH+"_"+i, iconWidth);
+				if ( iconHeight != null ) manifestValues.put(ICON_HEIGHT+"_"+i, iconHeight);
+				
+			}
+			
+			// feature elements ---------------------------------------------------------------------------
+			// possibility of multiple features, keys will be indexed for retrieval eg. "feature_name_1", "feature_required_1" etc...
+			List<?> features = root.getChildren(FEATURE_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
+			ListIterator<?> f_iter = features.listIterator();
+			while ( f_iter.hasNext()) {
+				int i = 1;
+				Element aFeature = (Element)f_iter.next();
+				String featureName = aFeature.getAttributeValue(NAME_ATTRIBUTE);
+				String featureRequired = aFeature.getAttributeValue(REQUIRED_ATTRIBUTE);
+				manifestValues.put(FEATURE_NAME+"_"+i, featureName);
+				if ( featureRequired != null ) manifestValues.put(FEATURE_REQUIRED+"_"+i, featureRequired);
 			}
 			
 			builder = null;
 			root = null;
-			return new String[]{id, start, height, width, title, description, author, iconPath};
+			return manifestValues;
 		}
 		else{
 			builder = null;
@@ -133,7 +221,6 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 				}
 			}
 		return uFile;
-
 	}
 
 
