@@ -87,8 +87,8 @@ var Widget = {
 	},
 	
 	proxify : function(url){
-		// TODO return the proxied result
-		return WidgetImpl.proxify(url);
+		return proxyUrl + "?instanceid_key=" + instanceid_key + "&url=" + url
+		
 	}
 }
 // very important !
