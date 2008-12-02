@@ -30,7 +30,7 @@ package org.tencompetence.widgetservice.ajaxmodel;
 /**
  * Definition of the widget API.  
  * @author Paul Sharples
- * @version $Id: IWidgetAPI.java,v 1.5 2008-12-01 19:17:25 ps3com Exp $
+ * @version $Id: IWidgetAPI.java,v 1.6 2008-12-02 12:35:52 ps3com Exp $
  *
  */
 public interface IWidgetAPI {	
@@ -83,14 +83,6 @@ public interface IWidgetAPI {
 	 * @return - a string value found in the DB or an error message
 	 */
 	public String preferenceForKey(String id_key, String key);
-	
-	/**
-	 * pass a url to the proxy servlet & return the results to the JS object
-	 * @param id_key
-	 * @param url
-	 * @return
-	 */
-	public String proxify(String id_key, String url);
 	
 	/**
 	 * ? not implemented yet

@@ -59,7 +59,7 @@ import org.tencompetence.widgetservice.manager.impl.WidgetAPIManager;
  *   Widget.setSharedDataForKey("defaultChatPresence",stringWithUserRemoved);
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAPIImpl.java,v 1.10 2008-12-01 19:17:57 ps3com Exp $
+ * @version $Id: WidgetAPIImpl.java,v 1.11 2008-12-02 12:35:52 ps3com Exp $
  *
  */
 public class WidgetAPIImpl implements IWidgetAPI {
@@ -454,11 +454,6 @@ public class WidgetAPIImpl implements IWidgetAPI {
         .appendScript(");");       
         wctx.getScriptSession().addScript(script);
         return "";
-	}
-	
-	public String proxify(String id_key, String url) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/*
