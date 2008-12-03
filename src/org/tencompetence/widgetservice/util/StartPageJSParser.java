@@ -28,12 +28,16 @@ package org.tencompetence.widgetservice.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.PrettyXmlSerializer;
 import org.htmlcleaner.TagNode;
+
 /**
  * Parse the HTML start page & add the JS file links
  * 
@@ -45,7 +49,7 @@ import org.htmlcleaner.TagNode;
  * <script type="text/javascript" src="/wookie/shared/js/wookie-wrapper.js"></script>
  *
  * @author Paul Sharples
- * @version $Id: StartPageJSParser.java,v 1.1 2008-12-02 18:39:42 ps3com Exp $
+ * @version $Id: StartPageJSParser.java,v 1.2 2008-12-03 11:42:03 ps3com Exp $
  */
 public class StartPageJSParser implements IStartPageConfiguration {
 	
@@ -54,8 +58,10 @@ public class StartPageJSParser implements IStartPageConfiguration {
 	private HtmlCleaner fCleaner = null;
 	private CleanerProperties fProps = null;
 	private File fStartPage = null;
+	List<TagNode> fScriptList = null;
 	
 	public StartPageJSParser(File startPage) {
+		fScriptList = new ArrayList<TagNode>();
 		fStartPage = startPage;
 		doParse();
 	}
@@ -75,6 +81,20 @@ public class StartPageJSParser implements IStartPageConfiguration {
 		return js;
 	}
 	
+	@SuppressWarnings("unchecked")
+	private void findNonWookieScriptTags(TagNode headNode){		
+		List<TagNode> children = headNode.getChildren();		
+		for(TagNode child : children){						
+			if(child.getName().equals(SCRIPT_TAG)){				
+				String attr = child.getAttributeByName(SRC_ATTRIBUTE);				
+				if(!attr.equals(DWR_UTIL_SRC_VALUE) & !attr.equals(DWR_ENGINE_SRC_VALUE) 
+						& !attr.equals(WIDGET_IMPL_SRC_VALUE) & !attr.equals(WOOKIE_WRAPPER_SRC_VALUE)){
+					fScriptList.add(child);					
+				}							
+			}			
+		}
+	}
+			
 	private void doParse(){
 		fCleaner = new HtmlCleaner();
 		// take default cleaner properties		
@@ -84,10 +104,16 @@ public class StartPageJSParser implements IStartPageConfiguration {
 		fProps.setUseCdataForScriptAndStyle(false);
 		fProps.setUseEmptyElementTags(false);		
 		try {
-			TagNode htmlNode = fCleaner.clean(fStartPage);
-			// TODO catch any fall out here from not having a head tag in the html
-			TagNode headNode = htmlNode.findElementByName(HEAD_TAG, false);
+			TagNode htmlNode = fCleaner.clean(fStartPage);			
+			TagNode headNode = htmlNode.findElementByName(HEAD_TAG, false);									
 			if(headNode != null){
+				// find any script tags
+				findNonWookieScriptTags(headNode);
+				// remove any script tags which are not wookie references
+				for(TagNode node : fScriptList){
+					headNode.removeChild(node);
+				}	
+				// look for wookie js links - add them in if not there already
 				if(!doesAttributeValueExistsInNode(headNode, SRC_ATTRIBUTE, DWR_UTIL_SRC_VALUE)){
 					_logger.debug("DWR_UTIL_SRC_VALUE NOT found");
 					TagNode jsTag = createScriptTag(DWR_UTIL_SRC_VALUE);
@@ -107,7 +133,11 @@ public class StartPageJSParser implements IStartPageConfiguration {
 					_logger.debug("WOOKIE_WRAPPER_SRC_VALUE NOT found");
 					TagNode jsTag = createScriptTag(WOOKIE_WRAPPER_SRC_VALUE);
 					headNode.addChild(jsTag);
-				}			
+				}	
+				// add back the orginal script tags - at the end - so that the local JS will load last!
+				for(TagNode node : fScriptList){
+					headNode.addChild(node);
+				}				
 				PrettyXmlSerializer ser = new PrettyXmlSerializer(fProps);						
 				ser.writeXmlToFile(htmlNode, fStartPage.getAbsolutePath());		
 			}
