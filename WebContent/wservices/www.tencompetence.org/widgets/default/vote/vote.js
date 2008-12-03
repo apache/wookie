@@ -20,7 +20,7 @@ var responseArr = new Array();
 function init() {
 	if(!isActive){
 		isActive = true;
-	 	Widget.preferenceForKey("Username", setLocalUsername);	 	
+	 	Widget.preferenceForKey("username", setLocalUsername);	 	
  	}
 }
 

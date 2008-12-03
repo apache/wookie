@@ -18,7 +18,7 @@ function init() {
 if (isDebug) DebugHelper.debug("<function init start>");				
  	instanceid_key = Widget.getInstanceKey();
  	if (isDebug) DebugHelper.debug("<function init start 2>");
- 	Widget.preferenceForKey("Username", setLocalUsername);	 			
+ 	Widget.preferenceForKey("username", setLocalUsername);	 			
 }
 
 

@@ -27,7 +27,7 @@ function init() {
 	if(!isActive){		
 		isActive = true;
 	 	WidgetUtil.setValue("memberslegend", LanguageHelper.getLocalizedString('online users'),  { escapeHtml:false });
-	 	Widget.preferenceForKey("Username", setLocalUsername);	 	
+	 	Widget.preferenceForKey("username", setLocalUsername);	 	
  	}
 }
 
