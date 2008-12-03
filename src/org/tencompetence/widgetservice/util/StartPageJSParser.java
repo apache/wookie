@@ -29,7 +29,6 @@ package org.tencompetence.widgetservice.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -49,7 +48,7 @@ import org.htmlcleaner.TagNode;
  * <script type="text/javascript" src="/wookie/shared/js/wookie-wrapper.js"></script>
  *
  * @author Paul Sharples
- * @version $Id: StartPageJSParser.java,v 1.2 2008-12-03 11:42:03 ps3com Exp $
+ * @version $Id: StartPageJSParser.java,v 1.3 2008-12-03 11:54:00 ps3com Exp $
  */
 public class StartPageJSParser implements IStartPageConfiguration {
 	
