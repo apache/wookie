@@ -19,9 +19,7 @@ CREATE TABLE `widget` (
 CREATE TABLE `widgetinstance` (
   `id` int(11) NOT NULL auto_increment,
   `userId` varchar(255) NOT NULL,
-  `runId` varchar(255) NOT NULL,
-  `envId` varchar(255) NOT NULL,
-  `serviceId` varchar(255) NOT NULL,
+  `sharedDataKey` varchar(255) NOT NULL,  
   `nonce` varchar(255) default NULL,
   `idKey` varchar(255) NOT NULL,
   `widget_id` int(11) NOT NULL,
