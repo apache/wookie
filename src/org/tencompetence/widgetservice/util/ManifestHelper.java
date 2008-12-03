@@ -39,11 +39,39 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 		Element root = builder.build(new StringReader(xmlText)).getRootElement();
 		if(root.getName().equalsIgnoreCase(WIDGET_ELEMENT)){
 			Hashtable<String,String> manifestValues = new Hashtable<String,String>();
-			manifestValues.put(UID_ATTRIBUTE, root.getAttributeValue(UID_ATTRIBUTE));
-			manifestValues.put(VERSION_ATTRIBUTE, root.getAttributeValue(VERSION_ATTRIBUTE));
-			manifestValues.put(HEIGHT_ATTRIBUTE, root.getAttributeValue(HEIGHT_ATTRIBUTE));
-			manifestValues.put(WIDTH_ATTRIBUTE, root.getAttributeValue(WIDTH_ATTRIBUTE));
-			manifestValues.put(MODE_ATTRIBUTE, root.getAttributeValue(MODE_ATTRIBUTE));
+			
+			if(root.getAttributeValue(UID_ATTRIBUTE)!=null){
+				manifestValues.put(UID_ATTRIBUTE, root.getAttributeValue(UID_ATTRIBUTE));
+			}
+			else{ 
+				// make one up
+				manifestValues.put(UID_ATTRIBUTE, RandomGUID.getUniqueID("generated-uid-"));				
+			}
+						
+			if(root.getAttributeValue(VERSION_ATTRIBUTE)!=null){
+				manifestValues.put(VERSION_ATTRIBUTE, root.getAttributeValue(VERSION_ATTRIBUTE));
+			}
+			
+			if(root.getAttributeValue(HEIGHT_ATTRIBUTE)!=null){
+				manifestValues.put(HEIGHT_ATTRIBUTE, root.getAttributeValue(HEIGHT_ATTRIBUTE));
+			}
+			else{
+				manifestValues.put(HEIGHT_ATTRIBUTE, "300");
+			}
+			
+			if(root.getAttributeValue(WIDTH_ATTRIBUTE)!=null){
+				manifestValues.put(WIDTH_ATTRIBUTE, root.getAttributeValue(WIDTH_ATTRIBUTE));
+			}
+			else{
+				manifestValues.put(WIDTH_ATTRIBUTE, "150");
+			}
+			
+			if(root.getAttributeValue(MODE_ATTRIBUTE)!=null){
+				manifestValues.put(MODE_ATTRIBUTE, root.getAttributeValue(MODE_ATTRIBUTE));
+			}
+			else{
+				manifestValues.put(MODE_ATTRIBUTE, "default");				
+			}
 			
 			
 			// name element --------------------------------------------------------------------------------
