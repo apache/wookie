@@ -29,8 +29,7 @@ public interface IWidgetServiceManager extends IWidgetAPIManager {
 	 * @param serviceContext - the widget context
 	 * @return
 	 */
-	boolean widgetInstanceExists(String userId, String runId, String envId,
-			String serviceId, String serviceContext);
+	boolean widgetInstanceExists(String userId, String sharedDataKey, String serviceContext);
 
 	/**
 	 * Get a widgetinstance from the DB
@@ -41,16 +40,14 @@ public interface IWidgetServiceManager extends IWidgetAPIManager {
 	 * @param serviceContext - the widget context
 	 * @return
 	 */
-	WidgetInstance getwidgetInstance(String userId, String runId, String envId,
-			String serviceId, String serviceContext);
+	WidgetInstance getWidgetInstance(String userId, String sharedDataKey, String serviceContext);
 
 	/**
 	 * Method to add a new instance to the widget instances table
 	 * @param type
 	 * @throws WidgetTypeNotSupportedException 
 	 */
-	WidgetInstance addNewWidgetInstance(String userId, String runId,
-			String envId, String serId, Widget widget, String nonce,
+	WidgetInstance addNewWidgetInstance(String userId, String sharedDataKey, Widget widget, String nonce,
 			String idKey);
 
 }

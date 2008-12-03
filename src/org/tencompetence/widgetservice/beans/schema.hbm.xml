@@ -54,9 +54,7 @@
 			<generator class="native" />
 		</id>		
 		<property name="userId" not-null="true"/>				
-		<property name="runId" not-null="true"/>
-		<property name="envId" not-null="true"/>
-		<property name="serviceId" not-null="true"/>				
+		<property name="sharedDataKey" not-null="true"/>				
 		<property name="nonce"/>
 		<property name="idKey" not-null="true"/>		
 		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />		

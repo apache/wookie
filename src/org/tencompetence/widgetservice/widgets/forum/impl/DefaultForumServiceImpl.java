@@ -49,7 +49,7 @@ import org.tencompetence.widgetservice.widgets.forum.PostNode;
  *   forum.getNodeTree();
  * 
  * @author Paul Sharples
- * @version $Id: DefaultForumServiceImpl.java,v 1.4 2008-05-13 13:57:22 ps3com Exp $
+ * @version $Id: DefaultForumServiceImpl.java,v 1.5 2008-12-03 15:29:39 ps3com Exp $
  *
  */
 public class DefaultForumServiceImpl implements IForumService {
@@ -70,7 +70,7 @@ public class DefaultForumServiceImpl implements IForumService {
 			WidgetInstance widgetInstance = checkUserKey(id_key);
 			if(widgetInstance!=null){
 				IForumManager fManager = new ForumManager();
-				String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();	
+				String sharedDataKey = widgetInstance.getSharedDataKey();	
 				return fManager.getNodeTree(sharedDataKey);
 			}
 			else{
@@ -93,7 +93,7 @@ public class DefaultForumServiceImpl implements IForumService {
 			WidgetInstance widgetInstance = checkUserKey(id_key);
 			if(widgetInstance!=null){
 				IForumManager fManager = new ForumManager();
-				String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();	
+				String sharedDataKey = widgetInstance.getSharedDataKey();	
 				return fManager.getPost(sharedDataKey, Integer.parseInt(postId));	
 			}
 			else{
@@ -115,7 +115,7 @@ public class DefaultForumServiceImpl implements IForumService {
 			WidgetInstance widgetInstance = checkUserKey(id_key);
 			if(widgetInstance!=null){
 				IForumManager fManager = new ForumManager();
-				String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();
+				String sharedDataKey = widgetInstance.getSharedDataKey();
 					if(fManager.newPost(sharedDataKey, parent, username, title, content)){
 						return true;
 					}

@@ -119,7 +119,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 		try {
 			dbManager = DBManagerFactory.getDBManager();
 			final Criteria crit = dbManager.createCriteria(SharedData.class);
-			String sharedDataKey = instance.getRunId() + "-" + instance.getEnvId() + "-" + instance.getServiceId();			
+			String sharedDataKey = instance.getSharedDataKey();		
 			crit.add( Restrictions.eq( "sharedDataKey", sharedDataKey ) );			
 			final List<SharedData> sqlReturnList =  dbManager.getObjects(SharedData.class, crit);
 			SharedData[] sharedData = sqlReturnList.toArray(new SharedData[sqlReturnList.size()]);	
@@ -137,7 +137,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#widgetInstanceExists(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public boolean widgetInstanceExists(String userId, String runId, String envId, String serviceId, String serviceContext){
+	public boolean widgetInstanceExists(String userId, String sharedDataKey, String serviceContext){
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
 		String sqlQuery =   "select " +
@@ -145,9 +145,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 							+ "from WidgetInstance widgetinstance, WidgetType widgettype "
 							+ "WHERE "
 							+ "widgetinstance.userId ='" + userId + "' "
-							+ "AND widgetinstance.runId ='" + runId + "' "
-							+ "AND widgetinstance.envId ='" + envId + "' "
-							+ "AND widgetinstance.serviceId ='" + serviceId + "' "							
+							+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "												
 							+ "AND widgettype.widgetContext ='" + serviceContext + "' "			
 							+ "AND widgetinstance.widget = widgettype.widget"
 							;							
@@ -161,16 +159,14 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getwidgetInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public WidgetInstance getwidgetInstance(String userId, String runId, String envId, String serviceId, String serviceContext){
+	public WidgetInstance getWidgetInstance(String userId, String sharedDataKey, String serviceContext){
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
 		String sqlQuery =   "select widgetinstance " 							
 							+ "from WidgetInstance widgetinstance, WidgetType widgettype "
 							+ "WHERE "
 							+ "widgetinstance.userId ='" + userId + "' "
-							+ "AND widgetinstance.runId ='" + runId + "' "
-							+ "AND widgetinstance.envId ='" + envId + "' "
-							+ "AND widgetinstance.serviceId ='" + serviceId + "' "							
+							+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "															
 							+ "AND widgettype.widgetContext ='" + serviceContext + "' "			
 							+ "AND widgetinstance.widget = widgettype.widget"
 							;							
@@ -188,15 +184,12 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#addNewWidgetInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.tencompetence.widgetservice.beans.Widget, java.lang.String, java.lang.String)
 	 */
-	public WidgetInstance addNewWidgetInstance(String userId, String runId, String envId,
-			String serId, Widget widget, String nonce, String idKey) {		
+	public WidgetInstance addNewWidgetInstance(String userId, String sharedDataKey, Widget widget, String nonce, String idKey) {		
 			final IDBManager dbManager = DBManagerFactory.getDBManager();
 			WidgetInstance widgetInstance = new WidgetInstance();
 			try {
 				widgetInstance.setUserId(userId);
-				widgetInstance.setRunId(runId);			
-				widgetInstance.setEnvId(envId);
-				widgetInstance.setServiceId(serId);
+				widgetInstance.setSharedDataKey(sharedDataKey);
 				widgetInstance.setIdKey(idKey);
 				widgetInstance.setNonce(nonce);
 				// set the defaults widget for this type			
@@ -206,20 +199,12 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 				widgetInstance.setUpdated(false);
 				widgetInstance.setLocked(false);
 				dbManager.saveObject(widgetInstance);	
-				/*
-				// we'll put the username of the LD user as a pref for later if needed
-				Preference pref = new Preference();
-				pref.setWidgetInstance(widgetInstance);
-				pref.setDkey("LDUsername");
-				pref.setDvalue(userId);
-				dbManager.saveObject(pref);	
-				*/
 				// add in the sharedDataKey as a preference so that a widget can know
 				// what sharedData event to listen to later
 				Preference pref = new Preference();
 				pref.setWidgetInstance(widgetInstance);
 				pref.setDkey("sharedDataKey");				
-				pref.setDvalue(widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId());
+				pref.setDvalue(sharedDataKey);
 				dbManager.saveObject(pref);	
 			} 
 			catch (Exception e) {

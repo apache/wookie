@@ -59,7 +59,7 @@ import org.tencompetence.widgetservice.manager.impl.WidgetAPIManager;
  *   Widget.setSharedDataForKey("defaultChatPresence",stringWithUserRemoved);
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAPIImpl.java,v 1.11 2008-12-02 12:35:52 ps3com Exp $
+ * @version $Id: WidgetAPIImpl.java,v 1.12 2008-12-03 15:30:36 ps3com Exp $
  *
  */
 public class WidgetAPIImpl implements IWidgetAPI {
@@ -207,7 +207,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
 				if(!manager.isInstanceLocked(widgetInstance)){
-					String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();
+					String sharedDataKey = widgetInstance.getSharedDataKey();
 					manager.updateSharedDataEntry(widgetInstance, key, value, false);					
 					WebContext wctx = WebContextFactory.get();
 			        String currentPage = wctx.getCurrentPage();			        
@@ -252,7 +252,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
 				if(!manager.isInstanceLocked(widgetInstance)){
-					String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();					
+					String sharedDataKey = widgetInstance.getSharedDataKey();					
 					manager.updateSharedDataEntry(widgetInstance, key, value, true);	
 					WebContext wctx = WebContextFactory.get();
 			        String currentPage = wctx.getCurrentPage();	
@@ -299,7 +299,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		} 
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 		if(widgetInstance!=null){
-			String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();
+			String sharedDataKey = widgetInstance.getSharedDataKey();
 			//_logger.error("lock called by " + widgetInstance.getUserId());			
 			manager.lockWidgetInstance(widgetInstance);	
 			WebContext wctx = WebContextFactory.get();
@@ -333,7 +333,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		} 
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 		if(widgetInstance!=null){
-			String sharedDataKey = widgetInstance.getRunId() + "-" + widgetInstance.getEnvId() + "-" + widgetInstance.getServiceId();
+			String sharedDataKey = widgetInstance.getSharedDataKey();
 			//_logger.error("unlock called by " + widgetInstance.getUserId());			
 			manager.unlockWidgetInstance(widgetInstance);	
 			WebContext wctx = WebContextFactory.get();

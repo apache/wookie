@@ -48,21 +48,16 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.7 2008-12-01 19:16:41 ps3com Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.8 2008-12-03 15:32:18 ps3com Exp $ 
  *
  */
  public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
     
-	private static final long serialVersionUID = 308590474406800659L;
-		
-	static Logger _logger = Logger.getLogger(WidgetServiceServlet.class.getName());
-	
+	private static final long serialVersionUID = 308590474406800659L;		
+	static Logger _logger = Logger.getLogger(WidgetServiceServlet.class.getName());	
 	private static final String XMLDECLARATION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-
-	private static final String CONTENT_TYPE = "text/xml;charset=\"UTF-8\""; 
-	
-	private static URL urlWidgetProxyServer = null;
-	//private static URL urlWidgetAPIServer = null;
+	private static final String CONTENT_TYPE = "text/xml;charset=\"UTF-8\""; 	
+	private static URL urlWidgetProxyServer = null;	
 	
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#HttpServlet()
@@ -103,14 +98,12 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 	}
 	
 	private void doStopWidget(HttpServletRequest request, HttpServletResponse response) throws IOException{
-		String userId = request.getParameter("userid");
-		String runId = request.getParameter("runid");
-		String envId = request.getParameter("environmentid");
-		String serviceId = request.getParameter("serviceid");
+		String userId = request.getParameter("userid");	
+		String sharedDataKey = request.getParameter("shareddatakey");	
 		String serviceType= request.getParameter("servicetype");
 		
 		IWidgetServiceManager wsm = new WidgetServiceManager();	
-		WidgetInstance widgetInstance = wsm.getwidgetInstance(userId, runId, envId, serviceId, serviceType);		
+		WidgetInstance widgetInstance = wsm.getWidgetInstance(userId, sharedDataKey, serviceType);		
 		if(widgetInstance!=null){
 			wsm.lockWidgetInstance(widgetInstance);
 			returnDoc(response,"completed", "message");
@@ -125,12 +118,10 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 	
 	private void doResumeWidget(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		String userId = request.getParameter("userid");
-		String runId = request.getParameter("runid");
-		String envId = request.getParameter("environmentid");
-		String serviceId = request.getParameter("serviceid");
+		String sharedDataKey = request.getParameter("shareddatakey");	
 		String serviceType= request.getParameter("servicetype");
 		IWidgetServiceManager wsm = new WidgetServiceManager();	
-		WidgetInstance widgetInstance = wsm.getwidgetInstance(userId, runId, envId, serviceId, serviceType);		
+		WidgetInstance widgetInstance = wsm.getWidgetInstance(userId, sharedDataKey, serviceType);		
 		if(widgetInstance!=null){
 			wsm.unlockWidgetInstance(widgetInstance);
 			returnDoc(response,"completed", "message");
@@ -153,15 +144,13 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 	 */
 	private void doSetProperty (HttpServletRequest request, HttpServletResponse response, boolean isPersonalProperty) throws ServletException, IOException {
 		String userId = request.getParameter("userid");
-		String runId = request.getParameter("runid");
-		String envId = request.getParameter("environmentid");
-		String serviceId = request.getParameter("serviceid");
+		String sharedDataKey = request.getParameter("shareddatakey");	
 		String serviceType= request.getParameter("servicetype");
 		String propertyName = request.getParameter("propertyname");
 		String propertyValue = request.getParameter("propertyvalue");
 		
 		IWidgetServiceManager wsm = new WidgetServiceManager();	
-		WidgetInstance instance = wsm.getwidgetInstance(userId, runId, envId, serviceId, serviceType);
+		WidgetInstance instance = wsm.getWidgetInstance(userId, sharedDataKey, serviceType);
 		if(instance != null){
 			try {
 				if(isPersonalProperty){
@@ -184,13 +173,11 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		
 	private void doGetWidget(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String userId = request.getParameter("userid");
-		String runId = request.getParameter("runid");
-		String envId = request.getParameter("environmentid");
-		String serviceId = request.getParameter("serviceid");
+		String sharedDataKey = request.getParameter("shareddatakey");	
 		String serviceType = request.getParameter("servicetype");
 		
 		try {						
-			if(userId==null || runId==null || envId==null || serviceId==null || serviceType==null){
+			if(userId==null || sharedDataKey==null || serviceType==null){
 				throw new InvalidWidgetCallException();
 			}
 		} 
@@ -219,7 +206,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		WidgetInstance widgetInstance;
 				
 		IWidgetServiceManager wsm = new WidgetServiceManager();	
-		widgetInstance = wsm.getwidgetInstance(userId, runId, envId, serviceId, serviceType);
+		widgetInstance = wsm.getWidgetInstance(userId, sharedDataKey, serviceType);
 		
 		if(widgetInstance!=null){
 			// generate a key, url etc
@@ -242,7 +229,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 				hashKey = hashKey.replaceAll("&", ".am.");
 				hashKey = hashKey.replaceAll("\\+", ".pl.");
 				
-				widgetInstance = wsm.addNewWidgetInstance(userId, runId, envId, serviceId, widget, nonce, hashKey);
+				widgetInstance = wsm.addNewWidgetInstance(userId, sharedDataKey, widget, nonce, hashKey);
 				_logger.debug("new widgetinstance added");
 				formatReturnDoc(request, response, widgetInstance.getWidget(), widgetInstance.getIdKey());
 			} 

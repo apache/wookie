@@ -87,7 +87,7 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 		try {
 			dbManager = DBManagerFactory.getDBManager();
 			final Criteria crit = dbManager.createCriteria(SharedData.class);
-			String sharedDataKey = instance.getRunId() + "-" + instance.getEnvId() + "-" + instance.getServiceId();			
+			String sharedDataKey = instance.getSharedDataKey();		
 			crit.add( Restrictions.eq( "sharedDataKey", sharedDataKey ) );			
 			final List<SharedData> sqlReturnList =  dbManager.getObjects(SharedData.class, crit);
 			SharedData[] sharedData = sqlReturnList.toArray(new SharedData[sqlReturnList.size()]);		
@@ -234,7 +234,7 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 		
 		try {
 			dbManager = DBManagerFactory.getDBManager();
-			String sharedDataKey = instance.getRunId() + "-" + instance.getEnvId() + "-" + instance.getServiceId();			
+			String sharedDataKey = instance.getSharedDataKey();		
 			SharedData sharedData= new SharedData();
 			sharedData.setSharedDataKey(sharedDataKey);
 			sharedData.setDkey(name);
