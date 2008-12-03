@@ -30,16 +30,14 @@ package org.tencompetence.widgetservice.beans;
  * WidgetInstance - a simple bean to model an actual widgets instance attributes
  * 
  * @author Paul Sharples
- * @version $Id: WidgetInstance.java,v 1.3 2008-03-03 16:22:14 ps3com Exp $
+ * @version $Id: WidgetInstance.java,v 1.4 2008-12-03 15:30:14 ps3com Exp $
  */
 public class WidgetInstance extends AbstractKeyBean {
 
 		private static final long serialVersionUID = 1L;
 		
 		private String userId;
-		private String runId;
-		private String envId;
-		private String serviceId;
+		private String sharedDataKey;
 		private String nonce;
 		private String idKey; // aka SHAKey
 		private boolean updated;
@@ -59,14 +57,14 @@ public class WidgetInstance extends AbstractKeyBean {
 			this.widget = widget;
 		}
 		
-		public String getEnvId() {
-			return envId;
+		public String getSharedDataKey() {
+			return sharedDataKey;
 		}
-		
-		public void setEnvId(String envId) {
-			this.envId = envId;
+
+		public void setSharedDataKey(String sharedDataKey) {
+			this.sharedDataKey = sharedDataKey;
 		}
-		
+
 		public boolean isHidden() {
 			return hidden;
 		}
@@ -90,15 +88,7 @@ public class WidgetInstance extends AbstractKeyBean {
 		public void setNonce(String nonce) {
 			this.nonce = nonce;
 		}
-		
-		public String getRunId() {
-			return runId;
-		}
-		
-		public void setRunId(String runId) {
-			this.runId = runId;
-		}
-		
+
 		public boolean isShown() {
 			return shown;
 		}
@@ -123,19 +113,9 @@ public class WidgetInstance extends AbstractKeyBean {
 			this.userId = userId;
 		}
 
-		public String getServiceId() {
-			return serviceId;
-		}
-
-		public void setServiceId(String serviceId) {
-			this.serviceId = serviceId;
-		}
-
-
 		public boolean isLocked() {
 			return locked;
 		}
-
 
 		public void setLocked(boolean locked) {
 			this.locked = locked;
