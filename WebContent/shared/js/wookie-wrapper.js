@@ -84,11 +84,9 @@ var Widget = {
 	
 	getProxyUrl : function(){
 		return this.proxyUrl;
-	},
-	
+	},	
 	proxify : function(url){
-		return proxyUrl + "?instanceid_key=" + instanceid_key + "&url=" + url
-		
+			return this.proxyUrl + "?instanceid_key=" + this.instanceid_key + "&url=" + url;
 	}
 }
 // very important !
