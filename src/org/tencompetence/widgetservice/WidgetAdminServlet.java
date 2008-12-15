@@ -46,6 +46,7 @@ import org.tencompetence.widgetservice.manager.impl.WidgetAdminManager;
 import org.tencompetence.widgetservice.util.ManifestHelper;
 import org.tencompetence.widgetservice.util.StartPageJSParser;
 import org.tencompetence.widgetservice.util.ZipUtils;
+import org.tencompetence.widgetservice.util.StartPageJSParser;
 
 /**
  * Servlet implementation class for Servlet: WidgetAdminServlet
@@ -53,7 +54,7 @@ import org.tencompetence.widgetservice.util.ZipUtils;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.8 2008-12-03 15:31:53 ps3com Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.9 2008-12-15 09:12:20 kris_popat Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -387,6 +388,9 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 							// get the url to the start page
 							String relativestartUrl = (ManifestHelper.getURLForWidget(properties, uid, src));
 							String relativeIconUrl=null;
+							
+							
+							
 							// get the url path to the icon file
 							
 							File startFile = new File(newWidgetFolder.getCanonicalPath() + File.separator + src);							
