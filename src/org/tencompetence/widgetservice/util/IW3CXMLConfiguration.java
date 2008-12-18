@@ -30,7 +30,7 @@ package org.tencompetence.widgetservice.util;
  * Constants for widget elements found in the config.xml file
  *
  * @author Paul Sharples
- * @version $Id: IW3CXMLConfiguration.java,v 1.3 2008-12-18 11:30:52 ps3com Exp $
+ * @version $Id: IW3CXMLConfiguration.java,v 1.4 2008-12-18 11:49:41 ps3com Exp $
  */
 public interface IW3CXMLConfiguration {
 	
@@ -63,6 +63,6 @@ public interface IW3CXMLConfiguration {
 	public static final String START_ATTRIBUTE = "start";
 	public static final String CHROME_ATTRIBUTE = "chrome";
 	public static final String MANIFEST_FILE = "config.xml";
-	public static final String MANIFEST_NAMESPACE = "http://http://www.w3.org/ns/widgets";
+	public static final String MANIFEST_NAMESPACE = "http://www.w3.org/ns/widgets";
 	
 }
