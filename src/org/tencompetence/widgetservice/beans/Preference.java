@@ -29,7 +29,7 @@ package org.tencompetence.widgetservice.beans;
 /**
  * A preference entity
  * @author Paul Sharples
- * @version $Id
+ * @version $Id: Preference.java,v 1.3 2008-12-18 11:30:52 ps3com Exp $
  *
  */
 public class Preference extends AbstractKeyBean {

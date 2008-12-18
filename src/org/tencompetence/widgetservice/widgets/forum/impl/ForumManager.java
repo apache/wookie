@@ -47,7 +47,7 @@ import org.tencompetence.widgetservice.widgets.forum.PostNode;
  * 
  * @author Paul Sharples  
  * @author Phillip Beauvour
- * @version $Id
+ * @version $Id: ForumManager.java,v 1.3 2008-12-18 11:30:52 ps3com Exp $
  *
  */
 public class ForumManager implements IForumManager {

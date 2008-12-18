@@ -29,7 +29,7 @@ package org.tencompetence.widgetservice.exceptions;
 /**
  * Call to a widget that was not supported by the server
  * @author Paul Sharples
- * @version $Id
+ * @version $Id: WidgetTypeNotSupportedException.java,v 1.3 2008-12-18 11:30:52 ps3com Exp $
  */
 public class WidgetTypeNotSupportedException extends Exception {
 

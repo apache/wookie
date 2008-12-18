@@ -6,7 +6,7 @@
 <hibernate-mapping
 	package="org.tencompetence.widgetservice.beans">
 
-	<class name="Widget" table="WIDGET">
+	<class name="Widget" table="Widget">
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>
@@ -25,7 +25,7 @@
 		</set>
 	</class>
 	
-	<class name="WidgetType" table="WIDGETTYPE">
+	<class name="WidgetType" table="WidgetType">
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>
@@ -33,7 +33,7 @@
 		<property name="widgetContext" column="widget_context" type="string" />
 	</class>
 	
-	<class name="WidgetService" table="WIDGETSERVICE">
+	<class name="WidgetService" table="WidgetService">
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>		
@@ -41,7 +41,7 @@
 	</class>
 
 
-	<class name="WidgetDefault" table="WIDGETDEFAULT">
+	<class name="WidgetDefault" table="WidgetDefault">
 		<id name="widgetContext" type="string">
 			<generator class="assigned" />
 		</id>
@@ -49,7 +49,7 @@
 	</class>
 
 
-	<class name="WidgetInstance" table="WIDGETINSTANCE">
+	<class name="WidgetInstance" table="WidgetInstance">
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>		
@@ -64,7 +64,7 @@
 		<property name="locked" type="true_false" />
 	</class>
 
-	<class name="SharedData" table="SHAREDDATA">
+	<class name="SharedData" table="SharedData">
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>		
@@ -73,7 +73,7 @@
 		<property name="dvalue" type="text" length="2147483647"/>
 	</class>
 	
-	<class name="Preference" table="PREFERENCE">
+	<class name="Preference" table="Preference">
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>
@@ -82,14 +82,14 @@
 		<property name="dvalue" type="text" length="2147483647"/>
 	</class>
 		
-	<class name="Whitelist" table="WHITELIST">
+	<class name="Whitelist" table="Whitelist">
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>		
 		<property name="fUrl" />		
 	</class>
 	
-	<class name="Post" table="POST">
+	<class name="Post" table="Post">
 		<id name="id" column="id">
             <generator class="native"/>
         </id>               

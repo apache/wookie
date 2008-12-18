@@ -30,7 +30,7 @@ package org.tencompetence.widgetservice.beans;
  * A whitelist entity
  * 
  * @author Paul Sharples
- * @version $Id
+ * @version $Id: Whitelist.java,v 1.3 2008-12-18 11:30:52 ps3com Exp $
  * 
  */
 public class Whitelist extends AbstractKeyBean {

@@ -33,7 +33,6 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.SharedData;
-import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.manager.IWidgetAPIManager;
 import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;

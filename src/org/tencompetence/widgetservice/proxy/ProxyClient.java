@@ -53,7 +53,7 @@ import org.apache.log4j.Logger;
  * A class using HttpClient to handle HTTP requests & manipulate the responses
  *
  * @author Paul Sharples
- * @version $Id: ProxyClient.java,v 1.7 2008-07-08 14:39:52 ps3com Exp $
+ * @version $Id: ProxyClient.java,v 1.8 2008-12-18 11:30:52 ps3com Exp $
  */
 public class ProxyClient {
 	
@@ -107,7 +107,8 @@ public class ProxyClient {
 	}
 		
 	    
-	    private String executeMethod(HttpMethod method, Configuration properties) throws Exception {
+	    @SuppressWarnings("unchecked")
+		private String executeMethod(HttpMethod method, Configuration properties) throws Exception {
 			// Execute the method.
 			try {		
 				HttpClient client = new HttpClient();
@@ -182,7 +183,8 @@ public class ProxyClient {
 		 * @return
 		 * @throws IOException
 		 */
-		 private String readFully(Reader input) throws IOException {
+		 @SuppressWarnings("unused")
+		private String readFully(Reader input) throws IOException {
 			BufferedReader bufferedReader = input instanceof BufferedReader ? (BufferedReader) input
 					: new BufferedReader(input);
 			StringBuffer result = new StringBuffer();

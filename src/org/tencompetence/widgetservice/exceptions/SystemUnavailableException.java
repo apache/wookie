@@ -29,7 +29,7 @@ package org.tencompetence.widgetservice.exceptions;
 /**
  * System unavailable 
  * @author Paul Sharples
- * @version $Id
+ * @version $Id: SystemUnavailableException.java,v 1.3 2008-12-18 11:30:52 ps3com Exp $
  */
 public class SystemUnavailableException extends Exception {
 	

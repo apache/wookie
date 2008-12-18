@@ -31,7 +31,7 @@ import java.io.Serializable;
  * Basic id key functionality of a bean to be modelled in the DB  
  * @author Paul Sharples
  * @author sheyenrath
- * @version $Id
+ * @version $Id: AbstractKeyBean.java,v 1.3 2008-12-18 11:30:52 ps3com Exp $
  */
 public class AbstractKeyBean implements Serializable{
 

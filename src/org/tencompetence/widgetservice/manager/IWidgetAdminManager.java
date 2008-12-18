@@ -36,7 +36,7 @@ import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedExceptio
  * Interface for admin functions
  * 
  * @author Paul Sharples
- * @version $Id: IWidgetAdminManager.java,v 1.4 2008-12-02 17:11:20 kris_popat Exp $
+ * @version $Id: IWidgetAdminManager.java,v 1.5 2008-12-18 11:30:52 ps3com Exp $
  *
  */
 public interface IWidgetAdminManager {
@@ -63,6 +63,11 @@ public interface IWidgetAdminManager {
 	 */
 	int addNewWidget(String widgetIconLocation, String url, java.util.Hashtable<String,String> widgetData, String[] widgetTypes);
 
+	/**
+	 * Add a new whitelist entry
+	 * @param uri
+	 * @return
+	 */
 	boolean addWhiteListEntry(String uri);
 
 	/**
@@ -70,6 +75,11 @@ public interface IWidgetAdminManager {
 	 */
 	void deleteWidgetDefaultById(int widgetKey);
 
+	/**
+	 * from a given widgetKey & service type, remove the default widget entry
+	 * @param widgetKey
+	 * @param serviceType
+	 */
 	void deleteWidgetDefaultByIdAndServiceType(int widgetKey,
 			String serviceType);
 
@@ -87,6 +97,11 @@ public interface IWidgetAdminManager {
 	boolean doesServiceExistForWidget(int dbkey,
 			String serviceType);
 
+	/**
+	 * using the GIUD found in the config.xml file, ascertain if this widget already exists
+	 * @param guid
+	 * @return
+	 */
 	boolean doesWidgetAlreadyExistInSystem(String guid);
 
 	/**
@@ -108,8 +123,17 @@ public interface IWidgetAdminManager {
 	 */
 	Widget[] getAllWidgets();
 
+	/**
+	 * Return all whitelist entries
+	 * @return
+	 */
 	Whitelist[] getWhiteList();
 
+	/**
+	 * Get a widget object using its DB key
+	 * @param dbKey
+	 * @return
+	 */
 	Widget getWidget(int dbKey);
 
 	/**
@@ -120,23 +144,53 @@ public interface IWidgetAdminManager {
 	Widget[] getWidgetsByType(String typeToSearch)
 			throws WidgetTypeNotSupportedException;
 
+	/**
+	 * Get a widget service type, using its DB key
+	 * @param dbKey
+	 * @return
+	 */
 	WidgetService getWidgetService(int dbKey);
 
+	/**
+	 * Find if this widget is maximizable, from given key
+	 * @param dbKey
+	 * @return
+	 */
 	boolean isWidgetMaximized(int dbKey);
 
 	/**
 	 * Prints the details of all widgets
 	 * @param magr - a widgetAdminManager instance
 	 */
-	@SuppressWarnings("unchecked")
 	void printOutAllWidgets(IWidgetAdminManager magr);
 
+	/**
+	 * Remove from the system the service & any other places it may reside in the DB
+	 *  - i.e in widgetDefault 
+	 * @param serviceId
+	 * @return
+	 */
 	boolean removeServiceAndReferences(int serviceId);
 
+	/**
+	 * 
+	 * @param widgetId
+	 * @param widgetType
+	 */
 	void removeSingleWidgetType(int widgetId, String widgetType);
 
+	/**
+	 * Remove a whitelist entry from the DB
+	 * @param entryId
+	 * @return
+	 */
 	boolean removeWhiteListEntry(int entryId);
 
+	/**
+	 * Remove a widget and any references in the DB - i.e. WidgetInstances 
+	 * @param widgetId
+	 * @return
+	 */
 	boolean removeWidgetAndReferences(int widgetId);
 
 	/**
@@ -146,10 +200,20 @@ public interface IWidgetAdminManager {
 	 */
 	void setDefaultWidget(int key, String widgetType);
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * FRom a given widget db key, allow to add multiple types
+	 * @param dbKey
+	 * @param widgetTypes
+	 * @param maximize
+	 */
 	void setWidgetTypesForWidget(int dbKey,
 			String[] widgetTypes, boolean maximize);
 
+	/**
+	 * Get this widgets GUID
+	 * @param parseInt
+	 * @return
+	 */
 	String getWidgetGuid(int parseInt);
 
 }

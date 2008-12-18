@@ -29,7 +29,7 @@ package org.tencompetence.widgetservice.exceptions;
 /**
  * Invalid call to a widget 
  * @author Paul Sharples
- * @version $Id
+ * @version $Id: InvalidWidgetCallException.java,v 1.3 2008-12-18 11:30:52 ps3com Exp $
  */
 public class InvalidWidgetCallException extends Exception {
 

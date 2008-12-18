@@ -31,7 +31,7 @@ import java.util.Date;
 /**
  * A post entity - a post in a forum
  * @author Paul Sharples
- * @version $Id
+ * @version $Id: Post.java,v 1.4 2008-12-18 11:30:52 ps3com Exp $
  *
  */
 public class Post extends AbstractKeyBean {

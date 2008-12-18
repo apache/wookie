@@ -40,13 +40,13 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
+import org.jdom.JDOMException;
 import org.tencompetence.widgetservice.beans.WidgetDefault;
 import org.tencompetence.widgetservice.manager.IWidgetAdminManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetAdminManager;
 import org.tencompetence.widgetservice.util.ManifestHelper;
 import org.tencompetence.widgetservice.util.StartPageJSParser;
 import org.tencompetence.widgetservice.util.ZipUtils;
-import org.tencompetence.widgetservice.util.StartPageJSParser;
 
 /**
  * Servlet implementation class for Servlet: WidgetAdminServlet
@@ -54,7 +54,7 @@ import org.tencompetence.widgetservice.util.StartPageJSParser;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.9 2008-12-15 09:12:20 kris_popat Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.10 2008-12-18 11:30:52 ps3com Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -95,6 +95,12 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 	}   	
 	
 
+	/**
+	 * Add a new service type to the DB
+	 * @param session
+	 * @param request
+	 * @param manager
+	 */
 	private void addNewService(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager) {
 		String serviceName = request.getParameter("newservice");
 		if(manager.addNewService(serviceName)){	
@@ -105,9 +111,9 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		}
 	}
 
-
-
-
+	/**
+	 *  Adds a new entry to the whitelist DB
+	 */
 	private void addWhiteListEntry(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager) {
 		String uri = request.getParameter("newuri");
 		if(manager.addWhiteListEntry(uri)){
@@ -118,7 +124,9 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		}
 	}
 
-
+	/**
+	 * Forward to correct jsp page
+	 */
 	private void doForward(HttpServletRequest request, HttpServletResponse response, String jsp) throws ServletException, IOException{
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(jsp);
 		dispatcher.forward(request, response);
@@ -395,6 +403,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 							
 							File startFile = new File(newWidgetFolder.getCanonicalPath() + File.separator + src);							
 							if(startFile.exists()){
+								@SuppressWarnings("unused")
 								StartPageJSParser parser = new StartPageJSParser(startFile);
 							}
 							
@@ -442,10 +451,13 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 				session.setAttribute("error_value","No file found uploaded to server");
 			}						
 		} 		 
-		catch (Exception ex) {
-			//ex.printStackTrace();
+		catch (JDOMException ex) {
 			_logger.error(ex);			
-			session.setAttribute("errors", ex.getMessage());
+			session.setAttribute("error_value", "Unable to parse the config.xml file\n"+ex.getMessage());
+		}
+		catch (Exception ex) {
+			_logger.error(ex);			
+			session.setAttribute("error_value", ex.getMessage());
 		}
 	}
 
