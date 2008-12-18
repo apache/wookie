@@ -2,7 +2,7 @@
 
 <!-- The Hypersonic embedded database JCA connection factory config -->
 
-<!-- $Id: hsqldb-ds.xml,v 1.1 2008-05-13 13:49:26 ps3com Exp $ -->
+<!-- $Id: hsqldb-ds.xml,v 1.2 2008-12-18 11:32:35 ps3com Exp $ -->
 
 <datasources>
    <local-tx-datasource>
@@ -123,9 +123,7 @@
           <min-pool-size>5</min-pool-size>    
           <depends>jboss:service=HSQLSERVER</depends>
      </local-tx-datasource>
-   -->   
-     
-     
+      
       <mbean code="uk.ac.reload.ldplayer.db.HsqlDatabase" 
         name="jboss:service=HSQLSERVER">
         <attribute name="Port">1701</attribute>
@@ -134,5 +132,7 @@
         <attribute name="Trace">false</attribute>
         <attribute name="No_system_exit">true</attribute>
    </mbean>
+   -->   
+     
    
 </datasources>
