@@ -33,7 +33,8 @@ import java.util.List;
 /**
  * A bean to model a post (with optional children)
  * @author Paul Sharples
- *
+ * 
+ * @version $Id: PostNode.java,v 1.4 2008-12-18 14:14:51 ps3com Exp $
  */
 public class PostNode {
 	
