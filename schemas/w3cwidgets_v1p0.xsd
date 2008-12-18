@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://http://www.w3.org/ns/widgets"
-	targetNamespace="http://http://www.w3.org/ns/widgets"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance"
+<xs:schema targetNamespace="http://www.w3.org/ns/widgets"
 	elementFormDefault="qualified" version="Widgets W3C 1.0"
-	attributeFormDefault="unqualified">
+	attributeFormDefault="unqualified" xmlns="http://www.w3.org/ns/widgets" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance">
 	
 		<xs:annotation>
         <xs:documentation>
