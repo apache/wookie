@@ -2,7 +2,7 @@ drop database if exists widgetdb;
 create database if not exists widgetdb DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 use widgetdb;
 
-CREATE TABLE `widget` (
+CREATE TABLE `Widget` (
   `id` int(11) NOT NULL auto_increment,
   `widget_title` varchar(255) default NULL,
   `url` varchar(255) default NULL,
@@ -16,10 +16,10 @@ CREATE TABLE `widget` (
   PRIMARY KEY  (`id`)
 );
 
-CREATE TABLE `widgetinstance` (
+CREATE TABLE `WidgetInstance` (
   `id` int(11) NOT NULL auto_increment,
-  `userId` varchar(255) NOT NULL,
-  `sharedDataKey` varchar(255) NOT NULL,  
+  `userId` varchar(255) NOT NULL,  
+  `sharedDataKey` varchar(255) default NULL,
   `nonce` varchar(255) default NULL,
   `idKey` varchar(255) NOT NULL,
   `widget_id` int(11) NOT NULL,
@@ -29,10 +29,10 @@ CREATE TABLE `widgetinstance` (
   `locked` char(1) default NULL,
   PRIMARY KEY  (`id`),
   KEY `FKEA564ED9E2C2E1E5` (`widget_id`),
-  CONSTRAINT `FKEA564ED9E2C2E1E5` FOREIGN KEY (`widget_id`) REFERENCES `widget` (`id`)
+  CONSTRAINT `FKEA564ED9E2C2E1E5` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)
 );
 
-CREATE TABLE `preference` (
+CREATE TABLE `Preference` (
   `id` int(11) NOT NULL auto_increment,
   `widget_instance_id` int(11) NOT NULL,
   `dkey` varchar(255) default NULL,
@@ -40,49 +40,48 @@ CREATE TABLE `preference` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unique_composite` (`widget_instance_id`,`dkey`),
   KEY `FKC5E6A8DB4215462E` (`widget_instance_id`),
-  CONSTRAINT `FKC5E6A8DB4215462E` FOREIGN KEY (`widget_instance_id`) REFERENCES `widgetinstance` (`id`)
+  CONSTRAINT `FKC5E6A8DB4215462E` FOREIGN KEY (`widget_instance_id`) REFERENCES `WidgetInstance` (`id`)
 );
 
-CREATE TABLE `shareddata` (
+CREATE TABLE `SharedData` (
   `id` int(11) NOT NULL auto_increment,
   `sharedDataKey` varchar(255) default NULL,
   `dkey` varchar(255) default NULL,
   `dvalue` text,
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `unique_composite` (`sharedDataKey`,`dkey`),
+  PRIMARY KEY  (`id`), 
   KEY `sharedDataIndex` (`sharedDataKey`)
 );
 
-CREATE TABLE `widgetdefault` (
+CREATE TABLE `WidgetDefault` (
   `widgetContext` varchar(128) NOT NULL,
   `widgetId` int(11) default NULL,
   PRIMARY KEY  (`widgetContext`),
   KEY `FK_widgetdefault_1` (`widgetId`),
-  CONSTRAINT `FK_widgetdefault_1` FOREIGN KEY (`widgetId`) REFERENCES `widget` (`id`)
+  CONSTRAINT `FK_widgetdefault_1` FOREIGN KEY (`widgetId`) REFERENCES `Widget` (`id`)
 );
 
-CREATE TABLE `widgetservice` (
+CREATE TABLE `WidgetService` (
   `id` int(11) NOT NULL auto_increment,
   `service_name` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
 );
 
-CREATE TABLE `widgettype` (
+CREATE TABLE `WidgetType` (
   `id` int(11) NOT NULL auto_increment,
   `widget_id` int(11) NOT NULL,
   `widget_context` varchar(255) default NULL,
   PRIMARY KEY  (`id`),
   KEY `FKAA9137EE2C2E1E5` (`widget_id`),
-  CONSTRAINT `FKAA9137EE2C2E1E5` FOREIGN KEY (`widget_id`) REFERENCES `widget` (`id`)
+  CONSTRAINT `FKAA9137EE2C2E1E5` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)
 );
 
-CREATE TABLE `whitelist` (
+CREATE TABLE `Whitelist` (
   `id` int(11) unsigned NOT NULL auto_increment,
   `fUrl` varchar(200) NOT NULL,
   PRIMARY KEY  (`id`)
 );
 
-CREATE TABLE `post` (
+CREATE TABLE `Post` (
   `id` int(11) NOT NULL auto_increment,
   `user_id` varchar(80) NOT NULL,
   `parent_id` int(11) default '0',
@@ -95,8 +94,8 @@ CREATE TABLE `post` (
 );
 
 
-INSERT INTO `widget` VALUES (1,'Unsupported widget widget','/wookie/wservices/www.tencompetence.org/widgets/default/notsupported/index.htm',350,500,'f','http://www.tencompetence.org/widgets/default/notsupported','This widget is a placeholder for when no corresponding widget is found for a given type','Paul Sharples','/wookie/shared/images/defaultwidget.png'),(2,'Default chat widget','/wookie/wservices/www.tencompetence.org/widgets/default/chat/index.htm',358,500,'f','http://www.tencompetence.org/widgets/default/chat','This widget provides a simple chat or Instant messaging facility','Paul Sharples','/wookie/shared/images/chat.png'),(3,'Default discussion/forum widget','/wookie/wservices/www.tencompetence.org/widgets/default/forum/index.htm',350,520,'t','http://www.tencompetence.org/widgets/default/forum','This widget provides a threaded discussion forum faciltity','Paul Sharples','/wookie/shared/images/forum.png'),(4,'Default vote widget','/wookie/wservices/www.tencompetence.org/widgets/default/vote/index.htm',350,500,'f','http://www.tencompetence.org/widgets/default/vote','This widget provides a voting facility','Paul Sharples','/wookie/shared/images/vote.png');
-INSERT INTO `widgetdefault` VALUES ('unsupported',1),('chat',2),('discussion',3),('forum',3),('vote',4);
-INSERT INTO `widgetservice` VALUES (1,'unsupported'),(2,'chat'),(3,'discussion'),(4,'forum'),(5,'vote');
-INSERT INTO `widgettype` VALUES (1,1,'unsupported'),(2,2,'chat'),(3,3,'forum'),(4,3,'discussion'),(5,4,'vote');
-INSERT INTO `whitelist` VALUES (1,'http://127.0.0.1'),(2,'http://localhost');
+INSERT INTO `Widget` VALUES (1,'Unsupported widget widget','/wookie/wservices/www.tencompetence.org/widgets/default/notsupported/index.htm',350,500,'f','http://www.tencompetence.org/widgets/default/notsupported','This widget is a placeholder for when no corresponding widget is found for a given type','Paul Sharples','/wookie/shared/images/defaultwidget.png'),(2,'Default chat widget','/wookie/wservices/www.tencompetence.org/widgets/default/chat/index.htm',358,500,'f','http://www.tencompetence.org/widgets/default/chat','This widget provides a simple chat or Instant messaging facility','Paul Sharples','/wookie/shared/images/chat.png'),(3,'Default discussion/forum widget','/wookie/wservices/www.tencompetence.org/widgets/default/forum/index.htm',350,520,'t','http://www.tencompetence.org/widgets/default/forum','This widget provides a threaded discussion forum faciltity','Paul Sharples','/wookie/shared/images/forum.png'),(4,'Default vote widget','/wookie/wservices/www.tencompetence.org/widgets/default/vote/index.htm',350,500,'f','http://www.tencompetence.org/widgets/default/vote','This widget provides a voting facility','Paul Sharples','/wookie/shared/images/vote.png');
+INSERT INTO `WidgetDefault` VALUES ('unsupported',1),('chat',2),('discussion',3),('forum',3),('vote',4);
+INSERT INTO `WidgetService` VALUES (1,'unsupported'),(2,'chat'),(3,'discussion'),(4,'forum'),(5,'vote');
+INSERT INTO `WidgetType` VALUES (1,1,'unsupported'),(2,2,'chat'),(3,3,'forum'),(4,3,'discussion'),(5,4,'vote');
+INSERT INTO `Whitelist` VALUES (1,'http://127.0.0.1'),(2,'http://localhost');
