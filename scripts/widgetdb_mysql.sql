@@ -48,6 +48,7 @@ CREATE TABLE `SharedData` (
   `sharedDataKey` varchar(255) default NULL,
   `dkey` varchar(255) default NULL,
   `dvalue` text,
+  `widgetGuid` varchar (255) NOT NULL,
   PRIMARY KEY  (`id`), 
   KEY `sharedDataIndex` (`sharedDataKey`)
 );
