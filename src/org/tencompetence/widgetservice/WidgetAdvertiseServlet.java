@@ -44,17 +44,17 @@ import org.tencompetence.widgetservice.manager.impl.WidgetAdminManager;
 /**
  * Servlet to advertise the existing widgets in the system
  * @author Paul Sharples
- * @version $Id: WidgetAdvertiseServlet.java,v 1.2 2008-12-18 11:30:52 ps3com Exp $ 
+ * @version $Id: WidgetAdvertiseServlet.java,v 1.3 2009-02-18 16:43:10 scottwilson Exp $ 
  *
  */
 public class WidgetAdvertiseServlet extends HttpServlet implements Servlet {
-	
+
 	private static final String XMLDECLARATION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
 	private static final String CONTENT_TYPE = "text/xml;charset=\"UTF-8\""; 
 
 	private static final long serialVersionUID = 1L;
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -68,27 +68,47 @@ public class WidgetAdvertiseServlet extends HttpServlet implements Servlet {
 		out.println(XMLDECLARATION);		
 		IWidgetAdminManager manager = new WidgetAdminManager();
 		out.println("<widgets>");	
-		for(WidgetDefault widgetDefault : manager.getAllDefaultWidgets()){
-			widget = manager.getWidget(widgetDefault.getWidgetId());
-			if(widget.getId()!=1){
-				out.println("\t<widget identifier=\""+widget.getGuid()+"\">");			
-				out.println("\t\t<title>"+widget.getWidgetTitle()+"</title>");
-				out.println("\t\t<description>"+widget.getWidgetDescription()+"</description>");
-				
-				iconPath = widget.getWidgetIconLocation();
-				urlWidgetIcon = new URL(request.getScheme() ,
-						request.getServerName() ,
-						request.getServerPort() , iconPath);
-				
-				
-				out.println("\t\t<icon>"+urlWidgetIcon.toString()+"</icon>");
-				out.println("\t\t<parameter>widget=" + widgetDefault.getWidgetContext()+"</parameter>");
-				out.println("\t</widget>");
-			}
-		}						
+
+		if (request.getParameter("all")!= null){
+			for(Widget thewidget : manager.getAllWidgets()){
+				widget = thewidget;
+				if(widget.getId()!=1){
+					out.println("\t<widget identifier=\""+widget.getGuid()+"\">");			
+					out.println("\t\t<title>"+widget.getWidgetTitle()+"</title>");
+					out.println("\t\t<description>"+widget.getWidgetDescription()+"</description>");
+
+					iconPath = widget.getWidgetIconLocation();
+					urlWidgetIcon = new URL(request.getScheme() ,
+							request.getServerName() ,
+							request.getServerPort() , iconPath);
+					out.println("\t\t<icon>"+urlWidgetIcon.toString()+"</icon>");
+					out.println("\t\t<parameter>widget=unknown</parameter>");
+					out.println("\t</widget>");
+				}
+			}						
+		} else {
+			for(WidgetDefault widgetDefault : manager.getAllDefaultWidgets()){
+				widget = manager.getWidget(widgetDefault.getWidgetId());
+				if(widget.getId()!=1){
+					out.println("\t<widget identifier=\""+widget.getGuid()+"\">");			
+					out.println("\t\t<title>"+widget.getWidgetTitle()+"</title>");
+					out.println("\t\t<description>"+widget.getWidgetDescription()+"</description>");
+
+					iconPath = widget.getWidgetIconLocation();
+					urlWidgetIcon = new URL(request.getScheme() ,
+							request.getServerName() ,
+							request.getServerPort() , iconPath);
+
+					out.println("\t\t<icon>"+urlWidgetIcon.toString()+"</icon>");
+					out.println("\t\t<parameter>widget=" + widgetDefault.getWidgetContext()+"</parameter>");
+					out.println("\t</widget>");
+				}
+			}						
+		}
 		out.println("</widgets>");
 	}
-	
+
+
 	/*
 	 * (non-Java-doc)
 	 * 
@@ -96,7 +116,7 @@ public class WidgetAdvertiseServlet extends HttpServlet implements Servlet {
 	 *      HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	throws ServletException, IOException {
 		doGet(request, response);
 	}
 
