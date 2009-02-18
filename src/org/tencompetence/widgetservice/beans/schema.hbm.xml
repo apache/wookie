@@ -71,6 +71,7 @@
 		<property name="sharedDataKey" column="sharedDataKey" index="sharedDataIndex" />				
 		<property name="dkey" />
 		<property name="dvalue" type="text" length="2147483647"/>
+		<property name="widgetGuid" column="widgetGuid"/>
 	</class>
 	
 	<class name="Preference" table="Preference">

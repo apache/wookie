@@ -48,7 +48,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.8 2008-12-03 15:32:18 ps3com Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.9 2009-02-18 14:50:42 scottwilson Exp $ 
  *
  */
  public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -175,9 +175,10 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		String userId = request.getParameter("userid");
 		String sharedDataKey = request.getParameter("shareddatakey");	
 		String serviceType = request.getParameter("servicetype");
+		String widgetId = request.getParameter("widgetid");
 		
 		try {						
-			if(userId==null || sharedDataKey==null || serviceType==null){
+			if(userId==null || sharedDataKey==null || (serviceType==null && widgetId==null)){
 				throw new InvalidWidgetCallException();
 			}
 		} 
@@ -206,7 +207,11 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		WidgetInstance widgetInstance;
 				
 		IWidgetServiceManager wsm = new WidgetServiceManager();	
-		widgetInstance = wsm.getWidgetInstance(userId, sharedDataKey, serviceType);
+		if (widgetId != null){
+			widgetInstance = wsm.getWidgetInstanceById(userId, sharedDataKey, widgetId);
+		} else {
+			widgetInstance = wsm.getWidgetInstance(userId, sharedDataKey, serviceType);
+		}
 		
 		if(widgetInstance!=null){
 			// generate a key, url etc
@@ -215,8 +220,16 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		}
 		else{
 			try {
-				// does this type of widget exist?
-				Widget widget = wsm.getDefaultWidgetByType(serviceType);
+				Widget widget;
+				// Widget ID or Widget Type?
+				if (widgetId != null){
+					widget = wsm.getWidgetById(widgetId);
+				} else {
+					// does this type of widget exist?
+					widget = wsm.getDefaultWidgetByType(serviceType);					
+				}
+				
+
 				// generate a nonce
 				String nonce = RandomGUID.getUniqueID("nonce-");				
 
@@ -268,6 +281,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 				+ "&amp;proxy=" + urlWidgetProxyServer.toExternalForm() 
 		);
 		out.println("</url>");
+		out.println("<title>"+widget.getWidgetTitle()+"</title>");
 		out.println("<height>"+widget.getHeight()+"</height>");
 		out.println("<width>"+widget.getWidth()+"</width>");
 		out.println("<maximize>"+widget.isMaximize()+"</maximize>");

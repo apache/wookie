@@ -13,6 +13,15 @@ public interface IWidgetServiceManager extends IWidgetAPIManager {
 	 */
 	Widget getDefaultWidgetByType(String typeToSearch)
 			throws WidgetTypeNotSupportedException;
+	
+	/**
+	 * Get the specified widget
+	 * @param id
+	 * @return a Widget or NULL meaning the id is invalid
+	 * @throws WidgetTypeNotSupportedException
+	 */
+	Widget getWidgetById(String id)
+			throws WidgetTypeNotSupportedException;
 
 	WidgetInstance[] getwidgetInstancesForWidget(Widget widget);
 
@@ -42,6 +51,17 @@ public interface IWidgetServiceManager extends IWidgetAPIManager {
 	 */
 	WidgetInstance getWidgetInstance(String userId, String sharedDataKey, String serviceContext);
 
+	/**
+	 * Get a widgetinstance from the DB
+	 * @param userId - userId to check
+	 * @param runId - runId to check
+	 * @param envId - environmentId to check
+	 * @param serviceId - serviceId to check
+	 * @param widgetId - the widget identifier
+	 * @return
+	 */
+	WidgetInstance getWidgetInstanceById(String userId, String sharedDataKey, String widgetId);
+	
 	/**
 	 * Method to add a new instance to the widget instances table
 	 * @param type

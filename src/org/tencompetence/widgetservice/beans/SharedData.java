@@ -30,7 +30,7 @@ package org.tencompetence.widgetservice.beans;
  * A shared data entity
  * 
  * @author Paul Sharples
- * @version $Id: SharedData.java,v 1.3 2008-12-18 11:30:52 ps3com Exp $
+ * @version $Id: SharedData.java,v 1.4 2009-02-18 14:50:39 scottwilson Exp $
  * 
  */
 public class SharedData extends AbstractKeyBean {
@@ -43,6 +43,7 @@ public class SharedData extends AbstractKeyBean {
 	private String sharedDataKey;
 	private String dkey;
 	private String dvalue;
+	private String widgetGuid;
 
 	public String getDkey() {
 		return dkey;
@@ -62,6 +63,20 @@ public class SharedData extends AbstractKeyBean {
 
 	public void setSharedDataKey(String sharedDataKey) {
 		this.sharedDataKey = sharedDataKey;
+	}
+
+	/**
+	 * @return the widget_guid
+	 */
+	public String getWidgetGuid() {
+		return widgetGuid;
+	}
+
+	/**
+	 * @param widgetGuid the widget_guid to set
+	 */
+	public void setWidgetGuid(String widgetGuid) {
+		this.widgetGuid = widgetGuid;
 	}
 
 	public void setDvalue(String dvalue) {

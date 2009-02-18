@@ -67,9 +67,26 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 		return widget;		 
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getWidgetById(java.lang.String)
+	 */
+	public Widget getWidgetById(String id)
+			throws WidgetTypeNotSupportedException {
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid "
+						+ "FROM Widget widget, WidgetDefault widgetdefault "
+						+ "WHERE widget.guid = '" + id + "'";		
+		
+		Widget widget = (Widget)dbManager.createSQLQuery(sqlQuery).addEntity(Widget.class).uniqueResult();	
+		if(widget==null){
+			throw new WidgetTypeNotSupportedException("Widget " + id + " is not supported");
+		}
+		return widget;	
+	}
 
 
-	
+
+
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getwidgetInstancesForWidget(org.tencompetence.widgetservice.beans.Widget)
 	 */
@@ -180,6 +197,35 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 		}
 	}
 	
+	
+	
+
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getWidgetInstanceById(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public WidgetInstance getWidgetInstanceById(String userId,
+			String sharedDataKey, String widgetId) {
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
+		String sqlQuery =   "select widgetinstance " 							
+							+ "from WidgetInstance widgetinstance "
+							+ "WHERE "
+							+ "widgetinstance.userId ='" + userId + "' "
+							+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "															
+							+ "AND widgetinstance.widget.guid = '" + widgetId + "' "			
+							;							
+		_logger.debug((sqlQuery));				
+		List<?> sqlReturnList = dbManager.createQuery(sqlQuery).list();
+		if(sqlReturnList.size()!=1){
+			return null;
+		}
+		else{
+			return (WidgetInstance)sqlReturnList.get(0);
+		}
+	}
+
+
+
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#addNewWidgetInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.tencompetence.widgetservice.beans.Widget, java.lang.String, java.lang.String)
