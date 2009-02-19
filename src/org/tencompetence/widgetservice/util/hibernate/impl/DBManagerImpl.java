@@ -42,7 +42,7 @@ import org.tencompetence.widgetservice.util.hibernate.HibernateUtil;
 /**
  * @author sheyenrath
  *
- * @version $Id: DBManagerImpl.java,v 1.3 2007-12-13 20:31:33 ps3com Exp $
+ * @version $Id: DBManagerImpl.java,v 1.4 2009-02-19 09:43:29 ps3com Exp $
  */
 public class DBManagerImpl implements IDBManager {
 
@@ -79,8 +79,10 @@ public class DBManagerImpl implements IDBManager {
 	 * @see org.tencompetence.tencs.business.database.IDBManager#closeSession()
 	 */
 	public void closeSession() {
-		session.flush();
-		session.close();
+		if (session.isOpen()) {
+			//session.flush();
+			session.close();
+		}	
 	}
 	
 	/**
