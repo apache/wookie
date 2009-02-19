@@ -42,7 +42,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 /**
  * Filter to set DB transactions
  * @author Paul Sharples
- * @version $Id
+ * @version $Id: MainFilter.java,v 1.5 2009-02-19 09:43:06 ps3com Exp $
  *
  */
 public class MainFilter implements Filter {
@@ -54,18 +54,22 @@ public class MainFilter implements Filter {
 
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) 
 	throws IOException, ServletException {
-		try {
-			request.setCharacterEncoding("UTF-8");
-			response.setContentType("text/xml;charset=\"UTF-8\"");
-			/** Get a DBManager for this thread. */
-			final IDBManager dbManager = DBManagerFactory.getDBManager();				
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("text/xml;charset=\"UTF-8\"");
+		/** Get a DBManager for this thread. */
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		try {							
 			dbManager.beginTransaction();
 			chain.doFilter(request, response);		
-			dbManager.commitTransaction();		
+			dbManager.commitTransaction();
 		}
 		catch (Exception e) {
 			logger.error("error: " + e.getCause());
 			e.printStackTrace();
+		}
+		finally {
+			// Close the session [This method checks if the session is open]
+			dbManager.closeSession();
 		}
 	}
 
