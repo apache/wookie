@@ -1,0 +1,75 @@
+antlr-2.7.6.jar
+	Containing Project URL: http://ant.apache.org/
+	License: Apache License (See apache-2.0.txt)
+
+asm.jar
+	Containing Project URL: http://asm.objectweb.org
+	License: France Telecom Software License (See http://asm.objectweb.org/license.html)
+
+c3p0-0.9.1.2.jar
+	Containing Project URL: http://sourceforge.net/projects/c3p0
+	License: LGPL (See http://www.gnu.org/copyleft/lesser.html or lgnu.txt)
+
+cglib-2.1.3.jar
+	Containing Project URL: http://cglib.sourceforge.net/
+	License: Apache License (See apache-2.0.txt)
+
+commons-codec-1.3.jar
+	Containing Project URL: http://commons.apache.org/codec/
+	License: Apache License (See apache-2.0.txt)
+
+commons-collections-3.2.jar
+	Containing Project URL: http://commons.apache.org/collections/
+	License: Apache License (See apache-2.0.txt)
+
+commons-configuration-1.4.jar
+	Containing Project URL: http://commons.apache.org/configuration/
+	License: Apache License (See apache-2.0.txt)
+
+commons-fileupload-1.0.jar
+	Containing Project URL: http://commons.apache.org/fileupload/
+	License: Apache License (See apache-2.0.txt)
+
+commons-httpclient-3.0.1.jar
+	Containing Project URL: http://hc.apache.org/httpcomponents-client/index.html
+	License: Apache License (See apache-2.0.txt)
+
+commons-lang-2.3.jar
+	Containing Project URL: http://commons.apache.org/lang/
+	License: Apache License (See apache-2.0.txt)
+
+commons-logging.jar
+	Containing Project URL: http://commons.apache.org/logging
+	License: Apache License (See apache-2.0.txt)
+
+dom4j-1.6.1.jar
+	Containing Project URL: http://www.dom4j.org/
+	License: BSD (http://www.dom4j.org/license.html)
+
+dwr_v2.jar
+	Containing Project URL: http://directwebremoting.org/
+	License: Apache License (apache-2.0.txt)
+
+hibernate3.jar
+	Containing Project URL: http://www.hibernate.org/
+	License: LGPL (See http://www.gnu.org/copyleft/lesser.html or lgnu.txt)
+
+htmlcleaner2_1.jar
+	Containing Project URL: http://htmlcleaner.sourceforge.net/
+	License: BSD (http://htmlcleaner.sourceforge.net/license.php)
+
+jdom.jar
+	Containing Project URL: http://www.jdom.org/
+	License: Apache-style (See jdom.txt)
+
+jta.jar
+	Containing Project URL: http://java.sun.com/javaee/technologies/jta/index.jsp
+	License: SUN MICROSYSTEMS, INC. BINARY CODE LICENSE AGREEMENT. (http://www.java.com/en/download/license.jsp)
+
+log4j-1.2.14.jar
+	Containing Project URL: http://logging.apache.org/log4j/1.2/index.html
+	License: Apache License (See apache-2.0.txt)
+
+mysql-connector-java-5.0.5-bin.jar
+	Containing Project URL: http://www.mysql.com/products/connector/j/
+	License: GNU General Public License. (http://www.mysql.com/about/legal/mysql_drivers_license.en.pdf)
