@@ -36,7 +36,7 @@ CREATE TABLE `Preference` (
   `id` int(11) NOT NULL auto_increment,
   `widget_instance_id` int(11) NOT NULL,
   `dkey` varchar(255) default NULL,
-  `dvalue` text,
+  `dvalue` longtext,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unique_composite` (`widget_instance_id`,`dkey`),
   KEY `FKC5E6A8DB4215462E` (`widget_instance_id`),
@@ -47,7 +47,7 @@ CREATE TABLE `SharedData` (
   `id` int(11) NOT NULL auto_increment,
   `sharedDataKey` varchar(255) default NULL,
   `dkey` varchar(255) default NULL,
-  `dvalue` text,
+  `dvalue` longtext,
   `widgetGuid` varchar (255) NOT NULL,
   PRIMARY KEY  (`id`), 
   KEY `sharedDataIndex` (`sharedDataKey`)
