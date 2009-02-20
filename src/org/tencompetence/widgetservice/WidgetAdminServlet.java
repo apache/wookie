@@ -28,6 +28,8 @@ package org.tencompetence.widgetservice;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Hashtable;
 
 import javax.servlet.RequestDispatcher;
@@ -41,12 +43,16 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
+import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetDefault;
 import org.tencompetence.widgetservice.manager.IWidgetAdminManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetAdminManager;
 import org.tencompetence.widgetservice.util.ManifestHelper;
 import org.tencompetence.widgetservice.util.StartPageJSParser;
 import org.tencompetence.widgetservice.util.ZipUtils;
+import org.tencompetence.widgetservice.util.gadgets.GadgetUtils;
+import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
+import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 
 /**
  * Servlet implementation class for Servlet: WidgetAdminServlet
@@ -54,7 +60,7 @@ import org.tencompetence.widgetservice.util.ZipUtils;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.10 2008-12-18 11:30:52 ps3com Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.11 2009-02-20 23:51:00 scottwilson Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -63,7 +69,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 	private enum Operation {
 		ADDNEWSERVICE, ADDNEWWHITELISTENTRY, LISTSERVICES, LISTSERVICESFORADDITION, 
 		LISTWIDGETS, REMOVESERVICE, REMOVESINGLEWIDGETTYPE, REMOVEWHITELISTENTRY, REMOVEWIDGET,  
-		REVISETYPES, SETDEFAULTWIDGET, SETWIDGETTYPES, UPLOADWIDGET, VIEWWHITELIST
+		REVISETYPES, SETDEFAULTWIDGET, SETWIDGETTYPES, UPLOADWIDGET, VIEWWHITELIST, REGISTERGADGET
 	}	
 	 	 	
 	// Get the logger
@@ -80,6 +86,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 	private static final String fremoveWhiteListPage = "/admin/removewhitelist.jsp";	
 	private static final String fUpLoadResultsPage = "/admin/uploadresults.jsp";
 	private static final String fViewWhiteListPage = "/admin/viewwhitelist.jsp";
+	private static final String fRegisterGadgetPage = "/admin/registergadget.jsp";
 	
 	
 	private static final long serialVersionUID = -3026022301561798524L;;	
@@ -253,6 +260,11 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 					doForward(request, response, fListWidgetsPage);
 					break;
 			    }
+				case REGISTERGADGET:{
+					registerOperation(request, properties, manager, session);
+					doForward(request, response,fRegisterGadgetPage);
+				}
+				
 				default: {
 					session.setAttribute("error_value", "No operation could be ascertained");// need to i18n this
 					doForward(request, response, fMainPage);
@@ -376,6 +388,24 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 	    manager.setWidgetTypesForWidget(dbKey, widgetTypes, canMax);
 		session.setAttribute("message_value", "Widget types were successfully set"); 		
 	}  
+	
+	private void registerOperation(HttpServletRequest request, Configuration properties, IWidgetAdminManager manager, HttpSession session){
+		Widget widget = null;
+		try {
+			widget = GadgetUtils.createWidget(request);
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			session.setAttribute("metadata", "There was a problem registering this gadget");
+		}
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		try {
+			dbManager.saveObject(widget);
+			session.setAttribute("metadata", "Successfully created a new entry for this gadget");
+		} catch (Exception e) {
+			session.setAttribute("metadata", "Couldn't create a new entry for this gadget");
+			e.printStackTrace();
+		}
+	}
 	
 	
 	private void uploadOperation(HttpServletRequest request, Configuration properties, IWidgetAdminManager manager, HttpSession session) {	

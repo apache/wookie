@@ -28,6 +28,8 @@ package org.tencompetence.widgetservice.manager.impl;
 
 import java.util.List;
 
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -39,6 +41,7 @@ import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedExceptio
 import org.tencompetence.widgetservice.manager.IWidgetServiceManager;
 import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
 import org.tencompetence.widgetservice.util.hibernate.IDBManager;
+import org.tencompetence.widgetservice.util.opensocial.OpenSocialUtils;
 
 /**
  * A class to manage widget instances
@@ -49,34 +52,34 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 public class WidgetServiceManager extends WidgetAPIManager implements IWidgetServiceManager {
 
 	static Logger _logger = Logger.getLogger(WidgetServiceManager.class.getName());
-		
+
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getDefaultWidgetByType(java.lang.String)
 	 */
 	public Widget getDefaultWidgetByType(String typeToSearch) throws WidgetTypeNotSupportedException {
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid "
-						+ "FROM Widget widget, WidgetDefault widgetdefault "
-						+ "WHERE widget.id = widgetdefault.widgetId "
-						+ "AND widgetdefault.widgetContext='" + typeToSearch + "'";		
-		
+			+ "FROM Widget widget, WidgetDefault widgetdefault "
+			+ "WHERE widget.id = widgetdefault.widgetId "
+			+ "AND widgetdefault.widgetContext='" + typeToSearch + "'";		
+
 		Widget widget = (Widget)dbManager.createSQLQuery(sqlQuery).addEntity(Widget.class).uniqueResult();	
 		if(widget==null){
 			throw new WidgetTypeNotSupportedException("Widget type " + typeToSearch + " is not supported");
 		}
 		return widget;		 
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getWidgetById(java.lang.String)
 	 */
 	public Widget getWidgetById(String id)
-			throws WidgetTypeNotSupportedException {
+	throws WidgetTypeNotSupportedException {
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid "
-						+ "FROM Widget widget, WidgetDefault widgetdefault "
-						+ "WHERE widget.guid = '" + id + "'";		
-		
+			+ "FROM Widget widget, WidgetDefault widgetdefault "
+			+ "WHERE widget.guid = '" + id + "'";		
+
 		Widget widget = (Widget)dbManager.createSQLQuery(sqlQuery).addEntity(Widget.class).uniqueResult();	
 		if(widget==null){
 			throw new WidgetTypeNotSupportedException("Widget " + id + " is not supported");
@@ -106,7 +109,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 			return null;
 		}		 
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#deletePreferenceInstancesForWidgetInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
 	 */
@@ -127,7 +130,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 			_logger.error(ex.getMessage());			
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#deleteSharedDataInstancesForWidgetInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
 	 */
@@ -149,7 +152,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 			_logger.error(ex.getMessage());			
 		}
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#widgetInstanceExists(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
@@ -158,21 +161,21 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
 		String sqlQuery =   "select " +
-							"count(*) "
-							+ "from WidgetInstance widgetinstance, WidgetType widgettype "
-							+ "WHERE "
-							+ "widgetinstance.userId ='" + userId + "' "
-							+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "												
-							+ "AND widgettype.widgetContext ='" + serviceContext + "' "			
-							+ "AND widgetinstance.widget = widgettype.widget"
-							;							
+		"count(*) "
+		+ "from WidgetInstance widgetinstance, WidgetType widgettype "
+		+ "WHERE "
+		+ "widgetinstance.userId ='" + userId + "' "
+		+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "												
+		+ "AND widgettype.widgetContext ='" + serviceContext + "' "			
+		+ "AND widgetinstance.widget = widgettype.widget"
+		;							
 		_logger.debug((sqlQuery));
 		long count=0l; 				
 		count = (Long) dbManager.createQuery(sqlQuery).uniqueResult();
 		return (count == 1 ? true : false); 
-				
+
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getwidgetInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
@@ -180,13 +183,13 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
 		String sqlQuery =   "select widgetinstance " 							
-							+ "from WidgetInstance widgetinstance, WidgetType widgettype "
-							+ "WHERE "
-							+ "widgetinstance.userId ='" + userId + "' "
-							+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "															
-							+ "AND widgettype.widgetContext ='" + serviceContext + "' "			
-							+ "AND widgetinstance.widget = widgettype.widget"
-							;							
+			+ "from WidgetInstance widgetinstance, WidgetType widgettype "
+			+ "WHERE "
+			+ "widgetinstance.userId ='" + userId + "' "
+			+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "															
+			+ "AND widgettype.widgetContext ='" + serviceContext + "' "			
+			+ "AND widgetinstance.widget = widgettype.widget"
+			;							
 		_logger.debug((sqlQuery));				
 		List<?> sqlReturnList = dbManager.createQuery(sqlQuery).list();
 		if(sqlReturnList.size()!=1){
@@ -196,9 +199,9 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 			return (WidgetInstance)sqlReturnList.get(0);
 		}
 	}
-	
-	
-	
+
+
+
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getWidgetInstanceById(java.lang.String, java.lang.String, java.lang.String)
@@ -208,12 +211,12 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
 		String sqlQuery =   "select widgetinstance " 							
-							+ "from WidgetInstance widgetinstance "
-							+ "WHERE "
-							+ "widgetinstance.userId ='" + userId + "' "
-							+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "															
-							+ "AND widgetinstance.widget.guid = '" + widgetId + "' "			
-							;							
+			+ "from WidgetInstance widgetinstance "
+			+ "WHERE "
+			+ "widgetinstance.userId ='" + userId + "' "
+			+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "															
+			+ "AND widgetinstance.widget.guid = '" + widgetId + "' "			
+			;							
 		_logger.debug((sqlQuery));				
 		List<?> sqlReturnList = dbManager.createQuery(sqlQuery).list();
 		if(sqlReturnList.size()!=1){
@@ -231,32 +234,44 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#addNewWidgetInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.tencompetence.widgetservice.beans.Widget, java.lang.String, java.lang.String)
 	 */
 	public WidgetInstance addNewWidgetInstance(String userId, String sharedDataKey, Widget widget, String nonce, String idKey) {		
-			final IDBManager dbManager = DBManagerFactory.getDBManager();
-			WidgetInstance widgetInstance = new WidgetInstance();
-			try {
-				widgetInstance.setUserId(userId);
-				widgetInstance.setSharedDataKey(sharedDataKey);
-				widgetInstance.setIdKey(idKey);
-				widgetInstance.setNonce(nonce);
-				// set the defaults widget for this type			
-				widgetInstance.setWidget(widget);						
-				widgetInstance.setHidden(false);
-				widgetInstance.setShown(true);
-				widgetInstance.setUpdated(false);
-				widgetInstance.setLocked(false);
-				dbManager.saveObject(widgetInstance);	
-				// add in the sharedDataKey as a preference so that a widget can know
-				// what sharedData event to listen to later
-				Preference pref = new Preference();
-				pref.setWidgetInstance(widgetInstance);
-				pref.setDkey("sharedDataKey");				
-				pref.setDvalue(sharedDataKey);
-				dbManager.saveObject(pref);	
-			} 
-			catch (Exception e) {
-				_logger.error(e.getMessage());
-			}		
-			return widgetInstance;
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		WidgetInstance widgetInstance = new WidgetInstance();
+		try {
+			widgetInstance.setUserId(userId);
+			widgetInstance.setSharedDataKey(sharedDataKey);
+			widgetInstance.setIdKey(idKey);
+			widgetInstance.setNonce(nonce);
+			// set the defaults widget for this type			
+			widgetInstance.setWidget(widget);						
+			widgetInstance.setHidden(false);
+			widgetInstance.setShown(true);
+			widgetInstance.setUpdated(false);
+			widgetInstance.setLocked(false);
+			// Setup opensocial token if needed
+			Configuration configuration = new PropertiesConfiguration("opensocial.properties");
+			widgetInstance.setOpensocialToken("");
+			if (configuration.getBoolean("EnableOpenSocial")){
+				if (configuration.getBoolean("UseSecureTokens")){
+					widgetInstance.setOpensocialToken(OpenSocialUtils.createEncryptedToken(widgetInstance,configuration.getString("key")));
+				} else {
+					widgetInstance.setOpensocialToken(OpenSocialUtils.createPlainToken(widgetInstance));					
+				}
+			}
+			// Save
+			dbManager.saveObject(widgetInstance);	
+			// add in the sharedDataKey as a preference so that a widget can know
+			// what sharedData event to listen to later
+			Preference pref = new Preference();
+			pref.setWidgetInstance(widgetInstance);
+			pref.setDkey("sharedDataKey");				
+			pref.setDvalue(sharedDataKey);
+			dbManager.saveObject(pref);	
+		} 
+		catch (Exception e) {
+			_logger.error(e.getMessage());
+		}		
+		return widgetInstance;
 	}
 	
 }
+

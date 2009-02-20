@@ -48,7 +48,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.9 2009-02-18 14:50:42 scottwilson Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.10 2009-02-20 23:51:00 scottwilson Exp $ 
  *
  */
  public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -216,7 +216,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		if(widgetInstance!=null){
 			// generate a key, url etc
 			//doForward(request, response, _okPage);
-			formatReturnDoc(request, response, widgetInstance.getWidget(), widgetInstance.getIdKey());
+			formatReturnDoc(request, response, widgetInstance.getWidget(), widgetInstance.getIdKey(), widgetInstance.getOpensocialToken());
 		}
 		else{
 			try {
@@ -244,14 +244,14 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 				
 				widgetInstance = wsm.addNewWidgetInstance(userId, sharedDataKey, widget, nonce, hashKey);
 				_logger.debug("new widgetinstance added");
-				formatReturnDoc(request, response, widgetInstance.getWidget(), widgetInstance.getIdKey());
+				formatReturnDoc(request, response, widgetInstance.getWidget(), widgetInstance.getIdKey(), widgetInstance.getOpensocialToken());
 			} 
 			catch (WidgetTypeNotSupportedException ex) {
 				// widget not supported	
 				// Here we will return a key to a holding page - ie no widget found
 				try {
 					Widget unsupportedWidget = wsm.getDefaultWidgetByType("unsupported");
-					formatReturnDoc(request, response, unsupportedWidget, "0000");
+					formatReturnDoc(request, response, unsupportedWidget, "0000", "");
 				} 
 				catch (WidgetTypeNotSupportedException e) {	
 					_logger.debug("WidgetTypeNotSupportedException:"+ex.getMessage());				
@@ -266,7 +266,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		}
 	}  	
 	
-	private void formatReturnDoc(HttpServletRequest request, HttpServletResponse response, Widget widget, String key) throws IOException{
+	private void formatReturnDoc(HttpServletRequest request, HttpServletResponse response, Widget widget, String key, String token) throws IOException{
 		URL urlWidget =  new URL(request.getScheme() ,
 				request.getServerName() ,
 				request.getServerPort() , widget.getUrl());
@@ -279,6 +279,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		out.print(urlWidget + "?idkey=" + key 
 				//+ "&amp;url=" + urlWidgetAPIServer.toExternalForm()  
 				+ "&amp;proxy=" + urlWidgetProxyServer.toExternalForm() 
+				+ "&amp;st=" + token
 		);
 		out.println("</url>");
 		out.println("<title>"+widget.getWidgetTitle()+"</title>");

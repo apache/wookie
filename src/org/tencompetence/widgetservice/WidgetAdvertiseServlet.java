@@ -44,7 +44,7 @@ import org.tencompetence.widgetservice.manager.impl.WidgetAdminManager;
 /**
  * Servlet to advertise the existing widgets in the system
  * @author Paul Sharples
- * @version $Id: WidgetAdvertiseServlet.java,v 1.3 2009-02-18 16:43:10 scottwilson Exp $ 
+ * @version $Id: WidgetAdvertiseServlet.java,v 1.4 2009-02-20 23:51:00 scottwilson Exp $ 
  *
  */
 public class WidgetAdvertiseServlet extends HttpServlet implements Servlet {
@@ -78,9 +78,15 @@ public class WidgetAdvertiseServlet extends HttpServlet implements Servlet {
 					out.println("\t\t<description>"+widget.getWidgetDescription()+"</description>");
 
 					iconPath = widget.getWidgetIconLocation();
+					// If local...
+					if (!iconPath.startsWith("http")){
 					urlWidgetIcon = new URL(request.getScheme() ,
 							request.getServerName() ,
 							request.getServerPort() , iconPath);
+					} else {
+						urlWidgetIcon = new URL(iconPath);
+					}
+					
 					out.println("\t\t<icon>"+urlWidgetIcon.toString()+"</icon>");
 					out.println("\t\t<parameter>widget=unknown</parameter>");
 					out.println("\t</widget>");

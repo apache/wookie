@@ -56,7 +56,8 @@
 		<property name="userId" not-null="true"/>				
 		<property name="sharedDataKey" not-null="true"/>				
 		<property name="nonce"/>
-		<property name="idKey" not-null="true"/>		
+		<property name="idKey" not-null="true"/>
+		<property name="opensocialToken" not-null="true"/>		
 		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />		
 		<property name="updated" type="true_false" />
 		<property name="shown" type="true_false" />
