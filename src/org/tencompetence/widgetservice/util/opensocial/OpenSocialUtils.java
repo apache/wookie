@@ -3,12 +3,10 @@
  */
 package org.tencompetence.widgetservice.util.opensocial;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.shindig.auth.BasicSecurityToken;
 import org.apache.shindig.auth.BlobCrypterSecurityToken;
 import org.apache.shindig.common.crypto.BasicBlobCrypter;
 import org.apache.shindig.common.crypto.BlobCrypterException;
@@ -29,10 +27,10 @@ public class OpenSocialUtils {
 	/**
 	 * A quick explanation of the fields in the SecurityToken
 	 * 
-	 * VIEWER = who the current user is
-	 * OWNER = who the page belongs to
-	 * APP_ID = what gadget this is 
-	 * MOD_ID = which instance of it 
+	 * VIEWER = who the current user is (ie. Instance.getUserId)
+	 * OWNER = who the page belongs to (assumed to be Instance.getUserId until we change plugin API)
+	 * APP_ID = what gadget this is (i.e. Widget.guid)
+	 * MOD_ID = which instance of it  (i.e. Instance.id/idkey)
 	 * 
 	 * Alas, MOD_ID doesn't really map onto instance.IdKey (incompatible types), so we just have to use instance.id
 	 */
@@ -43,24 +41,24 @@ public class OpenSocialUtils {
 	 * @return the plain text token for the widget instance
 	 * @throws Exception
 	 */
-	public static String createPlainToken(WidgetInstance instance){
+	public static String createPlainToken(WidgetInstance instance) throws Exception{
+		
+		if (instance == null) throw new Exception("Instance used to create token cannot be null");
+		// check we have the required information:
+		if (instance.getUserId().equals(null) || instance.getWidget() == null || instance.getIdKey() == null) {
+			throw new Exception("Instance cannot be used to create token - invalid content");
+		}
+
+		
 		// Order of fields is:
 		// owner, viewer, app_id, domain, app_url, mod_id, container
 		String[] fields = {instance.getUserId(), instance.getUserId(), instance.getWidget().getGuid(), DOMAIN_ID, instance.getWidget().getUrl(), "0", String.valueOf(instance.getIdKey())};
 		for (int i = 0; i < fields.length; i++) {
 			// escape each field individually, for metachars in URL
-				try {
-					fields[i] = URLEncoder.encode(fields[i], "UTF-8");
-				} catch (UnsupportedEncodingException e) {
-					_logger.error(e.getMessage());
-				}
+			fields[i] = URLEncoder.encode(fields[i], "UTF-8");
 		}		
 		String token = StringUtils.join(fields, ":");
-		try {
-			token = URLEncoder.encode(token, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			_logger.error(e.getMessage());
-		}
+		token = URLEncoder.encode(token, "UTF-8");
 		
 		return token;		
 	}
@@ -72,19 +70,24 @@ public class OpenSocialUtils {
 	 * @return the encrypted token for the widget instance
 	 * @throws Exception
 	 */
-	public static String createEncryptedToken(WidgetInstance instance, String key){
+	public static String createEncryptedToken(WidgetInstance instance, String key) throws Exception{
+		
+		if (instance == null) throw new Exception("Instance used to create token cannot be null");
+		// check we have the required information:
+		if (instance.getUserId().equals(null) || instance.getWidget() == null || instance.getIdKey() == null) {
+			throw new Exception("Instance cannot be used to create token - invalid content");
+		}
+		
 		BasicBlobCrypter crypter = new BasicBlobCrypter(key.getBytes());
 		BlobCrypterSecurityToken token = new BlobCrypterSecurityToken(crypter, CONTAINER_ID, DOMAIN_ID);
 		token.setAppUrl(instance.getWidget().getUrl());
+		// The ModuleId only takes a long
 		token.setModuleId(instance.getIdKey().hashCode());
 		token.setOwnerId(instance.getUserId());
 		token.setViewerId(instance.getUserId());
 		String encryptedToken = null;
-		try {
-			encryptedToken = token.encrypt();
-		} catch (BlobCrypterException e) {
-			_logger.error(e.getMessage());
-		}
+		encryptedToken = token.encrypt();
+		encryptedToken = URLEncoder.encode(encryptedToken, "UTF-8");
 		return encryptedToken;
 	}
 

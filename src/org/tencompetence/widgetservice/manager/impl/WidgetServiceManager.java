@@ -247,9 +247,11 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 			widgetInstance.setShown(true);
 			widgetInstance.setUpdated(false);
 			widgetInstance.setLocked(false);
+			
 			// Setup opensocial token if needed
 			Configuration configuration = new PropertiesConfiguration("opensocial.properties");
 			widgetInstance.setOpensocialToken("");
+
 			if (configuration.getBoolean("EnableOpenSocial")){
 				if (configuration.getBoolean("UseSecureTokens")){
 					widgetInstance.setOpensocialToken(OpenSocialUtils.createEncryptedToken(widgetInstance,configuration.getString("key")));
@@ -257,8 +259,10 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 					widgetInstance.setOpensocialToken(OpenSocialUtils.createPlainToken(widgetInstance));					
 				}
 			}
+			
 			// Save
-			dbManager.saveObject(widgetInstance);	
+			dbManager.saveObject(widgetInstance);
+
 			// add in the sharedDataKey as a preference so that a widget can know
 			// what sharedData event to listen to later
 			Preference pref = new Preference();

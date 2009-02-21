@@ -60,7 +60,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.11 2009-02-20 23:51:00 scottwilson Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.12 2009-02-21 23:40:22 scottwilson Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -393,8 +393,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		Widget widget = null;
 		try {
 			widget = GadgetUtils.createWidget(request);
-		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
+		} catch (Exception e1) {
 			session.setAttribute("metadata", "There was a problem registering this gadget");
 		}
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
