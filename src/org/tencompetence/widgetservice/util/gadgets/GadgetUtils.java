@@ -33,6 +33,11 @@ public class GadgetUtils {
 	public static final String METADATA_SERVICE = "/gadgets/metadata";
 	
 	/**
+	 * The default Container ID
+	 */
+	private static final String CONTAINER_ID = "wookie";
+	
+	/**
 	 * Create a new Widget from the request supplied
 	 * @param request the registration request, with a url parameter for the desired widget
 	 * @return the widget
@@ -70,7 +75,7 @@ public class GadgetUtils {
 	 */
 	public static String getMetadata(String service,String url){
 		String request = new String();
-		request = "{\"context\":{\"country\":\"US\",\"language\":\"en\",\"view\":\"default\",\"container\":\"default\"},\"gadgets\":[{\"url\":\""+url+"\",\"moduleId\":1}]}";
+		request = "{\"context\":{\"country\":\"US\",\"language\":\"en\",\"view\":\"default\",\"container\":\""+CONTAINER_ID+"\"},\"gadgets\":[{\"url\":\""+url+"\",\"moduleId\":1}]}";
 
 		StringRequestEntity req = null;
 		try {
@@ -142,7 +147,9 @@ public class GadgetUtils {
     	for (int idx=0;idx < gadgets.length(); idx++){
     		gadget = gadgets.getJSONObject(idx);
     		widget.setGuid(gadget.getString("url"));
-    		widget.setUrl(gadget.getString("iframeUrl"));
+    		// We should be able to use the "iframeUrl" property here, but
+    		// it isn't very reliable at generating a usable value
+    		widget.setUrl("/gadgets/ifr?url="+gadget.getString("url"));
     		widget.setHeight(gadget.getInt("height"));
     		// Default from gadget spec
     		if (widget.getHeight() == 0) widget.setHeight(200);
