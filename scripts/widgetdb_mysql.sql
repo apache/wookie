@@ -22,6 +22,7 @@ CREATE TABLE `WidgetInstance` (
   `sharedDataKey` varchar(255) default NULL,
   `nonce` varchar(255) default NULL,
   `idKey` varchar(255) NOT NULL,
+  `opensocialToken` varchar(255) NOT NULL,
   `widget_id` int(11) NOT NULL,
   `updated` char(1) default NULL,
   `shown` char(1) default NULL,
