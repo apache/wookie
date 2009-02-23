@@ -98,13 +98,23 @@
 	
 	<servlet>
 		<description></description>
+		<display-name>WidgetWebServlet</display-name>
+		<servlet-name>WidgetWebServlet</servlet-name>
+		<servlet-class>
+			org.tencompetence.widgetservice.WidgetWebMenuServlet
+		</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	
+	<servlet>
+		<description></description>
 		<display-name>WidgetServiceServlet</display-name>
 		<servlet-name>WidgetServiceServlet</servlet-name>
 		<servlet-class>
 			org.tencompetence.widgetservice.WidgetServiceServlet
 		</servlet-class>
 		<load-on-startup>2</load-on-startup>
-	</servlet>
+	</servlet>	
 	
 	<servlet>
 		<description></description>
@@ -129,6 +139,11 @@
 	<servlet-mapping>
 		<servlet-name>WidgetAdminServlet</servlet-name>
 		<url-pattern>/admin/WidgetAdminServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>WidgetWebServlet</servlet-name>
+		<url-pattern>/webmenu/WidgetWebMenuServlet</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
@@ -172,5 +187,9 @@
 			<description></description>
 			<role-name>widgetadmin</role-name>
 		</security-role>		
-
+		
+		<error-page>
+  			<error-code>401</error-code>
+  			<location>/error/notauthorized.jsp</location>
+ 		</error-page>		
 </web-app>
