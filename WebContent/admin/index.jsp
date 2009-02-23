@@ -1,10 +1,14 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<% String version = (String)session.getAttribute("version");%>
+<% String version = (String)session.getAttribute("version");
+if (version == null){
+	version="";
+}
+%>
 <html>
 <head>
 <title>Widget Server Administration <%=version%></title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="style.css" rel="stylesheet" type="text/css">
+<link href="../style.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -14,11 +18,11 @@
         <h2>Widget Server Administration</h2></td>
   </tr>
   <tr>
-    <td height="40" align="center" class="legend"><a href="index.jsp" class="hypercolourwhite">menu</a></td>
+    <td height="40" align="center" class="legend"></td>
   </tr>
   <tr>  	
     <td valign="top" bgcolor="#FFFFFF" class="tbody">
-	<h3>Main Menu</h3>
+	<h3>Administrator Menu</h3>
 	<% String errors = (String)session.getAttribute("error_value");%>
 	<% String messages = (String)session.getAttribute("message_value");%>
 	<%if(errors!=null){%>
@@ -43,10 +47,13 @@
     <p><a href="WidgetAdminServlet?operation=VIEWWHITELIST&param=list" class="hypercolour"><img src="../shared/images/view.gif" width="16" height="16" border="0">&nbsp;View white list</a></p>
     <p><a href="WidgetAdminServlet?operation=VIEWWHITELIST&param=add" class="hypercolour"><img src="../shared/images/plus1.gif" width="16" height="16" border="0">&nbsp;Add entry to white list</a></p>
     <p><a href="WidgetAdminServlet?operation=VIEWWHITELIST&param=remove" class="hypercolour"><img src="../shared/images/cancel.gif" width="16" height="16" border="0">&nbsp;Remove entry from white list</a></p>
+	<h4>Other</h4>
+	<p><a href="../webmenu/index.jsp" class="hypercolour"><img src="../shared/images/go.gif" width="16" height="16" border="0">&nbsp;Back to main menu</a></p>
+	<p></p>
 	</td>
   </tr>
   <tr>
-    <td height="40" align="center" class="legend"><a href="index.jsp" class="hypercolourwhite">menu</a></td>
+    <td height="40" align="center" class="legend"></td>
   </tr>
 </table>
 

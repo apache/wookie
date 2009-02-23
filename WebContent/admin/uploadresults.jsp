@@ -12,7 +12,7 @@ WidgetService[] services = (WidgetService[])session.getAttribute("services");
 <head>
 <title>Add widget services close:<%=closeWindow %></title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="style.css" rel="stylesheet" type="text/css">
+<link href="../style.css" rel="stylesheet" type="text/css">
 </head>
 <%if (closeWindow){ %>
 <body onload="javascript:pro = window.open('/upload.htm','UploadStatus'); pro.close();">
