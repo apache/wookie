@@ -1,0 +1,158 @@
+body {
+font-family: Arial, Helvetica, sans-serif;
+	color: #333;
+	line-height: 1.166;
+	margin: 0;
+	padding: 0;
+	background-color: #ffffff;
+	font-size: 100%;
+	background-attachment: fixed;	
+}
+
+
+h2 {
+	
+	font-size: 16px;
+	
+}
+.legend {
+	background-color: #333333;
+	color: #FFFFFF;
+	border: #666666;
+
+}
+
+.smallname {
+	font-size: 12px;
+}
+
+.smalldesc {
+	font-size: 10px;
+}
+
+.tbody {
+	color: #333;
+	line-height: 1.166;
+	margin: 0;
+	padding: 0;
+	background: #CCC url("shared/images/bg_gradient.gif") repeat-x;
+	font-size: 14px;
+	background-attachment: fixed;
+}
+h3 {
+	font-size: 14px;
+	background-color: #F0F0F0;
+	font-style: normal;
+	font-weight: bold;
+
+}
+
+a:link {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	text-decoration: none;	
+}
+a:hover {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	text-decoration: none;	
+}
+a:visited {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	text-decoration: none;
+}
+a:active {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	text-decoration: none;
+}
+
+.hypercolour {
+	color: #993399;
+}
+
+.hypercolourwhite {
+	color: #ffffff;
+}
+
+.widget-gallery{
+    margin-left: 10%;
+    margin-right: 10%;
+    clear: both;
+    vertical-align: top;
+}
+
+.wookie-widget{
+    background: url('shared/images/widget-bg.png');
+    display: inline-block;
+    position: relative;
+    height: 285px;
+    width: 180px;
+    margin-top: 10px;
+    vertical-align: top;
+}
+
+.wookie-icon-area{
+    height: 100px;
+    width: 140px;
+   
+    margin-top: 10px;
+    background-color: white;
+    border-color: #999;
+    border-style: solid;
+    border-width: 1px;
+    text-align:center;
+}
+
+.wookie-icon{
+   margin-top: 10px;
+}
+
+.wookie-title{
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 12px;
+    padding-left: 20px;
+    padding-right: 20px;
+    height: 55px;
+    text-align:center;
+    vertical-align: top;
+     background-color:#0000FF;
+}
+
+.wookie-description{
+    font-size: 10px;
+    padding: 20px;
+    height: 55px;
+    vertical-align: top;
+    background-color:#00FF00;
+}   
+
+.wookie-choose{
+    text-align:center;
+    margin-bottom: 5px;
+}
+
+input.wookie-button{
+   font-size:11px;
+   font-family:Tahoma,sans-serif;
+   text-align:center;
+   color:#FFFFFF;
+   width:96px;
+   height:26px;
+   cursor: pointer;
+   background-color:#2878C0;
+   border-top-style:solid;
+   border-top-color:#2878C0;
+   border-top-width:1px;
+   border-bottom-style:solid;
+   border-bottom-color:#2878C0;
+   border-bottom-width:1px;
+   border-left-style:solid;
+   border-left-color:#508CC0;
+   border-left-width:6px;
+   border-right-style:solid;
+   border-right-color:#508CC0;
+   border-right-width:6px;
+}
