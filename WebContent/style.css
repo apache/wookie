@@ -118,7 +118,7 @@ a:active {
     height: 55px;
     text-align:center;
     vertical-align: top;
-     background-color:#0000FF;
+    
 }
 
 .wookie-description{
@@ -126,7 +126,7 @@ a:active {
     padding: 20px;
     height: 55px;
     vertical-align: top;
-    background-color:#00FF00;
+    
 }   
 
 .wookie-choose{
