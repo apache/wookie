@@ -4,13 +4,18 @@
 <head>
 <title>Widget Service Types</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="../style.css" rel="stylesheet" type="text/css">
+<link href="style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 
-<%=metadata%>
+
+<%if(metadata!=null){%>
+    <%=metadata%>
+<%} else {%>
+    <form method="post" action="/wookie/admin/WidgetAdminServlet?operation=REGISTERGADGET">Enter URL of Gadget: <input type="text" size="255" id="url" name="url"></form>
+<%}%>
+
 
 </body>
 </html>
-<% session.setAttribute("error_value", null); %>
-<% session.setAttribute("message_value", null);%>
+<% session.setAttribute("metadata", null); %>
