@@ -11,6 +11,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
@@ -30,7 +31,7 @@ public class GadgetUtils {
 	/**
 	 * Relative URL of the Shindig metadata service
 	 */
-	public static final String METADATA_SERVICE = "/gadgets/metadata";
+	public static final String METADATA_SERVICE = "/shindig/gadgets/metadata";
 
 	/**
 	 * The default Container ID
@@ -49,9 +50,17 @@ public class GadgetUtils {
 	 * @throws MalformedURLException
 	 */
 	public static Widget createWidget(HttpServletRequest request) throws Exception{
+		String svc = GadgetUtils.METADATA_SERVICE;
+		try {
+			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties");
+			if (properties.getString("widget.metadata.url")!=null) svc = properties.getString("widget.metadata.url");
+		} catch (Exception e) {
+			// Problem with the servlet context; we'll just let it go for now
+			// TODO log this error
+		}
 		URL gadgetService = new URL(request.getScheme() ,
 				request.getServerName() ,
-				request.getServerPort() , GadgetUtils.METADATA_SERVICE);
+				request.getServerPort() , svc);
 		return createWidget(gadgetService.toString(), request.getParameter("url"));
 	}
 
@@ -94,6 +103,7 @@ public class GadgetUtils {
 			post.setRequestHeader("Content-Length", String.valueOf(req.getContentLength()));
 			response = executeMethod(post);
 		} catch (Exception e) {
+			System.err.println(e.getMessage());
 			throw new Exception("There was a problem connecting to the Shindig metadata service");
 		}
 		return response;
