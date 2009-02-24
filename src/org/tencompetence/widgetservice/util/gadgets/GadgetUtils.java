@@ -56,35 +56,38 @@ public class GadgetUtils {
 	}
 
 	/**
-	 * Create a new widget based on the gadget url supplied, and the metdata service supplied
+	 * Create a new widget based on the gadget url supplied, and the metadata service url supplied
 	 * @param service the metadata service
 	 * @param url the gadget url
 	 * @return the Widget instance
+	 * @throws Exception
 	 */
 	private static Widget createWidget(String service, String url) throws Exception{
 		return getWidget(getMetadata(service,url));
 	}
 
 	/**
-	 * Return metadata from a metadata service for the requested gadget url
+	 * Returns metadata from a metadata service for the requested gadget url.
+	 * If the request successfully completes, but no valid gadget is found, then
+	 * no exception is thrown - the error information will instead be returned in the JSON string.
 	 * @param service
 	 * @param url
-	 * @return
+	 * @return Gadget metadata as a JSON-formatted String; this may include either gadgets or errors depending on the outcome of the request
+	 * @throws Exception if the service does not exist, the service responds with a HTTP error, or the widget URL is malformed
 	 */
 	public static String getMetadata(String service,String url) throws Exception{
+		
+		try {
+			new URL(url);
+		} catch (MalformedURLException m) {
+			throw new Exception("Gadget URL was malformed");
+		}
+		
 		String request = new String();
 		request = "{\"context\":{\"country\":\"US\",\"language\":\"en\",\"view\":\"default\",\"container\":\""+CONTAINER_ID+"\"},\"gadgets\":[{\"url\":\""+url+"\",\"moduleId\":1}]}";
-
 		StringRequestEntity req = null;
-		try {
-			req = new StringRequestEntity(request, "text/x-json","UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-			//TODO implement
-			e1.printStackTrace();
-		}
-
+		req = new StringRequestEntity(request, "text/x-json","UTF-8");
 		String response = "";
-
 		PostMethod post = new PostMethod(service);
 		try {
 			post.setRequestEntity(req);
@@ -98,8 +101,8 @@ public class GadgetUtils {
 
 	/**
 	 * Call a remote service
-	 * @param method
-	 * @return
+	 * @param method the method to invoke
+	 * @return the response from the remote service
 	 * @throws Exception
 	 */
 	private static String executeMethod(HttpMethod method) throws Exception {
@@ -115,7 +118,6 @@ public class GadgetUtils {
 			if (statusCode == HttpStatus.SC_OK) {		
 				// for now we are only expecting Strings					
 				return method.getResponseBodyAsString();
-				//return readFully(new InputStreamReader(method.getResponseBodyAsStream(), "UTF-8"));
 			}																	
 			else {
 				throw new Exception("Method failed: " + method.getStatusLine() + ' ' + method.getURI() + ' ' + method.getStatusText() + method.getResponseBodyAsString()); //$NON-NLS-1$

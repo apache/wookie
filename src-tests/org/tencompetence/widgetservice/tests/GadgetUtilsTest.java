@@ -32,6 +32,7 @@ public class GadgetUtilsTest extends TestCase {
 	private String TEST_SERVICE_URL_INVALID;
 	private String TEST_GADGET_URL_VALID;
 	private String TEST_GADGET_URL_INVALID;
+	private String TEST_GADGET_URL_MALFORMED;
 	
     @Before public void setUp() {
     	TEST_METADATA_VALID = "{\"gadgets\":[{\"showInDirectory\":false,\"width\":0,\"title\":\"hello world example\",\"singleton\":false,\"categories\":[\"\",\"\"],\"views\":{\"default\":{\"preferredWidth\":0,\"preferredHeight\":0,\"type\":\"html\",\"quirks\":true}},\"screenshot\":\"\",\"links\":{},\"thumbnail\":\"\",\"authorLink\":\"\",\"height\":0,\"scaling\":false,\"moduleId\":1,\"features\":[],\"showStats\":false,\"authorPhoto\":\"\",\"scrolling\":false,\"url\":\"http://www.google.com/ig/modules/hello.xml\",\"titleUrl\":\"\",\"iframeUrl\":\"/gadgets/ifr?container=default&mid=1&v=db18c863f15d5d1e758a91f2a44881b4&lang=en&country=US&view=default&url=http%3A%2F%2Fwww.google.com%2Fig%2Fmodules%2Fhello.xml\",\"userPrefs\":{}}]}";
@@ -44,7 +45,8 @@ public class GadgetUtilsTest extends TestCase {
     	TEST_SERVICE_URL_VALID = "http://localhost:8080/gadgets/metadata";
     	TEST_SERVICE_URL_INVALID= "http://localhost:8080/gadgets/madeupname"; 
     	TEST_GADGET_URL_VALID = "http://www.google.com/ig/modules/hello.xml";
-    	TEST_GADGET_URL_INVALID= "http://localhost:8080/gadgets/madeupname"; 
+    	TEST_GADGET_URL_INVALID= "http://localhost:8080/gadgets/madeupname";
+    	TEST_GADGET_URL_MALFORMED = "ttp://www.google.com/ig/modules/hello.xml";
     }
 	
 	/**
@@ -156,6 +158,20 @@ public class GadgetUtilsTest extends TestCase {
             throws Exception {
         try {
     		String metadata = GadgetUtils.getMetadata(TEST_SERVICE_URL_INVALID, TEST_GADGET_URL_VALID);
+            // Uh-oh! No exception was thrown so we 
+            // better make this test fail!
+            fail("should've thrown an exception!");
+        } catch (Exception expected) {
+            // this is exactly what we were expecting so 
+            // let's just ignore it and let the test pass
+        }
+    }
+    
+    @Test(expected=Exception.class)
+    public void testGetMetadataWithMalformedGadgetUrl()
+            throws Exception {
+        try {
+    		String metadata = GadgetUtils.getMetadata(TEST_SERVICE_URL_VALID, TEST_GADGET_URL_MALFORMED);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");

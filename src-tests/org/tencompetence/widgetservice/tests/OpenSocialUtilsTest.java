@@ -12,7 +12,7 @@ public class OpenSocialUtilsTest extends TestCase {
 	
 	private WidgetInstance INSTANCE;
 	private WidgetInstance INSTANCE_NO_WIDGET;
-	private WidgetInstance INSTANCE_NOT_SAVED;
+	private WidgetInstance INSTANCE_NO_IDKEY;
 	private WidgetInstance INSTANCE_NO_USER_ID;
 	
 	@Before public void setUp(){
@@ -32,10 +32,10 @@ public class OpenSocialUtilsTest extends TestCase {
 		INSTANCE_NO_WIDGET.setIdKey("xhKEoiff/4ltxSuuBmPjjxBx5hw.eq.");
 		INSTANCE_NO_WIDGET.setUserId("scott");
 		
-		INSTANCE_NOT_SAVED = new WidgetInstance();
-		INSTANCE_NOT_SAVED.setWidget(widget);
-		//INSTANCE_NOT_SAVED.setIdKey("xhKEoiff/4ltxSuuBmPjjxBx5hw.eq.");
-		INSTANCE_NOT_SAVED.setUserId("scott");
+		INSTANCE_NO_IDKEY = new WidgetInstance();
+		INSTANCE_NO_IDKEY.setWidget(widget);
+		INSTANCE_NO_IDKEY.setId(1);
+		INSTANCE_NO_IDKEY.setUserId("scott");
 		
 		INSTANCE_NO_USER_ID = new WidgetInstance();
 		INSTANCE_NO_USER_ID.setWidget(widget);
@@ -88,7 +88,7 @@ public class OpenSocialUtilsTest extends TestCase {
     public void testCreatePlainTokenNoId()
             throws Exception {
         try {
-			String token = OpenSocialUtils.createPlainToken(INSTANCE_NOT_SAVED);
+			String token = OpenSocialUtils.createPlainToken(INSTANCE_NO_IDKEY);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");
@@ -141,7 +141,7 @@ public class OpenSocialUtilsTest extends TestCase {
     public void testCreateEncryptedTokenNoId()
             throws Exception {
         try {
-			String token = OpenSocialUtils.createEncryptedToken(INSTANCE_NOT_SAVED,"UNSECURED_TOKEN_KEY");
+			String token = OpenSocialUtils.createEncryptedToken(INSTANCE_NO_IDKEY,"UNSECURED_TOKEN_KEY");
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");

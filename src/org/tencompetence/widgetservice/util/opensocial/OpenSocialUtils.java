@@ -13,6 +13,8 @@ import org.apache.shindig.common.crypto.BlobCrypterException;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 
 /**
+ * Utilities for supporting OpenSocial integration, such as creation of security tokens that
+ * convey OpenSocial container context.
  * @author scott
  *
  */
@@ -21,6 +23,7 @@ public class OpenSocialUtils {
 	static Logger _logger = Logger.getLogger(OpenSocialUtils.class.getName());
 	
 	private static final String DOMAIN_ID = "wookie";
+	// TODO once we have an API Key implementation, we can convey the actual container id rather than Wookie
 	private static final String CONTAINER_ID = "wookie";
 	
 	
@@ -81,7 +84,8 @@ public class OpenSocialUtils {
 		BasicBlobCrypter crypter = new BasicBlobCrypter(key.getBytes());
 		BlobCrypterSecurityToken token = new BlobCrypterSecurityToken(crypter, CONTAINER_ID, DOMAIN_ID);
 		token.setAppUrl(instance.getWidget().getUrl());
-		// The ModuleId only takes a long
+		// The ModuleId only takes a long, so we just have to hash the idKey for now. We could use the instance id,
+		// but this would involve updating the instance object in a two-step create, which is more fiddly and expensive.
 		token.setModuleId(instance.getIdKey().hashCode());
 		token.setOwnerId(instance.getUserId());
 		token.setViewerId(instance.getUserId());
