@@ -49,7 +49,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.11 2009-02-24 09:56:22 scottwilson Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.12 2009-02-24 11:13:46 scottwilson Exp $ 
  *
  */
  public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -191,9 +191,10 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		
 		// set the proxy url.
 		if(urlWidgetProxyServer==null){
+			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties");
 		urlWidgetProxyServer = new URL(request.getScheme() ,
 				request.getServerName() ,
-				request.getServerPort() , "/wookie/proxy");
+				request.getServerPort() , properties.getString("widget.proxy.path"));
 		}
 		_logger.debug(urlWidgetProxyServer.toString());
 		//set the service url.
