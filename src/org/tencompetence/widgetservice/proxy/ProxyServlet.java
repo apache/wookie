@@ -28,8 +28,10 @@ package org.tencompetence.widgetservice.proxy;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -183,7 +185,13 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			return true;
 		}
 		else{
-			return false;
+			// check  if the default Shindig gadget key is being used
+			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("opensocial");
+			if (properties.getBoolean("opensocial.enable") && properties.getString("opensocial.proxy.id").equals(instanceId)) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 		
 	}
@@ -243,8 +251,17 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 				fNewUrl = new URL(endPointURL);
 			} 
 			catch (Exception ex) {
-				fErrorFound = true;
-				fErrorStr = "<error>URL error on request. " + ex.getMessage() + "</error>";					
+				// try decoding the URL
+				try {
+					fNewUrl = new URL(URLDecoder.decode(endPointURL, "UTF-8"));
+				} catch (MalformedURLException e) {
+					fErrorFound = true;
+					fErrorStr = "<error>URL error on request. " + e.getMessage() + "</error>";	
+				} catch (UnsupportedEncodingException e) {
+					fErrorFound = true;
+					fErrorStr = "<error>URL error on request. " + e.getMessage() + "</error>";	
+				}
+				
 			}
 		}
 
