@@ -26,7 +26,7 @@
  */
 package org.tencompetence.widgetservice.manager.impl;
 
-import java.util.List;
+import java.util.List; 
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -233,7 +233,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#addNewWidgetInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.tencompetence.widgetservice.beans.Widget, java.lang.String, java.lang.String)
 	 */
-	public WidgetInstance addNewWidgetInstance(String userId, String sharedDataKey, Widget widget, String nonce, String idKey) {		
+	public WidgetInstance addNewWidgetInstance(String userId, String sharedDataKey, Widget widget, String nonce, String idKey, Configuration properties) {		
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		WidgetInstance widgetInstance = new WidgetInstance();
 		try {
@@ -249,12 +249,11 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 			widgetInstance.setLocked(false);
 			
 			// Setup opensocial token if needed
-			Configuration configuration = new PropertiesConfiguration("opensocial.properties");
 			widgetInstance.setOpensocialToken("");
 
-			if (configuration.getBoolean("EnableOpenSocial")){
-				if (configuration.getBoolean("UseSecureTokens")){
-					widgetInstance.setOpensocialToken(OpenSocialUtils.createEncryptedToken(widgetInstance,configuration.getString("key")));
+			if (properties.getBoolean("opensocial.enable")){
+				if (properties.getString("opensocial.token").equals("secure")){
+					widgetInstance.setOpensocialToken(OpenSocialUtils.createEncryptedToken(widgetInstance,properties.getString("opensocial.key")));
 				} else {
 					widgetInstance.setOpensocialToken(OpenSocialUtils.createPlainToken(widgetInstance));					
 				}

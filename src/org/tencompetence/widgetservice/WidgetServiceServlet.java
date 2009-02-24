@@ -34,6 +34,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
@@ -48,7 +49,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.10 2009-02-20 23:51:00 scottwilson Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.11 2009-02-24 09:56:22 scottwilson Exp $ 
  *
  */
  public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -242,7 +243,9 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 				hashKey = hashKey.replaceAll("&", ".am.");
 				hashKey = hashKey.replaceAll("\\+", ".pl.");
 				
-				widgetInstance = wsm.addNewWidgetInstance(userId, sharedDataKey, widget, nonce, hashKey);
+				
+				Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("opensocial");
+				widgetInstance = wsm.addNewWidgetInstance(userId, sharedDataKey, widget, nonce, hashKey, properties);
 				_logger.debug("new widgetinstance added");
 				formatReturnDoc(request, response, widgetInstance.getWidget(), widgetInstance.getIdKey(), widgetInstance.getOpensocialToken());
 			} 

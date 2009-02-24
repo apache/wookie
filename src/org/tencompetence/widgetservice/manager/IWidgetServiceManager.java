@@ -1,5 +1,6 @@
 package org.tencompetence.widgetservice.manager;
 
+import org.apache.commons.configuration.Configuration;
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedException;
@@ -63,11 +64,16 @@ public interface IWidgetServiceManager extends IWidgetAPIManager {
 	WidgetInstance getWidgetInstanceById(String userId, String sharedDataKey, String widgetId);
 	
 	/**
-	 * Method to add a new instance to the widget instances table
-	 * @param type
-	 * @throws WidgetTypeNotSupportedException 
+	 * Add a new widget instance
+	 * @param userId - user id for the new instance
+	 * @param sharedDataKey - shared data key for the new instance
+	 * @param widget - widget instantiated
+	 * @param nonce - nonce for id generation
+	 * @param idKey - id key of instance
+	 * @param properties - servlet context properties to generate info
+	 * @return the widget instance created
 	 */
 	WidgetInstance addNewWidgetInstance(String userId, String sharedDataKey, Widget widget, String nonce,
-			String idKey);
+			String idKey, Configuration properties);
 
 }

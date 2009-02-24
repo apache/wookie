@@ -40,7 +40,7 @@ import org.tencompetence.widgetservice.util.hibernate.HibernateUtil;
  * to resources under this context
  * 
  * @author Paul Sharples
- * @version $Id: ContextListener.java,v 1.3 2008-06-06 10:50:39 ps3com Exp $ 
+ * @version $Id: ContextListener.java,v 1.4 2009-02-24 09:56:22 scottwilson Exp $ 
  *
  */
 public class ContextListener implements ServletContextListener {
@@ -63,7 +63,13 @@ public class ContextListener implements ServletContextListener {
 			 *  as an attribute 'properties' available to all resources
 			 */
 			Configuration configuration = new PropertiesConfiguration("widgetserver.properties");
-		 	context.setAttribute("properties", (Configuration) configuration);		 	
+		 	context.setAttribute("properties", (Configuration) configuration);
+			/* 
+			 *  load the opensocial.properties file and put it into this context
+			 *  as an attribute 'opensocial' available to all resources
+			 */
+			Configuration opensocialConfiguration = new PropertiesConfiguration("opensocial.properties");
+		 	context.setAttribute("opensocial", (Configuration) opensocialConfiguration);	
 		} 
 		catch (ConfigurationException ex) {
 			_logger.error("ConfigurationException thrown: "+ ex.toString());
