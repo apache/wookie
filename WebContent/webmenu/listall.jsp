@@ -19,14 +19,9 @@
   </tr>
   <tr>  	
     <td valign="top" bgcolor="#FFFFFF" class="tbody">
-	<h3>Gallery</h3>
-	
-	<p>
-	
-	
-	
-	<table  align="center">
-	
+	<h3 class="section">Gallery</h3>	
+	<p>			
+	<table  align="center">	
 	<%	
 	Hashtable widgetsHash = (Hashtable)session.getAttribute("widgetsHash");
 	int count = -1;
@@ -38,8 +33,7 @@
 		String widgetType = (String) e.nextElement();
 		if (!widgetType.equalsIgnoreCase("unsupported")){
 		%>
-		<td class="widget-gallery" align="center" valign="top">
-		
+		<td class="widget-gallery" align="center" valign="top">		
 			<table border="0" class="wookie-widget" bordercolor="#ffffff" align="center">			
 				<%Widget widget  = (Widget)widgetsHash.get(widgetType);%>		 			    
 				<tr>
@@ -47,26 +41,21 @@
 						<div align="center" class="wookie-icon-area"><img class="wookie-icon" src="<%=widget.getWidgetIconLocation()%>" width="75" height="75"/></div>
 					</td>
 				</tr>
-		    	<tr><td class="wookie-title" align="center" valign="top"><%=widget.getWidgetTitle()%></td></tr>
+		    	<tr><td class="wookie-title" align="center" valign="top"><%=widgetType%></td></tr>
 		    	<tr><td class="wookie-description" align="left" valign="top"><%=widget.getWidgetDescription()%></td></tr>
-		    	<tr><td class="wookie-choose" valign="top"><input type="button" name="widgettype" class="wookie-button" value="select widget" id=widgetid"></td></tr>		    
-		    </table>	
-		    
-		 </td> 		 
-		   
-		<%}%>	
-				 <%
-		 if (count==2){
+		    	<tr><td class="wookie-choose" valign="top"><input type="button" name="widgettype" class="wookie-button" value="select widget"></td></tr>		    
+		    </table>			    
+		 </td> 		 		   
+		<%
+		}
+		if (count==2){
 			%></tr><%
 			count=-1;
-		 }
-		 %>        			        
-	<%}%>	
-	
+		}		         			        
+	}%>		
 	</tr>
 	</table>								
-	</p>
-		    
+	</p>		    
 	</td>
   </tr>
   <tr>
