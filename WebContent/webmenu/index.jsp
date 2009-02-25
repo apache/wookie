@@ -1,5 +1,10 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<% String version = (String)session.getAttribute("version");%>
+<% String version = (String)session.getAttribute("version");
+// "version" is lazy loaded and will be empty until a request is made to the server
+if (version==null){
+	version="";
+}
+%>
 <html>
 <head>
 <title>Wookie Widget Server <%=version%></title>
