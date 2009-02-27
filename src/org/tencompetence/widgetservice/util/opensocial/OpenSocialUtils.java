@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shindig.auth.BlobCrypterSecurityToken;
 import org.apache.shindig.common.crypto.BasicBlobCrypter;
-import org.apache.shindig.common.crypto.BlobCrypterException;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 
 /**
@@ -48,14 +47,19 @@ public class OpenSocialUtils {
 		
 		if (instance == null) throw new Exception("Instance used to create token cannot be null");
 		// check we have the required information:
-		if (instance.getUserId().equals(null) || instance.getWidget() == null || instance.getIdKey() == null) {
+		if (instance.getWidget() == null || instance.getIdKey() == null) {
 			throw new Exception("Instance cannot be used to create token - invalid content");
 		}
 
+		// We really need to implement viewer/owner info
+		String userid = "@anon";
+		if (instance.getUserId()!=null) if(!instance.getUserId().equals("")) userid = instance.getUserId();
 		
 		// Order of fields is:
 		// owner, viewer, app_id, domain, app_url, mod_id, container
-		String[] fields = {instance.getUserId(), instance.getUserId(), instance.getWidget().getGuid(), DOMAIN_ID, instance.getWidget().getUrl(), "0", String.valueOf(instance.getIdKey())};
+		// NOTE that we're hacking this now to push the id_key through the wrong bit as 
+		// Shindig won't let us use nice long mod_id values
+		String[] fields = {userid, userid, instance.getWidget().getGuid(), DOMAIN_ID, instance.getWidget().getUrl(), "0", String.valueOf(instance.getIdKey())};
 		for (int i = 0; i < fields.length; i++) {
 			// escape each field individually, for metachars in URL
 			fields[i] = URLEncoder.encode(fields[i], "UTF-8");
@@ -77,9 +81,12 @@ public class OpenSocialUtils {
 		
 		if (instance == null) throw new Exception("Instance used to create token cannot be null");
 		// check we have the required information:
-		if (instance.getUserId().equals(null) || instance.getWidget() == null || instance.getIdKey() == null) {
+		if (instance.getWidget() == null || instance.getIdKey() == null) {
 			throw new Exception("Instance cannot be used to create token - invalid content");
 		}
+		
+		String userid = "@anon";
+		if (instance.getUserId()!=null) if(!instance.getUserId().equals("")) userid = instance.getUserId();
 		
 		BasicBlobCrypter crypter = new BasicBlobCrypter(key.getBytes());
 		BlobCrypterSecurityToken token = new BlobCrypterSecurityToken(crypter, CONTAINER_ID, DOMAIN_ID);

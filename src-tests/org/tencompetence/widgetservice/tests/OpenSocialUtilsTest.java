@@ -50,7 +50,6 @@ public class OpenSocialUtilsTest extends TestCase {
 			String token = OpenSocialUtils.createPlainToken(INSTANCE);
 			assertNotNull(token);
 			assertFalse(token.equals(""));
-			System.out.println(token);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("Couldn't create plaintext token");
@@ -70,17 +69,19 @@ public class OpenSocialUtilsTest extends TestCase {
         }
     }
     
-    @Test(expected=Exception.class)
+    /**
+     * If no id is supplied, the service should create a token using @anon
+     * @throws Exception
+     */
+    @Test()
     public void testCreatePlainTokenNoUserId()
             throws Exception {
         try {
 			String token = OpenSocialUtils.createPlainToken(INSTANCE_NO_USER_ID);
-            // Uh-oh! No exception was thrown so we 
-            // better make this test fail!
-            fail("should've thrown an exception!");
+			assertNotNull(token);
+			assertTrue(token.contains("anon"));
         } catch (Exception expected) {
-            // this is exactly what we were expecting so 
-            // let's just ignore it and let the test pass
+        	fail("should've created a token using @anon");
         }
     }
     
@@ -104,7 +105,6 @@ public class OpenSocialUtilsTest extends TestCase {
 			String token = OpenSocialUtils.createEncryptedToken(INSTANCE,"UNSECURED_TOKEN_KEY");
 			assertNotNull(token);
 			assertFalse(token.equals(""));
-			System.out.println(token);
 		} catch (Exception e) {
 			fail("Couldn't create encrypted token");
 		}
@@ -123,17 +123,14 @@ public class OpenSocialUtilsTest extends TestCase {
         }
     }
     
-    @Test(expected=Exception.class)
+    @Test()
     public void testCreateEncryptedTokenNoUserId()
             throws Exception {
         try {
 			String token = OpenSocialUtils.createEncryptedToken(INSTANCE_NO_USER_ID,"UNSECURED_TOKEN_KEY");
-            // Uh-oh! No exception was thrown so we 
-            // better make this test fail!
-            fail("should've thrown an exception!");
+            assertNotNull(token);
         } catch (Exception expected) {
-            // this is exactly what we were expecting so 
-            // let's just ignore it and let the test pass
+            fail("should've created a token using @anon");
         }
     }
     
