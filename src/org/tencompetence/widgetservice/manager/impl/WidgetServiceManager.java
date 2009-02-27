@@ -91,6 +91,34 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 
 
 	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getWidgetInstance(java.lang.String)
+	 */
+	public WidgetInstance getWidgetInstance(String key) {
+		IDBManager dbManager = null;
+		try {
+			if (key == null) {
+				return null;
+			}
+			dbManager = DBManagerFactory.getDBManager();
+			final Criteria crit = dbManager.createCriteria(WidgetInstance.class);
+			crit.add(Restrictions.eq("idKey", key));
+			final List<WidgetInstance> sqlReturnList = dbManager.getObjects(
+					WidgetInstance.class, crit);
+			if (sqlReturnList.size() != 1) {
+				return null;
+			} 
+			else {
+				return (WidgetInstance) sqlReturnList.get(0);
+			}
+		} 
+		catch (Exception e) {
+			dbManager.rollbackTransaction();
+			_logger.error(e.getMessage());
+			return null;
+		}		
+	}
+
+	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getwidgetInstancesForWidget(org.tencompetence.widgetservice.beans.Widget)
 	 */
 	public WidgetInstance[] getwidgetInstancesForWidget(Widget widget){			

@@ -64,6 +64,13 @@ public interface IWidgetServiceManager extends IWidgetAPIManager {
 	WidgetInstance getWidgetInstanceById(String userId, String sharedDataKey, String widgetId);
 	
 	/**
+	 * Get a widget instance from the DB; returns null if none exists
+	 * @param id_key
+	 * @return - the widget instance, or null if no matching instance exists
+	 */
+	WidgetInstance getWidgetInstance(String id_key);
+	
+	/**
 	 * Add a new widget instance
 	 * @param userId - user id for the new instance
 	 * @param sharedDataKey - shared data key for the new instance
