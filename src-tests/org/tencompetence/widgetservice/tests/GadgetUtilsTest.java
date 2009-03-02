@@ -34,6 +34,8 @@ public class GadgetUtilsTest extends TestCase {
 	private String TEST_GADGET_URL_INVALID;
 	private String TEST_GADGET_URL_MALFORMED;
 	
+	private String SHINDIG;
+	
     @Before public void setUp() {
     	TEST_METADATA_VALID = "{\"gadgets\":[{\"showInDirectory\":false,\"width\":0,\"title\":\"hello world example\",\"singleton\":false,\"categories\":[\"\",\"\"],\"views\":{\"default\":{\"preferredWidth\":0,\"preferredHeight\":0,\"type\":\"html\",\"quirks\":true}},\"screenshot\":\"\",\"links\":{},\"thumbnail\":\"\",\"authorLink\":\"\",\"height\":0,\"scaling\":false,\"moduleId\":1,\"features\":[],\"showStats\":false,\"authorPhoto\":\"\",\"scrolling\":false,\"url\":\"http://www.google.com/ig/modules/hello.xml\",\"titleUrl\":\"\",\"iframeUrl\":\"/gadgets/ifr?container=default&mid=1&v=db18c863f15d5d1e758a91f2a44881b4&lang=en&country=US&view=default&url=http%3A%2F%2Fwww.google.com%2Fig%2Fmodules%2Fhello.xml\",\"userPrefs\":{}}]}";
     	TEST_METADATA_URL_EMPTY = "{\"gadgets\":[{\"showInDirectory\":false,\"width\":0,\"title\":\"hello world example\",\"singleton\":false,\"categories\":[\"\",\"\"],\"views\":{\"default\":{\"preferredWidth\":0,\"preferredHeight\":0,\"type\":\"html\",\"quirks\":true}},\"screenshot\":\"\",\"links\":{},\"thumbnail\":\"\",\"authorLink\":\"\",\"height\":0,\"scaling\":false,\"moduleId\":1,\"features\":[],\"showStats\":false,\"authorPhoto\":\"\",\"scrolling\":false,\"url\":\" \",\"titleUrl\":\"\",\"iframeUrl\":\"/gadgets/ifr?container=default&mid=1&v=db18c863f15d5d1e758a91f2a44881b4&lang=en&country=US&view=default&url=http%3A%2F%2Fwww.google.com%2Fig%2Fmodules%2Fhello.xml\",\"userPrefs\":{}}]}";
@@ -47,6 +49,8 @@ public class GadgetUtilsTest extends TestCase {
     	TEST_GADGET_URL_VALID = "http://www.google.com/ig/modules/hello.xml";
     	TEST_GADGET_URL_INVALID= "http://localhost:8080/gadgets/madeupname";
     	TEST_GADGET_URL_MALFORMED = "ttp://www.google.com/ig/modules/hello.xml";
+    	
+    	SHINDIG = GadgetUtils.SHINDIG_SERVICE;
     }
 	
 	/**
@@ -188,7 +192,7 @@ public class GadgetUtilsTest extends TestCase {
 	public void testGetWidgetWithValidMetadata() {
 		Widget widget = null;
 		try {
-			assertNotNull(GadgetUtils.getWidget(TEST_METADATA_VALID));
+			assertNotNull(GadgetUtils.getWidget(TEST_METADATA_VALID, SHINDIG));
 		} catch (Exception e) {
 			fail("failed to Create widget from basic valid metadata");
 		}
@@ -201,7 +205,7 @@ public class GadgetUtilsTest extends TestCase {
     public void testGetWidgetWithErrorMetadata()
             throws Exception {
         try {
-        	Widget widget = GadgetUtils.getWidget(GadgetUtils.getMetadata(TEST_SERVICE_URL_VALID,TEST_GADGET_URL_INVALID));
+        	Widget widget = GadgetUtils.getWidget(GadgetUtils.getMetadata(TEST_SERVICE_URL_VALID,TEST_GADGET_URL_INVALID), SHINDIG);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");
@@ -218,7 +222,7 @@ public class GadgetUtilsTest extends TestCase {
 	public void testGetWidgetWithMetadataNoResults() {
 		Widget widget = null;
 		try {
-			assertNull(GadgetUtils.getWidget(TEST_METADATA_NO_GADGETS));
+			assertNull(GadgetUtils.getWidget(TEST_METADATA_NO_GADGETS, SHINDIG));
 		} catch (Exception e) {
 			fail("failed to return null from basic valid metadata with no results");
 		}
@@ -231,7 +235,7 @@ public class GadgetUtilsTest extends TestCase {
 	public void testGetWidgetWithValidMetadataAndDefaults() {
 		Widget widget = null;
 		try {
-			widget = GadgetUtils.getWidget(TEST_METADATA_VALID);
+			widget = GadgetUtils.getWidget(TEST_METADATA_VALID, SHINDIG);
 			assertEquals(widget.getHeight(),200);
 			assertEquals(widget.getWidth(),320);
 		} catch (Exception e) {
@@ -246,7 +250,7 @@ public class GadgetUtilsTest extends TestCase {
 	public void testGetWidgetWithValidMetadataAndOverrides() {
 		Widget widget = null;
 		try {
-			widget = GadgetUtils.getWidget(TEST_METADATA_SET_HEIGHT_WIDTH);
+			widget = GadgetUtils.getWidget(TEST_METADATA_SET_HEIGHT_WIDTH, SHINDIG);
 			assertEquals(widget.getHeight(),50);
 			assertEquals(widget.getWidth(),50);
 		} catch (Exception e) {
@@ -258,7 +262,7 @@ public class GadgetUtilsTest extends TestCase {
     public void testGetWidgetWithEmptyURL()
             throws Exception {
         try {
-        	Widget widget = GadgetUtils.getWidget(TEST_METADATA_URL_EMPTY);
+        	Widget widget = GadgetUtils.getWidget(TEST_METADATA_URL_EMPTY, SHINDIG);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");
@@ -272,7 +276,7 @@ public class GadgetUtilsTest extends TestCase {
     public void testGetWidgetWithMissingURL()
             throws Exception {
         try {
-        	Widget widget = GadgetUtils.getWidget(TEST_METADATA_URL_NULL);
+        	Widget widget = GadgetUtils.getWidget(TEST_METADATA_URL_NULL, SHINDIG);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");
@@ -286,7 +290,7 @@ public class GadgetUtilsTest extends TestCase {
     public void testGetWidgetWithInvalidJSON()
             throws Exception {
         try {
-        	Widget widget = GadgetUtils.getWidget(TEST_METADATA_INVALID);
+        	Widget widget = GadgetUtils.getWidget(TEST_METADATA_INVALID, SHINDIG);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");

@@ -28,6 +28,11 @@ import org.tencompetence.widgetservice.beans.Widget;
 public class GadgetUtils {
 
 	/**
+	 * Relative URL of the Shindig  service
+	 */
+	public static final String SHINDIG_SERVICE = "/shindig";
+	
+	/**
 	 * Relative URL of the Shindig metadata service
 	 */
 	public static final String METADATA_SERVICE = "/shindig/gadgets/metadata";
@@ -50,9 +55,11 @@ public class GadgetUtils {
 	 */
 	public static Widget createWidget(HttpServletRequest request) throws Exception{
 		String svc = GadgetUtils.METADATA_SERVICE;
+		String shindig = GadgetUtils.SHINDIG_SERVICE;
 		try {
 			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties");
 			if (properties.getString("widget.metadata.url")!=null) svc = properties.getString("widget.metadata.url");
+			if (properties.getString("widget.shindig.url")!=null) shindig = properties.getString("widget.shindig.url");
 		} catch (Exception e) {
 			// Problem with the servlet context; we'll just let it go for now
 			// TODO log this error
@@ -60,7 +67,7 @@ public class GadgetUtils {
 		URL gadgetService = new URL(request.getScheme() ,
 				request.getServerName() ,
 				request.getServerPort() , svc);
-		return createWidget(gadgetService.toString(), request.getParameter("url"));
+		return createWidget(gadgetService.toString(), request.getParameter("url"), shindig);
 	}
 
 	/**
@@ -70,8 +77,8 @@ public class GadgetUtils {
 	 * @return the Widget instance
 	 * @throws Exception
 	 */
-	private static Widget createWidget(String service, String url) throws Exception{
-		return getWidget(getMetadata(service,url));
+	private static Widget createWidget(String service, String url, String shindig) throws Exception{
+		return getWidget(getMetadata(service,url), shindig);
 	}
 
 	/**
@@ -147,7 +154,7 @@ public class GadgetUtils {
 	 * @return a Widget instance
 	 * @throws Exception if metadata cannot create a valid widget
 	 */
-	public static Widget getWidget(String metadata) throws Exception{
+	public static Widget getWidget(String metadata, String shindig) throws Exception{
 		JSONObject gadget = null;
 		Widget widget = null;
 		JSONObject response = new JSONObject(metadata);
@@ -178,7 +185,7 @@ public class GadgetUtils {
 			// We should be able to use the "iframeUrl" property here, but
 			// it isn't very reliable at generating a usable value, so we construct
 			// a very basic URL instead
-			widget.setUrl("/gadgets/ifr?url="+gadget.getString("url")+"&amp;lang=en&amp;country=UK");
+			widget.setUrl(shindig+"/gadgets/ifr?url="+gadget.getString("url")+"&amp;lang=en&amp;country=UK");
 
 			if (gadget.has("height")) if (gadget.getInt("height") != 0) height = gadget.getInt("height");
 			if (gadget.has("width")) if (gadget.getInt("width") != 0) width = gadget.getInt("width");
