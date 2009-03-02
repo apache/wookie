@@ -24,6 +24,8 @@ public class OpenSocialUtils {
 	private static final String DOMAIN_ID = "wookie";
 	// TODO once we have an API Key implementation, we can convey the actual container id rather than Wookie
 	private static final String CONTAINER_ID = "wookie";
+	// TODO once we get plugins to send owner Id, we can remove this
+	private static final String OWNER_ID = "0";
 	
 	
 	/**
@@ -57,9 +59,9 @@ public class OpenSocialUtils {
 		
 		// Order of fields is:
 		// owner, viewer, app_id, domain, app_url, mod_id, container
-		// NOTE that we're hacking this now to push the id_key through the wrong bit as 
-		// Shindig won't let us use nice long mod_id values
-		String[] fields = {userid, userid, instance.getWidget().getGuid(), DOMAIN_ID, instance.getWidget().getUrl(), "0", String.valueOf(instance.getIdKey())};
+		// NOTE that we're hacking this now to push the id_key through the container value as Shindig won't let us use Strings for mod_id, only Longs
+		// TODO replace hack with a real solution
+		String[] fields = {OWNER_ID, userid, instance.getWidget().getGuid(), DOMAIN_ID, instance.getWidget().getUrl(), "0", String.valueOf(instance.getIdKey())};
 		for (int i = 0; i < fields.length; i++) {
 			// escape each field individually, for metachars in URL
 			fields[i] = URLEncoder.encode(fields[i], "UTF-8");
@@ -93,8 +95,8 @@ public class OpenSocialUtils {
 		token.setAppUrl(instance.getWidget().getUrl());
 		// The ModuleId only takes a long, so we just have to hash the idKey for now. We could use the instance id,
 		// but this would involve updating the instance object in a two-step create, which is more fiddly and expensive.
-		token.setModuleId(instance.getIdKey().hashCode());
-		token.setOwnerId(instance.getUserId());
+		token.setModuleId(0);
+		token.setOwnerId(OWNER_ID);
 		token.setViewerId(instance.getUserId());
 		String encryptedToken = null;
 		encryptedToken = token.encrypt();
