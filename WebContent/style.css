@@ -9,16 +9,26 @@ font-family: Arial, Helvetica, sans-serif;
 	background-attachment: fixed;	
 }
 
-
-h2 {
-	
+h2 {	
 	font-size: 16px;
 	
 }
+
+h3 {
+	font-size: 14px;
+	background-color: #F0F0F0;
+	font-style: normal;
+	font-weight: bold;
+}
+
 .legend {
 	background-color: #333333;
 	color: #FFFFFF;
 	border: #666666;
+
+}
+
+.section {
 
 }
 
@@ -39,13 +49,7 @@ h2 {
 	font-size: 14px;
 	background-attachment: fixed;
 }
-h3 {
-	font-size: 14px;
-	background-color: #F0F0F0;
-	font-style: normal;
-	font-weight: bold;
 
-}
 
 a:link {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -78,31 +82,35 @@ a:active {
 
 .widget-gallery{
     margin-left: 10%;
-    margin-right: 10%;
-    clear: both;
+    
+   
     vertical-align: top;
+    text-align: center;
+}
+.td-widget{
+    text-align: center;    
 }
 
-.wookie-widget{
+.wookie-widget{		
     background: url('shared/images/widget-bg.png');
-    display: inline-block;
-    position: relative;
+    
     height: 285px;
     width: 180px;
     margin-top: 10px;
     vertical-align: top;
+    text-align: center; 
+       
 }
 
 .wookie-icon-area{
     height: 100px;
-    width: 140px;
-   
+    width: 140px;   
     margin-top: 10px;
     background-color: white;
     border-color: #999;
     border-style: solid;
     border-width: 1px;
-    text-align:center;
+    text-align:center;           
 }
 
 .wookie-icon{
@@ -115,23 +123,23 @@ a:active {
     font-size: 12px;
     padding-left: 20px;
     padding-right: 20px;
-    height: 55px;
+    height: 25px;
     text-align:center;
-    vertical-align: top;
-    
+    vertical-align: top;        
 }
 
 .wookie-description{
+	margin-top: 20px;
     font-size: 10px;
     padding: 20px;
-    height: 55px;
+    height: 90px;    
     vertical-align: top;
-    
 }   
 
 .wookie-choose{
     text-align:center;
-    margin-bottom: 5px;
+    margin-bottom: 5px; 
+   
 }
 
 input.wookie-button{
@@ -154,5 +162,5 @@ input.wookie-button{
    border-left-width:6px;
    border-right-style:solid;
    border-right-color:#508CC0;
-   border-right-width:6px;
+   border-right-width:6px;   
 }

@@ -63,8 +63,10 @@ var answer = confirm("Are you sure you wish to remove the service type...\n\n<" 
 	%>		 
 			<table border=1 width="798" bordercolor="#ffffff">      
 		        <tr><td width=70>Title</td><td><%=widget.getWidgetTitle()%></td></tr>
+		        <tr><td>Description</td><td><%=widget.getWidgetDescription()%></td></tr>
 		        <tr><td>Url</td><td><%=widget.getUrl()%></td></tr>
 		        <tr><td>Guid</td><td><%=widget.getGuid()%></td></tr>
+		        <tr><td>Author</td><td><%=widget.getWidgetAuthor()%></td></tr>
 		        <tr><td>Height</td><td><%=widget.getHeight()%></td></tr>
 		        <tr><td>Width</td><td><%=widget.getWidth()%></td></tr>
 		        <tr><td valign="top">Types</td><td>
