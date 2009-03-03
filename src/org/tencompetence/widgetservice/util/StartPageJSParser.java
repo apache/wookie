@@ -48,7 +48,7 @@ import org.htmlcleaner.TagNode;
  * <script type="text/javascript" src="/wookie/shared/js/wookie-wrapper.js"></script>
  *
  * @author Paul Sharples
- * @version $Id: StartPageJSParser.java,v 1.3 2008-12-03 11:54:00 ps3com Exp $
+ * @version $Id: StartPageJSParser.java,v 1.4 2009-03-03 17:19:30 scottwilson Exp $
  */
 public class StartPageJSParser implements IStartPageConfiguration {
 	
@@ -85,11 +85,13 @@ public class StartPageJSParser implements IStartPageConfiguration {
 		List<TagNode> children = headNode.getChildren();		
 		for(TagNode child : children){						
 			if(child.getName().equals(SCRIPT_TAG)){				
-				String attr = child.getAttributeByName(SRC_ATTRIBUTE);				
+				String attr = child.getAttributeByName(SRC_ATTRIBUTE);	
+				if (attr != null){
 				if(!attr.equals(DWR_UTIL_SRC_VALUE) & !attr.equals(DWR_ENGINE_SRC_VALUE) 
 						& !attr.equals(WIDGET_IMPL_SRC_VALUE) & !attr.equals(WOOKIE_WRAPPER_SRC_VALUE)){
 					fScriptList.add(child);					
-				}							
+				}				
+				}
 			}			
 		}
 	}
