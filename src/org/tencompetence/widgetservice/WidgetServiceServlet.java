@@ -49,7 +49,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.12 2009-02-24 11:13:46 scottwilson Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.13 2009-03-06 18:48:37 scottwilson Exp $ 
  *
  */
  public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -280,17 +280,24 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		out.println(XMLDECLARATION);			
 		out.println("<widgetdata>");					
 		out.print("<url>");
-		out.print(urlWidget + "?idkey=" + key 
-				//+ "&amp;url=" + urlWidgetAPIServer.toExternalForm()  
-				+ "&amp;proxy=" + urlWidgetProxyServer.toExternalForm() 
-				+ "&amp;st=" + token
-		);
+		if (urlWidget.getQuery() != null){
+			out.print(urlWidget + "&amp;idkey=" + key 
+					+ "&amp;proxy=" + urlWidgetProxyServer.toExternalForm() 
+					+ "&amp;st=" + token
+			);	
+		} else {
+			out.print(urlWidget + "?idkey=" + key 
+					+ "&amp;proxy=" + urlWidgetProxyServer.toExternalForm() 
+					+ "&amp;st=" + token
+			);
+		}
 		out.println("</url>");
 		out.println("<title>"+widget.getWidgetTitle()+"</title>");
 		out.println("<height>"+widget.getHeight()+"</height>");
 		out.println("<width>"+widget.getWidth()+"</width>");
 		out.println("<maximize>"+widget.isMaximize()+"</maximize>");
 		out.println("</widgetdata>");
+		
 	}
 	
 	
