@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget height="383" width="255" uid="http://www.getwookie.org/widgets/natter" version="0.8" xmlns="http://www.w3.org/ns/widgets">
+	<name>Natter2</name>
+	<description>A Sample chat widget</description>
+	<icon src="Icon.png"/>	
+	<access network="true"/>
+	<author>Scott Wilson</author>
+	<licence>None</licence>
+	<content src="index.htm"/>
+</widget>
