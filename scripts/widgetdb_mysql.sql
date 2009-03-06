@@ -22,7 +22,7 @@ CREATE TABLE `WidgetInstance` (
   `sharedDataKey` varchar(255) default NULL,
   `nonce` varchar(255) default NULL,
   `idKey` varchar(255) NOT NULL,
-  `opensocialToken` varchar(255) NOT NULL,
+  `opensocialToken` longtext NOT NULL,
   `widget_id` int(11) NOT NULL,
   `updated` char(1) default NULL,
   `shown` char(1) default NULL,
@@ -96,8 +96,8 @@ CREATE TABLE `Post` (
 );
 
 
-INSERT INTO `Widget` VALUES (1,'Unsupported widget widget','/wookie/wservices/www.tencompetence.org/widgets/default/notsupported/index.htm',350,500,'f','http://www.tencompetence.org/widgets/default/notsupported','This widget is a placeholder for when no corresponding widget is found for a given type','Paul Sharples','/wookie/shared/images/defaultwidget.png'),(2,'Default chat widget','/wookie/wservices/www.tencompetence.org/widgets/default/chat/index.htm',358,500,'f','http://www.tencompetence.org/widgets/default/chat','This widget provides a simple chat or Instant messaging facility','Paul Sharples','/wookie/shared/images/chat.png'),(3,'Default discussion/forum widget','/wookie/wservices/www.tencompetence.org/widgets/default/forum/index.htm',350,520,'t','http://www.tencompetence.org/widgets/default/forum','This widget provides a threaded discussion forum faciltity','Paul Sharples','/wookie/shared/images/forum.png'),(4,'Default vote widget','/wookie/wservices/www.tencompetence.org/widgets/default/vote/index.htm',350,500,'f','http://www.tencompetence.org/widgets/default/vote','This widget provides a voting facility','Paul Sharples','/wookie/shared/images/vote.png');
-INSERT INTO `WidgetDefault` VALUES ('unsupported',1),('chat',2),('discussion',3),('forum',3),('vote',4);
-INSERT INTO `WidgetService` VALUES (1,'unsupported'),(2,'chat'),(3,'discussion'),(4,'forum'),(5,'vote');
-INSERT INTO `WidgetType` VALUES (1,1,'unsupported'),(2,2,'chat'),(3,3,'forum'),(4,3,'discussion'),(5,4,'vote');
+INSERT INTO `Widget` VALUES (1,'Unsupported widget widget','/wookie/wservices/www.tencompetence.org/widgets/default/notsupported/index.htm',350,500,'f','http://www.tencompetence.org/widgets/default/notsupported','This widget is a placeholder for when no corresponding widget is found for a given type','Paul Sharples','/wookie/shared/images/defaultwidget.png'),(2,'Default chat widget','/wookie/wservices/www.tencompetence.org/widgets/default/chat/index.htm',358,500,'f','http://www.tencompetence.org/widgets/default/chat','This widget provides a simple chat or Instant messaging facility','Paul Sharples','/wookie/shared/images/chat.png'),(3,'Default discussion/forum widget','/wookie/wservices/www.tencompetence.org/widgets/default/forum/index.htm',350,520,'t','http://www.tencompetence.org/widgets/default/forum','This widget provides a threaded discussion forum facility','Paul Sharples','/wookie/shared/images/forum.png'),(4,'Default vote widget','/wookie/wservices/www.tencompetence.org/widgets/default/vote/index.htm',350,500,'f','http://www.tencompetence.org/widgets/default/vote','This widget provides a voting facility','Paul Sharples','/wookie/shared/images/vote.png'),(5,'Natter','/wookie/wservices/www.getwookie.org/widgets/natter/index.htm',383,255,'F','http://www.getwookie.org/widgets/natter','A simple chat widget','Scott Wilson','/wookie/wservices/www.getwookie.org/widgets/natter/Icon.png');
+INSERT INTO `WidgetDefault` VALUES ('unsupported',1),('chat',2),('discussion',3),('forum',3),('vote',4),('natter',5);
+INSERT INTO `WidgetService` VALUES (1,'unsupported'),(2,'chat'),(3,'discussion'),(4,'forum'),(5,'vote'),(6,'natter');
+INSERT INTO `WidgetType` VALUES (1,1,'unsupported'),(2,2,'chat'),(3,3,'forum'),(4,3,'discussion'),(5,4,'vote'),(6,5,'natter');
 INSERT INTO `Whitelist` VALUES (1,'http://127.0.0.1'),(2,'http://localhost');
