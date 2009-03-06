@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="pragma" content="no-cache"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Weather</title>   
+  <link rel="stylesheet" href="weather.css" type="text/css"/>  
+  <script type="text/javascript" src="/wookie/dwr/util.js"></script>
+  <script type="text/javascript" src="/wookie/dwr/engine.js"></script>
+  <script type="text/javascript" src="/wookie/dwr/interface/WidgetImpl.js"></script>
+  <script type="text/javascript" src="/wookie/shared/js/wookie-wrapper.js"></script>
+  <script type="text/javascript" src="weather.js" charset="utf-8"></script>  
+</head>
+<body onload="init()"> 
+  <div id="front">
+	<div id="weather"></div>
+    <div id="city"></div>
+	<div id="temperature"></div>
+	<div id="settings">
+	    <input type="submit" class="groovybutton" id ="settings" value="settings" onclick="showBack()"/>
+	</div>
+  </div>
+  <div id="back">
+    <div id="controls">         
+    </div>
+  </div>
+</body>
+<!-- fix forIE cashing - must go here even though its in the wrong place
+<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+</HEAD>
+-->
+</html>
