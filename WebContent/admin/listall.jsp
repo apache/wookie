@@ -60,9 +60,10 @@ var answer = confirm("Are you sure you wish to remove the service type...\n\n<" 
 	if(widgets!=null){	
 		for (int i = 1; i < widgets.length; i++) {
 			Widget widget = (Widget) widgets[i];
+			
 	%>		 
 			<table border=1 width="798" bordercolor="#ffffff">      
-		        <tr><td width=70>Title</td><td><%=widget.getWidgetTitle()%></td></tr>
+		        <tr><td width=70>Title</td><td><img height="30" width="30" src="<%=widget.getWidgetIconLocation()%>"/>&nbsp;<%=widget.getWidgetTitle()%></td></tr>
 		        <tr><td>Description</td><td><%=widget.getWidgetDescription()%></td></tr>
 		        <tr><td>Url</td><td><%=widget.getUrl()%></td></tr>
 		        <tr><td>Guid</td><td><%=widget.getGuid()%></td></tr>
