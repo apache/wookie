@@ -26,14 +26,18 @@
  */
 package org.tencompetence.widgetservice.beans;
 
+import java.io.Serializable;
+
 /**
  * A default widget entity
  * 
  * @author Paul Sharples
- * @version $Id: WidgetDefault.java,v 1.2 2007-10-17 23:11:11 ps3com Exp $
+ * @version $Id: WidgetDefault.java,v 1.3 2009-03-06 11:01:48 ps3com Exp $
  */
-public class WidgetDefault {
+public class WidgetDefault implements Serializable {
 
+	private static final long serialVersionUID = -8585379777119902714L;
+	
 	private String widgetContext;
 	private Integer widgetId;
 
