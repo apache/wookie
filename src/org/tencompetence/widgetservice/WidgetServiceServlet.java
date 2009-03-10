@@ -49,7 +49,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.13 2009-03-06 18:48:37 scottwilson Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.14 2009-03-10 20:06:35 scottwilson Exp $ 
  *
  */
  public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -149,9 +149,15 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		String serviceType= request.getParameter("servicetype");
 		String propertyName = request.getParameter("propertyname");
 		String propertyValue = request.getParameter("propertyvalue");
+		String widgetId = request.getParameter("widgetid");
 		
 		IWidgetServiceManager wsm = new WidgetServiceManager();	
-		WidgetInstance instance = wsm.getWidgetInstance(userId, sharedDataKey, serviceType);
+		WidgetInstance instance = null;
+		if (widgetId != null){
+			instance = wsm.getWidgetInstanceById(userId, sharedDataKey, widgetId);
+		} else {
+			instance = wsm.getWidgetInstance(userId, sharedDataKey, serviceType);
+		}
 		if(instance != null){
 			try {
 				if(isPersonalProperty){
