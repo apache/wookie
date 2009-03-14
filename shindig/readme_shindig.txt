@@ -9,6 +9,8 @@ inside the shindig-common-1.1. jar file.
 
 (We'll eventually provide a sample shindig.war on our website you can use to get started - copy it into you Tomcat webapps folder and you're good to go)
 
+Wookie setup
+============
 Once deployed, you need to setup Wookie as follows:
 
 In [WOOKIE]/WEB-INF/classes/widgetserver.properties, set widget.metadata.url to point to the Shindig metadata service (if you've set up Shindig at Root, 
@@ -16,6 +18,14 @@ this is already set)
 
 In [WOOKIE]/WEB-INF/classes/opensocial.properties, set opensocial.enable to true to start sending Shindig security tokens with rendered widgets/gadgets.
 
+Shindig/Wookie features
+=======================
+You can use Wookie to manage the preferences of your Gadgets; to do this you must replace the standard
+Shindig Features jar with one with some additional Wookie javascript code. You can download this jar
+from our site eventually, or maybe we'll make a decent installer one day :-)
+
+Proxy configuration
+===================
 Note that both Wookie and Shindig come with proxy implementations. You can use either or both of these. The setting for
 W3C widgets can be found in [WOOKIE]/WEB-INF/classes/widgetserver.properties. The setting for Google Gadgets/OpenSocial Apps
 can be found in [SHINDIG]/WEB-INF/classes/containers/default.container.js. In each case you can set the proxy URL to either:
@@ -30,6 +40,8 @@ to XML/JSON. (This is because we mostly assume that Widgets want to call AJAX me
 the Shindig proxy service handles all media types and has no whitelist/blacklist at all - be very careful if you choose to
 expose it!
 
+That's it folks
+===============
 Fingers crossed, once you've done these steps you can restart Tomcat and all will be well!
   
 Problems - email scott.bradley.wilson@gmail.com

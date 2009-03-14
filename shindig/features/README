@@ -1,0 +1,16 @@
+Shindig Features README
+
+The files in the folders /features/core and /features/setprefs replace the Shindig preference handling
+stubs with an interface to the Widget.preferences HTML 5 object implemented in Wookie.
+
+In Core:
+	- prefs.js has been altered to make the W3C Widget calls
+	- wookie-xxxxx.js has been added
+	- features.xml has had the wookie-xxxx.js libs included
+
+In SetPrefs
+	- setprefs.js the rpc calls have been removed
+	
+Replace or merge these files with the standard Shindig features files to add W3C widget persistence
+
+A ready-built Shindig-features jar accompanies these source files.
