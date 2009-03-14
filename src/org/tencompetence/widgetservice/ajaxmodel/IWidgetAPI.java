@@ -26,11 +26,13 @@
  */
 package org.tencompetence.widgetservice.ajaxmodel;
 
+import java.util.Map;
+
 
 /**
  * Definition of the widget API.  
  * @author Paul Sharples
- * @version $Id: IWidgetAPI.java,v 1.6 2008-12-02 12:35:52 ps3com Exp $
+ * @version $Id: IWidgetAPI.java,v 1.7 2009-03-14 20:30:15 scottwilson Exp $
  *
  */
 public interface IWidgetAPI {	
@@ -74,6 +76,13 @@ public interface IWidgetAPI {
 	 */
 	@Deprecated
 	public String openURL(String url);
+	
+	/**
+	 * Returns the set of preferences as a map of [key][value] objects
+	 * @param id_key
+	 * @return
+	 */
+	public Map<String, String> preferences(String id_key);
 	
 	/**
 	 * Returns a string preference value from the DB, obtained

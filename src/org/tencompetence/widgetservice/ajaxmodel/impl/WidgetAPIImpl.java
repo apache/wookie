@@ -27,7 +27,9 @@
 package org.tencompetence.widgetservice.ajaxmodel.impl;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -59,7 +61,7 @@ import org.tencompetence.widgetservice.manager.impl.WidgetAPIManager;
  *   Widget.setSharedDataForKey("defaultChatPresence",stringWithUserRemoved);
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAPIImpl.java,v 1.12 2008-12-03 15:30:36 ps3com Exp $
+ * @version $Id: WidgetAPIImpl.java,v 1.13 2009-03-14 20:30:15 scottwilson Exp $
  *
  */
 public class WidgetAPIImpl implements IWidgetAPI {
@@ -83,6 +85,47 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	static Logger _logger = Logger.getLogger(WidgetAPIImpl.class.getName());
 		
 	public WidgetAPIImpl(){}
+
+	
+	
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#preferences(java.lang.String)
+	 */
+	public Map<String, String> preferences(String id_key) {
+		HashMap<String, String> prefs = new HashMap<String,String>();
+
+		if(id_key == null){
+			prefs.put("message",UNAUTHORISED_MESSAGE);
+			return prefs;
+		}
+		
+		try {
+			IWidgetAPIManager manager = null;
+			HttpSession session = WebContextFactory.get().getHttpServletRequest().getSession();
+			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
+			if(manager == null){
+				manager = new WidgetAPIManager();
+				session.setAttribute(WidgetAPIManager.class.getName(), manager);
+			} 		
+			// check if instance is valid
+			WidgetInstance widgetInstance = manager.checkUserKey(id_key);			
+			if(widgetInstance!=null){
+				for(Preference preference : manager.getPreferenceForInstance(widgetInstance)){
+					prefs.put(preference.getDkey(), preference.getDvalue());
+				}
+			}
+			else{
+				prefs.put("message",UNAUTHORISED_MESSAGE);
+				return prefs;
+			}	
+		} 
+		catch (Exception ex) {			
+			_logger.error("Error getting preferences", ex);
+		}		
+		return prefs;	
+	}
+
+
 
 	/*
 	 * (non-Javadoc)
