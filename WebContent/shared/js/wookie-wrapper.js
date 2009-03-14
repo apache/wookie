@@ -1,8 +1,60 @@
 /*
+ * WidgetPreferences, singleton class
+ * Calls to this object replace the legacy setPreferenceForKey/preferenceForKey methods
+ * Implements HTML 5 Storage API
+ */
+ 
+WidgetPreferences = new function WidgetPreferences(){
+	// the internal preferences map
+	this.prefs = {};
+	// SPEC: The length attribute must return the number of key/value pairs currently present in the list associated with the object.
+	this.length = 0;
+	// Resets the length attribute
+	this.calcLength = function(){
+		var x = 0;
+		for (key in this.prefs) x++;
+		this.length = x;
+		return x;
+	}
+	//SPEC: The key(n) method must return the name of the nth key in the list. The order of keys is user-agent defined, but must be consistent within an object between changes to the number of keys. (Thus, adding or removing a key may change the order of the keys, but merely changing the value of an existing key must not.) If n is greater than or equal to the number of key/value pairs in the object, then this method must raise an INDEX_SIZE_ERR exception.
+	this.key = function(n){
+		var x=0;
+	    for (key in this.prefs){
+			if (x == n) return key;
+			x++;
+		};
+	}
+	//SPEC: The getItem(key) method must return the current value associated with the given key. If the given key does not exist in the list associated with the object then this method must return null.
+	this.getItem = function(key){
+		if (!this.prefs[key]) return null;
+		return this.prefs[key];
+	}
+	//SPEC: The setItem(key, value) method must first check if a key/value pair with the given key already exists in the list associated with the object. If it does not, then a new key/value pair must be added to the list, with the given key and value. If the given key does exist in the list, then it must have its value updated to the value given in the value argument.
+	this.setItem = function(key,value){
+		this.prefs[key] = value;
+		Widget.setPreferenceForKey(key, value);
+		this.calcLength();
+	}
+	//SPEC: The removeItem(key) method must cause the key/value pair with the given key to be removed from the list associated with the object, if it exists. If no item with that key exists, the method must do nothing.
+	this.removeItem = function(key){
+		delete this.prefs[key];
+		Widget.setPreferenceForKey(key,null);
+		this.calcLength();
+	}
+	//SPEC: The clear() method must atomically cause the list associated with the object to be emptied of all key/value pairs, if there are any. If there are none, then the method must do nothing
+	this.clear = function(){
+		for (key in this.prefs){
+			this.removeItem(key);
+		}
+	}
+}
+
+
+
+/*
  * Widget object
  */
 var Widget = {	
-	
 	instanceid_key : null,	
 	proxyUrl : null,	
 	// this should be assigned by the calling JS app
@@ -11,6 +63,8 @@ var Widget = {
 	onLocked : null,
 	// this should be assigned by the calling JS app
 	onUnlocked : null,
+	// initialised below as a singleton
+	preferences: null,
 
 	init : function(){	
 		/*
@@ -33,9 +87,24 @@ var Widget = {
 				}
 			}
 		}
+		// Instantiate a Widget Preferences object, and load all values
+		// Note we do this synchronously, as widgets are likely
+		// to ask for a handle on this as an onLoad() event
+		this.preferences = WidgetPreferences;
+		dwr.engine.beginBatch();
+		WidgetImpl.preferences(this.instanceid_key, this.setPrefs);
+		dwr.engine.endBatch({async:false});
+				
 		// this line tells DWR to use call backs 
 		// (i.e. will call onsharedupdate() when an event is received for shared data
 		dwr.engine.setActiveReverseAjax(true);	
+		
+	},
+	
+	setPrefs: function(map){
+		this.preferences = WidgetPreferences;
+		this.preferences.prefs = map;
+		this.preferences.calcLength();
 	},
 	
 	setPreferenceForKey : function(wName, wValue){
@@ -84,13 +153,17 @@ var Widget = {
 	
 	getProxyUrl : function(){
 		return this.proxyUrl;
-	},	
+	},
+		
 	proxify : function(url){
 			return this.proxyUrl + "?instanceid_key=" + this.instanceid_key + "&url=" + url;
 	}
+	
 }
 // very important !
 Widget.init();
+
+
 
 /*
  * Language helper object
@@ -410,6 +483,8 @@ var DebugHelper = {
 	}
 
 }
+
+
 
 
 
