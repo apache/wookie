@@ -51,7 +51,7 @@ import org.jdom.input.SAXBuilder;
  * Manifest Helper class - methods for uploading the zip & parsing a w3c widget manifest.
  * 
  * @author Paul Sharples
- * @version $Id: ManifestHelper.java,v 1.8 2008-12-18 11:30:52 ps3com Exp $ 
+ * @version $Id: ManifestHelper.java,v 1.9 2009-04-02 13:18:24 scottwilson Exp $ 
  *
  */
 public class ManifestHelper implements IW3CXMLConfiguration {
@@ -73,12 +73,16 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 		if(root.getName().equalsIgnoreCase(WIDGET_ELEMENT)){
 			Hashtable<String,String> manifestValues = new Hashtable<String,String>();
 			
-			if(root.getAttributeValue(UID_ATTRIBUTE)!=null){
-				manifestValues.put(UID_ATTRIBUTE, root.getAttributeValue(UID_ATTRIBUTE));
+			if(root.getAttributeValue(ID_ATTRIBUTE)!=null){
+				manifestValues.put(UID_ATTRIBUTE, root.getAttributeValue(ID_ATTRIBUTE));
 			}
 			else{ 
-				// make one up
-				manifestValues.put(UID_ATTRIBUTE, RandomGUID.getUniqueID("generated-uid-"));				
+				if(root.getAttributeValue(UID_ATTRIBUTE)!=null){
+					manifestValues.put(UID_ATTRIBUTE, root.getAttributeValue(UID_ATTRIBUTE));
+				} else {
+					// make one up
+					manifestValues.put(UID_ATTRIBUTE, RandomGUID.getUniqueID("generated-uid-"));
+				}
 			}
 						
 			if(root.getAttributeValue(VERSION_ATTRIBUTE)!=null){
@@ -153,10 +157,7 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 			if ( accessElement != null ) {
 				String network = accessElement.getAttributeValue(NETWORK_ATTRIBUTE);
 				if ( network != null ) manifestValues.put(NETWORK_ATTRIBUTE, network);
-				String plugins = accessElement.getAttributeValue(PLUGINS_ATTRIBUTE);
-				if ( plugins != null ) manifestValues.put(PLUGINS_ATTRIBUTE, plugins);
 			}
-			
 			
 			// content element --------------------------------------------------------------------------
 			// content specific values
