@@ -49,7 +49,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.14 2009-03-10 20:06:35 scottwilson Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.15 2009-04-02 13:16:25 scottwilson Exp $ 
  *
  */
  public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -198,9 +198,14 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		// set the proxy url.
 		if(urlWidgetProxyServer==null){
 			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties");
-		urlWidgetProxyServer = new URL(request.getScheme() ,
-				request.getServerName() ,
-				request.getServerPort() , properties.getString("widget.proxy.path"));
+			String scheme = request.getScheme();
+			String serverName = request.getServerName();
+			int serverPort = request.getServerPort();
+			if (!properties.getString("widget.proxy.scheme").trim().equals("")) scheme = properties.getString("widget.proxy.scheme");
+			if (!properties.getString("widget.proxy.hostname").trim().equals("")) serverName = properties.getString("widget.proxy.hostname");
+			if (!properties.getString("widget.proxy.port").trim().equals("")) serverPort = Integer.parseInt(properties.getString("widget.proxy.port"));
+			
+			urlWidgetProxyServer = new URL(scheme,serverName,serverPort,properties.getString("widget.proxy.path"));
 		}
 		_logger.debug(urlWidgetProxyServer.toString());
 		//set the service url.
