@@ -39,7 +39,7 @@ public interface IWidgetServiceManager extends IWidgetAPIManager {
 	 * @param serviceContext - the widget context
 	 * @return
 	 */
-	boolean widgetInstanceExists(String userId, String sharedDataKey, String serviceContext);
+	boolean widgetInstanceExists(String api_key, String userId, String sharedDataKey, String serviceContext);
 
 	/**
 	 * Get a widgetinstance from the DB
@@ -50,7 +50,7 @@ public interface IWidgetServiceManager extends IWidgetAPIManager {
 	 * @param serviceContext - the widget context
 	 * @return
 	 */
-	WidgetInstance getWidgetInstance(String userId, String sharedDataKey, String serviceContext);
+	WidgetInstance getWidgetInstance(String api_key, String userId, String sharedDataKey, String serviceContext);
 
 	/**
 	 * Get a widgetinstance from the DB
@@ -61,7 +61,7 @@ public interface IWidgetServiceManager extends IWidgetAPIManager {
 	 * @param widgetId - the widget identifier
 	 * @return
 	 */
-	WidgetInstance getWidgetInstanceById(String userId, String sharedDataKey, String widgetId);
+	WidgetInstance getWidgetInstanceById(String api_key, String userId, String sharedDataKey, String widgetId);
 	
 	/**
 	 * Get a widget instance from the DB; returns null if none exists
@@ -80,7 +80,7 @@ public interface IWidgetServiceManager extends IWidgetAPIManager {
 	 * @param properties - servlet context properties to generate info
 	 * @return the widget instance created
 	 */
-	WidgetInstance addNewWidgetInstance(String userId, String sharedDataKey, Widget widget, String nonce,
+	WidgetInstance addNewWidgetInstance(String api_key, String userId, String sharedDataKey, Widget widget, String nonce,
 			String idKey, Configuration properties);
 
 }

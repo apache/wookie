@@ -42,6 +42,7 @@ import org.tencompetence.widgetservice.exceptions.InvalidWidgetCallException;
 import org.tencompetence.widgetservice.exceptions.SystemUnavailableException;
 import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedException;
 import org.tencompetence.widgetservice.manager.IWidgetServiceManager;
+import org.tencompetence.widgetservice.manager.impl.WidgetKeyManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetServiceManager;
 import org.tencompetence.widgetservice.util.HashGenerator;
 import org.tencompetence.widgetservice.util.RandomGUID;
@@ -49,62 +50,72 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.15 2009-04-02 13:16:25 scottwilson Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.16 2009-04-09 12:40:06 scottwilson Exp $ 
  *
  */
- public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
-    
+public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
+
 	private static final long serialVersionUID = 308590474406800659L;		
 	static Logger _logger = Logger.getLogger(WidgetServiceServlet.class.getName());	
 	private static final String XMLDECLARATION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	private static final String CONTENT_TYPE = "text/xml;charset=\"UTF-8\""; 	
 	private static URL urlWidgetProxyServer = null;	
-	
+
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#HttpServlet()
 	 */
 	public WidgetServiceServlet() {
 		super();
 	}   	
-	
+
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
-		try {
-			String requestId = request.getParameter("requestid");
-			if(requestId.equals("getwidget")){
-				doGetWidget(request, response);
+		if (!WidgetKeyManager.isValidRequest(request)){
+			try {
+				returnDoc(response, "Invalid API key", "error");
+			} catch (IOException e) {
+				_logger.error("Error in doGet():", e);
 			}
-			else if(requestId.equals("stopwidget")){
-				doStopWidget(request, response);
+		} else {
+			try {
+				String requestId = request.getParameter("requestid");
+				if(requestId.equals("getwidget")){
+					doGetWidget(request, response);
+				}
+				else if(requestId.equals("stopwidget")){
+					doStopWidget(request, response);
+				}
+				else if(requestId.equals("resumewidget")){
+					doResumeWidget(request, response);
+				}
+				else if(requestId.equals("setpublicproperty")){
+					doSetProperty(request, response, false);
+				}		
+				else if(requestId.equals("setpersonalproperty")){
+					doSetProperty(request, response, true );
+				}
+				else {
+					returnDoc(response, "No valid requestid was found.", "error");
+				}
+
+			} 
+			catch (Exception ex) {					
+				_logger.error("Error in doGet():", ex);
 			}
-			else if(requestId.equals("resumewidget")){
-				doResumeWidget(request, response);
-			}
-			else if(requestId.equals("setpublicproperty")){
-				doSetProperty(request, response, false);
-			}		
-			else if(requestId.equals("setpersonalproperty")){
-				doSetProperty(request, response, true );
-			}
-			else {
-				returnDoc(response, "No valid requestid was found.", "error");
-			}
-		
-		} 
-		catch (Exception ex) {					
-			_logger.error("Error in doGet():", ex);
 		}
 	}
-	
+
 	private void doStopWidget(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		String apiKey = request.getParameter("api_key");
 		String userId = request.getParameter("userid");	
-		String sharedDataKey = request.getParameter("shareddatakey");	
+		String sharedDataKey = getSharedDataKey(request);	
 		String serviceType= request.getParameter("servicetype");
+
 		
 		IWidgetServiceManager wsm = new WidgetServiceManager();	
-		WidgetInstance widgetInstance = wsm.getWidgetInstance(userId, sharedDataKey, serviceType);		
+		WidgetInstance widgetInstance = wsm.getWidgetInstance(apiKey, userId, sharedDataKey, serviceType);		
 		if(widgetInstance!=null){
 			wsm.lockWidgetInstance(widgetInstance);
 			returnDoc(response,"completed", "message");
@@ -116,13 +127,14 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		_logger.debug("*** "+ userId + " ****");
 		_logger.debug("***************************");
 	}
-	
+
 	private void doResumeWidget(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		String apiKey = request.getParameter("api_key");
 		String userId = request.getParameter("userid");
-		String sharedDataKey = request.getParameter("shareddatakey");	
+		String sharedDataKey = getSharedDataKey(request);		
 		String serviceType= request.getParameter("servicetype");
 		IWidgetServiceManager wsm = new WidgetServiceManager();	
-		WidgetInstance widgetInstance = wsm.getWidgetInstance(userId, sharedDataKey, serviceType);		
+		WidgetInstance widgetInstance = wsm.getWidgetInstance(apiKey, userId, sharedDataKey, serviceType);		
 		if(widgetInstance!=null){
 			wsm.unlockWidgetInstance(widgetInstance);
 			returnDoc(response,"completed", "message");
@@ -134,7 +146,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		_logger.debug("*** "+ userId + " ****");
 		_logger.debug("***************************");
 	}
-	
+
 	/**
 	 * 
 	 * @param request
@@ -144,19 +156,21 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 	 * @throws IOException
 	 */
 	private void doSetProperty (HttpServletRequest request, HttpServletResponse response, boolean isPersonalProperty) throws ServletException, IOException {
+		String apiKey = request.getParameter("api_key");
 		String userId = request.getParameter("userid");
-		String sharedDataKey = request.getParameter("shareddatakey");	
+		String sharedDataKey = getSharedDataKey(request);
 		String serviceType= request.getParameter("servicetype");
 		String propertyName = request.getParameter("propertyname");
 		String propertyValue = request.getParameter("propertyvalue");
 		String widgetId = request.getParameter("widgetid");
-		
+
+
 		IWidgetServiceManager wsm = new WidgetServiceManager();	
 		WidgetInstance instance = null;
 		if (widgetId != null){
-			instance = wsm.getWidgetInstanceById(userId, sharedDataKey, widgetId);
+			instance = wsm.getWidgetInstanceById(apiKey,userId, sharedDataKey, widgetId);
 		} else {
-			instance = wsm.getWidgetInstance(userId, sharedDataKey, serviceType);
+			instance = wsm.getWidgetInstance(apiKey,userId, sharedDataKey, serviceType);
 		}
 		if(instance != null){
 			try {
@@ -177,13 +191,14 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 			returnDoc(response,"Widget instance does not exist", "error");
 		}
 	}
-		
+
 	private void doGetWidget(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String apiKey = request.getParameter("api_key");
 		String userId = request.getParameter("userid");
-		String sharedDataKey = request.getParameter("shareddatakey");	
+		String sharedDataKey = getSharedDataKey(request);	
 		String serviceType = request.getParameter("servicetype");
 		String widgetId = request.getParameter("widgetid");
-		
+
 		try {						
 			if(userId==null || sharedDataKey==null || (serviceType==null && widgetId==null)){
 				throw new InvalidWidgetCallException();
@@ -194,7 +209,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 			returnDoc(response,ex.getMessage(), "error");
 			return;
 		}
-		
+
 		// set the proxy url.
 		if(urlWidgetProxyServer==null){
 			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties");
@@ -204,7 +219,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 			if (!properties.getString("widget.proxy.scheme").trim().equals("")) scheme = properties.getString("widget.proxy.scheme");
 			if (!properties.getString("widget.proxy.hostname").trim().equals("")) serverName = properties.getString("widget.proxy.hostname");
 			if (!properties.getString("widget.proxy.port").trim().equals("")) serverPort = Integer.parseInt(properties.getString("widget.proxy.port"));
-			
+
 			urlWidgetProxyServer = new URL(scheme,serverName,serverPort,properties.getString("widget.proxy.path"));
 		}
 		_logger.debug(urlWidgetProxyServer.toString());
@@ -216,16 +231,16 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 					request.getServerPort() , "/wookie/dwr/interface/widget.js");
 			}
 		_logger.debug(urlWidgetAPIServer.toString());
-		*/
+		 */
 		WidgetInstance widgetInstance;
-				
+
 		IWidgetServiceManager wsm = new WidgetServiceManager();	
 		if (widgetId != null){
-			widgetInstance = wsm.getWidgetInstanceById(userId, sharedDataKey, widgetId);
+			widgetInstance = wsm.getWidgetInstanceById(apiKey, userId, sharedDataKey, widgetId);
 		} else {
-			widgetInstance = wsm.getWidgetInstance(userId, sharedDataKey, serviceType);
+			widgetInstance = wsm.getWidgetInstance(apiKey, userId, sharedDataKey, serviceType);
 		}
-		
+
 		if(widgetInstance!=null){
 			// generate a key, url etc
 			//doForward(request, response, _okPage);
@@ -241,23 +256,22 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 					// does this type of widget exist?
 					widget = wsm.getDefaultWidgetByType(serviceType);					
 				}
-				
 
 				// generate a nonce
 				String nonce = RandomGUID.getUniqueID("nonce-");				
 
 				// now use SHA hash on the nonce				
 				String hashKey = HashGenerator.getInstance().encrypt(nonce);	
-				
+
 				// get rid of any chars that might upset a url...
 				hashKey = hashKey.replaceAll("=", ".eq.");
 				hashKey = hashKey.replaceAll("\\?", ".qu.");
 				hashKey = hashKey.replaceAll("&", ".am.");
 				hashKey = hashKey.replaceAll("\\+", ".pl.");
-				
-				
+
+
 				Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("opensocial");
-				widgetInstance = wsm.addNewWidgetInstance(userId, sharedDataKey, widget, nonce, hashKey, properties);
+				widgetInstance = wsm.addNewWidgetInstance(apiKey, userId, sharedDataKey, widget, nonce, hashKey, properties);
 				_logger.debug("new widgetinstance added");
 				formatReturnDoc(request, response, widgetInstance.getWidget(), widgetInstance.getIdKey(), widgetInstance.getOpensocialToken());
 			} 
@@ -275,17 +289,17 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 			}
 			catch (SystemUnavailableException ex) {
 				_logger.debug("System Unavailable:"+ex.getMessage());				
-								
+
 				returnDoc(response, ex.getMessage(), "error");
 			}
 		}
 	}  	
-	
+
 	private void formatReturnDoc(HttpServletRequest request, HttpServletResponse response, Widget widget, String key, String token) throws IOException{
 		URL urlWidget =  new URL(request.getScheme() ,
 				request.getServerName() ,
 				request.getServerPort() , widget.getUrl());
-		
+
 		response.setContentType(CONTENT_TYPE);
 		PrintWriter out = response.getWriter();
 		out.println(XMLDECLARATION);			
@@ -308,11 +322,11 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		out.println("<width>"+widget.getWidth()+"</width>");
 		out.println("<maximize>"+widget.isMaximize()+"</maximize>");
 		out.println("</widgetdata>");
-		
+
 	}
-	
-	
-	
+
+
+
 	private void returnDoc(HttpServletResponse response, String message, String tagName) throws IOException {
 		//_logger.error("returnDoc called: "+ message + tagName);
 		StringBuffer envelope = new StringBuffer();	
@@ -326,14 +340,18 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 		out.println(envelope.toString());
 		//out.flush();
 	}	
-	
-	
-	
+
+
+
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}   
+	
+	private String getSharedDataKey(HttpServletRequest request){
+		return String.valueOf((request.getParameter("apikey")+":"+request.getParameter("shareddatakey")).hashCode());	
+	}
 
 }

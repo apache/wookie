@@ -30,7 +30,7 @@ package org.tencompetence.widgetservice.beans;
  * WidgetInstance - a simple bean to model an actual widgets instance attributes
  * 
  * @author Paul Sharples
- * @version $Id: WidgetInstance.java,v 1.5 2009-02-20 23:51:00 scottwilson Exp $
+ * @version $Id: WidgetInstance.java,v 1.6 2009-04-09 12:40:06 scottwilson Exp $
  */
 public class WidgetInstance extends AbstractKeyBean {
 
@@ -40,6 +40,7 @@ public class WidgetInstance extends AbstractKeyBean {
 		private String sharedDataKey;
 		private String nonce;
 		private String idKey; // aka SHAKey
+		private String apiKey;
 		private String opensocialToken; // Token used with OpenSocial gadgets;
 		private boolean updated;
 		private boolean shown;
@@ -82,6 +83,14 @@ public class WidgetInstance extends AbstractKeyBean {
 			this.idKey = idKey;
 		}
 
+		public String getApiKey() {
+			return apiKey;
+		}
+		
+		public void setApiKey(String apiKey) {
+			this.apiKey = apiKey;
+		}
+		
 		public String getOpensocialToken() {
 			return opensocialToken;
 		}

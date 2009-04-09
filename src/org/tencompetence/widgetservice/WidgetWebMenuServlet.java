@@ -1,7 +1,6 @@
 package org.tencompetence.widgetservice;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Hashtable;
 
 import javax.servlet.RequestDispatcher;
@@ -18,12 +17,13 @@ import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetDefault;
 import org.tencompetence.widgetservice.manager.IWidgetAdminManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetAdminManager;
+import org.tencompetence.widgetservice.manager.impl.WidgetKeyManager;
 
 public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 	
 	// our list of allowed operations
 	private enum Operation {		
-		LISTWIDGETS, INSTANTIATE
+		LISTWIDGETS, INSTANTIATE, REQUESTAPIKEY
 	}	
 	 	 	
 	// Get the logger
@@ -33,6 +33,7 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 	private static final String fMainPage = "/webmenu/index.jsp";
 	private static final String fListWidgetsPage = "/webmenu/listall.jsp";
 	private static final String fInstantiateWidgetsPage = "/webmenu/instantiate.jsp";
+	private static final String fRequestApiKeyPage = "/webmenu/requestapikey.jsp";
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		IWidgetAdminManager manager = new WidgetAdminManager();
@@ -66,6 +67,11 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 					doForward(request, response, fInstantiateWidgetsPage);						
 					break;
 				}
+				case REQUESTAPIKEY:{
+					requestApiKeyOperation(request,properties,manager,session);
+					doForward(request, response, fMainPage);
+					break;
+				}
 				default: {
 					session.setAttribute("error_value", "No operation could be ascertained");// need to i18n this
 					doForward(request, response, fMainPage);
@@ -95,10 +101,38 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 	
 	private void listOperation(HttpSession session, IWidgetAdminManager manager){
 		Hashtable<String, Widget> widgetsHash = new Hashtable<String, Widget>();		
-		for(WidgetDefault defaultWidget : manager.getAllDefaultWidgets()){
-			widgetsHash.put(defaultWidget.getWidgetContext(), manager.getWidget(defaultWidget.getWidgetId()));
-		}	
+		
+		for(Widget widget:manager.getAllWidgets()){
+			widgetsHash.put(widget.getGuid(), widget);
+		}
+		
+		//for(WidgetDefault defaultWidget : manager.getAllDefaultWidgets()){
+		//	widgetsHash.put(defaultWidget.getWidgetContext(), manager.getWidget(defaultWidget.getWidgetId()));
+		//}	
 		session.setAttribute("widgetsHash", widgetsHash);
+	}
+	
+	private void requestApiKeyOperation(HttpServletRequest request, Configuration properties, IWidgetAdminManager manager, HttpSession session){
+		session.setAttribute("message_value", null);
+		try {
+			String email = request.getParameter("email");
+			if (email == null) {
+				session.setAttribute("message_value", "You must include a valid email address to register for an API key");
+			} else {
+				if (email.trim().equals("")){
+					session.setAttribute("message_value", "You must include a valid email address to register for an API key");					
+				} else {
+					// Otherwise, good to go		
+					WidgetKeyManager.createKey(request, email);
+					session.setAttribute("message_value", "Your API key has been sent to your email address");
+				}
+			}
+
+
+		} catch (Exception e1) {
+			session.setAttribute("message_value", "There was a problem with the API key service");
+		}
+
 	}
 
 	/**

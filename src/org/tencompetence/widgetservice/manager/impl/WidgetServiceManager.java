@@ -29,7 +29,6 @@ package org.tencompetence.widgetservice.manager.impl;
 import java.util.List; 
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -185,7 +184,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#widgetInstanceExists(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public boolean widgetInstanceExists(String userId, String sharedDataKey, String serviceContext){
+	public boolean widgetInstanceExists(String api_key, String userId, String sharedDataKey, String serviceContext){
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
 		String sqlQuery =   "select " +
@@ -193,6 +192,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 		+ "from WidgetInstance widgetinstance, WidgetType widgettype "
 		+ "WHERE "
 		+ "widgetinstance.userId ='" + userId + "' "
+		+ "AND widgetinstance.apiKey ='" + api_key + "' "	
 		+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "												
 		+ "AND widgettype.widgetContext ='" + serviceContext + "' "			
 		+ "AND widgetinstance.widget = widgettype.widget"
@@ -207,13 +207,14 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getwidgetInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public WidgetInstance getWidgetInstance(String userId, String sharedDataKey, String serviceContext){
+	public WidgetInstance getWidgetInstance(String api_key, String userId, String sharedDataKey, String serviceContext){
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
 		String sqlQuery =   "select widgetinstance " 							
 			+ "from WidgetInstance widgetinstance, WidgetType widgettype "
 			+ "WHERE "
 			+ "widgetinstance.userId ='" + userId + "' "
+			+ "AND widgetinstance.apiKey ='" + api_key + "' "	
 			+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "															
 			+ "AND widgettype.widgetContext ='" + serviceContext + "' "			
 			+ "AND widgetinstance.widget = widgettype.widget"
@@ -234,8 +235,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getWidgetInstanceById(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public WidgetInstance getWidgetInstanceById(String userId,
-			String sharedDataKey, String widgetId) {
+	public WidgetInstance getWidgetInstanceById(String api_key, String userId, String sharedDataKey, String widgetId) {
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
 		String sqlQuery =   "select widgetinstance " 							
@@ -261,7 +261,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#addNewWidgetInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.tencompetence.widgetservice.beans.Widget, java.lang.String, java.lang.String)
 	 */
-	public WidgetInstance addNewWidgetInstance(String userId, String sharedDataKey, Widget widget, String nonce, String idKey, Configuration properties) {		
+	public WidgetInstance addNewWidgetInstance(String api_key, String userId, String sharedDataKey, Widget widget, String nonce, String idKey, Configuration properties) {		
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		WidgetInstance widgetInstance = new WidgetInstance();
 		try {
@@ -269,6 +269,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 			widgetInstance.setSharedDataKey(sharedDataKey);
 			widgetInstance.setIdKey(idKey);
 			widgetInstance.setNonce(nonce);
+			widgetInstance.setApiKey(api_key);
 			// set the defaults widget for this type			
 			widgetInstance.setWidget(widget);						
 			widgetInstance.setHidden(false);

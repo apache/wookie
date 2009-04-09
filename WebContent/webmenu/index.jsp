@@ -40,6 +40,7 @@ if (version==null){
 	<p><a href="WidgetWebMenuServlet?operation=LISTWIDGETS" class="hypercolour"><img src="../shared/images/view.gif" width="16" height="16" border="0">&nbsp;View Widget Gallery</a></p>	   	
     <p><a href="../admin"><img src="../shared/images/unlock.gif" width="16" height="16" border="0">&nbsp;Login as administrator</a></p>
 	<p><a href="WidgetWebMenuServlet?operation=INSTANTIATE"><img src="../shared/images/run.gif" width="16" height="16" border="0">&nbsp;Instantiate a widget</a><br></p>    
+	<p><a href="requestapikey.jsp"><img src="../shared/images/mail.png" width="16" height="16" border="0">&nbsp;Request an API key for your application</a></p>
 	</td>
   </tr>
   <tr>

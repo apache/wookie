@@ -18,6 +18,7 @@ CREATE TABLE `Widget` (
 
 CREATE TABLE `WidgetInstance` (
   `id` int(11) NOT NULL auto_increment,
+  `apikey` varchar(255) NOT NULL,
   `userId` varchar(255) NOT NULL,  
   `sharedDataKey` varchar(255) default NULL,
   `nonce` varchar(255) default NULL,
@@ -80,6 +81,13 @@ CREATE TABLE `WidgetType` (
 CREATE TABLE `Whitelist` (
   `id` int(11) unsigned NOT NULL auto_increment,
   `fUrl` varchar(200) NOT NULL,
+  PRIMARY KEY  (`id`)
+);
+
+CREATE TABLE `ApiKey` (
+  `id` int(11) NOT NULL auto_increment,
+  `value` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
 );
 

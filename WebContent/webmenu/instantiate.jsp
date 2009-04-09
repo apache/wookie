@@ -29,6 +29,10 @@ To instantiate a widget, you must supply a few parameters.
 <br>
 <table align="center" border="0">
 <tr>  
+  <td>API Key</td> 
+  <td><input name="api_key" type="text" id="api_key" value="TEST"></td>
+</tr>
+<tr>  
   <td>userid</td> 
   <td><input name="userid" type="text" id="userid" value="testuser"></td>
 </tr>

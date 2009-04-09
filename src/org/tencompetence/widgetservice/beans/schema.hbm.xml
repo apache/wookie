@@ -48,6 +48,13 @@
 		<property name="widgetId" />
 	</class>
 
+	<class name="ApiKey" table="ApiKey">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="value" column="value" type="string" />
+		<property name="email" column="email" type="string" />
+	</class>
 
 	<class name="WidgetInstance" table="WidgetInstance">
 		<id name="id" column="id">
@@ -57,6 +64,7 @@
 		<property name="sharedDataKey" not-null="true"/>				
 		<property name="nonce"/>
 		<property name="idKey" not-null="true"/>
+		<property name="apiKey"/>
 		<property name="opensocialToken" not-null="true"/>		
 		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />		
 		<property name="updated" type="true_false" />
