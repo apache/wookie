@@ -60,7 +60,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.13 2009-02-24 11:15:04 scottwilson Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.14 2009-04-17 14:23:35 ps3com Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -190,7 +190,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 				case REMOVEWIDGET: {
 					removeWidget(session, request, properties, manager);										
 					listOperation(session, manager, false);					
-					doForward(request, response, fListWidgetsForDeletePage);
+					doForward(request, response, fListWidgetsForDeletePage);					
 					break;
 				}
 				case REVISETYPES: {
@@ -252,6 +252,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 				}
 				case REMOVESINGLEWIDGETTYPE:{
 					removeSingleWidgetTypeOperation(session, request, manager);
+					listOperation(session, manager, true);
 					doForward(request, response, fListWidgetsPage);
 					break;
 			    }
@@ -263,6 +264,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 				case REGISTERGADGET:{
 					registerOperation(request, properties, manager, session);
 					doForward(request, response,fRegisterGadgetPage);
+					break;
 				}
 				
 				default: {
@@ -317,10 +319,13 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 			HttpServletRequest request, IWidgetAdminManager manager) {
 		String widgetId = request.getParameter("widgetId");
 		String widgetType = request.getParameter("widgetType");	
-		manager.removeSingleWidgetType(Integer.parseInt(widgetId), widgetType);
-		//
-		session.setAttribute("widgets", null);
-		listOperation(session, manager, true);		
+		if(manager.removeSingleWidgetType(Integer.parseInt(widgetId), widgetType)){
+			session.setAttribute("message_value", "Type was successfully removed from the widget."); 				
+		}
+		else{
+			session.setAttribute("error_value", "A problem occured removing this service type.");
+		}	
+		session.setAttribute("widgets", null);						
 	}
 	
 	private void removeWhiteListEntry(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager) {
@@ -338,7 +343,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		String guid = manager.getWidgetGuid(Integer.parseInt(widgetId));
 		if(manager.removeWidgetAndReferences(Integer.parseInt(widgetId))){
 			if(ManifestHelper.removeWidgetResources(request, properties, guid)){			
-				session.setAttribute("message_value", "The widget and its resource was successfully deleted.");			
+				session.setAttribute("message_value", "The widget and its resources was successfully deleted.");			
 			}
 			else{
 				session.setAttribute("error_value", "There was a problem deleting the widget resources.");

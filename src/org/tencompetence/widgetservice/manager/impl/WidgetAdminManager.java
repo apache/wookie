@@ -52,7 +52,7 @@ import org.tencompetence.widgetservice.util.*;
  * and setting which widget is to be the default
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminManager.java,v 1.4 2008-12-02 17:11:20 kris_popat Exp $
+ * @version $Id: WidgetAdminManager.java,v 1.5 2009-04-17 14:26:08 ps3com Exp $
  */
 public class WidgetAdminManager extends WidgetServiceManager implements IWidgetAdminManager {
 	
@@ -423,7 +423,8 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#removeSingleWidgetType(int, java.lang.String)
 	 */
-	public void removeSingleWidgetType(int widgetId, String widgetType) {
+	public boolean removeSingleWidgetType(int widgetId, String widgetType) {
+		boolean response = false;
 		final IDBManager dbManager = DBManagerFactory.getDBManager();	
 		Widget widget = getWidget(widgetId);
 		// remove any widget types for this widget
@@ -433,15 +434,18 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
         	try {
         		if(widgetType.equalsIgnoreCase(widgetTypes[j].getWidgetContext())){
         			dbManager.deleteObject(widgetTypes[j]);
+        			response = true;
         		}
 			} 
         	catch (Exception e) {
         		dbManager.rollbackTransaction();
     			_logger.error(e.getMessage());
+    			return response;
 			}
 		}
         // if it exists as a service default, then remove it
         deleteWidgetDefaultByIdAndServiceType(widgetId, widgetType);
+        return response;
 	}
 	
 	/* (non-Javadoc)
