@@ -36,7 +36,7 @@ import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedExceptio
  * Interface for admin functions
  * 
  * @author Paul Sharples
- * @version $Id: IWidgetAdminManager.java,v 1.5 2008-12-18 11:30:52 ps3com Exp $
+ * @version $Id: IWidgetAdminManager.java,v 1.6 2009-04-17 14:25:41 ps3com Exp $
  *
  */
 public interface IWidgetAdminManager {
@@ -177,7 +177,7 @@ public interface IWidgetAdminManager {
 	 * @param widgetId
 	 * @param widgetType
 	 */
-	void removeSingleWidgetType(int widgetId, String widgetType);
+	boolean removeSingleWidgetType(int widgetId, String widgetType);
 
 	/**
 	 * Remove a whitelist entry from the DB
