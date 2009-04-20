@@ -174,6 +174,7 @@ public class GadgetUtils {
 			if (!gadget.has("url")) throw new Exception("Invalid gadget - URL missing");
 			if (gadget.getString("url") == null || gadget.getString("url").equals("")) throw new Exception("Invalid gadget - Invalid URL");
 			try {
+				@SuppressWarnings("unused")
 				URL url = new URL(gadget.getString("url"));
 			} catch (Exception e) {
 				throw new Exception("Invalid gadget - invalid URL");

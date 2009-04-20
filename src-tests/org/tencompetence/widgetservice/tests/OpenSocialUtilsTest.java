@@ -59,6 +59,7 @@ public class OpenSocialUtilsTest extends TestCase {
     @Test(expected=Exception.class)
     public void testCreatePlainTokenNoWidget() throws Exception{
     	try {
+			@SuppressWarnings("unused")
 			String token = OpenSocialUtils.createPlainToken(INSTANCE_NO_WIDGET);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
@@ -89,6 +90,7 @@ public class OpenSocialUtilsTest extends TestCase {
     public void testCreatePlainTokenNoId()
             throws Exception {
         try {
+			@SuppressWarnings("unused")
 			String token = OpenSocialUtils.createPlainToken(INSTANCE_NO_IDKEY);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
@@ -113,6 +115,7 @@ public class OpenSocialUtilsTest extends TestCase {
     @Test(expected=Exception.class)
     public void testCreateEncryptedTokenNoWidget() throws Exception{
     	try {
+			@SuppressWarnings("unused")
 			String token = OpenSocialUtils.createEncryptedToken(INSTANCE_NO_WIDGET,"UNSECURED_TOKEN_KEY");
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
@@ -138,6 +141,7 @@ public class OpenSocialUtilsTest extends TestCase {
     public void testCreateEncryptedTokenNoId()
             throws Exception {
         try {
+			@SuppressWarnings("unused")
 			String token = OpenSocialUtils.createEncryptedToken(INSTANCE_NO_IDKEY,"UNSECURED_TOKEN_KEY");
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!

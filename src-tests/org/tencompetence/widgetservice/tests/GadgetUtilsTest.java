@@ -86,6 +86,7 @@ public class GadgetUtilsTest extends TestCase {
 		request.setParameter("url", TEST_GADGET_URL_INVALID);
 		
 		try {
+			@SuppressWarnings("unused")
 			Widget widget = GadgetUtils.createWidget(request);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
@@ -109,6 +110,7 @@ public class GadgetUtilsTest extends TestCase {
 		request.setParameter("url", TEST_GADGET_URL_VALID);
 		
 		try {
+			@SuppressWarnings("unused")
 			Widget widget = GadgetUtils.createWidget(request);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
@@ -131,6 +133,7 @@ public class GadgetUtilsTest extends TestCase {
 			fail("failed to connect to service");
 		}
 		try {
+			@SuppressWarnings("unused")
 			JSONObject object = new JSONObject(metadata);
 		} catch (JSONException e) {
 			fail("failed to return valid JSON from service");
@@ -161,7 +164,8 @@ public class GadgetUtilsTest extends TestCase {
     public void testGetMetadataWithInvalidService()
             throws Exception {
         try {
-    		String metadata = GadgetUtils.getMetadata(TEST_SERVICE_URL_INVALID, TEST_GADGET_URL_VALID);
+    		@SuppressWarnings("unused")
+			String metadata = GadgetUtils.getMetadata(TEST_SERVICE_URL_INVALID, TEST_GADGET_URL_VALID);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");
@@ -175,7 +179,8 @@ public class GadgetUtilsTest extends TestCase {
     public void testGetMetadataWithMalformedGadgetUrl()
             throws Exception {
         try {
-    		String metadata = GadgetUtils.getMetadata(TEST_SERVICE_URL_VALID, TEST_GADGET_URL_MALFORMED);
+    		@SuppressWarnings("unused")
+			String metadata = GadgetUtils.getMetadata(TEST_SERVICE_URL_VALID, TEST_GADGET_URL_MALFORMED);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");
@@ -190,6 +195,7 @@ public class GadgetUtilsTest extends TestCase {
 	 */
 	@Test
 	public void testGetWidgetWithValidMetadata() {
+		@SuppressWarnings("unused")
 		Widget widget = null;
 		try {
 			assertNotNull(GadgetUtils.getWidget(TEST_METADATA_VALID, SHINDIG));
@@ -205,7 +211,8 @@ public class GadgetUtilsTest extends TestCase {
     public void testGetWidgetWithErrorMetadata()
             throws Exception {
         try {
-        	Widget widget = GadgetUtils.getWidget(GadgetUtils.getMetadata(TEST_SERVICE_URL_VALID,TEST_GADGET_URL_INVALID), SHINDIG);
+        	@SuppressWarnings("unused")
+			Widget widget = GadgetUtils.getWidget(GadgetUtils.getMetadata(TEST_SERVICE_URL_VALID,TEST_GADGET_URL_INVALID), SHINDIG);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");
@@ -220,6 +227,7 @@ public class GadgetUtilsTest extends TestCase {
 	 */
 	@Test
 	public void testGetWidgetWithMetadataNoResults() {
+		@SuppressWarnings("unused")
 		Widget widget = null;
 		try {
 			assertNull(GadgetUtils.getWidget(TEST_METADATA_NO_GADGETS, SHINDIG));
@@ -262,7 +270,8 @@ public class GadgetUtilsTest extends TestCase {
     public void testGetWidgetWithEmptyURL()
             throws Exception {
         try {
-        	Widget widget = GadgetUtils.getWidget(TEST_METADATA_URL_EMPTY, SHINDIG);
+        	@SuppressWarnings("unused")
+			Widget widget = GadgetUtils.getWidget(TEST_METADATA_URL_EMPTY, SHINDIG);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");
@@ -276,7 +285,8 @@ public class GadgetUtilsTest extends TestCase {
     public void testGetWidgetWithMissingURL()
             throws Exception {
         try {
-        	Widget widget = GadgetUtils.getWidget(TEST_METADATA_URL_NULL, SHINDIG);
+        	@SuppressWarnings("unused")
+			Widget widget = GadgetUtils.getWidget(TEST_METADATA_URL_NULL, SHINDIG);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");
@@ -290,7 +300,8 @@ public class GadgetUtilsTest extends TestCase {
     public void testGetWidgetWithInvalidJSON()
             throws Exception {
         try {
-        	Widget widget = GadgetUtils.getWidget(TEST_METADATA_INVALID, SHINDIG);
+        	@SuppressWarnings("unused")
+			Widget widget = GadgetUtils.getWidget(TEST_METADATA_INVALID, SHINDIG);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");

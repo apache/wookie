@@ -23,9 +23,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -42,8 +40,6 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import org.junit.Assert;
 
 /**
  * Mock implementation of the {@link javax.servlet.http.HttpServletRequest}
@@ -98,7 +94,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	// ServletRequest properties
 	//---------------------------------------------------------------------
 
-	private final Hashtable attributes = new Hashtable();
+	private final Hashtable<String, Object> attributes = new Hashtable<String, Object>();
 
 	private String characterEncoding;
 
@@ -106,7 +102,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
 	private String contentType;
 
-	private final Map parameters = new LinkedHashMap(16);
+	private final Map<String, String[]> parameters = new LinkedHashMap<String, String[]>(16);
 
 	private String protocol = DEFAULT_PROTOCOL;
 
@@ -121,7 +117,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	private String remoteHost = DEFAULT_REMOTE_HOST;
 
 	/** List of locales in descending order */
-	private final Vector locales = new Vector();
+	private final Vector<Locale> locales = new Vector<Locale>();
 
 	private boolean secure = false;
 
@@ -147,7 +143,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	/**
 	 * The key is the lowercase header name; the value is a {@link HeaderValueHolder} object.
 	 */
-	private final Hashtable headers = new Hashtable();
+	private final Hashtable<String, Object> headers = new Hashtable<String, Object>();
 
 	private String method;
 
@@ -159,7 +155,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
 	private String remoteUser;
 
-	private final Set userRoles = new HashSet();
+	private final Set<String> userRoles = new HashSet<String>();
 
 	private Principal userPrincipal;
 
@@ -284,7 +280,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		return this.attributes.get(name);
 	}
 
-	public Enumeration getAttributeNames() {
+	public Enumeration<String> getAttributeNames() {
 		checkActive();
 		return this.attributes.keys();
 	}
@@ -340,8 +336,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	 * existing values for the provided parameter names. To add without
 	 * replacing existing values, use {@link #addParameters(Map)}.
 	 */
-	public void setParameters(Map params) {
-		for (Iterator it = params.keySet().iterator(); it.hasNext();) {
+	public void setParameters(Map<String, Object> params) {
+		for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
 			Object key = it.next();
 			Object value = params.get(key);
 			if (value instanceof String) {
@@ -389,8 +385,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	 * any existing values. To replace existing values, use
 	 * {@link #setParameters(Map)}.
 	 */
-	public void addParameters(Map params) {
-		for (Iterator it = params.keySet().iterator(); it.hasNext();) {
+	public void addParameters(Map<String, Object> params) {
+		for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
 			Object key = it.next();
 			Object value = params.get(key);
 			if (value instanceof String) {
@@ -425,7 +421,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		return (arr != null && arr.length > 0 ? arr[0] : null);
 	}
 
-	public Enumeration getParameterNames() {
+	public Enumeration<String> getParameterNames() {
 		return Collections.enumeration(this.parameters.keySet());
 	}
 
@@ -433,7 +429,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		return (String[]) this.parameters.get(name);
 	}
 
-	public Map getParameterMap() {
+	public Map<String, String[]> getParameterMap() {
 		return Collections.unmodifiableMap(this.parameters);
 	}
 
@@ -530,7 +526,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		return (Locale) this.locales.get(0);
 	}
 
-	public Enumeration getLocales() {
+	public Enumeration<Locale> getLocales() {
 		return this.locales.elements();
 	}
 
@@ -631,11 +627,11 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		return null;
 	}
 
-	public Enumeration getHeaders(String name) {
+	public Enumeration<Object> getHeaders(String name) {
 		return null;
 	}
 
-	public Enumeration getHeaderNames() {
+	public Enumeration<String> getHeaderNames() {
 		return this.headers.keys();
 	}
 
