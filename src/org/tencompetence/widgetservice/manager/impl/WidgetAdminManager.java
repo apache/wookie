@@ -52,7 +52,7 @@ import org.tencompetence.widgetservice.util.*;
  * and setting which widget is to be the default
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminManager.java,v 1.5 2009-04-17 14:26:08 ps3com Exp $
+ * @version $Id: WidgetAdminManager.java,v 1.6 2009-04-20 11:09:38 scottwilson Exp $
  */
 public class WidgetAdminManager extends WidgetServiceManager implements IWidgetAdminManager {
 	
@@ -100,7 +100,7 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 				widget.setWidgetAuthor(widgetData.get(ManifestHelper.AUTHOR_ELEMENT));
 				widget.setWidgetIconLocation(widgetIconLocation);
 				widget.setUrl(url);
-				widget.setGuid(widgetData.get(ManifestHelper.UID_ATTRIBUTE));
+				widget.setGuid(widgetData.get(ManifestHelper.ID_ATTRIBUTE));
 				widget.setHeight(Integer.parseInt(widgetData.get(ManifestHelper.HEIGHT_ATTRIBUTE)));
 				widget.setWidth(Integer.parseInt(widgetData.get(ManifestHelper.WIDTH_ATTRIBUTE)));
 				dbManager.saveObject(widget);	       	        

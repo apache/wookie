@@ -60,7 +60,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.14 2009-04-17 14:23:35 ps3com Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.15 2009-04-20 11:07:21 scottwilson Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -425,7 +425,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 					// check if the start file exists
 					String src = results.get(ManifestHelper.SOURCE_ATTRIBUTE);
 					if(ZipUtils.hasZipEntry(zipFile, src)){
-						String uid = results.get(ManifestHelper.UID_ATTRIBUTE);
+						String uid = results.get(ManifestHelper.ID_ATTRIBUTE);
 						if( uid != null && uid != ""){
 							File newWidgetFolder = ManifestHelper.createUnpackedWidgetFolder(request, properties, uid);
 							ZipUtils.unpackZip(zipFile, newWidgetFolder);
