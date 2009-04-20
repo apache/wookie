@@ -28,8 +28,6 @@ package org.tencompetence.widgetservice;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Hashtable;
 
 import javax.servlet.RequestDispatcher;
@@ -60,7 +58,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.15 2009-04-20 11:07:21 scottwilson Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.16 2009-04-20 11:17:51 scottwilson Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
