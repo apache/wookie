@@ -51,7 +51,7 @@ import org.jdom.input.SAXBuilder;
  * Manifest Helper class - methods for uploading the zip & parsing a w3c widget manifest.
  * 
  * @author Paul Sharples
- * @version $Id: ManifestHelper.java,v 1.9 2009-04-02 13:18:24 scottwilson Exp $ 
+ * @version $Id: ManifestHelper.java,v 1.10 2009-04-20 11:03:53 scottwilson Exp $ 
  *
  */
 public class ManifestHelper implements IW3CXMLConfiguration {
@@ -74,14 +74,14 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 			Hashtable<String,String> manifestValues = new Hashtable<String,String>();
 			
 			if(root.getAttributeValue(ID_ATTRIBUTE)!=null){
-				manifestValues.put(UID_ATTRIBUTE, root.getAttributeValue(ID_ATTRIBUTE));
+				manifestValues.put(ID_ATTRIBUTE, root.getAttributeValue(ID_ATTRIBUTE));
 			}
 			else{ 
 				if(root.getAttributeValue(UID_ATTRIBUTE)!=null){
-					manifestValues.put(UID_ATTRIBUTE, root.getAttributeValue(UID_ATTRIBUTE));
+					manifestValues.put(ID_ATTRIBUTE, root.getAttributeValue(UID_ATTRIBUTE));
 				} else {
 					// make one up
-					manifestValues.put(UID_ATTRIBUTE, RandomGUID.getUniqueID("generated-uid-"));
+					manifestValues.put(ID_ATTRIBUTE, RandomGUID.getUniqueID("generated-uid-"));
 				}
 			}
 						
@@ -135,19 +135,17 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 		
 			// author element ------------------------------------------------------------------------------
 			// specific author attributes
-			String authorImage=null, authorHref=null, authorEmail=null;
+			String authorHref=null, authorEmail=null;
 			Element authorElement = root.getChild(AUTHOR_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));									
 			if(authorElement==null){
 				author = "Anonymous";
 			}
 			else{
 				author = authorElement.getText();
-				authorImage = authorElement.getAttributeValue(IMG_ATTRIBUTE);
 				authorHref = authorElement.getAttributeValue(HREF_ATTRIBUTE);
 				authorEmail = authorElement.getAttributeValue(EMAIL_ATTRIBUTE);
 			}
 			manifestValues.put(AUTHOR_ELEMENT, author);
-			if ( authorImage != null ) manifestValues.put(NAME_ATTRIBUTE, authorImage);
 			if ( authorHref != null ) manifestValues.put(HREF_ATTRIBUTE, authorHref);
 			if ( authorEmail != null ) manifestValues.put(EMAIL_ATTRIBUTE, authorEmail);
 			
@@ -155,6 +153,9 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 			// access element ---------------------------------------------------------------------------
 			Element accessElement = root.getChild(ACCESS_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
 			if ( accessElement != null ) {
+				// TODO potential multiples here
+				String uri = accessElement.getAttributeValue(URI_ATTRIBUTE);
+				if (uri != null) manifestValues.put(URI_ATTRIBUTE, uri);
 				String network = accessElement.getAttributeValue(NETWORK_ATTRIBUTE);
 				if ( network != null ) manifestValues.put(NETWORK_ATTRIBUTE, network);
 			}
@@ -215,6 +216,9 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 				if ( featureRequired != null ) manifestValues.put(FEATURE_REQUIRED+"_"+i, featureRequired);
 				i++;
 			}
+			
+			// TODO preference elements -------------------------------------------------------------------------
+			//
 			
 			builder = null;
 			root = null;
