@@ -30,12 +30,12 @@ public class GadgetUtils {
 	/**
 	 * Relative URL of the Shindig  service
 	 */
-	public static final String SHINDIG_SERVICE = "/shindig";
+	public static final String SHINDIG_SERVICE = "/wookie";
 	
 	/**
 	 * Relative URL of the Shindig metadata service
 	 */
-	public static final String METADATA_SERVICE = "/shindig/gadgets/metadata";
+	public static final String METADATA_SERVICE = "/wookie/gadgets/metadata";
 
 	/**
 	 * The default Container ID
