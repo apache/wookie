@@ -1,73 +1,155 @@
 <%@ page import='org.tencompetence.widgetservice.beans.WidgetDefault' %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html>
 <head>
 <title>Wookie Widget Server</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="../style.css" rel="stylesheet" type="text/css">
+ <link type="text/css" href="/wookie/shared/js/jquery/themes/redmond/jquery-ui-1.7.1.custom.css" rel="stylesheet" />    
+  <link type="text/css" href="../layout.css" rel="stylesheet" />
+  <script type="text/javascript" src="/wookie/shared/js/jquery/jquery-1.3.2.min.js"></script>
+  <script type="text/javascript" src="/wookie/shared/js/jquery/jquery-ui-1.7.custom.min.js"></script>
 </head>
-<%
-WidgetDefault[] defaults = (WidgetDefault[])session.getAttribute("defaults");
-%>
+<%WidgetDefault[] defaults = (WidgetDefault[])session.getAttribute("defaults");%>
 <body>
-<table width="800" height="100%" border="0" align="center" cellpadding="0" cellspacing="0">
-  <tr align="center" valign="middle">
-    <td height="40" align="center" valign="middle" class="legend">
-    <img src="../shared/images/furry_white.png">       
-  </tr>
-  <tr>
-    <td height="40" align="center" class="legend"><a href="index.jsp" class="hypercolourwhite">menu</a></td>
-  </tr>
-  <tr>  	
-    <td valign="top" bgcolor="#FFFFFF" class="tbody">
-	<h3>Instantiate test</h3>
-
-<body>
-<p>
-To instantiate a widget, you must supply a few parameters.
-<form name="form1" method="post" action="/wookie/WidgetServiceServlet">
-<br>
-<table align="center" border="0">
-<tr>  
-  <td>API Key</td> 
-  <td><input name="api_key" type="text" id="api_key" value="TEST"></td>
-</tr>
-<tr>  
-  <td>userid</td> 
-  <td><input name="userid" type="text" id="userid" value="testuser"></td>
-</tr>
-<tr>   
-  <td>sharedDataKey</td>
-  <td><input name="shareddatakey" type="text" id="shareddatakey" value="mysharedkey"></td>
-</tr>
-<tr>  
-  <td>service type</td>
-  <td>
-  <div id="option_layer">
-  <select name="servicetype" type="text" id="servicetype">
-  <% 
-  for (WidgetDefault def : defaults){ 
-	  if(!def.getWidgetContext().equalsIgnoreCase("unsupported")){
-  %>
-  <option><%=def.getWidgetContext()%></option>
-  <%} %>
-  <%} %>
-</select><img src="../shared/images/go.gif">
+   <div id="header">
+ 		<div id="banner">
+    		<div style="float:left;">
+    			<img style="margin: 8 8px;" border="0" src="../shared/images/furry_white.png">
+    		</div>
+    		<div id="menu"><a class="menulink" href="index.jsp">menu&nbsp;<img border="0" src="../shared/images/book.gif"></a>&nbsp;</div>
+    	</div> 
+    	<div id="pagetitle">
+    		<h3>Instantiate test</h3>
+    	</div>
+    	<!--  END HEADER -->
+	</div>
+     
+    <div id="content">   	
+	<p>To instantiate a widget, you must supply a few parameters.</p>
+	
+	<form name="form1" method="post" action="/wookie/WidgetServiceServlet">
+	
+		<table width="300" class="ui-widget ui-widget-content" align="center">  
+		<tr class="ui-widget-header"><td colspan="2">&nbsp;Request instance</td></tr>		
+		<tr><td>
+		
+		
+		
+		
+				<div>
+				
+				
+					<div id="nifty">
+					<b class="rtop">
+					<b class="r1"></b>
+					<b class="r2"></b>
+					<b class="r3"></b>
+					<b class="r4"></b>
+					</b>	
+					<div><div class="adminLayerTitle">API key</div><div class="adminLayerDetail"><input class="ui-widget input ui-state-default ui-corner-all" name="api_key" type="text" id="api_key" value="TEST"></div></div>
+					<b class="rbottom">
+					<b class="r4"></b>
+					<b class="r3"></b>
+					<b class="r2"></b>
+					<b class="r1"></b>
+					</b>
+					</div>
+				
+					<div id="spacer"></div>
+					
+					<div id="nifty">
+					<b class="rtop">
+					<b class="r1"></b>
+					<b class="r2"></b>
+					<b class="r3"></b>
+					<b class="r4"></b>
+					</b>	
+					<div><div class="adminLayerTitle">userid</div><div class="adminLayerDetail"><input class="ui-widget input ui-state-default ui-corner-all" name="userid" type="text" id="userid" value="testuser"></div></div>
+					<b class="rbottom">
+					<b class="r4"></b>
+					<b class="r3"></b>
+					<b class="r2"></b>
+					<b class="r1"></b>
+					</b>
+					</div>
+				
+					<div id="spacer"></div>
+						
+					<div id="nifty">
+					<b class="rtop">
+					<b class="r1"></b>
+					<b class="r2"></b>
+					<b class="r3"></b>
+					<b class="r4"></b>
+					</b>		
+			    	<div><div class="adminLayerTitle" >sharedDataKey</div><div class="adminLayerDetail"><input class="ui-widget input ui-state-default ui-corner-all" name="shareddatakey" type="text" id="shareddatakey" value="mysharedkey"></div></div>
+			    	<b class="rbottom">
+					<b class="r4"></b>
+					<b class="r3"></b>
+					<b class="r2"></b>
+					<b class="r1"></b>
+					</b>
+					</div>
+	
+					<div id="spacer"></div>
+						
+					<div id="nifty">
+					<b class="rtop">
+					<b class="r1"></b>
+					<b class="r2"></b>
+					<b class="r3"></b>
+					<b class="r4"></b>
+					</b>		
+			    		<div>
+			    		<div class="adminLayerTitle">service type</div>
+			    		<div class="adminLayerDetail">
+				    		
+								  <select class="ui-widget input ui-state-default ui-corner-all" name="servicetype"  id="servicetype">
+								  <% 
+								  for (WidgetDefault def : defaults){ 
+									  if(!def.getWidgetContext().equalsIgnoreCase("unsupported")){
+								  %>
+								  <option><%=def.getWidgetContext()%></option>
+								  <%} %>
+								  <%} %>
+								  </select>
+							
+			    		
+			    		</div>
+			    		</div>
+			    	<b class="rbottom">
+					<b class="r4"></b>
+					<b class="r3"></b>
+					<b class="r2"></b>
+					<b class="r1"></b>
+					</b>
+					</div>
+	
+					<div id="spacer"></div>
+						
+					<div id="nifty">
+					<b class="rtop">
+					<b class="r1"></b>
+					<b class="r2"></b>
+					<b class="r3"></b>
+					<b class="r4"></b>
+					</b>		
+			    	<div style="text-align:center"><input class="ui-button ui-state-default ui-corner-all" type="submit" name="Submit" value="Submit"><input type="hidden" name="requestid" value="getwidget"></div>
+			    	<b class="rbottom">
+					<b class="r4"></b>
+					<b class="r3"></b>
+					<b class="r2"></b>
+					<b class="r1"></b>
+					</b>
+					</div>
+ 		</div>			
+  </td></tr>	
+</table>
+ </form>
+  </div>
+	
+<div id="footer">
+	<div style="text-align:right"><a class="menulink" href="index.jsp">menu&nbsp;<img border="0" src="../shared/images/book.gif"></a>&nbsp;</div>
 </div>
-  
-  </td>
-</tr>
-<tr>  
-  <td colspan="2" align="center">
-    <input type="submit" name="Submit" value="Submit"><input type="hidden" name="requestid" value="getwidget">
-  </td>  
-</tr>
-</table>
-</form>
-  <tr>
-    <td height="40" align="center" class="legend"><a href="index.jsp" class="hypercolourwhite">menu</a></td>
-  </tr>
-</table>
-
 </body>
 </html>
