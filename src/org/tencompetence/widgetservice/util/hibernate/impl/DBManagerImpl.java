@@ -42,7 +42,7 @@ import org.tencompetence.widgetservice.util.hibernate.HibernateUtil;
 /**
  * @author sheyenrath
  *
- * @version $Id: DBManagerImpl.java,v 1.4 2009-02-19 09:43:29 ps3com Exp $
+ * @version $Id: DBManagerImpl.java,v 1.5 2009-04-27 10:48:05 ps3com Exp $
  */
 public class DBManagerImpl implements IDBManager {
 
@@ -80,7 +80,7 @@ public class DBManagerImpl implements IDBManager {
 	 */
 	public void closeSession() {
 		if (session.isOpen()) {
-			//session.flush();
+			session.flush();
 			session.close();
 		}	
 	}
@@ -202,7 +202,7 @@ public class DBManagerImpl implements IDBManager {
 	public void deleteObject(final AbstractKeyBean obj) throws Exception {
 		
 		try {
-			session.delete(obj);
+			session.delete(obj);			
 		} catch (HibernateException he) {
 			throw new Exception(he);
 		}
