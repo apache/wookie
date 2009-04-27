@@ -52,7 +52,7 @@ import org.tencompetence.widgetservice.util.*;
  * and setting which widget is to be the default
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminManager.java,v 1.6 2009-04-20 11:09:38 scottwilson Exp $
+ * @version $Id: WidgetAdminManager.java,v 1.7 2009-04-27 10:51:19 ps3com Exp $
  */
 public class WidgetAdminManager extends WidgetServiceManager implements IWidgetAdminManager {
 	
@@ -433,6 +433,11 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
         for(int j=0;j<widgetTypes.length;++j){						
         	try {
         		if(widgetType.equalsIgnoreCase(widgetTypes[j].getWidgetContext())){
+        			// BUG FIX
+        			// Using only the deleteObject method meant that
+        			// the set still contained this widgetType.
+        			// So we also remove it from the list
+        			types.remove(widgetTypes[j]);
         			dbManager.deleteObject(widgetTypes[j]);
         			response = true;
         		}
