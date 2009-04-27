@@ -118,19 +118,21 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 			String email = request.getParameter("email");
 			if (email == null) {
 				session.setAttribute("message_value", "You must include a valid email address to register for an API key");
-			} else {
+			} 
+			else {
 				if (email.trim().equals("")){
 					session.setAttribute("message_value", "You must include a valid email address to register for an API key");					
-				} else {
+				} 
+				else {
 					// Otherwise, good to go		
 					WidgetKeyManager.createKey(request, email);
 					session.setAttribute("message_value", "Your API key has been sent to your email address");
 				}
 			}
-
-
-		} catch (Exception e1) {
+		} 
+		catch (Exception ex) {
 			session.setAttribute("message_value", "There was a problem with the API key service");
+			_logger.error("There was a problem with the API key service", ex);
 		}
 
 	}
