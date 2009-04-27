@@ -8,28 +8,37 @@ Boolean isMaxable = (Boolean)session.getAttribute("isMaxable");
 Boolean closeWindow = (Boolean)session.getAttribute("closeWindow");
 WidgetService[] services = (WidgetService[])session.getAttribute("services");
 %>
+<!DOCTYPE html>
 <html>
 <head>
 <title>Add widget services close:<%=closeWindow %></title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="../style.css" rel="stylesheet" type="text/css">
+  <link type="text/css" href="/wookie/shared/js/jquery/themes/redmond/jquery-ui-1.7.1.custom.css" rel="stylesheet" />  
+  <link type="text/css" href="../layout.css" rel="stylesheet" />
+  <script type="text/javascript" src="/wookie/shared/js/jquery/jquery-1.3.2.min.js"></script>
+  <script type="text/javascript" src="/wookie/shared/js/jquery/jquery-ui-1.7.custom.min.js"></script>
 </head>
 <%if (closeWindow){ %>
 <body onload="javascript:pro = window.open('/upload.htm','UploadStatus'); pro.close();">
 <%}else{%>
 <body>
 <%} %>
-<table width="800" height="100%" border="0" align="center" cellpadding="0" cellspacing="0">
-  <tr align="center" valign="middle">
-    <td height="40" align="center" valign="middle" class="legend">
-        <h2>Widget Server Administration</h2></td>
-  </tr>
-    <tr>
-    <td height="40" align="center" class="legend"><a href="index.jsp" class="hypercolourwhite">menu</a></td>
-  </tr>
-  <tr>  	
-    <td valign="top" bgcolor="#FFFFFF" class="tbody">
-	<h3>Add types</h3>	
+    <div id="header">
+ 		<div id="banner">
+    		<div style="float:left;">
+    			<img style="margin: 8 8px;" border="0" src="../shared/images/furry_white.png">
+    		</div>
+    		<div id="menu"><a class="menulink" href="index.jsp">menu&nbsp;<img border="0" src="../shared/images/book.gif"></a>&nbsp;</div>
+    	</div> 
+    	<div id="pagetitle">
+    		<h3>Add types</h3>
+    	</div>
+    	<!--  END HEADER -->
+	</div>
+     
+    <div id="content">  
+    
+    
 	<%if(errors!=null){%>
       <p><img src="../shared/images/cancel.gif" width="16" height="16">There was 
         a problem encountered when trying to upload the package. <br>
@@ -52,8 +61,8 @@ When a client of the widget system asks for a widget, it will ask using one of t
 <form name="form1" method="post" action="WidgetAdminServlet">
   <input type="hidden" name="operation" value="SETWIDGETTYPES">
    <input type="hidden" name="dbkey" value="<%=dbkey%>">
-	<table border=1 width="798">  
-	<tr>
+	<table width="500" class="ui-widget ui-widget-content" align="center">  
+	<tr class="ui-widget-header">
 		<td colspan="2">Please choose the type/s for this widget</td>
 	</tr>
 	 <tr> 
@@ -70,14 +79,14 @@ When a client of the widget system asks for a widget, it will ask using one of t
     	<td>Can maximize?</td>
     	<td>
     	<%if(isMaxable){%>
-    	<input type="checkbox" name="max" value="true" checked>
+    	<input type="checkbox" name="max" value="true" checked  class="ui-button ui-state-default ui-corner-all">
     	<%} else { %>
-    	<input type="checkbox" name="max" value="true">
+    	<input type="checkbox" name="max" value="true"  class="ui-button ui-state-default ui-corner-all">
     	<%}%>
     	</td>
     </tr>
      <tr> 
-		<td colspan="2"><div align="center"><input type="submit" name="Submit" value="Submit"></div>
+		<td colspan="2"><div align="center"><input  class="ui-button ui-state-default ui-corner-all" type="submit" name="Submit" value="Submit"></div>
         </td>
     </tr>
 	</table>
@@ -87,12 +96,11 @@ When a client of the widget system asks for a widget, it will ask using one of t
 
 
 
-	</td>
-  </tr>
-  <tr>
-    <td height="40" align="center" class="legend"><a href="index.jsp" class="hypercolourwhite">menu</a></td>
-  </tr>
-</table>
+</div>
+	
+<div id="footer">
+	<div style="text-align:right"><a class="menulink" href="index.jsp">menu&nbsp;<img border="0" src="../shared/images/book.gif"></a>&nbsp;</div>
+</div>
 
 </body>
 </html>
