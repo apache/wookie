@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.tencompetence.widgetservice.Messages;
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.util.opensocial.OpenSocialUtils;
@@ -14,6 +15,7 @@ public class OpenSocialUtilsTest extends TestCase {
 	private WidgetInstance INSTANCE_NO_WIDGET;
 	private WidgetInstance INSTANCE_NO_IDKEY;
 	private WidgetInstance INSTANCE_NO_USER_ID;
+	private Messages BUNDLE;
 	
 	@Before public void setUp(){
 		Widget widget = new Widget();
@@ -47,7 +49,7 @@ public class OpenSocialUtilsTest extends TestCase {
 	@Test
 	public void testCreatePlainToken() {
 		try {
-			String token = OpenSocialUtils.createPlainToken(INSTANCE);
+			String token = OpenSocialUtils.createPlainToken(INSTANCE, BUNDLE);
 			assertNotNull(token);
 			assertFalse(token.equals(""));
 		} catch (Exception e) {
@@ -60,7 +62,7 @@ public class OpenSocialUtilsTest extends TestCase {
     public void testCreatePlainTokenNoWidget() throws Exception{
     	try {
 			@SuppressWarnings("unused")
-			String token = OpenSocialUtils.createPlainToken(INSTANCE_NO_WIDGET);
+			String token = OpenSocialUtils.createPlainToken(INSTANCE_NO_WIDGET, BUNDLE);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");
@@ -78,7 +80,7 @@ public class OpenSocialUtilsTest extends TestCase {
     public void testCreatePlainTokenNoUserId()
             throws Exception {
         try {
-			String token = OpenSocialUtils.createPlainToken(INSTANCE_NO_USER_ID);
+			String token = OpenSocialUtils.createPlainToken(INSTANCE_NO_USER_ID, BUNDLE);
 			assertNotNull(token);
 			assertTrue(token.contains("anon"));
         } catch (Exception expected) {
@@ -91,7 +93,7 @@ public class OpenSocialUtilsTest extends TestCase {
             throws Exception {
         try {
 			@SuppressWarnings("unused")
-			String token = OpenSocialUtils.createPlainToken(INSTANCE_NO_IDKEY);
+			String token = OpenSocialUtils.createPlainToken(INSTANCE_NO_IDKEY, BUNDLE);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");
@@ -104,7 +106,7 @@ public class OpenSocialUtilsTest extends TestCase {
 	@Test
 	public void testCreateEncryptedToken() {
 		try {
-			String token = OpenSocialUtils.createEncryptedToken(INSTANCE,"UNSECURED_TOKEN_KEY");
+			String token = OpenSocialUtils.createEncryptedToken(INSTANCE,"UNSECURED_TOKEN_KEY", BUNDLE);
 			assertNotNull(token);
 			assertFalse(token.equals(""));
 		} catch (Exception e) {
@@ -116,7 +118,7 @@ public class OpenSocialUtilsTest extends TestCase {
     public void testCreateEncryptedTokenNoWidget() throws Exception{
     	try {
 			@SuppressWarnings("unused")
-			String token = OpenSocialUtils.createEncryptedToken(INSTANCE_NO_WIDGET,"UNSECURED_TOKEN_KEY");
+			String token = OpenSocialUtils.createEncryptedToken(INSTANCE_NO_WIDGET,"UNSECURED_TOKEN_KEY", BUNDLE);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");
@@ -130,7 +132,7 @@ public class OpenSocialUtilsTest extends TestCase {
     public void testCreateEncryptedTokenNoUserId()
             throws Exception {
         try {
-			String token = OpenSocialUtils.createEncryptedToken(INSTANCE_NO_USER_ID,"UNSECURED_TOKEN_KEY");
+			String token = OpenSocialUtils.createEncryptedToken(INSTANCE_NO_USER_ID,"UNSECURED_TOKEN_KEY", BUNDLE);
             assertNotNull(token);
         } catch (Exception expected) {
             fail("should've created a token using @anon");
@@ -142,7 +144,7 @@ public class OpenSocialUtilsTest extends TestCase {
             throws Exception {
         try {
 			@SuppressWarnings("unused")
-			String token = OpenSocialUtils.createEncryptedToken(INSTANCE_NO_IDKEY,"UNSECURED_TOKEN_KEY");
+			String token = OpenSocialUtils.createEncryptedToken(INSTANCE_NO_IDKEY,"UNSECURED_TOKEN_KEY", BUNDLE);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");

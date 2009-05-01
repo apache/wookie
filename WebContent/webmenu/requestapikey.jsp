@@ -1,3 +1,5 @@
+<%@ page import='org.tencompetence.widgetservice.Messages' %>
+<% Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName()); %>
 <!DOCTYPE html>
 <% String version = (String)session.getAttribute("version");
 // "version" is lazy loaded and will be empty until a request is made to the server
@@ -7,7 +9,7 @@ if (version==null){
 %>
 <html>
 <head>
-<title>Wookie Widget Server <%=version%></title>
+<title><%=localizedMessages.getString("webmenu.requestapikey.0")%> <%=version%></title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	<link type="text/css" href="/wookie/shared/js/jquery/themes/redmond/jquery-ui-1.7.1.custom.css" rel="stylesheet" />    
 	<link type="text/css" href="../layout.css" rel="stylesheet" />
@@ -54,7 +56,7 @@ if (version==null){
 			bgiframe: true,
 	    	autoOpen: false,
 	    	buttons: {
-	            "Ok": function() { $(this).dialog("close"); }
+	            "<%=localizedMessages.getString("webmenu.requestapikey.2")%>": function() { $(this).dialog("close"); }
 	    	},
 	    	resizable: false,                        
 	    	modal: true,
@@ -74,10 +76,10 @@ if (version==null){
     		<div style="float:left;">
     			<img style="margin: 4 8px;" border="0" src="../shared/images/furry_white.png">
     		</div>
-    		<div id="menu"><a class="menulink" href="index.jsp">menu&nbsp;<img border="0" src="../shared/images/book.gif"></a>&nbsp;</div>
+    		<div id="menu"><a class="menulink" href="index.jsp"><%=localizedMessages.getString("webmenu.requestapikey.1")%>&nbsp;<img border="0" src="../shared/images/book.gif"></a>&nbsp;</div>
     	</div> 
     	<div id="pagetitle">
-    		<h3>Request an API key</h3>
+    		<h3><%=localizedMessages.getString("webmenu.requestapikey.6")%></h3>
     	</div>
     	<!--  END HEADER -->
 	</div>
@@ -98,18 +100,18 @@ if (version==null){
 	<%}%>
 	
 <p>
-To request an API key, enter your email address and click Request
+<%=localizedMessages.getString("webmenu.requestapikey.3")%>
 <form name="requestkeyform" method="post" action="WidgetWebMenuServlet">
 <br>
 <table class="ui-widget ui-widget-content" align="center" border="0">
-<tr class="ui-widget-header"><td colspan="2">&nbsp;Request key</td></tr>
+<tr class="ui-widget-header"><td colspan="2">&nbsp;<%=localizedMessages.getString("webmenu.requestapikey.4")%></td></tr>
 <tr>  
-  <td>Email</td> 
+  <td><%=localizedMessages.getString("webmenu.requestapikey.7")%></td> 
   <td><input style="float:left;" name="email" size="50" type="text" id="email" value=""><div id="validEmail"></div></td>
 </tr>
 <tr>  
   <td colspan="2" align="center">
-    <input class="ui-button ui-state-default ui-corner-all" type="button" name="Submit" value="Request" onClick="checkValue()">
+    <input class="ui-button ui-state-default ui-corner-all" type="button" name="Submit" value="<%=localizedMessages.getString("webmenu.requestapikey.4")%>" onClick="checkValue()">
     <input type="hidden" name="operation" value="REQUESTAPIKEY">
   </td>  
 </tr>
@@ -121,8 +123,8 @@ To request an API key, enter your email address and click Request
 </div>
 	
 <div id="footer">
-	<div style="text-align:right"><a class="menulink" href="index.jsp">menu&nbsp;<img border="0" src="../shared/images/book.gif"></a>&nbsp;</div>
+	<div style="text-align:right"><a class="menulink" href="index.jsp"><%=localizedMessages.getString("webmenu.requestapikey.1")%>&nbsp;<img border="0" src="../shared/images/book.gif"></a>&nbsp;</div>
 </div>
-<div id="confirm" style="display:none;" title="Warning"><span class="ui-icon ui-icon-alert" style="float:left;"></span>Invalid email address</div>
+<div id="confirm" style="display:none;" title="<%=localizedMessages.getString("webmenu.requestapikey.8")%>"><span class="ui-icon ui-icon-alert" style="float:left;"></span><%=localizedMessages.getString("webmenu.requestapikey.5")%></div>
 </body>
 </html>

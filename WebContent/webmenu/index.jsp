@@ -1,3 +1,5 @@
+<%@ page import='org.tencompetence.widgetservice.Messages;'%>
+<% Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName()); %>
 <!DOCTYPE html>
 <% String version = (String)session.getAttribute("version");
 // "version" is lazy loaded and will be empty until a request is made to the server
@@ -7,7 +9,7 @@ if (version==null){
 %>
 <html>
 <head>
-<title>Wookie Widget Server <%=version%></title>
+<title><%=localizedMessages.getString("webmenu.index.0")%> <%=version%></title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <link type="text/css" href="/wookie/shared/js/jquery/themes/redmond/jquery-ui-1.7.1.custom.css" rel="stylesheet" />    
   <link type="text/css" href="../layout.css" rel="stylesheet" />
@@ -24,7 +26,7 @@ if (version==null){
     		<div id="menu"></div>
     	</div> 
     	<div id="pagetitle">
-    		<h3>Main Menu</h3>
+    		<h3><%=localizedMessages.getString("webmenu.index.6")%></h3>
     	</div>
     	<!--  END HEADER -->
 	</div>
@@ -43,7 +45,7 @@ if (version==null){
 		</font>
 	</p>
 	<%}%>
-	<h4>Options</h4>
+	<h4><%=localizedMessages.getString("webmenu.index.1")%></h4>
 	<br/>
 	
 	<div style="background:#ffffff;padding-top: 4px;">
@@ -56,7 +58,7 @@ if (version==null){
 						<b class="r3"></b>
 						<b class="r4"></b>
 					</b>	
-						<div class="adminLayerDetail"><p><a href="WidgetWebMenuServlet?operation=LISTWIDGETS" ><img src="../shared/images/view_1.gif" width="20" height="20" border="0">&nbsp;View Widget Gallery</a></p></div>
+						<div class="adminLayerDetail"><p><a href="WidgetWebMenuServlet?operation=LISTWIDGETS" ><img src="../shared/images/view_1.gif" width="20" height="20" border="0">&nbsp;<%=localizedMessages.getString("webmenu.index.2")%></a></p></div>
 					<b class="rbottom">
 						<b class="r4"></b>
 						<b class="r3"></b>
@@ -73,7 +75,7 @@ if (version==null){
 						<b class="r3"></b>
 						<b class="r4"></b>
 					</b>	
-						<div class="adminLayerDetail"><p><a href="../admin"><img src="../shared/images/unlock.gif" width="20" height="20" border="0">&nbsp;Administration menu</a></p></div>
+						<div class="adminLayerDetail"><p><a href="../admin"><img src="../shared/images/unlock.gif" width="20" height="20" border="0">&nbsp;<%=localizedMessages.getString("webmenu.index.3")%></a></p></div>
 					<b class="rbottom">
 						<b class="r4"></b>
 						<b class="r3"></b>
@@ -91,7 +93,7 @@ if (version==null){
 						<b class="r4"></b>
 					</b>	
 						<div class="adminLayerDetail"><p>
-						<a href="WidgetWebMenuServlet?operation=INSTANTIATE"><img src="../shared/images/run.gif" width="18" height="18" border="0">&nbsp;Instantiate a widget</a></p></div>
+						<a href="WidgetWebMenuServlet?operation=INSTANTIATE"><img src="../shared/images/run.gif" width="18" height="18" border="0">&nbsp;<%=localizedMessages.getString("webmenu.index.4")%></a></p></div>
 					<b class="rbottom">
 						<b class="r4"></b>
 						<b class="r3"></b>
@@ -109,7 +111,7 @@ if (version==null){
 						<b class="r4"></b>
 					</b>	
 						<div class="adminLayerDetail"><p>
-						<a href="requestapikey.jsp"><img src="../shared/images/mail.png" width="16" height="16" border="0">&nbsp;Request an API key for your application</a></p></div>
+						<a href="requestapikey.jsp"><img src="../shared/images/mail.png" width="16" height="16" border="0">&nbsp;<%=localizedMessages.getString("webmenu.index.5")%></a></p></div>
 					<b class="rbottom">
 						<b class="r4"></b>
 						<b class="r3"></b>
