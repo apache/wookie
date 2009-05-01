@@ -4,11 +4,13 @@
 package org.tencompetence.widgetservice.util.opensocial;
 
 import java.net.URLEncoder;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shindig.auth.BlobCrypterSecurityToken;
 import org.apache.shindig.common.crypto.BasicBlobCrypter;
+import org.tencompetence.widgetservice.Messages;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 
 /**
@@ -21,11 +23,11 @@ public class OpenSocialUtils {
 	
 	static Logger _logger = Logger.getLogger(OpenSocialUtils.class.getName());
 	
-	private static final String DOMAIN_ID = "wookie";
+	private static final String DOMAIN_ID = "wookie"; //$NON-NLS-1$
 	// TODO once we have an API Key implementation, we can convey the actual container id rather than Wookie
-	private static final String CONTAINER_ID = "wookie";
+	private static final String CONTAINER_ID = "wookie"; //$NON-NLS-1$
 	// TODO once we get plugins to send owner Id, we can remove this
-	private static final String OWNER_ID = "0";
+	private static final String OWNER_ID = "0"; //$NON-NLS-1$
 	
 	
 	/**
@@ -45,29 +47,29 @@ public class OpenSocialUtils {
 	 * @return the plain text token for the widget instance
 	 * @throws Exception
 	 */
-	public static String createPlainToken(WidgetInstance instance) throws Exception{
+	public static String createPlainToken(WidgetInstance instance, Messages localizedMessages) throws Exception{
 		
-		if (instance == null) throw new Exception("Instance used to create token cannot be null");
+		if (instance == null) throw new Exception(localizedMessages.getString("OpenSocialUtils.0")); //$NON-NLS-1$
 		// check we have the required information:
 		if (instance.getWidget() == null || instance.getIdKey() == null) {
-			throw new Exception("Instance cannot be used to create token - invalid content");
+			throw new Exception(localizedMessages.getString("OpenSocialUtils.1")); //$NON-NLS-1$
 		}
 
 		// We really need to implement viewer/owner info
-		String userid = "@anon";
-		if (instance.getUserId()!=null) if(!instance.getUserId().equals("")) userid = instance.getUserId();
+		String userid = "@anon"; //$NON-NLS-1$
+		if (instance.getUserId()!=null) if(!instance.getUserId().equals("")) userid = instance.getUserId(); //$NON-NLS-1$
 		
 		// Order of fields is:
 		// owner, viewer, app_id, domain, app_url, mod_id, container
 		// NOTE that we're hacking this now to push the id_key through the container value as Shindig won't let us use Strings for mod_id, only Longs
 		// TODO replace hack with a real solution
-		String[] fields = {OWNER_ID, userid, instance.getWidget().getGuid(), DOMAIN_ID, instance.getWidget().getUrl(), "0", String.valueOf(instance.getIdKey())};
+		String[] fields = {OWNER_ID, userid, instance.getWidget().getGuid(), DOMAIN_ID, instance.getWidget().getUrl(), "0", String.valueOf(instance.getIdKey())}; //$NON-NLS-1$
 		for (int i = 0; i < fields.length; i++) {
 			// escape each field individually, for metachars in URL
-			fields[i] = URLEncoder.encode(fields[i], "UTF-8");
+			fields[i] = URLEncoder.encode(fields[i], "UTF-8"); //$NON-NLS-1$
 		}		
-		String token = StringUtils.join(fields, ":");
-		token = URLEncoder.encode(token, "UTF-8");
+		String token = StringUtils.join(fields, ":"); //$NON-NLS-1$
+		token = URLEncoder.encode(token, "UTF-8"); //$NON-NLS-1$
 		
 		return token;		
 	}
@@ -79,16 +81,17 @@ public class OpenSocialUtils {
 	 * @return the encrypted token for the widget instance
 	 * @throws Exception
 	 */
-	public static String createEncryptedToken(WidgetInstance instance, String key) throws Exception{
+	public static String createEncryptedToken(WidgetInstance instance, String key, Messages localizedMessages) throws Exception{
 		
-		if (instance == null) throw new Exception("Instance used to create token cannot be null");
+		if (instance == null) throw new Exception(localizedMessages.getString("OpenSocialUtils.0")); //$NON-NLS-1$
 		// check we have the required information:
 		if (instance.getWidget() == null || instance.getIdKey() == null) {
-			throw new Exception("Instance cannot be used to create token - invalid content");
+			throw new Exception(localizedMessages.getString("OpenSocialUtils.1")); //$NON-NLS-1$
 		}
 		
-		String userid = "@anon";
-		if (instance.getUserId()!=null) if(!instance.getUserId().equals("")) userid = instance.getUserId();
+		@SuppressWarnings("unused")
+		String userid = "@anon"; //$NON-NLS-1$
+		if (instance.getUserId()!=null) if(!instance.getUserId().equals("")) userid = instance.getUserId(); //$NON-NLS-1$
 		
 		BasicBlobCrypter crypter = new BasicBlobCrypter(key.getBytes());
 		BlobCrypterSecurityToken token = new BlobCrypterSecurityToken(crypter, CONTAINER_ID, DOMAIN_ID);
@@ -100,7 +103,7 @@ public class OpenSocialUtils {
 		token.setViewerId(instance.getUserId());
 		String encryptedToken = null;
 		encryptedToken = token.encrypt();
-		encryptedToken = URLEncoder.encode(encryptedToken, "UTF-8");
+		encryptedToken = URLEncoder.encode(encryptedToken, "UTF-8"); //$NON-NLS-1$
 		return encryptedToken;
 	}
 

@@ -37,7 +37,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 /**
  * A class to manage the whitelist available to the proxy service
  * @author Paul Sharples
- * @version $Id
+ * @version $Id: WidgetProxyManager.java,v 1.2 2009-05-01 10:40:09 ps3com Exp $
  *
  */
 public class WidgetProxyManager implements IWidgetProxyManager {

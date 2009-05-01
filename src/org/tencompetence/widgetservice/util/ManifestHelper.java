@@ -29,10 +29,11 @@ package org.tencompetence.widgetservice.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Hashtable;
+import java.util.ResourceBundle;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -46,27 +47,28 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
-
+import org.tencompetence.widgetservice.Messages;
 /**
  * Manifest Helper class - methods for uploading the zip & parsing a w3c widget manifest.
  * 
  * @author Paul Sharples
- * @version $Id: ManifestHelper.java,v 1.10 2009-04-20 11:03:53 scottwilson Exp $ 
+ * @version $Id: ManifestHelper.java,v 1.11 2009-05-01 10:40:09 ps3com Exp $ 
  *
  */
 public class ManifestHelper implements IW3CXMLConfiguration {
 	
-	public static final String ICON_SOURCE = "icon_src";
-	public static final String ICON_HEIGHT = "icon_height";
-	public static final String ICON_WIDTH = "icon_width";
-	public static final String ICON_NAME = "icon_name";
+	public static final String ICON_SOURCE = "icon_src"; //$NON-NLS-1$
+	public static final String ICON_HEIGHT = "icon_height"; //$NON-NLS-1$
+	public static final String ICON_WIDTH = "icon_width"; //$NON-NLS-1$
+	public static final String ICON_NAME = "icon_name"; //$NON-NLS-1$
 	
-	public static final String FEATURE_NAME = "feature_name";
-	public static final String FEATURE_REQUIRED = "feature_required";
+	public static final String FEATURE_NAME = "feature_name"; //$NON-NLS-1$
+	public static final String FEATURE_REQUIRED = "feature_required"; //$NON-NLS-1$
 
 	static Logger _logger = Logger.getLogger(ManifestHelper.class.getName());
+	
 
-	public static Hashtable<String,String> dealWithManifest(String xmlText) throws JDOMException, IOException {
+	public static Hashtable<String,String> dealWithManifest(String xmlText, Messages localizedMessages) throws JDOMException, IOException {
 		String name, description, author, startFile;
 		SAXBuilder builder = new SAXBuilder();
 		Element root = builder.build(new StringReader(xmlText)).getRootElement();
@@ -81,7 +83,7 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 					manifestValues.put(ID_ATTRIBUTE, root.getAttributeValue(UID_ATTRIBUTE));
 				} else {
 					// make one up
-					manifestValues.put(ID_ATTRIBUTE, RandomGUID.getUniqueID("generated-uid-"));
+					manifestValues.put(ID_ATTRIBUTE, RandomGUID.getUniqueID("generated-uid-")); //$NON-NLS-1$
 				}
 			}
 						
@@ -93,28 +95,28 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 				manifestValues.put(HEIGHT_ATTRIBUTE, root.getAttributeValue(HEIGHT_ATTRIBUTE));
 			}
 			else{
-				manifestValues.put(HEIGHT_ATTRIBUTE, "300");
+				manifestValues.put(HEIGHT_ATTRIBUTE, "300"); //$NON-NLS-1$
 			}
 			
 			if(root.getAttributeValue(WIDTH_ATTRIBUTE)!=null){
 				manifestValues.put(WIDTH_ATTRIBUTE, root.getAttributeValue(WIDTH_ATTRIBUTE));
 			}
 			else{
-				manifestValues.put(WIDTH_ATTRIBUTE, "150");
+				manifestValues.put(WIDTH_ATTRIBUTE, "150"); //$NON-NLS-1$
 			}
 			
 			if(root.getAttributeValue(MODE_ATTRIBUTE)!=null){
 				manifestValues.put(MODE_ATTRIBUTE, root.getAttributeValue(MODE_ATTRIBUTE));
 			}
 			else{
-				manifestValues.put(MODE_ATTRIBUTE, "default");				
+				manifestValues.put(MODE_ATTRIBUTE, "default");				 //$NON-NLS-1$
 			}
 			
 			
 			// name element --------------------------------------------------------------------------------
 			Element nameElement = root.getChild(NAME_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
 			if(nameElement==null){
-				name = "Unnamed Widget";
+				name = localizedMessages.getString("ManifestHelper.0"); //$NON-NLS-1$
 			}
 			else{
 				name = nameElement.getText();
@@ -125,7 +127,7 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 			// description element -------------------------------------------------------------------------
 			Element descElement = root.getChild(DESCRIPTION_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));									
 			if(descElement==null){
-				description = "No Description";
+				description = localizedMessages.getString("ManifestHelper.1"); //$NON-NLS-1$
 			}
 			else{
 				description = descElement.getText();
@@ -138,7 +140,7 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 			String authorHref=null, authorEmail=null;
 			Element authorElement = root.getChild(AUTHOR_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));									
 			if(authorElement==null){
-				author = "Anonymous";
+				author = localizedMessages.getString("ManifestHelper.2"); //$NON-NLS-1$
 			}
 			else{
 				author = authorElement.getText();
@@ -165,11 +167,11 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 			String contentType=null, contentCharset=null;
 			Element contentElement = root.getChild(CONTENT_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
 			if ( contentElement == null ) {
-				startFile = "index.html";
+				startFile = "index.html"; //$NON-NLS-1$
 			}
 			else {
 				startFile = contentElement.getAttributeValue(SOURCE_ATTRIBUTE);
-				if ( startFile == null ) startFile = "index.html";
+				if ( startFile == null ) startFile = "index.html"; //$NON-NLS-1$
 				contentType = contentElement.getAttributeValue(TYPE_ATTRIBUTE);
 				contentCharset = contentElement.getAttributeValue(CHARSET_ATTRIBUTE);
 			}
@@ -196,10 +198,10 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 				String iconSrc = anIcon.getAttributeValue(SOURCE_ATTRIBUTE);
 				String iconWidth = anIcon.getAttributeValue(WIDTH_ATTRIBUTE);
 				String iconHeight = anIcon.getAttributeValue(HEIGHT_ATTRIBUTE);
-				manifestValues.put(ICON_NAME+"_"+i, iconName);
-				manifestValues.put(ICON_SOURCE+"_"+i, iconSrc);
-				if ( iconWidth != null ) manifestValues.put(ICON_WIDTH+"_"+i, iconWidth);
-				if ( iconHeight != null ) manifestValues.put(ICON_HEIGHT+"_"+i, iconHeight);
+				manifestValues.put(ICON_NAME+"_"+i, iconName); //$NON-NLS-1$
+				manifestValues.put(ICON_SOURCE+"_"+i, iconSrc); //$NON-NLS-1$
+				if ( iconWidth != null ) manifestValues.put(ICON_WIDTH+"_"+i, iconWidth); //$NON-NLS-1$
+				if ( iconHeight != null ) manifestValues.put(ICON_HEIGHT+"_"+i, iconHeight); //$NON-NLS-1$
 				i++;
 			}
 			
@@ -212,8 +214,8 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 				Element aFeature = (Element)f_iter.next();
 				String featureName = aFeature.getAttributeValue(NAME_ATTRIBUTE);
 				String featureRequired = aFeature.getAttributeValue(REQUIRED_ATTRIBUTE);
-				manifestValues.put(FEATURE_NAME+"_"+i, featureName);
-				if ( featureRequired != null ) manifestValues.put(FEATURE_REQUIRED+"_"+i, featureRequired);
+				manifestValues.put(FEATURE_NAME+"_"+i, featureName); //$NON-NLS-1$
+				if ( featureRequired != null ) manifestValues.put(FEATURE_REQUIRED+"_"+i, featureRequired); //$NON-NLS-1$
 				i++;
 			}
 			
@@ -233,7 +235,7 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 
 	public static File createUnpackedWidgetFolder(HttpServletRequest request, Configuration properties, String folder) throws IOException{
 		folder = convertIdToFolderName(folder);
-		String uploadPath = properties.getString("widget.widgetfolder");
+		String uploadPath = properties.getString("widget.widgetfolder"); //$NON-NLS-1$
 		ServletContext context = request.getSession().getServletContext();
 		String serverPath = context.getRealPath(uploadPath + File.separator + folder) ;
 		File file = new File(convertPathToPlatform(serverPath));
@@ -242,27 +244,27 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 
 	public static String getURLForWidget(Configuration properties, String folder, String file){
 		folder = convertIdToFolderName(folder);
-		String path = convertPathToRelativeUri("/wookie" + properties.getString("widget.widgetfolder") + File.separator + folder + File.separator + file);
+		String path = convertPathToRelativeUri("/wookie" + properties.getString("widget.widgetfolder") + File.separator + folder + File.separator + file); //$NON-NLS-1$ //$NON-NLS-2$
 		return path;
 	}
 
 	public static String convertIdToFolderName(String folder){
-		if(folder.startsWith("http://")){
+		if(folder.startsWith("http://")){ //$NON-NLS-1$
 			folder = folder.substring(7, folder.length());
 		}
-		folder.replaceAll(" ", "");
+		folder.replaceAll(" ", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		return folder;
 	}
 
 	public static File dealWithUploadFile(HttpServletRequest request, Configuration properties) throws Exception {
 		File uFile = null;
-		String uploadPath = properties.getString("widget.useruploadfolder");
+		String uploadPath = properties.getString("widget.useruploadfolder"); //$NON-NLS-1$
 		ServletContext context = request.getSession().getServletContext();
 		String serverPath = convertPathToPlatform(context.getRealPath(uploadPath));
 		_logger.debug(serverPath);
 		String archiveFileName = null;
 			if (FileUploadBase.isMultipartContent(request)) {
-				_logger.debug("uploading file...");
+				_logger.debug("uploading file..."); //$NON-NLS-1$
 				DiskFileUpload fu = new DiskFileUpload();
 				// maximum size before a FileUploadException will be thrown
 				fu.setSizeMax(1024 * 1024 * 1024);
@@ -282,9 +284,9 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 					uFile = new File(serverPath + File.separator + archiveFileName);
 
 					fi.write(uFile);
-					_logger.debug("Upload completed successfully ["
-							+ archiveFileName + "]-"
-							+ (fi.isInMemory() ? "M" : "D"));
+					_logger.debug("Upload completed successfully" +  "[" //$NON-NLS-1$ //$NON-NLS-2$
+							+ archiveFileName + "]-" //$NON-NLS-1$
+							+ (fi.isInMemory() ? "M" : "D")); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
 		return uFile;
@@ -306,12 +308,12 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 
 	 public static boolean removeWidgetResources(HttpServletRequest request, Configuration properties, String folder){
 		folder = convertIdToFolderName(folder);
-		String uploadPath = properties.getString("widget.widgetfolder");
+		String uploadPath = properties.getString("widget.widgetfolder"); //$NON-NLS-1$
 		ServletContext context = request.getSession().getServletContext();
 		String serverPath = context.getRealPath(uploadPath + File.separator + folder) ;
 		File pFolder = new File(convertPathToPlatform(serverPath));
 		try {
-			_logger.debug("Deleting folder:"+pFolder.getCanonicalFile().toString());
+			_logger.debug("Deleting folder:"+pFolder.getCanonicalFile().toString()); //$NON-NLS-1$
 			FileUtils.deleteFolder(pFolder);
 		}
 		catch (Exception ex) {

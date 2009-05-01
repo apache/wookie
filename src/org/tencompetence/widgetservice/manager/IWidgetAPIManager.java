@@ -4,6 +4,13 @@ import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 
+/**
+ * Interface for api functions
+ * 
+ * @author Paul Sharples
+ * @version $Id: IWidgetAPIManager.java,v 1.3 2009-05-01 10:40:09 ps3com Exp $
+ *
+ */
 public interface IWidgetAPIManager {
 
 	/**

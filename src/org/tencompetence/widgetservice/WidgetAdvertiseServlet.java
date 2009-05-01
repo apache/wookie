@@ -29,22 +29,26 @@ package org.tencompetence.widgetservice;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetDefault;
 import org.tencompetence.widgetservice.manager.IWidgetAdminManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetAdminManager;
+import org.tencompetence.widgetservice.server.LocaleHandler;
 
 /**
  * Servlet to advertise the existing widgets in the system
  * @author Paul Sharples
- * @version $Id: WidgetAdvertiseServlet.java,v 1.4 2009-02-20 23:51:00 scottwilson Exp $ 
+ * @version $Id: WidgetAdvertiseServlet.java,v 1.5 2009-05-01 10:39:37 ps3com Exp $ 
  *
  */
 public class WidgetAdvertiseServlet extends HttpServlet implements Servlet {
@@ -60,13 +64,20 @@ public class WidgetAdvertiseServlet extends HttpServlet implements Servlet {
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession(true);						
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);			
+		}
 		URL urlWidgetIcon = null;
 		Widget widget = null;
 		String iconPath = null;
 		response.setContentType(CONTENT_TYPE);
 		PrintWriter out = response.getWriter();
 		out.println(XMLDECLARATION);		
-		IWidgetAdminManager manager = new WidgetAdminManager();
+		IWidgetAdminManager manager = new WidgetAdminManager(localizedMessages);
 		out.println("<widgets>");	
 
 		if (request.getParameter("all")!= null){

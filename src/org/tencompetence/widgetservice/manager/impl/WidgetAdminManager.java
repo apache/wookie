@@ -26,13 +26,14 @@
  */
 package org.tencompetence.widgetservice.manager.impl;
 
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
-import java.util.Hashtable;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.tencompetence.widgetservice.Messages;
 import org.tencompetence.widgetservice.beans.Whitelist;
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetDefault;
@@ -41,9 +42,9 @@ import org.tencompetence.widgetservice.beans.WidgetService;
 import org.tencompetence.widgetservice.beans.WidgetType;
 import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedException;
 import org.tencompetence.widgetservice.manager.IWidgetAdminManager;
+import org.tencompetence.widgetservice.util.ManifestHelper;
 import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
 import org.tencompetence.widgetservice.util.hibernate.IDBManager;
-import org.tencompetence.widgetservice.util.*;
 
 /**
  * WidgetAdminManager
@@ -52,12 +53,16 @@ import org.tencompetence.widgetservice.util.*;
  * and setting which widget is to be the default
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminManager.java,v 1.7 2009-04-27 10:51:19 ps3com Exp $
+ * @version $Id: WidgetAdminManager.java,v 1.8 2009-05-01 10:40:09 ps3com Exp $
  */
 public class WidgetAdminManager extends WidgetServiceManager implements IWidgetAdminManager {
 	
 	static Logger _logger = Logger.getLogger(WidgetAdminManager.class.getName());
-			
+
+	public WidgetAdminManager(Messages localizedMessages) {
+		super(localizedMessages);
+	}
+						
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#addNewService(java.lang.String)
 	 */
@@ -72,7 +77,7 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 			success = true;
 		} 
 		catch (Exception ex) {
-			_logger.error(ex.getMessage());			
+			_logger.error(ex.getMessage());					
 		}
 		return success;
 	}

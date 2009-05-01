@@ -29,8 +29,10 @@ package org.tencompetence.widgetservice.ajaxmodel.impl;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -38,91 +40,100 @@ import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.tencompetence.widgetservice.Messages;
 import org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI;
 import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.manager.IWidgetAPIManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetAPIManager;
+import org.tencompetence.widgetservice.server.LocaleHandler;
 
 /**
  * Implementation of the widget API.  This class models the the javascript implementation of
  * the w3c widget API.  Using DWR - a javascript/HTML client which has included the correct js files...
- * 
+ *
  *   <script type='text/javascript' src='/wookie/dwr/interface/WidgetImpl.js'></script>
  *   <script type='text/javascript' src='/wookie/dwr/engine.js'></script>
- *   <script type='text/javascript' src='/wookie/shared/js/wookie-wrapper.js'></script>   
- *   
+ *   <script type='text/javascript' src='/wookie/shared/js/wookie-wrapper.js'></script>
+ *
  *   ...can then access this classes methods via a call for example like...
- *   
+ *
  *   Widget.preferenceForKey("Username", callbackFunctionName);
- *   
+ *
  *   							and
- *   
+ *
  *   Widget.setSharedDataForKey("defaultChatPresence",stringWithUserRemoved);
- * 
+ *
  * @author Paul Sharples
- * @version $Id: WidgetAPIImpl.java,v 1.13 2009-03-14 20:30:15 scottwilson Exp $
+ * @version $Id: WidgetAPIImpl.java,v 1.14 2009-05-01 10:40:09 ps3com Exp $
  *
  */
 public class WidgetAPIImpl implements IWidgetAPI {
-	
+
 	/*
-	TODO - i18n these strings - use locale to get browser language & set that by default 
+	TODO - i18n these strings - use locale to get browser language & set that by default
 	 - but allow user to change it in the widget using a dropdown menu
-	 	 	 
+
     Locale locale = request.getLocale();
     ResourceBundle bundle = ResourceBundle.getBundle("i18n.widgetBundle", locale);
     String welcome = bundle.getString("Welcome");
-	 
+
 	 */
-	
+
 	// string to return when no credential key is supplied by js call
-	public static final String UNAUTHORISED_MESSAGE = "Unauthorised";	
+	//public static final String UNAUTHORISED_MESSAGE = Messages.getString("WidgetAPIImpl.0");	 //$NON-NLS-1$
 	// string to return when no preference key is supplied by js call
-	public static final String NOKEY_MESSAGE = "No matching key found";
-	public static final String LOCKED_MESSAGE = "Widget Instance is locked by another user";
-	
+	//public static final String NOKEY_MESSAGE = Messages.getString("WidgetAPIImpl.1"); //$NON-NLS-1$
+	//public static final String LOCKED_MESSAGE = Messages.getString("WidgetAPIImpl.2"); //$NON-NLS-1$
+
 	static Logger _logger = Logger.getLogger(WidgetAPIImpl.class.getName());
-		
+
 	public WidgetAPIImpl(){}
 
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#preferences(java.lang.String)
 	 */
 	public Map<String, String> preferences(String id_key) {
+		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+		HttpSession session = request.getSession(true);
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);
+		}
 		HashMap<String, String> prefs = new HashMap<String,String>();
 
 		if(id_key == null){
-			prefs.put("message",UNAUTHORISED_MESSAGE);
+			prefs.put("message", localizedMessages.getString("WidgetAPIImpl.0"));	 //$NON-NLS-1$
 			return prefs;
 		}
-		
+
 		try {
 			IWidgetAPIManager manager = null;
-			HttpSession session = WebContextFactory.get().getHttpServletRequest().getSession();
 			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
 			if(manager == null){
-				manager = new WidgetAPIManager();
+				manager = new WidgetAPIManager(localizedMessages);
 				session.setAttribute(WidgetAPIManager.class.getName(), manager);
-			} 		
+			}
 			// check if instance is valid
-			WidgetInstance widgetInstance = manager.checkUserKey(id_key);			
+			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
 				for(Preference preference : manager.getPreferenceForInstance(widgetInstance)){
 					prefs.put(preference.getDkey(), preference.getDvalue());
 				}
 			}
 			else{
-				prefs.put("message",UNAUTHORISED_MESSAGE);
+				prefs.put("message", localizedMessages.getString("WidgetAPIImpl.0")); //$NON-NLS-1$
 				return prefs;
-			}	
-		} 
-		catch (Exception ex) {			
-			_logger.error("Error getting preferences", ex);
-		}		
-		return prefs;	
+			}
+		}
+		catch (Exception ex) {
+			_logger.error("Error getting preferences", ex); //$NON-NLS-1$
+		}
+		return prefs;
 	}
 
 
@@ -132,19 +143,26 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#preferenceForKey(java.lang.String, java.lang.String)
 	 */
 	public String preferenceForKey(String id_key, String key) {
-		if(id_key == null) return UNAUTHORISED_MESSAGE;
-		if(key == null)return NOKEY_MESSAGE;		
-		String preferenceText = null;		
+		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+		HttpSession session = request.getSession(true);
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);
+		}
+		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0");
+		if(key == null)return localizedMessages.getString("WidgetAPIImpl.1");
+		String preferenceText = null;
 		try {
 			IWidgetAPIManager manager = null;
-			HttpSession session = WebContextFactory.get().getHttpServletRequest().getSession();
 			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
 			if(manager == null){
-				manager = new WidgetAPIManager();
+				manager = new WidgetAPIManager(localizedMessages);
 				session.setAttribute(WidgetAPIManager.class.getName(), manager);
-			} 		
+			}
 			// check if instance is valid
-			WidgetInstance widgetInstance = manager.checkUserKey(id_key);			
+			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
 				boolean found = false;
 				// find the correct preference...
@@ -152,22 +170,22 @@ public class WidgetAPIImpl implements IWidgetAPI {
 					if(preference.getDkey().equals(key)){
 						preferenceText = preference.getDvalue();
 						found = true;
-						break;					
+						break;
 					}
 				}
 				if(!found){
-					_logger.debug("No key found in getpreference call:" + key);
-					preferenceText = "null";
+					_logger.debug("No key found in getpreference call:" + key); //$NON-NLS-1$
+					preferenceText = "null"; //$NON-NLS-1$
 				}
 			}
 			else{
-				preferenceText = UNAUTHORISED_MESSAGE;
-			}	
-		} 
-		catch (Exception ex) {			
-			_logger.error("Error getting preferences", ex);
-		}		
-		return preferenceText;	
+				preferenceText = localizedMessages.getString("WidgetAPIImpl.0");
+			}
+		}
+		catch (Exception ex) {
+			_logger.error("Error getting preferences", ex); //$NON-NLS-1$
+		}
+		return preferenceText;
 	}
 
 	/*
@@ -175,87 +193,108 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#sharedDataForKey(java.lang.String, java.lang.String)
 	 */
 	public String sharedDataForKey(String id_key, String key) {
+		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+		HttpSession session = request.getSession(true);
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);
+		}
 		//_logger.error("sharedDataForKey: " + id_key + " | "+ key);
-		if(id_key==null) return UNAUTHORISED_MESSAGE;
-		if(key==null) return NOKEY_MESSAGE;
-		String sharedDataValue = null;				
+		if(id_key==null) return localizedMessages.getString("WidgetAPIImpl.0");
+		if(key==null) return localizedMessages.getString("WidgetAPIImpl.1");
+		String sharedDataValue = null;
 		try {
 			IWidgetAPIManager manager = null;
-			HttpSession session = WebContextFactory.get().getHttpServletRequest().getSession();
 			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
 			if(manager == null){
-				manager = new WidgetAPIManager();
+				manager = new WidgetAPIManager(localizedMessages);
 				session.setAttribute(WidgetAPIManager.class.getName(), manager);
-			} 
+			}
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
-			if(widgetInstance!=null){			
+			if(widgetInstance!=null){
 				sharedDataValue = manager.getSharedDataValue(widgetInstance, key);
 				if(sharedDataValue == null){
-					_logger.debug("No key found in getshareddata call:" + key);		
+					_logger.debug("No key found in getshareddata call:" + key);		 //$NON-NLS-1$
 				}
 			}
 			else{
-				sharedDataValue = UNAUTHORISED_MESSAGE;
+				sharedDataValue = localizedMessages.getString("WidgetAPIImpl.0");
 			}
-		} 
+		}
 		catch (Exception ex) {
-			_logger.error("Error getting shared data", ex);
-		}				
+			_logger.error("Error getting shared data", ex); //$NON-NLS-1$
+		}
 		return sharedDataValue;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#setPreferenceForKey(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public String setPreferenceForKey(String id_key, String key, String value) {		
+	public String setPreferenceForKey(String id_key, String key, String value) {
+		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+		HttpSession session = request.getSession(true);
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);
+		}
 		try {
 			//_logger.error("setPreferenceForKey: " + id_key + " | "+ key + " | "+ value);
 			IWidgetAPIManager manager = null;
-			HttpSession session = WebContextFactory.get().getHttpServletRequest().getSession();
 			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
 			if(manager == null){
-				manager = new WidgetAPIManager();
+				manager = new WidgetAPIManager(localizedMessages);
 				session.setAttribute(WidgetAPIManager.class.getName(), manager);
-			} 
+			}
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
 				manager.updatePreference(widgetInstance, key, value);
 				//_logger.debug("setpreferenceForKey set " + key + "  to  " + value);
 			}
 			else{
-				return UNAUTHORISED_MESSAGE;
+				return localizedMessages.getString("WidgetAPIImpl.0");
 			}
-		} 
-		catch (Exception ex) {
-			_logger.error("setpreferenceForKey failed", ex);			
 		}
-		return "";
+		catch (Exception ex) {
+			_logger.error("setpreferenceForKey failed", ex);			 //$NON-NLS-1$
+		}
+		return ""; //$NON-NLS-1$
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#setSharedDataForKey(java.lang.String, java.lang.String, java.lang.String)
-	 */	
-	public String setSharedDataForKey(String id_key, String key, String value) {		
+	 */
+	public String setSharedDataForKey(String id_key, String key, String value) {
+		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+		HttpSession session = request.getSession(true);
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);
+		}
 		try {
 			//_logger.error("setSharedDataForKey: " + id_key + " | "+ key + " | "+ value);
 			IWidgetAPIManager manager = null;
-			HttpSession session = WebContextFactory.get().getHttpServletRequest().getSession();
 			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
 			if(manager == null){
-				manager = new WidgetAPIManager();
+				manager = new WidgetAPIManager(localizedMessages);
 				session.setAttribute(WidgetAPIManager.class.getName(), manager);
-			} 
+			}
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
 				if(!manager.isInstanceLocked(widgetInstance)){
 					String sharedDataKey = widgetInstance.getSharedDataKey();
-					manager.updateSharedDataEntry(widgetInstance, key, value, false);					
+					manager.updateSharedDataEntry(widgetInstance, key, value, false);
 					WebContext wctx = WebContextFactory.get();
-			        String currentPage = wctx.getCurrentPage();			        
+			        String currentPage = wctx.getCurrentPage();
 			        ScriptBuffer script = new ScriptBuffer();
-			        script.appendScript("Widget.onSharedUpdate(\"").appendScript(sharedDataKey).appendScript("\");");
+			        script.appendScript("Widget.onSharedUpdate(\"").appendScript(sharedDataKey).appendScript("\");"); //$NON-NLS-1$ //$NON-NLS-2$
 			        // Loop over all the users on the current page
 			        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
 			        for (Iterator<?> it = pages.iterator(); it.hasNext();){
@@ -264,18 +303,20 @@ public class WidgetAPIImpl implements IWidgetAPI {
 			        }
 				}
 				else {
-					return LOCKED_MESSAGE;
+					// is locked
+					return localizedMessages.getString("WidgetAPIImpl.2");
 				}
-				
+
 			}
 			else{
-				return UNAUTHORISED_MESSAGE;
+				// not authorized
+				return localizedMessages.getString("WidgetAPIImpl.0");
 			}
-		} 
-		catch (Exception ex) {
-			_logger.error("setSharedDataForKey failed", ex);
 		}
-		return "okay";
+		catch (Exception ex) {
+			_logger.error("setSharedDataForKey failed", ex); //$NON-NLS-1$
+		}
+		return "okay"; //$NON-NLS-1$
 	}
 
 	/*
@@ -283,49 +324,58 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#appendSharedDataForKey(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public String appendSharedDataForKey(String id_key, String key, String value) {
-		try {	
+		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+		HttpSession session = request.getSession(true);
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);
+		}
+		try {
 			//_logger.error("appendSharedDataForKey: " + id_key + " | "+ key + " | "+ value);
 			IWidgetAPIManager manager = null;
-			HttpSession session = WebContextFactory.get().getHttpServletRequest().getSession();
 			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
 			if(manager == null){
-				manager = new WidgetAPIManager();
+				manager = new WidgetAPIManager(localizedMessages);
 				session.setAttribute(WidgetAPIManager.class.getName(), manager);
-			} 
+			}
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
 				if(!manager.isInstanceLocked(widgetInstance)){
-					String sharedDataKey = widgetInstance.getSharedDataKey();					
-					manager.updateSharedDataEntry(widgetInstance, key, value, true);	
+					String sharedDataKey = widgetInstance.getSharedDataKey();
+					manager.updateSharedDataEntry(widgetInstance, key, value, true);
 					WebContext wctx = WebContextFactory.get();
-			        String currentPage = wctx.getCurrentPage();	
+			        String currentPage = wctx.getCurrentPage();
 			        ScriptBuffer script = new ScriptBuffer();
-			        script.appendScript("Widget.onSharedUpdate(\"").appendScript(sharedDataKey).appendScript("\");");	
+			        script.appendScript("Widget.onSharedUpdate(\"").appendScript(sharedDataKey).appendScript("\");");	 //$NON-NLS-1$ //$NON-NLS-2$
 			        // Loop over all the users on the current page
 			        //TODO - on high load the "otherSession.addScript(script)" call can throw illegalmodificationexception
 			        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
 			        //Collection<?> pages = Collections.synchronizedCollection(wctx.getScriptSessionsByPage(currentPage));
-			        // synchronized(pages){			        
+			        // synchronized(pages){
 				    for (Iterator<?> it = pages.iterator(); it.hasNext();){
-				    	ScriptSession otherSession = (ScriptSession) it.next();	
+				    	ScriptSession otherSession = (ScriptSession) it.next();
 				        // synchronized(otherSession){
 				    	otherSession.addScript(script);
 				        // }
 				    }
-			        //}			        			       
+			        //}
 				}
 				else {
-					return LOCKED_MESSAGE;
-				}			
+					// is locked
+					return localizedMessages.getString("WidgetAPIImpl.2");
+				}
 			}
 			else{
-				return UNAUTHORISED_MESSAGE;
+				// not authorized
+				return localizedMessages.getString("WidgetAPIImpl.0");
 			}
-		} 
-		catch (Exception ex) {			
-			_logger.error("appendSharedDataForKey failed", ex);
 		}
-		return "okay";
+		catch (Exception ex) {
+			_logger.error("appendSharedDataForKey failed", ex); //$NON-NLS-1$
+		}
+		return "okay"; //$NON-NLS-1$
 	}
 
 	/*
@@ -333,127 +383,155 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#lock(java.lang.String)
 	 */
 	public String lock(String id_key) {
+		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+		HttpSession session = request.getSession(true);
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);
+		}
 		IWidgetAPIManager manager = null;
-		HttpSession session = WebContextFactory.get().getHttpServletRequest().getSession();
 		manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
 		if(manager == null){
-			manager = new WidgetAPIManager();
+			manager = new WidgetAPIManager(localizedMessages);
 			session.setAttribute(WidgetAPIManager.class.getName(), manager);
-		} 
+		}
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 		if(widgetInstance!=null){
 			String sharedDataKey = widgetInstance.getSharedDataKey();
-			//_logger.error("lock called by " + widgetInstance.getUserId());			
-			manager.lockWidgetInstance(widgetInstance);	
+			//_logger.error("lock called by " + widgetInstance.getUserId());
+			manager.lockWidgetInstance(widgetInstance);
 			WebContext wctx = WebContextFactory.get();
 	        String currentPage = wctx.getCurrentPage();
 	        ScriptBuffer script = new ScriptBuffer();
-	        script.appendScript("Widget.onLocked(\"").appendScript(sharedDataKey).appendScript("\");");
+	        script.appendScript("Widget.onLocked(\"").appendScript(sharedDataKey).appendScript("\");"); //$NON-NLS-1$ //$NON-NLS-2$
 	        // Loop over all the users on the current page
 	        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
 	        for (Iterator<?> it = pages.iterator(); it.hasNext();){
 	            ScriptSession otherSession = (ScriptSession) it.next();
 	            otherSession.addScript(script);
 	        }
-	        return "";		
+	        return "";		 //$NON-NLS-1$
 		}
 		else{
-			return UNAUTHORISED_MESSAGE;
-		}		
+			return localizedMessages.getString("WidgetAPIImpl.0");
+		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#unlock(java.lang.String)
 	 */
 	public String unlock(String id_key) {
+		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+		HttpSession session = request.getSession(true);
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);
+		}
 		IWidgetAPIManager manager = null;
-		HttpSession session = WebContextFactory.get().getHttpServletRequest().getSession();
 		manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
 		if(manager == null){
-			manager = new WidgetAPIManager();
+			manager = new WidgetAPIManager(localizedMessages);
 			session.setAttribute(WidgetAPIManager.class.getName(), manager);
-		} 
+		}
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 		if(widgetInstance!=null){
 			String sharedDataKey = widgetInstance.getSharedDataKey();
-			//_logger.error("unlock called by " + widgetInstance.getUserId());			
-			manager.unlockWidgetInstance(widgetInstance);	
+			//_logger.error("unlock called by " + widgetInstance.getUserId());
+			manager.unlockWidgetInstance(widgetInstance);
 			WebContext wctx = WebContextFactory.get();
 	        String currentPage = wctx.getCurrentPage();
 	        ScriptBuffer script = new ScriptBuffer();
-	        script.appendScript("Widget.onUnlocked(\"").appendScript(sharedDataKey).appendScript("\");");
+	        script.appendScript("Widget.onUnlocked(\"").appendScript(sharedDataKey).appendScript("\");"); //$NON-NLS-1$ //$NON-NLS-2$
 	        // Loop over all the users on the current page
-	        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);	        
-	        for (Iterator<?> it = pages.iterator(); it.hasNext();){	        	
+	        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
+	        for (Iterator<?> it = pages.iterator(); it.hasNext();){
 	            ScriptSession otherSession = (ScriptSession) it.next();
-	            otherSession.addScript(script);	            	            
+	            otherSession.addScript(script);
 	        }
-	        return "";		
+	        return "";		 //$NON-NLS-1$
 		}
 		else{
-			return UNAUTHORISED_MESSAGE;
-		}	
+			return localizedMessages.getString("WidgetAPIImpl.0");
+		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#hide(java.lang.String)
 	 */
 	public String hide(String id_key){
+		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+		HttpSession session = request.getSession(true);
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);
+		}
 		IWidgetAPIManager manager = null;
-		HttpSession session = WebContextFactory.get().getHttpServletRequest().getSession();
 		manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
 		if(manager == null){
-			manager = new WidgetAPIManager();
+			manager = new WidgetAPIManager(localizedMessages);
 			session.setAttribute(WidgetAPIManager.class.getName(), manager);
-		} 
+		}
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 		if(widgetInstance!=null){
 			WebContext wctx = WebContextFactory.get();
-	        ScriptBuffer script = new ScriptBuffer();      
-	        script.appendScript("window.onHide(")	        	
-	        .appendScript(");");       
+	        ScriptBuffer script = new ScriptBuffer();
+	        script.appendScript("window.onHide(")	        	 //$NON-NLS-1$
+	        .appendScript(");");        //$NON-NLS-1$
 	        wctx.getScriptSession().addScript(script);
-	        return "";
+	        return ""; //$NON-NLS-1$
 		}
 		else{
-			return UNAUTHORISED_MESSAGE;
-		}	
+			return localizedMessages.getString("WidgetAPIImpl.0");
+		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#show(java.lang.String)
 	 */
 	public String show(String id_key){
+		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+		HttpSession session = request.getSession(true);
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);
+		}
 		IWidgetAPIManager manager = null;
-		HttpSession session = WebContextFactory.get().getHttpServletRequest().getSession();
 		manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
 		if(manager == null){
-			manager = new WidgetAPIManager();
+			manager = new WidgetAPIManager(localizedMessages);
 			session.setAttribute(WidgetAPIManager.class.getName(), manager);
-		} 
+		}
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 		if(widgetInstance!=null){
 			WebContext wctx = WebContextFactory.get();
-	        ScriptBuffer script = new ScriptBuffer();      
-	        script.appendScript("window.onShow(")	        	
-	        .appendScript(");");       
+	        ScriptBuffer script = new ScriptBuffer();
+	        script.appendScript("window.onShow(")	        	 //$NON-NLS-1$
+	        .appendScript(");");        //$NON-NLS-1$
 	        wctx.getScriptSession().addScript(script);
-	        return "";
+	        return ""; //$NON-NLS-1$
 		}
 		else{
-			return UNAUTHORISED_MESSAGE;
-		}	
+			return localizedMessages.getString("WidgetAPIImpl.0");
+		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#contextPropertyForKey(java.lang.String, java.lang.String)
 	 */
 	public String contextPropertyForKey(String id_key, String key) {
-		return "Not available";
+		return "Not available"; //$NON-NLS-1$
 	}
 
 	/*
@@ -461,7 +539,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#setContextPropertyForKey(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public String setContextPropertyForKey(String id_key, String key, String value) {
-		return "Not available";
+		return "Not available"; //$NON-NLS-1$
 	}
 
 	/*
@@ -469,7 +547,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#setUserPropertyForKey(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public String setUserPropertyForKey(String id_key, String key, String value) {
-		return "Not available";
+		return "Not available"; //$NON-NLS-1$
 	}
 
 	/*
@@ -477,7 +555,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#userPropertyForKey(java.lang.String, java.lang.String)
 	 */
 	public String userPropertyForKey(String id_key, String key) {
-		return "Not available";
+		return "Not available"; //$NON-NLS-1$
 	}
 
 	/*
@@ -485,18 +563,18 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#openURL(java.lang.String)
 	 */
 	// DEPRICATED - implemented in local js object instead
-	// NOTE - might not need this - we can call window.open in a browser - 
+	// NOTE - might not need this - we can call window.open in a browser -
 	// The only reason to send the call to this servlet is if we somehow wish to
 	// update other users.
 	public String openURL(String url) {
-		_logger.debug("openurl called with        "+ url );
+		_logger.debug("openurl called with        "+ url ); //$NON-NLS-1$
 		WebContext wctx = WebContextFactory.get();
-        ScriptBuffer script = new ScriptBuffer();      
-        script.appendScript("window.open(")
-        .appendData(url)	
-        .appendScript(");");       
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("window.open(") //$NON-NLS-1$
+        .appendData(url)
+        .appendScript(");");        //$NON-NLS-1$
         wctx.getScriptSession().addScript(script);
-        return "";
+        return ""; //$NON-NLS-1$
 	}
 
 	/*
@@ -504,12 +582,12 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		_logger.debug("system called with " + arg1 );
 		return "Not available";
 	}
-	
+
 	public String system(String id_key, String arg1, String arg2) {
 		_logger.debug("system called with " + arg1 + "   " + arg2);
 		return "Not available";
 	}
-	
+
 	public String system(String id_key, String arg1, String arg2, String arg3) {
 		_logger.debug("system called with " + arg1 + "   " + arg2+ "   " + arg3);
 		return "Not available";

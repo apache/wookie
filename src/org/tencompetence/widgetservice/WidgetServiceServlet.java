@@ -29,10 +29,13 @@ package org.tencompetence.widgetservice;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
@@ -44,21 +47,22 @@ import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedExceptio
 import org.tencompetence.widgetservice.manager.IWidgetServiceManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetKeyManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetServiceManager;
+import org.tencompetence.widgetservice.server.LocaleHandler;
 import org.tencompetence.widgetservice.util.HashGenerator;
 import org.tencompetence.widgetservice.util.RandomGUID;
 
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.16 2009-04-09 12:40:06 scottwilson Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.17 2009-05-01 10:39:37 ps3com Exp $ 
  *
  */
 public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
 
 	private static final long serialVersionUID = 308590474406800659L;		
 	static Logger _logger = Logger.getLogger(WidgetServiceServlet.class.getName());	
-	private static final String XMLDECLARATION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-	private static final String CONTENT_TYPE = "text/xml;charset=\"UTF-8\""; 	
+	private static final String XMLDECLARATION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"; //$NON-NLS-1$
+	private static final String CONTENT_TYPE = "text/xml;charset=\"UTF-8\""; 	 //$NON-NLS-1$
 	private static URL urlWidgetProxyServer = null;	
 
 	/* (non-Java-doc)
@@ -72,79 +76,110 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
+		HttpSession session = request.getSession(true);						
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);			
+		}
 		if (!WidgetKeyManager.isValidRequest(request)){
 			try {
-				returnDoc(response, "Invalid API key", "error");
-			} catch (IOException e) {
-				_logger.error("Error in doGet():", e);
+				returnDoc(response, localizedMessages.getString("WidgetServiceServlet.2"), "error"); //$NON-NLS-1$ //$NON-NLS-2$
+			} 
+			catch (IOException e) {
+				_logger.error("Error in doGet():", e); //$NON-NLS-1$
 			}
-		} else {
+		} 
+		else {
 			try {
-				String requestId = request.getParameter("requestid");
-				if(requestId.equals("getwidget")){
+				String requestId = request.getParameter("requestid"); //$NON-NLS-1$
+				if(requestId.equals("getwidget")){ //$NON-NLS-1$
 					doGetWidget(request, response);
 				}
-				else if(requestId.equals("stopwidget")){
+				else if(requestId.equals("stopwidget")){ //$NON-NLS-1$
 					doStopWidget(request, response);
 				}
-				else if(requestId.equals("resumewidget")){
+				else if(requestId.equals("resumewidget")){ //$NON-NLS-1$
 					doResumeWidget(request, response);
 				}
-				else if(requestId.equals("setpublicproperty")){
+				else if(requestId.equals("setpublicproperty")){ //$NON-NLS-1$
 					doSetProperty(request, response, false);
 				}		
-				else if(requestId.equals("setpersonalproperty")){
+				else if(requestId.equals("setpersonalproperty")){ //$NON-NLS-1$
 					doSetProperty(request, response, true );
 				}
 				else {
-					returnDoc(response, "No valid requestid was found.", "error");
+					returnDoc(response, localizedMessages.getString("WidgetServiceServlet.0"), "error"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 
 			} 
 			catch (Exception ex) {					
-				_logger.error("Error in doGet():", ex);
+				_logger.error("Error in doGet():", ex); //$NON-NLS-1$
 			}
 		}
 	}
 
 	private void doStopWidget(HttpServletRequest request, HttpServletResponse response) throws IOException{
-		String apiKey = request.getParameter("api_key");
-		String userId = request.getParameter("userid");	
+		HttpSession session = request.getSession(true);						
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);			
+		}
+		IWidgetServiceManager manager = (IWidgetServiceManager)session.getAttribute(WidgetServiceManager.class.getName());				
+		if(manager == null){
+			manager = new WidgetServiceManager(localizedMessages);
+			session.setAttribute(WidgetServiceManager.class.getName(), manager);
+		}		
+		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
+		String userId = request.getParameter("userid");	 //$NON-NLS-1$
 		String sharedDataKey = getSharedDataKey(request);	
-		String serviceType= request.getParameter("servicetype");
-
+		String serviceType= request.getParameter("servicetype"); //$NON-NLS-1$
 		
-		IWidgetServiceManager wsm = new WidgetServiceManager();	
-		WidgetInstance widgetInstance = wsm.getWidgetInstance(apiKey, userId, sharedDataKey, serviceType);		
+		WidgetInstance widgetInstance = manager.getWidgetInstance(apiKey, userId, sharedDataKey, serviceType);		
 		if(widgetInstance!=null){
-			wsm.lockWidgetInstance(widgetInstance);
-			returnDoc(response,"completed", "message");
+			manager.lockWidgetInstance(widgetInstance);
+			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.1"), "message"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		else{
-			returnDoc(response,"Widget instance does not exist", "error");
+			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.3"), "error"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-		_logger.debug("*** stop widget called ****");
-		_logger.debug("*** "+ userId + " ****");
-		_logger.debug("***************************");
+		_logger.debug("*** stop widget called ****"); //$NON-NLS-1$
+		_logger.debug("*** "+ userId + " ****"); //$NON-NLS-1$ //$NON-NLS-2$
+		_logger.debug("***************************"); //$NON-NLS-1$
 	}
 
 	private void doResumeWidget(HttpServletRequest request, HttpServletResponse response) throws IOException{
-		String apiKey = request.getParameter("api_key");
-		String userId = request.getParameter("userid");
+		HttpSession session = request.getSession(true);						
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);			
+		}
+		IWidgetServiceManager manager = (IWidgetServiceManager)session.getAttribute(WidgetServiceManager.class.getName());	
+		if(manager == null){
+			manager = new WidgetServiceManager(localizedMessages);
+			session.setAttribute(WidgetServiceManager.class.getName(), manager);
+		}
+		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
+		String userId = request.getParameter("userid"); //$NON-NLS-1$
 		String sharedDataKey = getSharedDataKey(request);		
-		String serviceType= request.getParameter("servicetype");
-		IWidgetServiceManager wsm = new WidgetServiceManager();	
-		WidgetInstance widgetInstance = wsm.getWidgetInstance(apiKey, userId, sharedDataKey, serviceType);		
+		String serviceType= request.getParameter("servicetype"); //$NON-NLS-1$
+						
+		WidgetInstance widgetInstance = manager.getWidgetInstance(apiKey, userId, sharedDataKey, serviceType);		
 		if(widgetInstance!=null){
-			wsm.unlockWidgetInstance(widgetInstance);
-			returnDoc(response,"completed", "message");
+			manager.unlockWidgetInstance(widgetInstance);
+			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.1"), "message"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		else{
-			returnDoc(response,"Widget instance does not exist", "error");
+			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.3"), "error"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-		_logger.debug("*** resume widget called ****");
-		_logger.debug("*** "+ userId + " ****");
-		_logger.debug("***************************");
+		_logger.debug("*** resume widget called ****"); //$NON-NLS-1$
+		_logger.debug("*** "+ userId + " ****"); //$NON-NLS-1$ //$NON-NLS-2$
+		_logger.debug("***************************"); //$NON-NLS-1$
 	}
 
 	/**
@@ -156,48 +191,66 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 	 * @throws IOException
 	 */
 	private void doSetProperty (HttpServletRequest request, HttpServletResponse response, boolean isPersonalProperty) throws ServletException, IOException {
-		String apiKey = request.getParameter("api_key");
-		String userId = request.getParameter("userid");
+		HttpSession session = request.getSession(true);						
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);			
+		}
+		IWidgetServiceManager manager = (IWidgetServiceManager)session.getAttribute(WidgetServiceManager.class.getName());	
+		if(manager == null){
+			manager = new WidgetServiceManager(localizedMessages);
+			session.setAttribute(WidgetServiceManager.class.getName(), manager);
+		}
+		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
+		String userId = request.getParameter("userid"); //$NON-NLS-1$
 		String sharedDataKey = getSharedDataKey(request);
-		String serviceType= request.getParameter("servicetype");
-		String propertyName = request.getParameter("propertyname");
-		String propertyValue = request.getParameter("propertyvalue");
-		String widgetId = request.getParameter("widgetid");
+		String serviceType= request.getParameter("servicetype"); //$NON-NLS-1$
+		String propertyName = request.getParameter("propertyname"); //$NON-NLS-1$
+		String propertyValue = request.getParameter("propertyvalue"); //$NON-NLS-1$
+		String widgetId = request.getParameter("widgetid"); //$NON-NLS-1$
 
-
-		IWidgetServiceManager wsm = new WidgetServiceManager();	
 		WidgetInstance instance = null;
 		if (widgetId != null){
-			instance = wsm.getWidgetInstanceById(apiKey,userId, sharedDataKey, widgetId);
-		} else {
-			instance = wsm.getWidgetInstance(apiKey,userId, sharedDataKey, serviceType);
+			instance = manager.getWidgetInstanceById(apiKey,userId, sharedDataKey, widgetId);
+		} 
+		else {
+			instance = manager.getWidgetInstance(apiKey,userId, sharedDataKey, serviceType);
 		}
 		if(instance != null){
 			try {
 				if(isPersonalProperty){
-					wsm.updatePreference(instance, propertyName, propertyValue);
+					manager.updatePreference(instance, propertyName, propertyValue);
 				}
 				else{
-					wsm.updateSharedDataEntry(instance, propertyName, propertyValue, false);
+					manager.updateSharedDataEntry(instance, propertyName, propertyValue, false);
 				}				
-				returnDoc(response,"completed", "message");							
+				returnDoc(response, localizedMessages.getString("WidgetServiceServlet.1"), "message");							 //$NON-NLS-1$ //$NON-NLS-2$
 			} 
 			catch (Exception ex) {			
-				returnDoc(response,"could not set property for " + propertyName, "error");			
-				_logger.error("error on doSetProperty", ex);
+				returnDoc(response, localizedMessages.getString("WidgetServiceServlet.4") + propertyName, "error");			 //$NON-NLS-1$ //$NON-NLS-2$
+				_logger.error("error on doSetProperty", ex); //$NON-NLS-1$
 			}
 		}
 		else{
-			returnDoc(response,"Widget instance does not exist", "error");
+			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.3"), "error"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
 	private void doGetWidget(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String apiKey = request.getParameter("api_key");
-		String userId = request.getParameter("userid");
+		HttpSession session = request.getSession(true);						
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);			
+		}
+		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
+		String userId = request.getParameter("userid"); //$NON-NLS-1$
 		String sharedDataKey = getSharedDataKey(request);	
-		String serviceType = request.getParameter("servicetype");
-		String widgetId = request.getParameter("widgetid");
+		String serviceType = request.getParameter("servicetype"); //$NON-NLS-1$
+		String widgetId = request.getParameter("widgetid"); //$NON-NLS-1$
 
 		try {						
 			if(userId==null || sharedDataKey==null || (serviceType==null && widgetId==null)){
@@ -205,22 +258,22 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 			}
 		} 
 		catch (InvalidWidgetCallException ex) {
-			_logger.debug("InvalidWidgetCallException:"+ex.getMessage());				
-			returnDoc(response,ex.getMessage(), "error");
+			_logger.debug("InvalidWidgetCallException:"+ex.getMessage());				 //$NON-NLS-1$
+			returnDoc(response,ex.getMessage(), "error"); //$NON-NLS-1$
 			return;
 		}
 
 		// set the proxy url.
 		if(urlWidgetProxyServer==null){
-			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties");
+			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
 			String scheme = request.getScheme();
 			String serverName = request.getServerName();
 			int serverPort = request.getServerPort();
-			if (!properties.getString("widget.proxy.scheme").trim().equals("")) scheme = properties.getString("widget.proxy.scheme");
-			if (!properties.getString("widget.proxy.hostname").trim().equals("")) serverName = properties.getString("widget.proxy.hostname");
-			if (!properties.getString("widget.proxy.port").trim().equals("")) serverPort = Integer.parseInt(properties.getString("widget.proxy.port"));
+			if (!properties.getString("widget.proxy.scheme").trim().equals("")) scheme = properties.getString("widget.proxy.scheme"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			if (!properties.getString("widget.proxy.hostname").trim().equals("")) serverName = properties.getString("widget.proxy.hostname"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			if (!properties.getString("widget.proxy.port").trim().equals("")) serverPort = Integer.parseInt(properties.getString("widget.proxy.port")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-			urlWidgetProxyServer = new URL(scheme,serverName,serverPort,properties.getString("widget.proxy.path"));
+			urlWidgetProxyServer = new URL(scheme,serverName,serverPort,properties.getString("widget.proxy.path")); //$NON-NLS-1$
 		}
 		_logger.debug(urlWidgetProxyServer.toString());
 		//set the service url.
@@ -233,12 +286,17 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 		_logger.debug(urlWidgetAPIServer.toString());
 		 */
 		WidgetInstance widgetInstance;
-
-		IWidgetServiceManager wsm = new WidgetServiceManager();	
+		IWidgetServiceManager manager = (IWidgetServiceManager)session.getAttribute(WidgetServiceManager.class.getName());	
+		if(manager == null){
+			manager = new WidgetServiceManager(localizedMessages);
+			session.setAttribute(WidgetServiceManager.class.getName(), manager);
+		}
+			
 		if (widgetId != null){
-			widgetInstance = wsm.getWidgetInstanceById(apiKey, userId, sharedDataKey, widgetId);
-		} else {
-			widgetInstance = wsm.getWidgetInstance(apiKey, userId, sharedDataKey, serviceType);
+			widgetInstance = manager.getWidgetInstanceById(apiKey, userId, sharedDataKey, widgetId);
+		} 
+		else {
+			widgetInstance = manager.getWidgetInstance(apiKey, userId, sharedDataKey, serviceType);
 		}
 
 		if(widgetInstance!=null){
@@ -251,46 +309,47 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 				Widget widget;
 				// Widget ID or Widget Type?
 				if (widgetId != null){
-					widget = wsm.getWidgetById(widgetId);
-				} else {
+					widget = manager.getWidgetById(widgetId);
+				} 
+				else {
 					// does this type of widget exist?
-					widget = wsm.getDefaultWidgetByType(serviceType);					
+					widget = manager.getDefaultWidgetByType(serviceType);					
 				}
 
 				// generate a nonce
-				String nonce = RandomGUID.getUniqueID("nonce-");				
+				String nonce = RandomGUID.getUniqueID("nonce-");				 //$NON-NLS-1$
 
 				// now use SHA hash on the nonce				
 				String hashKey = HashGenerator.getInstance().encrypt(nonce);	
 
 				// get rid of any chars that might upset a url...
-				hashKey = hashKey.replaceAll("=", ".eq.");
-				hashKey = hashKey.replaceAll("\\?", ".qu.");
-				hashKey = hashKey.replaceAll("&", ".am.");
-				hashKey = hashKey.replaceAll("\\+", ".pl.");
+				hashKey = hashKey.replaceAll("=", ".eq."); //$NON-NLS-1$ //$NON-NLS-2$
+				hashKey = hashKey.replaceAll("\\?", ".qu."); //$NON-NLS-1$ //$NON-NLS-2$
+				hashKey = hashKey.replaceAll("&", ".am."); //$NON-NLS-1$ //$NON-NLS-2$
+				hashKey = hashKey.replaceAll("\\+", ".pl."); //$NON-NLS-1$ //$NON-NLS-2$
 
 
-				Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("opensocial");
-				widgetInstance = wsm.addNewWidgetInstance(apiKey, userId, sharedDataKey, widget, nonce, hashKey, properties);
-				_logger.debug("new widgetinstance added");
+				Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("opensocial"); //$NON-NLS-1$
+				widgetInstance = manager.addNewWidgetInstance(apiKey, userId, sharedDataKey, widget, nonce, hashKey, properties);
+				_logger.debug("new widgetinstance added"); //$NON-NLS-1$
 				formatReturnDoc(request, response, widgetInstance.getWidget(), widgetInstance.getIdKey(), widgetInstance.getOpensocialToken());
 			} 
 			catch (WidgetTypeNotSupportedException ex) {
 				// widget not supported	
 				// Here we will return a key to a holding page - ie no widget found
 				try {
-					Widget unsupportedWidget = wsm.getDefaultWidgetByType("unsupported");
-					formatReturnDoc(request, response, unsupportedWidget, "0000", "");
+					Widget unsupportedWidget = manager.getDefaultWidgetByType("unsupported"); //$NON-NLS-1$
+					formatReturnDoc(request, response, unsupportedWidget, "0000", ""); //$NON-NLS-1$ //$NON-NLS-2$
 				} 
 				catch (WidgetTypeNotSupportedException e) {	
-					_logger.debug("WidgetTypeNotSupportedException:"+ex.getMessage());				
-					returnDoc(response,ex.getMessage(), "error");
+					_logger.debug("WidgetTypeNotSupportedException:"+ex.getMessage());				 //$NON-NLS-1$
+					returnDoc(response,ex.getMessage(), "error"); //$NON-NLS-1$
 				}												
 			}
 			catch (SystemUnavailableException ex) {
-				_logger.debug("System Unavailable:"+ex.getMessage());				
+				_logger.debug("System Unavailable:"+ex.getMessage());				 //$NON-NLS-1$
 
-				returnDoc(response, ex.getMessage(), "error");
+				returnDoc(response, ex.getMessage(), "error"); //$NON-NLS-1$
 			}
 		}
 	}  	
@@ -303,25 +362,25 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 		response.setContentType(CONTENT_TYPE);
 		PrintWriter out = response.getWriter();
 		out.println(XMLDECLARATION);			
-		out.println("<widgetdata>");					
-		out.print("<url>");
+		out.println("<widgetdata>");					 //$NON-NLS-1$
+		out.print("<url>"); //$NON-NLS-1$
 		if (urlWidget.getQuery() != null){
-			out.print(urlWidget + "&amp;idkey=" + key 
-					+ "&amp;proxy=" + urlWidgetProxyServer.toExternalForm() 
-					+ "&amp;st=" + token
+			out.print(urlWidget + "&amp;idkey=" + key  //$NON-NLS-1$
+					+ "&amp;proxy=" + urlWidgetProxyServer.toExternalForm()  //$NON-NLS-1$
+					+ "&amp;st=" + token //$NON-NLS-1$
 			);	
 		} else {
-			out.print(urlWidget + "?idkey=" + key 
-					+ "&amp;proxy=" + urlWidgetProxyServer.toExternalForm() 
-					+ "&amp;st=" + token
+			out.print(urlWidget + "?idkey=" + key  //$NON-NLS-1$
+					+ "&amp;proxy=" + urlWidgetProxyServer.toExternalForm()  //$NON-NLS-1$
+					+ "&amp;st=" + token //$NON-NLS-1$
 			);
 		}
-		out.println("</url>");
-		out.println("<title>"+widget.getWidgetTitle()+"</title>");
-		out.println("<height>"+widget.getHeight()+"</height>");
-		out.println("<width>"+widget.getWidth()+"</width>");
-		out.println("<maximize>"+widget.isMaximize()+"</maximize>");
-		out.println("</widgetdata>");
+		out.println("</url>"); //$NON-NLS-1$
+		out.println("<title>"+widget.getWidgetTitle()+"</title>"); //$NON-NLS-1$ //$NON-NLS-2$
+		out.println("<height>"+widget.getHeight()+"</height>"); //$NON-NLS-1$ //$NON-NLS-2$
+		out.println("<width>"+widget.getWidth()+"</width>"); //$NON-NLS-1$ //$NON-NLS-2$
+		out.println("<maximize>"+widget.isMaximize()+"</maximize>"); //$NON-NLS-1$ //$NON-NLS-2$
+		out.println("</widgetdata>"); //$NON-NLS-1$
 
 	}
 
@@ -333,9 +392,9 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 		response.setContentType(CONTENT_TYPE);
 		PrintWriter out = response.getWriter();
 		envelope.append(XMLDECLARATION);					
-		envelope.append("<"+tagName+">");
+		envelope.append("<"+tagName+">"); //$NON-NLS-1$ //$NON-NLS-2$
 		envelope.append(message);
-		envelope.append("</"+tagName+">");
+		envelope.append("</"+tagName+">"); //$NON-NLS-1$ //$NON-NLS-2$
 		//_logger.debug("Call to getWidget failed:" + message);		
 		out.println(envelope.toString());
 		//out.flush();
@@ -351,7 +410,7 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 	}   
 	
 	private String getSharedDataKey(HttpServletRequest request){
-		return String.valueOf((request.getParameter("apikey")+":"+request.getParameter("shareddatakey")).hashCode());	
+		return String.valueOf((request.getParameter("apikey")+":"+request.getParameter("shareddatakey")).hashCode());	 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 }

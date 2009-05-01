@@ -5,6 +5,13 @@ import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedException;
 
+/**
+ * Interface for service functions
+ * 
+ * @author Paul Sharples
+ * @version $Id: IWidgetServiceManager.java,v 1.8 2009-05-01 10:40:09 ps3com Exp $
+ *
+ */
 public interface IWidgetServiceManager extends IWidgetAPIManager {
 
 	/**

@@ -36,7 +36,7 @@ import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedExceptio
  * Interface for admin functions
  * 
  * @author Paul Sharples
- * @version $Id: IWidgetAdminManager.java,v 1.6 2009-04-17 14:25:41 ps3com Exp $
+ * @version $Id: IWidgetAdminManager.java,v 1.7 2009-05-01 10:40:09 ps3com Exp $
  *
  */
 public interface IWidgetAdminManager {

@@ -40,7 +40,7 @@ import org.tencompetence.widgetservice.util.hibernate.HibernateUtil;
  * to resources under this context
  * 
  * @author Paul Sharples
- * @version $Id: ContextListener.java,v 1.4 2009-02-24 09:56:22 scottwilson Exp $ 
+ * @version $Id: ContextListener.java,v 1.5 2009-05-01 10:40:09 ps3com Exp $ 
  *
  */
 public class ContextListener implements ServletContextListener {
@@ -69,7 +69,11 @@ public class ContextListener implements ServletContextListener {
 			 *  as an attribute 'opensocial' available to all resources
 			 */
 			Configuration opensocialConfiguration = new PropertiesConfiguration("opensocial.properties");
-		 	context.setAttribute("opensocial", (Configuration) opensocialConfiguration);	
+		 	context.setAttribute("opensocial", (Configuration) opensocialConfiguration);
+		 	/*
+		 	 * Initialise the locale handler
+		 	 */
+		 	LocaleHandler.getInstance().initialize(configuration);
 		} 
 		catch (ConfigurationException ex) {
 			_logger.error("ConfigurationException thrown: "+ ex.toString());

@@ -32,10 +32,33 @@ import java.util.List;
  * Methods a forum service will implement
  * @author Paul Sharples
  *
- * @version $Id: IForumService.java,v 1.4 2008-12-18 14:14:51 ps3com Exp $
+ * @version $Id: IForumService.java,v 1.5 2009-05-01 10:40:09 ps3com Exp $
  */
 public interface IForumService {
-	public List<PostNode> getNodeTree(String id_key);
-	public boolean newPost(String id_key, String parent, String username, String title, String content);
-	public PostNode getPost(String id_key, String postId);
+	
+	/**
+	 * Get the tree nodes
+	 * @param id_key
+	 * @return
+	 */
+	List<PostNode> getNodeTree(String id_key);
+	
+	/**
+	 * Add a new post
+	 * @param id_key
+	 * @param parent
+	 * @param username
+	 * @param title
+	 * @param content
+	 * @return
+	 */
+	boolean newPost(String id_key, String parent, String username, String title, String content);
+	
+	/**
+	 * Get specific post 
+	 * @param id_key
+	 * @param postId
+	 * @return
+	 */
+	PostNode getPost(String id_key, String postId);
 }

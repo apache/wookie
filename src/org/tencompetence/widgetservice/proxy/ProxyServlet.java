@@ -32,20 +32,24 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Locale;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
+import org.tencompetence.widgetservice.Messages;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.manager.IWidgetAPIManager;
 import org.tencompetence.widgetservice.manager.IWidgetProxyManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetAPIManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetProxyManager;
+import org.tencompetence.widgetservice.server.LocaleHandler;
 
 /**
  * A web proxy servlet which will translate calls for content and return them as if they came from
@@ -176,9 +180,16 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 	}
 	
 	private boolean isValidWidgetInstance(HttpServletRequest request){
+		HttpSession session = request.getSession(true);						
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);			
+		}
 		String instanceId = request.getParameter("instanceid_key");
 		if(instanceId == null) return false;
-		IWidgetAPIManager manager = new WidgetAPIManager();
+		IWidgetAPIManager manager = new WidgetAPIManager(localizedMessages);
 		// check if instance is valid
 		WidgetInstance widgetInstance = manager.checkUserKey(instanceId);			
 		if(widgetInstance!=null){

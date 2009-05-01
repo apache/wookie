@@ -27,11 +27,13 @@
 package org.tencompetence.widgetservice.manager.impl;
 
 import java.util.List; 
+import java.util.ResourceBundle;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.tencompetence.widgetservice.Messages;
 import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.Widget;
@@ -51,23 +53,28 @@ import org.tencompetence.widgetservice.util.opensocial.OpenSocialUtils;
 public class WidgetServiceManager extends WidgetAPIManager implements IWidgetServiceManager {
 
 	static Logger _logger = Logger.getLogger(WidgetServiceManager.class.getName());
+	
+	public WidgetServiceManager(Messages localizedMessages) {
+		super(localizedMessages);	
+	}
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getDefaultWidgetByType(java.lang.String)
 	 */
 	public Widget getDefaultWidgetByType(String typeToSearch) throws WidgetTypeNotSupportedException {
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid "
-			+ "FROM Widget widget, WidgetDefault widgetdefault "
-			+ "WHERE widget.id = widgetdefault.widgetId "
-			+ "AND widgetdefault.widgetContext='" + typeToSearch + "'";		
+		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid " //$NON-NLS-1$
+			+ "FROM Widget widget, WidgetDefault widgetdefault " //$NON-NLS-1$
+			+ "WHERE widget.id = widgetdefault.widgetId " //$NON-NLS-1$
+			+ "AND widgetdefault.widgetContext='" + typeToSearch + "'";		 //$NON-NLS-1$ //$NON-NLS-2$
 
 		Widget widget = (Widget)dbManager.createSQLQuery(sqlQuery).addEntity(Widget.class).uniqueResult();	
 		if(widget==null){
-			throw new WidgetTypeNotSupportedException("Widget type " + typeToSearch + " is not supported");
+			throw new WidgetTypeNotSupportedException("(" + typeToSearch + ") " + localizedMessages.getString("WidgetServiceManager.0")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		return widget;		 
 	}
+
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getWidgetById(java.lang.String)
@@ -75,13 +82,13 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	public Widget getWidgetById(String id)
 	throws WidgetTypeNotSupportedException {
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid "
-			+ "FROM Widget widget, WidgetDefault widgetdefault "
-			+ "WHERE widget.guid = '" + id + "'";		
+		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid " //$NON-NLS-1$
+			+ "FROM Widget widget, WidgetDefault widgetdefault " //$NON-NLS-1$
+			+ "WHERE widget.guid = '" + id + "'";		 //$NON-NLS-1$ //$NON-NLS-2$
 
 		Widget widget = (Widget)dbManager.createSQLQuery(sqlQuery).addEntity(Widget.class).uniqueResult();	
 		if(widget==null){
-			throw new WidgetTypeNotSupportedException("Widget " + id + " is not supported");
+			throw new WidgetTypeNotSupportedException("(" + id + ") "+ localizedMessages.getString("WidgetServiceManager.1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		return widget;	
 	}
@@ -100,7 +107,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 			}
 			dbManager = DBManagerFactory.getDBManager();
 			final Criteria crit = dbManager.createCriteria(WidgetInstance.class);
-			crit.add(Restrictions.eq("idKey", key));
+			crit.add(Restrictions.eq("idKey", key)); //$NON-NLS-1$
 			final List<WidgetInstance> sqlReturnList = dbManager.getObjects(
 					WidgetInstance.class, crit);
 			if (sqlReturnList.size() != 1) {
@@ -125,7 +132,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 		try {
 			dbManager = DBManagerFactory.getDBManager();
 			final Criteria crit = dbManager.createCriteria(WidgetInstance.class);						
-			crit.add( Restrictions.eq( "widget", widget ) );								
+			crit.add( Restrictions.eq( "widget", widget ) );								 //$NON-NLS-1$
 			final List<WidgetInstance> sqlReturnList =  dbManager.getObjects(WidgetInstance.class, crit);
 			WidgetInstance[] instances = sqlReturnList.toArray(new WidgetInstance[sqlReturnList.size()]);		
 			return instances;
@@ -145,7 +152,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 		try {
 			dbManager = DBManagerFactory.getDBManager();
 			final Criteria crit = dbManager.createCriteria(Preference.class);						
-			crit.add( Restrictions.eq( "widgetInstance", instance) );			
+			crit.add( Restrictions.eq( "widgetInstance", instance) );			 //$NON-NLS-1$
 			final List<Preference> sqlReturnList =  dbManager.getObjects(Preference.class, crit);
 			Preference[] preference = sqlReturnList.toArray(new Preference[sqlReturnList.size()]);	
 			for(Preference sData : preference){
@@ -167,7 +174,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 			dbManager = DBManagerFactory.getDBManager();
 			final Criteria crit = dbManager.createCriteria(SharedData.class);
 			String sharedDataKey = instance.getSharedDataKey();		
-			crit.add( Restrictions.eq( "sharedDataKey", sharedDataKey ) );			
+			crit.add( Restrictions.eq( "sharedDataKey", sharedDataKey ) );			 //$NON-NLS-1$
 			final List<SharedData> sqlReturnList =  dbManager.getObjects(SharedData.class, crit);
 			SharedData[] sharedData = sqlReturnList.toArray(new SharedData[sqlReturnList.size()]);	
 			for(SharedData sData : sharedData){
@@ -187,15 +194,15 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	public boolean widgetInstanceExists(String api_key, String userId, String sharedDataKey, String serviceContext){
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
-		String sqlQuery =   "select " +
-		"count(*) "
-		+ "from WidgetInstance widgetinstance, WidgetType widgettype "
-		+ "WHERE "
-		+ "widgetinstance.userId ='" + userId + "' "
-		+ "AND widgetinstance.apiKey ='" + api_key + "' "	
-		+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "												
-		+ "AND widgettype.widgetContext ='" + serviceContext + "' "			
-		+ "AND widgetinstance.widget = widgettype.widget"
+		String sqlQuery =   "select " + //$NON-NLS-1$
+		"count(*) " //$NON-NLS-1$
+		+ "from WidgetInstance widgetinstance, WidgetType widgettype " //$NON-NLS-1$
+		+ "WHERE " //$NON-NLS-1$
+		+ "widgetinstance.userId ='" + userId + "' " //$NON-NLS-1$ //$NON-NLS-2$
+		+ "AND widgetinstance.apiKey ='" + api_key + "' "	 //$NON-NLS-1$ //$NON-NLS-2$
+		+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "												 //$NON-NLS-1$ //$NON-NLS-2$
+		+ "AND widgettype.widgetContext ='" + serviceContext + "' "			 //$NON-NLS-1$ //$NON-NLS-2$
+		+ "AND widgetinstance.widget = widgettype.widget" //$NON-NLS-1$
 		;							
 		_logger.debug((sqlQuery));
 		long count=0l; 				
@@ -210,14 +217,14 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	public WidgetInstance getWidgetInstance(String api_key, String userId, String sharedDataKey, String serviceContext){
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
-		String sqlQuery =   "select widgetinstance " 							
-			+ "from WidgetInstance widgetinstance, WidgetType widgettype "
-			+ "WHERE "
-			+ "widgetinstance.userId ='" + userId + "' "
-			+ "AND widgetinstance.apiKey ='" + api_key + "' "	
-			+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "															
-			+ "AND widgettype.widgetContext ='" + serviceContext + "' "			
-			+ "AND widgetinstance.widget = widgettype.widget"
+		String sqlQuery =   "select widgetinstance " 							 //$NON-NLS-1$
+			+ "from WidgetInstance widgetinstance, WidgetType widgettype " //$NON-NLS-1$
+			+ "WHERE " //$NON-NLS-1$
+			+ "widgetinstance.userId ='" + userId + "' " //$NON-NLS-1$ //$NON-NLS-2$
+			+ "AND widgetinstance.apiKey ='" + api_key + "' "	 //$NON-NLS-1$ //$NON-NLS-2$
+			+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "															 //$NON-NLS-1$ //$NON-NLS-2$
+			+ "AND widgettype.widgetContext ='" + serviceContext + "' "			 //$NON-NLS-1$ //$NON-NLS-2$
+			+ "AND widgetinstance.widget = widgettype.widget" //$NON-NLS-1$
 			;							
 		_logger.debug((sqlQuery));				
 		List<?> sqlReturnList = dbManager.createQuery(sqlQuery).list();
@@ -238,12 +245,12 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	public WidgetInstance getWidgetInstanceById(String api_key, String userId, String sharedDataKey, String widgetId) {
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
-		String sqlQuery =   "select widgetinstance " 							
-			+ "from WidgetInstance widgetinstance "
-			+ "WHERE "
-			+ "widgetinstance.userId ='" + userId + "' "
-			+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "															
-			+ "AND widgetinstance.widget.guid = '" + widgetId + "' "			
+		String sqlQuery =   "select widgetinstance " 							 //$NON-NLS-1$
+			+ "from WidgetInstance widgetinstance " //$NON-NLS-1$
+			+ "WHERE " //$NON-NLS-1$
+			+ "widgetinstance.userId ='" + userId + "' " //$NON-NLS-1$ //$NON-NLS-2$
+			+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "															 //$NON-NLS-1$ //$NON-NLS-2$
+			+ "AND widgetinstance.widget.guid = '" + widgetId + "' "			 //$NON-NLS-1$ //$NON-NLS-2$
 			;							
 		_logger.debug((sqlQuery));				
 		List<?> sqlReturnList = dbManager.createQuery(sqlQuery).list();
@@ -278,13 +285,14 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 			widgetInstance.setLocked(false);
 			
 			// Setup opensocial token if needed
-			widgetInstance.setOpensocialToken("");
+			widgetInstance.setOpensocialToken(""); //$NON-NLS-1$
 
-			if (properties.getBoolean("opensocial.enable")){
-				if (properties.getString("opensocial.token").equals("secure")){
-					widgetInstance.setOpensocialToken(OpenSocialUtils.createEncryptedToken(widgetInstance,properties.getString("opensocial.key")));
-				} else {
-					widgetInstance.setOpensocialToken(OpenSocialUtils.createPlainToken(widgetInstance));					
+			if (properties.getBoolean("opensocial.enable")){ //$NON-NLS-1$
+				if (properties.getString("opensocial.token").equals("secure")){ //$NON-NLS-1$ //$NON-NLS-2$
+					widgetInstance.setOpensocialToken(OpenSocialUtils.createEncryptedToken(widgetInstance,properties.getString("opensocial.key"), localizedMessages)); //$NON-NLS-1$
+				} 
+				else {
+					widgetInstance.setOpensocialToken(OpenSocialUtils.createPlainToken(widgetInstance, localizedMessages));					
 				}
 			}
 			
@@ -295,7 +303,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 			// what sharedData event to listen to later
 			Preference pref = new Preference();
 			pref.setWidgetInstance(widgetInstance);
-			pref.setDkey("sharedDataKey");				
+			pref.setDkey("sharedDataKey");				 //$NON-NLS-1$
 			pref.setDvalue(sharedDataKey);
 			dbManager.saveObject(pref);	
 		} 

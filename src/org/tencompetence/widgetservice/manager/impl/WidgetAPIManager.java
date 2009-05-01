@@ -31,6 +31,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.tencompetence.widgetservice.Messages;
 import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
@@ -46,9 +47,18 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
  */
 public class WidgetAPIManager implements IWidgetAPIManager {
 	
+	public static Logger _logger = Logger.getLogger(WidgetAPIManager.class.getName());
+	
+	/**
+	 * keep this here so that all sunclasses can access it
+	 */
+	protected Messages localizedMessages;
+	
 	boolean showProcess = false;
 	
-	public static Logger _logger = Logger.getLogger(WidgetAPIManager.class.getName());
+	public WidgetAPIManager(Messages localizedMessages2) {		
+		this.localizedMessages = localizedMessages2;
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#checkUserKey(java.lang.String)
