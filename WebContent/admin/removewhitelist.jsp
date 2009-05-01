@@ -74,11 +74,11 @@ var answer = confirm("Are you sure you want to delete this entry?\n\n" + entryNa
 	<% String errors = (String)session.getAttribute("error_value");%>
 	<% String messages = (String)session.getAttribute("message_value");%>
 	<%if(errors!=null){%>
-      <p><img src="../shared/images/cancel.gif" width="16" height="16"><font color=red> <%=errors%> </font> </p>
+      <p><img src="../shared/images/cancel.gif" width="16" height="16"><font color="red"> <%=errors%> </font> </p>
 	<%}%>
 	<%if(messages!=null){%>
 	<p><img src="../shared/images/greentick.gif" width="16" height="16">
-		<font color=green>
+		<font color="green">
 		<%=messages%>
 		</font>
 	</p>
