@@ -94,9 +94,23 @@ var Widget = {
 		dwr.engine.beginBatch();
 		WidgetImpl.preferences(this.instanceid_key, this.setPrefs);
 		dwr.engine.endBatch({async:false});
-				
+		
+		// Set attributes based on preferences
+		this.viewMode = this.preferences.getItem("viewMode");
+		this.locale = this.preferences.getItem("local");
+		this.identifier = this.preferences.getItem("identifier");
+		this.authorInfo = this.preferences.getItem("authorInfo");
+		this.authorEmail = this.preferences.getItem("authorEmail");
+		this.authorHref = this.preferences.getItem("authorHref");
+		this.name = this.preferences.getItem("name");
+		this.description = this.preferences.getItem("description");
+		this.version = this.preferences.getItem("version");
+		this.height = this.preferences.getItem("height");
+		this.width = this.preferences.getItem("width");		
+						
 		// this line tells DWR to use call backs 
 		// (i.e. will call onsharedupdate() when an event is received for shared data
+		// TODO only call this when needed
 		dwr.engine.setActiveReverseAjax(true);	
 		
 	},
@@ -105,6 +119,23 @@ var Widget = {
 		this.preferences = WidgetPreferences;
 		this.preferences.prefs = map;
 		this.preferences.calcLength();
+	},
+	
+	// Check to see if Wookie supports the specified feature
+	// TODO implement this
+	hasFeature: function(feature){
+		return true;
+	},
+	
+	// Gets the users attention in some fashion
+	// TODO implement this
+	getAttention: function(){
+		return true;
+	},
+	
+	
+	showNotification: function(title, message, callbackfn){
+		return true;	
 	},
 	
 	setPreferenceForKey : function(wName, wValue){
