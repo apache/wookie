@@ -40,6 +40,7 @@ import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedException;
 import org.tencompetence.widgetservice.manager.IWidgetServiceManager;
+import org.tencompetence.widgetservice.server.LocaleHandler;
 import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
 import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 import org.tencompetence.widgetservice.util.opensocial.OpenSocialUtils;
@@ -301,7 +302,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 			
 			// add in basic widget data as preferences
 			//TODO setPreference(widgetInstance, "viewMode", String.valueOf(widget)); //$NON-NLS-1$
-			//TODO setPreference(widgetInstance, "locale", String.valueOf(widget.getWidgetTitle())); //$NON-NLS-1$
+			setPreference(widgetInstance, "locale", LocaleHandler.getInstance().getDefaultLocale().getLanguage()); //$NON-NLS-1$
 			setPreference(widgetInstance, "identifier", String.valueOf(widget.getGuid()));	//$NON-NLS-1$
 			setPreference(widgetInstance, "authorInfo", String.valueOf(widget.getWidgetAuthor()));	//$NON-NLS-1$
 			//TODO setPreference(widgetInstance, "authorEmail", String.valueOf(widget.getWidth()));//$NON-NLS-1$
