@@ -97,7 +97,7 @@ var Widget = {
 		
 		// Set attributes based on preferences
 		this.viewMode = this.preferences.getItem("viewMode");
-		this.locale = this.preferences.getItem("local");
+		this.locale = this.preferences.getItem("locale");
 		this.identifier = this.preferences.getItem("identifier");
 		this.authorInfo = this.preferences.getItem("authorInfo");
 		this.authorEmail = this.preferences.getItem("authorEmail");
@@ -133,7 +133,8 @@ var Widget = {
 		return true;
 	},
 	
-	
+	// Sends the user some sort of message on the screen
+	// TODO implement this
 	showNotification: function(title, message, callbackfn){
 		return true;	
 	},
