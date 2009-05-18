@@ -127,17 +127,33 @@ public class GadgetUtilsTest extends TestCase {
     @Test
 	public void testGetMetadata() {
 		String metadata = null;
+		JSONObject json = null;
+		JSONArray gadgets = null;
+		
 		try {
 			metadata = GadgetUtils.getMetadata(TEST_SERVICE_URL_VALID, TEST_GADGET_URL_VALID);
 		} catch (Exception e) {
 			fail("failed to connect to service");
 		}
+		
 		try {
-			@SuppressWarnings("unused")
-			JSONObject object = new JSONObject(metadata);
-		} catch (JSONException e) {
+			json = new JSONObject(metadata);
+		} catch (Exception e) {
 			fail("failed to return valid JSON from service");
 		}	
+
+		try {
+			assertTrue(json.has("gadgets"));
+			gadgets = json.getJSONArray("gadgets");
+		} catch (Exception e) {
+			fail("JSON returned with no gadgets");
+		}
+		
+		try {
+			assertFalse(gadgets.getJSONObject(0).has("errors"));
+		} catch (Exception e) {
+			fail("JSON retured containing errors");
+		}
 	}
 	
 	/**
