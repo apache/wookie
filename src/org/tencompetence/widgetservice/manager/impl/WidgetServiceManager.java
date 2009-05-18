@@ -298,19 +298,51 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 			
 			// Save
 			dbManager.saveObject(widgetInstance);
+			
+			// add in basic widget data as preferences
+			//TODO setPreference(widgetInstance, "viewMode", String.valueOf(widget)); //$NON-NLS-1$
+			//TODO setPreference(widgetInstance, "locale", String.valueOf(widget.getWidgetTitle())); //$NON-NLS-1$
+			setPreference(widgetInstance, "identifier", String.valueOf(widget.getGuid()));	//$NON-NLS-1$
+			setPreference(widgetInstance, "authorInfo", String.valueOf(widget.getWidgetAuthor()));	//$NON-NLS-1$
+			//TODO setPreference(widgetInstance, "authorEmail", String.valueOf(widget.getWidth()));//$NON-NLS-1$
+			//TODO setPreference(widgetInstance, "authorHref", String.valueOf(widget.getHeight()));			//$NON-NLS-1$
+			setPreference(widgetInstance, "name", String.valueOf(widget.getWidgetTitle()));//$NON-NLS-1$
+			setPreference(widgetInstance, "description", String.valueOf(widget.getWidgetDescription()));//$NON-NLS-1$	
+			//TODO setPreference(widgetInstance, "version", String.valueOf(widget.getWidgetVersion()));//$NON-NLS-1$
+			setPreference(widgetInstance, "width", String.valueOf(widget.getWidth()));//$NON-NLS-1$
+			setPreference(widgetInstance, "height", String.valueOf(widget.getHeight()));//$NON-NLS-1$
 
 			// add in the sharedDataKey as a preference so that a widget can know
 			// what sharedData event to listen to later
-			Preference pref = new Preference();
-			pref.setWidgetInstance(widgetInstance);
-			pref.setDkey("sharedDataKey");				 //$NON-NLS-1$
-			pref.setDvalue(sharedDataKey);
-			dbManager.saveObject(pref);	
+			setPreference(widgetInstance, "sharedDataKey", sharedDataKey);//$NON-NLS-1$
+			
+			// add in widget defaults
+			// TODO implement
+
 		} 
 		catch (Exception e) {
 			_logger.error(e.getMessage());
 		}		
 		return widgetInstance;
+	}
+	
+	/**
+	 * Initialize a preference for the instance
+	 * @param instance
+	 * @param key
+	 * @param value
+	 */
+	private void setPreference(WidgetInstance widgetInstance, String key, String value){
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		Preference pref = new Preference();
+		pref.setWidgetInstance(widgetInstance);
+		pref.setDkey(key);				
+		pref.setDvalue(value);
+		try {
+			dbManager.saveObject(pref);
+		} catch (Exception e) {
+			_logger.error(e.getMessage());
+		}	
 	}
 	
 }

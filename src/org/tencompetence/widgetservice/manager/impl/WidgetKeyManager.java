@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.configuration.Configuration;
 import org.tencompetence.widgetservice.Messages;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.tencompetence.widgetservice.beans.ApiKey;
 import org.tencompetence.widgetservice.util.HashGenerator;
 import org.tencompetence.widgetservice.util.RandomGUID;
@@ -19,11 +21,63 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 
 /**
  * @author scott
- * @version $Id: WidgetKeyManager.java,v 1.2 2009-05-01 10:40:09 ps3com Exp $
  *
  */
 public class WidgetKeyManager{
 
+	/**
+	 * Get the list of current API keys
+	 * @return an array of API keys
+	 */
+	public static ApiKey[] getKeys(){
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		try {
+			List<ApiKey> keys = dbManager.getObjects(ApiKey.class, dbManager.createCriteria(ApiKey.class));
+			return keys.toArray(new ApiKey[keys.size()]);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
+	/**
+	 * Revoke the given key
+	 * @param id the api key value
+	 * @return true if the key was successfully revoked
+	 */
+	public static boolean revokeKey(String id){
+		if (id == null) return false;
+		if (id.trim().equals("")) return false;
+		id = id.trim();
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		Criteria crit = dbManager.createCriteria(ApiKey.class);
+		crit.add(Restrictions.eq("value", id));
+		try {
+			ApiKey key = dbManager.getObject(ApiKey.class, crit);
+			return revokeKey(key);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+	
+	/**
+	 * Revoke a key
+	 * @param key the key to revoke
+	 */
+	private static boolean revokeKey(ApiKey key){
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		try {
+			dbManager.deleteObject(key);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	/**
 	 * Registers a new API key
 	 * @param key

@@ -34,6 +34,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.tencompetence.widgetservice.Messages;
+import org.tencompetence.widgetservice.beans.PreferenceDefault;
 import org.tencompetence.widgetservice.beans.Whitelist;
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetDefault;
@@ -53,7 +54,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
  * and setting which widget is to be the default
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminManager.java,v 1.8 2009-05-01 10:40:09 ps3com Exp $
+ * @version $Id: WidgetAdminManager.java,v 1.9 2009-05-18 12:06:42 scottwilson Exp $
  */
 public class WidgetAdminManager extends WidgetServiceManager implements IWidgetAdminManager {
 	
@@ -62,7 +63,7 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 	public WidgetAdminManager(Messages localizedMessages) {
 		super(localizedMessages);
 	}
-						
+				
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#addNewService(java.lang.String)
 	 */
@@ -86,15 +87,15 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#addNewWidget(java.lang.String, java.lang.String, java.lang.String, int, int)
 	 */
-	public void addNewWidget( String widgetIconLocation, String url, Hashtable<String, String> widgetData ) {
-		addNewWidget(widgetIconLocation, url, widgetData, null);
+	public void addNewWidget( String widgetIconLocation, String url, Hashtable<String, String> widgetData, List<PreferenceDefault> prefs ) {
+		addNewWidget(widgetIconLocation, url, widgetData, prefs, null);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#addNewWidget(java.lang.String, java.lang.String, java.lang.String, int, int, java.lang.String[])
 	 */
 	@SuppressWarnings("unchecked")
-	public int addNewWidget(String widgetIconLocation, String url, Hashtable<String,String> widgetData, String[] widgetTypes) {
+	public int addNewWidget(String widgetIconLocation, String url, Hashtable<String,String> widgetData, List<PreferenceDefault> prefs, String[] widgetTypes) {
 			int newWidgetIdx = -1;
 			final IDBManager dbManager = DBManagerFactory.getDBManager();
 	        Widget widget;
@@ -120,6 +121,11 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 					}
 				}
 				newWidgetIdx = widget.getId();
+				// Save default preferences
+				for (PreferenceDefault pref:(PreferenceDefault[])prefs.toArray()){
+					pref.setWidget(widget);
+					dbManager.saveObject(pref);
+				}
 			} 
 			catch (Exception e) {
 				_logger.error(e.getMessage());

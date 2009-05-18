@@ -26,17 +26,20 @@
  */
 package org.tencompetence.widgetservice.manager;
 
+import java.util.List;
+
 import org.tencompetence.widgetservice.beans.Whitelist;
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetDefault;
 import org.tencompetence.widgetservice.beans.WidgetService;
+import org.tencompetence.widgetservice.beans.PreferenceDefault;
 import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedException;
 
 /**
  * Interface for admin functions
  * 
  * @author Paul Sharples
- * @version $Id: IWidgetAdminManager.java,v 1.7 2009-05-01 10:40:09 ps3com Exp $
+ * @version $Id: IWidgetAdminManager.java,v 1.8 2009-05-18 12:06:42 scottwilson Exp $
  *
  */
 public interface IWidgetAdminManager {
@@ -50,7 +53,7 @@ public interface IWidgetAdminManager {
 	 * @param height - the height at which it is supposed to be displayed
 	 * @param width - the width at which it is supposed to be displayed
 	 */
-	void addNewWidget(String widgetIconLocation, String url, java.util.Hashtable<String, String> widgetData );
+	void addNewWidget(String widgetIconLocation, String url, java.util.Hashtable<String, String> widgetData, List<PreferenceDefault> prefs);
 
 	/**
 	 * Add a new widget to the system
@@ -61,7 +64,7 @@ public interface IWidgetAdminManager {
 	 * @param widgetTypes - a string array containing the types this widget can perform as
 	 * @return - the new key created for this widget
 	 */
-	int addNewWidget(String widgetIconLocation, String url, java.util.Hashtable<String,String> widgetData, String[] widgetTypes);
+	int addNewWidget(String widgetIconLocation, String url, java.util.Hashtable<String,String> widgetData, List<PreferenceDefault> prefs, String[] widgetTypes);
 
 	/**
 	 * Add a new whitelist entry

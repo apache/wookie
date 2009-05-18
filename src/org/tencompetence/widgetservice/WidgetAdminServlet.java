@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Locale;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
@@ -42,11 +43,13 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
+import org.tencompetence.widgetservice.beans.PreferenceDefault;
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetDefault;
 import org.tencompetence.widgetservice.manager.IWidgetAdminManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetAdminManager;
 import org.tencompetence.widgetservice.server.LocaleHandler;
+import org.tencompetence.widgetservice.manager.impl.WidgetKeyManager;
 import org.tencompetence.widgetservice.util.ManifestHelper;
 import org.tencompetence.widgetservice.util.StartPageJSParser;
 import org.tencompetence.widgetservice.util.ZipUtils;
@@ -60,7 +63,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.17 2009-05-01 10:39:37 ps3com Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.18 2009-05-18 12:06:42 scottwilson Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -69,7 +72,8 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 	private enum Operation {
 		ADDNEWSERVICE, ADDNEWWHITELISTENTRY, LISTSERVICES, LISTSERVICESFORADDITION, 
 		LISTWIDGETS, REMOVESERVICE, REMOVESINGLEWIDGETTYPE, REMOVEWHITELISTENTRY, REMOVEWIDGET,  
-		REVISETYPES, SETDEFAULTWIDGET, SETWIDGETTYPES, UPLOADWIDGET, VIEWWHITELIST, REGISTERGADGET
+		REVISETYPES, SETDEFAULTWIDGET, SETWIDGETTYPES, UPLOADWIDGET, VIEWWHITELIST, REGISTERGADGET,
+		LISTAPIKEYS, REVOKEAPIKEY
 	}	
 	 	 	
 	// Get the logger
@@ -87,6 +91,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 	private static final String fUpLoadResultsPage = "/admin/uploadresults.jsp"; //$NON-NLS-1$
 	private static final String fViewWhiteListPage = "/admin/viewwhitelist.jsp"; //$NON-NLS-1$
 	private static final String fRegisterGadgetPage = "/admin/registergadget.jsp"; //$NON-NLS-1$
+	private static final String fListAPIKeysPage = "/admin/keys.jsp"; //$NON-NLS-1$
 		
 	private static final long serialVersionUID = -3026022301561798524L;;	
 			
@@ -280,6 +285,16 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 					doForward(request, response,fRegisterGadgetPage);
 					break;
 				}
+				case LISTAPIKEYS:{
+					listAPIKeysOperation(session, request, manager);
+					doForward(request, response, fListAPIKeysPage);
+					break;
+				}
+				case REVOKEAPIKEY:{
+					revokeAPIKeyOperation(session, request, manager);
+					doForward(request, response, fListAPIKeysPage);
+					break;
+				}
 				
 				default: {
 					session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.5"));// need to i18n this //$NON-NLS-1$ //$NON-NLS-2$ 
@@ -433,6 +448,18 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 
 	}
 	
+	private void listAPIKeysOperation(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager){
+		session.setAttribute("keys", WidgetKeyManager.getKeys());
+	}
+
+	private void revokeAPIKeyOperation(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager){
+		String value = request.getParameter("key");
+		if (WidgetKeyManager.revokeKey(value)){
+			session.setAttribute("message_value", "Key revoked");
+		} else {
+			session.setAttribute("error_value", "Key could not be revoked");
+		}
+	}
 	
 	private void uploadOperation(HttpServletRequest request, Configuration properties, IWidgetAdminManager manager, HttpSession session) {
 		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
@@ -443,6 +470,8 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 			if(zipFile.exists()){
 				if(ZipUtils.hasZipEntry(zipFile, ManifestHelper.MANIFEST_FILE)){
 					Hashtable<String,String> results = ManifestHelper.dealWithManifest(ZipUtils.extractZipEntry(zipFile, ManifestHelper.MANIFEST_FILE), localizedMessages);
+					// Get default preferences
+					List<PreferenceDefault> prefs = ManifestHelper.getPreferenceDefaults(ZipUtils.extractZipEntry(zipFile, ManifestHelper.MANIFEST_FILE));
 					// check if the start file exists
 					String src = results.get(ManifestHelper.SOURCE_ATTRIBUTE);
 					if(ZipUtils.hasZipEntry(zipFile, src)){
@@ -480,7 +509,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 							// check to see if this widget already exists in the DB - using the ID (guid) key from the manifest
 							if(!manager.doesWidgetAlreadyExistInSystem(uid)){	
 								
-								int dbkey = manager.addNewWidget(relativeIconUrl, relativestartUrl, results, new String[]{});
+								int dbkey = manager.addNewWidget(relativeIconUrl, relativestartUrl, results, prefs, new String[]{});
 								session.setAttribute("message_value", "'"+ results.get(ManifestHelper.NAME_ELEMENT) +"' - " + localizedMessages.getString("WidgetAdminServlet.19")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 								retrieveServices(session, manager);
 								session.setAttribute("hasValidated", Boolean.valueOf(true));																	 //$NON-NLS-1$
