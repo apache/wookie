@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.ResourceBundle;
+import java.util.ArrayList;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -48,11 +49,13 @@ import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.tencompetence.widgetservice.Messages;
+import org.tencompetence.widgetservice.beans.PreferenceDefault;
+
 /**
  * Manifest Helper class - methods for uploading the zip & parsing a w3c widget manifest.
  * 
  * @author Paul Sharples
- * @version $Id: ManifestHelper.java,v 1.11 2009-05-01 10:40:09 ps3com Exp $ 
+ * @version $Id: ManifestHelper.java,v 1.12 2009-05-18 11:23:52 scottwilson Exp $ 
  *
  */
 public class ManifestHelper implements IW3CXMLConfiguration {
@@ -231,6 +234,21 @@ public class ManifestHelper implements IW3CXMLConfiguration {
 			root = null;
 			return null;
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<PreferenceDefault> getPreferenceDefaults(String xmlText) throws Exception{
+		SAXBuilder builder = new SAXBuilder();
+		Element root = builder.build(new StringReader(xmlText)).getRootElement();
+		List<Object> prefs = root.getChildren(PREFERENCE_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
+		ArrayList<PreferenceDefault> prefDefaults = new ArrayList<PreferenceDefault>();
+		for (Element pref:(Element[])prefs.toArray(new Element[prefs.size()])){
+			PreferenceDefault prefDefault = new PreferenceDefault();
+			prefDefault.setPreference(pref.getAttributeValue(NAME_ATTRIBUTE));
+			prefDefault.setValue(pref.getAttributeValue(VALUE_ATTRIBUTE));
+			prefDefaults.add(prefDefault);
+		}
+		return prefDefaults;
 	}
 
 	public static File createUnpackedWidgetFolder(HttpServletRequest request, Configuration properties, String folder) throws IOException{
