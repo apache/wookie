@@ -31,6 +31,7 @@ public class W3CTest extends TestCase{
 	private static String WRONG_XML;
 	private static String BASIC_MANIFEST;
 	private static String MANIFEST_WITH_PREFERENCES;
+	private static String BAD_NAMESPACE_MANIFEST;
 	
 	
     @Before public void setUp() {  
@@ -39,15 +40,15 @@ public class W3CTest extends TestCase{
     		WRONG_XML = readFile(new File(WRONG_XML_FILE));
 			BASIC_MANIFEST = readFile(new File(BASIC_MANIFEST_FILE));
 			MANIFEST_WITH_PREFERENCES = readFile(new File(MANIFEST_WITH_PREFERENCES_FILE));
+			BAD_NAMESPACE_MANIFEST = readFile(new File(BAD_NAMESPACE_FILE));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
     
     public void testWrongXML(){
     	try {
-			Hashtable table = ManifestHelper.dealWithManifest(WRONG_XML,null);
+			Hashtable<String, String> table = ManifestHelper.dealWithManifest(WRONG_XML,null);
 			assertNull(table);
 		} catch (JDOMException e) {
 			fail("couldn't read XML");
@@ -56,6 +57,19 @@ public class W3CTest extends TestCase{
 		} catch (Exception e){
 			e.printStackTrace();
 			fail("didn't parse manifest correctly");
+		}
+    }
+    
+    public void testParseManifestBadNS(){
+    	try {
+			@SuppressWarnings("unused")
+			Hashtable<String, String> table = ManifestHelper.dealWithManifest(BAD_NAMESPACE_MANIFEST,null);
+            // Uh-oh! No exception was thrown so we 
+            // better make this test fail!
+            fail("should've thrown an exception!");
+		} catch (Exception e) {
+            // this is exactly what we were expecting so 
+            // let's just ignore it and let the test pass
 		}
     }
 	
@@ -83,7 +97,7 @@ public class W3CTest extends TestCase{
 	
 	public void testPreferences(){
 		try {
-			ArrayList prefsList = (ArrayList) ManifestHelper.getPreferenceDefaults(MANIFEST_WITH_PREFERENCES);
+			ArrayList<PreferenceDefault> prefsList = (ArrayList<PreferenceDefault>) ManifestHelper.getPreferenceDefaults(MANIFEST_WITH_PREFERENCES);
 			PreferenceDefault[] prefs = (PreferenceDefault[]) prefsList.toArray(new PreferenceDefault[prefsList.size()]);
 			assertNotNull(prefs);
 			assertEquals(3,prefs.length);

@@ -30,15 +30,18 @@ package org.tencompetence.widgetservice.util;
  * Constants for widget elements found in the config.xml file
  *
  * @author Paul Sharples
- * @version $Id: IW3CXMLConfiguration.java,v 1.6 2009-04-20 11:03:53 scottwilson Exp $
+ * @version $Id: IW3CXMLConfiguration.java,v 1.7 2009-05-25 18:44:50 scottwilson Exp $
  */
 public interface IW3CXMLConfiguration {
 	
 	public static final String WIDGET_ELEMENT = "widget";
 		public static final String ID_ATTRIBUTE = "id";  // widget
 		public static final String VERSION_ATTRIBUTE = "version"; // widget
-		public static final String MODE_ATTRIBUTE = "viewmode"; //widget
-	
+		public static final String MODE_ATTRIBUTE = "viewmodes"; //widget
+		// Values of widget view modes
+		public static final String[] VIEWMODES = {"application", "floating", "fullscreen", "mini", "all"};
+		public static final String DEFAULT_VIEWMODE = "floating";
+		
 	public static final String NAME_ELEMENT = "name"; // widget[0..*]
 	 	public static final String SHORT_ATTRIBUTE = "short"; // name
 	

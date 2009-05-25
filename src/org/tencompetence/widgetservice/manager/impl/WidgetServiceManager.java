@@ -35,6 +35,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.tencompetence.widgetservice.Messages;
 import org.tencompetence.widgetservice.beans.Preference;
+import org.tencompetence.widgetservice.beans.PreferenceDefault;
 import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
@@ -318,13 +319,31 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 			setPreference(widgetInstance, "sharedDataKey", sharedDataKey);//$NON-NLS-1$
 			
 			// add in widget defaults
-			// TODO implement
+			for (PreferenceDefault pref: getPreferenceDefaultsForWidget(widget)){
+				setPreference(widgetInstance, pref.getPreference(), pref.getValue());
+			}
 
 		} 
 		catch (Exception e) {
 			_logger.error(e.getMessage());
 		}		
 		return widgetInstance;
+	}
+	
+	private PreferenceDefault[] getPreferenceDefaultsForWidget(Widget widget){
+		IDBManager dbManager = null;
+		try {
+			dbManager = DBManagerFactory.getDBManager();
+			final Criteria crit = dbManager.createCriteria(PreferenceDefault.class);						
+			crit.add( Restrictions.eq( "widget", widget) );			 //$NON-NLS-1$
+			final List<PreferenceDefault> sqlReturnList =  dbManager.getObjects(PreferenceDefault.class, crit);
+			PreferenceDefault[] preference = sqlReturnList.toArray(new PreferenceDefault[sqlReturnList.size()]);	
+			return preference;			
+		} 
+		catch (Exception ex) {
+			_logger.error(ex.getMessage());			
+			return null;
+		}
 	}
 	
 	/**

@@ -54,7 +54,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
  * and setting which widget is to be the default
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminManager.java,v 1.9 2009-05-18 12:06:42 scottwilson Exp $
+ * @version $Id: WidgetAdminManager.java,v 1.10 2009-05-25 18:44:50 scottwilson Exp $
  */
 public class WidgetAdminManager extends WidgetServiceManager implements IWidgetAdminManager {
 	
@@ -122,9 +122,11 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 				}
 				newWidgetIdx = widget.getId();
 				// Save default preferences
-				for (PreferenceDefault pref:(PreferenceDefault[])prefs.toArray()){
-					pref.setWidget(widget);
-					dbManager.saveObject(pref);
+				if (prefs != null){
+					for (PreferenceDefault pref:(PreferenceDefault[])prefs.toArray(new PreferenceDefault[prefs.size()])){
+						pref.setWidget(widget);
+						dbManager.saveObject(pref);
+					}
 				}
 			} 
 			catch (Exception e) {
