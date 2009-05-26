@@ -34,6 +34,15 @@ CREATE TABLE `WidgetInstance` (
   CONSTRAINT `FKEA564ED9E2C2E1E5` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)
 );
 
+CREATE TABLE `PreferenceDefault` (
+    `id` int(11) NOT NULL auto_increment,
+    `widget_id` int(11) NOT NULL,
+    `preference` varchar(255) NOT NULL,
+    `value` varchar(1024) NOT NULL,
+    PRIMARY KEY(`id`),
+    CONSTRAINT `FK_preferencesdefault_1` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)
+);
+
 CREATE TABLE `Preference` (
   `id` int(11) NOT NULL auto_increment,
   `widget_instance_id` int(11) NOT NULL,
