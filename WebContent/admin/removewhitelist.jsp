@@ -78,7 +78,7 @@ var answer = confirm("Are you sure you want to delete this entry?\n\n" + entryNa
 	<%}%>
 	<%if(messages!=null){%>
 	<p><img src="../shared/images/greentick.gif" width="16" height="16">
-		<font color="green">
+		<font color=green>
 		<%=messages%>
 		</font>
 	</p>
