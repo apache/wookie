@@ -13,6 +13,7 @@ CREATE TABLE `Widget` (
   `widget_description` varchar(255) default NULL,
   `widget_author` varchar(255) default NULL,
   `widget_icon_location` varchar(255) default NULL,
+  `widget_version` varchar(255) default NULL,
   PRIMARY KEY  (`id`)
 );
 

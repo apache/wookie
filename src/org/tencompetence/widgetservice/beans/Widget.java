@@ -34,7 +34,7 @@ import java.util.Set;
  * Widget - a simple bean to model a widgets attributes
  * 
  * @author Paul Sharples
- * @version $Id: Widget.java,v 1.4 2008-02-08 09:41:39 ps3com Exp $
+ * @version $Id: Widget.java,v 1.5 2009-05-29 10:20:38 scottwilson Exp $
  */
 public class Widget extends AbstractKeyBean {
 	
@@ -46,6 +46,7 @@ public class Widget extends AbstractKeyBean {
 	private String widgetIconLocation;
 	private String url;
 	private String guid;
+	private String version;
 	private int height;
 	private int width;
 	private boolean maximize;
@@ -149,5 +150,14 @@ public class Widget extends AbstractKeyBean {
 	public void setWidgetIconLocation(String widgetIconLocation) {
 		this.widgetIconLocation = widgetIconLocation;
 	}
+	
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
 	
 }

@@ -65,7 +65,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	 */
 	public Widget getDefaultWidgetByType(String typeToSearch) throws WidgetTypeNotSupportedException {
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid " //$NON-NLS-1$
+		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_version, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid " //$NON-NLS-1$
 			+ "FROM Widget widget, WidgetDefault widgetdefault " //$NON-NLS-1$
 			+ "WHERE widget.id = widgetdefault.widgetId " //$NON-NLS-1$
 			+ "AND widgetdefault.widgetContext='" + typeToSearch + "'";		 //$NON-NLS-1$ //$NON-NLS-2$
@@ -84,10 +84,9 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	public Widget getWidgetById(String id)
 	throws WidgetTypeNotSupportedException {
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid " //$NON-NLS-1$
+		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_version, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid " //$NON-NLS-1$
 			+ "FROM Widget widget, WidgetDefault widgetdefault " //$NON-NLS-1$
 			+ "WHERE widget.guid = '" + id + "'";		 //$NON-NLS-1$ //$NON-NLS-2$
-
 		Widget widget = (Widget)dbManager.createSQLQuery(sqlQuery).addEntity(Widget.class).uniqueResult();	
 		if(widget==null){
 			throw new WidgetTypeNotSupportedException("(" + id + ") "+ localizedMessages.getString("WidgetServiceManager.1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -310,7 +309,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 			//TODO setPreference(widgetInstance, "authorHref", String.valueOf(widget.getHeight()));			//$NON-NLS-1$
 			setPreference(widgetInstance, "name", String.valueOf(widget.getWidgetTitle()));//$NON-NLS-1$
 			setPreference(widgetInstance, "description", String.valueOf(widget.getWidgetDescription()));//$NON-NLS-1$	
-			//TODO setPreference(widgetInstance, "version", String.valueOf(widget.getWidgetVersion()));//$NON-NLS-1$
+			setPreference(widgetInstance, "version", widget.getVersion());//$NON-NLS-1$
 			setPreference(widgetInstance, "width", String.valueOf(widget.getWidth()));//$NON-NLS-1$
 			setPreference(widgetInstance, "height", String.valueOf(widget.getHeight()));//$NON-NLS-1$
 
