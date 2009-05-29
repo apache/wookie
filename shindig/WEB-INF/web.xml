@@ -11,7 +11,7 @@
 	<resource-ref>
         <description>The database connection.</description>
         <res-ref-name>jdbc/widgetdb</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
+        <res-type>com.mchange.v2.c3p0.ComboPooledDataSource</res-type>
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
@@ -120,16 +120,6 @@
 	
 	<servlet>
 		<description></description>
-		<display-name>WidgetPreferencesServlet</display-name>
-		<servlet-name>WidgetPreferencesServlet</servlet-name>
-		<servlet-class>
-			org.tencompetence.widgetservice.WidgetPreferencesServlet
-		</servlet-class>
-		<load-on-startup>2</load-on-startup>
-	</servlet>		
-	
-	<servlet>
-		<description></description>
 		<display-name>WidgetAdvertiseServlet</display-name>
 		<servlet-name>WidgetAdvertiseServlet</servlet-name>
 		<servlet-class>
@@ -161,11 +151,6 @@
 	<servlet-mapping>
 		<servlet-name>WidgetServiceServlet</servlet-name>
 		<url-pattern>/WidgetServiceServlet</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>WidgetPreferencesServlet</servlet-name>
-		<url-pattern>/WidgetPreferencesServlet</url-pattern>
 	</servlet-mapping>
 		
 	<servlet-mapping>
