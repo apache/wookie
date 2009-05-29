@@ -30,7 +30,7 @@ package org.tencompetence.widgetservice.util;
  * Constants for widget elements found in the config.xml file
  *
  * @author Paul Sharples
- * @version $Id: IW3CXMLConfiguration.java,v 1.7 2009-05-25 18:44:50 scottwilson Exp $
+ * @version $Id: IW3CXMLConfiguration.java,v 1.8 2009-05-29 10:17:30 scottwilson Exp $
  */
 public interface IW3CXMLConfiguration {
 	
@@ -50,7 +50,8 @@ public interface IW3CXMLConfiguration {
 	public static final String AUTHOR_ELEMENT = "author"; // widget[0..1]
 	 	public static final String EMAIL_ATTRIBUTE = "email"; // author
 	
-	public static final String LICENCE_ELEMENT = "licence"; // widget [0..*]
+	// Note that we spelled it differently to W3C originally. Oops.
+	public static final String LICENCE_ELEMENT = "license"; // widget [0..*]
 	
 	public static final String ICON_ELEMENT = "icon"; // widget [0..*]
 	
