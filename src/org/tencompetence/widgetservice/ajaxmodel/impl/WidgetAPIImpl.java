@@ -67,7 +67,7 @@ import org.tencompetence.widgetservice.server.LocaleHandler;
  *   Widget.setSharedDataForKey("defaultChatPresence",stringWithUserRemoved);
  *
  * @author Paul Sharples
- * @version $Id: WidgetAPIImpl.java,v 1.15 2009-06-01 08:42:43 scottwilson Exp $
+ * @version $Id: WidgetAPIImpl.java,v 1.16 2009-06-01 11:25:40 scottwilson Exp $
  *
  */
 public class WidgetAPIImpl implements IWidgetAPI {
@@ -693,7 +693,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 			if(widgetInstance!=null){
 				// find the correct participants...
 				Participant participant = manager.getViewer(widgetInstance);
-				return "{\"Participant\":"+toJson(participant)+"}";
+				if (participant != null) return "{\"Participant\":"+toJson(participant)+"}";
 			}
 			else{
 				return null;
