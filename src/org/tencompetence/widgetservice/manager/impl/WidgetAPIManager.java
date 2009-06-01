@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.tencompetence.widgetservice.Messages;
+import org.tencompetence.widgetservice.beans.Participant;
 import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
@@ -307,6 +308,48 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 		pref.setDkey(name);
 		pref.setDvalue(value);	
 		dbManager.saveObject(pref);				
+	}
+
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#getParticipants()
+	 */
+	public Participant[] getParticipants(WidgetInstance instance) {
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		
+		try {
+			final Criteria crit = dbManager.createCriteria(Participant.class);						
+			crit.add( Restrictions.eq( "sharedDataKey", instance.getSharedDataKey()) );	//$NON-NLS-1$
+			crit.add( Restrictions.eq( "widgetGuid", instance.getWidget().getGuid()) );	//$NON-NLS-1$
+			final List<Participant> sqlReturnList =  dbManager.getObjects(Participant.class, crit);
+			Participant[] participants = sqlReturnList.toArray(new Participant[sqlReturnList.size()]);	
+			return participants;
+		} 
+		catch (Exception ex) {
+			_logger.error(ex.getMessage());			
+			return null;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#getViewer()
+	 */
+	public Participant getViewer(WidgetInstance instance) {
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		
+		try {
+			final Criteria crit = dbManager.createCriteria(Participant.class);						
+			crit.add( Restrictions.eq( "sharedDataKey", instance.getSharedDataKey()) );	//$NON-NLS-1$
+			crit.add( Restrictions.eq( "widgetGuid", instance.getWidget().getGuid()) );	//$NON-NLS-1$
+			crit.add( Restrictions.eq( "participant_id", instance.getUserId()) );			 //$NON-NLS-1$
+			final List<Participant> sqlReturnList =  dbManager.getObjects(Participant.class, crit);
+			Participant[] participants = sqlReturnList.toArray(new Participant[sqlReturnList.size()]);	
+			if (participants.length == 1) return participants[0];
+		} 
+		catch (Exception ex) {
+			_logger.error(ex.getMessage());			
+			return null;
+		}
+		return null;
 	}
 
 }

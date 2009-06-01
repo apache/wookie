@@ -54,7 +54,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.17 2009-05-01 10:39:37 ps3com Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.18 2009-06-01 08:42:43 scottwilson Exp $ 
  *
  */
 public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -109,6 +109,12 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 				else if(requestId.equals("setpersonalproperty")){ //$NON-NLS-1$
 					doSetProperty(request, response, true );
 				}
+				else if(requestId.equals("addparticipant")){ //$NON-NLS-1$
+					doAddParticipant(request, response );
+				}
+				else if(requestId.equals("removeparticipant")){ //$NON-NLS-1$
+					doRemoveParticipant(request, response );
+				}
 				else {
 					returnDoc(response, localizedMessages.getString("WidgetServiceServlet.0"), "error"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
@@ -118,6 +124,93 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 				_logger.error("Error in doGet():", ex); //$NON-NLS-1$
 			}
 		}
+	}
+	
+	private void doAddParticipant(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		HttpSession session = request.getSession(true);						
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);			
+		}
+		IWidgetServiceManager manager = (IWidgetServiceManager)session.getAttribute(WidgetServiceManager.class.getName());				
+		if(manager == null){
+			manager = new WidgetServiceManager(localizedMessages);
+			session.setAttribute(WidgetServiceManager.class.getName(), manager);
+		}
+		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
+		String user_id = request.getParameter("userid"); //$NON-NLS-1$
+		String sharedDataKey = getSharedDataKey(request);
+		String serviceType= request.getParameter("servicetype"); //$NON-NLS-1$
+		String widgetId = request.getParameter("widgetid"); //$NON-NLS-1$
+		String participant_id = request.getParameter("participant_id"); //$NON-NLS-1$
+		String participant_display_name = request.getParameter("participant_display_name"); //$NON-NLS-1$
+		String participant_thumbnail_url = request.getParameter("participant_thumbnail_url"); //$NON-NLS-1$
+
+		WidgetInstance instance = null;
+		if (widgetId != null){
+			instance = manager.getWidgetInstanceById(apiKey, user_id, sharedDataKey, widgetId);
+		} 
+		else {
+			instance = manager.getWidgetInstance(apiKey, user_id, sharedDataKey, serviceType);
+		}
+		if(instance != null){
+			try {
+				manager.addParticipantToWidgetInstance(instance, participant_id, participant_display_name, participant_thumbnail_url);
+				returnDoc(response, localizedMessages.getString("WidgetServiceServlet.1"), "message");							 //$NON-NLS-1$ //$NON-NLS-2$
+			} 
+			catch (Exception ex) {	
+				ex.printStackTrace();
+				returnDoc(response, localizedMessages.getString("WidgetServiceServlet.6"), "error");	//$NON-NLS-1$ //$NON-NLS-2$
+			}
+		}
+		else{
+			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.3"), "error"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+
+	}
+	
+	private void doRemoveParticipant(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		HttpSession session = request.getSession(true);						
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);			
+		}
+		IWidgetServiceManager manager = (IWidgetServiceManager)session.getAttribute(WidgetServiceManager.class.getName());				
+		if(manager == null){
+			manager = new WidgetServiceManager(localizedMessages);
+			session.setAttribute(WidgetServiceManager.class.getName(), manager);
+		}
+		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
+		String user_id = request.getParameter("userid"); //$NON-NLS-1$
+		String participant_id = request.getParameter("participant_id"); //$NON-NLS-1$
+		String sharedDataKey = getSharedDataKey(request);
+		String serviceType= request.getParameter("servicetype"); //$NON-NLS-1$
+		String widgetId = request.getParameter("widgetid"); //$NON-NLS-1$
+
+		WidgetInstance instance = null;
+		if (widgetId != null){
+			instance = manager.getWidgetInstanceById(apiKey, user_id, sharedDataKey, widgetId);
+		} 
+		else {
+			instance = manager.getWidgetInstance(apiKey, user_id, sharedDataKey, serviceType);
+		}
+		if(instance != null){
+			try {
+				manager.removeParticipantFromWidgetInstance(instance, participant_id);
+				returnDoc(response, localizedMessages.getString("WidgetServiceServlet.1"), "message");							 //$NON-NLS-1$ //$NON-NLS-2$
+			} 
+			catch (Exception ex) {			
+				returnDoc(response, localizedMessages.getString("WidgetServiceServlet.5"), "error");	//$NON-NLS-1$ //$NON-NLS-2$
+			}
+		}
+		else{
+			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.3"), "error"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+
 	}
 
 	private void doStopWidget(HttpServletRequest request, HttpServletResponse response) throws IOException{

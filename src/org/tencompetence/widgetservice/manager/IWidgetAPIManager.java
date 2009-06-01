@@ -1,5 +1,6 @@
 package org.tencompetence.widgetservice.manager;
 
+import org.tencompetence.widgetservice.beans.Participant;
 import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
@@ -8,7 +9,7 @@ import org.tencompetence.widgetservice.beans.WidgetInstance;
  * Interface for api functions
  * 
  * @author Paul Sharples
- * @version $Id: IWidgetAPIManager.java,v 1.3 2009-05-01 10:40:09 ps3com Exp $
+ * @version $Id: IWidgetAPIManager.java,v 1.4 2009-06-01 08:42:43 scottwilson Exp $
  *
  */
 public interface IWidgetAPIManager {
@@ -86,5 +87,9 @@ public interface IWidgetAPIManager {
 	public String getSharedDataValue(WidgetInstance widgetInstance, String key);
 
 	public boolean isInstanceLocked(WidgetInstance widgetInstance);
+	
+	public Participant getViewer(WidgetInstance widgetInstance);
+	
+	public Participant[] getParticipants(WidgetInstance widgetInstance);
 
 }

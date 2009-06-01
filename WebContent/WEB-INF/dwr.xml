@@ -5,12 +5,15 @@
   <allow>
     <create creator="new" javascript="WidgetImpl" scope="application">
       <param name="class" value="org.tencompetence.widgetservice.ajaxmodel.impl.WidgetAPIImpl"/>
-      <include method="preferences"/>      
+      <include method="preferences"/> 
+      <include method="state"/>     
       <include method="preferenceForKey"/>
       <include method="setPreferenceForKey"/>
       <include method="setSharedDataForKey"/>
       <include method="sharedDataForKey"/>
       <include method="appendSharedDataForKey"/>
+      <include method="getParticipants"/>
+      <include method="getViewer"/>
       <include method="lock"/>
       <include method="unlock"/>
       <include method="system"/>

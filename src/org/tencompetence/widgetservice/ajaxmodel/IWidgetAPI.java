@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * Definition of the widget API.  
  * @author Paul Sharples
- * @version $Id: IWidgetAPI.java,v 1.7 2009-03-14 20:30:15 scottwilson Exp $
+ * @version $Id: IWidgetAPI.java,v 1.8 2009-06-01 08:42:43 scottwilson Exp $
  *
  */
 public interface IWidgetAPI {	
@@ -83,6 +83,13 @@ public interface IWidgetAPI {
 	 * @return
 	 */
 	public Map<String, String> preferences(String id_key);
+	
+	/**
+	 * Returns the set of shared state objects as a map of [key][value] objects
+	 * @param id_key
+	 * @return
+	 */
+	public Map<String, String> state(String id_key);
 	
 	/**
 	 * Returns a string preference value from the DB, obtained
@@ -163,4 +170,10 @@ public interface IWidgetAPI {
 	 * @return
 	 */
 	public String userPropertyForKey(String id_key, String key);
+	
+	
+	public String getViewer(String id_key);
+	
+	public String getParticipants(String id_key);
+	
 }

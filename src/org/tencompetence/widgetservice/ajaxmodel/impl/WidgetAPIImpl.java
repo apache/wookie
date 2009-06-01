@@ -42,7 +42,9 @@ import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.tencompetence.widgetservice.Messages;
 import org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI;
+import org.tencompetence.widgetservice.beans.Participant;
 import org.tencompetence.widgetservice.beans.Preference;
+import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.manager.IWidgetAPIManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetAPIManager;
@@ -65,7 +67,7 @@ import org.tencompetence.widgetservice.server.LocaleHandler;
  *   Widget.setSharedDataForKey("defaultChatPresence",stringWithUserRemoved);
  *
  * @author Paul Sharples
- * @version $Id: WidgetAPIImpl.java,v 1.14 2009-05-01 10:40:09 ps3com Exp $
+ * @version $Id: WidgetAPIImpl.java,v 1.15 2009-06-01 08:42:43 scottwilson Exp $
  *
  */
 public class WidgetAPIImpl implements IWidgetAPI {
@@ -136,6 +138,49 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		return prefs;
 	}
 
+
+
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#state(java.lang.String)
+	 */
+	public Map<String, String> state(String id_key) {
+		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+		HttpSession session = request.getSession(true);
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);
+		}
+		HashMap<String, String> state = new HashMap<String,String>();
+		if(id_key==null){
+			state.put("message", localizedMessages.getString("WidgetAPIImpl.0"));	 //$NON-NLS-1$
+			return state;
+		}
+		try {
+			IWidgetAPIManager manager = null;
+			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
+			if(manager == null){
+				manager = new WidgetAPIManager(localizedMessages);
+				session.setAttribute(WidgetAPIManager.class.getName(), manager);
+			}
+			// check if instance is valid
+			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+			if(widgetInstance!=null){
+				for(SharedData data : manager.getSharedDataForInstance(widgetInstance)){
+					state.put(data.getDkey(), data.getDvalue());
+				}
+			}
+			else{
+				state.put("message", localizedMessages.getString("WidgetAPIImpl.0")); //$NON-NLS-1$
+				return state;
+			}
+		}
+		catch (Exception ex) {
+			_logger.error("Error getting preferences", ex); //$NON-NLS-1$
+		}
+		return state;
+	}
 
 
 	/*
@@ -577,6 +622,97 @@ public class WidgetAPIImpl implements IWidgetAPI {
         return ""; //$NON-NLS-1$
 	}
 
+
+
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#getParticipants(java.lang.String)
+	 */
+	public String getParticipants(String id_key) {
+		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+		HttpSession session = request.getSession(true);
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);
+		}
+		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0");
+		try {
+			IWidgetAPIManager manager = null;
+			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
+			if(manager == null){
+				manager = new WidgetAPIManager(localizedMessages);
+				session.setAttribute(WidgetAPIManager.class.getName(), manager);
+			}
+			// check if instance is valid
+			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+			if(widgetInstance!=null){
+				// find the correct participants...
+				Participant[] participants = manager.getParticipants(widgetInstance);
+				String json = "{\"Participants\":[";
+				String delimit = "";
+				for (Participant participant: participants){
+					json+=delimit+toJson(participant);
+					delimit = ",";
+				}
+				json+="]}";
+				return json;
+			}
+			else{
+				return "ERROR";
+			}
+		}
+		catch (Exception ex) {
+			_logger.error("Error getting preferences", ex); //$NON-NLS-1$
+		}
+		return "ERROR";
+	}
+
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#getViewer(java.lang.String)
+	 */
+	public String getViewer(String id_key) {
+		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+		HttpSession session = request.getSession(true);
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);
+		}
+		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0");
+		try {
+			IWidgetAPIManager manager = null;
+			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
+			if(manager == null){
+				manager = new WidgetAPIManager(localizedMessages);
+				session.setAttribute(WidgetAPIManager.class.getName(), manager);
+			}
+			// check if instance is valid
+			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+			if(widgetInstance!=null){
+				// find the correct participants...
+				Participant participant = manager.getViewer(widgetInstance);
+				return "{\"Participant\":"+toJson(participant)+"}";
+			}
+			else{
+				return null;
+			}
+		}
+		catch (Exception ex) {
+			_logger.error("Error getting preferences", ex); //$NON-NLS-1$
+		}
+		return null;
+	}
+	
+	private String toJson(Participant participant){
+		String json = "{"+
+		"\"participant_id\":\""+participant.getParticipant_id()+
+		"\", \"participant_display_name\":\""+participant.getParticipant_display_name()+
+		"\", \"participant_thumbnail_url\":\""+participant.getParticipant_thumbnail_url()+"\"}";
+		return json;
+	}
+
 	/*
 	public String system(String id_key, String arg1) {
 		_logger.debug("system called with " + arg1 );
@@ -593,4 +729,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		return "Not available";
 	}
 	 */
+	
+	
+	
 }

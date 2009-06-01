@@ -34,6 +34,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.tencompetence.widgetservice.Messages;
+import org.tencompetence.widgetservice.beans.Participant;
 import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.PreferenceDefault;
 import org.tencompetence.widgetservice.beans.SharedData;
@@ -362,6 +363,84 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 		} catch (Exception e) {
 			_logger.error(e.getMessage());
 		}	
+	}
+
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#addParticipantToWidgetInstance(org.tencompetence.widgetservice.beans.WidgetInstance, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public boolean addParticipantToWidgetInstance(WidgetInstance instance,
+			String participantId, String participantDisplayName,
+			String participantThumbnailUrl) {
+		
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		
+		// Does participant already exist?
+		try {
+			final Criteria crit = dbManager.createCriteria(Participant.class);						
+			crit.add( Restrictions.eq( "sharedDataKey", instance.getSharedDataKey()) );	//$NON-NLS-1$
+			crit.add( Restrictions.eq( "widgetGuid", instance.getWidget().getGuid()) );	//$NON-NLS-1$
+			crit.add( Restrictions.eq( "participant_id", participantId)); //$NON-NLS-1$
+			final List<Participant> sqlReturnList =  dbManager.getObjects(Participant.class, crit);
+			Participant[] participants = sqlReturnList.toArray(new Participant[sqlReturnList.size()]);	
+			if (participants.length != 0) return false;		
+		} 
+		catch (Exception ex) {
+			_logger.error(ex.getMessage());			
+			return false;
+		}
+		
+		// Add participant
+		Participant participant = new Participant();
+		participant.setParticipant_id(participantId);
+		participant.setParticipant_display_name(participantDisplayName);
+		participant.setParticipant_thumbnail_url(participantThumbnailUrl);
+		participant.setSharedDataKey(instance.getSharedDataKey());
+		participant.setWidgetGuid(instance.getWidget().getGuid());
+		try {
+			dbManager.saveObject(participant);
+		} catch (Exception e) {
+			_logger.error(e.getMessage());
+		}			
+
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#removeParticipantFromWidgetInstance(org.tencompetence.widgetservice.beans.WidgetInstance, java.lang.String)
+	 */
+	public boolean removeParticipantFromWidgetInstance(WidgetInstance instance,
+			String participantId) {
+		
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		Participant[] participants;
+		
+		// Does participant exist?
+		try {
+			final Criteria crit = dbManager.createCriteria(Participant.class);						
+			crit.add( Restrictions.eq( "sharedDataKey", instance.getSharedDataKey()) );	//$NON-NLS-1$
+			crit.add( Restrictions.eq( "widgetGuid", instance.getWidget().getGuid()) );	//$NON-NLS-1$
+			crit.add( Restrictions.eq( "participant_id", participantId)); //$NON-NLS-1$
+			final List<Participant> sqlReturnList =  dbManager.getObjects(Participant.class, crit);
+			participants = sqlReturnList.toArray(new Participant[sqlReturnList.size()]);	
+			if (participants.length != 1) return false;		
+		} 
+		catch (Exception ex) {
+			_logger.error(ex.getMessage());			
+			return false;
+		}
+		
+		// Remove participant
+		if (participants.length == 0){
+			try {
+				dbManager.deleteObject(participants[0]);
+				return true;
+			} catch (Exception e) {
+				_logger.error(e.getMessage());			
+				return false;
+			}
+		}
+		
+		return false;
 	}
 	
 }

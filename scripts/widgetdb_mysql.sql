@@ -44,6 +44,16 @@ CREATE TABLE `PreferenceDefault` (
     CONSTRAINT `FK_preferencesdefault_1` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)
 );
 
+CREATE TABLE `participant` (
+  `id` int(11) NOT NULL auto_increment,
+  `participant_id` varchar(255) NOT NULL default '',
+  `participant_display_name` varchar(255) NOT NULL default '',
+  `participant_thumbnail_url` varchar(1024) default '',
+  `sharedDataKey` varchar(255) NOT NULL default '',
+  `widgetGuid` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`id`)
+);
+
 CREATE TABLE `Preference` (
   `id` int(11) NOT NULL auto_increment,
   `widget_instance_id` int(11) NOT NULL,
