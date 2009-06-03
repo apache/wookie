@@ -34,7 +34,10 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.tencompetence.widgetservice.Messages;
+import org.tencompetence.widgetservice.beans.Participant;
+import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.PreferenceDefault;
+import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.Whitelist;
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetDefault;
@@ -51,7 +54,7 @@ import org.tencompetence.widgetservice.util.ManifestHelper;
  * and setting which widget is to be the default
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminManager.java,v 1.12 2009-06-03 10:06:17 scottwilson Exp $
+ * @version $Id: WidgetAdminManager.java,v 1.13 2009-06-03 22:06:51 scottwilson Exp $
  */
 public class WidgetAdminManager extends WidgetServiceManager implements IWidgetAdminManager {
 	
@@ -284,8 +287,9 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 		WidgetInstance[] instances = WidgetInstance.findByValue("widget", widget);		
 		// try to remove prefs, shareddata and then the instances
 		for(WidgetInstance inst : instances){
-			deleteSharedDataInstancesForWidgetInstance(inst);
-			deletePreferenceInstancesForWidgetInstance(inst);
+			SharedData.delete(SharedData.findByValue("widgetInstance", inst));
+			Preference.delete(Preference.findByValue("widgetInstance", inst));
+			Participant.delete(Participant.findByValue("widgetInstance", inst));
 			inst.delete();
 		}
 		// remove any widget types for this widget

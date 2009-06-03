@@ -35,7 +35,6 @@ import org.tencompetence.widgetservice.Messages;
 import org.tencompetence.widgetservice.beans.Participant;
 import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.PreferenceDefault;
-import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedException;
@@ -86,23 +85,6 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 		if (instances!=null && instances.length == 1) return instances[0];
 		return null;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#deletePreferenceInstancesForWidgetInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
-	 */
-	public void deletePreferenceInstancesForWidgetInstance(WidgetInstance instance){				
-		Preference[] preferences = Preference.findByValue("widgetInstance", instance);	
-		Preference.delete(preferences);			
-	}
-
-	/* (non-Javadoc)
-	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#deleteSharedDataInstancesForWidgetInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
-	 */
-	public void deleteSharedDataInstancesForWidgetInstance(WidgetInstance instance){				
-		SharedData[] sharedData = SharedData.findByValue("sharedDataKey", instance.getSharedDataKey());
-		SharedData.delete(sharedData);		
-	}
-
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#widgetInstanceExists(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
