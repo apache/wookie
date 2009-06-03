@@ -68,9 +68,7 @@
     }
     
     this.submitDelta = function(delta){
-        for (object in delta){
-            Widget.setSharedDataForKey(object, delta[object]);
-        }
+        Widget.submitDelta(delta);
 	}
     
     // Sets the state callback; at this point we'll also do a 
@@ -323,7 +321,18 @@ var Widget = {
 	},
     
     state: function(callBackFunction){
-        WidgetImpl.state(this.instanceid_key, callBackFunction)
+        WidgetImpl.state(this.instanceid_key, callBackFunction);
+    },
+    
+    submitDelta: function(delta){
+        if (delta && delta!=null){
+            // hack to force into a map
+            var thedelta = {};
+            for (object in delta){
+                thedelta[object] = delta[object];
+            }
+            WidgetImpl.submitDelta(this.instanceid_key, thedelta);
+        }
     },
 	
 	setSharedDataForKey : function(wName, wValue){

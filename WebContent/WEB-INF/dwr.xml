@@ -6,7 +6,8 @@
     <create creator="new" javascript="WidgetImpl" scope="application">
       <param name="class" value="org.tencompetence.widgetservice.ajaxmodel.impl.WidgetAPIImpl"/>
       <include method="preferences"/> 
-      <include method="state"/>     
+      <include method="state"/>   
+      <include method="submitDelta"/>  
       <include method="preferenceForKey"/>
       <include method="setPreferenceForKey"/>
       <include method="setSharedDataForKey"/>
