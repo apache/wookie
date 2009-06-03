@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * Definition of the widget API.  
  * @author Paul Sharples
- * @version $Id: IWidgetAPI.java,v 1.8 2009-06-01 08:42:43 scottwilson Exp $
+ * @version $Id: IWidgetAPI.java,v 1.9 2009-06-03 20:55:21 scottwilson Exp $
  *
  */
 public interface IWidgetAPI {	
@@ -118,6 +118,13 @@ public interface IWidgetAPI {
 	 * @return - a string value marking status or an error message
 	 */
 	public String setPreferenceForKey(String id_key, String key, String value);
+	
+	/**
+	 * Submits a map of key/value pairs for shared state
+	 * @param map
+	 * @return a string value marking status or an error message
+	 */
+	public String submitDelta(String id_key, Map<String, String>map);
 	
 	/**
 	 * Sets a string shared data value in the DB, obtained

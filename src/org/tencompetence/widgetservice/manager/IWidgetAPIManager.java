@@ -9,7 +9,7 @@ import org.tencompetence.widgetservice.beans.WidgetInstance;
  * Interface for api functions
  * 
  * @author Paul Sharples
- * @version $Id: IWidgetAPIManager.java,v 1.4 2009-06-01 08:42:43 scottwilson Exp $
+ * @version $Id: IWidgetAPIManager.java,v 1.5 2009-06-03 20:55:20 scottwilson Exp $
  *
  */
 public interface IWidgetAPIManager {
@@ -42,43 +42,28 @@ public interface IWidgetAPIManager {
 			String name, String value, boolean append);
 
 	/**
-	 * Add a new shared data entry to the DB
-	 * @param instance
-	 * @param name
-	 * @param value
-	 * @throws Exception
-	 */
-	public void addNewSharedDataEntry(WidgetInstance instance, String name,
-			String value) throws Exception;
-
-	/**
 	 * Returns all preference records found which match a given WidgetInstance
 	 * @param id
-	 * @return - an array of preferences
-	 * @throws Exception 
+	 * @return - an array of preferences, or null if none exist
 	 */
-	public Preference[] getPreferenceForInstance(WidgetInstance id)
-			throws Exception;
+	public Preference[] getPreferenceForInstance(WidgetInstance id);
 
+	/**
+	 * Return the specified preference record for the given instance 
+	 * @param instance
+	 * @param key
+	 * @return - the preference, or null if not found
+	 */
+	public Preference getPreferenceForInstance(WidgetInstance instance, String key);
+	
 	/**
 	 * Add or update...
 	 * @param widgetInstance
 	 * @param name
 	 * @param value
-	 * @throws Exception 
 	 */
 	public void updatePreference(WidgetInstance widgetInstance, String name,
-			String value) throws Exception;
-
-	/**
-	 * Add a new preference for a widget instance
-	 * @param widgetInstance
-	 * @param name
-	 * @param value
-	 * @throws Exception
-	 */
-	public void addNewPreference(WidgetInstance widgetInstance, String name,
-			String value) throws Exception;
+			String value);
 
 	public void lockWidgetInstance(WidgetInstance instance);
 

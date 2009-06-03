@@ -64,11 +64,8 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 	public WidgetInstance checkUserKey(String key){
 		if (key == null) return null;
 		WidgetInstance[] instance = WidgetInstance.findByValue("idKey", key);
-		if (instance.length != 1) {
-			return null;
-		} else {
-			return (WidgetInstance) instance[0];
-		} 		
+		if (instance == null||instance.length!=1) return null;
+		return (WidgetInstance) instance[0];		
 	}
 	
 	/* (non-Javadoc)
@@ -106,7 +103,13 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 			}
 			if(!found){     
 				if(value!=null){
-					addNewSharedDataEntry(widgetInstance, name, value);
+					String sharedDataKey = widgetInstance.getSharedDataKey();		
+					SharedData sharedData= new SharedData();
+					sharedData.setWidgetGuid(widgetInstance.getWidget().getGuid());
+					sharedData.setSharedDataKey(sharedDataKey);
+					sharedData.setDkey(name);
+					sharedData.setDvalue(value);
+					sharedData.save();
 				}
 			}
 	}
@@ -189,20 +192,6 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 		}		 
 	}
 	*/
-	
-	/* (non-Javadoc)
-	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#addNewSharedDataEntry(org.tencompetence.widgetservice.beans.WidgetInstance, java.lang.String, java.lang.String)
-	 */
-	public synchronized void addNewSharedDataEntry(WidgetInstance instance, String name, String value){
-		String sharedDataKey = instance.getSharedDataKey();		
-		SharedData sharedData= new SharedData();
-		sharedData.setWidgetGuid(instance.getWidget().getGuid());
-		sharedData.setSharedDataKey(sharedDataKey);
-		sharedData.setDkey(name);
-		sharedData.setDvalue(value);
-		sharedData.save();
-	}
-
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#getPreferenceForInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
@@ -212,9 +201,21 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 	}
 	
 	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#getPreferenceForInstance(org.tencompetence.widgetservice.beans.WidgetInstance, java.lang.String)
+	 */
+	public Preference getPreferenceForInstance(WidgetInstance instance, String key){
+		Map<String, Object> map = new HashMap<String,Object>();
+		map.put("widgetInstance", instance);
+		map.put("dkey", key);
+		Preference[] preferences = Preference.findByValues(map);
+		if (preferences == null||preferences.length != 1) return null;
+		return preferences[0];
+	}
+	
+	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#updatePreference(org.tencompetence.widgetservice.beans.WidgetInstance, java.lang.String, java.lang.String)
 	 */
-	public void updatePreference(WidgetInstance widgetInstance, String name, String value) throws Exception{
+	public void updatePreference(WidgetInstance widgetInstance, String name, String value){
         boolean found=false;
         for (Preference preference :getPreferenceForInstance(widgetInstance)){
         	if(preference.getDkey().equals(name)){
@@ -229,21 +230,13 @@ public class WidgetAPIManager implements IWidgetAPIManager {
         		found=true;
         	}
         }
-     
         if(!found){        	
-        	addNewPreference(widgetInstance, name, value);
+    		Preference pref = new Preference();
+    		pref.setWidgetInstance(widgetInstance);
+    		pref.setDkey(name);
+    		pref.setDvalue(value);	
+    		pref.save();	
         }       
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#addNewPreference(org.tencompetence.widgetservice.beans.WidgetInstance, java.lang.String, java.lang.String)
-	 */	
-	public void addNewPreference(WidgetInstance widgetInstance, String name, String value) throws Exception{
-		Preference pref = new Preference();
-		pref.setWidgetInstance(widgetInstance);
-		pref.setDkey(name);
-		pref.setDvalue(value);	
-		pref.save();			
 	}
 
 	/* (non-Javadoc)

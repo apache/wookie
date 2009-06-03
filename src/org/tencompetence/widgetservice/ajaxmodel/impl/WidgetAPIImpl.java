@@ -66,32 +66,14 @@ import org.tencompetence.widgetservice.server.LocaleHandler;
  *   Widget.setSharedDataForKey("defaultChatPresence",stringWithUserRemoved);
  *
  * @author Paul Sharples
- * @version $Id: WidgetAPIImpl.java,v 1.18 2009-06-03 15:57:03 scottwilson Exp $
+ * @version $Id: WidgetAPIImpl.java,v 1.19 2009-06-03 20:55:20 scottwilson Exp $
  *
  */
 public class WidgetAPIImpl implements IWidgetAPI {
 
-	/*
-	TODO - i18n these strings - use locale to get browser language & set that by default
-	 - but allow user to change it in the widget using a dropdown menu
-
-    Locale locale = request.getLocale();
-    ResourceBundle bundle = ResourceBundle.getBundle("i18n.widgetBundle", locale);
-    String welcome = bundle.getString("Welcome");
-
-	 */
-
-	// string to return when no credential key is supplied by js call
-	//public static final String UNAUTHORISED_MESSAGE = Messages.getString("WidgetAPIImpl.0");	 //$NON-NLS-1$
-	// string to return when no preference key is supplied by js call
-	//public static final String NOKEY_MESSAGE = Messages.getString("WidgetAPIImpl.1"); //$NON-NLS-1$
-	//public static final String LOCKED_MESSAGE = Messages.getString("WidgetAPIImpl.2"); //$NON-NLS-1$
-
 	static Logger _logger = Logger.getLogger(WidgetAPIImpl.class.getName());
 
 	public WidgetAPIImpl(){}
-
-
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#preferences(java.lang.String)
@@ -101,28 +83,19 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		HttpSession session = request.getSession(true);
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		HashMap<String, String> prefs = new HashMap<String,String>();
-
 		if(id_key == null){
 			prefs.put("message", localizedMessages.getString("WidgetAPIImpl.0"));	 //$NON-NLS-1$
 			return prefs;
 		}
-
-		try {
-			IWidgetAPIManager manager = getManager(session, localizedMessages);
-			// check if instance is valid
-			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
-			if(widgetInstance!=null){
-				for(Preference preference : manager.getPreferenceForInstance(widgetInstance)){
-					prefs.put(preference.getDkey(), preference.getDvalue());
-				}
-			}
-			else{
-				prefs.put("message", localizedMessages.getString("WidgetAPIImpl.0")); //$NON-NLS-1$
-				return prefs;
-			}
+		IWidgetAPIManager manager = getManager(session, localizedMessages);
+		// check if instance is valid
+		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+		if(widgetInstance==null){
+			prefs.put("message", localizedMessages.getString("WidgetAPIImpl.0")); //$NON-NLS-1$
+			return prefs;
 		}
-		catch (Exception ex) {
-			_logger.error("Error getting preferences", ex); //$NON-NLS-1$
+		for(Preference preference : manager.getPreferenceForInstance(widgetInstance)){
+			prefs.put(preference.getDkey(), preference.getDvalue());
 		}
 		return prefs;
 	}
@@ -141,22 +114,15 @@ public class WidgetAPIImpl implements IWidgetAPI {
 			state.put("message", localizedMessages.getString("WidgetAPIImpl.0"));	 //$NON-NLS-1$
 			return state;
 		}
-		try {
-			IWidgetAPIManager manager = getManager(session, localizedMessages);
-			// check if instance is valid
-			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
-			if(widgetInstance!=null){
-				for(SharedData data : manager.getSharedDataForInstance(widgetInstance)){
-					state.put(data.getDkey(), data.getDvalue());
-				}
-			}
-			else{
-				state.put("message", localizedMessages.getString("WidgetAPIImpl.0")); //$NON-NLS-1$
-				return state;
-			}
+		IWidgetAPIManager manager = getManager(session, localizedMessages);
+		// check if instance is valid
+		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+		if (widgetInstance == null){
+			state.put("message", localizedMessages.getString("WidgetAPIImpl.0"));	 //$NON-NLS-1$
+			return state;			
 		}
-		catch (Exception ex) {
-			_logger.error("Error getting preferences", ex); //$NON-NLS-1$
+		for(SharedData data : manager.getSharedDataForInstance(widgetInstance)){
+			state.put(data.getDkey(), data.getDvalue());
 		}
 		return state;
 	}
@@ -172,34 +138,14 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0");
 		if(key == null)return localizedMessages.getString("WidgetAPIImpl.1");
-		String preferenceText = null;
-		try {
-			IWidgetAPIManager manager = getManager(session, localizedMessages);
-			// check if instance is valid
-			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
-			if(widgetInstance!=null){
-				boolean found = false;
-				// find the correct preference...
-				for(Preference preference : manager.getPreferenceForInstance(widgetInstance)){
-					if(preference.getDkey().equals(key)){
-						preferenceText = preference.getDvalue();
-						found = true;
-						break;
-					}
-				}
-				if(!found){
-					_logger.debug("No key found in getpreference call:" + key); //$NON-NLS-1$
-					preferenceText = "null"; //$NON-NLS-1$
-				}
-			}
-			else{
-				preferenceText = localizedMessages.getString("WidgetAPIImpl.0");
-			}
-		}
-		catch (Exception ex) {
-			_logger.error("Error getting preferences", ex); //$NON-NLS-1$
-		}
-		return preferenceText;
+		IWidgetAPIManager manager = getManager(session, localizedMessages);
+		// check if instance is valid
+		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+		if (widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
+		// find the correct preference...
+		Preference preference = manager.getPreferenceForInstance(widgetInstance, key);
+		if (preference == null) return localizedMessages.getString("WidgetAPIImpl.1");
+		return preference.getDvalue();
 	}
 
 	/*
@@ -212,24 +158,10 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		if(id_key==null) return localizedMessages.getString("WidgetAPIImpl.0");
 		if(key==null) return localizedMessages.getString("WidgetAPIImpl.1");
-		String sharedDataValue = null;
-		try {
-			IWidgetAPIManager manager = getManager(session, localizedMessages);
-			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
-			if(widgetInstance!=null){
-				sharedDataValue = manager.getSharedDataValue(widgetInstance, key);
-				if(sharedDataValue == null){
-					_logger.debug("No key found in getshareddata call:" + key);		 //$NON-NLS-1$
-				}
-			}
-			else{
-				sharedDataValue = localizedMessages.getString("WidgetAPIImpl.0");
-			}
-		}
-		catch (Exception ex) {
-			_logger.error("Error getting shared data", ex); //$NON-NLS-1$
-		}
-		return sharedDataValue;
+		IWidgetAPIManager manager = getManager(session, localizedMessages);
+		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+		if (widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
+		return manager.getSharedDataValue(widgetInstance, key);
 	}
 
 	/*
@@ -240,22 +172,28 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		HttpSession session = request.getSession(true);
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		try {
-			//_logger.error("setPreferenceForKey: " + id_key + " | "+ key + " | "+ value);
-			IWidgetAPIManager manager = getManager(session, localizedMessages);
-			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
-			if(widgetInstance!=null){
-				manager.updatePreference(widgetInstance, key, value);
-				//_logger.debug("setpreferenceForKey set " + key + "  to  " + value);
-			}
-			else{
-				return localizedMessages.getString("WidgetAPIImpl.0");
-			}
-		}
-		catch (Exception ex) {
-			_logger.error("setpreferenceForKey failed", ex);			 //$NON-NLS-1$
-		}
-		return ""; //$NON-NLS-1$
+		IWidgetAPIManager manager = getManager(session, localizedMessages);
+		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+		if (widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
+		manager.updatePreference(widgetInstance, key, value);
+		return "okay"; //$NON-NLS-1$
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.ajaxmodel.IWidgetAPI#submitDelta(java.lang.String, java.util.Map)
+	 */
+	public String submitDelta(String id_key, Map<String,String>map){
+		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+		HttpSession session = request.getSession(true);
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
+		IWidgetAPIManager manager = getManager(session, localizedMessages);
+		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
+		if(manager.isInstanceLocked(widgetInstance)) return localizedMessages.getString("WidgetAPIImpl.2");
+		for (String key: map.keySet())
+		 	manager.updateSharedDataEntry(widgetInstance, key, map.get(key), false);	
+		notifyWidgets(widgetInstance);
+		return "okay"; //$NON-NLS-1$
 	}
 
 	/*
@@ -266,39 +204,12 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		HttpSession session = request.getSession(true);
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		try {
-			//_logger.error("setSharedDataForKey: " + id_key + " | "+ key + " | "+ value);
-			IWidgetAPIManager manager = getManager(session, localizedMessages);
-			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
-			if(widgetInstance!=null){
-				if(!manager.isInstanceLocked(widgetInstance)){
-					String sharedDataKey = widgetInstance.getSharedDataKey();
-					manager.updateSharedDataEntry(widgetInstance, key, value, false);
-					WebContext wctx = WebContextFactory.get();
-			        String currentPage = wctx.getCurrentPage();
-			        ScriptBuffer script = new ScriptBuffer();
-			        script.appendScript("Widget.onSharedUpdate(\"").appendScript(sharedDataKey).appendScript("\");"); //$NON-NLS-1$ //$NON-NLS-2$
-			        // Loop over all the users on the current page
-			        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
-			        for (Iterator<?> it = pages.iterator(); it.hasNext();){
-			            ScriptSession otherSession = (ScriptSession) it.next();
-			            otherSession.addScript(script);
-			        }
-				}
-				else {
-					// is locked
-					return localizedMessages.getString("WidgetAPIImpl.2");
-				}
-
-			}
-			else{
-				// not authorized
-				return localizedMessages.getString("WidgetAPIImpl.0");
-			}
-		}
-		catch (Exception ex) {
-			_logger.error("setSharedDataForKey failed", ex); //$NON-NLS-1$
-		}
+		IWidgetAPIManager manager = getManager(session, localizedMessages);
+		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
+		if(manager.isInstanceLocked(widgetInstance)) return localizedMessages.getString("WidgetAPIImpl.2");
+		manager.updateSharedDataEntry(widgetInstance, key, value, false);
+		notifyWidgets(widgetInstance);
 		return "okay"; //$NON-NLS-1$
 	}
 
@@ -310,44 +221,12 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		HttpSession session = request.getSession(true);
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		try {
-			//_logger.error("appendSharedDataForKey: " + id_key + " | "+ key + " | "+ value);
-			IWidgetAPIManager manager = getManager(session, localizedMessages);
-			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
-			if(widgetInstance!=null){
-				if(!manager.isInstanceLocked(widgetInstance)){
-					String sharedDataKey = widgetInstance.getSharedDataKey();
-					manager.updateSharedDataEntry(widgetInstance, key, value, true);
-					WebContext wctx = WebContextFactory.get();
-			        String currentPage = wctx.getCurrentPage();
-			        ScriptBuffer script = new ScriptBuffer();
-			        script.appendScript("Widget.onSharedUpdate(\"").appendScript(sharedDataKey).appendScript("\");");	 //$NON-NLS-1$ //$NON-NLS-2$
-			        // Loop over all the users on the current page
-			        //TODO - on high load the "otherSession.addScript(script)" call can throw illegalmodificationexception
-			        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
-			        //Collection<?> pages = Collections.synchronizedCollection(wctx.getScriptSessionsByPage(currentPage));
-			        // synchronized(pages){
-				    for (Iterator<?> it = pages.iterator(); it.hasNext();){
-				    	ScriptSession otherSession = (ScriptSession) it.next();
-				        // synchronized(otherSession){
-				    	otherSession.addScript(script);
-				        // }
-				    }
-			        //}
-				}
-				else {
-					// is locked
-					return localizedMessages.getString("WidgetAPIImpl.2");
-				}
-			}
-			else{
-				// not authorized
-				return localizedMessages.getString("WidgetAPIImpl.0");
-			}
-		}
-		catch (Exception ex) {
-			_logger.error("appendSharedDataForKey failed", ex); //$NON-NLS-1$
-		}
+		IWidgetAPIManager manager = getManager(session, localizedMessages);
+		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
+		if(manager.isInstanceLocked(widgetInstance)) return localizedMessages.getString("WidgetAPIImpl.2");
+		manager.updateSharedDataEntry(widgetInstance, key, value, true);
+		notifyWidgets(widgetInstance);
 		return "okay"; //$NON-NLS-1$
 	}
 
@@ -361,25 +240,11 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		IWidgetAPIManager manager = getManager(session, localizedMessages);
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
-		if(widgetInstance!=null){
-			String sharedDataKey = widgetInstance.getSharedDataKey();
-			//_logger.error("lock called by " + widgetInstance.getUserId());
-			manager.lockWidgetInstance(widgetInstance);
-			WebContext wctx = WebContextFactory.get();
-	        String currentPage = wctx.getCurrentPage();
-	        ScriptBuffer script = new ScriptBuffer();
-	        script.appendScript("Widget.onLocked(\"").appendScript(sharedDataKey).appendScript("\");"); //$NON-NLS-1$ //$NON-NLS-2$
-	        // Loop over all the users on the current page
-	        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
-	        for (Iterator<?> it = pages.iterator(); it.hasNext();){
-	            ScriptSession otherSession = (ScriptSession) it.next();
-	            otherSession.addScript(script);
-	        }
-	        return "";		 //$NON-NLS-1$
-		}
-		else{
-			return localizedMessages.getString("WidgetAPIImpl.0");
-		}
+		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
+		String sharedDataKey = widgetInstance.getSharedDataKey();
+		manager.lockWidgetInstance(widgetInstance);
+		callback(widgetInstance, "Widget.onLocked(\""+sharedDataKey+"\");");//$NON-NLS-1$
+        return "okay"; //$NON-NLS-1$
 	}
 
 	/*
@@ -392,25 +257,11 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		IWidgetAPIManager manager = getManager(session, localizedMessages);
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
-		if(widgetInstance!=null){
-			String sharedDataKey = widgetInstance.getSharedDataKey();
-			//_logger.error("unlock called by " + widgetInstance.getUserId());
-			manager.unlockWidgetInstance(widgetInstance);
-			WebContext wctx = WebContextFactory.get();
-	        String currentPage = wctx.getCurrentPage();
-	        ScriptBuffer script = new ScriptBuffer();
-	        script.appendScript("Widget.onUnlocked(\"").appendScript(sharedDataKey).appendScript("\");"); //$NON-NLS-1$ //$NON-NLS-2$
-	        // Loop over all the users on the current page
-	        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
-	        for (Iterator<?> it = pages.iterator(); it.hasNext();){
-	            ScriptSession otherSession = (ScriptSession) it.next();
-	            otherSession.addScript(script);
-	        }
-	        return "";		 //$NON-NLS-1$
-		}
-		else{
-			return localizedMessages.getString("WidgetAPIImpl.0");
-		}
+		if(widgetInstance==null) return localizedMessages.getString("WidgetAPIImpl.0");
+		String sharedDataKey = widgetInstance.getSharedDataKey();
+		manager.unlockWidgetInstance(widgetInstance);
+		callback(widgetInstance, "Widget.onUnlocked(\""+sharedDataKey+"\");");//$NON-NLS-1$
+        return "okay"; //$NON-NLS-1$
 	}
 
 	/*
@@ -423,17 +274,9 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		IWidgetAPIManager manager = getManager(session, localizedMessages);
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
-		if(widgetInstance!=null){
-			WebContext wctx = WebContextFactory.get();
-	        ScriptBuffer script = new ScriptBuffer();
-	        script.appendScript("window.onHide(")	        	 //$NON-NLS-1$
-	        .appendScript(");");        //$NON-NLS-1$
-	        wctx.getScriptSession().addScript(script);
-	        return ""; //$NON-NLS-1$
-		}
-		else{
-			return localizedMessages.getString("WidgetAPIImpl.0");
-		}
+		if (widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
+		callback(widgetInstance,"window.onHide()");//$NON-NLS-1$
+	    return "okay"; //$NON-NLS-1$
 	}
 
 	/*
@@ -446,17 +289,9 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		IWidgetAPIManager manager = getManager(session, localizedMessages);
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
-		if(widgetInstance!=null){
-			WebContext wctx = WebContextFactory.get();
-	        ScriptBuffer script = new ScriptBuffer();
-	        script.appendScript("window.onShow(")	        	 //$NON-NLS-1$
-	        .appendScript(");");        //$NON-NLS-1$
-	        wctx.getScriptSession().addScript(script);
-	        return ""; //$NON-NLS-1$
-		}
-		else{
-			return localizedMessages.getString("WidgetAPIImpl.0");
-		}
+		if(widgetInstance==null) return localizedMessages.getString("WidgetAPIImpl.0");
+		callback(widgetInstance,"window.onShow()"); //$NON-NLS-1$
+	    return "okay"; //$NON-NLS-1$
 	}
 
 	/*
@@ -499,6 +334,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	// NOTE - might not need this - we can call window.open in a browser -
 	// The only reason to send the call to this servlet is if we somehow wish to
 	// update other users.
+	@Deprecated
 	public String openURL(String url) {
 		_logger.debug("openurl called with        "+ url ); //$NON-NLS-1$
 		WebContext wctx = WebContextFactory.get();
@@ -520,30 +356,19 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		HttpSession session = request.getSession(true);
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0");
-		try {
-			IWidgetAPIManager manager = getManager(session, localizedMessages);
-			// check if instance is valid
-			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
-			if(widgetInstance!=null){
-				// find the correct participants...
-				Participant[] participants = manager.getParticipants(widgetInstance);
-				String json = "{\"Participants\":[";
-				String delimit = "";
-				for (Participant participant: participants){
-					json+=delimit+toJson(participant);
-					delimit = ",";
-				}
-				json+="]}";
-				return json;
-			}
-			else{
-				return "ERROR";
-			}
+		IWidgetAPIManager manager = getManager(session, localizedMessages);
+		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+		if(widgetInstance==null) return localizedMessages.getString("WidgetAPIImpl.0");
+		// find the correct participants...
+		Participant[] participants = manager.getParticipants(widgetInstance);
+		String json = "{\"Participants\":[";
+		String delimit = "";
+		for (Participant participant: participants){
+			json+=delimit+toJson(participant);
+			delimit = ",";
 		}
-		catch (Exception ex) {
-			_logger.error("Error getting preferences", ex); //$NON-NLS-1$
-		}
-		return "ERROR";
+		json+="]}";
+		return json;
 	}
 
 	/* (non-Javadoc)
@@ -554,25 +379,19 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		HttpSession session = request.getSession(true);
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0");
-		try {
-			IWidgetAPIManager manager = getManager(session, localizedMessages);
-			// check if instance is valid
-			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
-			if(widgetInstance!=null){
-				// find the correct participants...
-				Participant participant = manager.getViewer(widgetInstance);
-				if (participant != null) return "{\"Participant\":"+toJson(participant)+"}";
-			}
-			else{
-				return null;
-			}
-		}
-		catch (Exception ex) {
-			_logger.error("Error getting preferences", ex); //$NON-NLS-1$
-		}
-		return null;
+		IWidgetAPIManager manager = getManager(session, localizedMessages);
+		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
+		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
+		Participant participant = manager.getViewer(widgetInstance);
+		if (participant != null) return "{\"Participant\":"+toJson(participant)+"}"; //$NON-NLS-1$
+		return null; // no viewer i.e. widget is anonymous
 	}
 	
+	/**
+	 * Converts a participant to JSON representation
+	 * @param participant
+	 * @return
+	 */
 	private String toJson(Participant participant){
 		String json = "{"+
 		"\"participant_id\":\""+participant.getParticipant_id()+
@@ -580,24 +399,40 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		"\", \"participant_thumbnail_url\":\""+participant.getParticipant_thumbnail_url()+"\"}";
 		return json;
 	}
-
-	/*
-	public String system(String id_key, String arg1) {
-		_logger.debug("system called with " + arg1 );
-		return "Not available";
-	}
-
-	public String system(String id_key, String arg1, String arg2) {
-		_logger.debug("system called with " + arg1 + "   " + arg2);
-		return "Not available";
-	}
-
-	public String system(String id_key, String arg1, String arg2, String arg3) {
-		_logger.debug("system called with " + arg1 + "   " + arg2+ "   " + arg3);
-		return "Not available";
-	}
-	 */
 	
+	/**
+	 * Send notifications to other widgets of shared data updates
+	 */
+	private void notifyWidgets(WidgetInstance widgetInstance){
+		String sharedDataKey = widgetInstance.getSharedDataKey();
+		String script = "Widget.onSharedUpdate(\""+sharedDataKey+"\");"; //$NON-NLS-1$ //$NON-NLS-2$
+		callback(widgetInstance, script);
+	}
+	
+	/**
+	 * Sends a callback script
+	 * @param widgetInstance
+	 * @param call
+	 */
+	private void callback(WidgetInstance widgetInstance, String call){
+		WebContext wctx = WebContextFactory.get();
+        String currentPage = wctx.getCurrentPage();
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript(call);
+        // Loop over all the users on the current page
+        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
+        for (Iterator<?> it = pages.iterator(); it.hasNext();){
+            ScriptSession otherSession = (ScriptSession) it.next();
+            otherSession.addScript(script);
+        }	
+	}
+	
+	/**
+	 * Gets the (cached) manager for this locale
+	 * @param session
+	 * @param localizedMessages
+	 * @return
+	 */
 	private IWidgetAPIManager getManager(HttpSession session, Messages localizedMessages){
 		//
 		IWidgetAPIManager manager = null;
