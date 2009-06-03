@@ -29,9 +29,10 @@ package org.tencompetence.widgetservice;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.Collection;
+import java.util.Iterator;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,6 +40,10 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
+import org.directwebremoting.ScriptBuffer;
+import org.directwebremoting.ScriptSession;
+import org.directwebremoting.ServerContext;
+import org.directwebremoting.ServerContextFactory;
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.exceptions.InvalidWidgetCallException;
@@ -54,7 +59,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.18 2009-06-01 08:42:43 scottwilson Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.19 2009-06-03 15:45:58 scottwilson Exp $ 
  *
  */
 public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -75,14 +80,8 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response){
-		HttpSession session = request.getSession(true);						
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);			
-		}
+	protected void doGet(HttpServletRequest request, HttpServletResponse response){					
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		if (!WidgetKeyManager.isValidRequest(request)){
 			try {
 				returnDoc(response, localizedMessages.getString("WidgetServiceServlet.2"), "error"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -128,17 +127,8 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 	
 	private void doAddParticipant(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		HttpSession session = request.getSession(true);						
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);			
-		}
-		IWidgetServiceManager manager = (IWidgetServiceManager)session.getAttribute(WidgetServiceManager.class.getName());				
-		if(manager == null){
-			manager = new WidgetServiceManager(localizedMessages);
-			session.setAttribute(WidgetServiceManager.class.getName(), manager);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
+		IWidgetServiceManager manager = getServiceManager(session, localizedMessages); 
 		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
 		String user_id = request.getParameter("userid"); //$NON-NLS-1$
 		String sharedDataKey = getSharedDataKey(request);
@@ -157,7 +147,8 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 		}
 		if(instance != null){
 			try {
-				manager.addParticipantToWidgetInstance(instance, participant_id, participant_display_name, participant_thumbnail_url);
+				if (manager.addParticipantToWidgetInstance(instance, participant_id, participant_display_name, participant_thumbnail_url))
+					notifyWidgets(session, manager, instance);
 				returnDoc(response, localizedMessages.getString("WidgetServiceServlet.1"), "message");							 //$NON-NLS-1$ //$NON-NLS-2$
 			} 
 			catch (Exception ex) {	
@@ -173,17 +164,8 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 	
 	private void doRemoveParticipant(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		HttpSession session = request.getSession(true);						
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);			
-		}
-		IWidgetServiceManager manager = (IWidgetServiceManager)session.getAttribute(WidgetServiceManager.class.getName());				
-		if(manager == null){
-			manager = new WidgetServiceManager(localizedMessages);
-			session.setAttribute(WidgetServiceManager.class.getName(), manager);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
+		IWidgetServiceManager manager = getServiceManager(session, localizedMessages); 
 		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
 		String user_id = request.getParameter("userid"); //$NON-NLS-1$
 		String participant_id = request.getParameter("participant_id"); //$NON-NLS-1$
@@ -200,7 +182,8 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 		}
 		if(instance != null){
 			try {
-				manager.removeParticipantFromWidgetInstance(instance, participant_id);
+				if(manager.removeParticipantFromWidgetInstance(instance, participant_id))
+					notifyWidgets(session, manager, instance);
 				returnDoc(response, localizedMessages.getString("WidgetServiceServlet.1"), "message");							 //$NON-NLS-1$ //$NON-NLS-2$
 			} 
 			catch (Exception ex) {			
@@ -215,17 +198,8 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 
 	private void doStopWidget(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		HttpSession session = request.getSession(true);						
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);			
-		}
-		IWidgetServiceManager manager = (IWidgetServiceManager)session.getAttribute(WidgetServiceManager.class.getName());				
-		if(manager == null){
-			manager = new WidgetServiceManager(localizedMessages);
-			session.setAttribute(WidgetServiceManager.class.getName(), manager);
-		}		
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
+		IWidgetServiceManager manager = getServiceManager(session, localizedMessages); 		
 		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
 		String userId = request.getParameter("userid");	 //$NON-NLS-1$
 		String sharedDataKey = getSharedDataKey(request);	
@@ -246,17 +220,8 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 
 	private void doResumeWidget(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		HttpSession session = request.getSession(true);						
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);			
-		}
-		IWidgetServiceManager manager = (IWidgetServiceManager)session.getAttribute(WidgetServiceManager.class.getName());	
-		if(manager == null){
-			manager = new WidgetServiceManager(localizedMessages);
-			session.setAttribute(WidgetServiceManager.class.getName(), manager);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
+		IWidgetServiceManager manager = getServiceManager(session, localizedMessages); 
 		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
 		String userId = request.getParameter("userid"); //$NON-NLS-1$
 		String sharedDataKey = getSharedDataKey(request);		
@@ -285,17 +250,8 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 	 */
 	private void doSetProperty (HttpServletRequest request, HttpServletResponse response, boolean isPersonalProperty) throws ServletException, IOException {
 		HttpSession session = request.getSession(true);						
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);			
-		}
-		IWidgetServiceManager manager = (IWidgetServiceManager)session.getAttribute(WidgetServiceManager.class.getName());	
-		if(manager == null){
-			manager = new WidgetServiceManager(localizedMessages);
-			session.setAttribute(WidgetServiceManager.class.getName(), manager);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
+		IWidgetServiceManager manager = getServiceManager(session, localizedMessages); 
 		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
 		String userId = request.getParameter("userid"); //$NON-NLS-1$
 		String sharedDataKey = getSharedDataKey(request);
@@ -333,12 +289,7 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 
 	private void doGetWidget(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(true);						
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);			
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
 		String userId = request.getParameter("userid"); //$NON-NLS-1$
 		String sharedDataKey = getSharedDataKey(request);	
@@ -379,11 +330,7 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 		_logger.debug(urlWidgetAPIServer.toString());
 		 */
 		WidgetInstance widgetInstance;
-		IWidgetServiceManager manager = (IWidgetServiceManager)session.getAttribute(WidgetServiceManager.class.getName());	
-		if(manager == null){
-			manager = new WidgetServiceManager(localizedMessages);
-			session.setAttribute(WidgetServiceManager.class.getName(), manager);
-		}
+		IWidgetServiceManager manager = getServiceManager(session, localizedMessages); 
 			
 		if (widgetId != null){
 			widgetInstance = manager.getWidgetInstanceById(apiKey, userId, sharedDataKey, widgetId);
@@ -504,6 +451,40 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 	
 	private String getSharedDataKey(HttpServletRequest request){
 		return String.valueOf((request.getParameter("apikey")+":"+request.getParameter("shareddatakey")).hashCode());	 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	}
+	
+	/**
+	 * Notifies widgets that participants have been updated
+	 * @param session
+	 * @param manager
+	 * @param instance
+	 */
+	private void notifyWidgets(HttpSession session, IWidgetServiceManager manager, WidgetInstance instance){
+		ServletContext ctx = session.getServletContext();
+		ServerContext sctx = ServerContextFactory.get(ctx);
+		String currentPage = instance.getWidget().getUrl();
+		ScriptBuffer script = new ScriptBuffer();
+		script.appendScript("wave.onParticipantUpdate();");
+		Collection<?> pages = sctx.getScriptSessionsByPage(currentPage);
+		for (Iterator<?> it = pages.iterator(); it.hasNext();){
+			ScriptSession otherSession = (ScriptSession) it.next();
+			otherSession.addScript(script);
+		}
+	}
+	
+	/**
+	 * Return a handle on a service manager localized for the session
+	 * @param session
+	 * @param localizedMessages
+	 * @return
+	 */
+	private IWidgetServiceManager getServiceManager(HttpSession session, Messages localizedMessages){
+		IWidgetServiceManager manager = (IWidgetServiceManager)session.getAttribute(WidgetServiceManager.class.getName());				
+		if(manager == null){
+			manager = new WidgetServiceManager(localizedMessages);
+			session.setAttribute(WidgetServiceManager.class.getName(), manager);
+		}
+		return manager;
 	}
 
 }
