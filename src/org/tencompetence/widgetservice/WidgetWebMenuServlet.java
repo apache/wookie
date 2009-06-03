@@ -2,7 +2,6 @@ package org.tencompetence.widgetservice;
 
 import java.io.IOException;
 import java.util.Hashtable;
-import java.util.Locale;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
@@ -25,7 +24,7 @@ import org.tencompetence.widgetservice.server.LocaleHandler;
  * WidgetWebMenuServlet
  *
  * @author Paul Sharples
- * @version $Id: WidgetWebMenuServlet.java,v 1.5 2009-06-03 10:06:17 scottwilson Exp $
+ * @version $Id: WidgetWebMenuServlet.java,v 1.6 2009-06-03 15:46:30 scottwilson Exp $
  */
 public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 
@@ -47,12 +46,7 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(true);
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();			
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		IWidgetAdminManager manager = (IWidgetAdminManager)session.getAttribute(WidgetAdminManager.class.getName());
 		if(manager == null){
 			manager = new WidgetAdminManager(localizedMessages);
@@ -138,7 +132,7 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 	}
 
 	private void requestApiKeyOperation(HttpServletRequest request, Configuration properties, IWidgetAdminManager manager, HttpSession session){
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		session.setAttribute("message_value", null); //$NON-NLS-1$
 		try {
 			String email = request.getParameter("email"); //$NON-NLS-1$

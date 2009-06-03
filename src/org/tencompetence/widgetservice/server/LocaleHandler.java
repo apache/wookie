@@ -7,6 +7,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.tencompetence.widgetservice.Messages;
@@ -14,7 +17,7 @@ import org.tencompetence.widgetservice.Messages;
 /**
  * A class to manage the locales as specified in the widgetserver.properties
  * @author Paul Sharples
- * @version $Id: LocaleHandler.java,v 1.1 2009-05-01 10:40:09 ps3com Exp $
+ * @version $Id: LocaleHandler.java,v 1.2 2009-06-03 15:46:31 scottwilson Exp $
  */
 public class LocaleHandler {	
 	
@@ -102,5 +105,22 @@ public class LocaleHandler {
 		}				
 		return bundle;
 	}
+	
+	/**
+	 * Sets localized messages within the session
+	 * @param request
+	 */
+	public static Messages localizeMessages(HttpServletRequest request){
+		HttpSession session = request.getSession(true);	
+		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
+		if(localizedMessages == null){
+			Locale locale = request.getLocale();
+			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
+			session.setAttribute(Messages.class.getName(), localizedMessages);			
+		}
+		return localizedMessages;
+	}
+	
+
 	
 }

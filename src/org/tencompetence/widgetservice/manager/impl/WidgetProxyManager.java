@@ -26,18 +26,14 @@
  */
 package org.tencompetence.widgetservice.manager.impl;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.tencompetence.widgetservice.beans.Whitelist;
 import org.tencompetence.widgetservice.manager.IWidgetProxyManager;
-import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
-import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 
 /**
  * A class to manage the whitelist available to the proxy service
  * @author Paul Sharples
- * @version $Id: WidgetProxyManager.java,v 1.2 2009-05-01 10:40:09 ps3com Exp $
+ * @version $Id: WidgetProxyManager.java,v 1.3 2009-06-03 15:46:31 scottwilson Exp $
  *
  */
 public class WidgetProxyManager implements IWidgetProxyManager {
@@ -48,18 +44,7 @@ public class WidgetProxyManager implements IWidgetProxyManager {
 	 * @see org.tencompetence.widgetservice.manager.IWidgetProxyManager#getWhiteList()
 	 */
 	public synchronized Whitelist[] getWhiteList(){
-		IDBManager dbManager = null;
-		try {
-			dbManager = DBManagerFactory.getDBManager();
-			List<?> sqlReturnList = dbManager.createQuery("from Whitelist").list();		
-			Whitelist[] whitelist = sqlReturnList.toArray(new Whitelist[sqlReturnList.size()]);
-			return whitelist;
-		} 
-		catch (Exception ex) {
-			dbManager.rollbackTransaction();
-			_logger.error(ex.getMessage());
-			return null;
-		}	
+		return Whitelist.findAll();	
 	}
 	
 	/* (non-Javadoc)

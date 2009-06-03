@@ -29,7 +29,6 @@ package org.tencompetence.widgetservice.ajaxmodel.impl;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,7 +66,7 @@ import org.tencompetence.widgetservice.server.LocaleHandler;
  *   Widget.setSharedDataForKey("defaultChatPresence",stringWithUserRemoved);
  *
  * @author Paul Sharples
- * @version $Id: WidgetAPIImpl.java,v 1.16 2009-06-01 11:25:40 scottwilson Exp $
+ * @version $Id: WidgetAPIImpl.java,v 1.17 2009-06-03 15:46:31 scottwilson Exp $
  *
  */
 public class WidgetAPIImpl implements IWidgetAPI {
@@ -100,12 +99,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public Map<String, String> preferences(String id_key) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		HttpSession session = request.getSession(true);
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		HashMap<String, String> prefs = new HashMap<String,String>();
 
 		if(id_key == null){
@@ -114,12 +108,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		}
 
 		try {
-			IWidgetAPIManager manager = null;
-			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
-			if(manager == null){
-				manager = new WidgetAPIManager(localizedMessages);
-				session.setAttribute(WidgetAPIManager.class.getName(), manager);
-			}
+			IWidgetAPIManager manager = getManager(session, localizedMessages);
 			// check if instance is valid
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
@@ -146,24 +135,14 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public Map<String, String> state(String id_key) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		HttpSession session = request.getSession(true);
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		HashMap<String, String> state = new HashMap<String,String>();
 		if(id_key==null){
 			state.put("message", localizedMessages.getString("WidgetAPIImpl.0"));	 //$NON-NLS-1$
 			return state;
 		}
 		try {
-			IWidgetAPIManager manager = null;
-			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
-			if(manager == null){
-				manager = new WidgetAPIManager(localizedMessages);
-				session.setAttribute(WidgetAPIManager.class.getName(), manager);
-			}
+			IWidgetAPIManager manager = getManager(session, localizedMessages);
 			// check if instance is valid
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
@@ -190,22 +169,12 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String preferenceForKey(String id_key, String key) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		HttpSession session = request.getSession(true);
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0");
 		if(key == null)return localizedMessages.getString("WidgetAPIImpl.1");
 		String preferenceText = null;
 		try {
-			IWidgetAPIManager manager = null;
-			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
-			if(manager == null){
-				manager = new WidgetAPIManager(localizedMessages);
-				session.setAttribute(WidgetAPIManager.class.getName(), manager);
-			}
+			IWidgetAPIManager manager = getManager(session, localizedMessages);
 			// check if instance is valid
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
@@ -240,23 +209,12 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String sharedDataForKey(String id_key, String key) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		HttpSession session = request.getSession(true);
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);
-		}
-		//_logger.error("sharedDataForKey: " + id_key + " | "+ key);
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		if(id_key==null) return localizedMessages.getString("WidgetAPIImpl.0");
 		if(key==null) return localizedMessages.getString("WidgetAPIImpl.1");
 		String sharedDataValue = null;
 		try {
-			IWidgetAPIManager manager = null;
-			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
-			if(manager == null){
-				manager = new WidgetAPIManager(localizedMessages);
-				session.setAttribute(WidgetAPIManager.class.getName(), manager);
-			}
+			IWidgetAPIManager manager = getManager(session, localizedMessages);
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
 				sharedDataValue = manager.getSharedDataValue(widgetInstance, key);
@@ -281,20 +239,10 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String setPreferenceForKey(String id_key, String key, String value) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		HttpSession session = request.getSession(true);
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		try {
 			//_logger.error("setPreferenceForKey: " + id_key + " | "+ key + " | "+ value);
-			IWidgetAPIManager manager = null;
-			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
-			if(manager == null){
-				manager = new WidgetAPIManager(localizedMessages);
-				session.setAttribute(WidgetAPIManager.class.getName(), manager);
-			}
+			IWidgetAPIManager manager = getManager(session, localizedMessages);
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
 				manager.updatePreference(widgetInstance, key, value);
@@ -317,20 +265,10 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String setSharedDataForKey(String id_key, String key, String value) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		HttpSession session = request.getSession(true);
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		try {
 			//_logger.error("setSharedDataForKey: " + id_key + " | "+ key + " | "+ value);
-			IWidgetAPIManager manager = null;
-			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
-			if(manager == null){
-				manager = new WidgetAPIManager(localizedMessages);
-				session.setAttribute(WidgetAPIManager.class.getName(), manager);
-			}
+			IWidgetAPIManager manager = getManager(session, localizedMessages);
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
 				if(!manager.isInstanceLocked(widgetInstance)){
@@ -338,6 +276,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 					manager.updateSharedDataEntry(widgetInstance, key, value, false);
 					WebContext wctx = WebContextFactory.get();
 			        String currentPage = wctx.getCurrentPage();
+			        System.out.println(currentPage);
 			        ScriptBuffer script = new ScriptBuffer();
 			        script.appendScript("Widget.onSharedUpdate(\"").appendScript(sharedDataKey).appendScript("\");"); //$NON-NLS-1$ //$NON-NLS-2$
 			        // Loop over all the users on the current page
@@ -371,20 +310,10 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String appendSharedDataForKey(String id_key, String key, String value) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		HttpSession session = request.getSession(true);
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		try {
 			//_logger.error("appendSharedDataForKey: " + id_key + " | "+ key + " | "+ value);
-			IWidgetAPIManager manager = null;
-			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
-			if(manager == null){
-				manager = new WidgetAPIManager(localizedMessages);
-				session.setAttribute(WidgetAPIManager.class.getName(), manager);
-			}
+			IWidgetAPIManager manager = getManager(session, localizedMessages);
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
 				if(!manager.isInstanceLocked(widgetInstance)){
@@ -430,18 +359,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String lock(String id_key) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		HttpSession session = request.getSession(true);
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);
-		}
-		IWidgetAPIManager manager = null;
-		manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
-		if(manager == null){
-			manager = new WidgetAPIManager(localizedMessages);
-			session.setAttribute(WidgetAPIManager.class.getName(), manager);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
+		IWidgetAPIManager manager = getManager(session, localizedMessages);
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 		if(widgetInstance!=null){
 			String sharedDataKey = widgetInstance.getSharedDataKey();
@@ -471,18 +390,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String unlock(String id_key) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		HttpSession session = request.getSession(true);
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);
-		}
-		IWidgetAPIManager manager = null;
-		manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
-		if(manager == null){
-			manager = new WidgetAPIManager(localizedMessages);
-			session.setAttribute(WidgetAPIManager.class.getName(), manager);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
+		IWidgetAPIManager manager = getManager(session, localizedMessages);
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 		if(widgetInstance!=null){
 			String sharedDataKey = widgetInstance.getSharedDataKey();
@@ -512,18 +421,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String hide(String id_key){
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		HttpSession session = request.getSession(true);
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);
-		}
-		IWidgetAPIManager manager = null;
-		manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
-		if(manager == null){
-			manager = new WidgetAPIManager(localizedMessages);
-			session.setAttribute(WidgetAPIManager.class.getName(), manager);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
+		IWidgetAPIManager manager = getManager(session, localizedMessages);
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 		if(widgetInstance!=null){
 			WebContext wctx = WebContextFactory.get();
@@ -545,18 +444,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String show(String id_key){
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		HttpSession session = request.getSession(true);
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);
-		}
-		IWidgetAPIManager manager = null;
-		manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
-		if(manager == null){
-			manager = new WidgetAPIManager(localizedMessages);
-			session.setAttribute(WidgetAPIManager.class.getName(), manager);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
+		IWidgetAPIManager manager = getManager(session, localizedMessages);
 		WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 		if(widgetInstance!=null){
 			WebContext wctx = WebContextFactory.get();
@@ -630,20 +519,10 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String getParticipants(String id_key) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		HttpSession session = request.getSession(true);
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0");
 		try {
-			IWidgetAPIManager manager = null;
-			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
-			if(manager == null){
-				manager = new WidgetAPIManager(localizedMessages);
-				session.setAttribute(WidgetAPIManager.class.getName(), manager);
-			}
+			IWidgetAPIManager manager = getManager(session, localizedMessages);
 			// check if instance is valid
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
@@ -674,20 +553,10 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String getViewer(String id_key) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		HttpSession session = request.getSession(true);
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);
-		}
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0");
 		try {
-			IWidgetAPIManager manager = null;
-			manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
-			if(manager == null){
-				manager = new WidgetAPIManager(localizedMessages);
-				session.setAttribute(WidgetAPIManager.class.getName(), manager);
-			}
+			IWidgetAPIManager manager = getManager(session, localizedMessages);
 			// check if instance is valid
 			WidgetInstance widgetInstance = manager.checkUserKey(id_key);
 			if(widgetInstance!=null){
@@ -730,6 +599,14 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	}
 	 */
 	
-	
-	
+	private IWidgetAPIManager getManager(HttpSession session, Messages localizedMessages){
+		//
+		IWidgetAPIManager manager = null;
+		manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
+		if(manager == null){
+			manager = new WidgetAPIManager(localizedMessages);
+			session.setAttribute(WidgetAPIManager.class.getName(), manager);
+		}
+		return manager;
+	}
 }
