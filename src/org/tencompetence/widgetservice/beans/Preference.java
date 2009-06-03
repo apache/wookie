@@ -26,13 +26,15 @@
  */
 package org.tencompetence.widgetservice.beans;
 
+import java.util.Map;
+
 /**
  * A preference entity
  * @author Paul Sharples
- * @version $Id: Preference.java,v 1.3 2008-12-18 11:30:52 ps3com Exp $
+ * @version $Id: Preference.java,v 1.4 2009-06-03 10:06:17 scottwilson Exp $
  *
  */
-public class Preference extends AbstractKeyBean {
+public class Preference extends AbstractKeyBean<Preference> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -65,6 +67,24 @@ public class Preference extends AbstractKeyBean {
 
 	public void setDvalue(String dvalue) {
 		this.dvalue = dvalue;
+	}
+	
+	/// Active record methods
+	public static Preference findById(Object id){
+		return (Preference) findById(Preference.class, id);
+	}
+	
+	public static Preference[] findByValue(String key, Object value) {
+		return (Preference[]) findByValue(Preference.class, key, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Preference[] findByValues(Map map) {
+		return (Preference[]) findByValues(Preference.class, map);
+	}
+	
+	public static Preference[] findAll(){
+		return (Preference[]) findAll(Preference.class);
 	}
 
 }

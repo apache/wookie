@@ -27,13 +27,16 @@
 package org.tencompetence.widgetservice.beans;
 
 import java.io.Serializable;
+import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
+import org.tencompetence.widgetservice.util.hibernate.IDBManager;
+
 /**
  * Basic id key functionality of a bean to be modelled in the DB  
  * @author Paul Sharples
  * @author sheyenrath
- * @version $Id: AbstractKeyBean.java,v 1.3 2008-12-18 11:30:52 ps3com Exp $
+ * @version $Id: AbstractKeyBean.java,v 1.4 2009-06-03 10:06:17 scottwilson Exp $
  */
-public class AbstractKeyBean implements Serializable{
+public class AbstractKeyBean<T> extends ActiveRecord<T> implements Serializable{
 
 	private static final long serialVersionUID = -6480009363953386701L;
 
@@ -52,4 +55,37 @@ public class AbstractKeyBean implements Serializable{
 	public void setId(final Integer id) {
 		this.id = id;
 	}
+	
+	//// active record methods
+	
+	@SuppressWarnings("unchecked")
+	public static boolean  delete(AbstractKeyBean object) {
+		if (object == null) return false;
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		try {
+			dbManager.deleteObject(object);
+			return true;
+		} catch (Exception e) {
+			_logger.error(e.getMessage());
+			return false;
+		}
+	}
+	
+	public boolean save(){
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		try {
+			dbManager.saveObject(this);
+			return true;
+		} catch (Exception e) {
+			_logger.error(e.getMessage());
+			return false;
+		}		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void delete(AbstractKeyBean[] objects) {
+		if (objects != null)
+			for (AbstractKeyBean object: objects) delete(object);
+	}
+	
 }

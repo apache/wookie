@@ -26,13 +26,11 @@
  */
 package org.tencompetence.widgetservice.manager.impl;
 
-import java.util.List; 
-import java.util.ResourceBundle;
+import java.util.HashMap; 
+import java.util.Map;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 import org.tencompetence.widgetservice.Messages;
 import org.tencompetence.widgetservice.beans.Participant;
 import org.tencompetence.widgetservice.beans.Preference;
@@ -43,8 +41,6 @@ import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedException;
 import org.tencompetence.widgetservice.manager.IWidgetServiceManager;
 import org.tencompetence.widgetservice.server.LocaleHandler;
-import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
-import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 import org.tencompetence.widgetservice.util.opensocial.OpenSocialUtils;
 
 /**
@@ -56,7 +52,7 @@ import org.tencompetence.widgetservice.util.opensocial.OpenSocialUtils;
 public class WidgetServiceManager extends WidgetAPIManager implements IWidgetServiceManager {
 
 	static Logger _logger = Logger.getLogger(WidgetServiceManager.class.getName());
-	
+
 	public WidgetServiceManager(Messages localizedMessages) {
 		super(localizedMessages);	
 	}
@@ -65,128 +61,46 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getDefaultWidgetByType(java.lang.String)
 	 */
 	public Widget getDefaultWidgetByType(String typeToSearch) throws WidgetTypeNotSupportedException {
-		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_version, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid " //$NON-NLS-1$
-			+ "FROM Widget widget, WidgetDefault widgetdefault " //$NON-NLS-1$
-			+ "WHERE widget.id = widgetdefault.widgetId " //$NON-NLS-1$
-			+ "AND widgetdefault.widgetContext='" + typeToSearch + "'";		 //$NON-NLS-1$ //$NON-NLS-2$
-
-		Widget widget = (Widget)dbManager.createSQLQuery(sqlQuery).addEntity(Widget.class).uniqueResult();	
-		if(widget==null){
+		Widget widget = Widget.findDefaultByType(typeToSearch);
+		if(widget==null)
 			throw new WidgetTypeNotSupportedException("(" + typeToSearch + ") " + localizedMessages.getString("WidgetServiceManager.0")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		}
 		return widget;		 
 	}
-
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getWidgetById(java.lang.String)
 	 */
 	public Widget getWidgetById(String id)
 	throws WidgetTypeNotSupportedException {
-		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_version, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid " //$NON-NLS-1$
-			+ "FROM Widget widget, WidgetDefault widgetdefault " //$NON-NLS-1$
-			+ "WHERE widget.guid = '" + id + "'";		 //$NON-NLS-1$ //$NON-NLS-2$
-		Widget widget = (Widget)dbManager.createSQLQuery(sqlQuery).addEntity(Widget.class).uniqueResult();	
-		if(widget==null){
-			throw new WidgetTypeNotSupportedException("(" + id + ") "+ localizedMessages.getString("WidgetServiceManager.1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		}
-		return widget;	
+		Widget[] widget = Widget.findByValue("guid", id);
+		if (widget == null || widget.length !=1) throw new WidgetTypeNotSupportedException("(" + id + ") "+ localizedMessages.getString("WidgetServiceManager.1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		return widget[0];
 	}
-
-
-
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getWidgetInstance(java.lang.String)
 	 */
 	public WidgetInstance getWidgetInstance(String key) {
-		IDBManager dbManager = null;
-		try {
-			if (key == null) {
-				return null;
-			}
-			dbManager = DBManagerFactory.getDBManager();
-			final Criteria crit = dbManager.createCriteria(WidgetInstance.class);
-			crit.add(Restrictions.eq("idKey", key)); //$NON-NLS-1$
-			final List<WidgetInstance> sqlReturnList = dbManager.getObjects(
-					WidgetInstance.class, crit);
-			if (sqlReturnList.size() != 1) {
-				return null;
-			} 
-			else {
-				return (WidgetInstance) sqlReturnList.get(0);
-			}
-		} 
-		catch (Exception e) {
-			dbManager.rollbackTransaction();
-			_logger.error(e.getMessage());
-			return null;
-		}		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getwidgetInstancesForWidget(org.tencompetence.widgetservice.beans.Widget)
-	 */
-	public WidgetInstance[] getwidgetInstancesForWidget(Widget widget){			
-		IDBManager dbManager = null;
-		try {
-			dbManager = DBManagerFactory.getDBManager();
-			final Criteria crit = dbManager.createCriteria(WidgetInstance.class);						
-			crit.add( Restrictions.eq( "widget", widget ) );								 //$NON-NLS-1$
-			final List<WidgetInstance> sqlReturnList =  dbManager.getObjects(WidgetInstance.class, crit);
-			WidgetInstance[] instances = sqlReturnList.toArray(new WidgetInstance[sqlReturnList.size()]);		
-			return instances;
-		} 
-		catch (Exception ex) {
-			dbManager.rollbackTransaction();
-			_logger.error(ex.getMessage());
-			return null;
-		}		 
+		if (key == null) return null;
+		WidgetInstance[] instances = WidgetInstance.findByValue("idKey", key);
+		if (instances!=null && instances.length == 1) return instances[0];
+		return null;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#deletePreferenceInstancesForWidgetInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
 	 */
 	public void deletePreferenceInstancesForWidgetInstance(WidgetInstance instance){				
-		IDBManager dbManager = null;
-		try {
-			dbManager = DBManagerFactory.getDBManager();
-			final Criteria crit = dbManager.createCriteria(Preference.class);						
-			crit.add( Restrictions.eq( "widgetInstance", instance) );			 //$NON-NLS-1$
-			final List<Preference> sqlReturnList =  dbManager.getObjects(Preference.class, crit);
-			Preference[] preference = sqlReturnList.toArray(new Preference[sqlReturnList.size()]);	
-			for(Preference sData : preference){
-				dbManager.deleteObject(sData);
-			}				
-		} 
-		catch (Exception ex) {
-			dbManager.rollbackTransaction();
-			_logger.error(ex.getMessage());			
-		}
+		Preference[] preferences = Preference.findByValue("widgetInstance", instance);	
+		Preference.delete(preferences);			
 	}
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#deleteSharedDataInstancesForWidgetInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
 	 */
 	public void deleteSharedDataInstancesForWidgetInstance(WidgetInstance instance){				
-		IDBManager dbManager = null;
-		try {
-			dbManager = DBManagerFactory.getDBManager();
-			final Criteria crit = dbManager.createCriteria(SharedData.class);
-			String sharedDataKey = instance.getSharedDataKey();		
-			crit.add( Restrictions.eq( "sharedDataKey", sharedDataKey ) );			 //$NON-NLS-1$
-			final List<SharedData> sqlReturnList =  dbManager.getObjects(SharedData.class, crit);
-			SharedData[] sharedData = sqlReturnList.toArray(new SharedData[sqlReturnList.size()]);	
-			for(SharedData sData : sharedData){
-				dbManager.deleteObject(sData);
-			}			
-		} 
-		catch (Exception ex) {
-			dbManager.rollbackTransaction();
-			_logger.error(ex.getMessage());			
-		}
+		SharedData[] sharedData = SharedData.findByValue("sharedDataKey", instance.getSharedDataKey());
+		SharedData.delete(sharedData);		
 	}
 
 
@@ -194,158 +108,92 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#widgetInstanceExists(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public boolean widgetInstanceExists(String api_key, String userId, String sharedDataKey, String serviceContext){
-		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
-		String sqlQuery =   "select " + //$NON-NLS-1$
-		"count(*) " //$NON-NLS-1$
-		+ "from WidgetInstance widgetinstance, WidgetType widgettype " //$NON-NLS-1$
-		+ "WHERE " //$NON-NLS-1$
-		+ "widgetinstance.userId ='" + userId + "' " //$NON-NLS-1$ //$NON-NLS-2$
-		+ "AND widgetinstance.apiKey ='" + api_key + "' "	 //$NON-NLS-1$ //$NON-NLS-2$
-		+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "												 //$NON-NLS-1$ //$NON-NLS-2$
-		+ "AND widgettype.widgetContext ='" + serviceContext + "' "			 //$NON-NLS-1$ //$NON-NLS-2$
-		+ "AND widgetinstance.widget = widgettype.widget" //$NON-NLS-1$
-		;							
-		_logger.debug((sqlQuery));
-		long count=0l; 				
-		count = (Long) dbManager.createQuery(sqlQuery).uniqueResult();
-		return (count == 1 ? true : false); 
-
+		return WidgetInstance.widgetInstanceExists(api_key, userId, sharedDataKey, serviceContext);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getwidgetInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public WidgetInstance getWidgetInstance(String api_key, String userId, String sharedDataKey, String serviceContext){
-		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
-		String sqlQuery =   "select widgetinstance " 							 //$NON-NLS-1$
-			+ "from WidgetInstance widgetinstance, WidgetType widgettype " //$NON-NLS-1$
-			+ "WHERE " //$NON-NLS-1$
-			+ "widgetinstance.userId ='" + userId + "' " //$NON-NLS-1$ //$NON-NLS-2$
-			+ "AND widgetinstance.apiKey ='" + api_key + "' "	 //$NON-NLS-1$ //$NON-NLS-2$
-			+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "															 //$NON-NLS-1$ //$NON-NLS-2$
-			+ "AND widgettype.widgetContext ='" + serviceContext + "' "			 //$NON-NLS-1$ //$NON-NLS-2$
-			+ "AND widgetinstance.widget = widgettype.widget" //$NON-NLS-1$
-			;							
-		_logger.debug((sqlQuery));				
-		List<?> sqlReturnList = dbManager.createQuery(sqlQuery).list();
-		if(sqlReturnList.size()!=1){
-			return null;
-		}
-		else{
-			return (WidgetInstance)sqlReturnList.get(0);
-		}
+		return WidgetInstance.getWidgetInstance(api_key, userId, sharedDataKey, serviceContext);
 	}
-
-
-
-
+	
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getWidgetInstanceById(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public WidgetInstance getWidgetInstanceById(String api_key, String userId, String sharedDataKey, String widgetId) {
-		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
-		String sqlQuery =   "select widgetinstance " 							 //$NON-NLS-1$
-			+ "from WidgetInstance widgetinstance " //$NON-NLS-1$
-			+ "WHERE " //$NON-NLS-1$
-			+ "widgetinstance.userId ='" + userId + "' " //$NON-NLS-1$ //$NON-NLS-2$
-			+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "															 //$NON-NLS-1$ //$NON-NLS-2$
-			+ "AND widgetinstance.widget.guid = '" + widgetId + "' "			 //$NON-NLS-1$ //$NON-NLS-2$
-			;							
-		_logger.debug((sqlQuery));				
-		List<?> sqlReturnList = dbManager.createQuery(sqlQuery).list();
-		if(sqlReturnList.size()!=1){
-			return null;
-		}
-		else{
-			return (WidgetInstance)sqlReturnList.get(0);
-		}
+		Widget[] widget = Widget.findByValue("guid",widgetId);
+		if (widget == null || widget.length !=1) return null;
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("userId", userId);
+		map.put("sharedDataKey", sharedDataKey);
+		map.put("widget", widget[0]);
+		WidgetInstance[] instance  = WidgetInstance.findByValues(map);
+		if(instance == null || instance.length != 1) return null;
+		return instance[0];
 	}
-
-
-
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#addNewWidgetInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.tencompetence.widgetservice.beans.Widget, java.lang.String, java.lang.String)
 	 */
 	public WidgetInstance addNewWidgetInstance(String api_key, String userId, String sharedDataKey, Widget widget, String nonce, String idKey, Configuration properties) {		
-		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		WidgetInstance widgetInstance = new WidgetInstance();
-		try {
-			widgetInstance.setUserId(userId);
-			widgetInstance.setSharedDataKey(sharedDataKey);
-			widgetInstance.setIdKey(idKey);
-			widgetInstance.setNonce(nonce);
-			widgetInstance.setApiKey(api_key);
-			// set the defaults widget for this type			
-			widgetInstance.setWidget(widget);						
-			widgetInstance.setHidden(false);
-			widgetInstance.setShown(true);
-			widgetInstance.setUpdated(false);
-			widgetInstance.setLocked(false);
-			
-			// Setup opensocial token if needed
-			widgetInstance.setOpensocialToken(""); //$NON-NLS-1$
+		widgetInstance.setUserId(userId);
+		widgetInstance.setSharedDataKey(sharedDataKey);
+		widgetInstance.setIdKey(idKey);
+		widgetInstance.setNonce(nonce);
+		widgetInstance.setApiKey(api_key);
+		// set the defaults widget for this type			
+		widgetInstance.setWidget(widget);						
+		widgetInstance.setHidden(false);
+		widgetInstance.setShown(true);
+		widgetInstance.setUpdated(false);
+		widgetInstance.setLocked(false);
 
-			if (properties.getBoolean("opensocial.enable")){ //$NON-NLS-1$
+		// Setup opensocial token if needed
+		widgetInstance.setOpensocialToken(""); //$NON-NLS-1$
+		if (properties.getBoolean("opensocial.enable")){ //$NON-NLS-1$
+			try {
 				if (properties.getString("opensocial.token").equals("secure")){ //$NON-NLS-1$ //$NON-NLS-2$
 					widgetInstance.setOpensocialToken(OpenSocialUtils.createEncryptedToken(widgetInstance,properties.getString("opensocial.key"), localizedMessages)); //$NON-NLS-1$
 				} 
 				else {
 					widgetInstance.setOpensocialToken(OpenSocialUtils.createPlainToken(widgetInstance, localizedMessages));					
 				}
+			} catch (Exception e) {
+				_logger.error(e.getMessage());
 			}
-			
-			// Save
-			dbManager.saveObject(widgetInstance);
-			
-			// add in basic widget data as preferences
-			//TODO setPreference(widgetInstance, "viewMode", String.valueOf(widget)); //$NON-NLS-1$
-			setPreference(widgetInstance, "locale", LocaleHandler.getInstance().getDefaultLocale().getLanguage()); //$NON-NLS-1$
-			setPreference(widgetInstance, "identifier", String.valueOf(widget.getGuid()));	//$NON-NLS-1$
-			setPreference(widgetInstance, "authorInfo", String.valueOf(widget.getWidgetAuthor()));	//$NON-NLS-1$
-			//TODO setPreference(widgetInstance, "authorEmail", String.valueOf(widget.getWidth()));//$NON-NLS-1$
-			//TODO setPreference(widgetInstance, "authorHref", String.valueOf(widget.getHeight()));			//$NON-NLS-1$
-			setPreference(widgetInstance, "name", String.valueOf(widget.getWidgetTitle()));//$NON-NLS-1$
-			setPreference(widgetInstance, "description", String.valueOf(widget.getWidgetDescription()));//$NON-NLS-1$	
-			setPreference(widgetInstance, "version", widget.getVersion());//$NON-NLS-1$
-			setPreference(widgetInstance, "width", String.valueOf(widget.getWidth()));//$NON-NLS-1$
-			setPreference(widgetInstance, "height", String.valueOf(widget.getHeight()));//$NON-NLS-1$
+		}
 
-			// add in the sharedDataKey as a preference so that a widget can know
-			// what sharedData event to listen to later
-			setPreference(widgetInstance, "sharedDataKey", sharedDataKey);//$NON-NLS-1$
-			
-			// add in widget defaults
-			for (PreferenceDefault pref: getPreferenceDefaultsForWidget(widget)){
-				setPreference(widgetInstance, pref.getPreference(), pref.getValue());
-			}
+		// Save
+		widgetInstance.save();
 
-		} 
-		catch (Exception e) {
-			_logger.error(e.getMessage());
-		}		
+		// add in basic widget data as preferences
+		//TODO setPreference(widgetInstance, "viewMode", String.valueOf(widget)); //$NON-NLS-1$
+		setPreference(widgetInstance, "locale", LocaleHandler.getInstance().getDefaultLocale().getLanguage()); //$NON-NLS-1$
+		setPreference(widgetInstance, "identifier", String.valueOf(widget.getGuid()));	//$NON-NLS-1$
+		setPreference(widgetInstance, "authorInfo", String.valueOf(widget.getWidgetAuthor()));	//$NON-NLS-1$
+		//TODO setPreference(widgetInstance, "authorEmail", String.valueOf(widget.getWidth()));//$NON-NLS-1$
+		//TODO setPreference(widgetInstance, "authorHref", String.valueOf(widget.getHeight()));			//$NON-NLS-1$
+		setPreference(widgetInstance, "name", String.valueOf(widget.getWidgetTitle()));//$NON-NLS-1$
+		setPreference(widgetInstance, "description", String.valueOf(widget.getWidgetDescription()));//$NON-NLS-1$	
+		setPreference(widgetInstance, "version", widget.getVersion());//$NON-NLS-1$
+		setPreference(widgetInstance, "width", String.valueOf(widget.getWidth()));//$NON-NLS-1$
+		setPreference(widgetInstance, "height", String.valueOf(widget.getHeight()));//$NON-NLS-1$
+
+		// add in the sharedDataKey as a preference so that a widget can know
+		// what sharedData event to listen to later
+		setPreference(widgetInstance, "sharedDataKey", sharedDataKey);//$NON-NLS-1$
+
+		// add in widget defaults
+		PreferenceDefault[] prefs = PreferenceDefault.findByValue("widget", widget);	
+		if (prefs == null) return null;
+		for (PreferenceDefault pref: prefs){
+			setPreference(widgetInstance, pref.getPreference(), pref.getValue());
+		}	
 		return widgetInstance;
 	}
-	
-	private PreferenceDefault[] getPreferenceDefaultsForWidget(Widget widget){
-		IDBManager dbManager = null;
-		try {
-			dbManager = DBManagerFactory.getDBManager();
-			final Criteria crit = dbManager.createCriteria(PreferenceDefault.class);						
-			crit.add( Restrictions.eq( "widget", widget) );			 //$NON-NLS-1$
-			final List<PreferenceDefault> sqlReturnList =  dbManager.getObjects(PreferenceDefault.class, crit);
-			PreferenceDefault[] preference = sqlReturnList.toArray(new PreferenceDefault[sqlReturnList.size()]);	
-			return preference;			
-		} 
-		catch (Exception ex) {
-			_logger.error(ex.getMessage());			
-			return null;
-		}
-	}
-	
+
 	/**
 	 * Initialize a preference for the instance
 	 * @param instance
@@ -353,16 +201,11 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	 * @param value
 	 */
 	private void setPreference(WidgetInstance widgetInstance, String key, String value){
-		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		Preference pref = new Preference();
 		pref.setWidgetInstance(widgetInstance);
 		pref.setDkey(key);				
 		pref.setDvalue(value);
-		try {
-			dbManager.saveObject(pref);
-		} catch (Exception e) {
-			_logger.error(e.getMessage());
-		}	
+		pref.save();	
 	}
 
 	/* (non-Javadoc)
@@ -371,24 +214,14 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	public boolean addParticipantToWidgetInstance(WidgetInstance instance,
 			String participantId, String participantDisplayName,
 			String participantThumbnailUrl) {
-		
-		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		
+
 		// Does participant already exist?
-		try {
-			final Criteria crit = dbManager.createCriteria(Participant.class);						
-			crit.add( Restrictions.eq( "sharedDataKey", instance.getSharedDataKey()) );	//$NON-NLS-1$
-			crit.add( Restrictions.eq( "widgetGuid", instance.getWidget().getGuid()) );	//$NON-NLS-1$
-			crit.add( Restrictions.eq( "participant_id", participantId)); //$NON-NLS-1$
-			final List<Participant> sqlReturnList =  dbManager.getObjects(Participant.class, crit);
-			Participant[] participants = sqlReturnList.toArray(new Participant[sqlReturnList.size()]);	
-			if (participants.length != 0) return false;		
-		} 
-		catch (Exception ex) {
-			_logger.error(ex.getMessage());			
-			return false;
-		}
-		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("sharedDataKey", instance.getSharedDataKey());
+		map.put("widgetGuid", instance.getWidget().getGuid());
+		map.put("participant_id", participantId);
+		if (Participant.findByValues(map).length != 0) return false;		
+
 		// Add participant
 		Participant participant = new Participant();
 		participant.setParticipant_id(participantId);
@@ -396,12 +229,7 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 		participant.setParticipant_thumbnail_url(participantThumbnailUrl);
 		participant.setSharedDataKey(instance.getSharedDataKey());
 		participant.setWidgetGuid(instance.getWidget().getGuid());
-		try {
-			dbManager.saveObject(participant);
-		} catch (Exception e) {
-			_logger.error(e.getMessage());
-		}			
-
+		participant.save();
 		return true;
 	}
 
@@ -410,38 +238,18 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	 */
 	public boolean removeParticipantFromWidgetInstance(WidgetInstance instance,
 			String participantId) {
-		
-		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		Participant[] participants;
-		
 		// Does participant exist?
-		try {
-			final Criteria crit = dbManager.createCriteria(Participant.class);						
-			crit.add( Restrictions.eq( "sharedDataKey", instance.getSharedDataKey()) );	//$NON-NLS-1$
-			crit.add( Restrictions.eq( "widgetGuid", instance.getWidget().getGuid()) );	//$NON-NLS-1$
-			crit.add( Restrictions.eq( "participant_id", participantId)); //$NON-NLS-1$
-			final List<Participant> sqlReturnList =  dbManager.getObjects(Participant.class, crit);
-			participants = sqlReturnList.toArray(new Participant[sqlReturnList.size()]);	
-			if (participants.length != 1) return false;		
-		} 
-		catch (Exception ex) {
-			_logger.error(ex.getMessage());			
-			return false;
-		}
-		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("sharedDataKey", instance.getSharedDataKey());
+		map.put("widgetGuid", instance.getWidget().getGuid());
+		map.put("participant_id", participantId);
+		participants = Participant.findByValues(map);
+		if (participants.length != 1) return false;	
 		// Remove participant
-		if (participants.length == 0){
-			try {
-				dbManager.deleteObject(participants[0]);
-				return true;
-			} catch (Exception e) {
-				_logger.error(e.getMessage());			
-				return false;
-			}
-		}
-		
-		return false;
+		Participant.delete(participants[0]);
+		return true;
 	}
-	
+
 }
 

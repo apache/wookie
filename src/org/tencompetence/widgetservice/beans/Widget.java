@@ -27,16 +27,21 @@
 package org.tencompetence.widgetservice.beans;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
+import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 
 
 /**
  * Widget - a simple bean to model a widgets attributes
  * 
  * @author Paul Sharples
- * @version $Id: Widget.java,v 1.5 2009-05-29 10:20:38 scottwilson Exp $
+ * @version $Id: Widget.java,v 1.6 2009-06-03 10:06:17 scottwilson Exp $
  */
-public class Widget extends AbstractKeyBean {
+public class Widget extends AbstractKeyBean<Widget> {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -159,5 +164,51 @@ public class Widget extends AbstractKeyBean {
 		this.version = version;
 	}
 
+	/// Active record methods
+	public static Widget findById(Object id){
+		return (Widget) findById(Widget.class, id);
+	}
 	
+	public static Widget[] findByValue(String key, Object value) {
+		return (Widget[]) findByValue(Widget.class, key, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Widget[] findByValues(Map map) {
+		return (Widget[]) findByValues(Widget.class, map);
+	}
+	
+	public static Widget[] findAll(){
+		return (Widget[]) findAll(Widget.class);
+	}
+	
+	////// Special queries
+	
+	/**
+	 * Get all widgets of a particular type - e.g. - chat
+	 * @param typeToSearch - a widget type
+	 * @return - returns an array of widgets
+	 */
+	public static Widget[] findByType(String typeToSearch) {
+		final IDBManager dbManager = DBManagerFactory.getDBManager();			
+		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_description, widget_author, widget_icon_location, widget.url, widget.maximize, widget.guid, " +
+								"widget.height, widget.width, widgettype.widget_context "
+						+ "FROM Widget widget, WidgetType widgettype "
+						+ "WHERE widget.id = widgettype.widget_id "
+						+ "AND widgettype.widget_context='" + typeToSearch + "'";		
+		
+		List<?> sqlReturnList = dbManager.createSQLQuery(sqlQuery).addEntity(Widget.class).list();
+		Widget[] widgets = sqlReturnList.toArray(new Widget[sqlReturnList.size()]);
+		return widgets;		 
+	}	
+	
+	public static Widget findDefaultByType(String typeToSearch) {
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_version, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid " //$NON-NLS-1$
+			+ "FROM Widget widget, WidgetDefault widgetdefault " //$NON-NLS-1$
+			+ "WHERE widget.id = widgetdefault.widgetId " //$NON-NLS-1$
+			+ "AND widgetdefault.widgetContext='" + typeToSearch + "'";		 //$NON-NLS-1$ //$NON-NLS-2$
+		Widget widget = (Widget)dbManager.createSQLQuery(sqlQuery).addEntity(Widget.class).uniqueResult();	
+		return widget;		 
+	}
 }

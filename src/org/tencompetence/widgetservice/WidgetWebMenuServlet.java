@@ -25,7 +25,7 @@ import org.tencompetence.widgetservice.server.LocaleHandler;
  * WidgetWebMenuServlet
  *
  * @author Paul Sharples
- * @version $Id: WidgetWebMenuServlet.java,v 1.4 2009-05-01 10:39:37 ps3com Exp $
+ * @version $Id: WidgetWebMenuServlet.java,v 1.5 2009-06-03 10:06:17 scottwilson Exp $
  */
 public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 
@@ -120,14 +120,14 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 	}
 
 	private void instantiateOperation(HttpSession session, IWidgetAdminManager manager){
-		WidgetDefault[] def = manager.getAllDefaultWidgets();
+		WidgetDefault[] def = WidgetDefault.findAll();
 		session.setAttribute("defaults", def); //$NON-NLS-1$
 	}
 
 	private void listOperation(HttpSession session, IWidgetAdminManager manager){
 		Hashtable<String, Widget> widgetsHash = new Hashtable<String, Widget>();
 
-		for(Widget widget:manager.getAllWidgets()){
+		for(Widget widget:Widget.findAll()){
 			widgetsHash.put(widget.getGuid(), widget);
 		}
 

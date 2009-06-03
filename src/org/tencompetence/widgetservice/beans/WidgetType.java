@@ -26,13 +26,15 @@
  */
 package org.tencompetence.widgetservice.beans;
 
+import java.util.Map;
+
 /**
  * WidgetType - what type of service a particular widget can be
  * 
  * @author Paul Sharples
- * @version $Id: WidgetType.java,v 1.3 2007-12-13 20:31:33 ps3com Exp $
+ * @version $Id: WidgetType.java,v 1.4 2009-06-03 10:06:17 scottwilson Exp $
  */
-public class WidgetType extends AbstractKeyBean {
+public class WidgetType extends AbstractKeyBean<WidgetType> {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -56,6 +58,19 @@ public class WidgetType extends AbstractKeyBean {
 	}
 
 
+	/// Active record methods
+	public static WidgetType findById(String id){
+		return (WidgetType) findById(WidgetType.class, id);
+	}
+	
+	public static WidgetType[] findByValue(String key, Object value){
+		return (WidgetType[]) findByValue(WidgetType.class, key, value);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static WidgetType[] findByValues(Map map){
+		return (WidgetType[]) findByValues(WidgetType.class, map);		
+	}
 	
 	
 }

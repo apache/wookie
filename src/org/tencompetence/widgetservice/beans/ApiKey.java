@@ -3,11 +3,13 @@
  */
 package org.tencompetence.widgetservice.beans;
 
+import java.util.Map;
+
 /**
  * @author scott
  *
  */
-public class ApiKey extends AbstractKeyBean {
+public class ApiKey extends AbstractKeyBean<ApiKey> {
 
 	/**
 	 * 
@@ -43,6 +45,24 @@ public class ApiKey extends AbstractKeyBean {
 	 */
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	/// Active record methods
+	public static ApiKey findById(Object id){
+		return (ApiKey) findById(ApiKey.class, id);
+	}
+	
+	public static ApiKey[] findByValue(String key, Object value) {
+		return (ApiKey[]) findByValue(ApiKey.class, key, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static ApiKey[] findByValues(Map map) {
+		return (ApiKey[]) findByValues(ApiKey.class, map);
+	}
+	
+	public static ApiKey[] findAll(){
+		return (ApiKey[]) findAll(ApiKey.class);
 	}
 
 }

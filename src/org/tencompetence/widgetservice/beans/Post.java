@@ -31,10 +31,10 @@ import java.util.Date;
 /**
  * A post entity - a post in a forum
  * @author Paul Sharples
- * @version $Id: Post.java,v 1.4 2008-12-18 11:30:52 ps3com Exp $
+ * @version $Id: Post.java,v 1.5 2009-06-03 10:06:17 scottwilson Exp $
  *
  */
-public class Post extends AbstractKeyBean {
+public class Post extends AbstractKeyBean<Post> {
 
 	private static final long serialVersionUID = 1L;
 	

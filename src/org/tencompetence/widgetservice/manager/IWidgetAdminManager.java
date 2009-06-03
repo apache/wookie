@@ -28,18 +28,13 @@ package org.tencompetence.widgetservice.manager;
 
 import java.util.List;
 
-import org.tencompetence.widgetservice.beans.Whitelist;
-import org.tencompetence.widgetservice.beans.Widget;
-import org.tencompetence.widgetservice.beans.WidgetDefault;
-import org.tencompetence.widgetservice.beans.WidgetService;
 import org.tencompetence.widgetservice.beans.PreferenceDefault;
-import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedException;
 
 /**
  * Interface for admin functions
  * 
  * @author Paul Sharples
- * @version $Id: IWidgetAdminManager.java,v 1.8 2009-05-18 12:06:42 scottwilson Exp $
+ * @version $Id: IWidgetAdminManager.java,v 1.9 2009-06-03 10:06:17 scottwilson Exp $
  *
  */
 public interface IWidgetAdminManager {
@@ -106,53 +101,6 @@ public interface IWidgetAdminManager {
 	 * @return
 	 */
 	boolean doesWidgetAlreadyExistInSystem(String guid);
-
-	/**
-	 * Get all of the default widgets from the DefaultWidgets table
-	 * @return - an array of default widgets
-	 */
-	WidgetDefault[] getAllDefaultWidgets();
-
-	/**
-	 * 
-	 * @return
-	 */
-	WidgetService[] getAllServices();
-
-	/**
-	 * Get all widgets from widget table
-	 * 
-	 * @return - an array of widgets
-	 */
-	Widget[] getAllWidgets();
-
-	/**
-	 * Return all whitelist entries
-	 * @return
-	 */
-	Whitelist[] getWhiteList();
-
-	/**
-	 * Get a widget object using its DB key
-	 * @param dbKey
-	 * @return
-	 */
-	Widget getWidget(int dbKey);
-
-	/**
-	 * Get all widgets of a particular type - e.g. - chat
-	 * @param typeToSearch - a widget type
-	 * @return - returns an array of widgets
-	 */
-	Widget[] getWidgetsByType(String typeToSearch)
-			throws WidgetTypeNotSupportedException;
-
-	/**
-	 * Get a widget service type, using its DB key
-	 * @param dbKey
-	 * @return
-	 */
-	WidgetService getWidgetService(int dbKey);
 
 	/**
 	 * Find if this widget is maximizable, from given key

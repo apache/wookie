@@ -25,13 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.tencompetence.widgetservice.beans;
+
+import java.util.Map;
  /**
  * A type of service - a service provided in the system
  * 
  * @author Paul Sharples
- * @version $Id: WidgetService.java,v 1.2 2008-12-18 11:30:52 ps3com Exp $
+ * @version $Id: WidgetService.java,v 1.3 2009-06-03 10:06:17 scottwilson Exp $
  */
-public class WidgetService extends AbstractKeyBean {
+public class WidgetService extends AbstractKeyBean<WidgetService> {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -44,5 +46,22 @@ public class WidgetService extends AbstractKeyBean {
 	public void setServiceName(String serviceName) {
 		this.serviceName = serviceName;
 	}
+	
+	/// Active record methods
+	public static WidgetService findById(Object id){
+		return (WidgetService) findById(WidgetService.class, id);
+	}
+	
+	public static WidgetService[] findByValue(String key, Object value) {
+		return (WidgetService[]) findByValue(WidgetService.class, key, value);
+	}
 
+	@SuppressWarnings("unchecked")
+	public static WidgetService[] findByValues(Map map) {
+		return (WidgetService[]) findByValues(WidgetService.class, map);
+	}
+	
+	public static WidgetService[] findAll(){
+		return (WidgetService[]) findAll(WidgetService.class);
+	}
 }

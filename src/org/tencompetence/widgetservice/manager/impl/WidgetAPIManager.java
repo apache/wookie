@@ -26,19 +26,16 @@
  */
 package org.tencompetence.widgetservice.manager.impl;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 import org.tencompetence.widgetservice.Messages;
 import org.tencompetence.widgetservice.beans.Participant;
 import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.manager.IWidgetAPIManager;
-import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
-import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 
 /**
  * API manager - manages DB calls for widget API
@@ -65,66 +62,35 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#checkUserKey(java.lang.String)
 	 */
 	public WidgetInstance checkUserKey(String key){
-		IDBManager dbManager = null;
-		try {
-			if (key == null) {
-				return null;
-			}
-			dbManager = DBManagerFactory.getDBManager();
-			final Criteria crit = dbManager.createCriteria(WidgetInstance.class);
-			crit.add(Restrictions.eq("idKey", key));
-			final List<WidgetInstance> sqlReturnList = dbManager.getObjects(
-					WidgetInstance.class, crit);
-			if (sqlReturnList.size() != 1) {
-				return null;
-			} 
-			else {
-				return (WidgetInstance) sqlReturnList.get(0);
-			}
-		} 
-		catch (Exception e) {
-			dbManager.rollbackTransaction();
-			_logger.error(e.getMessage());
+		if (key == null) return null;
+		WidgetInstance[] instance = WidgetInstance.findByValue("idKey", key);
+		if (instance.length != 1) {
 			return null;
-		}		
+		} else {
+			return (WidgetInstance) instance[0];
+		} 		
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#getSharedDataForInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
 	 */
 	public synchronized SharedData[] getSharedDataForInstance(WidgetInstance instance){
-		IDBManager dbManager = null;
-		try {
-			dbManager = DBManagerFactory.getDBManager();
-			final Criteria crit = dbManager.createCriteria(SharedData.class);
-			String sharedDataKey = instance.getSharedDataKey();		
-			crit.add( Restrictions.eq( "sharedDataKey", sharedDataKey ) );	
-			crit.add( Restrictions.eq( "widgetGuid", instance.getWidget().getGuid()));
-			final List<SharedData> sqlReturnList =  dbManager.getObjects(SharedData.class, crit);
-			SharedData[] sharedData = sqlReturnList.toArray(new SharedData[sqlReturnList.size()]);		
-			return sharedData;
-		} 
-		catch (Exception ex) {
-			dbManager.rollbackTransaction();
-			_logger.error(ex.getMessage());
-			return null;
-		}
+		Map<String, Object> map = new HashMap<String,Object>();
+		map.put("sharedDataKey", instance.getSharedDataKey());
+		map.put("widgetGuid", instance.getWidget().getGuid());
+		return SharedData.findByValues(map);
 	}
 		
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#updateSharedDataEntry(org.tencompetence.widgetservice.beans.WidgetInstance, java.lang.String, java.lang.String, boolean)
 	 */
 	public synchronized void updateSharedDataEntry(WidgetInstance widgetInstance, String name, String value, boolean append){
-		if(showProcess){_logger.debug("############ Start updateshareddataentry called "+ Thread.currentThread().getName() +"############## name="+name+"value="+value);}
-		IDBManager dbManager = null;
-		try {
-			dbManager = DBManagerFactory.getDBManager();
 			boolean found=false;
 			for (SharedData sharedData : getSharedDataForInstance(widgetInstance)){
 				if(sharedData.getDkey().equals(name)){
 					// if the value is null we need to remove the tuple
-					if(value==null || value.equalsIgnoreCase("null")){        
-						dbManager.deleteObject(sharedData);
+					if(value==null || value.equalsIgnoreCase("null")){   
+						sharedData.delete();
 					}
 					else{    
 						if(append){
@@ -133,7 +99,7 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 						else{
 							sharedData.setDvalue(value);
 						}
-						dbManager.saveObject(sharedData);
+						sharedData.save();
 					}
 					found=true;
 				}       	
@@ -143,12 +109,6 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 					addNewSharedDataEntry(widgetInstance, name, value);
 				}
 			}
-		} 
-		catch (Exception e) {
-			dbManager.rollbackTransaction();
-			_logger.error(e.getMessage());
-		} 
-        if(showProcess){ _logger.debug("############ End updateshareddataentry called "+ Thread.currentThread().getName() +"############## name="+name+"value="+value);}
 	}
 	
 	/*
@@ -170,19 +130,13 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 	}
 	
 	public synchronized boolean isInstanceLocked(WidgetInstance widgetInstance){
-			try {
-				if(getSharedDataValue(widgetInstance, "isLocked") == null){
-					//addNewSharedDataEntry(widgetInstance, "isLocked", "false");
-					return false;
-				}
-				else{
-					return Boolean.valueOf(getSharedDataValue(widgetInstance, "isLocked"));
-				}
-			} 
-			catch (Exception e) {
-				_logger.error(e.getMessage());
-				return false;
-			}			
+		if(getSharedDataValue(widgetInstance, "isLocked") == null){
+			//addNewSharedDataEntry(widgetInstance, "isLocked", "false");
+			return false;
+		}
+		else{
+			return Boolean.valueOf(getSharedDataValue(widgetInstance, "isLocked"));
+		}	 			
 	}
 	
 	public String getSharedDataValue(WidgetInstance widgetInstance, String key){
@@ -239,55 +193,38 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#addNewSharedDataEntry(org.tencompetence.widgetservice.beans.WidgetInstance, java.lang.String, java.lang.String)
 	 */
-	public synchronized void addNewSharedDataEntry(WidgetInstance instance, String name, String value) throws Exception{
-		if(showProcess){_logger.debug("############ Start addNewSharedDataEntry called "+ Thread.currentThread().getName() +"############## name="+name+"value="+value);}
-		IDBManager dbManager = null;
-		
-		try {
-			dbManager = DBManagerFactory.getDBManager();
-			String sharedDataKey = instance.getSharedDataKey();		
-			SharedData sharedData= new SharedData();
-			sharedData.setWidgetGuid(instance.getWidget().getGuid());
-			sharedData.setSharedDataKey(sharedDataKey);
-			sharedData.setDkey(name);
-			sharedData.setDvalue(value);	
-			dbManager.saveObject(sharedData);
-		} 
-		catch (Exception e) {
-			dbManager.rollbackTransaction();
-			_logger.error(e.getMessage());
-		}
-		if(showProcess){_logger.debug("############ End addNewSharedDataEntry called "+ Thread.currentThread().getName() +"############## name="+name+"value="+value);}
+	public synchronized void addNewSharedDataEntry(WidgetInstance instance, String name, String value){
+		String sharedDataKey = instance.getSharedDataKey();		
+		SharedData sharedData= new SharedData();
+		sharedData.setWidgetGuid(instance.getWidget().getGuid());
+		sharedData.setSharedDataKey(sharedDataKey);
+		sharedData.setDkey(name);
+		sharedData.setDvalue(value);
+		sharedData.save();
 	}
 
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#getPreferenceForInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
 	 */
-	public Preference[] getPreferenceForInstance(WidgetInstance id) throws Exception{
-		final IDBManager dbManager = DBManagerFactory.getDBManager();		
-		Criteria crit = dbManager.createCriteria(Preference.class);		
-		crit.add( Restrictions.eq( "widgetInstance", id ) );		
-		final List<WidgetInstance> sqlReturnList =  dbManager.getObjects(WidgetInstance.class, crit);					
-		Preference[] prefs = sqlReturnList.toArray(new Preference[sqlReturnList.size()]);
-		return prefs;
+	public Preference[] getPreferenceForInstance(WidgetInstance id){		
+		return Preference.findByValue("widgetInstance", id);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#updatePreference(org.tencompetence.widgetservice.beans.WidgetInstance, java.lang.String, java.lang.String)
 	 */
 	public void updatePreference(WidgetInstance widgetInstance, String name, String value) throws Exception{
-		final IDBManager dbManager = DBManagerFactory.getDBManager();
         boolean found=false;
         for (Preference preference :getPreferenceForInstance(widgetInstance)){
         	if(preference.getDkey().equals(name)){
         		// if the value is null we need to remove the tuple
-        		if(value==null || value.equalsIgnoreCase("null")){       				
-        			dbManager.deleteObject(preference);        			
+        		if(value==null || value.equalsIgnoreCase("null")){  
+        			preference.delete();     			
         		}
         		else{    
         			preference.setDvalue(value);
-        			dbManager.saveObject(preference);
+        			preference.save();
         		}
         		found=true;
         	}
@@ -302,54 +239,34 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#addNewPreference(org.tencompetence.widgetservice.beans.WidgetInstance, java.lang.String, java.lang.String)
 	 */	
 	public void addNewPreference(WidgetInstance widgetInstance, String name, String value) throws Exception{
-		final IDBManager dbManager = DBManagerFactory.getDBManager();	
 		Preference pref = new Preference();
 		pref.setWidgetInstance(widgetInstance);
 		pref.setDkey(name);
 		pref.setDvalue(value);	
-		dbManager.saveObject(pref);				
+		pref.save();			
 	}
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#getParticipants()
 	 */
 	public Participant[] getParticipants(WidgetInstance instance) {
-		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		
-		try {
-			final Criteria crit = dbManager.createCriteria(Participant.class);						
-			crit.add( Restrictions.eq( "sharedDataKey", instance.getSharedDataKey()) );	//$NON-NLS-1$
-			crit.add( Restrictions.eq( "widgetGuid", instance.getWidget().getGuid()) );	//$NON-NLS-1$
-			final List<Participant> sqlReturnList =  dbManager.getObjects(Participant.class, crit);
-			Participant[] participants = sqlReturnList.toArray(new Participant[sqlReturnList.size()]);	
-			return participants;
-		} 
-		catch (Exception ex) {
-			_logger.error(ex.getMessage());			
-			return null;
-		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("sharedDataKey", instance.getSharedDataKey());	//$NON-NLS-1$
+		map.put("widgetGuid", instance.getWidget().getGuid());	//$NON-NLS-1$
+		return Participant.findByValues(map);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#getViewer()
 	 */
 	public Participant getViewer(WidgetInstance instance) {
-		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		
-		try {
-			final Criteria crit = dbManager.createCriteria(Participant.class);						
-			crit.add( Restrictions.eq( "sharedDataKey", instance.getSharedDataKey()) );	//$NON-NLS-1$
-			crit.add( Restrictions.eq( "widgetGuid", instance.getWidget().getGuid()) );	//$NON-NLS-1$
-			crit.add( Restrictions.eq( "participant_id", instance.getUserId()) );			 //$NON-NLS-1$
-			final List<Participant> sqlReturnList =  dbManager.getObjects(Participant.class, crit);
-			Participant[] participants = sqlReturnList.toArray(new Participant[sqlReturnList.size()]);	
-			if (participants.length == 1) return participants[0];
-		} 
-		catch (Exception ex) {
-			_logger.error(ex.getMessage());			
-			return null;
-		}
-		return null;
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("sharedDataKey", instance.getSharedDataKey());	//$NON-NLS-1$
+		map.put("widgetGuid", instance.getWidget().getGuid());	//$NON-NLS-1$
+		map.put("participant_id", instance.getUserId());	//$NON-NLS-1$
+		Participant[] participants = Participant.findByValues(map);
+		if (participants == null || participants.length != 1) return null;
+		return participants[0];
 	}
 
 }

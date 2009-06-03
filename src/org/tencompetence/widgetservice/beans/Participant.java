@@ -26,11 +26,13 @@
  */
 package org.tencompetence.widgetservice.beans;
 
+import java.util.Map;
+
 /**
  * A participant entity
  * @author Scott Wilson
  */
-public class Participant extends AbstractKeyBean {
+public class Participant extends AbstractKeyBean<Participant> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -112,6 +114,24 @@ public class Participant extends AbstractKeyBean {
 	 */
 	public void setWidgetGuid(String widgetGuid) {
 		this.widgetGuid = widgetGuid;
+	}
+
+	/// Active record methods
+	public static Participant findById(Object id){
+		return (Participant) findById(Participant.class, id);
+	}
+	
+	public static Participant[] findByValue(String key, Object value) {
+		return (Participant[]) findByValue(Participant.class, key, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Participant[] findByValues(Map map) {
+		return (Participant[]) findByValues(Participant.class, map);
+	}
+	
+	public static Participant[] findAll(){
+		return (Participant[]) findAll(Participant.class);
 	}
 
 	

@@ -41,14 +41,12 @@ import javax.servlet.http.HttpSession;
 
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetDefault;
-import org.tencompetence.widgetservice.manager.IWidgetAdminManager;
-import org.tencompetence.widgetservice.manager.impl.WidgetAdminManager;
 import org.tencompetence.widgetservice.server.LocaleHandler;
 
 /**
  * Servlet to advertise the existing widgets in the system
  * @author Paul Sharples
- * @version $Id: WidgetAdvertiseServlet.java,v 1.5 2009-05-01 10:39:37 ps3com Exp $ 
+ * @version $Id: WidgetAdvertiseServlet.java,v 1.6 2009-06-03 10:06:17 scottwilson Exp $ 
  *
  */
 public class WidgetAdvertiseServlet extends HttpServlet implements Servlet {
@@ -77,11 +75,10 @@ public class WidgetAdvertiseServlet extends HttpServlet implements Servlet {
 		response.setContentType(CONTENT_TYPE);
 		PrintWriter out = response.getWriter();
 		out.println(XMLDECLARATION);		
-		IWidgetAdminManager manager = new WidgetAdminManager(localizedMessages);
 		out.println("<widgets>");	
 
 		if (request.getParameter("all")!= null){
-			for(Widget thewidget : manager.getAllWidgets()){
+			for(Widget thewidget : Widget.findAll()){
 				widget = thewidget;
 				if(widget.getId()!=1){
 					out.println("\t<widget identifier=\""+widget.getGuid()+"\">");			
@@ -104,8 +101,8 @@ public class WidgetAdvertiseServlet extends HttpServlet implements Servlet {
 				}
 			}						
 		} else {
-			for(WidgetDefault widgetDefault : manager.getAllDefaultWidgets()){
-				widget = manager.getWidget(widgetDefault.getWidgetId());
+			for(WidgetDefault widgetDefault : WidgetDefault.findAll()){
+				widget = Widget.findById(widgetDefault.getWidgetId());
 				if(widget.getId()!=1){
 					out.println("\t<widget identifier=\""+widget.getGuid()+"\">");			
 					out.println("\t\t<title>"+widget.getWidgetTitle()+"</title>");

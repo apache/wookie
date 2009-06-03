@@ -3,11 +3,13 @@
  */
 package org.tencompetence.widgetservice.beans;
 
+import java.util.Map;
+
 /**
  * @author scott
  *
  */
-public class PreferenceDefault extends AbstractKeyBean {
+public class PreferenceDefault extends AbstractKeyBean<PreferenceDefault> {
 
 	private static final long serialVersionUID = 3036952538484789860L;
 
@@ -48,5 +50,22 @@ public class PreferenceDefault extends AbstractKeyBean {
 		this.value = value;
 	}
 	
+	/// Active record methods
+	public static PreferenceDefault findById(Object id){
+		return (PreferenceDefault) findById(PreferenceDefault.class, id);
+	}
 	
+	public static PreferenceDefault[] findByValue(String key, Object value) {
+		return (PreferenceDefault[]) findByValue(PreferenceDefault.class, key, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static PreferenceDefault[] findByValues(Map map) {
+		return (PreferenceDefault[]) findByValues(PreferenceDefault.class, map);
+	}
+	
+	public static PreferenceDefault[] findAll(){
+		return (PreferenceDefault[]) findAll(PreferenceDefault.class);
+	}
+
 }

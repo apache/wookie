@@ -26,14 +26,16 @@
  */
 package org.tencompetence.widgetservice.beans;
 
+import java.util.Map;
+
 /**
  * A shared data entity
  * 
  * @author Paul Sharples
- * @version $Id: SharedData.java,v 1.4 2009-02-18 14:50:39 scottwilson Exp $
+ * @version $Id: SharedData.java,v 1.5 2009-06-03 10:06:17 scottwilson Exp $
  * 
  */
-public class SharedData extends AbstractKeyBean {
+public class SharedData extends AbstractKeyBean<SharedData> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -81,6 +83,24 @@ public class SharedData extends AbstractKeyBean {
 
 	public void setDvalue(String dvalue) {
 		this.dvalue = dvalue;
+	}
+	
+	/// Active record methods
+	public static SharedData findById(Object id){
+		return (SharedData) findById(SharedData.class, id);
+	}
+	
+	public static SharedData[] findByValue(String key, Object value) {
+		return (SharedData[]) findByValue(SharedData.class, key, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static SharedData[] findByValues(Map map) {
+		return (SharedData[]) findByValues(SharedData.class, map);
+	}
+	
+	public static SharedData[] findAll(){
+		return (SharedData[]) findAll(SharedData.class);
 	}
 
 }

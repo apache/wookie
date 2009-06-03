@@ -26,14 +26,16 @@
  */
 package org.tencompetence.widgetservice.beans;
 
+import java.util.Map;
+
 /**
  * A whitelist entity
  * 
  * @author Paul Sharples
- * @version $Id: Whitelist.java,v 1.3 2008-12-18 11:30:52 ps3com Exp $
+ * @version $Id: Whitelist.java,v 1.4 2009-06-03 10:06:17 scottwilson Exp $
  * 
  */
-public class Whitelist extends AbstractKeyBean {
+public class Whitelist extends AbstractKeyBean<Whitelist> {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -47,5 +49,22 @@ public class Whitelist extends AbstractKeyBean {
 		fUrl = url;
 	}
 	
+	/// Active record methods
+	public static Whitelist findById(Object id){
+		return (Whitelist) findById(Whitelist.class, id);
+	}
+
+	public static Whitelist[] findByValue(String key, Object value) {
+		return (Whitelist[]) findByValue(Whitelist.class, key, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Whitelist[] findByValues(Map map) {
+		return (Whitelist[]) findByValues(Whitelist.class, map);
+	}
+	
+	public static Whitelist[] findAll(){
+		return (Whitelist[]) findAll(Whitelist.class);
+	}
 
 }

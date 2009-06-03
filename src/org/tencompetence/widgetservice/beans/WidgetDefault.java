@@ -27,14 +27,15 @@
 package org.tencompetence.widgetservice.beans;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * A default widget entity
  * 
  * @author Paul Sharples
- * @version $Id: WidgetDefault.java,v 1.3 2009-03-06 11:01:48 ps3com Exp $
+ * @version $Id: WidgetDefault.java,v 1.4 2009-06-03 10:06:17 scottwilson Exp $
  */
-public class WidgetDefault implements Serializable {
+public class WidgetDefault extends ActiveRecord<WidgetDefault> implements Serializable {
 
 	private static final long serialVersionUID = -8585379777119902714L;
 	
@@ -58,6 +59,20 @@ public class WidgetDefault implements Serializable {
 
 	public void setWidgetContext(String widgetContext) {
 		this.widgetContext = widgetContext;
+	}
+	/// Active record methods
+	public static WidgetDefault findById(String id){
+		return (WidgetDefault) findById(WidgetDefault.class, id);
+	}
+	public static WidgetDefault[] findAll(){
+		return (WidgetDefault[]) findAll(WidgetDefault.class);		
+	}
+	public static WidgetDefault[] findByValue(String key, Object value){
+		return (WidgetDefault[]) findByValue(WidgetDefault.class, key, value);		
+	}
+	@SuppressWarnings("unchecked")
+	public static WidgetDefault[] findByValues(Map map){
+		return (WidgetDefault[]) findByValues(WidgetDefault.class,map);			
 	}
 
 }

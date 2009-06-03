@@ -43,9 +43,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
+import org.tencompetence.widgetservice.beans.ApiKey;
 import org.tencompetence.widgetservice.beans.PreferenceDefault;
+import org.tencompetence.widgetservice.beans.Whitelist;
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetDefault;
+import org.tencompetence.widgetservice.beans.WidgetService;
 import org.tencompetence.widgetservice.manager.IWidgetAdminManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetAdminManager;
 import org.tencompetence.widgetservice.server.LocaleHandler;
@@ -63,7 +66,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.18 2009-05-18 12:06:42 scottwilson Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.19 2009-06-03 10:06:17 scottwilson Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -322,15 +325,18 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		retrieveWidgets(session, manager);	
 		if(getDefaults){
 			Hashtable<String, Integer> defaultHash = new Hashtable<String, Integer>();
-			for(WidgetDefault defaultWidget :manager.getAllDefaultWidgets()){
-				defaultHash.put(defaultWidget.getWidgetContext(), defaultWidget.getWidgetId());				
-			}		
+			WidgetDefault[] wds = WidgetDefault.findAll();
+			if (wds != null){
+				for(WidgetDefault defaultWidget : wds){
+					defaultHash.put(defaultWidget.getWidgetContext(), defaultWidget.getWidgetId());				
+				}	
+			}
 			session.setAttribute("widget_defaults", defaultHash); //$NON-NLS-1$
 		}
 	}
 
 	private void listWhiteListOperation(HttpSession session, IWidgetAdminManager manager) {
-		session.setAttribute("whitelist", manager.getWhiteList()); //$NON-NLS-1$
+		session.setAttribute("whitelist", Whitelist.findAll()); //$NON-NLS-1$
 	}  	
 		
 	private void removeServiceOperation(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager) {
@@ -388,11 +394,11 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 	}		
 	
 	private void retrieveServices(HttpSession session, IWidgetAdminManager manager){						
-		session.setAttribute("services", manager.getAllServices());						 //$NON-NLS-1$
+		session.setAttribute("services", WidgetService.findAll());						 //$NON-NLS-1$
 	}
 	
 	private void retrieveWidgets(HttpSession session, IWidgetAdminManager manager){
-		session.setAttribute("widgets", manager.getAllWidgets()); //$NON-NLS-1$
+		session.setAttribute("widgets", Widget.findAll()); //$NON-NLS-1$
 	}
 
 	
@@ -449,7 +455,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 	}
 	
 	private void listAPIKeysOperation(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager){
-		session.setAttribute("keys", WidgetKeyManager.getKeys());
+		session.setAttribute("keys", ApiKey.findAll());
 	}
 
 	private void revokeAPIKeyOperation(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager){

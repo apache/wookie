@@ -26,13 +26,19 @@
  */
 package org.tencompetence.widgetservice.beans;
 
+import java.util.List;
+import java.util.Map;
+
+import org.tencompetence.widgetservice.util.hibernate.DBManagerFactory;
+import org.tencompetence.widgetservice.util.hibernate.IDBManager;
+
 /**
  * WidgetInstance - a simple bean to model an actual widgets instance attributes
  * 
  * @author Paul Sharples
- * @version $Id: WidgetInstance.java,v 1.6 2009-04-09 12:40:06 scottwilson Exp $
+ * @version $Id: WidgetInstance.java,v 1.7 2009-06-03 10:06:17 scottwilson Exp $
  */
-public class WidgetInstance extends AbstractKeyBean {
+public class WidgetInstance extends AbstractKeyBean<WidgetInstance> {
 
 		private static final long serialVersionUID = 1L;
 		
@@ -137,6 +143,66 @@ public class WidgetInstance extends AbstractKeyBean {
 
 		public void setLocked(boolean locked) {
 			this.locked = locked;
+		}
+		
+		/// Active record methods
+		public static WidgetInstance findById(Object id){
+			return (WidgetInstance) findById(WidgetInstance.class, id);
+		}
+	
+		public static WidgetInstance[] findByValue(String key, Object value) {
+			return (WidgetInstance[]) findByValue(WidgetInstance.class, key, value);
+		}
+
+		@SuppressWarnings("unchecked")
+		public static WidgetInstance[] findByValues(Map map) {
+			return (WidgetInstance[]) findByValues(WidgetInstance.class, map);
+		}
+		
+		public static WidgetInstance[] findAll(){
+			return (WidgetInstance[]) findAll(WidgetInstance.class);
+		}
+		
+		/// Special queries
+		public static boolean widgetInstanceExists(String api_key, String userId, String sharedDataKey, String serviceContext){
+			final IDBManager dbManager = DBManagerFactory.getDBManager();
+			//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
+			String sqlQuery =   "select " + //$NON-NLS-1$
+			"count(*) " //$NON-NLS-1$
+			+ "from WidgetInstance widgetinstance, WidgetType widgettype " //$NON-NLS-1$
+			+ "WHERE " //$NON-NLS-1$
+			+ "widgetinstance.userId ='" + userId + "' " //$NON-NLS-1$ //$NON-NLS-2$
+			+ "AND widgetinstance.apiKey ='" + api_key + "' "	 //$NON-NLS-1$ //$NON-NLS-2$
+			+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "												 //$NON-NLS-1$ //$NON-NLS-2$
+			+ "AND widgettype.widgetContext ='" + serviceContext + "' "			 //$NON-NLS-1$ //$NON-NLS-2$
+			+ "AND widgetinstance.widget = widgettype.widget" //$NON-NLS-1$
+			;							
+			_logger.debug((sqlQuery));
+			long count=0l; 				
+			count = (Long) dbManager.createQuery(sqlQuery).uniqueResult();
+			return (count == 1 ? true : false); 
+		}
+
+		public static WidgetInstance getWidgetInstance(String api_key, String userId, String sharedDataKey, String serviceContext){
+			final IDBManager dbManager = DBManagerFactory.getDBManager();
+			//got to exist in widgetinstance and also be registered as this type of context in widgetcontext		
+			String sqlQuery =   "select widgetinstance " 							 //$NON-NLS-1$
+				+ "from WidgetInstance widgetinstance, WidgetType widgettype " //$NON-NLS-1$
+				+ "WHERE " //$NON-NLS-1$
+				+ "widgetinstance.userId ='" + userId + "' " //$NON-NLS-1$ //$NON-NLS-2$
+				+ "AND widgetinstance.apiKey ='" + api_key + "' "	 //$NON-NLS-1$ //$NON-NLS-2$
+				+ "AND widgetinstance.sharedDataKey ='" + sharedDataKey + "' "															 //$NON-NLS-1$ //$NON-NLS-2$
+				+ "AND widgettype.widgetContext ='" + serviceContext + "' "			 //$NON-NLS-1$ //$NON-NLS-2$
+				+ "AND widgetinstance.widget = widgettype.widget" //$NON-NLS-1$
+				;							
+			_logger.debug((sqlQuery));				
+			List<?> sqlReturnList = dbManager.createQuery(sqlQuery).list();
+			if(sqlReturnList.size()!=1){
+				return null;
+			}
+			else{
+				return (WidgetInstance)sqlReturnList.get(0);
+			}
 		}
 
 }

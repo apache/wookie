@@ -35,6 +35,7 @@ import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.tencompetence.widgetservice.beans.ActiveRecord;
 import org.tencompetence.widgetservice.beans.AbstractKeyBean;
 import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 import org.tencompetence.widgetservice.util.hibernate.HibernateUtil;
@@ -42,7 +43,7 @@ import org.tencompetence.widgetservice.util.hibernate.HibernateUtil;
 /**
  * @author sheyenrath
  *
- * @version $Id: DBManagerImpl.java,v 1.5 2009-04-27 10:48:05 ps3com Exp $
+ * @version $Id: DBManagerImpl.java,v 1.6 2009-06-03 10:06:17 scottwilson Exp $
  */
 public class DBManagerImpl implements IDBManager {
 
@@ -88,7 +89,8 @@ public class DBManagerImpl implements IDBManager {
 	/**
 	 * @see org.tencompetence.tencs.business.database.IDBManager#createCriteria(java.lang.Class)
 	 */
-	public <T extends AbstractKeyBean> Criteria createCriteria(final Class<? extends AbstractKeyBean> baseClass) {
+	@SuppressWarnings("unchecked")
+	public <T extends ActiveRecord> Criteria createCriteria(final Class<? extends ActiveRecord> baseClass) {
 		return session.createCriteria(baseClass);
 	}
 	
@@ -107,7 +109,7 @@ public class DBManagerImpl implements IDBManager {
 	 * @see org.tencompetence.tencs.business.database.IDBManager#getObject(java.lang.Class, java.lang.Integer)
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends AbstractKeyBean> T getObject(final Class<T> baseClass,
+	public <T extends ActiveRecord> T getObject(final Class<T> baseClass,
 			final Integer id) throws Exception {
 
 		try {
@@ -122,7 +124,7 @@ public class DBManagerImpl implements IDBManager {
 	 * @see org.tencompetence.tencs.business.database.IDBManager#getObject(java.lang.Class, java.util.List)
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends AbstractKeyBean> T getObject(final Class<T> baseClass,
+	public <T extends ActiveRecord> T getObject(final Class<T> baseClass,
 			final Criteria criteria) throws Exception {
 
 		try {
@@ -141,9 +143,8 @@ public class DBManagerImpl implements IDBManager {
 	 * @see org.tencompetence.tencs.business.database.IDBManager#getObjects(java.lang.Class, java.util.List)
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends AbstractKeyBean> List<T> getObjects(final Class<T> baseClass,
+	public <T extends ActiveRecord> List<T> getObjects(final Class<T> baseClass,
 			final Criteria criteria) throws Exception {
-
 		try {
 			return (List<T>) criteria.list();
 			
@@ -155,6 +156,7 @@ public class DBManagerImpl implements IDBManager {
 	/**
 	 * @see org.tencompetence.tencs.business.database.IDBManager#updateObject(java.lang.Class, java.lang.Object)
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends AbstractKeyBean> void updateObject(final Class<T> baseClass,
 			final AbstractKeyBean changedObject) throws Exception {
 	
@@ -176,7 +178,8 @@ public class DBManagerImpl implements IDBManager {
 	/**
 	 * @see org.tencompetence.tencs.business.database.IDBManager#saveObject(org.tencompetence.tencs.business.database.beans.DBAbstractBean)
 	 */
-	public Serializable saveObject(final AbstractKeyBean obj) throws Exception {
+	@SuppressWarnings("unchecked")
+	public Serializable saveObject(final ActiveRecord obj) throws Exception {
 		
 		try {
 			return session.save(obj);
@@ -199,8 +202,20 @@ public class DBManagerImpl implements IDBManager {
 	/**
 	 * @see org.tencompetence.tencs.business.database.IDBManager#deleteObject(org.tencompetence.tencs.business.database.beans.DBAbstractBean)
 	 */
-	public void deleteObject(final AbstractKeyBean obj) throws Exception {
+	@SuppressWarnings("unchecked")
+	public void deleteObject(final ActiveRecord obj) throws Exception {
 		
+		try {
+			session.delete(obj);			
+		} catch (HibernateException he) {
+			throw new Exception(he);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.tencompetence.widgetservice.util.hibernate.IDBManager#deleteGenericObject(java.lang.Object)
+	 */
+	public void deleteGenericObject(Object obj) throws Exception {
 		try {
 			session.delete(obj);			
 		} catch (HibernateException he) {

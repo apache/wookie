@@ -32,12 +32,13 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
+import org.tencompetence.widgetservice.beans.ActiveRecord;
 import org.tencompetence.widgetservice.beans.AbstractKeyBean;
 
 /**
  * @author sheyenrath
  *
- * @version $Id: IDBManager.java,v 1.1 2007-12-13 20:31:33 ps3com Exp $
+ * @version $Id: IDBManager.java,v 1.2 2009-06-03 10:06:17 scottwilson Exp $
  */
 public interface IDBManager {
 
@@ -65,7 +66,8 @@ public interface IDBManager {
 	 * @param baseClass
 	 * @return Object
 	 */
-	public <T extends AbstractKeyBean> Criteria createCriteria(final Class<? extends AbstractKeyBean> baseClass);
+	@SuppressWarnings("unchecked")
+	public <T extends ActiveRecord> Criteria createCriteria(final Class<? extends ActiveRecord> baseClass);
 	
 	/**
 	 * @param baseClass
@@ -82,7 +84,8 @@ public interface IDBManager {
 	 * @param id Identifier (key) from the obejct to search for.
 	 * @return object (or null when not found)
 	 */
-	public <T extends AbstractKeyBean> T getObject(final Class<T> baseClass, final Integer id)
+	@SuppressWarnings("unchecked")
+	public <T extends ActiveRecord> T getObject(final Class<T> baseClass, final Integer id)
 		throws Exception;
 
 	/**
@@ -94,7 +97,8 @@ public interface IDBManager {
 	 * @return object (or null when not found)
 	 * @throws TENCDatabaseException
 	 */
-	public <T extends AbstractKeyBean> T getObject(final Class<T> baseClass,
+	@SuppressWarnings("unchecked")
+	public <T extends ActiveRecord> T getObject(final Class<T> baseClass,
 			final Criteria criteria) throws Exception;
 	
 	/**
@@ -106,7 +110,8 @@ public interface IDBManager {
 	 * @return A list from objects or an empty list when no objects are found.
 	 * @throws TENCDatabaseException
 	 */
-	public <T extends AbstractKeyBean> List<T> getObjects(final Class<T> baseClass,
+	@SuppressWarnings("unchecked")
+	public <T extends ActiveRecord> List<T> getObjects(final Class<T> baseClass,
 			final Criteria criteria) throws Exception;
 	
 	/**
@@ -117,6 +122,7 @@ public interface IDBManager {
 	 * @throws TENCDatabaseException
 	 * @throws TENCObjectNotFoundException
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends AbstractKeyBean> void updateObject(final Class<T> baseClass,
 			final AbstractKeyBean object) throws Exception;
 	
@@ -127,7 +133,8 @@ public interface IDBManager {
 	 * @return
 	 * @throws TENCServerException
 	 */
-	public Serializable saveObject(final AbstractKeyBean object) throws Exception;
+	@SuppressWarnings("unchecked")
+	public Serializable saveObject(final ActiveRecord object) throws Exception;
 	
 	public Serializable saveGenericObject(final Object obj) throws Exception;
 	
@@ -137,5 +144,14 @@ public interface IDBManager {
 	 * @param object the object to delete.
 	 * @throws TENCServerException
 	 */
-	public void deleteObject(final AbstractKeyBean object) throws Exception;
+	@SuppressWarnings("unchecked")
+	public void deleteObject(final ActiveRecord object) throws Exception;
+	
+	/**
+	 * Deletes an object from the database
+	 * @param obj
+	 * @throws Exception
+	 */
+	public void deleteGenericObject(final Object obj) throws Exception;
+	
 }
