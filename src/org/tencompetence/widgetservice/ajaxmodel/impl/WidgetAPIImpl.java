@@ -66,7 +66,7 @@ import org.tencompetence.widgetservice.server.LocaleHandler;
  *   Widget.setSharedDataForKey("defaultChatPresence",stringWithUserRemoved);
  *
  * @author Paul Sharples
- * @version $Id: WidgetAPIImpl.java,v 1.17 2009-06-03 15:46:31 scottwilson Exp $
+ * @version $Id: WidgetAPIImpl.java,v 1.18 2009-06-03 15:57:03 scottwilson Exp $
  *
  */
 public class WidgetAPIImpl implements IWidgetAPI {
@@ -276,7 +276,6 @@ public class WidgetAPIImpl implements IWidgetAPI {
 					manager.updateSharedDataEntry(widgetInstance, key, value, false);
 					WebContext wctx = WebContextFactory.get();
 			        String currentPage = wctx.getCurrentPage();
-			        System.out.println(currentPage);
 			        ScriptBuffer script = new ScriptBuffer();
 			        script.appendScript("Widget.onSharedUpdate(\"").appendScript(sharedDataKey).appendScript("\");"); //$NON-NLS-1$ //$NON-NLS-2$
 			        // Loop over all the users on the current page
