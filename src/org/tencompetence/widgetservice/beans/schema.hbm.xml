@@ -7,7 +7,6 @@
 	package="org.tencompetence.widgetservice.beans">
 
 	<class name="Widget" table="Widget">
-		<cache usage="read-write"/>
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>
@@ -28,7 +27,6 @@
 	</class>
 	
 	<class name="WidgetType" table="WidgetType">
-	    <cache usage="read-write"/>
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>
@@ -37,7 +35,6 @@
 	</class>
 	
 	<class name="WidgetService" table="WidgetService">
-	    <cache usage="read-write"/>
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>		
@@ -46,7 +43,6 @@
 
 
 	<class name="WidgetDefault" table="WidgetDefault">
-	    <cache usage="read-write"/>
 		<id name="widgetContext" type="string">
 			<generator class="assigned" />
 		</id>
@@ -54,7 +50,6 @@
 	</class>
 
 	<class name="ApiKey" table="ApiKey">
-	    <cache usage="read-write"/>
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>
@@ -63,7 +58,6 @@
 	</class>
 
 	<class name="WidgetInstance" table="WidgetInstance">
-	    <cache usage="read-write"/>
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>		
@@ -81,7 +75,6 @@
 	</class>
 
 	<class name="SharedData" table="SharedData">
-	    <cache usage="read-write"/>
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>		
@@ -92,7 +85,6 @@
 	</class>
 	
 	<class name="Preference" table="Preference">
-	    <cache usage="read-write"/>
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>
@@ -102,7 +94,6 @@
 	</class>
 
 	<class name="Participant" table="Participant">
-	    <cache usage="read-write"/>
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>
@@ -114,7 +105,6 @@
 	</class>
 	
 	<class name="PreferenceDefault" table="preferenceDefault">
-	    <cache usage="read-write"/>
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>
@@ -124,7 +114,6 @@
 	</class>
 		
 	<class name="Whitelist" table="Whitelist">
-	    <cache usage="read-write"/>
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>		
@@ -132,7 +121,6 @@
 	</class>
 	
 	<class name="Post" table="Post">
-	    <cache usage="read-write"/>
 		<id name="id" column="id">
             <generator class="native"/>
         </id>               
