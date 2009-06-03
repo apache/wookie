@@ -54,9 +54,9 @@
  wave = new function Wave(){
  	this.participants = null;
  	this.viewer = null;
-    //this.state = null;
     this.callback = null;
-    
+    this.pcallback = null;
+    this.onParticipantUpdate = null;
     this.isInWaveContainer = function(){ return true};
     
     //////////////////////////////////////////////////
@@ -87,7 +87,6 @@
         Widget.state(wave.__update);
     }
     this.__update = function(data){
-        //wave.state = data;
         state.__setState(data);
         wave.callback();
     }
@@ -140,7 +139,17 @@
 	}
     
     this.setParticipantCallback = function(callback, opt_context){
-        //  NOT YET IMPLEMENTED
+        wave.pcallback = callback;
+        wave.onParticipantUpdate = wave.__pcallback;
+        wave.__pcallback();
+    }
+    // We have to capture the callback method and wrap it in our private functions
+    this.__pcallback = function(){
+    	WidgetImpl.getParticipants(Widget.instanceid_key, wave.__pupdate);
+    }
+    this.__pupdate = function(data){
+        wave.setParticipants(data);
+        wave.pcallback();
     }
     
     //////////////////////////////////////////////////
