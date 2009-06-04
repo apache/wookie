@@ -48,7 +48,7 @@ import org.htmlcleaner.TagNode;
  * <script type="text/javascript" src="/wookie/shared/js/wookie-wrapper.js"></script>
  *
  * @author Paul Sharples
- * @version $Id: StartPageJSParser.java,v 1.4 2009-03-03 17:19:30 scottwilson Exp $
+ * @version $Id: StartPageJSParser.java,v 1.5 2009-06-04 15:06:32 ps3com Exp $
  */
 public class StartPageJSParser implements IStartPageConfiguration {
 	
@@ -61,8 +61,7 @@ public class StartPageJSParser implements IStartPageConfiguration {
 	
 	public StartPageJSParser(File startPage) {
 		fScriptList = new ArrayList<TagNode>();
-		fStartPage = startPage;
-		doParse();
+		fStartPage = startPage;		
 	}
 	
 	private boolean doesAttributeValueExistsInNode(TagNode node, String attrName, String attrValue){
@@ -96,7 +95,7 @@ public class StartPageJSParser implements IStartPageConfiguration {
 		}
 	}
 			
-	private void doParse(){
+	public void doParse(){
 		fCleaner = new HtmlCleaner();
 		// take default cleaner properties		
 		fProps = fCleaner.getProperties();
