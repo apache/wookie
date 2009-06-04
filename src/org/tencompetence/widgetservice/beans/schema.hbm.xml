@@ -12,7 +12,6 @@
 		</id>
 		<property name="widgetTitle" column="widget_title" type="string" />
 		<property name="widgetDescription" column="widget_description" type="string" />
-		<property name="version" column="widget_version" type="string" />
 		<property name="widgetAuthor" column="widget_author" type="string" />
 		<property name="widgetIconLocation" column="widget_icon_location" type="string" />
 		<property name="url" column="url" type="string" />
@@ -24,6 +23,7 @@
 			<key column="widget_id" not-null="true" />
 			<one-to-many class="WidgetType" />
 		</set>
+		<property name="version" column="widget_version" type="string" />
 	</class>
 	
 	<class name="WidgetType" table="WidgetType">
@@ -110,6 +110,7 @@
 		</id>
 		<property name="preference"/>
 		<property name="value"/>	
+		<property name="readOnly" type="true_false" />
 		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />		
 	</class>
 		
@@ -132,5 +133,34 @@
         <property name="updateDate" column="update_date"></property>
         <property name="sharedDataKey" column="sharedDataKey" index="sharedDataKeyIndex" />             
      </class>  
+     
+     <class name="Feature" table="Feature">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>			
+		<property name="featureName" column="featureName" />
+		<property name="required" type="true_false" />
+		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />
+		<set name="parameters" inverse="true">
+			<key column="feature_id" not-null="true" />
+			<one-to-many class="Param" />
+		</set>	
+	</class>		
+	
+	<class name="Param" table="Param">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<many-to-one name="parentFeature" class="Feature" column="feature_id" not-null="true" />
+		<property name="parameterName" column="parameterName" />	
+		<property name="parameterValue" column="parameterValue" />
+	</class>
+	
+	<class name="ServerFeature" table="ServerFeature">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>		
+		<property name="featureName" />		
+	</class>
 		
 </hibernate-mapping>
