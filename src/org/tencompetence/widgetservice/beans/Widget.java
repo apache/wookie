@@ -39,7 +39,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
  * Widget - a simple bean to model a widgets attributes
  * 
  * @author Paul Sharples
- * @version $Id: Widget.java,v 1.6 2009-06-03 10:06:17 scottwilson Exp $
+ * @version $Id: Widget.java,v 1.7 2009-06-04 15:11:19 ps3com Exp $
  */
 public class Widget extends AbstractKeyBean<Widget> {
 	
@@ -50,14 +50,13 @@ public class Widget extends AbstractKeyBean<Widget> {
 	private String widgetAuthor;
 	private String widgetIconLocation;
 	private String url;
-	private String guid;
-	private String version;
+	private String guid;	
 	private int height;
 	private int width;
-	private boolean maximize;
-	
+	private boolean maximize;	
 	@SuppressWarnings("unchecked")
-	private Set widgetTypes = new HashSet();	
+	private Set widgetTypes = new HashSet();
+	private String version;
 	
 	public Widget(){}
 	
@@ -192,7 +191,7 @@ public class Widget extends AbstractKeyBean<Widget> {
 	public static Widget[] findByType(String typeToSearch) {
 		final IDBManager dbManager = DBManagerFactory.getDBManager();			
 		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_description, widget_author, widget_icon_location, widget.url, widget.maximize, widget.guid, " +
-								"widget.height, widget.width, widgettype.widget_context "
+								"widget.height, widget.width, widget_version, widgettype.widget_context "
 						+ "FROM Widget widget, WidgetType widgettype "
 						+ "WHERE widget.id = widgettype.widget_id "
 						+ "AND widgettype.widget_context='" + typeToSearch + "'";		
