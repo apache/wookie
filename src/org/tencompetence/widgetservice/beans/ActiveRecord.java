@@ -42,6 +42,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
 /**
  * ActiveRecord pattern implementation for beans 
  * @author Scott Wilson
+ * @version $Id: ActiveRecord.java,v 1.2 2009-06-04 15:13:24 ps3com Exp $ 
  */
 public class ActiveRecord<T> implements Serializable{
 	

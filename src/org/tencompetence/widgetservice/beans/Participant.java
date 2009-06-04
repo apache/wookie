@@ -31,6 +31,7 @@ import java.util.Map;
 /**
  * A participant entity
  * @author Scott Wilson
+ * @version $Id: Participant.java,v 1.3 2009-06-04 15:10:41 ps3com Exp $ 
  */
 public class Participant extends AbstractKeyBean<Participant> {
 
