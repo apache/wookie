@@ -64,7 +64,7 @@ import org.tencompetence.widgetservice.util.gadgets.GadgetUtils;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.21 2009-06-04 15:13:55 ps3com Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.22 2009-06-04 15:22:46 ps3com Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -177,8 +177,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 			try {op = Operation.valueOf(task);} 
 			catch (IllegalArgumentException e) {
 				op=null;
-				session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.4")); //$NON-NLS-1$ //$NON-NLS-2$
-				//String crap =Messages.getString("WidgetAdminServlet.26"); //$NON-NLS-1$
+				session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.4")); //$NON-NLS-1$ //$NON-NLS-2$				
 			}
 		}	
 		if(op!=null){
