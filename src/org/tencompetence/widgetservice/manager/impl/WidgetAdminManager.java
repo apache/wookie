@@ -27,13 +27,13 @@
 package org.tencompetence.widgetservice.manager.impl;
 
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.tencompetence.widgetservice.Messages;
+import org.tencompetence.widgetservice.beans.Feature;
+import org.tencompetence.widgetservice.beans.Param;
 import org.tencompetence.widgetservice.beans.Participant;
 import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.PreferenceDefault;
@@ -45,7 +45,10 @@ import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.beans.WidgetService;
 import org.tencompetence.widgetservice.beans.WidgetType;
 import org.tencompetence.widgetservice.manager.IWidgetAdminManager;
-import org.tencompetence.widgetservice.util.ManifestHelper;
+import org.tencompetence.widgetservice.manifestmodel.IFeatureEntity;
+import org.tencompetence.widgetservice.manifestmodel.IManifestModel;
+import org.tencompetence.widgetservice.manifestmodel.IParamEntity;
+import org.tencompetence.widgetservice.manifestmodel.IPreferenceEntity;
 
 /**
  * WidgetAdminManager
@@ -54,7 +57,7 @@ import org.tencompetence.widgetservice.util.ManifestHelper;
  * and setting which widget is to be the default
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminManager.java,v 1.13 2009-06-03 22:06:51 scottwilson Exp $
+ * @version $Id: WidgetAdminManager.java,v 1.14 2009-06-04 15:07:47 ps3com Exp $
  */
 public class WidgetAdminManager extends WidgetServiceManager implements IWidgetAdminManager {
 	
@@ -77,28 +80,30 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#addNewWidget(java.lang.String, java.lang.String, java.lang.String, int, int)
 	 */
-	public void addNewWidget( String widgetIconLocation, String url, Hashtable<String, String> widgetData, List<PreferenceDefault> prefs ) {
-		addNewWidget(widgetIconLocation, url, widgetData, prefs, null);
+	public void addNewWidget(IManifestModel model) {
+		addNewWidget(model, null);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#addNewWidget(java.lang.String, java.lang.String, java.lang.String, int, int, java.lang.String[])
 	 */
 	@SuppressWarnings("unchecked")
-	public int addNewWidget(String widgetIconLocation, String url, Hashtable<String,String> widgetData, List<PreferenceDefault> prefs, String[] widgetTypes) {
-		int newWidgetIdx = -1;
-        Widget widget;
-		widget = new Widget();
-		widget.setWidgetTitle(widgetData.get(ManifestHelper.NAME_ELEMENT));
-		widget.setWidgetDescription(widgetData.get(ManifestHelper.DESCRIPTION_ELEMENT));
-		widget.setWidgetAuthor(widgetData.get(ManifestHelper.AUTHOR_ELEMENT));
-		widget.setWidgetIconLocation(widgetIconLocation);
-		widget.setUrl(url);
-		widget.setGuid(widgetData.get(ManifestHelper.ID_ATTRIBUTE));
-		widget.setHeight(Integer.parseInt(widgetData.get(ManifestHelper.HEIGHT_ATTRIBUTE)));
-		widget.setWidth(Integer.parseInt(widgetData.get(ManifestHelper.WIDTH_ATTRIBUTE)));
-		widget.setVersion(widgetData.get(ManifestHelper.VERSION_ATTRIBUTE));
-		widget.save();	       	        
+	public int addNewWidget(IManifestModel model, String[] widgetTypes) {
+		// NOTE: we pass the whole model here, so that we can create all the DB hooks more easily.
+		// FOR now just use the first name, description, etc elements found in the manifest.
+		int newWidgetIdx = -1;			
+		Widget widget;
+		widget = new Widget();												
+		widget.setWidgetTitle(model.getFirstName());
+		widget.setWidgetDescription(model.getFirstDescription());
+		widget.setWidgetAuthor(model.getAuthor());
+		widget.setWidgetIconLocation(model.getFirstIconPath());
+		widget.setUrl(model.getContent().getSrc());
+		widget.setGuid(model.getIdentifier());
+		widget.setHeight(model.getHeight());
+		widget.setWidth(model.getWidth());
+		widget.setVersion(model.getVersion());
+		widget.save();	
 		WidgetType widgetType;
 		if (widgetTypes!=null){
 			for(int i=0;i<widgetTypes.length;i++){
@@ -110,15 +115,36 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 			}
 		}
 		newWidgetIdx = widget.getId();
-		// Save default preferences
-		if (prefs != null){
-			for (PreferenceDefault pref:(PreferenceDefault[])prefs.toArray(new PreferenceDefault[prefs.size()])){
-				pref.setWidget(widget);
-				pref.save();
+
+		// Save default preferences				
+		for(IPreferenceEntity prefEntity : model.getPrefences()){
+			PreferenceDefault prefenceDefault = new PreferenceDefault();
+			prefenceDefault.setPreference(prefEntity.getName());
+			prefenceDefault.setValue(prefEntity.getValue());
+			prefenceDefault.setReadOnly(prefEntity.isReadOnly());
+			prefenceDefault.setWidget(widget);
+			prefenceDefault.save();
+		}
+
+		// Save Features
+		for(IFeatureEntity featureEntity: model.getFeatures()){
+			Feature feature = new Feature();
+			feature.setFeatureName(featureEntity.getName());
+			feature.setRequired(featureEntity.isRequired());
+			feature.setWidget(widget);
+			feature.save();			
+			// now attach all parameters to this feature.
+			for(IParamEntity paramEntity : featureEntity.getParams()){
+				Param param = new Param();
+				param.setParameterName(paramEntity.getName());
+				param.setParameterValue(paramEntity.getValue());
+				param.setParentFeature(feature);
+				param.save();
 			}
 		}
-        return newWidgetIdx;	       
-	 }
+
+		return newWidgetIdx;	       
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#addWhiteListEntry(java.lang.String)
@@ -153,7 +179,7 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#deleteWidgetDefaultByServiceName(java.lang.String)
 	 */
 	public void deleteWidgetDefaultByServiceName(String serviceName){
-		WidgetDefault[] widgetDefaults = WidgetDefault.findByValue("widgetContent", serviceName);
+		WidgetDefault[] widgetDefaults = WidgetDefault.findByValue("widgetContext", serviceName);
 		WidgetDefault.delete(widgetDefaults);
 	}
 	
@@ -161,7 +187,7 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#doesServiceExistForWidget(int, java.lang.String)
 	 */
 	public boolean doesServiceExistForWidget(int dbkey, String serviceType){
-		Widget widget = Widget.findById(String.valueOf(dbkey));
+		Widget widget = Widget.findById(Integer.valueOf(dbkey));
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("widget", widget);
 		map.put("widgetContext", serviceType);
@@ -216,7 +242,7 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#removeServiceAndReferences(int)
 	 */
 	public boolean removeServiceAndReferences(int serviceId){
-		WidgetService service = WidgetService.findById(String.valueOf(serviceId));
+		WidgetService service = WidgetService.findById(Integer.valueOf(serviceId));
 		String serviceName = service.getServiceName();
 		
 		// if exists, remove from widget default table
@@ -245,7 +271,7 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 	 */
 	public boolean removeSingleWidgetType(int widgetId, String widgetType) {
 		boolean response = false;	
-		Widget widget = Widget.findById(String.valueOf(widgetId));
+		Widget widget = Widget.findById(Integer.valueOf(widgetId));
 		// remove any widget types for this widget
 		Set<?> types = widget.getWidgetTypes();
         WidgetType[] widgetTypes = types.toArray(new WidgetType[types.size()]);		        
@@ -269,7 +295,7 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#removeWhiteListEntry(int)
 	 */
 	public boolean removeWhiteListEntry(int entryId) {
-		Whitelist entry = Whitelist.findById(String.valueOf(entryId));
+		Whitelist entry = Whitelist.findById(Integer.valueOf(entryId));
 		return entry.delete();
 	}
 	
@@ -278,7 +304,7 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 	 */
 	public boolean removeWidgetAndReferences(int widgetId){
 		// get the widget
-		Widget widget = Widget.findById(String.valueOf(widgetId));
+		Widget widget = Widget.findById(Integer.valueOf(widgetId));
 		// remove any defaults for this widget
 		deleteWidgetDefaultById(widgetId);
 		
@@ -298,6 +324,16 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
         for(int j=0;j<widgetTypes.length;++j){	
         	widgetTypes[j].delete();
 		}
+        
+        //Delete any PreferenceDefaults
+        PreferenceDefault.delete(PreferenceDefault.findByValue("widget", widget));
+        
+        // next do the features & children params
+        for(Feature feature :Feature.findByValue("widget", widget)){
+        	Param.delete(Param.findByValue("parentFeature", feature));
+        	feature.delete();
+        }
+        
 		// remove the widget itself
         widget.delete();
 		return true;
@@ -359,7 +395,8 @@ public class WidgetAdminManager extends WidgetServiceManager implements IWidgetA
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAdminManager#getWidgetGuid(int)
 	 */
 	public String getWidgetGuid(int dbKey) {
-		Widget widget = Widget.findById(String.valueOf(dbKey));
+		//Widget widget = Widget.findById(String.valueOf(dbKey));
+		Widget widget = Widget.findById(Integer.valueOf(dbKey));
 		return widget.getGuid();
 	}
 
