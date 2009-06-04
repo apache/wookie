@@ -26,15 +26,13 @@
  */
 package org.tencompetence.widgetservice.manager;
 
-import java.util.List;
-
-import org.tencompetence.widgetservice.beans.PreferenceDefault;
+import org.tencompetence.widgetservice.manifestmodel.IManifestModel;
 
 /**
  * Interface for admin functions
  * 
  * @author Paul Sharples
- * @version $Id: IWidgetAdminManager.java,v 1.9 2009-06-03 10:06:17 scottwilson Exp $
+ * @version $Id: IWidgetAdminManager.java,v 1.10 2009-06-04 15:08:17 ps3com Exp $
  *
  */
 public interface IWidgetAdminManager {
@@ -48,7 +46,7 @@ public interface IWidgetAdminManager {
 	 * @param height - the height at which it is supposed to be displayed
 	 * @param width - the width at which it is supposed to be displayed
 	 */
-	void addNewWidget(String widgetIconLocation, String url, java.util.Hashtable<String, String> widgetData, List<PreferenceDefault> prefs);
+	void addNewWidget(IManifestModel model);
 
 	/**
 	 * Add a new widget to the system
@@ -59,7 +57,7 @@ public interface IWidgetAdminManager {
 	 * @param widgetTypes - a string array containing the types this widget can perform as
 	 * @return - the new key created for this widget
 	 */
-	int addNewWidget(String widgetIconLocation, String url, java.util.Hashtable<String,String> widgetData, List<PreferenceDefault> prefs, String[] widgetTypes);
+	int addNewWidget(IManifestModel model, String[] widgetTypes);
 
 	/**
 	 * Add a new whitelist entry
