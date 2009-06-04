@@ -29,7 +29,6 @@ package org.tencompetence.widgetservice;
 import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
-import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
@@ -43,15 +42,17 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
 import org.tencompetence.widgetservice.beans.ApiKey;
-import org.tencompetence.widgetservice.beans.PreferenceDefault;
 import org.tencompetence.widgetservice.beans.Whitelist;
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetDefault;
 import org.tencompetence.widgetservice.beans.WidgetService;
+import org.tencompetence.widgetservice.exceptions.BadManifestException;
 import org.tencompetence.widgetservice.manager.IWidgetAdminManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetAdminManager;
 import org.tencompetence.widgetservice.server.LocaleHandler;
 import org.tencompetence.widgetservice.manager.impl.WidgetKeyManager;
+import org.tencompetence.widgetservice.manifestmodel.IManifestModel;
+import org.tencompetence.widgetservice.manifestmodel.IW3CXMLConfiguration;
 import org.tencompetence.widgetservice.util.ManifestHelper;
 import org.tencompetence.widgetservice.util.StartPageJSParser;
 import org.tencompetence.widgetservice.util.ZipUtils;
@@ -63,7 +64,7 @@ import org.tencompetence.widgetservice.util.gadgets.GadgetUtils;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.20 2009-06-03 15:46:31 scottwilson Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.21 2009-06-04 15:13:55 ps3com Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -460,75 +461,73 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		session.setAttribute("hasValidated", Boolean.valueOf(false)); //$NON-NLS-1$
 		session.setAttribute("closeWindow", Boolean.valueOf(true)); //$NON-NLS-1$
-		try {						
-			File zipFile = ManifestHelper.dealWithUploadFile(request, properties);						
+		File zipFile;
+		try {
+			zipFile = ManifestHelper.dealWithUploadFile(request, properties);
+		} 
+		catch (Exception ex) {
+			session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.28") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			return;
+		}
+		
+		try {	
 			if(zipFile.exists()){
-				if(ZipUtils.hasZipEntry(zipFile, ManifestHelper.MANIFEST_FILE)){
-					Hashtable<String,String> results = ManifestHelper.dealWithManifest(ZipUtils.extractZipEntry(zipFile, ManifestHelper.MANIFEST_FILE), localizedMessages);
-					// Get default preferences
-					List<PreferenceDefault> prefs = ManifestHelper.getPreferenceDefaults(ZipUtils.extractZipEntry(zipFile, ManifestHelper.MANIFEST_FILE));
-					// check if the start file exists
-					String src = results.get(ManifestHelper.SOURCE_ATTRIBUTE);
+				if(ZipUtils.hasZipEntry(zipFile, IW3CXMLConfiguration.MANIFEST_FILE)){
+					// build the model
+					IManifestModel widgetModel = ManifestHelper.dealWithManifest(ZipUtils.extractZipEntry(zipFile, IW3CXMLConfiguration.MANIFEST_FILE), localizedMessages);															
+					// get the src value from content
+					String src =  widgetModel.getContent().getSrc();
+					// check if the start file exists in the zip file
 					if(ZipUtils.hasZipEntry(zipFile, src)){
-						String uid = results.get(ManifestHelper.ID_ATTRIBUTE);
-						if( uid != null && uid != ""){ //$NON-NLS-1$
-							File newWidgetFolder = ManifestHelper.createUnpackedWidgetFolder(request, properties, uid);
-							ZipUtils.unpackZip(zipFile, newWidgetFolder);
-							// get the url to the start page
-							String relativestartUrl = (ManifestHelper.getURLForWidget(properties, uid, src));
-							String relativeIconUrl=null;
-							
-							
-							
-							// get the url path to the icon file
-							
-							File startFile = new File(newWidgetFolder.getCanonicalPath() + File.separator + src);							
-							if(startFile.exists()){
-								@SuppressWarnings("unused")
-								StartPageJSParser parser = new StartPageJSParser(startFile);
-							}
-							
-							// this is a hack!
-							String iconURL = results.get(ManifestHelper.ICON_SOURCE+"_1"); //$NON-NLS-1$
-							if (iconURL == null ) {
-								relativeIconUrl = ""; //$NON-NLS-1$
-							}
-							else {
-								if (!iconURL.startsWith("http://")){ //$NON-NLS-1$
-									relativeIconUrl = (ManifestHelper.getURLForWidget(properties, uid, iconURL));								
-								}
-								else{
-									relativeIconUrl = iconURL;
-								}
-							}
-							// check to see if this widget already exists in the DB - using the ID (guid) key from the manifest
-							if(!manager.doesWidgetAlreadyExistInSystem(uid)){	
-								
-								int dbkey = manager.addNewWidget(relativeIconUrl, relativestartUrl, results, prefs, new String[]{});
-								session.setAttribute("message_value", "'"+ results.get(ManifestHelper.NAME_ELEMENT) +"' - " + localizedMessages.getString("WidgetAdminServlet.19")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-								retrieveServices(session, manager);
-								session.setAttribute("hasValidated", Boolean.valueOf(true));																	 //$NON-NLS-1$
-								session.setAttribute("dbkey", dbkey); //$NON-NLS-1$
-								boolean isMaxable = manager.isWidgetMaximized(dbkey);
-								session.setAttribute("isMaxable", Boolean.valueOf(isMaxable)); //$NON-NLS-1$
-							}	
-							else{
-								session.setAttribute("message_value", "'"+ results.get(ManifestHelper.NAME_ELEMENT) +"' - " + localizedMessages.getString("WidgetAdminServlet.20")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-							}
-						}
-						else{							
-							session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.21")); //$NON-NLS-1$ //$NON-NLS-2$
-						}
+						// get the widget identifier
+						String manifestIdentifier = widgetModel.getIdentifier();						
+						// create the folder structure to unzip the zip into
+						File newWidgetFolder = ManifestHelper.createUnpackedWidgetFolder(request, properties, manifestIdentifier);
+						// now unzip it into that folder
+						ZipUtils.unpackZip(zipFile, newWidgetFolder);							
+						// get the url to the start page
+						String relativestartUrl = (ManifestHelper.getURLForWidget(properties, manifestIdentifier, src));
+						// update the model version of the start page
+						widgetModel.getContent().setSrc(relativestartUrl);
+						// now update the js links in the start page
+						File startFile = new File(newWidgetFolder.getCanonicalPath() + File.separator + src);							
+						if(startFile.exists()){								
+							StartPageJSParser parser = new StartPageJSParser(startFile);
+							parser.doParse();
+						}							
+						// get the path to the root of the unzipped folder
+						String localPath = ManifestHelper.getURLForWidget(properties, manifestIdentifier, "");
+						// now pass this to the model which will prepend the path to local resources (not web icons)
+						widgetModel.updateIconPaths(localPath);							
+						// check to see if this widget already exists in the DB - using the ID (guid) key from the manifest
+						if(!manager.doesWidgetAlreadyExistInSystem(manifestIdentifier)){									
+							int dbkey = manager.addNewWidget(widgetModel, new String[]{});
+							// widget added
+							session.setAttribute("message_value", "'"+ widgetModel.getFirstName() +"' - " + localizedMessages.getString("WidgetAdminServlet.19")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+							retrieveServices(session, manager);
+							session.setAttribute("hasValidated", Boolean.valueOf(true));																	 //$NON-NLS-1$
+							session.setAttribute("dbkey", dbkey); //$NON-NLS-1$
+							boolean isMaxable = manager.isWidgetMaximized(dbkey);
+							session.setAttribute("isMaxable", Boolean.valueOf(isMaxable)); //$NON-NLS-1$
+						}	
+						else{
+							// TODO - call the manager to update required resources
+							// widget updated
+							session.setAttribute("message_value", "'"+ widgetModel.getFirstName() +"' - " + localizedMessages.getString("WidgetAdminServlet.20")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+						}						
 					}
-					else{						
-						session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.22")); //$NON-NLS-1$ //$NON-NLS-2$
+					else{
+						// the start page as defined in config.xml does not exist in zip file
+						throw new BadManifestException(localizedMessages.getString("WidgetAdminServlet.22")); //$NON-NLS-1$
 					}
 				}
-				else{					
-					session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.23")); //$NON-NLS-1$ //$NON-NLS-2$
+				else{
+					// no manifest file found in zip archive
+					throw new BadManifestException(localizedMessages.getString("WidgetAdminServlet.23")); //$NON-NLS-1$ 
 				}
 			}
-			else{				
+			else{
+				// no file found to be uploaded - shouldn't happen
 				session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.24")); //$NON-NLS-1$ //$NON-NLS-2$
 			}						
 		} 		 
@@ -536,10 +535,15 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 			_logger.error(ex);			
 			session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.25") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
-		catch (Exception ex) {
+		catch (IOException ex) {
+			_logger.error(ex);
+			session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.25") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}		
+		catch (BadManifestException ex) {
 			_logger.error(ex);			
 			session.setAttribute("error_value", ex.getMessage()); //$NON-NLS-1$
 		}
+		
 	}
 
 
