@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xml:lang="en" height="300" id="http://www.getwookie.org/example"  version="0.8" viewmodes="application" width="315" xmlns="http://www.w3.org/ns/widgets" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/ns/widgets w3cwidgets_v1p2.xsd">
+  <name xml:lang="en">Example Test Widget</name>
+  <name xml:lang="es" short="Exampleo">Exampleo Testo Widgeto</name>
+  <description xml:lang="en">This is a test widget, used to test the Wookie widget server</description>
+  <description xml:lang="es" >el testo</description>
+  <author email="" href="http://tempuri.org">author</author>
+  <license xml:lang="en" href="http://someuri.org/aresource">licence</license>
+  <license xml:lang="nl">dutch licence</license>
+  <icon height="0" src="book.gif" width="0"/>
+  <icon src=""/>
+  <access uri="http://test.org"/>
+  <access uri="http://test.org/another" subdomains="true"/>
+  <content charset="en" src="astartpage.htm" type="text/xml"/>
+  <feature name="http://www.getwookie.org/testfeature1" required="true">
+  	<param name="p1" value="v1"></param>
+  	<param name="p2" value="v2"/>
+  	<param name="p3" value="v3"/>
+  	<param name="" value=""/>  	
+  </feature>
+  <feature name="http://www.getwookie.org/testfeature2">
+  	<param name="p5" value="v5"></param>
+  </feature>  
+  <feature name="http://www.getwookie.org/testfeature3" required="false"/>
+  <preference name="pref1" value="1" readonly="true"/>
+  <preference name="pref2" value="2" readonly="false"/>
+  <preference name="pref3" />
+</widget>
