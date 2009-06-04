@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget height="0" mode="window" uid="http://tempuri.org" version="" width="0" xmlns="http://www.w3.org/ns/widgets" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/ns/widgets w3cwidgets_v1p1.xsd ">
+  <name>name</name>
+  <description>description</description>
+  <icon height="0" src="" width="0">icon</icon>
+  <access network="true" plugins="true"/>
+  <author email="" href="http://tempuri.org" img="">author</author>
+  <licence>licence</licence>
+  <content charset="" src="" type=""/>
+  <update href="http://tempuri.org"/>
+  <feature name="http://tempuri.org" required="true"/>
+</widget>

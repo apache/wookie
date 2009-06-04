@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget height="400" width="500" uid="http://www.tencompetence.org/widgets/chatv0.8" version="0.8" xmlns="http://www.w3.org/ns/widgets" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/ns/widgets w3cwidgets_v1p1.xsd ">
+  <name>Chat version 0.8</name>
+  <description>This is an example package for widget developers</description>
+  <icon src="me">chat.png</icon>
+  <icon src="me">brkeme.jpg</icon>
+  <access network="false"/>
+  <author>Paul Sharples</author>
+  <licence>licence</licence>
+  <content src="index.htm"></content>
+  <update href=""></update>
+  <feature name="jjj"></feature>
+  <feature name="jjj"></feature>
+  <feature name="jjj"></feature>
+</widget>
