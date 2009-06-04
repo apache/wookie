@@ -29,12 +29,8 @@ package org.tencompetence.widgetservice.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.ResourceBundle;
-import java.util.ArrayList;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -46,209 +42,30 @@ import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.tencompetence.widgetservice.Messages;
-import org.tencompetence.widgetservice.beans.PreferenceDefault;
+import org.tencompetence.widgetservice.exceptions.BadManifestException;
+import org.tencompetence.widgetservice.manifestmodel.IManifestModel;
+import org.tencompetence.widgetservice.manifestmodel.IW3CXMLConfiguration;
+import org.tencompetence.widgetservice.manifestmodel.impl.WidgetManifestModel;
 
 /**
  * Manifest Helper class - methods for uploading the zip & parsing a w3c widget manifest.
  * 
  * @author Paul Sharples
- * @version $Id: ManifestHelper.java,v 1.12 2009-05-18 11:23:52 scottwilson Exp $ 
+ * @version $Id: ManifestHelper.java,v 1.13 2009-06-04 15:07:02 ps3com Exp $ 
  *
  */
 public class ManifestHelper implements IW3CXMLConfiguration {
 	
-	public static final String ICON_SOURCE = "icon_src"; //$NON-NLS-1$
-	public static final String ICON_HEIGHT = "icon_height"; //$NON-NLS-1$
-	public static final String ICON_WIDTH = "icon_width"; //$NON-NLS-1$
-	public static final String ICON_NAME = "icon_name"; //$NON-NLS-1$
-	
-	public static final String FEATURE_NAME = "feature_name"; //$NON-NLS-1$
-	public static final String FEATURE_REQUIRED = "feature_required"; //$NON-NLS-1$
-
 	static Logger _logger = Logger.getLogger(ManifestHelper.class.getName());
 	
-
-	public static Hashtable<String,String> dealWithManifest(String xmlText, Messages localizedMessages) throws JDOMException, IOException {
-		String name, description, author, startFile;
+	public static IManifestModel dealWithManifest(String xmlText, Messages localizedMessages) throws JDOMException, IOException, BadManifestException {
 		SAXBuilder builder = new SAXBuilder();
-		Element root = builder.build(new StringReader(xmlText)).getRootElement();
-		if(root.getName().equalsIgnoreCase(WIDGET_ELEMENT)){
-			Hashtable<String,String> manifestValues = new Hashtable<String,String>();
-			
-			if(root.getAttributeValue(ID_ATTRIBUTE)!=null){
-				manifestValues.put(ID_ATTRIBUTE, root.getAttributeValue(ID_ATTRIBUTE));
-			}
-			else{ 
-				if(root.getAttributeValue(UID_ATTRIBUTE)!=null){
-					manifestValues.put(ID_ATTRIBUTE, root.getAttributeValue(UID_ATTRIBUTE));
-				} else {
-					// make one up
-					manifestValues.put(ID_ATTRIBUTE, RandomGUID.getUniqueID("generated-uid-")); //$NON-NLS-1$
-				}
-			}
-						
-			if(root.getAttributeValue(VERSION_ATTRIBUTE)!=null){
-				manifestValues.put(VERSION_ATTRIBUTE, root.getAttributeValue(VERSION_ATTRIBUTE));
-			}
-			
-			if(root.getAttributeValue(HEIGHT_ATTRIBUTE)!=null){
-				manifestValues.put(HEIGHT_ATTRIBUTE, root.getAttributeValue(HEIGHT_ATTRIBUTE));
-			}
-			else{
-				manifestValues.put(HEIGHT_ATTRIBUTE, "300"); //$NON-NLS-1$
-			}
-			
-			if(root.getAttributeValue(WIDTH_ATTRIBUTE)!=null){
-				manifestValues.put(WIDTH_ATTRIBUTE, root.getAttributeValue(WIDTH_ATTRIBUTE));
-			}
-			else{
-				manifestValues.put(WIDTH_ATTRIBUTE, "150"); //$NON-NLS-1$
-			}
-			
-			if(root.getAttributeValue(MODE_ATTRIBUTE)!=null){
-				manifestValues.put(MODE_ATTRIBUTE, root.getAttributeValue(MODE_ATTRIBUTE));
-			}
-			else{
-				manifestValues.put(MODE_ATTRIBUTE, "default");				 //$NON-NLS-1$
-			}
-			
-			
-			// name element --------------------------------------------------------------------------------
-			Element nameElement = root.getChild(NAME_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
-			if(nameElement==null){
-				name = localizedMessages.getString("ManifestHelper.0"); //$NON-NLS-1$
-			}
-			else{
-				name = nameElement.getText();
-			}
-			manifestValues.put(NAME_ELEMENT, name);
-			
-			
-			// description element -------------------------------------------------------------------------
-			Element descElement = root.getChild(DESCRIPTION_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));									
-			if(descElement==null){
-				description = localizedMessages.getString("ManifestHelper.1"); //$NON-NLS-1$
-			}
-			else{
-				description = descElement.getText();
-			}
-			manifestValues.put(DESCRIPTION_ELEMENT, description);
-			
-		
-			// author element ------------------------------------------------------------------------------
-			// specific author attributes
-			String authorHref=null, authorEmail=null;
-			Element authorElement = root.getChild(AUTHOR_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));									
-			if(authorElement==null){
-				author = localizedMessages.getString("ManifestHelper.2"); //$NON-NLS-1$
-			}
-			else{
-				author = authorElement.getText();
-				authorHref = authorElement.getAttributeValue(HREF_ATTRIBUTE);
-				authorEmail = authorElement.getAttributeValue(EMAIL_ATTRIBUTE);
-			}
-			manifestValues.put(AUTHOR_ELEMENT, author);
-			if ( authorHref != null ) manifestValues.put(HREF_ATTRIBUTE, authorHref);
-			if ( authorEmail != null ) manifestValues.put(EMAIL_ATTRIBUTE, authorEmail);
-			
-			
-			// access element ---------------------------------------------------------------------------
-			Element accessElement = root.getChild(ACCESS_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
-			if ( accessElement != null ) {
-				// TODO potential multiples here
-				String uri = accessElement.getAttributeValue(URI_ATTRIBUTE);
-				if (uri != null) manifestValues.put(URI_ATTRIBUTE, uri);
-				String network = accessElement.getAttributeValue(NETWORK_ATTRIBUTE);
-				if ( network != null ) manifestValues.put(NETWORK_ATTRIBUTE, network);
-			}
-			
-			// content element --------------------------------------------------------------------------
-			// content specific values
-			String contentType=null, contentCharset=null;
-			Element contentElement = root.getChild(CONTENT_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
-			if ( contentElement == null ) {
-				startFile = "index.html"; //$NON-NLS-1$
-			}
-			else {
-				startFile = contentElement.getAttributeValue(SOURCE_ATTRIBUTE);
-				if ( startFile == null ) startFile = "index.html"; //$NON-NLS-1$
-				contentType = contentElement.getAttributeValue(TYPE_ATTRIBUTE);
-				contentCharset = contentElement.getAttributeValue(CHARSET_ATTRIBUTE);
-			}
-			manifestValues.put(SOURCE_ATTRIBUTE, startFile);
-			if ( contentType != null ) manifestValues.put(TYPE_ATTRIBUTE, contentType);
-			if ( contentCharset != null ) manifestValues.put(CHARSET_ATTRIBUTE, contentCharset);
-			
-			
-			// licence element ---------------------------------------------------------------------------
-			Element licenceElement = root.getChild(LICENCE_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE) );
-			if ( licenceElement != null ) {
-				manifestValues.put(LICENCE_ELEMENT, licenceElement.getText());
-			}
-			
-			
-			// icon elements -----------------------------------------------------------------------------
-			// possibility of multiple icons, keys will be indexed for retrieval eg. "icon_name_1", "icon_source_1" etc...
-			List<?> icons = root.getChildren(ICON_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
-			ListIterator<?> i_iter = icons.listIterator();
-			while ( i_iter.hasNext() ) {
-				int i = 1;
-				Element anIcon = (Element)i_iter.next();
-				String iconName = anIcon.getText();
-				String iconSrc = anIcon.getAttributeValue(SOURCE_ATTRIBUTE);
-				String iconWidth = anIcon.getAttributeValue(WIDTH_ATTRIBUTE);
-				String iconHeight = anIcon.getAttributeValue(HEIGHT_ATTRIBUTE);
-				manifestValues.put(ICON_NAME+"_"+i, iconName); //$NON-NLS-1$
-				manifestValues.put(ICON_SOURCE+"_"+i, iconSrc); //$NON-NLS-1$
-				if ( iconWidth != null ) manifestValues.put(ICON_WIDTH+"_"+i, iconWidth); //$NON-NLS-1$
-				if ( iconHeight != null ) manifestValues.put(ICON_HEIGHT+"_"+i, iconHeight); //$NON-NLS-1$
-				i++;
-			}
-			
-			// feature elements ---------------------------------------------------------------------------
-			// possibility of multiple features, keys will be indexed for retrieval eg. "feature_name_1", "feature_required_1" etc...
-			List<?> features = root.getChildren(FEATURE_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
-			ListIterator<?> f_iter = features.listIterator();
-			while ( f_iter.hasNext()) {
-				int i = 1;
-				Element aFeature = (Element)f_iter.next();
-				String featureName = aFeature.getAttributeValue(NAME_ATTRIBUTE);
-				String featureRequired = aFeature.getAttributeValue(REQUIRED_ATTRIBUTE);
-				manifestValues.put(FEATURE_NAME+"_"+i, featureName); //$NON-NLS-1$
-				if ( featureRequired != null ) manifestValues.put(FEATURE_REQUIRED+"_"+i, featureRequired); //$NON-NLS-1$
-				i++;
-			}
-			
-			// TODO preference elements -------------------------------------------------------------------------
-			//
-			
-			builder = null;
-			root = null;
-			return manifestValues;
-		}
-		else{
-			builder = null;
-			root = null;
-			return null;
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static List<PreferenceDefault> getPreferenceDefaults(String xmlText) throws Exception{
-		SAXBuilder builder = new SAXBuilder();
-		Element root = builder.build(new StringReader(xmlText)).getRootElement();
-		List<Object> prefs = root.getChildren(PREFERENCE_ELEMENT, Namespace.getNamespace(MANIFEST_NAMESPACE));
-		ArrayList<PreferenceDefault> prefDefaults = new ArrayList<PreferenceDefault>();
-		for (Element pref:(Element[])prefs.toArray(new Element[prefs.size()])){
-			PreferenceDefault prefDefault = new PreferenceDefault();
-			prefDefault.setPreference(pref.getAttributeValue(NAME_ATTRIBUTE));
-			prefDefault.setValue(pref.getAttributeValue(VALUE_ATTRIBUTE));
-			prefDefaults.add(prefDefault);
-		}
-		return prefDefaults;
+		Element root = builder.build(new StringReader(xmlText)).getRootElement();				
+		IManifestModel manifestModel = new WidgetManifestModel();
+		manifestModel.fromJDOM(root);
+		return manifestModel;		
 	}
 
 	public static File createUnpackedWidgetFolder(HttpServletRequest request, Configuration properties, String folder) throws IOException{
