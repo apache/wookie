@@ -21,6 +21,7 @@
       <include method="hide"/>
       <include method="show"/>
       <include method="openURL"/>
+      <include method="hasFeature"/>
     </create>
     
     <create creator="new" javascript="forum" scope="application">
