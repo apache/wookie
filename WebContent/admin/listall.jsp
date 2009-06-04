@@ -22,8 +22,7 @@
         	bgiframe: true,
             autoOpen: false,
             buttons: {
-                "Yes": function() {
-        		alert("1@"+originalLink.href);
+                "Yes": function() {        		
             	window.location.href = originalLink.href;
             },
                 "No": function() { $(this).dialog("close"); }
