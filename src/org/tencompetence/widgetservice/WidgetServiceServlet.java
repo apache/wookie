@@ -59,7 +59,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
 /**
  * Servlet implementation class for Servlet: WidgetService
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.19 2009-06-03 15:45:58 scottwilson Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.20 2009-06-06 08:47:00 scottwilson Exp $ 
  *
  */
 public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -141,22 +141,14 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 		WidgetInstance instance = null;
 		if (widgetId != null){
 			instance = manager.getWidgetInstanceById(apiKey, user_id, sharedDataKey, widgetId);
-		} 
-		else {
+		} else {
 			instance = manager.getWidgetInstance(apiKey, user_id, sharedDataKey, serviceType);
 		}
 		if(instance != null){
-			try {
-				if (manager.addParticipantToWidgetInstance(instance, participant_id, participant_display_name, participant_thumbnail_url))
-					notifyWidgets(session, manager, instance);
-				returnDoc(response, localizedMessages.getString("WidgetServiceServlet.1"), "message");							 //$NON-NLS-1$ //$NON-NLS-2$
-			} 
-			catch (Exception ex) {	
-				ex.printStackTrace();
-				returnDoc(response, localizedMessages.getString("WidgetServiceServlet.6"), "error");	//$NON-NLS-1$ //$NON-NLS-2$
-			}
-		}
-		else{
+			if (manager.addParticipantToWidgetInstance(instance, participant_id, participant_display_name, participant_thumbnail_url))
+				notifyWidgets(session, manager, instance);
+			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.1"), "message");							 //$NON-NLS-1$ //$NON-NLS-2$
+		}else{
 			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.3"), "error"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
@@ -176,21 +168,14 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 		WidgetInstance instance = null;
 		if (widgetId != null){
 			instance = manager.getWidgetInstanceById(apiKey, user_id, sharedDataKey, widgetId);
-		} 
-		else {
+		} else {
 			instance = manager.getWidgetInstance(apiKey, user_id, sharedDataKey, serviceType);
 		}
 		if(instance != null){
-			try {
-				if(manager.removeParticipantFromWidgetInstance(instance, participant_id))
-					notifyWidgets(session, manager, instance);
-				returnDoc(response, localizedMessages.getString("WidgetServiceServlet.1"), "message");							 //$NON-NLS-1$ //$NON-NLS-2$
-			} 
-			catch (Exception ex) {			
-				returnDoc(response, localizedMessages.getString("WidgetServiceServlet.5"), "error");	//$NON-NLS-1$ //$NON-NLS-2$
-			}
-		}
-		else{
+			if(manager.removeParticipantFromWidgetInstance(instance, participant_id))
+				notifyWidgets(session, manager, instance);
+			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.1"), "message");							 //$NON-NLS-1$ //$NON-NLS-2$
+		}else{
 			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.3"), "error"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
@@ -209,13 +194,9 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 		if(widgetInstance!=null){
 			manager.lockWidgetInstance(widgetInstance);
 			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.1"), "message"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		else{
+		}else{
 			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.3"), "error"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-		_logger.debug("*** stop widget called ****"); //$NON-NLS-1$
-		_logger.debug("*** "+ userId + " ****"); //$NON-NLS-1$ //$NON-NLS-2$
-		_logger.debug("***************************"); //$NON-NLS-1$
 	}
 
 	private void doResumeWidget(HttpServletRequest request, HttpServletResponse response) throws IOException{
@@ -231,13 +212,9 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 		if(widgetInstance!=null){
 			manager.unlockWidgetInstance(widgetInstance);
 			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.1"), "message"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		else{
+		}else{
 			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.3"), "error"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-		_logger.debug("*** resume widget called ****"); //$NON-NLS-1$
-		_logger.debug("*** "+ userId + " ****"); //$NON-NLS-1$ //$NON-NLS-2$
-		_logger.debug("***************************"); //$NON-NLS-1$
 	}
 
 	/**
@@ -263,24 +240,16 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 		WidgetInstance instance = null;
 		if (widgetId != null){
 			instance = manager.getWidgetInstanceById(apiKey,userId, sharedDataKey, widgetId);
-		} 
-		else {
+		} else {
 			instance = manager.getWidgetInstance(apiKey,userId, sharedDataKey, serviceType);
 		}
 		if(instance != null){
-			try {
-				if(isPersonalProperty){
-					manager.updatePreference(instance, propertyName, propertyValue);
-				}
-				else{
-					manager.updateSharedDataEntry(instance, propertyName, propertyValue, false);
-				}				
-				returnDoc(response, localizedMessages.getString("WidgetServiceServlet.1"), "message");							 //$NON-NLS-1$ //$NON-NLS-2$
-			} 
-			catch (Exception ex) {			
-				returnDoc(response, localizedMessages.getString("WidgetServiceServlet.4") + propertyName, "error");			 //$NON-NLS-1$ //$NON-NLS-2$
-				_logger.error("error on doSetProperty", ex); //$NON-NLS-1$
-			}
+			if(isPersonalProperty){
+				manager.updatePreference(instance, propertyName, propertyValue);
+			}else{
+				manager.updateSharedDataEntry(instance, propertyName, propertyValue, false);
+			}				
+			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.1"), "message");							 //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		else{
 			returnDoc(response, localizedMessages.getString("WidgetServiceServlet.3"), "error"); //$NON-NLS-1$ //$NON-NLS-2$
