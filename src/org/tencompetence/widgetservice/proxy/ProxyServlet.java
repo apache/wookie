@@ -45,9 +45,7 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.tencompetence.widgetservice.Messages;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
-import org.tencompetence.widgetservice.manager.IWidgetAPIManager;
 import org.tencompetence.widgetservice.manager.IWidgetProxyManager;
-import org.tencompetence.widgetservice.manager.impl.WidgetAPIManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetProxyManager;
 import org.tencompetence.widgetservice.server.LocaleHandler;
 
@@ -189,9 +187,8 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 		}
 		String instanceId = request.getParameter("instanceid_key");
 		if(instanceId == null) return false;
-		IWidgetAPIManager manager = new WidgetAPIManager(localizedMessages);
 		// check if instance is valid
-		WidgetInstance widgetInstance = manager.checkUserKey(instanceId);			
+		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(instanceId);			
 		if(widgetInstance!=null){
 			return true;
 		}

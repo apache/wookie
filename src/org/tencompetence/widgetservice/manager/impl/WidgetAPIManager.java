@@ -70,16 +70,6 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#checkUserKey(java.lang.String)
-	 */
-	public WidgetInstance checkUserKey(String key){
-		if (key == null) return null;
-		WidgetInstance[] instance = WidgetInstance.findByValue("idKey", key);
-		if (instance == null||instance.length!=1) return null;
-		return (WidgetInstance) instance[0];		
-	}
-	
-	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#getSharedDataForInstance(org.tencompetence.widgetservice.beans.WidgetInstance)
 	 */
 	public synchronized SharedData[] getSharedDataForInstance(WidgetInstance instance){

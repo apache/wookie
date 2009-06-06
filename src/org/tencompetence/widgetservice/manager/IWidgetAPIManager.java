@@ -8,18 +8,10 @@ import org.tencompetence.widgetservice.beans.WidgetInstance;
  * Interface for api functions
  * 
  * @author Paul Sharples
- * @version $Id: IWidgetAPIManager.java,v 1.6 2009-06-06 20:09:24 scottwilson Exp $
+ * @version $Id: IWidgetAPIManager.java,v 1.7 2009-06-06 20:20:03 scottwilson Exp $
  *
  */
 public interface IWidgetAPIManager {
-	
-	/**
-	 * Check that a request is valid by getting the hashed key and seeing if it exists in the DB
-	 * @param key
-	 * @return
-	 * @throws Exception 
-	 */
-	public WidgetInstance checkUserKey(String key);
 
 	/**
 	 * Returns all sharedData records related to this instance

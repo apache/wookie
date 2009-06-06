@@ -77,16 +77,6 @@ public class WidgetServiceManager extends WidgetAPIManager implements IWidgetSer
 	}
 
 	/* (non-Javadoc)
-	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#getWidgetInstance(java.lang.String)
-	 */
-	public WidgetInstance getWidgetInstance(String key) {
-		if (key == null) return null;
-		WidgetInstance[] instances = WidgetInstance.findByValue("idKey", key);
-		if (instances!=null && instances.length == 1) return instances[0];
-		return null;
-	}
-
-	/* (non-Javadoc)
 	 * @see org.tencompetence.widgetservice.manager.IWidgetServiceManager#widgetInstanceExists(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public boolean widgetInstanceExists(String api_key, String userId, String sharedDataKey, String serviceContext){

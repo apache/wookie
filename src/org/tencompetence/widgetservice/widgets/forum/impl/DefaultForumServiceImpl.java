@@ -40,8 +40,6 @@ import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.tencompetence.widgetservice.Messages;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
-import org.tencompetence.widgetservice.manager.IWidgetAPIManager;
-import org.tencompetence.widgetservice.manager.impl.WidgetAPIManager;
 import org.tencompetence.widgetservice.server.LocaleHandler;
 import org.tencompetence.widgetservice.widgets.forum.IForumManager;
 import org.tencompetence.widgetservice.widgets.forum.IForumService;
@@ -58,7 +56,7 @@ import org.tencompetence.widgetservice.widgets.forum.PostNode;
  *   forum.getNodeTree();
  * 
  * @author Paul Sharples
- * @version $Id: DefaultForumServiceImpl.java,v 1.6 2009-05-01 10:40:09 ps3com Exp $
+ * @version $Id: DefaultForumServiceImpl.java,v 1.7 2009-06-06 20:20:03 scottwilson Exp $
  *
  */
 public class DefaultForumServiceImpl implements IForumService {
@@ -90,7 +88,7 @@ public class DefaultForumServiceImpl implements IForumService {
 		
 		try {
 			// check if instance is valid
-			WidgetInstance widgetInstance = checkUserKey(id_key, localizedMessages);
+			WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
 			if(widgetInstance!=null){
 				IForumManager fManager = new ForumManager();
 				String sharedDataKey = widgetInstance.getSharedDataKey();	
@@ -125,7 +123,7 @@ public class DefaultForumServiceImpl implements IForumService {
 		}					
 		try {
 			// check if instance is valid
-			WidgetInstance widgetInstance = checkUserKey(id_key, localizedMessages);
+			WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
 			if(widgetInstance!=null){
 				IForumManager fManager = new ForumManager();
 				String sharedDataKey = widgetInstance.getSharedDataKey();	
@@ -160,7 +158,7 @@ public class DefaultForumServiceImpl implements IForumService {
 		}		
 		try {
 			// check if instance is valid
-			WidgetInstance widgetInstance = checkUserKey(id_key, localizedMessages);
+			WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
 			if(widgetInstance!=null){
 				IForumManager fManager = new ForumManager();
 				String sharedDataKey = widgetInstance.getSharedDataKey();
@@ -179,16 +177,6 @@ public class DefaultForumServiceImpl implements IForumService {
 			_logger.error(localizedMessages.getString("DefaultForumServiceImpl.5"), ex); //$NON-NLS-1$
 			return false;	
 		}				
-	}
-	
-	/**
-	 * Check the userid to ensure its valid
-	 * @param id_key
-	 * @return
-	 */
-	private WidgetInstance checkUserKey(String id_key, Messages localizedMessages){
-		IWidgetAPIManager manager = new WidgetAPIManager(localizedMessages);					
-		return manager.checkUserKey(id_key);		
 	}
 	
 	/**

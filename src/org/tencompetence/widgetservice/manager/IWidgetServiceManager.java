@@ -9,7 +9,7 @@ import org.tencompetence.widgetservice.exceptions.WidgetTypeNotSupportedExceptio
  * Interface for service functions
  * 
  * @author Paul Sharples
- * @version $Id: IWidgetServiceManager.java,v 1.11 2009-06-03 22:06:51 scottwilson Exp $
+ * @version $Id: IWidgetServiceManager.java,v 1.12 2009-06-06 20:20:03 scottwilson Exp $
  *
  */
 public interface IWidgetServiceManager extends IWidgetAPIManager {
@@ -63,13 +63,6 @@ public interface IWidgetServiceManager extends IWidgetAPIManager {
 	 * @return
 	 */
 	WidgetInstance getWidgetInstanceById(String api_key, String userId, String sharedDataKey, String widgetId);
-	
-	/**
-	 * Get a widget instance from the DB; returns null if none exists
-	 * @param id_key
-	 * @return - the widget instance, or null if no matching instance exists
-	 */
-	WidgetInstance getWidgetInstance(String id_key);
 	
 	/**
 	 * Add a new widget instance
