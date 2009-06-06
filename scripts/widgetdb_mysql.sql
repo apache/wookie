@@ -148,6 +148,7 @@ CREATE TABLE `Param` (
 CREATE TABLE `ServerFeature` (
 	`id` int(11) NOT NULL auto_increment,
 	`featureName` varchar(255) NOT NULL,
+	`className` varchar(255) NOT NULL,
 	PRIMARY KEY  (`id`)
 );
 
@@ -158,5 +159,5 @@ INSERT INTO `WidgetDefault` VALUES ('unsupported',1),('chat',2),('discussion',3)
 INSERT INTO `WidgetService` VALUES (1,'unsupported'),(2,'chat'),(3,'discussion'),(4,'forum'),(5,'vote'),(6,'natter'),(7,'weather');
 INSERT INTO `WidgetType` VALUES (1,1,'unsupported'),(2,2,'chat'),(3,3,'forum'),(4,3,'discussion'),(5,4,'vote'),(6,5,'natter'),(7,6,'weather');
 INSERT INTO `Whitelist` VALUES (1,'http://127.0.0.1'),(2,'http://localhost'),(3,'http://feeds.bbc.co.uk/weather/feeds/rss');
-INSERT INTO `ServerFeature` VALUES (1,'polling');
+INSERT INTO `ServerFeature` VALUES (1,'http://wave.google.com','org.tencompetence.widgetservice.feature.wave.WaveAPIImpl');
 INSERT INTO `ApiKey` VALUES (1,'TEST','test@127.0.0.1');

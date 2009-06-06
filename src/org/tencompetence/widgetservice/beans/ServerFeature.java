@@ -30,13 +30,14 @@ package org.tencompetence.widgetservice.beans;
  * NOTE: The config.xml file can also define other features, which may 
  * or may not be supported. These types are modelled in the "Feature" class.
  * @author Paul Sharples
- * @version $Id: ServerFeature.java,v 1.1 2009-06-04 15:10:13 ps3com Exp $
+ * @version $Id: ServerFeature.java,v 1.2 2009-06-06 20:09:24 scottwilson Exp $
  */
 public class ServerFeature extends AbstractKeyBean<ServerFeature> {
 
 	private static final long serialVersionUID = 1L;
 	
 	private String featureName;
+	private String className;
 
 	public String getFeatureName() {
 		return featureName;
@@ -44,6 +45,26 @@ public class ServerFeature extends AbstractKeyBean<ServerFeature> {
 
 	public void setFeatureName(String featureName) {
 		this.featureName = featureName;
+	}
+	
+	public static ServerFeature findByName(String name){
+		ServerFeature[] features = (ServerFeature[]) findByValue(ServerFeature.class, "featureName", name);
+		if (features == null || features.length != 1) return null;
+		return features[0];
+	}
+
+	/**
+	 * @return the className
+	 */
+	public String getClassName() {
+		return className;
+	}
+
+	/**
+	 * @param className the className to set
+	 */
+	public void setClassName(String className) {
+		this.className = className;
 	}
 
 }

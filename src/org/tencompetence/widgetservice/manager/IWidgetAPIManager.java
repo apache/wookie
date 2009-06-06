@@ -1,6 +1,5 @@
 package org.tencompetence.widgetservice.manager;
 
-import org.tencompetence.widgetservice.beans.Participant;
 import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
@@ -9,11 +8,11 @@ import org.tencompetence.widgetservice.beans.WidgetInstance;
  * Interface for api functions
  * 
  * @author Paul Sharples
- * @version $Id: IWidgetAPIManager.java,v 1.5 2009-06-03 20:55:20 scottwilson Exp $
+ * @version $Id: IWidgetAPIManager.java,v 1.6 2009-06-06 20:09:24 scottwilson Exp $
  *
  */
 public interface IWidgetAPIManager {
-
+	
 	/**
 	 * Check that a request is valid by getting the hashed key and seeing if it exists in the DB
 	 * @param key
@@ -72,9 +71,5 @@ public interface IWidgetAPIManager {
 	public String getSharedDataValue(WidgetInstance widgetInstance, String key);
 
 	public boolean isInstanceLocked(WidgetInstance widgetInstance);
-	
-	public Participant getViewer(WidgetInstance widgetInstance);
-	
-	public Participant[] getParticipants(WidgetInstance widgetInstance);
 
 }

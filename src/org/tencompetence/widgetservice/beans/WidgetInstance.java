@@ -36,7 +36,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
  * WidgetInstance - a simple bean to model an actual widgets instance attributes
  * 
  * @author Paul Sharples
- * @version $Id: WidgetInstance.java,v 1.7 2009-06-03 10:06:17 scottwilson Exp $
+ * @version $Id: WidgetInstance.java,v 1.8 2009-06-06 20:09:24 scottwilson Exp $
  */
 public class WidgetInstance extends AbstractKeyBean<WidgetInstance> {
 
@@ -203,6 +203,13 @@ public class WidgetInstance extends AbstractKeyBean<WidgetInstance> {
 			else{
 				return (WidgetInstance)sqlReturnList.get(0);
 			}
+		}
+		
+		public static WidgetInstance findByIdKey(String key){
+			if (key == null) return null;
+			WidgetInstance[] instance = WidgetInstance.findByValue("idKey", key);
+			if (instance == null||instance.length!=1) return null;
+			return (WidgetInstance) instance[0];		
 		}
 
 }

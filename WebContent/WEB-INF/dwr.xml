@@ -3,18 +3,22 @@
 
 <dwr>
   <allow>
+    <create creator="new" javascript="WaveImpl" scope="application">
+      <param name="class" value="org.tencompetence.widgetservice.feature.wave.WaveAPIImpl"/>  
+      <include method="state"/>   
+      <include method="submitDelta"/> 
+      <include method="getParticipants"/>
+      <include method="getViewer"/>      
+    </create>
+    
     <create creator="new" javascript="WidgetImpl" scope="application">
       <param name="class" value="org.tencompetence.widgetservice.ajaxmodel.impl.WidgetAPIImpl"/>
       <include method="preferences"/> 
-      <include method="state"/>   
-      <include method="submitDelta"/>  
       <include method="preferenceForKey"/>
       <include method="setPreferenceForKey"/>
       <include method="setSharedDataForKey"/>
       <include method="sharedDataForKey"/>
       <include method="appendSharedDataForKey"/>
-      <include method="getParticipants"/>
-      <include method="getViewer"/>
       <include method="lock"/>
       <include method="unlock"/>
       <include method="system"/>

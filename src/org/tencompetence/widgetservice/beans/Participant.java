@@ -26,12 +26,13 @@
  */
 package org.tencompetence.widgetservice.beans;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * A participant entity
  * @author Scott Wilson
- * @version $Id: Participant.java,v 1.3 2009-06-04 15:10:41 ps3com Exp $ 
+ * @version $Id: Participant.java,v 1.4 2009-06-06 20:09:24 scottwilson Exp $ 
  */
 public class Participant extends AbstractKeyBean<Participant> {
 
@@ -133,6 +134,23 @@ public class Participant extends AbstractKeyBean<Participant> {
 	
 	public static Participant[] findAll(){
 		return (Participant[]) findAll(Participant.class);
+	}
+	/// Special queries
+	public static Participant[] getParticipants(WidgetInstance instance) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("sharedDataKey", instance.getSharedDataKey());	//$NON-NLS-1$
+		map.put("widgetGuid", instance.getWidget().getGuid());	//$NON-NLS-1$
+		return findByValues(map);
+	}
+
+	public static Participant getViewer(WidgetInstance instance) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("sharedDataKey", instance.getSharedDataKey());	//$NON-NLS-1$
+		map.put("widgetGuid", instance.getWidget().getGuid());	//$NON-NLS-1$
+		map.put("participant_id", instance.getUserId());	//$NON-NLS-1$
+		Participant[] participants = findByValues(map);
+		if (participants == null || participants.length != 1) return null;
+		return participants[0];
 	}
 
 	

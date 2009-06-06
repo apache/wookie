@@ -29,9 +29,10 @@ package org.tencompetence.widgetservice.manager.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 import org.tencompetence.widgetservice.Messages;
-import org.tencompetence.widgetservice.beans.Participant;
 import org.tencompetence.widgetservice.beans.Preference;
 import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
@@ -56,6 +57,16 @@ public class WidgetAPIManager implements IWidgetAPIManager {
 	
 	public WidgetAPIManager(Messages localizedMessages2) {		
 		this.localizedMessages = localizedMessages2;
+	}
+	
+	public static IWidgetAPIManager getManager(HttpSession session, Messages localizedMessages){
+		IWidgetAPIManager manager = null;
+		manager = (IWidgetAPIManager)session.getAttribute(WidgetAPIManager.class.getName());
+		if(manager == null){
+			manager = new WidgetAPIManager(localizedMessages);
+			session.setAttribute(WidgetAPIManager.class.getName(), manager);
+		}
+		return manager;
 	}
 	
 	/* (non-Javadoc)
@@ -237,29 +248,6 @@ public class WidgetAPIManager implements IWidgetAPIManager {
     		pref.setDvalue(value);	
     		pref.save();	
         }       
-	}
-
-	/* (non-Javadoc)
-	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#getParticipants()
-	 */
-	public Participant[] getParticipants(WidgetInstance instance) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("sharedDataKey", instance.getSharedDataKey());	//$NON-NLS-1$
-		map.put("widgetGuid", instance.getWidget().getGuid());	//$NON-NLS-1$
-		return Participant.findByValues(map);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.tencompetence.widgetservice.manager.IWidgetAPIManager#getViewer()
-	 */
-	public Participant getViewer(WidgetInstance instance) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("sharedDataKey", instance.getSharedDataKey());	//$NON-NLS-1$
-		map.put("widgetGuid", instance.getWidget().getGuid());	//$NON-NLS-1$
-		map.put("participant_id", instance.getUserId());	//$NON-NLS-1$
-		Participant[] participants = Participant.findByValues(map);
-		if (participants == null || participants.length != 1) return null;
-		return participants[0];
 	}
 
 }

@@ -64,7 +64,7 @@ import org.tencompetence.widgetservice.util.gadgets.GadgetUtils;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.22 2009-06-04 15:22:46 ps3com Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.23 2009-06-06 20:09:24 scottwilson Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -491,7 +491,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 						// now update the js links in the start page
 						File startFile = new File(newWidgetFolder.getCanonicalPath() + File.separator + src);							
 						if(startFile.exists()){								
-							StartPageJSParser parser = new StartPageJSParser(startFile);
+							StartPageJSParser parser = new StartPageJSParser(startFile, widgetModel);
 							parser.doParse();
 						}							
 						// get the path to the root of the unzipped folder

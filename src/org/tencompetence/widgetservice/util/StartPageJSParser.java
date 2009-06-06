@@ -36,6 +36,10 @@ import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.PrettyXmlSerializer;
 import org.htmlcleaner.TagNode;
+import org.tencompetence.widgetservice.beans.ServerFeature;
+import org.tencompetence.widgetservice.feature.IFeature;
+import org.tencompetence.widgetservice.manifestmodel.IFeatureEntity;
+import org.tencompetence.widgetservice.manifestmodel.IManifestModel;
 
 /**
  * Parse the HTML start page & add the JS file links
@@ -48,7 +52,7 @@ import org.htmlcleaner.TagNode;
  * <script type="text/javascript" src="/wookie/shared/js/wookie-wrapper.js"></script>
  *
  * @author Paul Sharples
- * @version $Id: StartPageJSParser.java,v 1.5 2009-06-04 15:06:32 ps3com Exp $
+ * @version $Id: StartPageJSParser.java,v 1.6 2009-06-06 20:09:24 scottwilson Exp $
  */
 public class StartPageJSParser implements IStartPageConfiguration {
 	
@@ -58,10 +62,12 @@ public class StartPageJSParser implements IStartPageConfiguration {
 	private CleanerProperties fProps = null;
 	private File fStartPage = null;
 	List<TagNode> fScriptList = null;
+	private IManifestModel fWidget = null;
 	
-	public StartPageJSParser(File startPage) {
+	public StartPageJSParser(File startPage, IManifestModel model) {
 		fScriptList = new ArrayList<TagNode>();
 		fStartPage = startPage;		
+		fWidget = model;
 	}
 	
 	private boolean doesAttributeValueExistsInNode(TagNode node, String attrName, String attrValue){
@@ -95,6 +101,7 @@ public class StartPageJSParser implements IStartPageConfiguration {
 		}
 	}
 			
+	@SuppressWarnings("unchecked")
 	public void doParse(){
 		fCleaner = new HtmlCleaner();
 		// take default cleaner properties		
@@ -133,7 +140,34 @@ public class StartPageJSParser implements IStartPageConfiguration {
 					_logger.debug("WOOKIE_WRAPPER_SRC_VALUE NOT found");
 					TagNode jsTag = createScriptTag(WOOKIE_WRAPPER_SRC_VALUE);
 					headNode.addChild(jsTag);
-				}	
+				}
+				
+				// Add features.
+				// For each requested feature, check if there is a corresponding installed ServerFeature
+				// If so, inject its JS into the header.
+				
+				for (IFeatureEntity feature: fWidget.getFeatures()){
+					ServerFeature sf = ServerFeature.findByName(feature.getName());
+					if (sf!=null){
+						Class<? extends IFeature> klass;
+						try {
+							klass = (Class<? extends IFeature>) Class.forName(sf.getClassName());
+							IFeature theFeature = (IFeature) klass.newInstance();
+							if(!doesAttributeValueExistsInNode(headNode, SRC_ATTRIBUTE, theFeature.getJavaScriptImpl())){
+								TagNode jsTag = createScriptTag(theFeature.getJavaScriptImpl());
+								headNode.addChild(jsTag);
+							}
+							if(!doesAttributeValueExistsInNode(headNode, SRC_ATTRIBUTE, theFeature.getJavaScriptWrapper())){
+								TagNode jsTag = createScriptTag(theFeature.getJavaScriptWrapper());
+								headNode.addChild(jsTag);
+							}
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+				
 				// add back the orginal script tags - at the end - so that the local JS will load last!
 				for(TagNode node : fScriptList){
 					headNode.addChild(node);
@@ -145,6 +179,5 @@ public class StartPageJSParser implements IStartPageConfiguration {
 		catch (IOException ex) {
 			_logger.error("doParse() failed:", ex);
 		}
-	}
-	
+	} 
 }
