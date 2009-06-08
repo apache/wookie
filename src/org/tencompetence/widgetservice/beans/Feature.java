@@ -29,9 +29,9 @@ package org.tencompetence.widgetservice.beans;
 import java.util.HashSet;
 import java.util.Set;
 /**
- * A Feature found in the config.aml 
+ * A Feature found in the config.xml 
  * @author Paul Sharples
- * @version $Id: Feature.java,v 1.1 2009-06-04 15:09:34 ps3com Exp $ 
+ * @version $Id: Feature.java,v 1.2 2009-06-08 14:56:48 ps3com Exp $ 
  */
 public class Feature extends AbstractKeyBean<Feature>{
 
