@@ -52,7 +52,7 @@ import org.tencompetence.widgetservice.manifestmodel.IManifestModel;
  * <script type="text/javascript" src="/wookie/shared/js/wookie-wrapper.js"></script>
  *
  * @author Paul Sharples
- * @version $Id: StartPageJSParser.java,v 1.6 2009-06-06 20:09:24 scottwilson Exp $
+ * @version $Id: StartPageJSParser.java,v 1.7 2009-06-08 14:58:06 ps3com Exp $
  */
 public class StartPageJSParser implements IStartPageConfiguration {
 	
@@ -153,13 +153,17 @@ public class StartPageJSParser implements IStartPageConfiguration {
 						try {
 							klass = (Class<? extends IFeature>) Class.forName(sf.getClassName());
 							IFeature theFeature = (IFeature) klass.newInstance();
-							if(!doesAttributeValueExistsInNode(headNode, SRC_ATTRIBUTE, theFeature.getJavaScriptImpl())){
-								TagNode jsTag = createScriptTag(theFeature.getJavaScriptImpl());
-								headNode.addChild(jsTag);
+							if(theFeature.getJavaScriptImpl() != null){
+								if(!doesAttributeValueExistsInNode(headNode, SRC_ATTRIBUTE, theFeature.getJavaScriptImpl())){
+									TagNode jsTag = createScriptTag(theFeature.getJavaScriptImpl());
+									headNode.addChild(jsTag);
+								}
 							}
-							if(!doesAttributeValueExistsInNode(headNode, SRC_ATTRIBUTE, theFeature.getJavaScriptWrapper())){
-								TagNode jsTag = createScriptTag(theFeature.getJavaScriptWrapper());
-								headNode.addChild(jsTag);
+							if(theFeature.getJavaScriptWrapper() != null){
+								if(!doesAttributeValueExistsInNode(headNode, SRC_ATTRIBUTE, theFeature.getJavaScriptWrapper())){
+									TagNode jsTag = createScriptTag(theFeature.getJavaScriptWrapper());
+									headNode.addChild(jsTag);
+								}
 							}
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
