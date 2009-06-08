@@ -211,7 +211,7 @@ var LanguageHelper = {
 	
 	
 	init : function(){
-		Widget.preferenceForKey("Locale", this.setDefaultLanguageFromPrefs);
+		Widget.preferenceForKey("locale", this.setDefaultLanguageFromPrefs);
 	},
 	
 	setDefaultLanguageFromPrefs : function(res){
@@ -252,7 +252,7 @@ var LanguageHelper = {
 
 	doLanguageUpdate : function(la){
 		this.currentLanguage = la;
-		Widget.setPreferenceForKey("Locale", this.currentLanguage);
+		Widget.setPreferenceForKey("locale", this.currentLanguage);
 		lCallbackFunctName();
 	}
 
