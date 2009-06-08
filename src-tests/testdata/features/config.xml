@@ -22,6 +22,7 @@
   	<param name="p5" value="v5"></param>
   </feature>  
   <feature name="http://www.getwookie.org/testfeature3" required="false"/>
+  <feature name="http://www.getwookie.org/usefeature/polling"/>
   <preference name="pref1" value="1" readonly="true"/>
   <preference name="pref2" value="2" readonly="false"/>
   <preference name="pref3" />

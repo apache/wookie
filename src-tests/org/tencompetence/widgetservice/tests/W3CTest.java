@@ -146,7 +146,7 @@ public class W3CTest extends TestCase implements IW3CXMLConfiguration {
 			assertEquals("es", model.getDescriptions().get(1).getLanguage());
 			
 			// now do the features
-			assertEquals(3, model.getFeatures().size());
+			assertEquals(4, model.getFeatures().size());
 			assertEquals("http://www.getwookie.org/testfeature1", model.getFeatures().get(0).getName());
 			assertEquals(true, model.getFeatures().get(0).isRequired());
 			assertEquals(4, model.getFeatures().get(0).getParams().size());
@@ -168,6 +168,8 @@ public class W3CTest extends TestCase implements IW3CXMLConfiguration {
 			assertEquals("http://www.getwookie.org/testfeature3", model.getFeatures().get(2).getName());
 			assertEquals(false, model.getFeatures().get(2).isRequired());
 			assertEquals(0, model.getFeatures().get(2).getParams().size());
+			
+			assertEquals("http://www.getwookie.org/usefeature/polling", model.getFeatures().get(3).getName());
 		} 
 		catch (JDOMException ex) {
 			fail("couldn't read XML");
