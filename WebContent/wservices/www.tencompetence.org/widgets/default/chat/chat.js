@@ -27,14 +27,7 @@ function init() {
 	if(!isActive){		
 		isActive = true;
 	 	WidgetUtil.setValue("memberslegend", LanguageHelper.getLocalizedString('online users'),  { escapeHtml:false });
-	 	if (Widget.hasFeature("polling")){
-	 		// carry on
-			Widget.preferenceForKey("username", setLocalUsername);
-		}
-		else{
-			//error
-			WidgetUtil.setValue("chatlog", "The polling feature is unavailable.", { escapeHtml:false }); 
-		}	 	
+		Widget.preferenceForKey("username", setLocalUsername);
  	}
 }
 
