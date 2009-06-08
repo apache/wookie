@@ -82,6 +82,7 @@ var Widget = {
 					// This gets the id_key and assigns it to instanceid_key.
 					this.instanceid_key = pairs[i].substring(pos+1);
 				}
+				//TODO - remove this & use a callback instead of having it in the URL
 				if(argname=="proxy"){
 					this.proxyUrl = pairs[i].substring(pos+1);
 				}
@@ -108,11 +109,6 @@ var Widget = {
 		this.version = this.preferences.getItem("version");
 		this.height = this.preferences.getItem("height");
 		this.width = this.preferences.getItem("width");		
-						
-		// this line tells DWR to use call backs 
-		// (i.e. will call onsharedupdate() when an event is received for shared data
-		// TODO only call this when needed
-		dwr.engine.setActiveReverseAjax(true);	
 		
 	},
 	
