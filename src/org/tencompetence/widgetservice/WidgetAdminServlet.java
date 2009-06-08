@@ -47,6 +47,7 @@ import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetDefault;
 import org.tencompetence.widgetservice.beans.WidgetService;
 import org.tencompetence.widgetservice.exceptions.BadManifestException;
+import org.tencompetence.widgetservice.exceptions.BadWidgetZipFileException;
 import org.tencompetence.widgetservice.manager.IWidgetAdminManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetAdminManager;
 import org.tencompetence.widgetservice.server.LocaleHandler;
@@ -64,7 +65,7 @@ import org.tencompetence.widgetservice.util.gadgets.GadgetUtils;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.23 2009-06-06 20:09:24 scottwilson Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.24 2009-06-08 14:56:12 ps3com Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -517,12 +518,12 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 					}
 					else{
 						// the start page as defined in config.xml does not exist in zip file
-						throw new BadManifestException(localizedMessages.getString("WidgetAdminServlet.22")); //$NON-NLS-1$
+						throw new BadWidgetZipFileException(localizedMessages.getString("WidgetAdminServlet.22")); //$NON-NLS-1$
 					}
 				}
 				else{
 					// no manifest file found in zip archive
-					throw new BadManifestException(localizedMessages.getString("WidgetAdminServlet.23")); //$NON-NLS-1$ 
+					throw new BadWidgetZipFileException(localizedMessages.getString("WidgetAdminServlet.23")); //$NON-NLS-1$ 
 				}
 			}
 			else{
@@ -542,6 +543,11 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 			_logger.error(ex);			
 			session.setAttribute("error_value", ex.getMessage()); //$NON-NLS-1$
 		}
+		catch (BadWidgetZipFileException ex) {
+			_logger.error(ex);			
+			session.setAttribute("error_value", ex.getMessage()); //$NON-NLS-1$
+		}
+		
 		
 	}
 
