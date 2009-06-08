@@ -103,13 +103,13 @@ function init() {
     setLangOpts();
 	if(!isActive){
 		isActive = true;
-        Widget.preferenceForKey("LDUsercolor", setLocalUsercolor);		 
+		Widget.preferenceForKey("LDUsercolor", setLocalUsercolor);			 
  	}
 }
 
 // set the local username
 function setLocalUsername(p){	
-	if (!p || p == "null"){
+	if (!p || p == "null" ||  p == "No matching key found"){
 	   username = "natterer" + rnd_no(9999);
 	   Widget.setPreferenceForKey("username", username, null);
 	} else {
