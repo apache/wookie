@@ -17,8 +17,15 @@ var isdActive=false;
 function init() {
 if (isDebug) DebugHelper.debug("<function init start>");				
  	instanceid_key = Widget.getInstanceKey();
- 	if (isDebug) DebugHelper.debug("<function init start 2>");
- 	Widget.preferenceForKey("username", setLocalUsername);	 			
+ 	if (isDebug) DebugHelper.debug("<function init start 2>"); 		 
+ 	if (Widget.hasFeature("polling")){
+ 		// carry on
+		Widget.preferenceForKey("username", setLocalUsername);
+	}
+	else{
+		//error
+		WidgetUtil.setValue("chatlog", "The polling feature is unavailable.", { escapeHtml:false }); 
+	}	
 }
 
 

@@ -27,14 +27,21 @@ function init() {
 	if(!isActive){		
 		isActive = true;
 	 	WidgetUtil.setValue("memberslegend", LanguageHelper.getLocalizedString('online users'),  { escapeHtml:false });
-	 	Widget.preferenceForKey("username", setLocalUsername);	 	
+	 	if (Widget.hasFeature("polling")){
+	 		// carry on
+			Widget.preferenceForKey("username", setLocalUsername);
+		}
+		else{
+			//error
+			WidgetUtil.setValue("chatlog", "The polling feature is unavailable.", { escapeHtml:false }); 
+		}	 	
  	}
 }
 
 // set the local username
-function setLocalUsername(p){
+function setLocalUsername(p){	
 	if(username == ""){
-		if(p == "null"){
+		if(p == "null" ||  p == "No matching key found"){
 			username = "User "+ WidgetUtil.generate3DigitRandomNumber();
 		}
 		else {
