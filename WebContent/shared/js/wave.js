@@ -66,7 +66,12 @@
 		dwr.engine.beginBatch();
 		WaveImpl.getParticipants(Widget.instanceid_key, this.setParticipants);
 		WaveImpl.getViewer(Widget.instanceid_key, this.setViewer);
+        WaveImpl.state(Widget.instanceid_key, this.setState);
 		dwr.engine.endBatch({async:false});		
+    }
+    
+    this.setState = function(data){
+        state.__setState(data);
     }
     
     this.setParticipants = function(parts){
