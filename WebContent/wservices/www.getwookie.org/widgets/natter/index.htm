@@ -1,21 +1,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta http-equiv="pragma" content="no-cache"/>
+  <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>Natter Widget</title> 
-  <script type='text/javascript' src='/wookie/dwr/util.js'> </script>
-  <script type='text/javascript' src='/wookie/dwr/engine.js'> </script>
-  <script type='text/javascript' src='/wookie/dwr/interface/WidgetImpl.js'> </script>
-  <script type='text/javascript' src='/wookie/shared/js/wookie-wrapper.js'> </script>
-  <script type="text/javascript" src="/wookie/shared/js/wookie-polling-feature.js"></script>
+  <title>Default Chat Widget</title> 
   <script type='text/javascript' src='AppleInfoButton.js' charset='utf-8'></script>
   <script type='text/javascript' src='AppleAnimator.js' charset='utf-8'></script>
   <script type='text/javascript' src='InfoButton.js' charset='utf-8'></script>   
   <script type='text/javascript' src='chat.js'> </script>   
-  <script type='text/javascript' src='smileys.js'> </script>   
-  <script type='text/javascript' src='locales/en/localizedStrings.js'> </script>
-  <script type='text/javascript' src='locales/bu/localizedStrings.js'> </script> 
+  <script type='text/javascript' src='smileys.js'> </script> 
+  <script type='text/javascript' src='jquery.js'> </script> 
+  <!-- injected scripts -->
+  <script type='text/javascript' src='/wookie/dwr/util.js'> </script>
+  <script type='text/javascript' src='/wookie/dwr/engine.js'> </script>
+  <script type='text/javascript' src='/wookie/dwr/interface/WidgetImpl.js'> </script>
+  <script type='text/javascript' src='/wookie/shared/js/wookie-wrapper.js'> </script>
+  <script type='text/javascript' src='/wookie/dwr/interface/WaveImpl.js'> </script>
+  <script type='text/javascript' src='/wookie/shared/js/wave.js'> </script>
+  <!-- end injected scripts -->
   <link rel="stylesheet" href="chat.css" type="text/css"/>   
 </head>
 <body onload="init()"> 
@@ -33,7 +35,7 @@
   <div id="back">
         <div id="about"><p>(c) University of Bolton, 2008</p></div>
         <div id="langopts"></div>
-        <input type="submit" id ="done" value="Done" onclick="showFront()"/>
+        <input type="submit" id ="done" value="Done" onClick="showFront()">
   </div>
 </body>
 <!-- fix forIE cashing - must go here even though its in the wrong place

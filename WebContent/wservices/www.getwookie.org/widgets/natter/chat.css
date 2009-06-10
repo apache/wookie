@@ -22,7 +22,7 @@ div#front
 {
  background:url('Images/bg.png') no-repeat;
  height:383px;
- width:255px; 
+ width:255px;
 }
 
 div#back
@@ -135,14 +135,13 @@ span.alert
 	top: 340px;
 	left: 190px;
 	cursor: pointer;
-	width:50px
 }
 
 #about{
 	position: absolute;
     color: white;
 	top: 90px;
-	left: 24px;  	  
+	left: 24px;    
 }
 
 #langopts{

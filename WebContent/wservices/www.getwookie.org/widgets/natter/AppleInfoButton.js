@@ -1,9 +1,9 @@
 /*
-Copyright 2005-2007 Apple Inc.  All Rights Reserved.
+Copyright © 2005-2007 Apple Inc.  All Rights Reserved.
 
 IMPORTANT:  This Apple software and the associated images located in
 /System/Library/WidgetResources/AppleClasses/ (collectively "Apple Software")
-are supplied to you by Apple Inc. (Apple) in consideration of your
+are supplied to you by Apple Inc. (“Apple”) in consideration of your
 agreement to the following terms. Your use, installation and/or redistribution
 of this Apple Software constitutes acceptance of these terms. If you do not
 agree with these terms, please do not use, install, or redistribute this Apple
@@ -11,7 +11,7 @@ Software.
 
 In consideration of your agreement to abide by the following terms, and subject
 to these terms, Apple grants you a personal, non-exclusive license, under
-Apples copyrights in the Apple Software, to use, reproduce, and redistribute
+Apple’s copyrights in the Apple Software, to use, reproduce, and redistribute
 the Apple Software, in text form (for JavaScript files) or binary form (for
 associated images), for the sole purpose of creating Dashboard widgets for Mac
 OS X.
@@ -155,7 +155,7 @@ function AppleInfoButton(flipper, front, foregroundStyle, backgroundStyle, oncli
 	}
 	
 	this._labelClicked = function(event)
-	{				
+	{		
 		_self._flipCircle.style.visibility = "hidden";
 		
 		try {
@@ -164,14 +164,8 @@ function AppleInfoButton(flipper, front, foregroundStyle, backgroundStyle, oncli
 		} catch(ex) {
 			throw ex;
 		} finally {
-			// IE Fix
-			if(BrowserDetect.isBrowser('Explorer')){				
-				event.returnValue = false;
-			}
-			else{
-				event.stopPropagation();
-				event.preventDefault();
-    	    }			
+			event.stopPropagation();
+    	    event.preventDefault();
     	}
 	}
 	
@@ -212,24 +206,16 @@ function AppleInfoButton(flipper, front, foregroundStyle, backgroundStyle, oncli
 	
 	this.setStyle(foregroundStyle, backgroundStyle);
 	
-	// IE Fix
-	if(BrowserDetect.isBrowser('Explorer')){
-		this._front.attachEvent("mousemove", this._frontMove, true);
-		this._front.attachEvent("mouseout", this._frontOutDelay, true);
-		this._flipper.attachEvent("mousedown", this._tempLabelDown, true);
-		this._flipper.attachEvent("onclick", this._labelClicked);
-	}
-	else{
-		this._front.addEventListener("mousemove", this._frontMove, true);
-		this._front.addEventListener("mouseout", this._frontOutDelay, true);
-		this._flipper.addEventListener("mousedown", this._tempLabelDown, true);
-		this._flipper.setAttribute("onclick", "event.stopPropagation(); event.preventDefault();");
-		// switch to this later
-		// this._flipper.addEventListener("click", this._labelClicked, true);
-		this._flipper.addEventListener("mouseover", this._labelOver, true);
-		this._flipper.addEventListener("mouseout", this._labelOut, true);	
-	}
+	this._front.addEventListener("mousemove", this._frontMove, true);
+	this._front.addEventListener("mouseout", this._frontOutDelay, true);
 
+// temp stuff
+	this._flipper.addEventListener("mousedown", this._tempLabelDown, true);
+	this._flipper.setAttribute("onclick", "event.stopPropagation(); event.preventDefault();");
+// switch to this later
+//	this._flipper.addEventListener("click", this._labelClicked, true);
+	this._flipper.addEventListener("mouseover", this._labelOver, true);
+	this._flipper.addEventListener("mouseout", this._labelOut, true);
 }
 
 AppleInfoButton.prototype.remove = function()

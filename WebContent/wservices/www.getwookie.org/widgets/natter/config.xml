@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<widget height="383" width="255" uid="http://www.getwookie.org/widgets/natter" version="0.8" xmlns="http://www.w3.org/ns/widgets">
-	<name>Natter2</name>
-	<description>A Sample chat widget</description>
-	<icon src="Icon.png"/>	
+<widget xmlns="http://www.w3.org/ns/widgets" uid="http://www.getwookie.org/widgets/natter" height="383" width="255">
+	<name>Natter</name>
+	<description>basic chat widget</description>
+	<icon src="icon.png"/>
+	<content src="index.htm"/>
 	<access network="true"/>
 	<author>Scott Wilson</author>
 	<licence>None</licence>
-	<content src="index.htm"/>
+    <feature name="http://wave.google.com" required="true"/>
 </widget>
