@@ -68,6 +68,7 @@
 		WaveImpl.getViewer(Widget.instanceid_key, this.setViewer);
         WaveImpl.state(Widget.instanceid_key, this.setState);
 		dwr.engine.endBatch({async:false});		
+        dwr.engine.setActiveReverseAjax(true);
     }
     
     this.setState = function(data){
