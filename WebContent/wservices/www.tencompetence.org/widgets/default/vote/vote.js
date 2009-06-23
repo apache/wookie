@@ -175,7 +175,7 @@ function setupVoteDisplayStageTwo(pQuestion){
 
 function setupVoteDisplayStageThree(pAnswers){
 	answers = pAnswers;	
-	var questionText = "<div id='questionDiv'><img border='0' src='/wookie/shared/images/vote.png'>"+question+"</div>";
+	var questionText = "<div id='questionDiv'><img  height='32' width='32' border='0' src='/wookie/shared/images/vote.png'>"+question+"</div>";
 	var answerText = "<div id='responseDiv'><form name='responseform'>";	
 	var answerArray = pAnswers.split(answerSeparator);	
 	var count=0;
@@ -247,7 +247,7 @@ function newClosure(someNum, someRef) {
 function showVoteDisplayStageThree(pAnswers){
 	answers = pAnswers;
 	var submitDiv = null;
-	var questionText = "<div id='questionDiv'><img border='0' src='/wookie/shared/images/vote.png'>"+question+"</div>";
+	var questionText = "<div id='questionDiv'><img  height='32' width='32' border='0' src='/wookie/shared/images/vote.png'>"+question+"</div>";
 	var answerText = "<div id='responseDiv'><form name='responseform'><table border='0'>";	
 	var answerArray = pAnswers.split(answerSeparator);	
 	var count=0;

@@ -63,7 +63,11 @@ function init(){
 }
 
 function setLocation(obj){
-    if (obj && obj != "null") city = obj;
+    if (obj && obj != "null") {
+    	if(obj != "No matching key found"){
+    		city = obj;
+    	}
+    }   
     startFetchingWeather();
 }
 
@@ -91,9 +95,10 @@ function startFetchingWeather()
 }
 
 function fetchWeatherData(){
-	var loc = serviceLocation + cities[city]+".xml";    
-    loc = Widget.proxify(loc);
+    var loc = serviceLocation + cities[city]+".xml";    
+    loc = Widget.proxify(loc);    
     var xml_request = new XMLHttpRequest();
+    
 	xml_request.open("GET", loc, true);	
 	xml_request.onreadystatechange = function()
 	{
