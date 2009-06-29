@@ -10,9 +10,17 @@
   <script type="text/javascript" src="/wookie/dwr/interface/WidgetImpl.js"></script>
   <script type="text/javascript" src="/wookie/shared/js/wookie-wrapper.js"></script>
   <script type="text/javascript" src="weather.js" charset="utf-8"></script>  
+  <script type="text/javascript">
+function dragDrop(ev) {
+    var city = ev.dataTransfer.getData("city");
+    setLocation(city);
+    ev.stopPropagation();
+    return false;
+}
+   </script> 
 </head>
 <body onload="init()"> 
-  <div id="front">
+  <div id="front" ondrop="return dragDrop(event)">
 	<div id="weather"></div>
     <div id="city"></div>
 	<div id="temperature"></div>
