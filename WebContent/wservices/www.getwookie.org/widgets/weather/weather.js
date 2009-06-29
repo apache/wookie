@@ -1,7 +1,7 @@
 // A widget for showing the weather in a given location.
 
 var serviceLocation = "http://feeds.bbc.co.uk/weather/feeds/rss/5day/world/"
-var city="Manchester";
+var city="manchester";
 
 var iconTable = new Array;
 iconTable['sunny'] = 'images/sunny.png';
@@ -17,26 +17,26 @@ iconTable['heavysnow'] = 'images/snowy.png';
 iconTable['cloudy'] = 'images/cloudy.png';
 
 var cities = new Array;
-cities['Belfast'] = '1';
-cities['Birmingham'] = '2';
-cities['Bristol'] = '3';
-cities['Cardiff'] = '4';
-cities['Edinburgh'] = '5';
-cities['Glasgow'] = '6';
-cities['Jersey'] = '7';
-cities['London'] = '8';
-cities['Manchester'] = '9';
-cities['Newcastle'] = '10';
-cities['Southampton'] = '11';
-cities['Lerwick'] = '12';
-cities['Plymouth'] = '13';
-cities['Aberdeen'] = '14';
-cities['St Andrews'] = '15';
-cities['Inverness'] = '16';
-cities['York'] = '17';
-cities['Leeds'] = '18';
-cities['Peterborough'] = '19';
-cities['Aberystwyth'] = '20';
+cities['belfast'] = '1';
+cities['birmingham'] = '2';
+cities['bristol'] = '3';
+cities['cardiff'] = '4';
+cities['edinburgh'] = '5';
+cities['glasgow'] = '6';
+cities['jersey'] = '7';
+cities['london'] = '8';
+cities['manchester'] = '9';
+cities['newcastle'] = '10';
+cities['southampton'] = '11';
+cities['lerwick'] = '12';
+cities['plymouth'] = '13';
+cities['aberdeen'] = '14';
+cities['st andrews'] = '15';
+cities['inverness'] = '16';
+cities['york'] = '17';
+cities['leeds'] = '18';
+cities['peterborough'] = '19';
+cities['aberystwyth'] = '20';
 
 var icon;
 var celsius;
@@ -59,15 +59,14 @@ function getDropDownList(){
 }
 
 function init(){	
-	Widget.preferenceForKey("city", setLocation);
+	var pref = Widget.preferences.getItem("city");
+    setLocation(pref);
 }
 
 function setLocation(obj){
-    if (obj && obj != "null") {
-    	if(obj != "No matching key found"){
-    		city = obj;
-    	}
-    }   
+    if (obj && obj != "null") thecity = obj.toLowerCase();
+    if (cities[thecity] != null) city = thecity;
+    Widget.preferences.setItem("city",city);
     startFetchingWeather();
 }
 
@@ -95,10 +94,9 @@ function startFetchingWeather()
 }
 
 function fetchWeatherData(){
-    var loc = serviceLocation + cities[city]+".xml";    
-    loc = Widget.proxify(loc);    
+	var loc = serviceLocation + cities[city]+".xml";    
+    loc = Widget.proxify(loc);
     var xml_request = new XMLHttpRequest();
-    
 	xml_request.open("GET", loc, true);	
 	xml_request.onreadystatechange = function()
 	{
@@ -142,7 +140,7 @@ function updateDisplay()
 }
 
 function setCity(theCity){
-	city = theCity;   
-    Widget.setPreferenceForKey("city", city, null);
+	city = theCity.toLowerCase();    
+    Widget.preferences.setItem("city", city);
     fetchWeatherData();
 }
