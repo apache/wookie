@@ -4,7 +4,6 @@
 package org.tencompetence.widgetservice.util.opensocial;
 
 import java.net.URLEncoder;
-import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
