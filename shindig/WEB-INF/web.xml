@@ -217,17 +217,17 @@
 
   <filter-mapping>
     <filter-name>authFilter</filter-name>
-    <url-pattern>/social/*</url-pattern>
+    <url-pattern>/wookie/social/*</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
     <filter-name>authFilter</filter-name>
-    <url-pattern>/gadgets/ifr</url-pattern>
+    <url-pattern>/wookie/gadgets/ifr</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
     <filter-name>authFilter</filter-name>
-    <url-pattern>/gadgets/makeRequest</url-pattern>
+    <url-pattern>/wookie/gadgets/makeRequest</url-pattern>
   </filter-mapping>
 
   <listener>
