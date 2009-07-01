@@ -106,7 +106,7 @@ public class GadgetUtilsTest extends TestCase {
 		request = new MockHttpServletRequest();
 		request.setScheme("HTTP");
 		request.setServerName("localhost");
-		request.setServerPort(8888);
+		request.setServerPort(8080);
 		request.setParameter("url", TEST_GADGET_URL_VALID);
 		
 		try {
