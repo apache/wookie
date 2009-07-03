@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.tencompetence.widgetservice.manager.impl;
+package org.tencompetence.widgetservice.helpers;
 
 import java.io.PrintWriter;
 import java.net.Socket;

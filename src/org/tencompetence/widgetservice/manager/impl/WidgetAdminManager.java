@@ -57,14 +57,15 @@ import org.tencompetence.widgetservice.manifestmodel.IPreferenceEntity;
  * and setting which widget is to be the default
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminManager.java,v 1.14 2009-06-04 15:07:47 ps3com Exp $
+ * @version $Id: WidgetAdminManager.java,v 1.15 2009-07-03 22:24:28 scottwilson Exp $
  */
-public class WidgetAdminManager extends WidgetServiceManager implements IWidgetAdminManager {
+public class WidgetAdminManager implements IWidgetAdminManager {
 	
 	static Logger _logger = Logger.getLogger(WidgetAdminManager.class.getName());
+	protected Messages localizedMessages;
 
 	public WidgetAdminManager(Messages localizedMessages) {
-		super(localizedMessages);
+		this.localizedMessages = localizedMessages;	
 	}
 				
 	/* (non-Javadoc)

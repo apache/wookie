@@ -51,7 +51,7 @@ import org.tencompetence.widgetservice.exceptions.BadWidgetZipFileException;
 import org.tencompetence.widgetservice.manager.IWidgetAdminManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetAdminManager;
 import org.tencompetence.widgetservice.server.LocaleHandler;
-import org.tencompetence.widgetservice.manager.impl.WidgetKeyManager;
+import org.tencompetence.widgetservice.helpers.WidgetKeyManager;
 import org.tencompetence.widgetservice.manifestmodel.IManifestModel;
 import org.tencompetence.widgetservice.manifestmodel.IW3CXMLConfiguration;
 import org.tencompetence.widgetservice.util.ManifestHelper;
@@ -65,7 +65,7 @@ import org.tencompetence.widgetservice.util.gadgets.GadgetUtils;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.24 2009-06-08 14:56:12 ps3com Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.25 2009-07-03 22:24:28 scottwilson Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -476,6 +476,8 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 					// build the model
 					IManifestModel widgetModel = ManifestHelper.dealWithManifest(ZipUtils.extractZipEntry(zipFile, IW3CXMLConfiguration.MANIFEST_FILE), localizedMessages);															
 					// get the src value from content
+					if (widgetModel.getContent() == null) throw new BadManifestException("No start file found");
+					if (widgetModel.getContent().getSrc() == null) throw new BadManifestException("No start file found");					
 					String src =  widgetModel.getContent().getSrc();
 					// check if the start file exists in the zip file
 					if(ZipUtils.hasZipEntry(zipFile, src)){

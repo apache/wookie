@@ -108,6 +108,69 @@
 		<load-on-startup>2</load-on-startup>
 	</servlet>
 	
+	// REST API
+	<servlet>
+		<description></description>
+		<display-name>Participants</display-name>
+		<servlet-name>ParticipantServlet</servlet-name>
+		<servlet-class>
+			org.tencompetence.widgetservice.controller.ParticipantsController
+		</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>ParticipantServlet</servlet-name>
+		<url-pattern>/participants</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<description></description>
+		<display-name>Properties</display-name>
+		<servlet-name>PropertiesServlet</servlet-name>
+		<servlet-class>
+			org.tencompetence.widgetservice.controller.PropertiesController
+		</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>PropertiesServlet</servlet-name>
+		<url-pattern>/properties</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<description></description>
+		<display-name>WidgetInstances</display-name>
+		<servlet-name>WidgetInstancesServlet</servlet-name>
+		<servlet-class>
+			org.tencompetence.widgetservice.controller.WidgetInstancesController
+		</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>WidgetInstancesServlet</servlet-name>
+		<url-pattern>/widgetinstances</url-pattern>
+	</servlet-mapping>	
+	
+	<servlet>
+		<description></description>
+		<display-name>Widget</display-name>
+		<servlet-name>WidgetServlet</servlet-name>
+		<servlet-class>
+			org.tencompetence.widgetservice.controller.WidgetsController
+		</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>WidgetServlet</servlet-name>
+		<url-pattern>/widgets/*</url-pattern>
+	</servlet-mapping>	
+	<servlet-mapping>
+		<servlet-name>WidgetServlet</servlet-name>
+		<url-pattern>/advertise/*</url-pattern>
+	</servlet-mapping>	
+
+	//
+	
 	<servlet>
 		<description></description>
 		<display-name>WidgetServiceServlet</display-name>
@@ -118,24 +181,9 @@
 		<load-on-startup>2</load-on-startup>
 	</servlet>
 	
-	<servlet>
-		<description></description>
-		<display-name>WidgetAdvertiseServlet</display-name>
-		<servlet-name>WidgetAdvertiseServlet</servlet-name>
-		<servlet-class>
-			org.tencompetence.widgetservice.WidgetAdvertiseServlet
-		</servlet-class>
-		<load-on-startup>2</load-on-startup>
-	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>ProxyServlet</servlet-name>
 		<url-pattern>/proxy/*</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>WidgetAdvertiseServlet</servlet-name>
-		<url-pattern>/advertise</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>

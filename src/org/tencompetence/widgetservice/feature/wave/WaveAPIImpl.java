@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
@@ -19,8 +18,7 @@ import org.tencompetence.widgetservice.Messages;
 import org.tencompetence.widgetservice.beans.Participant;
 import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
-import org.tencompetence.widgetservice.manager.IWidgetAPIManager;
-import org.tencompetence.widgetservice.manager.impl.WidgetAPIManager;
+import org.tencompetence.widgetservice.controller.PropertiesController;
 import org.tencompetence.widgetservice.server.LocaleHandler;
 
 /**
@@ -68,14 +66,12 @@ public class WaveAPIImpl implements IWaveAPI{
 	 */
 	public Map<String, String> state(String id_key) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-		HttpSession session = request.getSession(true);
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		HashMap<String, String> state = new HashMap<String,String>();
 		if(id_key==null){
 			state.put("message", localizedMessages.getString("WidgetAPIImpl.0"));	 //$NON-NLS-1$
 			return state;
 		}
-		IWidgetAPIManager manager = WidgetAPIManager.getManager(session, localizedMessages);
 		// check if instance is valid
 		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
 		if (widgetInstance == null){
@@ -83,7 +79,7 @@ public class WaveAPIImpl implements IWaveAPI{
 			return state;			
 		}
 		//
-		for(SharedData data : manager.getSharedDataForInstance(widgetInstance)){
+		for(SharedData data : SharedData.findSharedDataForInstance(widgetInstance)){
 			state.put(data.getDkey(), data.getDvalue());
 		}
 		return state;
@@ -128,15 +124,13 @@ public class WaveAPIImpl implements IWaveAPI{
 	 */
 	public String submitDelta(String id_key, Map<String,String>map){
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-		HttpSession session = request.getSession(true);
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		IWidgetAPIManager manager = WidgetAPIManager.getManager(session, localizedMessages);
 		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
 		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
-		if(manager.isInstanceLocked(widgetInstance)) return localizedMessages.getString("WidgetAPIImpl.2");
+		if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2");
 		//
 		for (String key: map.keySet())
-		 	manager.updateSharedDataEntry(widgetInstance, key, map.get(key), false);
+		 	PropertiesController.updateSharedDataEntry(widgetInstance, key, map.get(key), false);
 		notifyWidgets(widgetInstance);
 		return "okay"; //$NON-NLS-1$
 	}

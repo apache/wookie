@@ -44,9 +44,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.tencompetence.widgetservice.Messages;
+import org.tencompetence.widgetservice.beans.Whitelist;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
-import org.tencompetence.widgetservice.manager.IWidgetProxyManager;
-import org.tencompetence.widgetservice.manager.impl.WidgetProxyManager;
 import org.tencompetence.widgetservice.server.LocaleHandler;
 
 /**
@@ -85,8 +84,6 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			boolean checkDomain =  properties.getBoolean("widget.proxy.checkdomain");
 			
 			if(isValidUser(request, checkDomain)){
-														
-				IWidgetProxyManager proxyManager = new WidgetProxyManager();
 				
 				ProxyURLBean bean = new ProxyURLBean(request);		
 				if(bean.isErrorFound()){
@@ -103,7 +100,7 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 						// set this to false until found
 						cFlag=false;
 						// check if url is in the white list from DB...
-						if(proxyManager.isAllowed(bean.getNewUrl().toExternalForm())){
+						if(isAllowed(bean.getNewUrl().toExternalForm())){
 							fLogger.debug("is allowed");
 							cFlag = true;				
 						}
@@ -202,6 +199,20 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			}
 		}
 		
+	}
+	
+	/**
+	 * Check to see if a given url appears in the whitelist
+	 * @param aUrl
+	 * @return
+	 */
+	public boolean isAllowed(String aUrl){					
+		for (Whitelist whiteList : Whitelist.findAll()){
+			// TODO - make this better then just comparing the beginning...
+			if(aUrl.toLowerCase().startsWith(whiteList.getfUrl().toLowerCase()))			
+				return true;
+		}
+		return false;		
 	}
 	
 	/**

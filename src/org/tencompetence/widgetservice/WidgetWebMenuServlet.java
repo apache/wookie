@@ -15,16 +15,16 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetDefault;
+import org.tencompetence.widgetservice.helpers.WidgetKeyManager;
 import org.tencompetence.widgetservice.manager.IWidgetAdminManager;
 import org.tencompetence.widgetservice.manager.impl.WidgetAdminManager;
-import org.tencompetence.widgetservice.manager.impl.WidgetKeyManager;
 import org.tencompetence.widgetservice.server.LocaleHandler;
 
 /**
  * WidgetWebMenuServlet
  *
  * @author Paul Sharples
- * @version $Id: WidgetWebMenuServlet.java,v 1.6 2009-06-03 15:46:30 scottwilson Exp $
+ * @version $Id: WidgetWebMenuServlet.java,v 1.7 2009-07-03 22:24:28 scottwilson Exp $
  */
 public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 
