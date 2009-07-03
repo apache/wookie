@@ -26,13 +26,14 @@
  */
 package org.tencompetence.widgetservice.beans;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * A shared data entity
  * 
  * @author Paul Sharples
- * @version $Id: SharedData.java,v 1.5 2009-06-03 10:06:17 scottwilson Exp $
+ * @version $Id: SharedData.java,v 1.6 2009-07-03 20:44:51 scottwilson Exp $
  * 
  */
 public class SharedData extends AbstractKeyBean<SharedData> {
@@ -101,6 +102,23 @@ public class SharedData extends AbstractKeyBean<SharedData> {
 	
 	public static SharedData[] findAll(){
 		return (SharedData[]) findAll(SharedData.class);
+	}
+	
+	// Special queries
+	public static synchronized SharedData[] findSharedDataForInstance(WidgetInstance instance){
+		Map<String, Object> map = new HashMap<String,Object>();
+		map.put("sharedDataKey", instance.getSharedDataKey());
+		map.put("widgetGuid", instance.getWidget().getGuid());
+		return SharedData.findByValues(map);
+	}
+	public static synchronized SharedData findSharedDataForInstance(WidgetInstance instance, String key){
+		Map<String, Object> map = new HashMap<String,Object>();
+		map.put("sharedDataKey", instance.getSharedDataKey());
+		map.put("widgetGuid", instance.getWidget().getGuid());
+		map.put("dkey", key);
+		SharedData[] sharedData = findByValues(map);
+		if (sharedData == null||sharedData.length != 1) return null;
+		return sharedData[0];
 	}
 
 }

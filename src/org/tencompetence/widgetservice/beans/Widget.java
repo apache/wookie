@@ -39,7 +39,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
  * Widget - a simple bean to model a widgets attributes
  * 
  * @author Paul Sharples
- * @version $Id: Widget.java,v 1.7 2009-06-04 15:11:19 ps3com Exp $
+ * @version $Id: Widget.java,v 1.8 2009-07-03 20:44:51 scottwilson Exp $
  */
 public class Widget extends AbstractKeyBean<Widget> {
 	
@@ -182,6 +182,15 @@ public class Widget extends AbstractKeyBean<Widget> {
 	}
 	
 	////// Special queries
+	
+	/**
+	 * Find one widget by guid
+	 */
+	public static Widget findByGuid(String guid){
+		Widget[] widget = Widget.findByValue("guid", guid);
+		if (widget == null || widget.length !=1) return null;
+		return widget[0];
+	}
 	
 	/**
 	 * Get all widgets of a particular type - e.g. - chat

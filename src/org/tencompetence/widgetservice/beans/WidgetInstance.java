@@ -26,6 +26,7 @@
  */
 package org.tencompetence.widgetservice.beans;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ import org.tencompetence.widgetservice.util.hibernate.IDBManager;
  * WidgetInstance - a simple bean to model an actual widgets instance attributes
  * 
  * @author Paul Sharples
- * @version $Id: WidgetInstance.java,v 1.9 2009-06-06 20:20:03 scottwilson Exp $
+ * @version $Id: WidgetInstance.java,v 1.10 2009-07-03 20:44:51 scottwilson Exp $
  */
 public class WidgetInstance extends AbstractKeyBean<WidgetInstance> {
 
@@ -181,6 +182,18 @@ public class WidgetInstance extends AbstractKeyBean<WidgetInstance> {
 			long count=0l; 				
 			count = (Long) dbManager.createQuery(sqlQuery).uniqueResult();
 			return (count == 1 ? true : false); 
+		}
+		
+		public static WidgetInstance getWidgetInstanceById(String api_key, String userId, String sharedDataKey, String widgetId) {
+			Widget[] widget = Widget.findByValue("guid",widgetId);  //$NON-NLS-1$
+			if (widget == null || widget.length !=1) return null;
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("userId", userId); //$NON-NLS-1$
+			map.put("sharedDataKey", sharedDataKey); //$NON-NLS-1$
+			map.put("widget", widget[0]); //$NON-NLS-1$
+			WidgetInstance[] instance  = WidgetInstance.findByValues(map);
+			if(instance == null || instance.length != 1) return null;
+			return instance[0];
 		}
 
 		public static WidgetInstance getWidgetInstance(String api_key, String userId, String sharedDataKey, String serviceContext){

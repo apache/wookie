@@ -26,12 +26,13 @@
  */
 package org.tencompetence.widgetservice.beans;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * A preference entity
  * @author Paul Sharples
- * @version $Id: Preference.java,v 1.4 2009-06-03 10:06:17 scottwilson Exp $
+ * @version $Id: Preference.java,v 1.5 2009-07-03 20:44:51 scottwilson Exp $
  *
  */
 public class Preference extends AbstractKeyBean<Preference> {
@@ -85,6 +86,20 @@ public class Preference extends AbstractKeyBean<Preference> {
 	
 	public static Preference[] findAll(){
 		return (Preference[]) findAll(Preference.class);
+	}
+	
+	// Special queries
+	public static Preference findPreferenceForInstance(WidgetInstance instance, String key){
+		Map<String, Object> map = new HashMap<String,Object>();
+		map.put("widgetInstance", instance);
+		map.put("dkey", key);
+		Preference[] preferences = findByValues(map);
+		if (preferences == null||preferences.length != 1) return null;
+		return preferences[0];
+	}
+	
+	public static Preference[] findPreferencesForInstance(WidgetInstance instance){
+		return Preference.findByValue("widgetInstance", instance);	
 	}
 
 }
