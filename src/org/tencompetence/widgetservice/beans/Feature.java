@@ -26,12 +26,14 @@
  */
 package org.tencompetence.widgetservice.beans;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 /**
  * A Feature found in the config.xml 
  * @author Paul Sharples
- * @version $Id: Feature.java,v 1.2 2009-06-08 14:56:48 ps3com Exp $ 
+ * @version $Id: Feature.java,v 1.3 2009-07-03 20:42:03 scottwilson Exp $ 
  */
 public class Feature extends AbstractKeyBean<Feature>{
 
@@ -43,7 +45,7 @@ public class Feature extends AbstractKeyBean<Feature>{
 	private Widget widget;
 	// set of parameters
 	@SuppressWarnings("unchecked")
-	private Set parameters = new HashSet();
+	private Set<Param> parameters = new HashSet();
 	
 	public String getFeatureName() {
 		return featureName;
@@ -63,17 +65,24 @@ public class Feature extends AbstractKeyBean<Feature>{
 	public void setWidget(Widget widget) {
 		this.widget = widget;
 	}
-	@SuppressWarnings("unchecked")
-	public Set getParameters() {
+	public Set<Param> getParameters() {
 		return parameters;
 	}
-	@SuppressWarnings("unchecked")
-	public void setParameters(Set parameters) {
+	public void setParameters(Set<Param> parameters) {
 		this.parameters = parameters;
 	}
 	
 	public static Feature[] findByValue(String key, Object value) {
 		return (Feature[]) findByValue(Feature.class, key, value);
+	}
+	
+	public static Feature findNamedFeatureForWidget(Widget widget, String name){
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("widget", widget);
+		map.put("featureName", name);
+		Feature[] features = (Feature[]) findByValues(Feature.class, map);
+		if (features == null||features.length!=1) return null;
+		return features[0];
 	}
 
 
