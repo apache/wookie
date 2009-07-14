@@ -40,7 +40,7 @@ import org.tencompetence.widgetservice.helpers.WidgetKeyManager;
  * NOTE this class only exists for legacy plugin support. New plugins
  * should implement the REST interface.
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.21 2009-07-03 22:24:28 scottwilson Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.22 2009-07-14 20:04:41 scottwilson Exp $ 
  *
  */
 public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -85,8 +85,11 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 				else if(requestId.equals("removeparticipant")){ //$NON-NLS-1$
 					ParticipantsController.removeParticipant(request, response );
 				}
+				else if(requestId.equals("cloneshareddata")){ //$NON-NLS-1$
+					WidgetInstancesController.cloneSharedData(request, response );
+				}
 				else {
-					response.setBufferSize(HttpServletResponse.SC_BAD_REQUEST);
+					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				}
 
 			} 
