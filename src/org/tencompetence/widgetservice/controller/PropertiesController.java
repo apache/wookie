@@ -27,6 +27,7 @@
 package org.tencompetence.widgetservice.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -58,18 +59,18 @@ public class PropertiesController extends javax.servlet.http.HttpServlet impleme
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException {
-		boolean setpublic = false;
+		boolean setpersonal = true;
 		if (!WidgetKeyManager.isValidRequest(request)){
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		} else {
 			String is_public = request.getParameter("is_public"); //$NON-NLS-1$		
 			if (is_public != null){
 				if (is_public.equals("true")|| is_public.equals("1")){
-					setpublic = true;
+					setpersonal = false;
 				}
 			}
 		}
-		doSetProperty(request, response, setpublic);
+		doSetProperty(request, response, setpersonal);
 	}
 
 
@@ -84,7 +85,7 @@ public class PropertiesController extends javax.servlet.http.HttpServlet impleme
 			try {
 				String requestId = request.getParameter("requestid"); //$NON-NLS-1$
 				if (requestId == null || requestId.equals("")){
-					response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+					doGetProperty(request, response);
 				} else {
 					if(requestId.equals("setpublicproperty")){ //$NON-NLS-1$
 						doSetProperty(request, response, false);
@@ -96,7 +97,8 @@ public class PropertiesController extends javax.servlet.http.HttpServlet impleme
 						response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 					}
 				}
-			} catch (Exception ex) {					
+			} catch (Exception ex) {	
+				ex.printStackTrace();
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
 		}
@@ -104,6 +106,41 @@ public class PropertiesController extends javax.servlet.http.HttpServlet impleme
 
 
 	/// Implementation
+	
+
+	/**
+	 * Get a property for an instance
+	 * @param request
+	 * @param response
+	 */
+	public static void doGetProperty(HttpServletRequest request, HttpServletResponse response){
+		WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
+		if (instance == null){
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		}
+		String propertyName = request.getParameter("propertyname"); //$NON-NLS-1$
+		if (propertyName == null || propertyName.trim().equals("")){
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		}	
+		
+		String value = null;
+		Preference pref = Preference.findPreferenceForInstance(instance, propertyName);
+		if (pref != null) value = pref.getDvalue();
+		SharedData data = SharedData.findSharedDataForInstance(instance, propertyName);
+		if (data != null) value = data.getDvalue();
+		
+		if (value == null){
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);	
+			return;
+		}
+		try {
+			PrintWriter out = response.getWriter();
+			out.write(value);
+			response.setStatus(HttpServletResponse.SC_OK);
+		} catch (IOException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	/**
 	 * 
