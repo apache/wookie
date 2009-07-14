@@ -38,6 +38,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.tencompetence.widgetservice.Messages;
+import org.tencompetence.widgetservice.beans.SharedData;
 import org.tencompetence.widgetservice.beans.Widget;
 import org.tencompetence.widgetservice.beans.WidgetInstance;
 import org.tencompetence.widgetservice.exceptions.InvalidWidgetCallException;
@@ -52,7 +53,7 @@ import org.tencompetence.widgetservice.util.RandomGUID;
  * REST implementation for widgetInstance
  *
  * POST: creates and returns (or just returns) an instance
- * PUT: stop or resume an instance
+ * PUT: stop, resume, or clone an instance
  * (GET: redirect to other actions. Useful for some limited clients)
  *
  */
@@ -68,9 +69,13 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		doGetWidget(req, resp);
+		if (!WidgetKeyManager.isValidRequest(request)){
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+		} else {
+			doGetWidget(request, response);
+		}
 	}
 
 
@@ -93,6 +98,8 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 						doStopWidget(request, response);
 					} else if(requestId.equals("resumewidget")){ //$NON-NLS-1$
 						doResumeWidget(request, response);
+					} else if(requestId.equals("clone")){ //$NON-NLS-1$
+						cloneSharedData(request, response);
 					} else {
 						response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 					}
@@ -123,6 +130,8 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 						doStopWidget(request, response);
 					} else if(requestId.equals("resumewidget")){ //$NON-NLS-1$
 						doResumeWidget(request, response);
+					} else if(requestId.equals("clone")){ //$NON-NLS-1$
+						cloneSharedData(request, response);
 					} else {
 						response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 					}
@@ -161,7 +170,6 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	}
 	
 	public static void doGetWidget(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
 		String userId = request.getParameter("userid"); //$NON-NLS-1$
 		String sharedDataKey = getSharedDataKey(request);	
 		String serviceType = request.getParameter("servicetype"); //$NON-NLS-1$
@@ -192,7 +200,12 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
 
 		// Widget exists
-		if(instance==null) instance = newInstance(request);
+		if(instance==null){
+			instance = newInstance(request);
+			response.setStatus(HttpServletResponse.SC_CREATED);
+		} else {
+			response.setStatus(HttpServletResponse.SC_OK);			
+		}
 		
 		// Return default widget if not created by now
 		if(instance==null){
@@ -202,6 +215,27 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 			formatReturnDoc(request, response, instance.getWidget(), instance.getIdKey(), instance.getOpensocialToken());
 		}
 	}  
+	
+	public static void cloneSharedData(HttpServletRequest request, HttpServletResponse response){
+		WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);	
+		if (instance == null){
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;			
+		}
+		String sharedDataKey = getSharedDataKey(request);	
+		String cloneSharedDataKey = request.getParameter("cloneshareddatakey");
+		if (sharedDataKey == null || sharedDataKey.trim().equals("") || cloneSharedDataKey == null || cloneSharedDataKey.trim().equals("")){
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+		String cloneKey = String.valueOf((request.getParameter("apikey")+":"+cloneSharedDataKey).hashCode());
+		boolean ok = SharedData.clone(sharedDataKey, instance.getWidget().getGuid(), cloneKey);
+		if (ok){
+			response.setStatus(HttpServletResponse.SC_OK);
+		} else {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+	}
 	
 	// Utility methods
 
