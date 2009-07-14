@@ -33,7 +33,7 @@ import java.util.Map;
  * A shared data entity
  * 
  * @author Paul Sharples
- * @version $Id: SharedData.java,v 1.6 2009-07-03 20:44:51 scottwilson Exp $
+ * @version $Id: SharedData.java,v 1.7 2009-07-14 20:04:13 scottwilson Exp $
  * 
  */
 public class SharedData extends AbstractKeyBean<SharedData> {
@@ -119,6 +119,25 @@ public class SharedData extends AbstractKeyBean<SharedData> {
 		SharedData[] sharedData = findByValues(map);
 		if (sharedData == null||sharedData.length != 1) return null;
 		return sharedData[0];
+	}
+	public static boolean clone(String sharedDataKey, String widgetId, String cloneKey){
+		boolean ok = true;
+		// get data
+		Map<String, Object> map = new HashMap<String,Object>();
+		map.put("sharedDataKey",sharedDataKey);
+		map.put("widgetGuid", widgetId);
+		SharedData[] sharedData = findByValues(map);
+		// clone data
+		for (SharedData entry: sharedData){
+			SharedData clonedEntry = new SharedData();
+			clonedEntry.setDkey(entry.getDkey());
+			clonedEntry.setDvalue(entry.getDvalue());
+			clonedEntry.setSharedDataKey(cloneKey);
+			clonedEntry.setWidgetGuid(entry.getWidgetGuid());
+			boolean saved = clonedEntry.save();
+			if (!saved) ok = false;
+		}
+		return ok;
 	}
 
 }
