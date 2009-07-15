@@ -72,7 +72,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		if (!WidgetKeyManager.isValidRequest(request)){
-			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		} else {
 			doGetWidget(request, response);
 		}
@@ -87,7 +87,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		if (!WidgetKeyManager.isValidRequest(request)){
-			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		} else {
 			try {
 				String requestId = request.getParameter("requestid"); //$NON-NLS-1$
@@ -117,7 +117,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){					
 		if (!WidgetKeyManager.isValidRequest(request)){
-			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		} else {
 			try {
 				String requestId = request.getParameter("requestid"); //$NON-NLS-1$
@@ -210,6 +210,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		// Return default widget if not created by now
 		if(instance==null){
 			Widget unsupportedWidget = Widget.findDefaultByType("unsupported"); //$NON-NLS-1$
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);	
 			formatReturnDoc(request, response, unsupportedWidget, "0000", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		} else {
 			formatReturnDoc(request, response, instance.getWidget(), instance.getIdKey(), instance.getOpensocialToken());

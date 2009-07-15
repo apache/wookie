@@ -61,7 +61,7 @@ public class PropertiesController extends javax.servlet.http.HttpServlet impleme
 	throws ServletException, IOException {
 		boolean setpersonal = true;
 		if (!WidgetKeyManager.isValidRequest(request)){
-			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		} else {
 			String is_public = request.getParameter("is_public"); //$NON-NLS-1$		
 			if (is_public != null){
@@ -80,7 +80,7 @@ public class PropertiesController extends javax.servlet.http.HttpServlet impleme
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){					
 		if (!WidgetKeyManager.isValidRequest(request)){
-			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		} else {
 			try {
 				String requestId = request.getParameter("requestid"); //$NON-NLS-1$
