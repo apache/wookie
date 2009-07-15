@@ -120,11 +120,18 @@ public class ParticipantsController extends javax.servlet.http.HttpServlet imple
 	public static void addParticipant(HttpServletRequest request, HttpServletResponse response){
 		if (!WidgetKeyManager.isValidRequest(request)){
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
 		} else {
 			HttpSession session = request.getSession(true);						
 			String participant_id = request.getParameter("participant_id"); //$NON-NLS-1$
 			String participant_display_name = request.getParameter("participant_display_name"); //$NON-NLS-1$
 			String participant_thumbnail_url = request.getParameter("participant_thumbnail_url"); //$NON-NLS-1$
+			// Check required params
+			if (participant_id == null || participant_id.trim().equals("")){
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+			
 			WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
 			if(instance != null){
 				if (addParticipantToWidgetInstance(instance, participant_id, participant_display_name, participant_thumbnail_url)){
