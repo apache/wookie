@@ -1,4 +1,4 @@
-<%@ page import='org.tencompetence.widgetservice.beans.WidgetService' %>
+<%@ page import='org.apache.wookie.beans.WidgetService' %>
 <%String metadata = (String)session.getAttribute("metadata"); %>
 <html>
 <head>

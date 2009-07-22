@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<%@ page import='org.tencompetence.widgetservice.beans.Whitelist' %>
+<%@ page import='org.apache.wookie.beans.Whitelist' %>
 <%Whitelist[] services = (Whitelist[])session.getAttribute("whitelist"); %>
 <html>
 <head>

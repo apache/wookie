@@ -1,4 +1,4 @@
-<%@ page import='org.tencompetence.widgetservice.beans.WidgetService' %>
+<%@ page import='org.apache.wookie.beans.WidgetService' %>
 <% 
 Integer dbkey = (Integer)session.getAttribute("dbkey");
 String errors = (String)session.getAttribute("error_value");

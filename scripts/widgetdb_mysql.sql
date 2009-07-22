@@ -46,7 +46,7 @@ CREATE TABLE `PreferenceDefault` (
     CONSTRAINT `FK_preferencesdefault_1` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)
 );
 
-CREATE TABLE `participant` (
+CREATE TABLE `Participant` (
   `id` int(11) NOT NULL auto_increment,
   `participant_id` varchar(255) NOT NULL default '',
   `participant_display_name` varchar(255) NOT NULL default '',
@@ -152,6 +152,18 @@ CREATE TABLE `ServerFeature` (
 	PRIMARY KEY  (`id`)
 );
 
+CREATE TABLE `Token` (
+	`id` int(11) NOT NULL auto_increment,
+	`requestUrl` varchar(255) NOT NULL,
+	`authzUrl` varchar(255) NOT NULL,
+	`requestToken` varchar(255) NOT NULL,
+	`accessToken` varchar(255) NOT NULL,
+	`tokenSecret` varchar(255) NOT NULL,
+	`widget_instance_id` int(11) NOT NULL,
+    KEY `TKWID` (`widget_instance_id`),
+    CONSTRAINT `FKTKWID` FOREIGN KEY (`widget_instance_id`) REFERENCES `WidgetInstance` (`id`),
+	PRIMARY KEY  (`id`)    
+);
 
 
 INSERT INTO `Widget` VALUES (1,'Unsupported widget widget','/wookie/wservices/www.tencompetence.org/widgets/default/notsupported/index.htm',350,500,'f','http://www.tencompetence.org/widgets/default/notsupported','This widget is a placeholder for when no corresponding widget is found for a given type','Paul Sharples','/wookie/shared/images/defaultwidget.png', 'v1.0'),(2,'Default chat widget','/wookie/wservices/www.tencompetence.org/widgets/default/chat/index.htm',358,500,'f','http://www.tencompetence.org/widgets/default/chat','This widget provides a simple chat or Instant messaging facility','Paul Sharples','/wookie/shared/images/chat.png', 'v1.0'),(3,'Default discussion/forum widget','/wookie/wservices/www.tencompetence.org/widgets/default/forum/index.htm',350,520,'t','http://www.tencompetence.org/widgets/default/forum','This widget provides a threaded discussion forum facility','Paul Sharples','/wookie/shared/images/forum.png', 'v1.0'),(4,'Default vote widget','/wookie/wservices/www.tencompetence.org/widgets/default/vote/index.htm',350,500,'f','http://www.tencompetence.org/widgets/default/vote','This widget provides a voting facility','Paul Sharples','/wookie/shared/images/vote.png', 'v1.0'),(5,'Natter','/wookie/wservices/www.getwookie.org/widgets/natter/index.htm',383,255,'F','http://www.getwookie.org/widgets/natter','A simple chat widget','Scott Wilson','/wookie/wservices/www.getwookie.org/widgets/natter/icon.png', 'v1.0'),(6,'Weather','/wookie/wservices/www.getwookie.org/widgets/weather/index.htm',125,125,'F','http://www.getwookie.org/widgets/weather','A simple weather widget','Scott Wilson','/wookie/wservices/www.getwookie.org/widgets/weather/icon.png', 'v1.0');

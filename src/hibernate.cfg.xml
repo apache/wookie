@@ -27,7 +27,7 @@
 		<property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
 		<!-- Echo all executed SQL to stdout -->
 		<property name="show_sql">false</property>
-		<mapping resource="org/tencompetence/widgetservice/beans/schema.hbm.xml"/>
+		<mapping resource="org/apache/wookie/beans/schema.hbm.xml"/>
        
     </session-factory>
 

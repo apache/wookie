@@ -17,7 +17,7 @@
 	
 	<listener>
 		<listener-class>
-			org.tencompetence.widgetservice.server.ContextListener
+			org.apache.wookie.server.ContextListener
 		</listener-class>
 	</listener>
 	
@@ -36,7 +36,7 @@
 	<filter>
 		<filter-name>MainFilter</filter-name>
 		<filter-class>
-			org.tencompetence.widgetservice.server.MainFilter
+			org.apache.wookie.server.MainFilter
 		</filter-class>
 	</filter>
 		
@@ -84,7 +84,7 @@
 		<display-name>Participants</display-name>
 		<servlet-name>ParticipantServlet</servlet-name>
 		<servlet-class>
-			org.tencompetence.widgetservice.controller.ParticipantsController
+			org.apache.wookie.controller.ParticipantsController
 		</servlet-class>
 		<load-on-startup>2</load-on-startup>
 	</servlet>	
@@ -98,7 +98,7 @@
 		<display-name>Properties</display-name>
 		<servlet-name>PropertiesServlet</servlet-name>
 		<servlet-class>
-			org.tencompetence.widgetservice.controller.PropertiesController
+			org.apache.wookie.controller.PropertiesController
 		</servlet-class>
 		<load-on-startup>2</load-on-startup>
 	</servlet>	
@@ -112,7 +112,7 @@
 		<display-name>WidgetInstances</display-name>
 		<servlet-name>WidgetInstancesServlet</servlet-name>
 		<servlet-class>
-			org.tencompetence.widgetservice.controller.WidgetInstancesController
+			org.apache.wookie.controller.WidgetInstancesController
 		</servlet-class>
 		<load-on-startup>2</load-on-startup>
 	</servlet>	
@@ -126,7 +126,7 @@
 		<display-name>Widget</display-name>
 		<servlet-name>WidgetServlet</servlet-name>
 		<servlet-class>
-			org.tencompetence.widgetservice.controller.WidgetsController
+			org.apache.wookie.controller.WidgetsController
 		</servlet-class>
 		<load-on-startup>2</load-on-startup>
 	</servlet>	
@@ -145,7 +145,7 @@
 		<display-name>ProxyServlet</display-name>
 		<servlet-name>ProxyServlet</servlet-name>
 		<servlet-class>
-			org.tencompetence.widgetservice.proxy.ProxyServlet
+			org.apache.wookie.proxy.ProxyServlet
 		</servlet-class>
 	</servlet>
 	<servlet-mapping>
@@ -159,7 +159,7 @@
 		<display-name>WidgetAdminServlet</display-name>
 		<servlet-name>WidgetAdminServlet</servlet-name>
 		<servlet-class>
-			org.tencompetence.widgetservice.WidgetAdminServlet
+			org.apache.wookie.WidgetAdminServlet
 		</servlet-class>
 	</servlet>
 	
@@ -168,7 +168,7 @@
 		<display-name>WidgetWebServlet</display-name>
 		<servlet-name>WidgetWebServlet</servlet-name>
 		<servlet-class>
-			org.tencompetence.widgetservice.WidgetWebMenuServlet
+			org.apache.wookie.WidgetWebMenuServlet
 		</servlet-class>
 		<load-on-startup>2</load-on-startup>
 	</servlet>

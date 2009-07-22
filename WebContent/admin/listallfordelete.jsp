@@ -1,4 +1,4 @@
-<%@ page import='org.tencompetence.widgetservice.beans.Widget,org.tencompetence.widgetservice.beans.WidgetType,java.util.Set,java.util.Hashtable;' %>
+<%@ page import='org.apache.wookie.beans.Widget,org.apache.wookie.beans.WidgetType,java.util.Set,java.util.Hashtable;' %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>

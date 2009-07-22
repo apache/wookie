@@ -1,4 +1,4 @@
-<%@ page import='org.tencompetence.widgetservice.beans.ApiKey' %>
+<%@ page import='org.apache.wookie.beans.ApiKey' %>
 <% ApiKey[] keys = (ApiKey[])session.getAttribute("keys"); %>
 <html>
 <head>

@@ -4,7 +4,7 @@
 <dwr>
   <allow>
     <create creator="new" javascript="WaveImpl" scope="application">
-      <param name="class" value="org.tencompetence.widgetservice.feature.wave.WaveAPIImpl"/>  
+      <param name="class" value="org.apache.wookie.feature.wave.WaveAPIImpl"/>  
       <include method="state"/>   
       <include method="submitDelta"/> 
       <include method="getParticipants"/>
@@ -12,7 +12,7 @@
     </create>
     
     <create creator="new" javascript="WidgetImpl" scope="application">
-      <param name="class" value="org.tencompetence.widgetservice.ajaxmodel.impl.WidgetAPIImpl"/>
+      <param name="class" value="org.apache.wookie.ajaxmodel.impl.WidgetAPIImpl"/>
       <include method="preferences"/> 
       <include method="preferenceForKey"/>
       <include method="setPreferenceForKey"/>
@@ -29,11 +29,11 @@
     </create>
     
     <create creator="new" javascript="forum" scope="application">
-      <param name="class" value="org.tencompetence.widgetservice.widgets.forum.impl.DefaultForumServiceImpl"/>
+      <param name="class" value="org.apache.wookie.widgets.forum.impl.DefaultForumServiceImpl"/>
       <include method="getNodeTree"/>   
       <include method="newPost"/>       
       <include method="getPost"/>
     </create>    
-    <convert converter="bean" match="org.tencompetence.widgetservice.widgets.forum.PostNode"/>
+    <convert converter="bean" match="org.apache.wookie.widgets.forum.PostNode"/>
   </allow>
 </dwr>

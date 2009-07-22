@@ -1,4 +1,4 @@
-<%@ page import='org.tencompetence.widgetservice.Messages' %>
+<%@ page import='org.apache.wookie.Messages' %>
 <% Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName()); %>
 <!DOCTYPE html>
 <% String version = (String)session.getAttribute("version");

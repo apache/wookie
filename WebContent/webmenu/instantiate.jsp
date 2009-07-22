@@ -1,4 +1,4 @@
-<%@ page import='org.tencompetence.widgetservice.Messages,org.tencompetence.widgetservice.beans.WidgetDefault' %>
+<%@ page import='org.apache.wookie.Messages,org.apache.wookie.beans.WidgetDefault' %>
 <% Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName()); %>
 <% WidgetDefault[] defaults = (WidgetDefault[])session.getAttribute("defaults"); %>
 <!DOCTYPE html>

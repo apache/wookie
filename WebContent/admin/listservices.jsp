@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<%@ page import='org.tencompetence.widgetservice.beans.WidgetService' %>
+<%@ page import='org.apache.wookie.beans.WidgetService' %>
 <%WidgetService[] services = (WidgetService[])session.getAttribute("services"); %>
 <html>
 <head>
