@@ -6,23 +6,37 @@ function replaceTextSmileys(text)
         ":(",
         ";)",
         ":D",
-        
+        ":P",
+
         ":-)",
         ":-(",
         ";-)",
-        ":-D"
+        ":-D",
+        ":-P",
+        
+        "(beer)",
+        "<3",
+        "(moon)",
+        "O_o"
         );
     // *** add the url's from the corresponding images below
     var realSmileys = new Array(
-        "smileys/emoticon-0100-smile.gif",
-        "smileys/emoticon-0101-sadsmile.gif",
-        "smileys/emoticon-0105-wink.gif",
-        "smileys/emoticon-0102-bigsmile.gif",
+        "smileys/smile.png",
+        "smileys/frown.png",
+        "smileys/wink.png",
+        "smileys/grin2.png",
+        "smileys/tongue.png",
         
-        "smileys/emoticon-0100-smile.gif",
-        "smileys/emoticon-0101-sadsmile.gif",
-        "smileys/emoticon-0105-wink.gif",
-        "smileys/emoticon-0102-bigsmile.gif"
+        "smileys/smile.png",
+        "smileys/frown.png",
+        "smileys/wink.png",
+        "smileys/grin2.png",
+        "smileys/tongue.png",
+        
+        "smileys/beer.png",
+        "smileys/heart.png",
+        "smileys/ass.png",
+        "smileys/O_o.png"
         );
    
     var indx;

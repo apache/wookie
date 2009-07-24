@@ -42,18 +42,6 @@ function flip(){
         $("#chatlog").hide();
     }
 }
-
-function showBack(event)
-{
-    $("#front").hide();
-    $("#back").show();
-}
-
-function showFront(event)
-{
-    $("#back").hide();
-    $("#front").show();	
-}	
 	
 // on start up set some values & init with the server
 function init() {
@@ -63,7 +51,6 @@ function init() {
     Widget.onLocked = handleLocked;
     Widget.onUnlocked = handleUnlocked;
     wave.getState().submitDelta({"test":"testvalue"});
-    CreateInfoButton('infobutton', { foregroundStyle: 'white', backgroundStyle: 'black', onclick: 'showBack', frontID: 'front' });
 	if(!isActive){
 		isActive = true;
         if (wave.getViewer() != null){
