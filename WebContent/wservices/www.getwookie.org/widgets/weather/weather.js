@@ -7,10 +7,12 @@ var iconTable = new Array;
 iconTable['sunny'] = 'images/sunny.png';
 iconTable['sunnyintervals'] = 'images/sunny.png';
 iconTable['rainy'] = 'images/rainy.png';
-iconTable['lightshowers'] = 'images/rainy.png';
 iconTable['drizzle'] = 'images/rainy.png';
 iconTable['lightrain'] = 'images/rainy.png';
 iconTable['heavyrain'] = 'images/rainy.png';
+iconTable['lightshowers'] = 'images/rainy.png';
+iconTable['heavyshowers'] = 'images/rainy.png';
+iconTable['thunderyshowers'] = 'images/rainy.png';
 iconTable['snowy'] = 'images/snowy.png';
 iconTable['lightsnow'] = 'images/snowy.png';
 iconTable['heavysnow'] = 'images/snowy.png';
@@ -64,7 +66,9 @@ function init(){
 }
 
 function setLocation(obj){
+    var thecity = null;
     if (obj && obj != "null") thecity = obj.toLowerCase();
+    if (thecity == null) thecity = "manchester";
     if (cities[thecity] != null) city = thecity;
     Widget.preferences.setItem("city",city);
     startFetchingWeather();
