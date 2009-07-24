@@ -138,6 +138,22 @@
 		<servlet-name>WidgetServlet</servlet-name>
 		<url-pattern>/advertise/*</url-pattern>
 	</servlet-mapping>	
+	
+		// Legacy API - deprecated in favour of REST API
+	<servlet>
+		<description></description>
+		<display-name>Widget API</display-name>
+		<servlet-name>WidgetServiceServlet</servlet-name>
+		<servlet-class>
+			org.apache.wookie.WidgetServiceServlet
+		</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>WidgetServiceServlet</servlet-name>
+		<url-pattern>/WidgetServiceServlet</url-pattern>
+	</servlet-mapping>
+	
 	//
 	
 	<servlet>
