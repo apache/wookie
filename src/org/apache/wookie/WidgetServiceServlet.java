@@ -26,6 +26,9 @@
  */
 package org.apache.wookie;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -40,7 +43,7 @@ import org.apache.wookie.helpers.WidgetKeyManager;
  * NOTE this class only exists for legacy plugin support. New plugins
  * should implement the REST interface.
  * @author Paul Sharples
- * @version $Id: WidgetServiceServlet.java,v 1.1 2009-07-22 09:31:30 scottwilson Exp $ 
+ * @version $Id: WidgetServiceServlet.java,v 1.2 2009-07-25 21:19:39 scottwilson Exp $ 
  *
  */
 public class WidgetServiceServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
@@ -98,5 +101,16 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 			}
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		doGet(req, resp);
+	}
+	
+	
 
 }
