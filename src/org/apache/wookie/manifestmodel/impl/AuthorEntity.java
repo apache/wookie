@@ -19,7 +19,7 @@ import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
- * @version $Id: AuthorEntity.java,v 1.2 2009-07-28 16:05:22 scottwilson Exp $
+ * @version $Id: AuthorEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
 public class AuthorEntity implements IAuthorEntity {
 	
@@ -64,11 +64,11 @@ public class AuthorEntity implements IAuthorEntity {
 		fEmail = email;
 	}
 	
-	public String getTagName() {
+	public String getXMLTagName() {
 		return IW3CXMLConfiguration.AUTHOR_ELEMENT;
 	}
 	
-	public void fromJDOM(Element element) {
+	public void fromXML(Element element) {
 		fAuthorName = element.getText();		
 		if(fAuthorName == null){					
 			fAuthorName = "";

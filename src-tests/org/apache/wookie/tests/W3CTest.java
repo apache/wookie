@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
-import org.apache.wookie.util.ManifestHelper;
+import org.apache.wookie.util.WidgetManifestUtils;
 import org.jdom.JDOMException;
 import org.junit.Before;
 
@@ -67,7 +67,7 @@ public class W3CTest extends TestCase implements IW3CXMLConfiguration {
 	public void testWrongXML(){
 		try {
 			@SuppressWarnings("unused")
-			IManifestModel model = ManifestHelper.dealWithManifest(WRONG_XML,null);
+			IManifestModel model = WidgetManifestUtils.dealWithManifest(WRONG_XML,null);
 			// This should throw a BadManifestException	
 			//assertNull(model);
 		} 
@@ -85,7 +85,7 @@ public class W3CTest extends TestCase implements IW3CXMLConfiguration {
 	public void testParseManifestBadNS(){    	
 		try {
 			@SuppressWarnings("unused")
-			IManifestModel model = ManifestHelper.dealWithManifest(BAD_NAMESPACE_MANIFEST,null);
+			IManifestModel model = WidgetManifestUtils.dealWithManifest(BAD_NAMESPACE_MANIFEST,null);
 			// This should throw a BadManifestException			
 		} 
 		catch (BadManifestException ex) {    		
@@ -101,7 +101,7 @@ public class W3CTest extends TestCase implements IW3CXMLConfiguration {
 
 	public void testParseManifest(){
 		try {
-			IManifestModel model = ManifestHelper.dealWithManifest(BASIC_MANIFEST,null);
+			IManifestModel model = WidgetManifestUtils.dealWithManifest(BASIC_MANIFEST,null);
 			assertNotNull(model);
 			assertEquals("http://www.getwookie.org/widgets/WP3/natter", model.getIdentifier());
 			assertEquals("Natter", model.getFirstName());
@@ -126,7 +126,7 @@ public class W3CTest extends TestCase implements IW3CXMLConfiguration {
 
 	public void testFeaturesExample(){		
 		try {
-			IManifestModel model = ManifestHelper.dealWithManifest(FEATURES_MANIFEST, null);
+			IManifestModel model = WidgetManifestUtils.dealWithManifest(FEATURES_MANIFEST, null);
 			assertNotNull(model);
 			assertEquals("http://www.getwookie.org/example", model.getIdentifier());
 			assertEquals("Example Test Widget", model.getFirstName());			
@@ -175,7 +175,7 @@ public class W3CTest extends TestCase implements IW3CXMLConfiguration {
 
 	public void testPrefsManifest(){
 		try {
-			IManifestModel model = ManifestHelper.dealWithManifest(MANIFEST_WITH_PREFERENCES,null);
+			IManifestModel model = WidgetManifestUtils.dealWithManifest(MANIFEST_WITH_PREFERENCES,null);
 			assertNotNull(model);
 			// should be 3 prefs
 			assertEquals(3, model.getPrefences().size());

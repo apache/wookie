@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.ApiKey;
 import org.apache.wookie.beans.Whitelist;
@@ -39,11 +40,10 @@ import org.apache.wookie.helpers.WidgetKeyManager;
 import org.apache.wookie.manager.IWidgetAdminManager;
 import org.apache.wookie.manager.impl.WidgetAdminManager;
 import org.apache.wookie.manifestmodel.IManifestModel;
-import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.apache.wookie.server.LocaleHandler;
-import org.apache.wookie.util.ManifestHelper;
+import org.apache.wookie.util.WidgetManifestUtils;
 import org.apache.wookie.util.StartPageJSParser;
-import org.apache.wookie.util.ZipUtils;
+import org.apache.wookie.util.WidgetPackageUtils;
 import org.apache.wookie.util.gadgets.GadgetUtils;
 import org.jdom.JDOMException;
 
@@ -53,7 +53,7 @@ import org.jdom.JDOMException;
  * This servlet handles all requests for Admin tasks
  * 
  * @author Paul Sharples
- * @version $Id: WidgetAdminServlet.java,v 1.2 2009-07-28 16:05:23 scottwilson Exp $ 
+ * @version $Id: WidgetAdminServlet.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $ 
  *
  */
 public class WidgetAdminServlet extends HttpServlet implements Servlet {
@@ -362,7 +362,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		String widgetId = request.getParameter("widgetId"); //$NON-NLS-1$
 		String guid = manager.getWidgetGuid(Integer.parseInt(widgetId));
 		if(manager.removeWidgetAndReferences(Integer.parseInt(widgetId))){
-			if(ManifestHelper.removeWidgetResources(request, properties, guid)){			
+			if(WidgetPackageUtils.removeWidgetResources(request, properties, guid)){			
 				session.setAttribute("message_value", localizedMessages.getString("WidgetAdminServlet.12"));			 //$NON-NLS-1$ //$NON-NLS-2$ 
 			}
 			else{
@@ -451,7 +451,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		session.setAttribute("closeWindow", Boolean.valueOf(true)); //$NON-NLS-1$
 		File zipFile;
 		try {
-			zipFile = ManifestHelper.dealWithUploadFile(request, properties);
+			zipFile = WidgetPackageUtils.dealWithUploadFile(request, properties);
 		} 
 		catch (Exception ex) {
 			session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.28") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -460,23 +460,24 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		
 		try {	
 			if(zipFile.exists()){
-				if(ZipUtils.hasZipEntry(zipFile, IW3CXMLConfiguration.MANIFEST_FILE)){
+				ZipFile zip = new ZipFile(zipFile);
+				if (WidgetPackageUtils.hasManifest(zip)){
 					// build the model
-					IManifestModel widgetModel = ManifestHelper.dealWithManifest(ZipUtils.extractZipEntry(zipFile, IW3CXMLConfiguration.MANIFEST_FILE), localizedMessages);															
+					IManifestModel widgetModel = WidgetManifestUtils.dealWithManifest(WidgetPackageUtils.extractManifest(zip), localizedMessages);															
 					// get the src value from content
 					if (widgetModel.getContent() == null) throw new BadManifestException("No start file found");
 					if (widgetModel.getContent().getSrc() == null) throw new BadManifestException("No start file found");					
 					String src =  widgetModel.getContent().getSrc();
 					// check if the start file exists in the zip file
-					if(ZipUtils.hasZipEntry(zipFile, src)){
+					if(zip.getEntry(src)!=null){
 						// get the widget identifier
 						String manifestIdentifier = widgetModel.getIdentifier();						
 						// create the folder structure to unzip the zip into
-						File newWidgetFolder = ManifestHelper.createUnpackedWidgetFolder(request, properties, manifestIdentifier);
+						File newWidgetFolder = WidgetPackageUtils.createUnpackedWidgetFolder(request, properties, manifestIdentifier);
 						// now unzip it into that folder
-						ZipUtils.unpackZip(zipFile, newWidgetFolder);							
+						WidgetPackageUtils.unpackZip(zip, newWidgetFolder);							
 						// get the url to the start page
-						String relativestartUrl = (ManifestHelper.getURLForWidget(properties, manifestIdentifier, src));
+						String relativestartUrl = (WidgetPackageUtils.getURLForWidget(properties, manifestIdentifier, src));
 						// update the model version of the start page
 						widgetModel.getContent().setSrc(relativestartUrl);
 						// now update the js links in the start page
@@ -486,7 +487,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 							parser.doParse();
 						}							
 						// get the path to the root of the unzipped folder
-						String localPath = ManifestHelper.getURLForWidget(properties, manifestIdentifier, "");
+						String localPath = WidgetPackageUtils.getURLForWidget(properties, manifestIdentifier, "");
 						// now pass this to the model which will prepend the path to local resources (not web icons)
 						widgetModel.updateIconPaths(localPath);							
 						// check to see if this widget already exists in the DB - using the ID (guid) key from the manifest

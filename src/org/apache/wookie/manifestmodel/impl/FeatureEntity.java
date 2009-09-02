@@ -24,7 +24,7 @@ import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
- * @version $Id: FeatureEntity.java,v 1.2 2009-07-28 16:05:22 scottwilson Exp $
+ * @version $Id: FeatureEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
 public class FeatureEntity implements IFeatureEntity {
 	
@@ -84,11 +84,11 @@ public class FeatureEntity implements IFeatureEntity {
 		fParams = params;
 	}
 
-	public String getTagName() {
+	public String getXMLTagName() {
 		return IW3CXMLConfiguration.FEATURE_ELEMENT;
 	}
 	
-	public void fromJDOM(Element element) throws BadManifestException {
+	public void fromXML(Element element) throws BadManifestException {
 		fName = element.getAttributeValue(IW3CXMLConfiguration.NAME_ATTRIBUTE);
 		if(fName == null || fName == ""){
 			throw new BadManifestException("A Feature is defined in the manifest, but its name attribute is empty.");
@@ -114,7 +114,7 @@ public class FeatureEntity implements IFeatureEntity {
 			// PARAM optional, can be 0 or many
 			if(tag.equals(IW3CXMLConfiguration.PARAM_ELEMENT)) {	
 				IParamEntity aParam = new ParamEntity();
-				aParam.fromJDOM(child);
+				aParam.fromXML(child);
 				fParams.add(aParam);
 			}
 		}

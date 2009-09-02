@@ -15,9 +15,9 @@
 package org.apache.wookie.manifestmodel;
 /**
  * @author Paul Sharples
- * @version $Id: INameEntity.java,v 1.2 2009-07-28 16:05:22 scottwilson Exp $
+ * @version $Id: INameEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
-public interface INameEntity extends IManifestModelJDOM {
+public interface INameEntity extends IManifestModelBase {
 
 	public String getName();
 

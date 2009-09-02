@@ -35,7 +35,7 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 /**
  * @author Paul Sharples
- * @version $Id: WidgetManifestModel.java,v 1.2 2009-07-28 16:05:22 scottwilson Exp $
+ * @version $Id: WidgetManifestModel.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
 public class WidgetManifestModel implements IManifestModel {
 	
@@ -174,12 +174,12 @@ public class WidgetManifestModel implements IManifestModel {
 		return true;
 	}
 	
-	public String getTagName() {
+	public String getXMLTagName() {
 		return IW3CXMLConfiguration.WIDGET_ELEMENT;
 	}
 
 	@SuppressWarnings("deprecation")
-	public void fromJDOM(Element element) throws BadManifestException {						
+	public void fromXML(Element element) throws BadManifestException {						
 		// check the namespace uri 
 		if(!element.getNamespace().getURI().equals(IW3CXMLConfiguration.MANIFEST_NAMESPACE)){			
 			throw new BadManifestException("'"+element.getNamespace().getURI() 
@@ -193,7 +193,8 @@ public class WidgetManifestModel implements IManifestModel {
 		}
 		if(fIdentifier == null){
 			//give up & generate one
-			fIdentifier = RandomGUID.getUniqueID("generated-uid-");
+			RandomGUID r = new RandomGUID();
+			fIdentifier = "generated-uid-" + r.toString();
 		}
 		// VERSION IS OPTIONAL		
 		fVersion = element.getAttributeValue(IW3CXMLConfiguration.VERSION_ATTRIBUTE);
@@ -239,7 +240,7 @@ public class WidgetManifestModel implements IManifestModel {
 			// NAME IS OPTIONAL - get the name elements (multiple based on xml:lang)
 			if(tag.equals(IW3CXMLConfiguration.NAME_ELEMENT)) {				
 				INameEntity aName = new NameEntity();
-				aName.fromJDOM(child);				
+				aName.fromXML(child);				
 				// add it to our list
 				fNamesList.add(aName);
 			}
@@ -247,7 +248,7 @@ public class WidgetManifestModel implements IManifestModel {
 			// DESCRIPTION IS OPTIONAL multiple on xml:lang
 			if(tag.equals(IW3CXMLConfiguration.DESCRIPTION_ELEMENT)) {				
 				IDescriptionEntity aDescription = new DescriptionEntity();
-				aDescription.fromJDOM(child);
+				aDescription.fromXML(child);
 				// add it to our list
 				fDescriptionsList.add(aDescription);
 			}
@@ -255,20 +256,20 @@ public class WidgetManifestModel implements IManifestModel {
 			// AUTHOR IS OPTIONAL - can only be one
 			if(tag.equals(IW3CXMLConfiguration.AUTHOR_ELEMENT)) {
 				fAuthor = new AuthorEntity();
-				fAuthor.fromJDOM(child);
+				fAuthor.fromXML(child);
 			}		
 		
 			// LICENSE IS OPTIONAL - can be many
 			if(tag.equals(IW3CXMLConfiguration.LICENSE_ELEMENT)) {				
 				ILicenseEntity aLicense = new LicenseEntity();
-				aLicense.fromJDOM(child);
+				aLicense.fromXML(child);
 				fLicensesList.add(aLicense);
 			}
 			
 			// ICON IS OPTIONAL - can be many
 			if(tag.equals(IW3CXMLConfiguration.ICON_ELEMENT)) {						
 				IIconEntity anIcon = new IconEntity();
-				anIcon.fromJDOM(child);
+				anIcon.fromXML(child);
 				fIconsList.add(anIcon);
 			}
 			
@@ -276,27 +277,27 @@ public class WidgetManifestModel implements IManifestModel {
 			// (not sure if this has been removed from the spec?)
 			if(tag.equals(IW3CXMLConfiguration.ACCESS_ELEMENT)) {											
 				IAccessEntity access = new AccessEntity();
-				access.fromJDOM(child);
+				access.fromXML(child);
 				fAccessList.add(access);
 			}
 			
 			// CONTENT IS OPTIONAL - can only be 0 or 1
 			if(tag.equals(IW3CXMLConfiguration.CONTENT_ELEMENT)) {							
 				fContent = new ContentEntity();						
-				fContent.fromJDOM(child);
+				fContent.fromXML(child);
 			}
 			
 			// FEATURE IS OPTIONAL - can be many
 			if(tag.equals(IW3CXMLConfiguration.FEATURE_ELEMENT)) {
 				IFeatureEntity feature = new FeatureEntity();
-				feature.fromJDOM(child);
+				feature.fromXML(child);
 				fFeaturesList.add(feature);
 			}
 			
 			// PREFERENCE IS OPTIONAL - can be many
 			if(tag.equals(IW3CXMLConfiguration.PREFERENCE_ELEMENT)) {
 				IPreferenceEntity preference = new PreferenceEntity();
-				preference.fromJDOM(child);
+				preference.fromXML(child);
 				fPreferencesList.add(preference);
 			}
 			

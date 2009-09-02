@@ -15,9 +15,9 @@
 package org.apache.wookie.manifestmodel;
 /**
  * @author Paul Sharples
- * @version $Id: ILicenseEntity.java,v 1.2 2009-07-28 16:05:22 scottwilson Exp $
+ * @version $Id: ILicenseEntity.java,v 1.3 2009-09-02 18:37:30 scottwilson Exp $
  */
-public interface ILicenseEntity extends IManifestModelJDOM {
+public interface ILicenseEntity extends IManifestModelBase {
 
 	public String getLicenseText();
 

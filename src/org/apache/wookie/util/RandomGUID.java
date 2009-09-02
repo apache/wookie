@@ -107,7 +107,7 @@ import java.util.Random;
  * - Marc
  */
 /**
-* @version $Id: RandomGUID.java,v 1.2 2009-07-28 16:05:21 scottwilson Exp $
+* @version $Id: RandomGUID.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
 */
 public class RandomGUID {
 	
@@ -136,24 +136,6 @@ public class RandomGUID {
 			e.printStackTrace();
 		}
 		
-	}
-	
-	/**
-	 * Added by Phillip Beauvoir
-	 * @return a new GUID prepended with prefix
-	 */
-	public static String getUniqueID(String prefix) {
-		RandomGUID rg = new RandomGUID();
-		return (prefix == null) ? rg.toString() : prefix + rg.toString();
-	}
-	
-	/**
-	 * Added by Phillip Beauvoir
-	 * @return a new GUID
-	 */
-	public static String getUniqueID() {
-		RandomGUID rg = new RandomGUID();
-		return rg.toString();
 	}
 	
 	/*

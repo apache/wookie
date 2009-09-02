@@ -20,7 +20,7 @@ import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
- * @version $Id: ParamEntity.java,v 1.2 2009-07-28 16:05:22 scottwilson Exp $
+ * @version $Id: ParamEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
 public class ParamEntity implements IParamEntity {
 	
@@ -54,11 +54,11 @@ public class ParamEntity implements IParamEntity {
 		fValue = value;
 	}
 
-	public String getTagName() {
+	public String getXMLTagName() {
 		return IW3CXMLConfiguration.PARAM_ELEMENT;
 	}
 	
-	public void fromJDOM(Element element) throws BadManifestException {
+	public void fromXML(Element element) throws BadManifestException {
 		// Name
 		fName = element.getAttributeValue(IW3CXMLConfiguration.NAME_ATTRIBUTE);
 		if(fName == null){

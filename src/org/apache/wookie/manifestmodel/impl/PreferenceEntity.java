@@ -20,7 +20,7 @@ import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
- * @version $Id: PreferenceEntity.java,v 1.2 2009-07-28 16:05:22 scottwilson Exp $
+ * @version $Id: PreferenceEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
 public class PreferenceEntity extends ParamEntity implements IPreferenceEntity {
 	
@@ -39,12 +39,12 @@ public class PreferenceEntity extends ParamEntity implements IPreferenceEntity {
 		fReadOnly = readOnly;
 	}
 
-	public String getTagName() {
+	public String getXMLTagName() {
 		return IW3CXMLConfiguration.PREFERENCE_ELEMENT;
 	}
 	
-	public void fromJDOM(Element element) throws BadManifestException {
-		super.fromJDOM(element);
+	public void fromXML(Element element) throws BadManifestException {
+		super.fromXML(element);
 		String isReadOnly = element.getAttributeValue(IW3CXMLConfiguration.READONLY_ATTRIBUTE);
 		if(isReadOnly == null){
 			fReadOnly = false;

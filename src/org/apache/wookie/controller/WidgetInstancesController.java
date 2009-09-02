@@ -252,7 +252,8 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 			if (widget == null) return null;
 
 			// generate a nonce
-			String nonce = RandomGUID.getUniqueID("nonce-");//$NON-NLS-1$
+			RandomGUID r = new RandomGUID();
+			String nonce = "nonce-" + r.toString();				 //$NON-NLS-1$
 
 			// now use SHA hash on the nonce				
 			String hashKey = HashGenerator.getInstance().encrypt(nonce);	

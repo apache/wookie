@@ -19,7 +19,7 @@ import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
- * @version $Id: AccessEntity.java,v 1.2 2009-07-28 16:05:22 scottwilson Exp $
+ * @version $Id: AccessEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
 public class AccessEntity implements IAccessEntity {
 	
@@ -51,11 +51,11 @@ public class AccessEntity implements IAccessEntity {
 		fSubDomains = subDomains;
 	}
 
-	public String getTagName() {
+	public String getXMLTagName() {
 		return IW3CXMLConfiguration.ACCESS_ELEMENT;
 	}
 	
-	public void fromJDOM(Element element) {		
+	public void fromXML(Element element) {		
 		fUri = element.getAttributeValue(IW3CXMLConfiguration.URI_ATTRIBUTE);
 		//TODO this is required, but may need to be checked
 		if(fUri == null){
