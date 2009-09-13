@@ -14,7 +14,6 @@
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
 	
-	
 	<listener>
 		<listener-class>
 			org.apache.wookie.server.ContextListener
@@ -78,7 +77,7 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
-	// REST API
+	<!-- REST API -->
 	<servlet>
 		<description></description>
 		<display-name>Participants</display-name>
@@ -138,7 +137,6 @@
 		<servlet-name>WidgetServlet</servlet-name>
 		<url-pattern>/advertise/*</url-pattern>
 	</servlet-mapping>	
-	//
 	
 	<servlet>
 		<description></description>
@@ -153,7 +151,7 @@
 		<url-pattern>/proxy/*</url-pattern>
 	</servlet-mapping>
 	
-	// Legacy API - deprecated in favour of REST API
+	<!--  Legacy API - deprecated in favour of REST API  -->
 	<servlet>
 		<description></description>
 		<display-name>Widget API</display-name>
@@ -168,7 +166,7 @@
 		<url-pattern>/WidgetServiceServlet</url-pattern>
 	</servlet-mapping>
 	
-	/// Admin  
+	<!-- Admin -->  
 	<servlet>
 		<description></description>
 		<display-name>WidgetAdminServlet</display-name>
@@ -197,8 +195,6 @@
 		<url-pattern>/webmenu/WidgetWebMenuServlet</url-pattern>
 	</servlet-mapping>
 	
-	///
-		
 	<servlet-mapping>
 		<servlet-name>dwr-invoker</servlet-name>
 		<url-pattern>/dwr/*</url-pattern>

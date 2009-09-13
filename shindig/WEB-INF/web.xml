@@ -78,7 +78,7 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
-	// REST API
+	<!-- REST API -->
 	<servlet>
 		<description></description>
 		<display-name>Participants</display-name>
@@ -139,7 +139,7 @@
 		<url-pattern>/advertise/*</url-pattern>
 	</servlet-mapping>	
 	
-		// Legacy API - deprecated in favour of REST API
+    <!-- Legacy API - deprecated in favour of REST API  -->
 	<servlet>
 		<description></description>
 		<display-name>Widget API</display-name>
@@ -154,8 +154,6 @@
 		<url-pattern>/WidgetServiceServlet</url-pattern>
 	</servlet-mapping>
 	
-	//
-	
 	<servlet>
 		<description></description>
 		<display-name>ProxyServlet</display-name>
@@ -169,7 +167,7 @@
 		<url-pattern>/proxy/*</url-pattern>
 	</servlet-mapping>
 	
-	/// Admin  
+	<!-- Admin -->  
 	<servlet>
 		<description></description>
 		<display-name>WidgetAdminServlet</display-name>
@@ -197,8 +195,6 @@
 		<servlet-name>WidgetWebServlet</servlet-name>
 		<url-pattern>/webmenu/WidgetWebMenuServlet</url-pattern>
 	</servlet-mapping>
-	
-	///
 		
 	<servlet-mapping>
 		<servlet-name>dwr-invoker</servlet-name>
