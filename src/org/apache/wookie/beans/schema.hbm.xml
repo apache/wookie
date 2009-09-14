@@ -91,6 +91,7 @@
 		<many-to-one name="widgetInstance" class="WidgetInstance" column="widget_instance_id" not-null="true" />
 		<property name="dkey" />
 		<property name="dvalue" type="text" length="2147483647"/>
+		<property name="readOnly" type="true_false" />
 	</class>
 
 	<class name="Participant" table="Participant">

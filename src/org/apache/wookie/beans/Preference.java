@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * A preference entity
  * @author Paul Sharples
- * @version $Id: Preference.java,v 1.2 2009-07-28 16:05:22 scottwilson Exp $
+ * @version $Id: Preference.java,v 1.3 2009-09-14 21:15:07 scottwilson Exp $
  *
  */
 public class Preference extends AbstractKeyBean<Preference> {
@@ -33,6 +33,7 @@ public class Preference extends AbstractKeyBean<Preference> {
 	private WidgetInstance widgetInstance;
 	private String dkey;
 	private String dvalue;
+	private boolean readOnly;
 
 	public WidgetInstance getWidgetInstance() {
 		return widgetInstance;
@@ -49,6 +50,10 @@ public class Preference extends AbstractKeyBean<Preference> {
 	public void setDkey(String dkey) {
 		this.dkey = dkey;
 	}
+	
+	public void setReadOnly(boolean value){
+		this.readOnly = value;
+	}
 
 	public String getDvalue() {
 		return dvalue;
@@ -56,6 +61,10 @@ public class Preference extends AbstractKeyBean<Preference> {
 
 	public void setDvalue(String dvalue) {
 		this.dvalue = dvalue;
+	}
+	
+	public boolean getReadOnly(){
+		return this.readOnly;
 	}
 	
 	/// Active record methods

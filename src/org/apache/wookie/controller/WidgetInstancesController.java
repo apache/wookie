@@ -263,6 +263,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 			hashKey = hashKey.replaceAll("\\?", ".qu."); //$NON-NLS-1$ //$NON-NLS-2$
 			hashKey = hashKey.replaceAll("&", ".am."); //$NON-NLS-1$ //$NON-NLS-2$
 			hashKey = hashKey.replaceAll("\\+", ".pl."); //$NON-NLS-1$ //$NON-NLS-2$
+            hashKey = hashKey.replaceAll("/", ".sl."); //$NON-NLS-1$ //$NON-NLS-2$
 			
 			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("opensocial"); //$NON-NLS-1$
 			widgetInstance = factory.addNewWidgetInstance(apiKey, userId, sharedDataKey, widget, nonce, hashKey, properties);

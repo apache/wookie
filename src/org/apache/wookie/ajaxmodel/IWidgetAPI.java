@@ -15,12 +15,15 @@
 package org.apache.wookie.ajaxmodel;
 
 import java.util.Map;
+import java.util.List;
+
+import org.apache.wookie.beans.Preference;
 
 
 /**
  * Definition of the widget API.  
  * @author Paul Sharples
- * @version $Id: IWidgetAPI.java,v 1.2 2009-07-28 16:05:23 scottwilson Exp $
+ * @version $Id: IWidgetAPI.java,v 1.3 2009-09-14 21:15:08 scottwilson Exp $
  *
  */
 public interface IWidgetAPI {	
@@ -70,7 +73,14 @@ public interface IWidgetAPI {
 	 * @param id_key
 	 * @return
 	 */
-	public Map<String, String> preferences(String id_key);
+	public List<Preference> preferences(String id_key);
+	
+	/**
+	 * Returns the widget metadata
+	 * @param id_key
+	 * @return
+	 */
+	public Map<String, String> metadata(String id_key);
 	
 	/**
 	 * Returns a string preference value from the DB, obtained

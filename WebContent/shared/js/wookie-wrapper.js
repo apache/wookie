@@ -30,7 +30,6 @@ WidgetPreferences = new function WidgetPreferences(){
 		this.length = x;
 		return x;
 	}
-	//SPEC: The key(n) method must return the name of the nth key in the list. The order of keys is user-agent defined, but must be consistent within an object between changes to the number of keys. (Thus, adding or removing a key may change the order of the keys, but merely changing the value of an existing key must not.) If n is greater than or equal to the number of key/value pairs in the object, then this method must raise an INDEX_SIZE_ERR exception.
 	this.key = function(n){
 		var x=0;
 	    for (key in this.prefs){
@@ -38,32 +37,41 @@ WidgetPreferences = new function WidgetPreferences(){
 			x++;
 		};
 	}
-	//SPEC: The getItem(key) method must return the current value associated with the given key. If the given key does not exist in the list associated with the object then this method must return null.
 	this.getItem = function(key){
 		if (!this.prefs[key]) return null;
-		return this.prefs[key];
+		return this.prefs[key]["dvalue"];
 	}
-	//SPEC: The setItem(key, value) method must first check if a key/value pair with the given key already exists in the list associated with the object. If it does not, then a new key/value pair must be added to the list, with the given key and value. If the given key does exist in the list, then it must have its value updated to the value given in the value argument.
 	this.setItem = function(key,value){
-		this.prefs[key] = value;
+        // Make a preference object
+        var pref = {};
+        pref.dvalue = value;
+        pref.key = key;
+        pref.readOnly = false;
+        
+	    var existing = this.prefs[key];
+        if (existing){
+            if (existing["readOnly"] == true) throw "NO_MODIFICATION_ALLOWED_ERR";
+        } else {
+        	// Setup prototype methods
+            eval("Widget.preferences.__defineGetter__('"+key+"', function(){return Widget.preferences.getItem('"+key+"')})");
+            eval("Widget.preferences.__defineSetter__('"+key+"', function(v){return Widget.preferences.setItem('"+key+"',v)})");
+            eval("Widget.preferences.prefs."+key+"=pref");
+        }
+		this.prefs[key] = pref;
 		Widget.setPreferenceForKey(key, value);
 		this.calcLength();
 	}
-	//SPEC: The removeItem(key) method must cause the key/value pair with the given key to be removed from the list associated with the object, if it exists. If no item with that key exists, the method must do nothing.
 	this.removeItem = function(key){
-		delete this.prefs[key];
+        this.prefs[key] = null;
 		Widget.setPreferenceForKey(key,null);
 		this.calcLength();
 	}
-	//SPEC: The clear() method must atomically cause the list associated with the object to be emptied of all key/value pairs, if there are any. If there are none, then the method must do nothing
 	this.clear = function(){
 		for (key in this.prefs){
 			this.removeItem(key);
 		}
 	}
 }
-
-
 
 /*
  * Widget object
@@ -109,53 +117,39 @@ var Widget = {
 		this.preferences = WidgetPreferences;
 		dwr.engine.beginBatch();
 		WidgetImpl.preferences(this.instanceid_key, this.setPrefs);
+		WidgetImpl.metadata(this.instanceid_key, this.setMetadata);
 		dwr.engine.endBatch({async:false});
-		
-		// Set attributes based on preferences
-		this.viewMode = this.preferences.getItem("viewMode");
-		this.locale = this.preferences.getItem("locale");
-		this.identifier = this.preferences.getItem("identifier");
-		this.authorInfo = this.preferences.getItem("authorInfo");
-		this.authorEmail = this.preferences.getItem("authorEmail");
-		this.authorHref = this.preferences.getItem("authorHref");
-		this.name = this.preferences.getItem("name");
-		this.description = this.preferences.getItem("description");
-		this.version = this.preferences.getItem("version");
-		this.height = this.preferences.getItem("height");
-		this.width = this.preferences.getItem("width");		
-		
+	},
+	
+	setMetadata: function(map){
+		Widget.id = map["id"];
+		Widget.author = map["author"];
+		Widget.authorEmail = map["authorEmail"];
+		Widget.authorHref = map["authorHref"];
+		Widget.name = map["name"];
+		Widget.description = map["description"];
+		Widget.version = map["version"];
+		Widget.height = map["height"];
+		Widget.width = map["width"];
 	},
 	
 	setPrefs: function(map){
 		this.preferences = WidgetPreferences;
-		this.preferences.prefs = map;
+		this.preferences.prefs = {};
+		for (i in map){
+            obj = map[i];
+            key = obj["dkey"];
+			eval("Widget.preferences.__defineGetter__('"+key+"', function(){return Widget.preferences.getItem('"+key+"')})");
+            eval("Widget.preferences.__defineSetter__('"+key+"', function(v){return Widget.preferences.setItem('"+key+"',v)})");
+            eval("this.preferences.prefs."+key+"=obj");
+		}
 		this.preferences.calcLength();
 	},
 	
-	// Check to see if Wookie supports the specified feature
-	// TODO implement this
-	hasFeature: function(feature){
-		return true;
-	},
-	
-	// Gets the users attention in some fashion
-	// TODO implement this
-	getAttention: function(){
-		return true;
-	},
-	
-	// Sends the user some sort of message on the screen
-	// TODO implement this
-	showNotification: function(title, message, callbackfn){
-		return true;	
-	},
-	
-	// Deprecated
 	setPreferenceForKey : function(wName, wValue){
 		WidgetImpl.setPreferenceForKey(this.instanceid_key, wName, wValue);	
 	},
 
-	// Deprecated
 	preferenceForKey : function(wName, callBackFunction){
 		WidgetImpl.preferenceForKey(this.instanceid_key, wName, callBackFunction);
 	},
@@ -207,6 +201,7 @@ var Widget = {
 }
 // very important !
 Widget.init();
+widget = Widget;
 
 
 

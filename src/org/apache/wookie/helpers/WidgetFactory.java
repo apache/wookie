@@ -14,8 +14,6 @@
 
 package org.apache.wookie.helpers;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
@@ -23,7 +21,6 @@ import org.apache.wookie.beans.Preference;
 import org.apache.wookie.beans.PreferenceDefault;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetInstance;
-import org.apache.wookie.controller.WidgetInstancesController;
 import org.apache.wookie.server.LocaleHandler;
 import org.apache.wookie.util.opensocial.OpenSocialUtils;
 
@@ -84,28 +81,15 @@ public class WidgetFactory{
 		// Save
 		widgetInstance.save();
 
-		// add in basic widget data as preferences
-		//TODO setPreference(widgetInstance, "viewMode", String.valueOf(widget)); //$NON-NLS-1$
-		setPreference(widgetInstance, "locale", LocaleHandler.getInstance().getDefaultLocale().getLanguage()); //$NON-NLS-1$
-		setPreference(widgetInstance, "identifier", String.valueOf(widget.getGuid()));	//$NON-NLS-1$
-		setPreference(widgetInstance, "authorInfo", String.valueOf(widget.getWidgetAuthor()));	//$NON-NLS-1$
-		//TODO setPreference(widgetInstance, "authorEmail", String.valueOf(widget.getWidth()));//$NON-NLS-1$
-		//TODO setPreference(widgetInstance, "authorHref", String.valueOf(widget.getHeight()));			//$NON-NLS-1$
-		setPreference(widgetInstance, "name", String.valueOf(widget.getWidgetTitle()));//$NON-NLS-1$
-		setPreference(widgetInstance, "description", String.valueOf(widget.getWidgetDescription()));//$NON-NLS-1$	
-		setPreference(widgetInstance, "version", widget.getVersion());//$NON-NLS-1$
-		setPreference(widgetInstance, "width", String.valueOf(widget.getWidth()));//$NON-NLS-1$
-		setPreference(widgetInstance, "height", String.valueOf(widget.getHeight()));//$NON-NLS-1$
-
 		// add in the sharedDataKey as a preference so that a widget can know
 		// what sharedData event to listen to later
-		setPreference(widgetInstance, "sharedDataKey", sharedDataKey);//$NON-NLS-1$
+		setPreference(widgetInstance, "sharedDataKey", sharedDataKey, true);//$NON-NLS-1$
 
 		// add in widget defaults
 		PreferenceDefault[] prefs = PreferenceDefault.findByValue("widget", widget);	
 		if (prefs == null) return null;
 		for (PreferenceDefault pref: prefs){
-			setPreference(widgetInstance, pref.getPreference(), pref.getValue());
+			setPreference(widgetInstance, pref.getPreference(), pref.getValue(),pref.isReadOnly());
 		}	
 		return widgetInstance;
 	}
@@ -116,11 +100,12 @@ public class WidgetFactory{
 	 * @param key
 	 * @param value
 	 */
-	private void setPreference(WidgetInstance widgetInstance, String key, String value){
+	private void setPreference(WidgetInstance widgetInstance, String key, String value, boolean readOnly){
 		Preference pref = new Preference();
 		pref.setWidgetInstance(widgetInstance);
 		pref.setDkey(key);				
 		pref.setDvalue(value);
+		pref.setReadOnly(readOnly);
 		pref.save();	
 	}
 

@@ -11,9 +11,14 @@
       <include method="getViewer"/>      
     </create>
     
+    <convert converter="object" match="org.apache.wookie.beans.Preference" javascript="Preference">
+        <param name="force" value="true"/>
+        <param name="include" value="dkey, dvalue, readOnly"/>
+    </convert>
     <create creator="new" javascript="WidgetImpl" scope="application">
       <param name="class" value="org.apache.wookie.ajaxmodel.impl.WidgetAPIImpl"/>
       <include method="preferences"/> 
+      <include method="metadata"/> 
       <include method="preferenceForKey"/>
       <include method="setPreferenceForKey"/>
       <include method="setSharedDataForKey"/>

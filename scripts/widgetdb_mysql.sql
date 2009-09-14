@@ -61,6 +61,7 @@ CREATE TABLE `Preference` (
   `widget_instance_id` int(11) NOT NULL,
   `dkey` varchar(255) default NULL,
   `dvalue` longtext,
+  `readOnly` char(1) default'f',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unique_composite` (`widget_instance_id`,`dkey`),
   KEY `FKC5E6A8DB4215462E` (`widget_instance_id`),
