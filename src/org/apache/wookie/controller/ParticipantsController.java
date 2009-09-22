@@ -15,6 +15,7 @@
 package org.apache.wookie.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +41,9 @@ import org.apache.wookie.helpers.WidgetKeyManager;
  *
  */
 public class ParticipantsController extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
+	
+	private static final String XMLDECLARATION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+	private static final String CONTENT_TYPE = "text/xml;charset=\"UTF-8\""; 
 
 	private static final long serialVersionUID = 308590474406800659L;		
 	static Logger _logger = Logger.getLogger(ParticipantsController.class.getName());	
@@ -52,7 +56,8 @@ public class ParticipantsController extends javax.servlet.http.HttpServlet imple
 	}   	
 
 	/**
-	 * There is no default action for GET; we check for a command param and re-route to POST or DELETE
+	 * The default action for GET is to return participant IDs for an instance.
+	 * We also check for a command param and re-route to POST or DELETE
 	 */
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -64,7 +69,7 @@ public class ParticipantsController extends javax.servlet.http.HttpServlet imple
 			try {
 				String requestId = request.getParameter("requestid"); //$NON-NLS-1$
 				if (requestId == null || requestId.equals("")){
-					response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+					getParticipants(request, response);
 				} else {
 					if(requestId.equals("addparticipant")){ //$NON-NLS-1$
 						doPost(request, response );
@@ -104,6 +109,35 @@ public class ParticipantsController extends javax.servlet.http.HttpServlet imple
 	}
 	
 	// Implementation
+	
+	public static void getParticipants(HttpServletRequest request, HttpServletResponse response){
+		if (!WidgetKeyManager.isValidRequest(request)){
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		} else {					
+			
+			WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
+			if(instance != null){
+				Participant[] participants = Participant.getParticipants(instance);
+				try {
+					response.setContentType(CONTENT_TYPE);
+					PrintWriter out = response.getWriter();
+					out.println(XMLDECLARATION);		
+					out.println("<participants>\n");	
+
+						for(Participant participant : participants){
+								out.println("<participant id=\""+participant.getParticipant_id()+"\" display_name=\""+participant.getParticipant_display_name()+"\" thumbnail_url=\""+participant.getParticipant_thumbnail_url()+"\" />");
+						}					
+					out.println("</participants>");
+					response.setStatus(HttpServletResponse.SC_OK);
+				} catch (IOException e) {
+					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				}
+			} else {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			}
+		}
+	}
 	
 	public static void addParticipant(HttpServletRequest request, HttpServletResponse response){
 		if (!WidgetKeyManager.isValidRequest(request)){
