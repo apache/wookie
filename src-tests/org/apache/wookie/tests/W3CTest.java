@@ -19,14 +19,15 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.apache.wookie.util.WidgetManifestUtils;
 import org.jdom.JDOMException;
-import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 
 /**
@@ -35,7 +36,7 @@ import org.junit.Before;
  * @version $Id
  *
  */
-public class W3CTest extends TestCase implements IW3CXMLConfiguration {
+public class W3CTest implements IW3CXMLConfiguration {
 
 	private static final String WRONG_XML_FILE = "src-tests/testdata/wrong/config.xml";
 	private static final String BASIC_MANIFEST_FILE = "src-tests/testdata/basic_manifest/config.xml";
@@ -49,7 +50,8 @@ public class W3CTest extends TestCase implements IW3CXMLConfiguration {
 	private static String FEATURES_MANIFEST;
 
 
-	@Before public void setUp() {  
+	@BeforeClass 
+	public static void setUp() {  
 
 		try {
 			WRONG_XML = readFile(new File(WRONG_XML_FILE));
@@ -63,7 +65,7 @@ public class W3CTest extends TestCase implements IW3CXMLConfiguration {
 		}
 	}
 
-
+	@Test
 	public void testWrongXML(){
 		try {
 			@SuppressWarnings("unused")
@@ -82,6 +84,7 @@ public class W3CTest extends TestCase implements IW3CXMLConfiguration {
 		}
 	}
 
+	@Test
 	public void testParseManifestBadNS(){    	
 		try {
 			@SuppressWarnings("unused")
@@ -99,6 +102,7 @@ public class W3CTest extends TestCase implements IW3CXMLConfiguration {
 		}
 	}
 
+	@Test
 	public void testParseManifest(){
 		try {
 			IManifestModel model = WidgetManifestUtils.dealWithManifest(BASIC_MANIFEST,null);
@@ -124,6 +128,7 @@ public class W3CTest extends TestCase implements IW3CXMLConfiguration {
 		}
 	}
 
+	@Test
 	public void testFeaturesExample(){		
 		try {
 			IManifestModel model = WidgetManifestUtils.dealWithManifest(FEATURES_MANIFEST, null);
@@ -173,6 +178,7 @@ public class W3CTest extends TestCase implements IW3CXMLConfiguration {
 		}
 	}
 
+	@Test
 	public void testPrefsManifest(){
 		try {
 			IManifestModel model = WidgetManifestUtils.dealWithManifest(MANIFEST_WITH_PREFERENCES,null);
@@ -205,7 +211,7 @@ public class W3CTest extends TestCase implements IW3CXMLConfiguration {
 		}
 	}
 
-	private String readFile(File file) throws Exception{
+	private static String readFile(File file) throws Exception{
 		StringBuffer sb = new StringBuffer(1024);
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		String line;

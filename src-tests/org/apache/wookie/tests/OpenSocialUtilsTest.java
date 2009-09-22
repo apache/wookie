@@ -14,24 +14,25 @@
 
 package org.apache.wookie.tests;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 import org.apache.wookie.Messages;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.util.opensocial.OpenSocialUtils;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class OpenSocialUtilsTest extends TestCase {
+public class OpenSocialUtilsTest{
 	
-	private WidgetInstance INSTANCE;
-	private WidgetInstance INSTANCE_NO_WIDGET;
-	private WidgetInstance INSTANCE_NO_IDKEY;
-	private WidgetInstance INSTANCE_NO_USER_ID;
-	private Messages BUNDLE;
+	private static WidgetInstance INSTANCE;
+	private static WidgetInstance INSTANCE_NO_WIDGET;
+	private static WidgetInstance INSTANCE_NO_IDKEY;
+	private static WidgetInstance INSTANCE_NO_USER_ID;
+	private static Messages BUNDLE;
 	
-	@Before public void setUp(){
+	@BeforeClass 
+	public static void setUp(){
 		Widget widget = new Widget();
 		widget.setUrl("http://getwookie.org/test/index.html");
 		widget.setGuid("http://getwookie.org/test");
@@ -74,16 +75,11 @@ public class OpenSocialUtilsTest extends TestCase {
 	
     @Test(expected=Exception.class)
     public void testCreatePlainTokenNoWidget() throws Exception{
-    	try {
 			@SuppressWarnings("unused")
 			String token = OpenSocialUtils.createPlainToken(INSTANCE_NO_WIDGET, BUNDLE);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");
-        } catch (Exception expected) {
-            // this is exactly what we were expecting so 
-            // let's just ignore it and let the test pass
-        }
     }
     
     /**
@@ -105,16 +101,11 @@ public class OpenSocialUtilsTest extends TestCase {
     @Test(expected=Exception.class)
     public void testCreatePlainTokenNoId()
             throws Exception {
-        try {
 			@SuppressWarnings("unused")
 			String token = OpenSocialUtils.createPlainToken(INSTANCE_NO_IDKEY, BUNDLE);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");
-        } catch (Exception expected) {
-            // this is exactly what we were expecting so 
-            // let's just ignore it and let the test pass
-        }
     }
 
 	@Test
@@ -130,16 +121,11 @@ public class OpenSocialUtilsTest extends TestCase {
 	
     @Test(expected=Exception.class)
     public void testCreateEncryptedTokenNoWidget() throws Exception{
-    	try {
 			@SuppressWarnings("unused")
 			String token = OpenSocialUtils.createEncryptedToken(INSTANCE_NO_WIDGET,"UNSECURED_TOKEN_KEY", BUNDLE);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");
-        } catch (Exception expected) {
-            // this is exactly what we were expecting so 
-            // let's just ignore it and let the test pass
-        }
     }
     
     @Test()
@@ -156,16 +142,11 @@ public class OpenSocialUtilsTest extends TestCase {
     @Test(expected=Exception.class)
     public void testCreateEncryptedTokenNoId()
             throws Exception {
-        try {
 			@SuppressWarnings("unused")
 			String token = OpenSocialUtils.createEncryptedToken(INSTANCE_NO_IDKEY,"UNSECURED_TOKEN_KEY", BUNDLE);
             // Uh-oh! No exception was thrown so we 
             // better make this test fail!
             fail("should've thrown an exception!");
-        } catch (Exception expected) {
-            // this is exactly what we were expecting so 
-            // let's just ignore it and let the test pass
-        }
     }
 
 }
