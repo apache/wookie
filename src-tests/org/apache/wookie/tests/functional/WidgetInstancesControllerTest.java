@@ -14,10 +14,14 @@
 
 package org.apache.wookie.tests.functional;
 
+import static org.junit.Assert.*;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
+import org.junit.Ignore;
+import org.junit.Test;
 
 
 /**
@@ -27,7 +31,8 @@ import org.apache.commons.httpclient.methods.PutMethod;
  */
 public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	
-	public void testGetInstanceById(){
+	@Test
+	public void getInstanceById(){
 	    try {
 	        HttpClient client = new HttpClient();
 	        PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
@@ -43,7 +48,8 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	    }
 	}
 
-	public void testGetInstanceById_AlreadyExists(){
+	@Test
+	public void getInstanceById_AlreadyExists(){
 	    try {
 	        HttpClient client = new HttpClient();
 	        PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
@@ -58,7 +64,8 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	    }		
 	}
 	
-	public void testGetInstance_InvalidAPIkey(){
+	@Test
+	public void getInstance_InvalidAPIkey(){
 	    try {
 	        HttpClient client = new HttpClient();
 	        PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
@@ -74,7 +81,8 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	    }		
 	}
 	
-	public void testGetInstanceById_InvalidWidget(){
+	@Test
+	public void getInstanceById_InvalidWidget(){
 	    try {
 	        HttpClient client = new HttpClient();
 	        PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
@@ -90,15 +98,18 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	    }		
 	}
 	
-	public void testStop(){
+	@Test @Ignore
+	public void stop(){
 		fail("test not written");
 	}
 	
-	public void testResume(){
+	@Test @Ignore 
+	public void resume(){
 		fail("test not written");
 	}
 	
-	public void testCloneSharedData(){
+	@Test
+	public void cloneSharedData(){
 		// Create an instance
 	    try {
 	        HttpClient client = new HttpClient();

@@ -14,10 +14,14 @@
 
 package org.apache.wookie.tests.functional;
 
+import static org.junit.Assert.*;
+
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 
 /**
@@ -27,8 +31,9 @@ import org.junit.Before;
  */
 public class ParticipantsControllerTest extends AbstractControllerTest {	
 	
-	@Before public void setUp() throws Exception {
-		super.setUp();
+	@BeforeClass
+	public static void setUp() throws Exception {
+
 		// Create an instance
 	    try {
 	        HttpClient client = new HttpClient();
@@ -42,7 +47,8 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	    }
 	}
 
-	public void testAddParticipant(){
+	@Test
+	public void addParticipant(){
 	    try {
 	        HttpClient client = new HttpClient();
 	        PostMethod post = new PostMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
@@ -56,9 +62,27 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	    	e.printStackTrace();
 	    	fail("post failed");
 	    }
+	    // Now lets GET it to make sure it was added OK
+	    try {
+	        HttpClient client = new HttpClient();
+	        GetMethod get = new GetMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
+	        get.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&shareddatakey=participantstest");
+	        client.executeMethod(get);
+	        int code = get.getStatusCode();
+	        assertEquals(200,code);
+	        String response = get.getResponseBodyAsString();
+	        System.out.println(response);
+	        assertTrue(response.contains("<participant id=\"1\" display_name=\"bob\" thumbnail_url=\"http://www.test.org\" />"));
+	        get.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    	fail("get failed");
+	    }
 	}
 	
-	public void testAddParticipant_AlreadyExists(){
+	@Test
+	public void addParticipant_AlreadyExists(){
 	    try {
 	        HttpClient client = new HttpClient();
 	        PostMethod post = new PostMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
@@ -74,7 +98,8 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	    }
 	}
 	
-	public void testAddParticipant_InvalidAPIkey(){
+	@Test
+	public void addParticipant_InvalidAPIkey(){
 	    try {
 	        HttpClient client = new HttpClient();
 	        PostMethod post = new PostMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
@@ -90,7 +115,8 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	    }		
 	}
 	
-	public void testAddParticipant_InvalidParticipant(){
+	@Test
+	public void addParticipant_InvalidParticipant(){
 	    try {
 	        HttpClient client = new HttpClient();
 	        PostMethod post = new PostMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
@@ -106,7 +132,8 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	    }
 	}
 	
-	public void testAddParticipant_InvalidWidget(){
+	@Test
+	public void addParticipant_InvalidWidget(){
 	    try {
 	        HttpClient client = new HttpClient();
 	        PostMethod post = new PostMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
@@ -122,17 +149,89 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	    }
 	}
 	
-	public void testDeleteParticipant(){
-		fail("test not implemented");
+	@Test
+	public void deleteParticipant(){
+	    try {
+	        HttpClient client = new HttpClient();
+	        DeleteMethod post = new DeleteMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
+	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&shareddatakey=participantstest&participant_id=1");
+	        client.executeMethod(post);
+	        int code = post.getStatusCode();
+	        assertEquals(200,code);
+	        post.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    	fail("delete failed");
+	    }
+	    // Now lets GET it to make sure it was deleted
+	    try {
+	        HttpClient client = new HttpClient();
+	        GetMethod get = new GetMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
+	        get.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&shareddatakey=participantstest");
+	        client.executeMethod(get);
+	        int code = get.getStatusCode();
+	        assertEquals(200,code);
+	        String response = get.getResponseBodyAsString();
+	        System.out.println(response);
+	        assertFalse(response.contains("<participant id=\"1\" display_name=\"bob\" thumbnail_url=\"http://www.test.org\" />"));
+	        get.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    	fail("get failed");
+	    }
 	}
-	public void testDeleteParticipant_InvalidAPIKey(){
-		fail("test not implemented");
+	
+	@Test
+	public void deleteParticipant_InvalidAPIKey(){
+	    try {
+	        HttpClient client = new HttpClient();
+	        DeleteMethod post = new DeleteMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
+	        post.setQueryString("api_key="+API_KEY_INVALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&shareddatakey=participantstest");
+	        client.executeMethod(post);
+	        int code = post.getStatusCode();
+	        assertEquals(401,code);
+	        post.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    	fail("post failed");
+	    }	
 	}
-	public void testDeleteParticipant_InvalidParticipant(){
-		fail("test not implemented");
+	
+	@Test
+	public void deleteParticipant_InvalidParticipant(){
+	    try {
+	        HttpClient client = new HttpClient();
+	        DeleteMethod post = new DeleteMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
+	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&shareddatakey=participantstest&participant_id=99");
+	        client.executeMethod(post);
+	        int code = post.getStatusCode();
+	        assertEquals(404,code);
+	        post.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    	fail("post failed");
+	    }	
 	}
-	public void testDeleteParticipant_InvalidInstance(){
-		fail("test not implemented");
+	
+	@Test
+	public void deleteParticipant_InvalidInstance(){
+	    try {
+	        HttpClient client = new HttpClient();
+	        DeleteMethod post = new DeleteMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
+	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&shareddatakey=participantstestinvalidkey&participant_id=1");
+	        client.executeMethod(post);
+	        int code = post.getStatusCode();
+	        assertEquals(400,code);
+	        post.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    	fail("post failed");
+	    }	
 	}
 
 }

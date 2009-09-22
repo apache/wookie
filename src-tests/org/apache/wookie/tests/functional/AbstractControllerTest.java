@@ -14,13 +14,11 @@
 
 package org.apache.wookie.tests.functional;
 
-import junit.framework.TestCase;
-
 /**
  * @author scott
  *
  */
-public abstract class AbstractControllerTest extends TestCase {
+public abstract class AbstractControllerTest{
 	
 	protected static final String TEST_INSTANCES_SERVICE_URL_VALID = "http://localhost:8080/wookie/widgetinstances";
 	protected static final String TEST_PROPERTIES_SERVICE_URL_VALID = "http://localhost:8080/wookie/properties";
