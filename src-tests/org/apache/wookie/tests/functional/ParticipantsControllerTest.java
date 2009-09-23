@@ -31,6 +31,8 @@ import org.junit.Test;
  */
 public class ParticipantsControllerTest extends AbstractControllerTest {	
 	
+	private static String instance_id_key;
+	
 	@BeforeClass
 	public static void setUp() throws Exception {
 
@@ -40,6 +42,8 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	        PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
 	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&shareddatakey=participantstest");
 	        client.executeMethod(post);
+	        String response = post.getResponseBodyAsString();
+	        instance_id_key = response.substring(response.indexOf("<identifier>")+12, response.indexOf("</identifier>"));
 	        post.releaseConnection();
 	    }
 	    catch (Exception e) {
@@ -71,7 +75,25 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	        int code = get.getStatusCode();
 	        assertEquals(200,code);
 	        String response = get.getResponseBodyAsString();
-	        System.out.println(response);
+	        assertTrue(response.contains("<participant id=\"1\" display_name=\"bob\" thumbnail_url=\"http://www.test.org\" />"));
+	        get.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    	fail("get failed");
+	    }
+	}
+	
+	@Test
+	public void getParticipant_usingIdKey(){
+	    try {
+	        HttpClient client = new HttpClient();
+	        GetMethod get = new GetMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
+	        get.setQueryString("api_key="+API_KEY_VALID+"&id_key="+instance_id_key);
+	        client.executeMethod(get);
+	        int code = get.getStatusCode();
+	        assertEquals(200,code);
+	        String response = get.getResponseBodyAsString();
 	        assertTrue(response.contains("<participant id=\"1\" display_name=\"bob\" thumbnail_url=\"http://www.test.org\" />"));
 	        get.releaseConnection();
 	    }
@@ -173,7 +195,6 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	        int code = get.getStatusCode();
 	        assertEquals(200,code);
 	        String response = get.getResponseBodyAsString();
-	        System.out.println(response);
 	        assertFalse(response.contains("<participant id=\"1\" display_name=\"bob\" thumbnail_url=\"http://www.test.org\" />"));
 	        get.releaseConnection();
 	    }
