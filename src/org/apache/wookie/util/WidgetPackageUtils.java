@@ -34,6 +34,10 @@ import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.log4j.Logger;
+import org.apache.wookie.Messages;
+import org.apache.wookie.exceptions.BadManifestException;
+import org.apache.wookie.exceptions.BadWidgetZipFileException;
+import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 
 /**
@@ -43,6 +47,42 @@ import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
  */
 public class WidgetPackageUtils {
 	static Logger _logger = Logger.getLogger(WidgetPackageUtils.class.getName());
+	
+	public static final String[] START_FILES = {"index.htm","index.html","index.svg","index.xhtml","index.xht"};
+	
+	/**
+	 * Identify the start file for a given zipfile and manifest, or throw an exception
+	 * @param widgetModel
+	 * @param zip
+	 * @param localizedMessages
+	 * @return the name of the start file
+	 * @throws BadWidgetZipFileException if a custom start file is specified, but is not present
+	 * @throws BadManifestException if no custom start file is found, and no default start file can be located
+	 */
+	public static String locateStartFile(IManifestModel widgetModel, ZipFile zip, Messages localizedMessages) throws BadWidgetZipFileException, BadManifestException{
+		String startFile = null;
+		// Check for a custom start file
+		if (widgetModel.getContent() != null) {
+			if (widgetModel.getContent().getSrc() == null){
+				startFile = widgetModel.getContent().getSrc();
+				// Check that the specified custom start file exists
+				if (zip.getEntry(startFile)==null){
+					startFile = null;
+					throw new BadWidgetZipFileException(localizedMessages.getString("WidgetAdminServlet.22")); //$NON-NLS-1$
+				}
+			}
+		}
+		// If no custom start file exists, look for defaults
+		for (String s: START_FILES){
+			if (startFile == null && zip.getEntry(s)!=null){
+				startFile = s;
+			}
+		}
+		// If no start file has been found, throw an exception
+		if (startFile == null) 
+			throw new BadManifestException("WidgetAdminServlet.27"); //$NON-NLS-1$
+		return startFile;
+	}
 
 	public static File createUnpackedWidgetFolder(HttpServletRequest request, Configuration properties, String folder) throws IOException{
 		folder = convertIdToFolderName(folder);

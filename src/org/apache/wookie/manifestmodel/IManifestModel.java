@@ -55,4 +55,6 @@ public interface IManifestModel extends IManifestModelBase{
 	public String getViewModes();
 
 	public List<IDescriptionEntity> getDescriptions();
+	
+	public void setContent(IContentEntity content);
 }
