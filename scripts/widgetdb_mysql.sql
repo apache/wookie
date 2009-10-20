@@ -172,5 +172,5 @@ INSERT INTO `WidgetDefault` VALUES ('unsupported',1),('chat',2),('discussion',3)
 INSERT INTO `WidgetService` VALUES (1,'unsupported'),(2,'chat'),(3,'discussion'),(4,'forum'),(5,'vote'),(6,'natter'),(7,'weather');
 INSERT INTO `WidgetType` VALUES (1,1,'unsupported'),(2,2,'chat'),(3,3,'forum'),(4,3,'discussion'),(5,4,'vote'),(6,5,'natter'),(7,6,'weather');
 INSERT INTO `Whitelist` VALUES (1,'http://127.0.0.1'),(2,'http://localhost'),(3,'http://feeds.bbc.co.uk/weather/feeds/rss');
-INSERT INTO `ServerFeature` VALUES (1,'http://wave.google.com','org.tencompetence.widgetservice.feature.wave.WaveAPIImpl'),(2,'http://www.getwookie.org/usefeature/polling','org.tencompetence.widgetservice.feature.polling.impl.WookiePollingImpl');
+INSERT INTO `ServerFeature` VALUES (1,'http://wave.google.com','org.apache.wookie.feature.wave.WaveAPIImpl'),(2,'http://www.getwookie.org/usefeature/polling','org.apache.wookie.feature.polling.impl.WookiePollingImpl');
 INSERT INTO `ApiKey` VALUES (1,'TEST','test@127.0.0.1');
