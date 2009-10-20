@@ -165,7 +165,7 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 			}
 		}
 		catch (Exception ex) {
-			session.setAttribute("message_value", localizedMessages.getString("WidgetWebMenuServlet.4")); //$NON-NLS-1$ //$NON-NLS-2$
+			session.setAttribute("error_value", localizedMessages.getString("WidgetWebMenuServlet.4")); //$NON-NLS-1$ //$NON-NLS-2$
 			_logger.error(localizedMessages.getString("WidgetWebMenuServlet.4"), ex); //$NON-NLS-1$
 		}
 
