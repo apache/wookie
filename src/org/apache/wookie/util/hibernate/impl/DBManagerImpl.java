@@ -41,7 +41,7 @@ public class DBManagerImpl implements IDBManager {
 	private Session session = null;
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.IDBManager#beginTransaction()
+	 * @see org.apache.wookie.util.hibernate.IDBManager#beginTransaction()
 	 */
 	public void beginTransaction() {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
@@ -49,7 +49,7 @@ public class DBManagerImpl implements IDBManager {
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.IDBManager#commitTransaction()
+	 * @see org.apache.wookie.util.hibernate.IDBManager#commitTransaction()
 	 */
 	public void commitTransaction() {
 		if (session.isOpen()) {
@@ -58,14 +58,14 @@ public class DBManagerImpl implements IDBManager {
 	}
 	
 	/** (non-Javadoc)
-	 * @see org.tencompetence.tencs.business.database.IDBManager#rollbackTransaction()
+	 * @see org.apache.wookie.util.hibernate.IDBManager#rollbackTransaction()
 	 */
 	public void rollbackTransaction() {
 		session.getTransaction().rollback();
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.IDBManager#closeSession()
+	 * @see org.apache.wookie.util.hibernate.IDBManager#closeSession()
 	 */
 	public void closeSession() {
 		if (session.isOpen()) {
@@ -75,7 +75,7 @@ public class DBManagerImpl implements IDBManager {
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.IDBManager#createCriteria(java.lang.Class)
+	 * @see org.apache.wookie.util.hibernate.IDBManager#createCriteria(java.lang.Class)
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends ActiveRecord> Criteria createCriteria(final Class<? extends ActiveRecord> baseClass) {
@@ -83,7 +83,7 @@ public class DBManagerImpl implements IDBManager {
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.IDBManager#createQuery(java.lang.String)
+	 * @see org.apache.wookie.util.hibernate.IDBManager#createQuery(java.lang.String)
 	 */
 	public Query createQuery(final String query) {
 		return session.createQuery(query);
@@ -94,7 +94,7 @@ public class DBManagerImpl implements IDBManager {
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.IDBManager#getObject(java.lang.Class, java.lang.Integer)
+	 * @see org.apache.wookie.util.hibernate.IDBManager#getObject(java.lang.Class, java.lang.Integer)
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends ActiveRecord> T getObject(final Class<T> baseClass,
@@ -109,7 +109,7 @@ public class DBManagerImpl implements IDBManager {
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.IDBManager#getObject(java.lang.Class, java.util.List)
+	 * @see org.apache.wookie.util.hibernate.IDBManager#getObject(java.lang.Class, java.util.List)
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends ActiveRecord> T getObject(final Class<T> baseClass,
@@ -128,7 +128,7 @@ public class DBManagerImpl implements IDBManager {
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.IDBManager#getObjects(java.lang.Class, java.util.List)
+	 * @see org.apache.wookie.util.hibernate.IDBManager#getObjects(java.lang.Class, java.util.List)
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends ActiveRecord> List<T> getObjects(final Class<T> baseClass,
@@ -142,7 +142,7 @@ public class DBManagerImpl implements IDBManager {
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.IDBManager#updateObject(java.lang.Class, java.lang.Object)
+	 * @see org.apache.wookie.util.hibernate.IDBManager#updateObject(java.lang.Class, java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends AbstractKeyBean> void updateObject(final Class<T> baseClass,
@@ -164,7 +164,7 @@ public class DBManagerImpl implements IDBManager {
 	}
 	
 	/**
-	 * @see org.tencompetence.tencs.business.database.IDBManager#saveObject(org.tencompetence.tencs.business.database.beans.DBAbstractBean)
+	 * @see org.apache.wookie.util.hibernate.IDBManager#saveObject(org.apache.wookie.util.hibernate.beans.DBAbstractBean)
 	 */
 	@SuppressWarnings("unchecked")
 	public Serializable saveObject(final ActiveRecord obj) throws Exception {
@@ -188,7 +188,7 @@ public class DBManagerImpl implements IDBManager {
 	}
 
 	/**
-	 * @see org.tencompetence.tencs.business.database.IDBManager#deleteObject(org.tencompetence.tencs.business.database.beans.DBAbstractBean)
+	 * @see org.apache.wookie.util.hibernate.IDBManager#deleteObject(org.apache.wookie.util.hibernate.beans.DBAbstractBean)
 	 */
 	@SuppressWarnings("unchecked")
 	public void deleteObject(final ActiveRecord obj) throws Exception {
