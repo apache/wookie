@@ -94,6 +94,7 @@ public class WidgetManifestModel implements IManifestModel {
 	}
 	
 	public String getAuthor(){
+		if (fAuthor == null) return null;
 		return fAuthor.getAuthorName();
 	}
 	
@@ -282,9 +283,12 @@ public class WidgetManifestModel implements IManifestModel {
 			}
 			
 			// CONTENT IS OPTIONAL - can only be 0 or 1
-			if(tag.equals(IW3CXMLConfiguration.CONTENT_ELEMENT)) {							
-				fContent = new ContentEntity();						
-				fContent.fromXML(child);
+			// Only the first CONTENT element should be considered, further instances MUST be ignored
+			if(tag.equals(IW3CXMLConfiguration.CONTENT_ELEMENT)) {	
+				if (fContent == null){
+					fContent = new ContentEntity();						
+					fContent.fromXML(child);
+				}
 			}
 			
 			// FEATURE IS OPTIONAL - can be many
@@ -303,6 +307,5 @@ public class WidgetManifestModel implements IManifestModel {
 			
 		}
 	}
-
 
 }
