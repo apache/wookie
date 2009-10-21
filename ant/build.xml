@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="wookie" basedir="." default="run">
+	<description>
+			  	Widget Server Build File
+			 	-------------------------		  				  
+	</description>
+		
+	<property name="webcontent" value="../WebContent"/>
+	<property name="lib" value="${webcontent}/WEB-INF/lib"/>
+	<property name="dist" value="${webcontent}/WEB-INF/lib"/>
+	<property name="shindig" value="../shindig"/>
+	<property name="src" value="../src"/>
+	<property name="test.src.dir" value="../src-tests"/>
+	<property name="tests" value="../src-tests"/>
+	<property name="meta-inf" value="${webcontent}/META-INF"/>		
+	<property name="work" value="${basedir}/build"/>
+	<property name="war.file" value="${war.file}"/>
+	<property name="classes.dir" value="${work}/wookie/WEB-INF/classes"/>
+	
+	<property name="dev.lib.dir" value="../dev_lib"/>
+	
+	<!-- FIXME: These properties are dependent on a specific file setup and therefore not appropriate -->
+	<property name="ccrt.home" value="../../ccrt" />
+	<property name="jboss.home" value="${ccrt.home}/jboss-4.0.4.GA" />		
+	<property name="deploy.folder" value="${jboss.home}/server/default/deploy" />	
+	<property name="deploy.conf" value="${jboss.home}/server/default/conf" />
+	
+	<!-- External jar dependencies -->
+	<property name="jta.lib" value="${lib}/jta-1_1-classes.jar"/>
+	<property name="c3p0.lib" value="${lib}/c3p0-0.9.1.2.jar"/>
+	<property name="hibernate.lib" value="${lib}/hibernate3.jar"/>	
+	<property name="mysql.lib" value="${lib}/mysql-connector-java-5.0.5-bin.jar"/>
+	<!-- end external jar dependencies -->
+
+	<tstamp prefix="header">
+			<format property="DSTAMP" pattern="EEEE d MMMM yyyy" locale="en"/>
+			<format property="TSTAMP" pattern="HH:mm" locale="en"/>
+	</tstamp>
+		
+	<target name="failIfMissingRequiredProperties" unless="extpropset.okay">
+	    <fail message="You need to set required properties for external dependencies"/>
+	</target>
+	<target name="failIfMissingRequiredFiles" unless="extpropavail.okay">
+	    <fail message="Required external dependencies are missing - there are a number of incompatibly licenced libraries required, please ensure you have downloaded as in structed in http://cwiki.apache.org/confluence/display/WOOKIE/Sources "/>
+	</target>
+	
+	<target name="init">
+		<echo message="${line.separator}Project : ${ant.project.name}"/>
+		<echo message="------------------------------------------------------------------"/>
+		<echo message="Build File : ${ant.file}"/>
+		<echo message="Ant Version: ${ant.version}"/>
+		<echo message="JVM Version: ${ant.java.version}"/>
+		<echo message="OS Version : ${os.name} ${os.version} (${os.arch})"/>
+		<echo message="Time Stamp : ${header.DSTAMP} at ${header.TSTAMP}"/>
+		<echo message="------------------------------------------------------------------"/>
+		<echo message=""/>
+		
+		<mkdir dir="${work}/"/>
+		
+		<path id="class.path">
+			<fileset dir="${lib}" includes="*.jar"/>
+		</path>
+
+		<path id="dev.class.path">
+	        <path refid="class.path"/>
+			<fileset dir="${dev.lib.dir}" includes="*.jar"/>
+		    <pathelement path="${classes.dir}"/>
+		</path>
+			
+		<condition property="extpropset.okay">
+	    	 <and>
+	    	   	<isset property="jta.lib"/>
+	    	   	<isset property="c3p0.lib"/>
+		    	<isset property="hibernate.lib"/>
+		    	<isset property="mysql.lib"/>
+	    	 </and>
+	    </condition>
+	    <condition property="extpropavail.okay">
+	    	<and>
+				<available file="${jta.lib}"/>
+				<available file="${c3p0.lib}"/>
+				<available file="${hibernate.lib}"/>
+				<available file="${mysql.lib}"/>
+	    	</and>
+		</condition>
+	    <antcall target="failIfMissingRequiredProperties"/>
+	    <antcall target="failIfMissingRequiredFiles"/>
+	</target>
+		
+	<target name="build_src" depends="init">		
+		<mkdir dir="${classes.dir}"/>
+		<javac source="1.5" target="1.5" optimize="true" debug="true"
+			deprecation="true" srcdir="${src}" destdir="${classes.dir}">
+			<classpath refid="class.path"/>
+		</javac>
+		<!-- Copy necessary files -->
+		<copy todir="${classes.dir}">
+			<fileset dir="${src}">
+			    <exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+		<copy todir="${work}/wookie">
+			<fileset dir="${webcontent}">			    
+				<exclude name="META-INF"/>
+				<exclude name="META-INF"/>
+			</fileset>
+		</copy>									
+	</target>
+	
+	<target name="compile_test" depends="build_src">
+		<javac source="1.5" target="1.5" optimize="true" debug="true"
+			deprecation="true" srcdir="${test.src.dir}" destdir="${classes.dir}">
+			<classpath refid="dev.class.path"/>
+		</javac>								
+	</target>
+	
+	<target name="build_war" depends="build_src">		
+		<war destfile="wookie_temp.war" webxml="${work}/wookie/WEB-INF/web.xml">		  
+			<!--<metainf dir="${meta-inf}" includes="context.xml"/>-->
+		  	<lib dir="${webcontent}/WEB-INF/lib">
+		  		<exclude name="mysql-connector-java-5.0.5-bin.jar"/>
+		  	</lib>
+		  	<classes dir="${classes.dir}"/>
+			<fileset dir="${webcontent}">
+				 <include name="*.htm"/>
+				 <include name="admin/**.*"/>
+				 <include name="upload/**/*.*"/>
+				 <include name="shared/js/**/*.*"/>
+				 <include name="shared/images/**/*.*"/>
+				 <include name="wservices/**/*.*"/>
+				 <include name="WEB-INF/dwr.xml"/>
+				<include name="WEB-INF/jboss-web.xml"/>
+			</fileset>  
+		</war>
+	</target>
+	
+	<target name="clean" description="Cleans everything" depends="init">
+		<delete includeemptydirs="true">			
+			<fileset dir="${work}/" includes="**/*"/>
+			<fileset dir="${basedir}/" includes="wookie_temp.war"/>	
+			<fileset dir="${classes.dir}" includes="**/*"/>
+		</delete>			
+	</target>
+
+	<target name="build" depends="build_src,build_war" description="Builds the deployment">
+		<echo message="Done."/>
+	</target>
+	
+	<target name="rebuild" depends="build" description="Rebuilds all">
+		<echo message="Done."/>
+	</target>
+
+	<target name="dist" depends="rebuild,deploy,clean" description="Create distribution">
+		<echo message="Done."/>
+	</target>
+
+	<target name="deploy">
+		<!-- to do copy over wars to deploy folder -->
+		<copy todir="${deploy.folder}">
+	    	<fileset dir=".">
+	        	<include name="wookie_temp.war"/>	
+	      	</fileset>
+		</copy>  
+		<mkdir dir="${deploy.folder}/wookie.war"/>
+		<unzip src="${deploy.folder}/wookie_temp.war" dest="${deploy.folder}/wookie.war"/>
+		<delete file="${deploy.folder}/wookie_temp.war"/>
+		<copy file="${c3p0.lib}" tofile="${tomcat.lib}/c3p0-0.9.1.2.jar" overwrite="yes"/>
+		<delete file="${tomcat.lib}/commons-httpclient.jar"/>
+		<copy file="${lib}/commons-httpclient-3.0.1.jar" tofile="${tomcat.lib}/commons-httpclient-3.0.1.jar" overwrite="yes"/>
+		<copy file="../scripts/log4j.xml" tofile="${deploy.conf}/log4j.xml" overwrite="yes"/>
+	</target>
+	
+	<target name="build_wookie_standalone" depends="build_src, make_libs">
+		<copy file="${src}/hibernate.cfg.xml" tofile="${classes.dir}/hibernate.cfg.xml" overwrite="yes"/>
+			
+		<war destfile="${war.file}" webxml="${work}/wookie/WEB-INF/web.xml">		  
+					<metainf dir="${meta-inf}" includes="context.xml"/>
+				  	<lib dir="${work}/wookie/WEB-INF/lib"/>				  
+				  	<classes dir="${classes.dir}"/>
+					<fileset dir="${webcontent}">
+						 <include name="*.htm"/>
+						 <include name="*.css"/>
+						 <include name="error/**.*"/>
+						 <include name="admin/**.*"/>
+						 <include name="webmenu/**.*"/>
+						 <include name="upload/**/*.*"/>
+						 <include name="shared/js/**/*.*"/>
+						 <include name="shared/images/**/*.*"/>
+						 <include name="wservices/**/*.*"/>
+						 <include name="WEB-INF/dwr.xml"/>
+						<include name="WEB-INF/jboss-web.xml"/>
+					</fileset>  
+				</war>
+		<delete includeemptydirs="true">			
+				<fileset dir="${work}/" excludes="wookie_tomcat.war" includes="**/*"/>								
+		</delete>
+		<mkdir dir="${work}/wookie"/>
+		<unzip src="${war.file}" dest="${work}/wookie"/>	
+		<delete file="${war.file}"/>
+		
+		<copy todir="${work}/licenses">
+		    <fileset dir="../licenses"/>
+		  </copy>
+		<copy todir="${work}/docs">
+		    <fileset dir="../docs"/>
+		</copy>
+
+		<copy file="../readme_tomcat.txt" tofile="${work}/readme.txt" overwrite="yes"/>
+		<copy file="../scripts/widgetdb_mysql.sql" tofile="${work}/widgetdb_mysql.sql" overwrite="yes"/>
+		<zip destfile="${work}/wookie_for_tomcat.zip" basedir="${work}" excludes="${work}/CVS"/>		
+		<delete includeemptydirs="true">			
+				<fileset dir="${work}/" excludes="wookie_for_tomcat.zip,CVS" includes="**/*"/>								
+		</delete>
+	</target>
+	
+	<target name="build_with_shindig" depends="clean, build_src, copy_shindig_files, build_wookie_standalone"
+		description="Builds with Shindig OpenSocial container">
+		<echo message="Done."/>
+	</target>
+	
+	<target name="make_libs">
+		<mkdir dir="${work}/wookie/WEB-INF/lib"/>
+		<copy todir="${work}/wookie/WEB-INF/lib" overwrite="yes">
+			<fileset dir="${webcontent}/WEB-INF/lib"/>
+		</copy>
+		<copy file="${jta.lib}" toFile="${work}/wookie/WEB-INF/lib/jta.jar" overwrite="yes"/>
+		<copy file="${c3p0.lib}" toFile="${work}/wookie/WEB-INF/lib/c3p0.jar" overwrite="yes"/>
+		<copy file="${hibernate.lib}" toFile="${work}/wookie/WEB-INF/lib/hibernate.jar" overwrite="yes"/>
+		<copy file="${mysql.lib}" toFile="${work}/wookie/WEB-INF/lib/mysql-connector.jar" overwrite="yes"/>
+	</target>
+	
+	<target name="copy_shindig_files">
+		<!-- copy libraries -->
+		<mkdir dir="${work}/wookie/WEB-INF/lib"/>
+		<copy todir="${work}/wookie/WEB-INF/lib" overwrite="yes">
+			<fileset dir="${shindig}/WEB-INF/lib"/>
+		</copy>
+		<!-- copy config files -->
+		<copy todir="${work}/wookie/WEB-INF" overwrite="yes">
+			<fileset dir="${shindig}/WEB-INF"/>
+		</copy>	
+		<!-- copy combined web.xml -->
+		<copy file="${shindig}/WEB-INF/web.xml" tofile="${work}/wookie/WEB-INF/web.xml" overwrite="yes"/>
+	</target>
+	
+	<target name="cold_deploy" description="Build, destroy, deploy">
+		<!--clear db-->
+		   <sql 
+		   	classpath="${mysql.lib}"
+		   	driver="com.mysql.jdbc.Driver" 
+		   	url="jdbc:mysql://localhost:3306/?autoReconnect=true" 
+		   	userid="root" password="" >
+		      <transaction src="../scripts/widgetdb_mysql.sql"/>
+		    </sql>
+		
+		<!--delete old app-->
+		<echo message="Deleting app"/>
+		<delete includeemptydirs="true">			
+				<fileset dir="/usr/local/tomcat-5.5.27/webapps/wookie" includes="/**/*.*"/>								
+		</delete>
+		
+		<!--unzip to tomcat-->
+		<unzip src="${work}/wookie_for_tomcat.zip" dest="/usr/local/tomcat-5.5.27/webapps/"/>		
+		
+		<!--restart server-->
+		<exec dir="/usr/local/tomcat-5.5.27/bin" executable="sh">
+				<arg line="restart.sh"/>
+			</exec>
+		<echo message="Done."/>
+	</target>
+	
+	<target name="build and deploy" description="Build, destroy, deploy" depends="build_with_shindig, cold_deploy">
+		<echo message="Done."/>	
+	</target>
+	
+	<!-- ======================================================================================= -->
+	<!-- Run in Jetty, useful for testing and development, nt useful for deployment              -->
+	<!-- ======================================================================================= -->
+	<target name="run"
+      depends="build_src, compile_test, copy_shindig_files"
+      description="* Run Jetty (instant live webapp)">
+	    <java classname="org.apache.wookie.WookieDevServer"
+	    	  dir=".."
+	          fork="yes"
+	          failonerror="yes">
+			<classpath refid="dev.class.path"/>
+	    </java>
+	</target>
+	
+</project>

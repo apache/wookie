@@ -5,17 +5,51 @@ Wookie is an open-source Widget Engine based on the W3C Widgets Specification.
 
 For more information see http://incubator.apache.org/projects/wookie.html
 
-The code uses an Apache 2.0 license; third party licenses can be found in the folder /licenses.
+======================
+IMPORTANT LEGAL NOTICE
+======================
 
-Wookie depends on several libraries with incompatible licenses. These must be downloaded and installed to build and run Wookie:
+Apache Wookie (Incubating) depends on several libraries that are licenced under open source licences that are incompatible with
+the Apache License. When you first build the project these will be downloaded automatically by the build system.
 
-- hibernate 3
-- jta
-- mysql-connector
-- c3p0
 
-For instructions on setting up Wookie under Tomcat, see readme_tomcat.txt. 
+Building
+========
 
-For instructions on setting up Wookie with CopperCore, see readme_coppercore.txt
+You will need to download and install Apache Ant in order to build from source. See http://ant.apace.org
 
-Problems - email P.Sharples@bolton.ac.uk
+Once installed run the following commands:
+
+cd PROJECT_HOME_DIRECTORY
+ant
+
+The first time you run this command all dependencies will be downloaded so you must be online and it will take some time. 
+Subsequent builds will be much faster.
+
+Running
+=======
+
+The following will compile any changed java files and run the webserver in demo mode, complete with an embedded database. 
+The database will be automatically updated at construction - do not use this approach in production.
+
+cd PROJECT_HOME_DIRECTORY
+ant run
+http://localhost:8080/wookie
+
+To access the administration menu (http://localhost:8080/wookie/admin) use the username 'java' and password 'java'.
+
+If you want to start with a completely clean build then use:
+
+ant clean-build run
+
+If you want to clean the database use:
+
+ant clean-db
+
+Debugging
+=========
+
+To run the server in debug mode on a specific port use the wookie.jvmargs property, as follows:
+
+ant -Dwookie.jvmargs="-Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n" run
+

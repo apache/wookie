@@ -38,7 +38,7 @@
 			org.apache.wookie.server.MainFilter
 		</filter-class>
 	</filter>
-		
+	
 	<filter-mapping>
 		<filter-name>MainFilter</filter-name>
 		<url-pattern>/*</url-pattern>
