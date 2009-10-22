@@ -8,7 +8,7 @@
 
 	<class name="Widget" table="Widget">
 		<id name="id" column="id">
-			<generator class="native" />
+			<generator class="increment" />
 		</id>
 		<property name="widgetTitle" column="widget_title" type="string" />
 		<property name="widgetDescription" column="widget_description" type="string" />
@@ -28,7 +28,7 @@
 	
 	<class name="WidgetType" table="WidgetType">
 		<id name="id" column="id">
-			<generator class="native" />
+			<generator class="increment" />
 		</id>
 		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />
 		<property name="widgetContext" column="widget_context" type="string" />
@@ -36,7 +36,7 @@
 	
 	<class name="WidgetService" table="WidgetService">
 		<id name="id" column="id">
-			<generator class="native" />
+			<generator class="increment" />
 		</id>		
 		<property name="serviceName" column="service_name" type="string" not-null="true"/>
 	</class>
@@ -51,7 +51,7 @@
 
 	<class name="ApiKey" table="ApiKey">
 		<id name="id" column="id">
-			<generator class="native" />
+			<generator class="increment" />
 		</id>
 		<property name="value" column="value" type="string" />
 		<property name="email" column="email" type="string" />
@@ -59,7 +59,7 @@
 
 	<class name="WidgetInstance" table="WidgetInstance">
 		<id name="id" column="id">
-			<generator class="native" />
+			<generator class="increment" />
 		</id>		
 		<property name="userId" not-null="true"/>				
 		<property name="sharedDataKey" not-null="true"/>				
@@ -76,7 +76,7 @@
 
 	<class name="SharedData" table="SharedData">
 		<id name="id" column="id">
-			<generator class="native" />
+			<generator class="increment" />
 		</id>		
 		<property name="sharedDataKey" column="sharedDataKey" index="sharedDataIndex" />				
 		<property name="dkey" />
@@ -86,7 +86,7 @@
 	
 	<class name="Preference" table="Preference">
 		<id name="id" column="id">
-			<generator class="native" />
+			<generator class="increment" />
 		</id>
 		<many-to-one name="widgetInstance" class="WidgetInstance" column="widget_instance_id" not-null="true" />
 		<property name="dkey" />
@@ -96,7 +96,7 @@
 
 	<class name="Participant" table="Participant">
 		<id name="id" column="id">
-			<generator class="native" />
+			<generator class="increment" />
 		</id>
 		<property name="widgetGuid" />
 		<property name="sharedDataKey" />
@@ -107,7 +107,7 @@
 	
 	<class name="PreferenceDefault" table="PreferenceDefault">
 		<id name="id" column="id">
-			<generator class="native" />
+			<generator class="increment" />
 		</id>
 		<property name="preference"/>
 		<property name="value"/>	
@@ -117,14 +117,14 @@
 		
 	<class name="Whitelist" table="Whitelist">
 		<id name="id" column="id">
-			<generator class="native" />
+			<generator class="increment" />
 		</id>		
 		<property name="fUrl" />		
 	</class>
 	
 	<class name="Post" table="Post">
 		<id name="id" column="id">
-            <generator class="native"/>
+            <generator class="increment"/>
         </id>               
         <property name="userId" column="user_id"></property>        
         <property name="parentId" column="parent_id"></property>        
@@ -137,7 +137,7 @@
      
      <class name="Feature" table="Feature">
 		<id name="id" column="id">
-			<generator class="native" />
+			<generator class="increment" />
 		</id>			
 		<property name="featureName" column="featureName" />
 		<property name="required" type="true_false" />
@@ -150,7 +150,7 @@
 	
 	<class name="Param" table="Param">
 		<id name="id" column="id">
-			<generator class="native" />
+			<generator class="increment" />
 		</id>
 		<many-to-one name="parentFeature" class="Feature" column="feature_id" not-null="true" />
 		<property name="parameterName" column="parameterName" />	
@@ -159,7 +159,7 @@
 	
 	<class name="ServerFeature" table="ServerFeature">
 		<id name="id" column="id">
-			<generator class="native" />
+			<generator class="increment" />
 		</id>		
 		<property name="className"/>
 		<property name="featureName" />		
@@ -167,7 +167,7 @@
 	
 	<class name="Token" table="Token">
 		<id name="id" column="id">
-			<generator class="native" />
+			<generator class="increment" />
 		</id>		
 		<property name="requestUrl"/>
 		<property name="accessUrl" />	
