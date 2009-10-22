@@ -47,7 +47,7 @@ public class Start {
 	 */
 	private static void configureDatabase() throws IOException {
 		logger.debug("Configuring Derby Database");
-		URL sqlFile = Start.class.getClassLoader().getResource("widgetdb_derby.sql");
+		URL sqlFile = Start.class.getClassLoader().getResource("widgetdb.sql");
 		StringBuilder fileData = new StringBuilder(1000);
 		FileReader in = new FileReader(sqlFile.getFile());
 		BufferedReader br = new BufferedReader(in);

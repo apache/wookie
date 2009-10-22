@@ -17,10 +17,7 @@
 -->
 <project xmlns:ivy="antlib:fr.jayasoft.ivy.ant">
 
-	<property name="project.webapp.dir" location="src/webapp" />
-	<property name="project.lib.dir" location="lib" />
-
-	<property name="serveltEngine.webapp.dir" location="C:\\Program Files\\Apache Software Foundation\\Tomcat 5.5\\webapps" />
+	<property name="project.webapp.dir" location="WebContent" />
 
 	<import file="ivy-java-common.xml" />
 	
@@ -29,19 +26,23 @@
 			<java classname="org.apache.wookie.server.Stop" classpathref="run.path.id" />
 		</parallel>
 	</target>
+	
+    <target name="clean-webapp-lib" description="--> clean the project webapp libs directory">
+        <delete includeemptydirs="true" dir="${project.weblib.dir}"/>
+    </target>
 
-	<target name="deploy-webapp" depends="compile-core">
-		<copy todir="${serveltEngine.webapp.dir}/${ant.project.name}/WEB-INF/classes">
+	<target name="deploy-webapp" depends="compile-core, clean-webapp-lib">
+		<ivy:cachepath pathid="project.core.class.path" conf="default" />
+		<copy todir="${servletEngine.webapp.dir}/${ant.project.name}/WEB-INF/classes">
 			<fileset dir="${project.build.classes.dir}" />
 		</copy>
 
-		<copy todir="${serveltEngine.webapp.dir}/${ant.project.name}">
+		<copy todir="${servletEngine.webapp.dir}/${ant.project.name}">
 			<fileset dir="${project.webapp.dir}" />
 		</copy>
-
-		<ivy:retrieve />
-		<copy todir="${serveltEngine.webapp.dir}/${ant.project.name}/WEB-INF/lib">
-			<fileset dir="${project.lib.dir}" />
+		<ivy:retrieve conf="deploy" pattern="${project.weblib.dir}/[artifact]-[revision].[ext]"/>
+		<copy todir="${servletEngine.webapp.dir}/${ant.project.name}/WEB-INF/lib">
+			<fileset dir="${project.weblib.dir}" />
 		</copy>
 
 		<antcall target="post-deploy-webapp" />
@@ -50,7 +51,9 @@
 	<target name="post-deploy-webapp" />
 
 	<target name="undeploy-webapp">
-		<delete dir="${serveltEngine.webapp.dir}/${ant.project.name}" />
+		<delete dir="${servletEngine.webapp.dir}/${ant.project.name}" />
 	</target>
+	
+	<target name="redeploy-webapp" description="replace current webapp" depends="undeploy-webapp, deploy-webapp"/>
 
 </project>

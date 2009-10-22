@@ -25,11 +25,34 @@
 	
   <import file="ant/ivy-webapp-common.xml"/>
 	
-  <target name="post-compile-core">
-  	<copy file="scripts/widgetdb_derby.sql" tofile="${project.build.classes.dir}/widgetdb_derby.sql"/>
+ <target name="set-mysql-script-dir" if="project.using.mysql">
+ 	<property name="project.scripts.dir" value="scripts/mysql"/>
+ </target>
+  <target name="set-derby-script-dir" if="project.using.derby">
+	 	<property name="project.scripts.dir" value="scripts/derby"/>
   </target>
 	
-  <target name="clean-db" description="delete the Wookie database, it will be recreated next time the application is run">
+  <target name="post-compile-core" depends="set-mysql-script-dir, set-derby-script-dir">
+  	<copy file="${project.scripts.dir}/widgetdb.sql" tofile="${project.build.classes.dir}/widgetdb.sql"/>
+  	<copy file="${project.scripts.dir}/hibernate.cfg.xml" tofile="${project.build.classes.dir}/hibernate.cfg.xml"/>
+  </target>
+	
+  <target name="clean-mysql" if="project.using.mysql">
+  	<echo>Deleting mysql database</echo>
+  	<sql 
+	   	classpath="${project.weblib.dir}/mysql-connector-java-5.1.6.jar"
+	   	driver="com.mysql.jdbc.Driver" 
+	   	url="jdbc:mysql://localhost:3306/?autoReconnect=true" 
+	   	userid="java" password="java" >
+	      <transaction src="${project.scripts.dir}/widgetdb.sql"/>
+	</sql>
+  </target>
+	
+  <target name="clean-derby" if="project.using.derby">
+  	<echo>Deleting derby database files</echo>
   	<delete dir="${db.name}"/>
+  </target>
+	
+  <target name="clean-db" depends="clean-mysql, clean-derby" description="delete the Wookie database, it will be recreated next time the application is run">
   </target>
 </project>

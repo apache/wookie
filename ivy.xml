@@ -2,46 +2,47 @@
     <info organisation="org.apache.incubator" module="wookie-server"/>
     
     <configurations>
-	  <conf name="default"/>
+      <conf name="deploy"/>
+	  <conf name="default" extends="deploy"/>
 	  <conf name="test" extends="default"/>
 	</configurations>
     
     <dependencies>
-        <dependency org="antlr" name="antlr" rev="2.7.7" conf="default->default">
+        <dependency org="antlr" name="antlr" rev="2.7.7" conf="deploy->default">
         </dependency>
-        <dependency org="cglib" name="cglib" rev="2.2" conf="default->default">
+        <dependency org="cglib" name="cglib" rev="2.2" conf="deploy->default">
         </dependency>
-        <dependency org="commons-codec" name="commons-codec" rev="1.3" conf="default->default">
+        <dependency org="commons-codec" name="commons-codec" rev="1.3" conf="deploy->default">
         </dependency>
-        <dependency org="commons-collections" name="commons-collections" rev="3.2" conf="default->default">
+        <dependency org="commons-collections" name="commons-collections" rev="3.2" conf="deploy->default">
         </dependency>
-        <dependency org="commons-compress" name="commons-compress" rev="1.0" conf="default->default">
+        <dependency org="commons-compress" name="commons-compress" rev="1.0" conf="deploy->default">
 		</dependency>
-        <dependency org="commons-configuration" name="commons-configuration" rev="1.4" conf="default->default">
+        <dependency org="commons-configuration" name="commons-configuration" rev="1.4" conf="deploy->default">
         </dependency>
-        <dependency org="commons-fileupload" name="commons-fileupload" rev="1.2.1" conf="default->default">
+        <dependency org="commons-fileupload" name="commons-fileupload" rev="1.2.1" conf="deploy->default">
         </dependency>
-        <dependency org="commons-httpclient" name="commons-httpclient" rev="3.0.1" conf="default->default">
+        <dependency org="commons-httpclient" name="commons-httpclient" rev="3.0.1" conf="deploy->default">
         </dependency>
-        <dependency org="commons-lang" name="commons-lang" rev="2.4" conf="default->default">
+        <dependency org="commons-lang" name="commons-lang" rev="2.4" conf="deploy->default">
         </dependency>
-        <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="default->optional">
+        <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="deploy->default">
         </dependency>
-        <dependency org="dom4j" name="dom4j" rev="1.6.1" conf="default->default">
+        <dependency org="dom4j" name="dom4j" rev="1.6.1" conf="deploy->default">
         </dependency>
-        <dependency org="htmlcleaner" name="htmlcleaner" rev="2.1.0" conf="default->default">
+        <dependency org="htmlcleaner" name="htmlcleaner" rev="2.1.0" conf="deploy->default">
         </dependency>
-        <dependency org="org.directwebremoting" name="dwr" rev="2.0.5" conf="default->default">
+        <dependency org="org.directwebremoting" name="dwr" rev="2.0.5" conf="deploy->default">
 		</dependency>
-        <dependency org="com.google.collections" name="google-collections" rev="0.9" conf="default->default">
+        <dependency org="com.google.collections" name="google-collections" rev="0.9" conf="deploy->default">
         </dependency>
-        <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.5.2" conf="default->default">
+        <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.5.2" conf="deploy->default">
         </dependency> 
         <dependency org="org.apache.incubator" name="shindig-common" rev="1.1-SNAPSHOT">
         </dependency>
-        <dependency org="org.jdom" name="jdom" rev="1.1" conf="default->default">
+        <dependency org="org.jdom" name="jdom" rev="1.1" conf="deploy->default">
         </dependency>
-        <dependency org="org.json" name="json" rev="20080701" conf="default->default">
+        <dependency org="org.json" name="json" rev="20080701" conf="deploy->default">
         </dependency>
         
         <!-- Libraries used in a development/test environment but not in deployment -->
@@ -64,11 +65,11 @@
         
         
         <!-- Libraries with incompatible open source licences -->
-        <dependency org="org.hibernate" name="hibernate-c3p0" rev="3.3.1.GA" conf="default->default">
+        <dependency org="org.hibernate" name="hibernate-c3p0" rev="3.3.1.GA" conf="deploy->default">
         </dependency>
-        <dependency org="org.hibernate" name="hibernate-core" rev="3.3.1.GA" conf="default->default,optional">
+        <dependency org="org.hibernate" name="hibernate-core" rev="3.3.1.GA" conf="deploy->default,optional">
         </dependency>
-        <dependency org="mysql" name="mysql-connector-java" rev="5.1.6" conf="default->default">
+        <dependency org="mysql" name="mysql-connector-java" rev="5.1.6" conf="deploy->default">
         </dependency>
         
         <exclude module="spring"/>
