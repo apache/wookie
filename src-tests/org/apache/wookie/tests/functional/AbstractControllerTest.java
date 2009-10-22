@@ -25,7 +25,7 @@ public abstract class AbstractControllerTest{
 	protected static final String TEST_PARTICIPANTS_SERVICE_URL_VALID = "http://localhost:8080/wookie/participants";
 	protected static final String TEST_WIDGETS_SERVICE_URL_VALID = "http://localhost:8080/wookie/widgets";
 	
-	protected static final String API_KEY_VALID = "test";
+	protected static final String API_KEY_VALID = "TEST";
 	protected static final String API_KEY_INVALID = "rubbish";
 	protected static final String WIDGET_ID_VALID = "http://www.getwookie.org/widgets/natter";
 	protected static final String WIDGET_ID_INVALID = "http://www.getwookie.org/widgets/nosuchwidget";
