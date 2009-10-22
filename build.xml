@@ -15,7 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project default="compile-core" basedir="." name="Wookie Build File">
+<project default="compile-core" basedir="." name="wookie">
   <description>
     Ivy based build system for Apache Forrest.
   </description>
@@ -26,6 +26,7 @@
   <import file="ant/ivy-webapp-common.xml"/>
 	
   <target name="post-compile-core">
+  	<copy file="scripts/widgetdb_derby.sql" tofile="${project.build.classes.dir}/widgetdb_derby.sql"/>
   </target>
 	
   <target name="clean-db" description="delete the Wookie database, it will be recreated next time the application is run">
