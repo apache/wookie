@@ -12,6 +12,10 @@ IMPORTANT LEGAL NOTICE
 Apache Wookie (Incubating) depends on several libraries that are licenced under open source licences that are incompatible with
 the Apache License. When you first build the project these will be downloaded automatically by the build system.
 
+Configuration
+=============
+
+There are some configuration options in build.properties, these are documented within the file itself.
 
 Building
 ========
