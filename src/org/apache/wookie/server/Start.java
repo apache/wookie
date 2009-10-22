@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
+import org.apache.wookie.util.WidgetPackageUtils;
 import org.apache.wookie.util.hibernate.DBManagerFactory;
 import org.apache.wookie.util.hibernate.IDBManager;
 import org.hibernate.SQLQuery;
@@ -47,29 +48,20 @@ public class Start {
 	 */
 	private static void configureDatabase() throws IOException {
 		logger.debug("Configuring Derby Database");
-		URL sqlFile = Start.class.getClassLoader().getResource("widgetdb.sql");
-		StringBuilder fileData = new StringBuilder(1000);
-		FileReader in = new FileReader(sqlFile.getFile());
-		BufferedReader br = new BufferedReader(in);
-		char[] buf = new char[1024];
-        int numRead=0;
-        while((numRead=br.read(buf)) != -1){
-        	fileData.append(buf, 0, numRead);
-
-        }
-        br.close();
-        String sqlScript = fileData.toString();
+		String sqlScript = WidgetPackageUtils.convertStreamToString(Start.class.getClassLoader().getResourceAsStream("widgetdb.sql"));
+		
 		
         final IDBManager dbManager = DBManagerFactory.getDBManager();
+
 		StringTokenizer st = new StringTokenizer(sqlScript, ";");
 		while (st.hasMoreTokens()) {
-			String sql = st.nextToken();
-			logger.debug("Running SQL snippet: " + sql);
-	        dbManager.beginTransaction();
-			SQLQuery query = dbManager.createSQLQuery(sql);
-			query.executeUpdate();
-			dbManager.commitTransaction();
-		}
+			String q = st.nextToken();
+            dbManager.beginTransaction();
+        	SQLQuery query = dbManager.createSQLQuery(q);
+        	query.executeUpdate();
+        	dbManager.commitTransaction();
+        }
+		
 	}
 
 	private static void startServer() throws Exception, InterruptedException {

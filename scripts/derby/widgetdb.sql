@@ -4,4 +4,4 @@ INSERT INTO WidgetService VALUES (1,'unsupported'),(2,'chat'),(3,'discussion'),(
 INSERT INTO WidgetType VALUES (1,1,'unsupported'),(2,2,'chat'),(3,3,'forum'),(4,3,'discussion'),(5,4,'vote'),(6,5,'natter'),(7,6,'weather');
 INSERT INTO Whitelist VALUES (1,'http://127.0.0.1'),(2,'http://localhost'),(3,'http://feeds.bbc.co.uk/weather/feeds/rss');
 INSERT INTO ServerFeature VALUES (1,'http://wave.google.com','org.tencompetence.widgetservice.feature.wave.WaveAPIImpl'),(2,'http://www.getwookie.org/usefeature/polling','org.tencompetence.widgetservice.feature.polling.impl.WookiePollingImpl');
-INSERT INTO ApiKey VALUES (1,'TEST','test@127.0.0.1');
+INSERT INTO ApiKey VALUES (1,'TEST','test@127.0.0.1')
