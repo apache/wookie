@@ -17,7 +17,7 @@
 -->
 <project default="compile-core" basedir="." name="wookie">
   <description>
-    Ivy based build system for Apache Forrest.
+    Ivy based build system for Apache Wookie.
   </description>
   
   <property file="build.properties"/>
@@ -53,6 +53,6 @@
   	<delete dir="${db.name}"/>
   </target>
 	
-  <target name="clean-db" depends="clean-mysql, clean-derby" description="delete the Wookie database, it will be recreated next time the application is run">
+  <target name="clean-db" depends="set-mysql-script-dir, set-derby-script-dir, clean-mysql, clean-derby" description="delete the Wookie database, it will be recreated next time the application is run">
   </target>
 </project>
