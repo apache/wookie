@@ -63,7 +63,7 @@ public class WidgetPackageUtils {
 		String startFile = null;
 		// Check for a custom start file
 		if (widgetModel.getContent() != null) {
-			if (widgetModel.getContent().getSrc() == null){
+			if (widgetModel.getContent().getSrc() != null){
 				startFile = widgetModel.getContent().getSrc();
 				// Check that the specified custom start file exists
 				if (zip.getEntry(startFile)==null){
@@ -72,6 +72,7 @@ public class WidgetPackageUtils {
 				}
 			}
 		}
+		
 		// If no custom start file exists, look for defaults
 		for (String s: START_FILES){
 			if (startFile == null && zip.getEntry(s)!=null){
