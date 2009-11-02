@@ -16,7 +16,6 @@
   limitations under the License.
 -->
 <project xmlns:ivy="antlib:org.apache.ivy.ant" >
-	<ivy:settings id="ivy.instance" file="${ivy.repository.dir}/ivysettings.xml" />
 	
 	<property name="ivy.install.version" value="2.1.0-rc2" />
     <condition property="ivy.home" value="${env.IVY_HOME}">
@@ -54,6 +53,7 @@
     </target>
 	
     <target name="configure" depends="init-ivy">
+    	<ivy:settings id="ivy.instance" file="${ivy.repository.dir}/ivysettings.xml" />
     </target>
 	
     <target name="resolve" depends="configure, clean-lib" description="--> retrieve dependencies with ivy">
