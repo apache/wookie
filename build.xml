@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project default="compile-core" basedir="." name="wookie">
+  <description>
+    Ivy based build system for Apache Wookie.
+  </description>
+  
+  <property file="build.properties"/>
+  <property name="db.name" value="widgetDB" />
+	
+  <import file="ant/ivy-webapp-common.xml"/>
+	
+ <target name="set-mysql-script-dir" if="project.using.mysql">
+ 	<property name="project.scripts.dir" value="scripts/mysql"/>
+ </target>
+  <target name="set-derby-script-dir" if="project.using.derby">
+	 	<property name="project.scripts.dir" value="scripts/derby"/>
+  </target>
+	
+  <target name="post-compile-core" depends="set-mysql-script-dir, set-derby-script-dir">
+  	<copy file="${project.scripts.dir}/widgetdb.sql" tofile="${project.build.classes.dir}/widgetdb.sql"/>
+  	<copy file="${project.scripts.dir}/hibernate.cfg.xml" tofile="${project.build.classes.dir}/hibernate.cfg.xml"/>
+  </target>
+	
+  <target name="clean-mysql" if="project.using.mysql">
+  	<echo>Deleting mysql database</echo>
+  	<sql 
+	   	classpath="${project.weblib.dir}/mysql-connector-java-5.1.6.jar"
+	   	driver="com.mysql.jdbc.Driver" 
+	   	url="jdbc:mysql://localhost:3306/?autoReconnect=true" 
+	   	userid="java" password="java" >
+	      <transaction src="${project.scripts.dir}/widgetdb.sql"/>
+	</sql>
+  </target>
+	
+  <target name="clean-derby" if="project.using.derby">
+  	<echo>Deleting derby database files</echo>
+  	<delete dir="${db.name}"/>
+  </target>
+	
+  <target name="clean-db" depends="set-mysql-script-dir, set-derby-script-dir, clean-mysql, clean-derby" description="delete the Wookie database, it will be recreated next time the application is run">
+  </target>
+</project>
