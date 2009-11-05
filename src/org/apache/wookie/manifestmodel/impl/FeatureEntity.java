@@ -21,6 +21,7 @@ import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.manifestmodel.IFeatureEntity;
 import org.apache.wookie.manifestmodel.IParamEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
@@ -89,12 +90,12 @@ public class FeatureEntity implements IFeatureEntity {
 	}
 	
 	public void fromXML(Element element) throws BadManifestException {
-		fName = element.getAttributeValue(IW3CXMLConfiguration.NAME_ATTRIBUTE);
-		if(fName == null || fName == ""){
+		fName = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.NAME_ATTRIBUTE));
+		if(fName == null || fName.equals("")){
 			throw new BadManifestException("A Feature is defined in the manifest, but its name attribute is empty.");
 		}
-		String isRequired = element.getAttributeValue(IW3CXMLConfiguration.REQUIRED_ATTRIBUTE);
-		if(isRequired == null){
+		String isRequired = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.REQUIRED_ATTRIBUTE));
+		if(isRequired.equals("")){
 			fRequired = true;
 		}
 		else{

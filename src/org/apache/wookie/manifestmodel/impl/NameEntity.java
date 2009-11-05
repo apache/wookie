@@ -16,6 +16,7 @@ package org.apache.wookie.manifestmodel.impl;
 
 import org.apache.wookie.manifestmodel.INameEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
 import org.jdom.Namespace;
 /**
@@ -70,22 +71,12 @@ public class NameEntity implements INameEntity {
 	}
 	
 	public void fromXML(Element element) {				
-		fName = element.getText();		
 		// Get the text value of name
-		if(fName == null){					
-			fName = "";
-		}		
+		fName = UnicodeUtils.normalizeWhitespace(element.getText());
 		// Get the xml:lang attribute (if exists)
-		fLanguage = element.getAttributeValue(IW3CXMLConfiguration.LANG_ATTRIBUTE, Namespace.XML_NAMESPACE);
-		if(fLanguage == null){
-			fLanguage = IW3CXMLConfiguration.DEFAULT_LANG;
-		}
+		fLanguage = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.LANG_ATTRIBUTE, Namespace.XML_NAMESPACE));
 		// Get the short attribute (if exists)
-		fShort = element.getAttributeValue(IW3CXMLConfiguration.SHORT_ATTRIBUTE);
-		if(fShort == null){
-			fShort = "";
-		}
+		fShort = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.SHORT_ATTRIBUTE));
 	}
-
 
 }

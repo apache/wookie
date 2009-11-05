@@ -108,13 +108,13 @@ public class W3CTest implements IW3CXMLConfiguration {
 			IManifestModel model = WidgetManifestUtils.dealWithManifest(BASIC_MANIFEST,null);
 			assertNotNull(model);
 			assertEquals("http://www.getwookie.org/widgets/WP3/natter", model.getIdentifier());
-			assertEquals("Natter", model.getFirstName());
+			assertEquals("Natter", model.getLocalName("en"));
 			assertEquals(255, model.getWidth());
 			assertEquals(383, model.getHeight());
 			assertEquals("Icon.png", model.getFirstIconPath());
 			assertEquals("Scott Wilson", model.getAuthor());
 			assertEquals("1.0", model.getVersion());	
-			assertEquals("basic chat widget", model.getFirstDescription());
+			assertEquals("basic chat widget", model.getLocalDescription("en"));
 			assertEquals("application", model.getViewModes());	
 		} 
 		catch (JDOMException ex) {
@@ -134,7 +134,7 @@ public class W3CTest implements IW3CXMLConfiguration {
 			IManifestModel model = WidgetManifestUtils.dealWithManifest(FEATURES_MANIFEST, null);
 			assertNotNull(model);
 			assertEquals("http://www.getwookie.org/example", model.getIdentifier());
-			assertEquals("Example Test Widget", model.getFirstName());			
+			assertEquals("Example Test Widget", model.getLocalName("en"));			
 			assertEquals(2, model.getNames().size());
 			assertEquals("es", model.getDescriptions().get(1).getLanguage());
 			

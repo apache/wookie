@@ -17,6 +17,7 @@ package org.apache.wookie.manifestmodel.impl;
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.manifestmodel.IPreferenceEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
@@ -45,8 +46,8 @@ public class PreferenceEntity extends ParamEntity implements IPreferenceEntity {
 	
 	public void fromXML(Element element) throws BadManifestException {
 		super.fromXML(element);
-		String isReadOnly = element.getAttributeValue(IW3CXMLConfiguration.READONLY_ATTRIBUTE);
-		if(isReadOnly == null){
+		String isReadOnly = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.READONLY_ATTRIBUTE));
+		if(isReadOnly.equals("")){
 			fReadOnly = false;
 		}
 		else{

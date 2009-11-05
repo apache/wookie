@@ -32,11 +32,11 @@ public interface IManifestModel extends IManifestModelBase{
 
 	public void updateIconPaths(String path);
 
-	public String getFirstName();
+	public String getLocalName(String locale);
 	
 	public List<INameEntity> getNames();
 
-	public String getFirstDescription();
+	public String getLocalDescription(String locale);
 
 	public int getHeight();
 

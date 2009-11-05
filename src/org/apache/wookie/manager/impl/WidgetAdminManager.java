@@ -83,8 +83,8 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 		int newWidgetIdx = -1;			
 		Widget widget;
 		widget = new Widget();												
-		widget.setWidgetTitle(model.getFirstName());
-		widget.setWidgetDescription(model.getFirstDescription());
+		widget.setWidgetTitle(model.getLocalName("en"));
+		widget.setWidgetDescription(model.getLocalDescription("en"));
 		widget.setWidgetAuthor(model.getAuthor());
 		widget.setWidgetIconLocation(model.getFirstIconPath());
 		widget.setUrl(model.getContent().getSrc());

@@ -16,6 +16,7 @@ package org.apache.wookie.manifestmodel.impl;
 
 import org.apache.wookie.manifestmodel.IAuthorEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
@@ -69,19 +70,9 @@ public class AuthorEntity implements IAuthorEntity {
 	}
 	
 	public void fromXML(Element element) {
-		fAuthorName = element.getText();		
-		if(fAuthorName == null){					
-			fAuthorName = "";
-		}
-		fHref = element.getAttributeValue(IW3CXMLConfiguration.HREF_ATTRIBUTE);
-		if(fHref == null){
-			fHref = "";
-		}				
-		fEmail = element.getAttributeValue(IW3CXMLConfiguration.EMAIL_ATTRIBUTE);
-		if(fEmail == null){
-			fEmail = "";
-		}
-		
+		fAuthorName = UnicodeUtils.normalizeWhitespace(element.getText());		
+		fHref = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.HREF_ATTRIBUTE));			
+		fEmail = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.EMAIL_ATTRIBUTE));
 	}
 
 }

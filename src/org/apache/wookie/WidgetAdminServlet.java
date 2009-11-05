@@ -493,7 +493,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 					if(!manager.doesWidgetAlreadyExistInSystem(manifestIdentifier)){									
 						int dbkey = manager.addNewWidget(widgetModel, new String[]{});
 						// widget added
-						session.setAttribute("message_value", "'"+ widgetModel.getFirstName() +"' - " + localizedMessages.getString("WidgetAdminServlet.19")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+						session.setAttribute("message_value", "'"+ widgetModel.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 						retrieveServices(session, manager);
 						session.setAttribute("hasValidated", Boolean.valueOf(true));																	 //$NON-NLS-1$
 						session.setAttribute("dbkey", dbkey); //$NON-NLS-1$
@@ -503,7 +503,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 					else{
 						// TODO - call the manager to update required resources
 						// widget updated
-						session.setAttribute("message_value", "'"+ widgetModel.getFirstName() +"' - " + localizedMessages.getString("WidgetAdminServlet.20")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+						session.setAttribute("message_value", "'"+ widgetModel.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.20")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					}						
 				}
 				else{

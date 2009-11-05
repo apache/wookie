@@ -16,6 +16,7 @@ package org.apache.wookie.manifestmodel.impl;
 
 import org.apache.wookie.manifestmodel.ILicenseEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
 import org.jdom.Namespace;
 /**
@@ -70,17 +71,10 @@ public class LicenseEntity implements ILicenseEntity {
 	}
 	
 	public void fromXML(Element element) {
-		fLicenseText = element.getText();
-
-		if(fLicenseText == null){					
-			fLicenseText = "";
-		}
-		fHref = element.getAttributeValue(IW3CXMLConfiguration.HREF_ATTRIBUTE);
-		if(fHref == null){
-			fHref = "";
-		}				
-		fLanguage = element.getAttributeValue(IW3CXMLConfiguration.LANG_ATTRIBUTE, Namespace.XML_NAMESPACE);
-		if(fLanguage == null){
+		fLicenseText = UnicodeUtils.normalizeWhitespace(element.getText());
+		fHref = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.HREF_ATTRIBUTE));				
+		fLanguage = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.LANG_ATTRIBUTE, Namespace.XML_NAMESPACE));
+		if(fLanguage.equals("")){
 			fLanguage = IW3CXMLConfiguration.DEFAULT_LANG;
 		}		
 	}

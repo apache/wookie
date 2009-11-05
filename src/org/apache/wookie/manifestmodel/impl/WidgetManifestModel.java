@@ -31,6 +31,7 @@ import org.apache.wookie.manifestmodel.INameEntity;
 import org.apache.wookie.manifestmodel.IPreferenceEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.apache.wookie.util.RandomGUID;
+import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
 import org.jdom.Namespace;
 /**
@@ -114,22 +115,24 @@ public class WidgetManifestModel implements IManifestModel {
 		return fNamesList;
 	}
 	
-	public String getFirstName(){
-		if(fNamesList.size() > 0){
-			return fNamesList.get(0).getName();
+	public String getLocalName(String locale){
+		String nonlocalizedvalue = null;
+		for (INameEntity name:fNamesList.toArray(new INameEntity[fNamesList.size()])){
+			if (name.getLanguage().equals(locale)) return name.getName();
+			if (name.getLanguage().equals("")) nonlocalizedvalue = name.getName();
 		}
-		else {
-			return IW3CXMLConfiguration.UNKNOWN;
-		}
+		if (nonlocalizedvalue == null) return IW3CXMLConfiguration.UNKNOWN;
+		return nonlocalizedvalue;
 	}
 	
-	public String getFirstDescription(){
-		if(fDescriptionsList.size() > 0){
-			return fDescriptionsList.get(0).getDescription();
+	public String getLocalDescription(String locale){
+		String nonlocalizedvalue = "";
+		for (IDescriptionEntity desc:fDescriptionsList.toArray(new IDescriptionEntity[fDescriptionsList.size()])){
+			if (desc.getLanguage().equals(locale)) return desc.getDescription();
+			if (desc.getLanguage().equals("")) nonlocalizedvalue = desc.getDescription();
 		}
-		else {
-			return IW3CXMLConfiguration.UNKNOWN;
-		}
+		if (nonlocalizedvalue == null) return IW3CXMLConfiguration.UNKNOWN;
+		return nonlocalizedvalue;	
 	}
 	
 	public List<IIconEntity> getIconsList() {
@@ -196,12 +199,17 @@ public class WidgetManifestModel implements IManifestModel {
 			//give up & generate one
 			RandomGUID r = new RandomGUID();
 			fIdentifier = "generated-uid-" + r.toString();
+		} else {
+			//normalize spaces
+			fIdentifier = UnicodeUtils.normalizeSpaces(fIdentifier);
 		}
 		// VERSION IS OPTIONAL		
 		fVersion = element.getAttributeValue(IW3CXMLConfiguration.VERSION_ATTRIBUTE);
 		if(fVersion == null){
 			// give up 
 			fVersion = IW3CXMLConfiguration.DEFAULT_WIDGET_VERSION;
+		} else {
+			fVersion = UnicodeUtils.normalizeSpaces(fVersion);
 		}
 		// HEIGHT IS OPTIONAL		
 		String height  = element.getAttributeValue(IW3CXMLConfiguration.HEIGHT_ATTRIBUTE);
@@ -225,6 +233,8 @@ public class WidgetManifestModel implements IManifestModel {
 		fViewModes = element.getAttributeValue(IW3CXMLConfiguration.MODE_ATTRIBUTE);
 		if(fViewModes == null){
 			fViewModes = IW3CXMLConfiguration.DEFAULT_VIEWMODE;
+		} else {
+			fViewModes = UnicodeUtils.normalizeSpaces(fViewModes);
 		}
 		// xml:lang optional
 		fLang = element.getAttributeValue(IW3CXMLConfiguration.LANG_ATTRIBUTE, Namespace.XML_NAMESPACE);
@@ -254,8 +264,8 @@ public class WidgetManifestModel implements IManifestModel {
 				fDescriptionsList.add(aDescription);
 			}
 			
-			// AUTHOR IS OPTIONAL - can only be one
-			if(tag.equals(IW3CXMLConfiguration.AUTHOR_ELEMENT)) {
+			// AUTHOR IS OPTIONAL - can only be one, ignore subsequent repetitions
+			if(tag.equals(IW3CXMLConfiguration.AUTHOR_ELEMENT) && fAuthor == null) {
 				fAuthor = new AuthorEntity();
 				fAuthor.fromXML(child);
 			}		

@@ -16,6 +16,7 @@ package org.apache.wookie.manifestmodel.impl;
 
 import org.apache.wookie.manifestmodel.IDescriptionEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
 import org.jdom.Namespace;
 /**
@@ -59,14 +60,8 @@ public class DescriptionEntity implements IDescriptionEntity {
 	}
 	
 	public void fromXML(Element element) {
-		fDescription = element.getText();
-		if(fDescription == null){					
-			fDescription = "";
-		}
-		fLanguage = element.getAttributeValue(IW3CXMLConfiguration.LANG_ATTRIBUTE, Namespace.XML_NAMESPACE);
-		if(fLanguage == null){
-			fLanguage = IW3CXMLConfiguration.DEFAULT_LANG;
-		}
+		fDescription = UnicodeUtils.normalizeWhitespace(element.getText());
+		fLanguage = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.LANG_ATTRIBUTE, Namespace.XML_NAMESPACE));
 	}
 
 

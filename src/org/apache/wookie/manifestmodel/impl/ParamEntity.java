@@ -17,6 +17,7 @@ package org.apache.wookie.manifestmodel.impl;
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.manifestmodel.IParamEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
@@ -59,16 +60,8 @@ public class ParamEntity implements IParamEntity {
 	}
 	
 	public void fromXML(Element element) throws BadManifestException {
-		// Name
-		fName = element.getAttributeValue(IW3CXMLConfiguration.NAME_ATTRIBUTE);
-		if(fName == null){
-			fName = "";
-		}
-		// Value
-		fValue = element.getAttributeValue(IW3CXMLConfiguration.VALUE_ATTRIBUTE);
-		if(fValue == null){
-			fValue = "";
-		}
+		fName = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.NAME_ATTRIBUTE));
+		fValue = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.VALUE_ATTRIBUTE));
 	}	
 
 }

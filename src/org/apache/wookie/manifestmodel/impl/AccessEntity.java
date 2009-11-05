@@ -16,6 +16,7 @@ package org.apache.wookie.manifestmodel.impl;
 
 import org.apache.wookie.manifestmodel.IAccessEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
@@ -56,13 +57,10 @@ public class AccessEntity implements IAccessEntity {
 	}
 	
 	public void fromXML(Element element) {		
-		fUri = element.getAttributeValue(IW3CXMLConfiguration.URI_ATTRIBUTE);
+		fUri = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.URI_ATTRIBUTE));
 		//TODO this is required, but may need to be checked
-		if(fUri == null){
-			fUri = "";
-		}
-		String subDomains = element.getAttributeValue(IW3CXMLConfiguration.SUBDOMAINS_ATTRIBUTE);
-		if(subDomains == null){
+		String subDomains = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.SUBDOMAINS_ATTRIBUTE));
+		if(subDomains.equals("")){
 			fSubDomains = false;
 		}
 		else{

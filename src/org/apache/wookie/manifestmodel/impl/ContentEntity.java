@@ -16,6 +16,7 @@ package org.apache.wookie.manifestmodel.impl;
 
 import org.apache.wookie.manifestmodel.IContentEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
@@ -69,20 +70,17 @@ public class ContentEntity implements IContentEntity {
 	}
 	
 	public void fromXML(Element element) {				
-		fSrc = element.getAttributeValue(IW3CXMLConfiguration.SOURCE_ATTRIBUTE);
-		if(fSrc == null){
-			fSrc = IW3CXMLConfiguration.DEFAULT_SRC_PAGE;
-		}
+		fSrc = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.SOURCE_ATTRIBUTE));
 		// just in case it's there, but they leave it empty
-		if(fSrc == ""){
+		if(fSrc.equals("")){
 			fSrc = IW3CXMLConfiguration.DEFAULT_SRC_PAGE;
 		}
-		fCharSet = element.getAttributeValue(IW3CXMLConfiguration.CHARSET_ATTRIBUTE);
-		if(fCharSet == null){
+		fCharSet = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.CHARSET_ATTRIBUTE));
+		if(fSrc.equals("")){
 			fCharSet = IW3CXMLConfiguration.DEFAULT_CHARSET;
 		}
-		fType = element.getAttributeValue(IW3CXMLConfiguration.TYPE_ATTRIBUTE);
-		if(fType == null){
+		fType = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.TYPE_ATTRIBUTE));
+		if(fSrc.equals("")){
 			fType = IW3CXMLConfiguration.DEFAULT_MEDIA_TYPE;
 		}	
 	}	

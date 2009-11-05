@@ -16,6 +16,7 @@ package org.apache.wookie.manifestmodel.impl;
 
 import org.apache.wookie.manifestmodel.IIconEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
@@ -65,26 +66,31 @@ public class IconEntity implements IIconEntity{
 	
 	public void fromXML(Element element) {		
 		// src is required
-		fSrc = element.getAttributeValue(IW3CXMLConfiguration.SOURCE_ATTRIBUTE);
+		fSrc = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.SOURCE_ATTRIBUTE));
 		// TODO - do we test that this file exists?
-		if(fSrc==null){
-			fSrc="";
-		}
 		// height is optional
-		String tempHeight = element.getAttributeValue(IW3CXMLConfiguration.HEIGHT_ATTRIBUTE);
-		if(tempHeight == null){
+		String tempHeight = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.HEIGHT_ATTRIBUTE));
+		if(tempHeight.equals("")){
 			fHeight = IW3CXMLConfiguration.DEFAULT_HEIGHT_SMALL;
 		}
 		else{
-			fHeight = Integer.valueOf(tempHeight);
+			try {
+				fHeight = Integer.valueOf(tempHeight);
+			} catch (NumberFormatException e) {
+				fHeight = IW3CXMLConfiguration.DEFAULT_HEIGHT_SMALL;
+			}
 		}
 		// width is optional
-		String tempWidth = element.getAttributeValue(IW3CXMLConfiguration.WIDTH_ATTRIBUTE);
-		if(tempWidth == null){
+		String tempWidth = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.WIDTH_ATTRIBUTE));
+		if(tempWidth.equals("")){
 			fWidth = IW3CXMLConfiguration.DEFAULT_WIDTH_SMALL;
 		}
 		else{
-			fWidth = Integer.valueOf(tempWidth);
+			try {
+				fWidth = Integer.valueOf(tempWidth);
+			} catch (NumberFormatException e) {
+				fWidth = IW3CXMLConfiguration.DEFAULT_WIDTH_SMALL;
+			}
 		}	
 	}
 
