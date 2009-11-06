@@ -17,6 +17,7 @@ package org.apache.wookie.manifestmodel.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.manifestmodel.IAccessEntity;
@@ -116,13 +117,24 @@ public class WidgetManifestModel implements IManifestModel {
 	}
 	
 	public String getLocalName(String locale){
-		String nonlocalizedvalue = null;
+		INameEntity name = getLocalNameEntity(locale);
+		if (name != null) return name.getName();
+		return IW3CXMLConfiguration.UNKNOWN;
+	}
+	
+	public String getLocalShortName(String locale){
+		INameEntity name = getLocalNameEntity(locale);
+		if (name != null) return name.getShort();
+		return IW3CXMLConfiguration.UNKNOWN;		
+	}
+	
+	private INameEntity getLocalNameEntity(String locale){
+		INameEntity nonLocalized = null;
 		for (INameEntity name:fNamesList.toArray(new INameEntity[fNamesList.size()])){
-			if (name.getLanguage().equals(locale)) return name.getName();
-			if (name.getLanguage().equals("")) nonlocalizedvalue = name.getName();
+			if (name.getLanguage().equals(locale)) return name;
+			if (name.getLanguage().equals("")) nonLocalized = name;
 		}
-		if (nonlocalizedvalue == null) return IW3CXMLConfiguration.UNKNOWN;
-		return nonlocalizedvalue;
+		return nonLocalized;
 	}
 	
 	public String getLocalDescription(String locale){
@@ -252,8 +264,12 @@ public class WidgetManifestModel implements IManifestModel {
 			if(tag.equals(IW3CXMLConfiguration.NAME_ELEMENT)) {				
 				INameEntity aName = new NameEntity();
 				aName.fromXML(child);				
-				// add it to our list
-				fNamesList.add(aName);
+				// add it to our list only if its not a repetition of an
+				// existing name for the locale
+				boolean exists = false;
+				for (INameEntity name: fNamesList.toArray(new INameEntity[fNamesList.size()]))
+					if (StringUtils.equals(name.getLanguage(), aName.getLanguage())) exists = true;
+				if (!exists) fNamesList.add(aName);
 			}
 			
 			// DESCRIPTION IS OPTIONAL multiple on xml:lang

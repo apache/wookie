@@ -70,7 +70,7 @@ public class WidgetHelper {
 		URL urlWidgetIcon = null;
 		out += "\t<widget id=\""+widget.getId()+"\" identifier=\"" + widget.getGuid() + "\" version=\""
 				+ widget.getVersion() + "\">\n";
-		out += "\t\t<title>" + widget.getWidgetTitle() + "</title>\n";
+		out += "\t\t<title short=\""+widget.getWidgetShortName()+"\">" + widget.getWidgetTitle() + "</title>\n";
 		out += "\t\t<description>" + widget.getWidgetDescription()
 				+ "</description>\n";
 		String iconPath = widget.getWidgetIconLocation();

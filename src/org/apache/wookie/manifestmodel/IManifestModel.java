@@ -34,6 +34,8 @@ public interface IManifestModel extends IManifestModelBase{
 
 	public String getLocalName(String locale);
 	
+	public String getLocalShortName(String locale);
+	
 	public List<INameEntity> getNames();
 
 	public String getLocalDescription(String locale);

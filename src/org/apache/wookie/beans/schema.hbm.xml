@@ -11,6 +11,7 @@
 			<generator class="increment" />
 		</id>
 		<property name="widgetTitle" column="widget_title" type="string" />
+		<property name="widgetShortName" column="widget_short_name" type="string" />
 		<property name="widgetDescription" column="widget_description" type="string" />
 		<property name="widgetAuthor" column="widget_author" type="string" />
 		<property name="widgetIconLocation" column="widget_icon_location" type="string" />

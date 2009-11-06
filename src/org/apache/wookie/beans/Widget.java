@@ -34,6 +34,7 @@ public class Widget extends AbstractKeyBean<Widget> {
 	private static final long serialVersionUID = 1L;
 	
 	private String widgetTitle;
+	private String widgetShortName;
 	private String widgetDescription;
 	private String widgetAuthor;
 	private String widgetIconLocation;
@@ -113,7 +114,15 @@ public class Widget extends AbstractKeyBean<Widget> {
 		this.widgetTitle = widgetTitle;
 	}
 
+	public String getWidgetShortName() {
+		return widgetShortName;
+	}
 
+
+	public void setWidgetShortName(String name) {
+		this.widgetShortName = name;
+	}
+	
 	public String getWidgetDescription() {
 		return widgetDescription;
 	}
@@ -187,7 +196,7 @@ public class Widget extends AbstractKeyBean<Widget> {
 	 */
 	public static Widget[] findByType(String typeToSearch) {
 		final IDBManager dbManager = DBManagerFactory.getDBManager();			
-		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_description, widget_author, widget_icon_location, widget.url, widget.maximize, widget.guid, " +
+		String sqlQuery = "SELECT widget.id, widget.widget_title,  widget.widget_short_name, widget_description, widget_author, widget_icon_location, widget.url, widget.maximize, widget.guid, " +
 								"widget.height, widget.width, widget_version, widgettype.widget_context "
 						+ "FROM Widget widget, WidgetType widgettype "
 						+ "WHERE widget.id = widgettype.widget_id "
@@ -200,7 +209,7 @@ public class Widget extends AbstractKeyBean<Widget> {
 	
 	public static Widget findDefaultByType(String typeToSearch) {
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		String sqlQuery = "SELECT widget.id, widget.widget_title, widget_version, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid " //$NON-NLS-1$
+		String sqlQuery = "SELECT widget.id, widget.widget_title, widget.widget_short_name, widget_version, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid " //$NON-NLS-1$
 			+ "FROM Widget widget, WidgetDefault widgetdefault " //$NON-NLS-1$
 			+ "WHERE widget.id = widgetdefault.widgetId " //$NON-NLS-1$
 			+ "AND widgetdefault.widgetContext='" + typeToSearch + "'";		 //$NON-NLS-1$ //$NON-NLS-2$
