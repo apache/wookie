@@ -33,6 +33,7 @@ import org.apache.wookie.exceptions.InvalidWidgetCallException;
 import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetKeyManager;
+import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.apache.wookie.server.LocaleHandler;
 import org.apache.wookie.util.HashGenerator;
 import org.apache.wookie.util.RandomGUID;
@@ -277,7 +278,14 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		URL urlWidget =  new URL(request.getScheme() ,
 				request.getServerName() ,
 				request.getServerPort() , widget.getUrl());
-
+		
+		// Return a default width and height where the original value is either not provided
+		// or of an invalid range (<0)
+		String width = String.valueOf(IW3CXMLConfiguration.DEFAULT_WIDTH_LARGE);
+		String height = String.valueOf(IW3CXMLConfiguration.DEFAULT_HEIGHT_LARGE);
+		if (widget.getWidth()!=null && widget.getWidth()>0) width = widget.getWidth().toString();
+		if (widget.getHeight()!=null && widget.getHeight()>0) height = widget.getHeight().toString();
+		
 		response.setContentType(CONTENT_TYPE);
 		PrintWriter out = response.getWriter();
 		out.println(XMLDECLARATION);			
@@ -297,8 +305,8 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		out.println("</url>"); //$NON-NLS-1$
 		out.println("<identifier>"+key+"</identifier>"); //$NON-NLS-1$ //$NON-NLS-2$
 		out.println("<title>"+widget.getWidgetTitle()+"</title>"); //$NON-NLS-1$ //$NON-NLS-2$
-		out.println("<height>"+widget.getHeight()+"</height>"); //$NON-NLS-1$ //$NON-NLS-2$
-		out.println("<width>"+widget.getWidth()+"</width>"); //$NON-NLS-1$ //$NON-NLS-2$
+		out.println("<height>"+height+"</height>"); //$NON-NLS-1$ //$NON-NLS-2$
+		out.println("<width>"+width+"</width>"); //$NON-NLS-1$ //$NON-NLS-2$
 		out.println("<maximize>"+widget.isMaximize()+"</maximize>"); //$NON-NLS-1$ //$NON-NLS-2$
 		out.println("</widgetdata>"); //$NON-NLS-1$
 	}

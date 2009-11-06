@@ -40,8 +40,8 @@ public class Widget extends AbstractKeyBean<Widget> {
 	private String widgetIconLocation;
 	private String url;
 	private String guid;	
-	private int height;
-	private int width;
+	private Integer height;
+	private Integer width;
 	private boolean maximize;	
 	@SuppressWarnings("unchecked")
 	private Set widgetTypes = new HashSet();
@@ -58,19 +58,19 @@ public class Widget extends AbstractKeyBean<Widget> {
 		this.url = url;
 	}
 	
-	public int getHeight(){
+	public Integer getHeight(){
 		return height;
 	}
 	
-	public void setHeight(int height){
+	public void setHeight(Integer height){
 		this.height = height;
 	}
 
-	public int getWidth(){
+	public Integer getWidth(){
 		return width;
 	}
 	
-	public void setWidth(int width){
+	public void setWidth(Integer width){
 		this.width = width;
 	}
 	

@@ -65,11 +65,21 @@ public class WidgetHelper {
 	 * @return the XML representation of the widget
 	 */
 	public static String toXml(Widget widget, String localIconPath){
+		String width = "";
+		String height = "";
+		if (widget.getWidth()!=null)  width = widget.getWidth().toString();
+		if (widget.getHeight()!=null) height = widget.getHeight().toString();
+		
 		if (widget == null) return null;
 		String out = "";
 		URL urlWidgetIcon = null;
-		out += "\t<widget id=\""+widget.getId()+"\" identifier=\"" + widget.getGuid() + "\" version=\""
-				+ widget.getVersion() + "\">\n";
+		out += "\t<widget " +
+				"id=\""+widget.getId()
+				+"\" identifier=\"" + widget.getGuid() 
+				+"\" width=\"" + width
+				+"\" height=\"" + height
+				+ "\" version=\"" + widget.getVersion() 
+				+ "\">\n";
 		out += "\t\t<title short=\""+widget.getWidgetShortName()+"\">" + widget.getWidgetTitle() + "</title>\n";
 		out += "\t\t<description>" + widget.getWidgetDescription()
 				+ "</description>\n";

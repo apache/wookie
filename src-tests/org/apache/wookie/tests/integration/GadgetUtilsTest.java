@@ -226,8 +226,8 @@ public class GadgetUtilsTest {
 		Widget widget = null;
 		try {
 			widget = GadgetUtils.getWidget(TEST_METADATA_VALID, SHINDIG);
-			assertEquals(widget.getHeight(), 200);
-			assertEquals(widget.getWidth(), 320);
+			assertEquals(widget.getHeight().intValue(), 200);
+			assertEquals(widget.getWidth().intValue(), 320);
 		} catch (Exception e) {
 			fail("Create widget from basic valid metadata - defaults not used");
 		}
@@ -239,8 +239,8 @@ public class GadgetUtilsTest {
 		try {
 			widget = GadgetUtils.getWidget(TEST_METADATA_SET_HEIGHT_WIDTH,
 					SHINDIG);
-			assertEquals(widget.getHeight(), 50);
-			assertEquals(widget.getWidth(), 50);
+			assertEquals(widget.getHeight().intValue(), 50);
+			assertEquals(widget.getWidth().intValue(), 50);
 		} catch (Exception e) {
 			fail("Create widget from basic valid metadata - overrides not used");
 		}

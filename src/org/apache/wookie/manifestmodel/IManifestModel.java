@@ -40,9 +40,9 @@ public interface IManifestModel extends IManifestModelBase{
 
 	public String getLocalDescription(String locale);
 
-	public int getHeight();
+	public Integer getHeight();
 
-	public int getWidth();
+	public Integer getWidth();
 
 	public String getAuthor();
 

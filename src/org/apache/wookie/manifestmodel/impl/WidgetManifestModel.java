@@ -31,6 +31,7 @@ import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.manifestmodel.INameEntity;
 import org.apache.wookie.manifestmodel.IPreferenceEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.NumberUtils;
 import org.apache.wookie.util.RandomGUID;
 import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
@@ -45,8 +46,8 @@ public class WidgetManifestModel implements IManifestModel {
 	
 	private String fIdentifier;
 	private String fVersion;
-	private int fHeight;
-	private int fWidth;
+	private Integer fHeight;
+	private Integer fWidth;
 	private String fViewModes;
 	private String fLang;
 	private List<INameEntity> fNamesList;
@@ -167,7 +168,7 @@ public class WidgetManifestModel implements IManifestModel {
 		fContent = content;
 	}
 
-	public int getHeight() {
+	public Integer getHeight() {
 		return fHeight;
 	}
 
@@ -175,7 +176,7 @@ public class WidgetManifestModel implements IManifestModel {
 		fHeight = height;
 	}
 	
-	public int getWidth() {
+	public Integer getWidth() {
 		return fWidth;
 	}
 
@@ -223,24 +224,26 @@ public class WidgetManifestModel implements IManifestModel {
 		} else {
 			fVersion = UnicodeUtils.normalizeSpaces(fVersion);
 		}
-		// HEIGHT IS OPTIONAL		
+		// HEIGHT IS OPTIONAL	
 		String height  = element.getAttributeValue(IW3CXMLConfiguration.HEIGHT_ATTRIBUTE);
 		if(height != null){
-			fHeight  = Integer.valueOf(height);
+			try { 
+				fHeight = NumberUtils.processNonNegativeInteger(height); 
+			} catch (NumberFormatException e) { 
+				// Not a valid number - pass through without setting 
+			} 
 		}
-		else{ 
-			// give up
-			fHeight = IW3CXMLConfiguration.DEFAULT_HEIGHT_LARGE;
-		}
+
 		// WIDTH IS OPTIONAL		
 		String width  = element.getAttributeValue(IW3CXMLConfiguration.WIDTH_ATTRIBUTE);
 		if(width != null){
-			fWidth = Integer.valueOf(width);
+			try { 
+				fWidth = NumberUtils.processNonNegativeInteger(width); 
+			} catch (NumberFormatException e) { 
+				// Not a valid number - pass through without setting 
+			} 
 		}
-		else{
-			// give up
-			fWidth = IW3CXMLConfiguration.DEFAULT_WIDTH_LARGE;
-		}
+
 		// VIEWMODES IS OPTIONAL	
 		fViewModes = element.getAttributeValue(IW3CXMLConfiguration.MODE_ATTRIBUTE);
 		if(fViewModes == null){
