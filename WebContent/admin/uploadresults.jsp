@@ -40,12 +40,12 @@ WidgetService[] services = (WidgetService[])session.getAttribute("services");
     
     
 	<%if(errors!=null){%>
-      <p><img src="../shared/images/cancel.gif" width="16" height="16">There was 
+      <p id="error" title="<%=errors%>"><img src="../shared/images/cancel.gif" width="16" height="16">There was 
         a problem encountered when trying to upload the package. <br>
         Cause: <font color=red> <%=errors%> </font> </p>
 	<%}%>
 	<%if(messages!=null){%>
-	<p><img src="../shared/images/greentick.gif" width="16" height="16">
+	  <p id="message"><img src="../shared/images/greentick.gif" width="16" height="16">
 		<font color=green>
 		<%=messages%>
 		</font>
