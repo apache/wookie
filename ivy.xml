@@ -28,6 +28,8 @@
         </dependency>
         <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="deploy->default">
         </dependency>
+        <dependency org="commons-io" name="commons-io" rev="1.4" conf="deploy->default">
+        </dependency>
         <dependency org="dom4j" name="dom4j" rev="1.6.1" conf="deploy->default">
         </dependency>
         <dependency org="htmlcleaner" name="htmlcleaner" rev="2.1.0" conf="deploy->default">
