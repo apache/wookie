@@ -107,7 +107,7 @@ public class WidgetHelper {
 		PreferenceDefault[] prefs = PreferenceDefault.findByValue("widget",
 				widget);
 		for (PreferenceDefault pref : prefs) {
-			out += "\t\t<preference name=\"" + pref.getPreference() + "\"/>";
+			out += "\t\t<preference name=\"" + pref.getPreference() + "\"  value=\""+pref.getValue()+"\"  readonly=\"" + (pref.isReadOnly()? "true" : "false") + "\"/>";
 		}
 		out += "\t</widget>\n";
 

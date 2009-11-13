@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -597,74 +598,90 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}
 
 	@Test
-	@Ignore
 	public void a6(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/001/a6.wgt");
-		System.out.println(widget.getChildren("preference"));
 		assertTrue(widget.getChildren("preference").size() == 1);
 		assertEquals("PASS", widget.getChild("preference").getAttributeValue("name"));
-		assertEquals("PASS", widget.getChild("preference").getAttributeValue("value")); //TODO
-		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));//TODO
+		assertEquals("PASS", widget.getChild("preference").getAttributeValue("value")); 
+		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));
 	}		
 	@Test
-	@Ignore
 	public void a7(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/002/a7.wgt");
-		System.out.println(widget.getChildren("preference"));
 		assertTrue(widget.getChildren("preference").size() == 1);
 		assertEquals("PASS", widget.getChild("preference").getAttributeValue("name"));
-		assertEquals("PASS", widget.getChild("preference").getAttributeValue("value")); //TODO
-		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));//TODO
+		assertEquals("PASS", widget.getChild("preference").getAttributeValue("value")); 
+		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));
 	}			
 	@Test
-	@Ignore
 	public void a8(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/003/a8.wgt");
-		System.out.println(widget.getChildren("preference"));
 		assertTrue(widget.getChildren("preference").size() == 1);
 		assertEquals("PASS", widget.getChild("preference").getAttributeValue("name"));
-		assertEquals("PASS", widget.getChild("preference").getAttributeValue("value")); //TODO
-		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));//TODO
+		assertEquals("PASS", widget.getChild("preference").getAttributeValue("value")); 
+		assertEquals("true", widget.getChild("preference").getAttributeValue("readonly"));
 	}	
 	@Test
-	@Ignore
 	public void a9(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/004/a9.wgt");
-		System.out.println(widget.getChildren("preference"));
 		assertTrue(widget.getChildren("preference").size() == 1);
 		assertEquals("PASS", widget.getChild("preference").getAttributeValue("name"));
-		assertEquals("PASS", widget.getChild("preference").getAttributeValue("value")); //TODO
-		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));//TODO
+		assertEquals("PASS", widget.getChild("preference").getAttributeValue("value")); 
+		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));
 	}	
 	@Test
-	@Ignore
 	public void ba(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/005/ba.wgt");
-		System.out.println(widget.getChildren("preference"));
 		assertTrue(widget.getChildren("preference").size() == 1);
 		assertEquals("a", widget.getChild("preference").getAttributeValue("name"));
-		assertEquals("a", widget.getChild("preference").getAttributeValue("value")); //TODO
-		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));//TODO
+		assertEquals("a", widget.getChild("preference").getAttributeValue("value")); 
+		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));
 	}
+	@SuppressWarnings("unchecked")
 	@Test
-	@Ignore
 	public void bb(){
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/006/bb.wgt");
+		List<Element> preferences = widget.getChildren("preference");
+		assertTrue(preferences.size() == 2);
+		Element pref1 = preferences.get(0);
+		Element pref2 = preferences.get(1);
+		
+		assertEquals("a", pref1.getAttributeValue("name"));
+		assertEquals("a", pref1.getAttributeValue("value")); 
+		assertEquals("false", pref1.getAttributeValue("readonly"));
+		assertEquals("A", pref2.getAttributeValue("name"));
+		assertEquals("b", pref2.getAttributeValue("value")); 
+		assertEquals("false", pref2.getAttributeValue("readonly"));
 	}
+	@SuppressWarnings("unchecked")
 	@Test
-	@Ignore
 	public void bc(){
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/007/bc.wgt");
+		List<Element> preferences = widget.getChildren("preference");
+		assertTrue(preferences.size() == 1);
+		Element pref1 = preferences.get(0);
+		
+		assertEquals("PASS", pref1.getAttributeValue("name"));
+		assertEquals("PASS", pref1.getAttributeValue("value")); 
+		assertEquals("false", pref1.getAttributeValue("readonly"));
 	}
 	@Test
-	@Ignore
 	public void bd(){
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/008/bd.wgt");
+		assertTrue(widget.getChildren("preference").size() == 1);
+		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));
 	}
 	@Test
-	@Ignore
 	public void be(){
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/009/be.wgt");
+		assertTrue(widget.getChildren("preference").size() == 1);
+		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));
 	}
 	@Test
-	@Ignore
 	public void bf(){
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/010/bf.wgt");
+		assertTrue(widget.getChildren("preference").size() == 1);
+		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));
 	}
 
 	// 32
@@ -865,7 +882,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	public void b4(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RGNHRBWNZV/001/b4.wgt");
 		String start = locateStartFile(widget);
-		assertEquals("index.htm",start);
+		assertEquals("index.html",start);
 		assertEquals("text/html",getStartFileContentType(widget));
 	}
 	@Test
@@ -956,7 +973,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		try {
 			//File file = new File("src-tests/testdata/conformance/"+widgetfname);
 			String error = WidgetUploader.uploadWidget(widgetfname);
-			if (error != null){
+			if (error != null && !error.equals("")){
 				fail("widget failed to upload correctly:"+error);
 			}
 			Element widget = WidgetUploader.getLastWidget();
@@ -1043,7 +1060,6 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		try {
 			return WidgetUploader.uploadWidget(widgetfname);
 		} catch (Exception e) {
-			e.printStackTrace();
 			fail("couldn't upload widget");
 		}		
 		fail("widget not found after upload");
