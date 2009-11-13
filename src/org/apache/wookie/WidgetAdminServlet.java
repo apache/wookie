@@ -41,8 +41,8 @@ import org.apache.wookie.manager.IWidgetAdminManager;
 import org.apache.wookie.manager.impl.WidgetAdminManager;
 import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.manifestmodel.impl.ContentEntity;
+import org.apache.wookie.manifestmodel.impl.WidgetManifestModel;
 import org.apache.wookie.server.LocaleHandler;
-import org.apache.wookie.util.WidgetManifestUtils;
 import org.apache.wookie.util.StartPageJSParser;
 import org.apache.wookie.util.WidgetPackageUtils;
 import org.apache.wookie.util.gadgets.GadgetUtils;
@@ -464,10 +464,10 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 				ZipFile zip = new ZipFile(zipFile);
 				if (WidgetPackageUtils.hasManifest(zip)){
 					// build the model
-					IManifestModel widgetModel = WidgetManifestUtils.dealWithManifest(WidgetPackageUtils.extractManifest(zip), localizedMessages);															
+					IManifestModel widgetModel = new WidgetManifestModel(WidgetPackageUtils.extractManifest(zip), zip);															
 
 					// get the start file; if there is no valid start file an exception will be thrown
-					String src = WidgetPackageUtils.locateStartFile(widgetModel, zip, localizedMessages);
+					String src = WidgetPackageUtils.locateStartFile(widgetModel, zip);
 					// get the widget identifier
 					String manifestIdentifier = widgetModel.getIdentifier();						
 					// create the folder structure to unzip the zip into
@@ -525,12 +525,16 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 			session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.25") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}		
 		catch (BadManifestException ex) {
-			_logger.error(ex);			
-			session.setAttribute("error_value", ex.getMessage()); //$NON-NLS-1$
+			_logger.error(ex);		
+			String message = ex.getMessage();
+			if (ex.getMessage() == null || ex.getMessage().equals("")) message = localizedMessages.getString("WidgetAdminServlet.27"); //$NON-NLS-1$
+			session.setAttribute("error_value", message); //$NON-NLS-1$
 		}
 		catch (BadWidgetZipFileException ex) {
-			_logger.error(ex);			
-			session.setAttribute("error_value", ex.getMessage()); //$NON-NLS-1$
+			_logger.error(ex);	
+			String message = ex.getMessage();
+			if (ex.getMessage() == null || ex.getMessage().equals("")) message = localizedMessages.getString("WidgetAdminServlet.29"); //$NON-NLS-1$
+			session.setAttribute("error_value", message); //$NON-NLS-1$
 		}
 
 

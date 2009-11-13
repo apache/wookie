@@ -18,28 +18,26 @@ import org.apache.wookie.manifestmodel.ILicenseEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
-import org.jdom.Namespace;
 /**
  * @author Paul Sharples
  * @version $Id: LicenseEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
-public class LicenseEntity implements ILicenseEntity {
+public class LicenseEntity extends LocalizedEntity implements ILicenseEntity {
 	
 	private String fLicenseText;
 	private String fHref;
-	private String fLanguage;
 	
 	public LicenseEntity(){
 		fLicenseText = "";
 		fHref = "";
-		fLanguage = "";
+		setLanguage("");
 	}
 	
 	public LicenseEntity(String licenseText, String href, String language) {
 		super();
 		fLicenseText = licenseText;
 		fHref = href;
-		fLanguage = language;
+		setLanguage(language);
 	}
 
 	public String getLicenseText() {
@@ -58,25 +56,14 @@ public class LicenseEntity implements ILicenseEntity {
 		fHref = href;
 	}
 
-	public String getLanguage() {
-		return fLanguage;
-	}
-
-	public void setLanguage(String language) {
-		fLanguage = language;
-	}
-
 	public String getXMLTagName() {
 		return IW3CXMLConfiguration.LICENSE_ELEMENT;
 	}
 	
 	public void fromXML(Element element) {
+		super.fromXML(element);
 		fLicenseText = UnicodeUtils.normalizeWhitespace(element.getText());
-		fHref = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.HREF_ATTRIBUTE));				
-		fLanguage = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.LANG_ATTRIBUTE, Namespace.XML_NAMESPACE));
-		if(fLanguage.equals("")){
-			fLanguage = IW3CXMLConfiguration.DEFAULT_LANG;
-		}		
+		fHref = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.HREF_ATTRIBUTE));					
 	}
 
 

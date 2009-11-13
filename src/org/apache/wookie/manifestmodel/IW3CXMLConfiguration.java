@@ -75,7 +75,6 @@ public interface IW3CXMLConfiguration {
 	// Other values used
 	public static final String DEFAULT_WIDGET_VERSION = "1.0";
 	public static final String UNKNOWN = "unknown";
- 	public static final String DEFAULT_SRC_PAGE = "index.htm";
  	public static final String DEFAULT_ICON_PATH = "/wookie/shared/images/cog.gif";
 	public static final int DEFAULT_HEIGHT_SMALL = 32;
 	public static final int DEFAULT_WIDTH_SMALL = 32;
@@ -83,7 +82,8 @@ public interface IW3CXMLConfiguration {
 	public static final int DEFAULT_WIDTH_LARGE = 150;
 	public static final String MANIFEST_FILE = "config.xml";
 	public static final String MANIFEST_NAMESPACE = "http://www.w3.org/ns/widgets";
-	
+	public static final String[] SUPPORTED_CONTENT_TYPES = {"text/html", "image/svg+xml","application/xhtml+xml"};
+	public static final String[] START_FILES = {"index.htm","index.html","index.svg","index.xhtml","index.xht"};
 	
 	// Deprecated: used in early drafts of spec:
 	

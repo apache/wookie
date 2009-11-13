@@ -14,9 +14,12 @@
 
 package org.apache.wookie.manifestmodel.impl;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.wookie.exceptions.BadManifestException;
@@ -27,6 +30,7 @@ import org.apache.wookie.manifestmodel.IDescriptionEntity;
 import org.apache.wookie.manifestmodel.IFeatureEntity;
 import org.apache.wookie.manifestmodel.IIconEntity;
 import org.apache.wookie.manifestmodel.ILicenseEntity;
+import org.apache.wookie.manifestmodel.ILocalizedEntity;
 import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.manifestmodel.INameEntity;
 import org.apache.wookie.manifestmodel.IPreferenceEntity;
@@ -35,7 +39,9 @@ import org.apache.wookie.util.NumberUtils;
 import org.apache.wookie.util.RandomGUID;
 import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.Namespace;
+import org.jdom.input.SAXBuilder;
 /**
  * @author Paul Sharples
  * @version $Id: WidgetManifestModel.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
@@ -59,6 +65,8 @@ public class WidgetManifestModel implements IManifestModel {
 	private IContentEntity fContent;
 	private List<IFeatureEntity> fFeaturesList;
 	private List<IPreferenceEntity> fPreferencesList;
+	
+	private ZipFile zip;
 
 	public WidgetManifestModel() {
 		super();
@@ -69,6 +77,28 @@ public class WidgetManifestModel implements IManifestModel {
 		fAccessList = new ArrayList<IAccessEntity>();
 		fFeaturesList = new ArrayList<IFeatureEntity>();
 		fPreferencesList = new ArrayList<IPreferenceEntity>();
+	}
+	
+	/**
+	 * Constructs a new WidgetManifestModel using an XML manifest supplied as a String.
+	 * @param xmlText the XML manifest file
+	 * @throws JDOMException
+	 * @throws IOException
+	 * @throws BadManifestException
+	 */
+	public WidgetManifestModel (String xmlText, ZipFile zip) throws JDOMException, IOException, BadManifestException {
+		super();
+		this.zip = zip;
+		fNamesList = new ArrayList<INameEntity>();
+		fDescriptionsList = new ArrayList<IDescriptionEntity>();
+		fLicensesList = new ArrayList<ILicenseEntity>();
+		fIconsList = new ArrayList<IIconEntity>();
+		fAccessList = new ArrayList<IAccessEntity>();
+		fFeaturesList = new ArrayList<IFeatureEntity>();
+		fPreferencesList = new ArrayList<IPreferenceEntity>();
+		SAXBuilder builder = new SAXBuilder();
+		Element root = builder.build(new StringReader(xmlText)).getRootElement();				
+		fromXML(root);	
 	}
 	
 	public String getViewModes() {
@@ -269,18 +299,16 @@ public class WidgetManifestModel implements IManifestModel {
 				aName.fromXML(child);				
 				// add it to our list only if its not a repetition of an
 				// existing name for the locale
-				boolean exists = false;
-				for (INameEntity name: fNamesList.toArray(new INameEntity[fNamesList.size()]))
-					if (StringUtils.equals(name.getLanguage(), aName.getLanguage())) exists = true;
-				if (!exists) fNamesList.add(aName);
+				if (isFirstLocalizedEntity(fNamesList,aName)) fNamesList.add(aName);
 			}
 			
 			// DESCRIPTION IS OPTIONAL multiple on xml:lang
 			if(tag.equals(IW3CXMLConfiguration.DESCRIPTION_ELEMENT)) {				
 				IDescriptionEntity aDescription = new DescriptionEntity();
 				aDescription.fromXML(child);
-				// add it to our list
-				fDescriptionsList.add(aDescription);
+				// add it to our list only if its not a repetition of an
+				// existing description for the locale
+				if (isFirstLocalizedEntity(fDescriptionsList,aDescription)) fDescriptionsList.add(aDescription);
 			}
 			
 			// AUTHOR IS OPTIONAL - can only be one, ignore subsequent repetitions
@@ -293,7 +321,9 @@ public class WidgetManifestModel implements IManifestModel {
 			if(tag.equals(IW3CXMLConfiguration.LICENSE_ELEMENT)) {				
 				ILicenseEntity aLicense = new LicenseEntity();
 				aLicense.fromXML(child);
-				fLicensesList.add(aLicense);
+				// add it to our list only if its not a repetition of an
+				// existing entry for the locale
+				if (isFirstLocalizedEntity(fLicensesList,aLicense)) fLicensesList.add(aLicense);
 			}
 			
 			// ICON IS OPTIONAL - can be many
@@ -312,11 +342,11 @@ public class WidgetManifestModel implements IManifestModel {
 			}
 			
 			// CONTENT IS OPTIONAL - can only be 0 or 1
-			// Only the first CONTENT element should be considered, further instances MUST be ignored
+			// Only the first valid CONTENT element should be considered, further instances MUST be ignored
 			if(tag.equals(IW3CXMLConfiguration.CONTENT_ELEMENT)) {	
 				if (fContent == null){
 					fContent = new ContentEntity();						
-					fContent.fromXML(child);
+					fContent.fromXML(child,zip);
 				}
 			}
 			
@@ -337,4 +367,19 @@ public class WidgetManifestModel implements IManifestModel {
 		}
 	}
 
+	/**
+	 * Checks to see if the given list already contains an ILocalizedEntity
+	 * with a language that matches that of the given entity. If it does, then the
+	 * method returns false.
+	 * @param list a list of ILocalizedEntity instances
+	 * @param ent an ILocalizedEntity
+	 * @return true if the list contains an entity with matching language
+	 */
+	@SuppressWarnings("unchecked")
+	private boolean isFirstLocalizedEntity(List list, ILocalizedEntity ent){
+		boolean first = true;
+		for (ILocalizedEntity entity: (ILocalizedEntity[])list.toArray(new ILocalizedEntity[list.size()]))
+			if (StringUtils.equals(entity.getLanguage(), ent.getLanguage())) first = false;
+		return first;
+	}
 }

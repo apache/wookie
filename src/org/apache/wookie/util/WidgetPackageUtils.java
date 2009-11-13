@@ -13,13 +13,12 @@
  */
 package org.apache.wookie.util;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -33,8 +32,9 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.apache.wookie.Messages;
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.manifestmodel.IManifestModel;
@@ -48,8 +48,6 @@ import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 public class WidgetPackageUtils {
 	static Logger _logger = Logger.getLogger(WidgetPackageUtils.class.getName());
 	
-	public static final String[] START_FILES = {"index.htm","index.html","index.svg","index.xhtml","index.xht"};
-	
 	/**
 	 * Identify the start file for a given zipfile and manifest, or throw an exception
 	 * @param widgetModel
@@ -59,29 +57,24 @@ public class WidgetPackageUtils {
 	 * @throws BadWidgetZipFileException if a custom start file is specified, but is not present
 	 * @throws BadManifestException if no custom start file is found, and no default start file can be located
 	 */
-	public static String locateStartFile(IManifestModel widgetModel, ZipFile zip, Messages localizedMessages) throws BadWidgetZipFileException, BadManifestException{
+	public static String locateStartFile(IManifestModel widgetModel, ZipFile zip) throws BadWidgetZipFileException, BadManifestException{
 		String startFile = null;
 		// Check for a custom start file
 		if (widgetModel.getContent() != null) {
-			if (widgetModel.getContent().getSrc() != null){
-				startFile = widgetModel.getContent().getSrc();
-				// Check that the specified custom start file exists
-				if (zip.getEntry(startFile)==null){
-					startFile = null;
-					throw new BadWidgetZipFileException(localizedMessages.getString("WidgetAdminServlet.22")); //$NON-NLS-1$
-				}
+			if (widgetModel.getContent().getSrc() != null && !widgetModel.getContent().getSrc().equals("")){
+				return widgetModel.getContent().getSrc();
 			}
 		}
 		
 		// If no custom start file exists, look for defaults
-		for (String s: START_FILES){
+		for (String s: IW3CXMLConfiguration.START_FILES){
 			if (startFile == null && zip.getEntry(s)!=null){
 				startFile = s;
 			}
 		}
 		// If no start file has been found, throw an exception
 		if (startFile == null) 
-			throw new BadManifestException("WidgetAdminServlet.27"); //$NON-NLS-1$
+			throw new BadManifestException(); //$NON-NLS-1$
 		return startFile;
 	}
 
@@ -166,36 +159,13 @@ public class WidgetPackageUtils {
 		File pFolder = new File(convertPathToPlatform(serverPath));
 		try {
 			_logger.debug("Deleting folder:"+pFolder.getCanonicalFile().toString()); //$NON-NLS-1$
-			deleteDirectory(pFolder);
+			if (pFolder.getParent() != null) // never call on a root folder
+				FileUtils.deleteDirectory(pFolder);
 		}
 		catch (Exception ex) {
 			_logger.error(ex);
 		}
 		return true;
-	}
-
-	/**
-	 * Recursive delete of a folder
-	 * Based on a how-to article by RŽal Gagnon at http://www.rgagnon.com/javadetails/java-0483.html
-	 * @param path the directory to delete
-	 * @return true if the directory was deleted
-	 * @throws IOException
-	 */
-	private static boolean deleteDirectory(File path) throws IOException{
-		if( path.exists() ) {
-			// This should never be called with a root folder
-			assert path.getParentFile()!=null;
-			File[] files = path.listFiles();
-			for(int i=0; i<files.length; i++) {
-				if(files[i].isDirectory()) {
-					deleteDirectory(files[i]);
-				}
-				else {
-					files[i].delete();
-				}
-			}
-		}
-		return( path.delete() );
 	}
 	
 	/**
@@ -216,8 +186,7 @@ public class WidgetPackageUtils {
 	 */
 	public static String extractManifest(ZipFile zipFile) throws IOException{
 		ZipArchiveEntry entry = zipFile.getEntry(IW3CXMLConfiguration.MANIFEST_FILE);
-		InputStream content = zipFile.getInputStream(entry);
-		return convertStreamToString(content);
+		return IOUtils.toString(zipFile.getInputStream(entry));
 	}
 
 	/**
@@ -236,9 +205,6 @@ public class WidgetPackageUtils {
 		BufferedOutputStream out = null;
 		InputStream in = null;
 		ZipArchiveEntry zipEntry;
-		int bytesRead;
-		final int bufSize = 512;
-		byte buf[] = new byte[bufSize];
 
 		Enumeration entries = zipfile.getEntries();
 		try {
@@ -253,15 +219,13 @@ public class WidgetPackageUtils {
 						outFile.getParentFile().mkdirs();
 					}
 					// Read the entry
-					in = zipfile.getInputStream(zipEntry);
-					out = new BufferedOutputStream(new FileOutputStream(outFile), bufSize);
-					while((bytesRead = in.read(buf)) != -1) {
-						out.write(buf, 0, bytesRead);
-					}
+					in = new BufferedInputStream(zipfile.getInputStream(zipEntry));
+					out = new BufferedOutputStream(new FileOutputStream(outFile));
+					IOUtils.copy(in, out);
 					// Restore time stamp
 					outFile.setLastModified(zipEntry.getTime());
+					
 					// Close File
-					out.flush();
 					out.close();
 					// Close Stream
 					in.close();
@@ -281,38 +245,5 @@ public class WidgetPackageUtils {
 			// And throw it again
 			throw ex;
 		}
-	}
-
-	/**
-	 * Taken from an example at http://www.kodejava.org/examples/266.html
-	 * @param is the InputStream to convert
-	 * @return a String representing the content of the Stream
-	 */
-	public static String convertStreamToString(InputStream is) {
-		/*
-		 * To convert the InputStream to String we use the BufferedReader.readLine()
-		 * method. We iterate until the BufferedReader return null which means
-		 * there's no more data to read. Each line will appended to a StringBuilder
-		 * and returned as String.
-		 */
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		StringBuilder sb = new StringBuilder();
-
-		String line = null;
-		try {
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return sb.toString();
 	}
 }

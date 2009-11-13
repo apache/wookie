@@ -13,6 +13,11 @@
  */
 
 package org.apache.wookie.manifestmodel;
+
+import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.apache.wookie.exceptions.BadManifestException;
+import org.jdom.Element;
+
 /**
  * @author Paul Sharples
  * @version $Id: IContentEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
@@ -30,5 +35,7 @@ public interface IContentEntity extends IManifestModelBase {
 	public String getType();
 
 	public void setType(String type);
+	
+	public void fromXML(Element element, ZipFile zip) throws BadManifestException;
 
 }

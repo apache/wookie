@@ -11,22 +11,12 @@
  *  See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.wookie.manifestmodel;
-/**
- * @author Paul Sharples
- * @version $Id: INameEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
- */
-public interface INameEntity extends ILocalizedEntity {
 
-	public String getName();
+public interface ILocalizedEntity extends IManifestModelBase {
+	
+	public String getLanguage();
 
-	public void setName(String name);
-
-	public String getShort();
-
-	public void setShort(String short1);
-
-
+	public void setLanguage(String language);
 
 }

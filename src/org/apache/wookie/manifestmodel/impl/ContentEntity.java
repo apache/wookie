@@ -14,6 +14,9 @@
 
 package org.apache.wookie.manifestmodel.impl;
 
+import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.apache.commons.lang.StringUtils;
+import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.manifestmodel.IContentEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.apache.wookie.util.UnicodeUtils;
@@ -69,20 +72,35 @@ public class ContentEntity implements IContentEntity {
 		return IW3CXMLConfiguration.CONTENT_ELEMENT;
 	}
 	
-	public void fromXML(Element element) {				
-		fSrc = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.SOURCE_ATTRIBUTE));
-		// just in case it's there, but they leave it empty
-		if(fSrc.equals("")){
-			fSrc = IW3CXMLConfiguration.DEFAULT_SRC_PAGE;
+	public void fromXML(Element element) throws BadManifestException{
+
+	}
+	
+	private static boolean isSupportedContentType(String atype){
+		boolean supported = false;
+		for (String type: IW3CXMLConfiguration.SUPPORTED_CONTENT_TYPES){
+			if (StringUtils.equals(atype, type)) supported = true;
 		}
+		return supported;
+	}
+
+	public void fromXML(Element element, ZipFile zip) throws BadManifestException {
+		fSrc = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.SOURCE_ATTRIBUTE));
+		// Check custom start file exists; remove the src value if it doesn't
+		if(!fSrc.equals("")) if (zip.getEntry(fSrc) == null) fSrc = "";
+
 		fCharSet = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.CHARSET_ATTRIBUTE));
-		if(fSrc.equals("")){
+		if(fCharSet.equals("")){
 			fCharSet = IW3CXMLConfiguration.DEFAULT_CHARSET;
 		}
 		fType = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.TYPE_ATTRIBUTE));
-		if(fSrc.equals("")){
+		if(fType.equals("")){
 			fType = IW3CXMLConfiguration.DEFAULT_MEDIA_TYPE;
-		}	
-	}	
+		} else {
+			// If a type attribute is specified, and is either invalid or unsupported, we must treat it as an invalid widget
+			if (!isSupportedContentType(fSrc)) throw new BadManifestException();
+		}
+		
+	}
 
 }

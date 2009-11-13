@@ -17,7 +17,7 @@ package org.apache.wookie.manifestmodel;
  * @author Paul Sharples
  * @version $Id: ILicenseEntity.java,v 1.3 2009-09-02 18:37:30 scottwilson Exp $
  */
-public interface ILicenseEntity extends IManifestModelBase {
+public interface ILicenseEntity extends ILocalizedEntity {
 
 	public String getLicenseText();
 
@@ -26,9 +26,5 @@ public interface ILicenseEntity extends IManifestModelBase {
 	public String getHref();
 
 	public void setHref(String href);
-
-	public String getLanguage();
-
-	public void setLanguage(String language);
 
 }

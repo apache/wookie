@@ -17,14 +17,10 @@ package org.apache.wookie.manifestmodel;
  * @author Paul Sharples
  * @version $Id: IDescriptionEntity.java,v 1.3 2009-09-02 18:37:30 scottwilson Exp $
  */
-public interface IDescriptionEntity extends IManifestModelBase {
+public interface IDescriptionEntity extends ILocalizedEntity {
 
 	public String getDescription();
 
 	public void setDescription(String description);
-
-	public String getLanguage();
-
-	public void setLanguage(String language);
 
 }

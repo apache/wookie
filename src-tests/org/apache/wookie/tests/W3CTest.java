@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
-import org.apache.wookie.util.WidgetManifestUtils;
+import org.apache.wookie.manifestmodel.impl.WidgetManifestModel;
 import org.jdom.JDOMException;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -69,7 +69,7 @@ public class W3CTest implements IW3CXMLConfiguration {
 	public void testWrongXML(){
 		try {
 			@SuppressWarnings("unused")
-			IManifestModel model = WidgetManifestUtils.dealWithManifest(WRONG_XML,null);
+			IManifestModel model = new WidgetManifestModel(WRONG_XML,null);
 			// This should throw a BadManifestException	
 			//assertNull(model);
 		} 
@@ -88,7 +88,7 @@ public class W3CTest implements IW3CXMLConfiguration {
 	public void testParseManifestBadNS(){    	
 		try {
 			@SuppressWarnings("unused")
-			IManifestModel model = WidgetManifestUtils.dealWithManifest(BAD_NAMESPACE_MANIFEST,null);
+			IManifestModel model = new WidgetManifestModel(BAD_NAMESPACE_MANIFEST,null);
 			// This should throw a BadManifestException			
 		} 
 		catch (BadManifestException ex) {    		
@@ -105,12 +105,12 @@ public class W3CTest implements IW3CXMLConfiguration {
 	@Test
 	public void testParseManifest(){
 		try {
-			IManifestModel model = WidgetManifestUtils.dealWithManifest(BASIC_MANIFEST,null);
+			IManifestModel model = new WidgetManifestModel (BASIC_MANIFEST,null);
 			assertNotNull(model);
 			assertEquals("http://www.getwookie.org/widgets/WP3/natter", model.getIdentifier());
 			assertEquals("Natter", model.getLocalName("en"));
-			assertEquals(255, model.getWidth());
-			assertEquals(383, model.getHeight());
+			assertEquals(255, model.getWidth().intValue());
+			assertEquals(383, model.getHeight().intValue());
 			assertEquals("Icon.png", model.getFirstIconPath());
 			assertEquals("Scott Wilson", model.getAuthor());
 			assertEquals("1.0", model.getVersion());	
@@ -131,7 +131,7 @@ public class W3CTest implements IW3CXMLConfiguration {
 	@Test
 	public void testFeaturesExample(){		
 		try {
-			IManifestModel model = WidgetManifestUtils.dealWithManifest(FEATURES_MANIFEST, null);
+			IManifestModel model = new WidgetManifestModel(FEATURES_MANIFEST,null);
 			assertNotNull(model);
 			assertEquals("http://www.getwookie.org/example", model.getIdentifier());
 			assertEquals("Example Test Widget", model.getLocalName("en"));			
@@ -181,7 +181,7 @@ public class W3CTest implements IW3CXMLConfiguration {
 	@Test
 	public void testPrefsManifest(){
 		try {
-			IManifestModel model = WidgetManifestUtils.dealWithManifest(MANIFEST_WITH_PREFERENCES,null);
+			IManifestModel model = new WidgetManifestModel(MANIFEST_WITH_PREFERENCES,null);
 			assertNotNull(model);
 			// should be 3 prefs
 			assertEquals(3, model.getPrefences().size());
@@ -222,5 +222,6 @@ public class W3CTest implements IW3CXMLConfiguration {
 
 		return sb.toString();	
 	}
+	
 
 }

@@ -18,25 +18,23 @@ import org.apache.wookie.manifestmodel.IDescriptionEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
-import org.jdom.Namespace;
 /**
  * @author Paul Sharples
  * @version $Id: DescriptionEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
-public class DescriptionEntity implements IDescriptionEntity {
+public class DescriptionEntity extends LocalizedEntity  implements IDescriptionEntity {
 	
 	private String fDescription;
-	private String fLanguage;
 	
 	public DescriptionEntity(){
 		fDescription = "";
-		fLanguage = "";
+		setLanguage("");
 	}
 	
 	public DescriptionEntity(String description, String language) {
 		super();
 		fDescription = description;
-		fLanguage = language;
+		setLanguage(language);
 	}
 	
 	public String getDescription() {
@@ -47,21 +45,13 @@ public class DescriptionEntity implements IDescriptionEntity {
 		fDescription = description;
 	}
 	
-	public String getLanguage() {
-		return fLanguage;
-	}
-	
-	public void setLanguage(String language) {
-		fLanguage = language;
-	}
-	
 	public String getXMLTagName() {
 		return IW3CXMLConfiguration.DESCRIPTION_ELEMENT;
 	}
 	
 	public void fromXML(Element element) {
+		super.fromXML(element);
 		fDescription = UnicodeUtils.normalizeWhitespace(element.getText());
-		fLanguage = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.LANG_ATTRIBUTE, Namespace.XML_NAMESPACE));
 	}
 
 

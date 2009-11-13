@@ -14,14 +14,11 @@
 
 package org.apache.wookie.server;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 import java.util.StringTokenizer;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.apache.wookie.util.WidgetPackageUtils;
 import org.apache.wookie.util.hibernate.DBManagerFactory;
 import org.apache.wookie.util.hibernate.IDBManager;
 import org.hibernate.SQLQuery;
@@ -48,7 +45,7 @@ public class Start {
 	 */
 	private static void configureDatabase() throws IOException {
 		logger.debug("Configuring Derby Database");
-		String sqlScript = WidgetPackageUtils.convertStreamToString(Start.class.getClassLoader().getResourceAsStream("widgetdb.sql"));
+		String sqlScript = IOUtils.toString(Start.class.getClassLoader().getResourceAsStream("widgetdb.sql"));
 		
 		
         final IDBManager dbManager = DBManagerFactory.getDBManager();
