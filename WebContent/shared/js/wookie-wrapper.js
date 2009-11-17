@@ -202,7 +202,7 @@ var Widget = {
 // very important !
 Widget.init();
 widget = Widget;
-
+window.widget = Widget;
 
 
 /*
