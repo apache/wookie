@@ -133,7 +133,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		if(key==null) return localizedMessages.getString("WidgetAPIImpl.1");
 		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
 		if (widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
-		//
+		SharedData data = SharedData.findSharedDataForInstance(widgetInstance, key);
+		if (data == null) return localizedMessages.getString("WidgetAPIImpl.1");
 		return SharedData.findSharedDataForInstance(widgetInstance, key).getDvalue();
 	}
 
