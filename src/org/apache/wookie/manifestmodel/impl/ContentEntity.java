@@ -17,6 +17,7 @@ package org.apache.wookie.manifestmodel.impl;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wookie.exceptions.BadManifestException;
+import org.apache.wookie.exceptions.InvalidContentTypeException;
 import org.apache.wookie.manifestmodel.IContentEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.apache.wookie.util.UnicodeUtils;
@@ -98,7 +99,7 @@ public class ContentEntity implements IContentEntity {
 			fType = IW3CXMLConfiguration.DEFAULT_MEDIA_TYPE;
 		} else {
 			// If a type attribute is specified, and is either invalid or unsupported, we must treat it as an invalid widget
-			if (!isSupportedContentType(fSrc)) throw new BadManifestException();
+			if (!isSupportedContentType(fType)) throw new InvalidContentTypeException();
 		}
 		
 	}

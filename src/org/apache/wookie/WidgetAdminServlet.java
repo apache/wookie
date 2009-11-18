@@ -36,6 +36,8 @@ import org.apache.wookie.beans.WidgetDefault;
 import org.apache.wookie.beans.WidgetService;
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.exceptions.BadWidgetZipFileException;
+import org.apache.wookie.exceptions.InvalidContentTypeException;
+import org.apache.wookie.exceptions.InvalidStartFileException;
 import org.apache.wookie.helpers.WidgetKeyManager;
 import org.apache.wookie.manager.IWidgetAdminManager;
 import org.apache.wookie.manager.impl.WidgetAdminManager;
@@ -523,11 +525,16 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		catch (IOException ex) {
 			_logger.error(ex);
 			session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.25") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		}		
+		}	
+		catch (InvalidStartFileException ex){
+			_logger.error(ex);
+			session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.27") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$			
+		}
 		catch (BadManifestException ex) {
 			_logger.error(ex);		
 			String message = ex.getMessage();
-			if (ex.getMessage() == null || ex.getMessage().equals("")) message = localizedMessages.getString("WidgetAdminServlet.27"); //$NON-NLS-1$
+			if (ex.getMessage() == null || ex.getMessage().equals("")) message = localizedMessages.getString("WidgetAdminServlet.28"); //$NON-NLS-1$
+			if (ex instanceof InvalidContentTypeException) message = localizedMessages.getString("WidgetAdminServlet.30");//$NON-NLS-1$
 			session.setAttribute("error_value", message); //$NON-NLS-1$
 		}
 		catch (BadWidgetZipFileException ex) {

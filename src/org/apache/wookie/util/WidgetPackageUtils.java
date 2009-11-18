@@ -37,6 +37,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.exceptions.BadWidgetZipFileException;
+import org.apache.wookie.exceptions.InvalidStartFileException;
 import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 
@@ -57,7 +58,7 @@ public class WidgetPackageUtils {
 	 * @throws BadWidgetZipFileException if a custom start file is specified, but is not present
 	 * @throws BadManifestException if no custom start file is found, and no default start file can be located
 	 */
-	public static String locateStartFile(IManifestModel widgetModel, ZipFile zip) throws BadWidgetZipFileException, BadManifestException{
+	public static String locateStartFile(IManifestModel widgetModel, ZipFile zip) throws BadWidgetZipFileException, InvalidStartFileException{
 		String startFile = null;
 		// Check for a custom start file
 		if (widgetModel.getContent() != null) {
@@ -74,7 +75,7 @@ public class WidgetPackageUtils {
 		}
 		// If no start file has been found, throw an exception
 		if (startFile == null) 
-			throw new BadManifestException(); //$NON-NLS-1$
+			throw new InvalidStartFileException(); //$NON-NLS-1$
 		return startFile;
 	}
 
