@@ -102,10 +102,16 @@ public class WidgetHelper {
 		for (WidgetType type:types){
 			out +="\t\t<category>"+type.getWidgetContext()+"</category>\n";
 		}
+		
+		// Do author
+		out += "\t\t<author>"+widget.getWidgetAuthor()+"</author>";
+		
+		// TODO license
+		
+		// TODO features
 
 		// Do preference defaults
-		PreferenceDefault[] prefs = PreferenceDefault.findByValue("widget",
-				widget);
+		PreferenceDefault[] prefs = PreferenceDefault.findByValue("widget",widget);
 		for (PreferenceDefault pref : prefs) {
 			out += "\t\t<preference name=\"" + pref.getPreference() + "\"  value=\""+pref.getValue()+"\"  readonly=\"" + (pref.isReadOnly()? "true" : "false") + "\"/>";
 		}

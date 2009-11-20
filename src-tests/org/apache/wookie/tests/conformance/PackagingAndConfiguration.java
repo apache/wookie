@@ -181,11 +181,9 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("pass&.html",start);
 	}
 	@Test
-	@Ignore
 	public void bw(){
-		//Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-klLDaEgJeU/003/bw.wgt");
-		// TODO include author in metadata generated from REST API
-		// assertEquals("PASS", widget.getChild("author").getText());
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-klLDaEgJeU/003/bw.wgt");
+		assertEquals("PASS", widget.getChild("author").getText());
 	}
 	// 11 widget
 	@Test
@@ -528,36 +526,38 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 
 	// 29 Author
 	@Test
-	@Ignore
 	public void b7(){
-		// TODO can't test without author exposed in metadata
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-sdwhMozwIc/000/b7.wgt");
+		assertEquals("PASS", widget.getChild("author").getText());
 	}
 	@Test
-	@Ignore
 	public void b8(){
-		// TODO can't test without author exposed in metadata
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-sdwhMozwIc/001/b8.wgt");
+		assertEquals("", widget.getChild("author").getText());
+
 	}
 	@Test
-	@Ignore
 	public void b9(){
-		// TODO can't test without author exposed in metadata
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-sdwhMozwIc/002/b9.wgt");
+		assertEquals("PASS", widget.getChild("author").getText());
+
 	}
 
 	// 30 Author  
 	@Test
-	@Ignore
 	public void af(){
-		// TODO can't test without author exposed in metadata
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/000/af.wgt");
+		assertEquals("PASS", widget.getChild("author").getText());
 	}
 	@Test
-	@Ignore
 	public void ag(){
-		// TODO can't test without author exposed in metadata
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/001/ag.wgt");
+		assertEquals("P A S S", widget.getChild("author").getText());
 	}
 	@Test
-	@Ignore
 	public void ah(){
-		// TODO can't test without author exposed in metadata
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/002/ah.wgt");
+		assertEquals("PASS", widget.getChild("author").getText());
 	}
 	@Test
 	@Ignore
@@ -749,11 +749,13 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("index.htm",start);
 	}
 
-	//37
+	//38
 	@Test
-	@Ignore
 	public void dc(){
-		// TODO needs to test start file location
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-paIabGIIMC/000/dc.wgt");
+		String start = locateStartFile(widget);
+		assertEquals("index.php",start);
+		assertEquals("text/html",getStartFileContentType(widget));
 	}
 	@Test
 	public void dv(){
@@ -761,26 +763,30 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertFalse(err == null||err.equals(""));
 	}	
 
-	// 38 Start File Encoding
+	// 37 TODO Start File Text Encoding
 	@Test
 	@Ignore
 	public void e4(){
-		// TODO needs to test start file encoding
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-CEGwkNQcWo/000/e2.wgt");
+		assertEquals("UTF-8",getStartFileEncoding(widget));
 	}
 	@Test
 	@Ignore
 	public void e5(){
-		// TODO needs to test start file encoding
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-CEGwkNQcWo/001/e3.wgt");
+		assertEquals("ISO-8859-1",getStartFileEncoding(widget));
 	}
 	@Test
 	@Ignore
 	public void e6(){
-		// TODO needs to test start file encoding
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-CEGwkNQcWo/002/e4.wgt");
+		assertEquals("ISO-8859-1",getStartFileEncoding(widget));
 	}
 	@Test
 	@Ignore
 	public void e7(){
-		// TODO needs to test start file encoding
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-CEGwkNQcWo/003/e5.wgt");
+		assertEquals("UTF-8",getStartFileEncoding(widget));
 	}
 
 	//39
@@ -1018,6 +1024,26 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		return doc.getRootElement().getChild("url").getText();
 	}
 
+	private String getStartFileEncoding(Element widget){
+		String response = instantiateWidget(widget);
+		String startFile = getStartFile(response);
+		// Download and check text encoding
+		try {
+			HttpClient client = new HttpClient();
+			GetMethod get = new GetMethod(startFile);
+			client.executeMethod(get);
+			int code = get.getStatusCode();
+			assertEquals(200,code);
+			get.releaseConnection();
+			return get.getResponseCharSet();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail("failed to get start file");
+		}
+		return null;	
+	}
+	
 	private String getStartFileContentType(Element widget){
 		String response = instantiateWidget(widget);
 		String startFile = getStartFile(response);
@@ -1049,7 +1075,8 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		try {
 			url = new URL(start);
 		} catch (MalformedURLException e) {
-			return null;
+				System.out.println("start file URL was invalid");
+				return null;
 		}
 		String[] parts = url.getPath().split("/");
 		start = parts[parts.length-1];
