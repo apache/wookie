@@ -14,6 +14,8 @@
 
 package org.apache.wookie.helpers;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
@@ -21,7 +23,8 @@ import org.apache.wookie.beans.Preference;
 import org.apache.wookie.beans.PreferenceDefault;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetInstance;
-import org.apache.wookie.server.LocaleHandler;
+import org.apache.wookie.util.HashGenerator;
+import org.apache.wookie.util.RandomGUID;
 import org.apache.wookie.util.opensocial.OpenSocialUtils;
 
 /**
@@ -35,21 +38,101 @@ public class WidgetFactory{
 
 	static Logger _logger = Logger.getLogger(WidgetFactory.class.getName());
 	
-	/**
-	 * keep this here so that all subclasses can access it
-	 */
-	protected Messages localizedMessages;
+	private Messages localizedMessages;
+	private HttpSession session;
 	
 	boolean showProcess = false;
+	
+	/**
+	 * Return a handle on a Widget Factory localized for the session
+	 * @param session
+	 * @param localizedMessages
+	 * @return
+	 */
+	public static WidgetFactory getWidgetFactory(HttpSession session, Messages localizedMessages){
+		WidgetFactory factory = (WidgetFactory)session.getAttribute(WidgetFactory.class.getName());				
+		if(factory == null){
+			factory = new WidgetFactory();
+			factory.localizedMessages = localizedMessages;
+			factory.session = session;
+			session.setAttribute(WidgetFactory.class.getName(), factory);
+		}
+		return factory;
+	}
+	
+	/**
+	 * Return the "default widget" instance
+	 * @return
+	 */
+	public WidgetInstance defaultInstance(){
+		WidgetInstance instance = new WidgetInstance();
+		instance.setWidget(Widget.findDefaultByType("unsupported")); //$NON-NLS-1$
+		instance.setIdKey("0000");
+		instance.setOpensocialToken("");
+		return instance;
+	}
+	
+	/**
+	 * Create a new widget instance with the given parameters
+	 * @param session
+	 * @param apiKey
+	 * @param userId
+	 * @param sharedDataKey
+	 * @param serviceType
+	 * @param widgetId
+	 * @param localizedMessages
+	 * @return
+	 */
+	public WidgetInstance newInstance(String apiKey, String userId, String sharedDataKey, String serviceType, String widgetId){
+		try {
+			Widget widget;
+			WidgetInstance widgetInstance;
+			// Widget ID or Widget Type?
+			if (widgetId != null){
+				widget = Widget.findByGuid(widgetId);
+			} 
+			else {
+				// does this type of widget exist?
+				widget = Widget.findDefaultByType(serviceType);				
+			}
+			// Unsupported
+			if (widget == null) return null;
 
-	public WidgetFactory(Messages localizedMessages) {
-		this.localizedMessages = localizedMessages;	
+			// generate a nonce
+			RandomGUID r = new RandomGUID();
+			String nonce = "nonce-" + r.toString();				 //$NON-NLS-1$
+
+			// now use SHA hash on the nonce				
+			String hashKey = HashGenerator.getInstance().encrypt(nonce);	
+
+			// get rid of any chars that might upset a url...
+			hashKey = hashKey.replaceAll("=", ".eq."); //$NON-NLS-1$ //$NON-NLS-2$
+			hashKey = hashKey.replaceAll("\\?", ".qu."); //$NON-NLS-1$ //$NON-NLS-2$
+			hashKey = hashKey.replaceAll("&", ".am."); //$NON-NLS-1$ //$NON-NLS-2$
+			hashKey = hashKey.replaceAll("\\+", ".pl."); //$NON-NLS-1$ //$NON-NLS-2$
+            hashKey = hashKey.replaceAll("/", ".sl."); //$NON-NLS-1$ //$NON-NLS-2$
+
+			Configuration properties = (Configuration) session.getServletContext().getAttribute("opensocial"); //$NON-NLS-1$
+			
+			widgetInstance = addNewWidgetInstance(apiKey, userId, sharedDataKey, widget, nonce, hashKey, properties);
+			return widgetInstance;
+		} catch (Exception ex) {
+			return null;
+		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetServiceManager#addNewWidgetInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.apache.wookie.beans.Widget, java.lang.String, java.lang.String)
+	/**
+	 * Create a new widget instance object, populate its default values, and save it.
+	 * @param api_key
+	 * @param userId
+	 * @param sharedDataKey
+	 * @param widget
+	 * @param nonce
+	 * @param idKey
+	 * @param properties
+	 * @return
 	 */
-	public WidgetInstance addNewWidgetInstance(String api_key, String userId, String sharedDataKey, Widget widget, String nonce, String idKey, Configuration properties) {		
+	private WidgetInstance addNewWidgetInstance(String api_key, String userId, String sharedDataKey, Widget widget, String nonce, String idKey, Configuration properties) {		
 		WidgetInstance widgetInstance = new WidgetInstance();
 		widgetInstance.setUserId(userId);
 		widgetInstance.setSharedDataKey(sharedDataKey);
