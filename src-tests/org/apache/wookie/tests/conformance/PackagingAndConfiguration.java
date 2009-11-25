@@ -61,26 +61,28 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertFalse(err == null||err.equals(""));
 	}	
 
+	// Seems to have been pulled
 	// 3 Start files
-	@Test
-	public void taGVVIvsdEUo2(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-GVVIvsdEUo/000/test");
-		String start = locateStartFile(widget);
-		assertEquals("index.htm",start);
-	}
-	@Test
-	public void taGVVIvsdEUo1(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-GVVIvsdEUo/001/test.html");
-		String start = locateStartFile(widget);
-		assertEquals("index.htm",start);
-	}
+	//@Test
+	//public void taGVVIvsdEUo2(){
+	//	Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-GVVIvsdEUo/000/test");
+	//	String start = locateStartFile(widget);
+	//	assertEquals("index.htm",start);
+	//}
+	//@Test
+	//public void taGVVIvsdEUo1(){
+	//	Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-GVVIvsdEUo/001/test.html");
+	//	String start = locateStartFile(widget);
+	//	assertEquals("index.htm",start);
+	//}
 
+	// Seems to have been pulled
 	// 4 MIME
-	@Test
-	public void di(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-YrdwUYRXwc/000/di.wgt");
-		assertFalse(err == null||err.equals(""));
-	}	
+	//@Test
+	//public void di(){
+	//	String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-YrdwUYRXwc/000/di.wgt");
+	//	assertFalse(err == null||err.equals(""));
+	//}	
 
 	// 5 bad magic number
 	@Test
@@ -91,14 +93,14 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 
 	// 6 start files
 	@Test
-	public void taFDGQBROtzW0(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FDGQBROtzW/000/test.test");
+	public void dn(){
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FDGQBROtzW/000/dn.test");
 		String start = locateStartFile(widget);
 		assertEquals("index.htm",start);
 	}
 	@Test
-	public void taFDGQBROtzW1(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FDGQBROtzW/001/test");
+	public void dm(){
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FDGQBROtzW/001/dm");
 		String start = locateStartFile(widget);
 		assertEquals("index.htm",start);
 	}
@@ -703,19 +705,20 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("pass.html",start);
 	}
 
+	// These have been pulled
 	//33
-	@Test
-	public void dz(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UJGJCaaFLT/000/dz.wgt");
-		String start = locateStartFile(widget);
-		assertEquals("pass.html",start);
-	}
-	@Test
-	public void da(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UJGJCaaFLT/001/da.wgt");
-		String start = locateStartFile(widget);
-		assertEquals("pass.html",start);
-	}
+//	@Test
+//	public void dz(){
+//		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UJGJCaaFLT/000/dz.wgt");
+//		String start = locateStartFile(widget);
+//		assertEquals("pass.html",start);
+//	}
+//	@Test
+//	public void da(){
+//		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UJGJCaaFLT/001/da.wgt");
+//		String start = locateStartFile(widget);
+//		assertEquals("pass.html",start);
+//	}
 	//34
 	@Test
 	public void d7(){
@@ -843,7 +846,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		// TODO needs to test features
 	}
 
-	// 46 Feature
+	// 47 Feature
 	@Test
 	@Ignore
 	public void e2(){
@@ -854,8 +857,16 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	public void e3(){
 		// TODO needs to test features
 	}
-
-	//47 Start file and icons
+	
+	//48
+	@Test
+	public void xx(){
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-bbbbbbbbbb/000/xx.wgt");
+		String start = locateStartFile(widget);
+		assertEquals("pass.html",start);
+	}
+	
+	//49 Start file and icons
 	@Test
 	public void aw(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-BnWPqNvNVo/000/aw.wgt");
