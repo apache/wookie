@@ -15,14 +15,23 @@
 package org.apache.wookie.server;
 
 
+import java.io.File;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import org.apache.log4j.Logger;
+import org.apache.wookie.manager.impl.WidgetAdminManager;
+import org.apache.wookie.manifestmodel.IManifestModel;
+import org.apache.wookie.util.WgtWatcher;
+import org.apache.wookie.util.WidgetPackageUtils;
+import org.apache.wookie.util.hibernate.DBManagerFactory;
 import org.apache.wookie.util.hibernate.HibernateUtil;
+import org.apache.wookie.util.hibernate.IDBManager;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+
 /**
  * ContextListener - does some init work and makes certain things are available 
  * to resources under this context
@@ -50,22 +59,105 @@ public class ContextListener implements ServletContextListener {
 			 *  load the widgetserver.properties file and put it into this context
 			 *  as an attribute 'properties' available to all resources
 			 */
-			Configuration configuration = new PropertiesConfiguration("widgetserver.properties");
+			PropertiesConfiguration configuration;
+			File localPropsFile = new File(System.getProperty("user.dir") + File.separator + "local.widgetserver.properties");
+			if (localPropsFile.exists()) {
+				configuration = new PropertiesConfiguration(localPropsFile);
+				_logger.info("Using local widget server properties file: " + localPropsFile.toString());
+			} else {
+				configuration = new PropertiesConfiguration("widgetserver.properties");
+				configuration.setFile(localPropsFile);
+				configuration.save();
+				_logger.info("Using default widget server properties, configure your local server using: " + localPropsFile.toString());
+			}
 		 	context.setAttribute("properties", (Configuration) configuration);
-			/* 
-			 *  load the opensocial.properties file and put it into this context
-			 *  as an attribute 'opensocial' available to all resources
-			 */
-			Configuration opensocialConfiguration = new PropertiesConfiguration("opensocial.properties");
-		 	context.setAttribute("opensocial", (Configuration) opensocialConfiguration);
 		 	/*
 		 	 * Initialise the locale handler
 		 	 */
 		 	LocaleHandler.getInstance().initialize(configuration);
+	
+		 	if (configuration.getBoolean("widget.hot_deploy")) startWatcher(context, configuration);
+		 	
+		 	/* 
+			 *  load the opensocial.properties file and put it into this context
+			 *  as an attribute 'opensocial' available to all resources
+			 */
+			PropertiesConfiguration opensocialConfiguration;
+			File localOpenSocialPropsFile = new File(System.getProperty("user.dir") + File.separator + "local.opensocial.properties");
+			if (localOpenSocialPropsFile.exists()) {
+				opensocialConfiguration = new PropertiesConfiguration(localOpenSocialPropsFile);
+				_logger.info("Using local open social properties file: " + localOpenSocialPropsFile.toString());
+			} else {
+				opensocialConfiguration = new PropertiesConfiguration("opensocial.properties");
+				opensocialConfiguration.setFile(localOpenSocialPropsFile);
+				opensocialConfiguration.save();
+				_logger.info("Using default open social properties, configure your local server using: " + localOpenSocialPropsFile.toString());
+			}
+			context.setAttribute("opensocial", (Configuration) opensocialConfiguration);
 		} 
 		catch (ConfigurationException ex) {
 			_logger.error("ConfigurationException thrown: "+ ex.toString());
 		}					
+	}
+	
+	/**
+	 * Starts a watcher thread for hot-deploy of new widgets dropped into the deploy folder
+	 * this is controlled using the <code>widget.hot_deploy=true|false</code> property 
+	 * and configured to look in the folder specified by the <code>widget.deployfolder</code> property
+	 * @param context the current servlet context
+	 * @param configuration the configuration properties
+	 */
+	private void startWatcher(ServletContext context, Configuration configuration){
+	 	/*
+	 	 * Start watching for widget deployment
+	 	 */
+	 	final File deploy = new File(WidgetPackageUtils.convertPathToPlatform(context.getRealPath(configuration.getString("widget.deployfolder"))));
+		final String UPLOADFOLDER = context.getRealPath(configuration.getString("widget.useruploadfolder"));
+		final String WIDGETFOLDER = context.getRealPath(configuration.getString("widget.widgetfolder"));
+		final String localWidgetFolderPath = configuration.getString("widget.widgetfolder");
+		Thread thr = new Thread(){
+	 		public void run() {
+	 			/** Get a DBManager for this thread. */
+	 			final IDBManager dbManager = DBManagerFactory.getDBManager();
+	 			int interval = 5000;
+	 			WgtWatcher watcher = new WgtWatcher();
+	 			watcher.setWatchDir(deploy);
+	 			watcher.setListener(new WgtWatcher.FileChangeListener(){
+	 				public void fileModified(File f) {
+	 					_logger.info("Deploying widget:"+f.getName());
+	 					try {
+							try {			
+								dbManager.beginTransaction();
+								File upload = WidgetPackageUtils.dealWithDroppedFile(UPLOADFOLDER, f);
+								IManifestModel model = WidgetPackageUtils.processWidgetPackage(upload, localWidgetFolderPath, WIDGETFOLDER, UPLOADFOLDER);
+								WidgetAdminManager manager = new WidgetAdminManager(null);
+								manager.addNewWidget(model, null);	
+								dbManager.commitTransaction();
+							}
+							catch (Exception e) {
+								_logger.error("error: " + e.getCause());
+							}
+						} catch (Exception e) {
+							_logger.error("error: "+e.getCause());
+						}
+	 				}
+	 				public void fileRemoved(File f) {
+	 					// Not implemented - the .wgt files are removed as part of the deployment process
+	 				}
+	 			});
+	 		    try {
+	 		       while (true) {
+	 		         watcher.check();
+	 		         Thread.sleep(interval);
+	 		       }
+	 		     } catch (InterruptedException iex) {
+	 		    	 dbManager.closeSession();
+	 		     }
+	 		}	
+	 	};
+	 	
+	 	thr.start();
+		
 	}
 
 	public void contextDestroyed(ServletContextEvent event){

@@ -23,12 +23,10 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
-import org.apache.commons.configuration.Configuration;
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
@@ -40,6 +38,8 @@ import org.apache.wookie.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.exceptions.InvalidStartFileException;
 import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.manifestmodel.impl.ContentEntity;
+import org.apache.wookie.manifestmodel.impl.WidgetManifestModel;
 
 /**
  * Utilities for working with Widget packages, i.e. Zip Files with an XML manifest
@@ -78,22 +78,20 @@ public class WidgetPackageUtils {
 			throw new InvalidStartFileException(); //$NON-NLS-1$
 		return startFile;
 	}
-
-	public static File createUnpackedWidgetFolder(HttpServletRequest request, Configuration properties, String folder) throws IOException{
+	
+	public static File createUnpackedWidgetFolder(String widgetFolder, String folder) throws IOException{
 		folder = convertIdToFolderName(folder);
-		String uploadPath = properties.getString("widget.widgetfolder"); //$NON-NLS-1$
-		ServletContext context = request.getSession().getServletContext();
-		String serverPath = context.getRealPath(uploadPath + File.separator + folder) ;
+		String serverPath = widgetFolder + File.separator + folder;
 		File file = new File(convertPathToPlatform(serverPath));
 		return file;
 	}
 
-	public static String getURLForWidget(Configuration properties, String folder, String file){
+	public static String getURLForWidget(String widgetFolder, String folder, String file){
 		folder = convertIdToFolderName(folder);
-		String path = convertPathToRelativeUri("/wookie" + properties.getString("widget.widgetfolder") + File.separator + folder + File.separator + file); //$NON-NLS-1$ //$NON-NLS-2$
+		String path = convertPathToRelativeUri("/wookie" + widgetFolder + File.separator + folder + File.separator + file); //$NON-NLS-1$ //$NON-NLS-2$
 		return path;
 	}
-
+	
 	public static String convertIdToFolderName(String folder){
 		if(folder.startsWith("http://")){ //$NON-NLS-1$
 			folder = folder.substring(7, folder.length());
@@ -101,12 +99,18 @@ public class WidgetPackageUtils {
 		folder.replaceAll(" ", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		return folder;
 	}
+	
+	public static File dealWithDroppedFile(String uploadPath, File file) throws Exception{	
+		String serverPath = convertPathToPlatform(uploadPath);
+		File uFile = new File(serverPath + File.separator + file.getName());
+		FileUtils.copyFile(file, uFile);
+		file.delete();
+		return uFile;
+	}
 
-	public static File dealWithUploadFile(HttpServletRequest request, Configuration properties) throws Exception {
+	public static File dealWithUploadFile(String uploadPath, HttpServletRequest request) throws Exception {
 		File uFile = null;
-		String uploadPath = properties.getString("widget.useruploadfolder"); //$NON-NLS-1$
-		ServletContext context = request.getSession().getServletContext();
-		String serverPath = convertPathToPlatform(context.getRealPath(uploadPath));
+		String serverPath = convertPathToPlatform(uploadPath);
 		_logger.debug(serverPath);
 		String archiveFileName = null;
 		if (FileUploadBase.isMultipartContent(request)) {
@@ -152,11 +156,9 @@ public class WidgetPackageUtils {
 		return result;
 	}
 
-	public static boolean removeWidgetResources(HttpServletRequest request, Configuration properties, String folder){
-		folder = convertIdToFolderName(folder);
-		String uploadPath = properties.getString("widget.widgetfolder"); //$NON-NLS-1$
-		ServletContext context = request.getSession().getServletContext();
-		String serverPath = context.getRealPath(uploadPath + File.separator + folder) ;
+	public static boolean removeWidgetResources(String WIDGETFOLDER, String widgetGuid){
+		String folder = convertIdToFolderName(widgetGuid);
+		String serverPath = WIDGETFOLDER + File.separator + folder;
 		File pFolder = new File(convertPathToPlatform(serverPath));
 		try {
 			_logger.debug("Deleting folder:"+pFolder.getCanonicalFile().toString()); //$NON-NLS-1$
@@ -167,6 +169,56 @@ public class WidgetPackageUtils {
 			_logger.error(ex);
 		}
 		return true;
+	}
+	
+	public static IManifestModel processWidgetPackage(File zipFile, String localWidgetPath, String WIDGETFOLDER, String UPLOADFOLDER) throws BadWidgetZipFileException, BadManifestException{
+		ZipFile zip;
+		try {
+			zip = new ZipFile(zipFile);
+		} catch (IOException e) {
+			throw new BadWidgetZipFileException();
+		}
+		if (WidgetPackageUtils.hasManifest(zip)){
+			try {
+				// build the model
+				IManifestModel widgetModel = new WidgetManifestModel(WidgetPackageUtils.extractManifest(zip), zip);															
+				// get the start file; if there is no valid start file an exception will be thrown
+				String src = WidgetPackageUtils.locateStartFile(widgetModel, zip);
+				// get the widget identifier
+				String manifestIdentifier = widgetModel.getIdentifier();						
+				// create the folder structure to unzip the zip into
+				File newWidgetFolder = WidgetPackageUtils.createUnpackedWidgetFolder(WIDGETFOLDER, manifestIdentifier);
+				// now unzip it into that folder
+				WidgetPackageUtils.unpackZip(zip, newWidgetFolder);							
+				// get the url to the start page
+				String relativestartUrl = (WidgetPackageUtils.getURLForWidget(localWidgetPath, manifestIdentifier, src));
+				// update the model version of the start page (or create one if none exists)
+				if (widgetModel.getContent() == null) widgetModel.setContent(new ContentEntity()); 
+				widgetModel.getContent().setSrc(relativestartUrl);
+				// now update the js links in the start page
+				File startFile = new File(newWidgetFolder.getCanonicalPath() + File.separator + src);							
+				if(startFile.exists()){								
+					StartPageJSParser parser = new StartPageJSParser(startFile, widgetModel);
+					parser.doParse();
+				}							
+				// get the path to the root of the unzipped folder
+				String localPath = WidgetPackageUtils.getURLForWidget(localWidgetPath, manifestIdentifier, "");
+				// now pass this to the model which will prepend the path to local resources (not web icons)
+				widgetModel.updateIconPaths(localPath);							
+				// check to see if this widget already exists in the DB - using the ID (guid) key from the manifest
+				return widgetModel;
+			} catch (InvalidStartFileException e) {
+				throw e;
+			} catch (BadManifestException e) {
+				throw e;
+			} catch (Exception e){
+				throw new BadManifestException();
+			}
+		}
+		else{
+			// no manifest file found in zip archive
+			throw new BadWidgetZipFileException(); //$NON-NLS-1$ 
+		}
 	}
 	
 	/**
@@ -191,7 +243,7 @@ public class WidgetPackageUtils {
 	}
 
 	/**
-	 * uses apache commons compress to unpack all the zipe entries into a target folder
+	 * uses apache commons compress to unpack all the zip entries into a target folder
 	 * partly adapted from the examples on the apache commons compress site, and an
 	 * example of generic Zip unpacking. Note this iterates over the ZipArchiveEntry enumeration rather
 	 * than use the more typical ZipInputStream parsing model, as according to the doco it will
