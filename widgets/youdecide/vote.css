@@ -1,0 +1,156 @@
+html {
+height:100%; 
+max-height:100%; 
+padding:0; 
+margin:0; 
+border:0; 
+font-size:80%; 
+font-family: "trebuchet ms", tahoma, verdana, arial, sans-serif;
+/* hide overflow:hidden from IE5/Mac */ 
+/* \*/ 
+overflow: hidden; 
+/* */ 
+}
+
+body{
+ margin-top:0px;	
+ margin-left:0px;
+ color: #000000;
+ background:url('bg.png') no-repeat;
+} 
+
+  
+div#form
+{
+  margin-top: 5px;
+  margin-left: 20px;
+  width: 206px;
+  height: 100%;
+  display: none;
+  padding: 2px;
+  overflow: auto; 
+}
+
+div#question
+{
+  width: 206px;
+  height: 100%;
+  display: none;
+  padding: 22px;
+  overflow: auto; 
+}
+
+div#results
+{
+  width: 206px; 
+  height: 100%; 
+  display: none;
+  padding: 22px;
+  overflow: auto; 
+}
+
+div.hidden
+{
+  display: none;
+}
+
+#question-input{
+	font-size: 12pt;
+	size: 65;
+	width: 200px;
+}
+
+#question-text{
+	font-size: 18pt;	
+	margin-bottom: 16px;
+	text-align:center;
+}
+
+.answer-button{
+	  width: 100%;
+	  cursor: pointer;
+	  height: 30px;
+	  font-size: 16px;
+	  font-weight: bold; 
+	  background-color: orange; 
+	  align: center;
+	  border:2px solid white;
+	  margin-bottom: 5px;  
+}
+
+.answer-button.longanswer{
+	font-size: 10px;
+}
+
+.answer-button.disabled{
+	cursor: not-allowed;
+	border: none;
+}
+
+#lock {
+	position: absolute;
+	top: 286px;
+	left: 10px;
+	width: 100px;
+	color: white;
+	font-size: 8pt;
+	text-valign: center;
+}
+
+#done {
+	position: absolute;
+	top: 340px;
+	left: 190px;
+	cursor: pointer;
+	width:50px
+}
+
+#about{
+	position: absolute;
+    color: white;
+	top: 90px;
+	left: 24px;  	  
+}
+
+#result-table{
+	width:100%;
+}
+
+#result-table caption{
+	font-size: 18pt;
+}
+
+.cell-answer{
+	width: 80%;
+	text-align:left;
+}
+.cell-result{
+	width: 20%;
+	text-align:right;
+}
+
+.answer1{
+	color: red;
+	font-size: 20pt;
+}
+.answer1.longanswer{ font-size: 14pt }
+.answer2{
+	color: green;
+	font-size: 16pt;
+}
+.answer2.longanswer{ font-size: 12pt }
+.answer3{
+	color: blue;
+	font-size: 14pt;
+}
+.answer3.longanswer{ font-size: 10pt }
+.answer4{
+	color: purple;
+	font-size: 12pt;
+}
+.answer4.longanswer{ font-size: 8pt }
+.answer5{
+	color: orange;
+	font-size: 10pt;
+}
+.answer5.longanswer{ font-size: 6pt }

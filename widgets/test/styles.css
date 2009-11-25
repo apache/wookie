@@ -1,0 +1,15 @@
+html{
+    font-family: "trebuchet ms", tahoma, verana, arial, sans-serif;
+}
+
+td {
+    font-size: 7pt;
+}
+
+.pass {
+    background-color: #CFC;
+}
+
+.fail {
+    background-color: red;
+}

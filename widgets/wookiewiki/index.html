@@ -1,0 +1,27 @@
+<html>
+<head>
+<script type='text/javascript' src="creole.js"></script>
+<script type='text/javascript' src="wiki.js"></script>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+
+<body onload="wiki.init()">
+    <p><img src="icon.png">WookieWiki</p>
+    <div id="article">
+        <div id="displayarea"></div>
+        <button onclick="wiki.showEditor()">Show Editor</button>
+        <button onclick="wiki.showHistory()">History</button>
+    </div>
+    <div id="edit">
+    <textarea id="editarea"></textarea>
+    <br/>
+    <button onclick="wiki.save()">Save</button>
+    <button onclick="wiki.hideEditor()">Hide Editor</button>
+    </div>
+    <div id="history">
+        <div id="history_text"></div>
+        <button onclick="wiki.showArticle()">Article</button>
+    </div>
+    <div><p><a href="http://www.wikicreole.org/wiki/CheatSheet" target="_new">editing tips</a></p></div>
+</body>
+</html>

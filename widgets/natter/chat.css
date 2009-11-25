@@ -1,0 +1,153 @@
+html {
+height:100%; 
+max-height:100%; 
+padding:0; 
+margin:0; 
+border:0; 
+font-size:80%; 
+font-family: "trebuchet ms", tahoma, verdana, arial, sans-serif;
+/* hide overflow:hidden from IE5/Mac */ 
+/* \*/ 
+overflow: hidden; 
+/* */ 
+}
+
+body{
+ margin-top:0px;	
+ margin-left:0px;
+ color: #000000;
+} 
+
+div#front
+{
+ background:url('Images/bg.png') no-repeat;
+ height:383px;
+ width:255px;
+}
+
+div#back
+{
+ background:url('Images/bg-reverse.png') no-repeat;
+ display:none;
+ height:383px;
+ width:255px;
+}
+
+div#chatroom
+{
+    position:absolute;
+    margin-top:34px;
+    margin-left: 14px;
+    width: 224px;
+    height: 276px;
+    padding: 2px;
+}
+  
+div#chatlog
+{
+  float: left;
+  margin-top: 0px;
+  margin-left: 0px;
+  width: 206px;
+  height: 100%;
+  padding: 2px;
+  overflow: auto; 
+}
+
+div#members
+{
+  float:left;
+  margin-top: 0px;
+  margin-left: 0px;
+  width: 206px; 
+  height: 100%; 
+  display: none;
+  padding: 2px;
+  background-color: #f3f3ff;
+  overflow: auto; 
+}
+
+div#flip
+{
+  float: left;
+  margin-top: 0px;
+  margin-left: 0px;
+  width: 12px;
+  height: 100%;
+  padding-bottom: 2px;
+ border-right:1px solid;
+}
+
+div#input
+{
+  position:absolute;
+  margin-top: 324px;
+  margin-left:16px;
+  padding: 2px;
+  height: 28px;
+  width: 216px;
+}
+
+input#text
+{
+  width:212px;
+  background-color: #e0f0f0;
+}
+
+input#username
+{
+  width:14px;
+  background-color: #e0f0f0;
+}
+
+div.hidden
+{
+  display: none;
+}
+
+span.from
+{
+  font-weight: bold;
+}
+
+span.alert
+{
+  font-style: italic;
+}
+
+#infobutton {
+	position: absolute;
+	width: 13px;
+	height: 13px;
+	top: 355px;
+	left: 228px;
+	cursor: pointer;
+}
+
+#lock {
+	position: absolute;
+	top: 30px;
+	left: 0px;
+}
+
+#done {
+	position: absolute;
+	top: 340px;
+	left: 190px;
+	cursor: pointer;
+}
+
+#about{
+	position: absolute;
+    color: white;
+	top: 90px;
+	left: 24px;    
+}
+
+#langopts{
+	position: absolute;
+    color: white;
+	top: 140px;
+	left: 24px;
+}
+

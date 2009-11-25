@@ -1,0 +1,29 @@
+body {
+    font-family: Arial;
+    color: #eec;
+    background-color: #443;
+}
+
+a {
+    color: #fff;
+}
+
+a.newpage {
+    color: #ff8;
+}
+
+#edit {
+    width: 300px;
+    height: 200px;
+    display: None;
+}
+
+#editarea {
+	width: 280;
+	height: 160px;
+	border: 3px solid #cccccc;
+	padding: 5px;
+}
+#history {
+    display: None;
+}

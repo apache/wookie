@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project default="build-widget" basedir="." name="Wookie_widgets_build_file">
+	<property name="wookie.widgets.dir" location="."/>
+	<property name="widget.template.dir" value="${wookie.widgets.dir}/widget-template"/>
+    <property name="widget.build.dir" value="${wookie.widgets.dir}/build"/>
+
+	<target name="_get-widget-name" unless="widget.shortname">
+		<input message="What is the short name of the widget you wish to work with?" 
+			   addproperty="widget.shortname"/>
+    </target>
+		
+	<target name="_validate" depends="_get-widget-name">
+		<fail unless="widget.shortname" message="Property widget.shortname has not been set"/>
+	</target>
+	   
+	<target name="_clean">
+   </target>
+   
+   <target name="_init" depends="_validate, _clean">
+     <delete file="${widget.build.dir}/${widget_name}" failonerror="false"/>
+     <mkdir dir="${widget.build.dir}"/>
+   </target>
+	
+
+    <target name="seed-widget" description="Seed a new widget">
+    	<input message="What is the short name of the widget you wish to create?" addproperty="widget.shortname"/>
+    	<input message="What is the default height of the ${widget.shortname} widget?" addproperty="widget.height" defaultvalue="320"/>
+    	<input message="What is the default width of the widget you wish to create?" addproperty="widget.width" defaultvalue="200"/>
+    	    	
+    	<mkdir dir="${wookie.widgets.dir}/${widget.shortname}"/>
+    	<copy todir="${wookie.widgets.dir}/${widget.shortname}" filtering="true">
+    		<fileset dir="${widget.template.dir}"/>
+    		<filterset>
+    			<filter token="widget.shortname" value="${widget.shortname}"/>
+    			<filter token="widget.height" value="${widget.height}"/>
+    			<filter token="widget.width" value="${widget.width}"/>
+    		</filterset>
+    	</copy>
+    </target>
+   
+    <target name="build-widget" depends="_init">
+	    <zip destfile="${widget.build.dir}/${widget.shortname}.wgt"
+	         basedir="${wookie.widgets.dir}/${widget.shortname}"
+	    />
+   		<echo>Widget package created at ${widget.build.dir}/${widget.shortname}.wgt</echo>
+    </target>
+</project>

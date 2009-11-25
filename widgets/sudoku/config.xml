@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?><widget xmlns="http://www.w3.org/ns/widgets"         id="http://www.getwookie.org/widgets/sudoku"         version="1.0"         height="380"         width="520">	<name>Wave Test: Sudoku</name>	<description>Google Wave Sudoku Widget</description>	<icon src="icon.png"/>	<content src="sudoku.html"/>	<author>Austin Chau</author>	<license>Unknown (c) Google.com</license>
+    <feature name="http://wave.google.com" required="true"/></widget>

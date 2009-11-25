@@ -1,0 +1,135 @@
+html
+{
+	max-width:320px !important;
+	max-height:320px !important;
+}
+body
+{
+    color:#fff;
+    padding:0;
+    margin:0;
+    border:0;
+    font:normal normal 18px sans-serif;
+}
+#widgetWrapper{
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:#333 url(hud.bg.png?zxvwss) top center repeat-x;
+}
+#dock
+{
+    display:none;
+    position:absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 100;
+
+}
+#hud
+{
+    padding:8px;
+    text-align:center;
+    text-shadow:-1px 1px #666,1px 1px #666,0px 1px #000;
+    height: 20px;
+    overflow: hidden;
+}
+#hud button
+{
+    color:#000;
+    text-shadow:0px 1px #fff;
+}
+#hud #score
+{
+    text-align:left;
+    line-height:24px;
+    float:left;
+    width:75px;
+    padding-left:28px;
+    background:url(sprite.png) -72px 0px no-repeat;
+}
+#hud #score:before
+{
+    content:"Sc: ";
+}
+#hud > *
+{
+    display:inline-block;
+    max-height:24px;
+}
+#hud #hiScore
+{
+    width:70px;
+    line-height:24px;
+    float:right;
+    text-align:right;
+}
+#hiScore:before
+{
+    content:"Hi: ";
+}
+#gameArea
+{
+    top:48px;
+    bottom:8px;
+    left:8px;
+    right:8px;
+    position:absolute;
+    text-align:center;
+}
+#gameArea *
+{
+    display:inline-block;
+    background:url(sprite.png) -48px 0px no-repeat;
+    width:24px;
+    height:24px;
+    line-height:24px;
+}
+#gameArea *[style]
+{
+    cursor:pointer;
+    background-position:0px 0px;
+}
+
+#gameArea *.hover
+{
+    background-position:-24px 0px;
+}
+
+#gameArea.win:after
+{
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    position:absolute;
+    content:'';
+    background:url(win.png?asza) center center no-repeat;
+}
+#gameArea.fail:after
+{
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    position:absolute;
+    content:'';
+    background:url(fail.png?assf) center center no-repeat;
+}
+
+#dock
+{
+    background:url(icon_42.png) transparent 30% 30% no-repeat;
+    /*padding-left:48px;*/
+    line-height:24px;
+    white-space:pre-line;
+    color: black;
+    text-align: center;
+}
+@media all and ( min-height:64px )
+{
+    #dock
+    {
+        background:url(icon_64.png) transparent 30% 30% no-repeat;
+        /*padding-left:68px;*/
+        max-height:64px;
+    }
+}

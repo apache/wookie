@@ -1,0 +1,144 @@
+body {
+  font: icon;
+  font-size: 15pt !important;
+}
+
+#main {
+  width: 800px;
+  text-align: center;
+}
+
+#gameDisplay {
+  float: left;
+}
+
+#messages {
+  height: 100px;
+  border: 0px solid red;
+  color: black;
+  text-align: left;
+}
+
+#info {
+  width: 300px;
+  float: left;
+  margin-left: 20px; 
+  font-size: 13px;
+}
+
+#rankingDisplay {
+  border: 0px dotted red;
+  color: black;
+  text-align: left;
+  padding: 2px;
+}
+
+#debugConsole {
+  display: none;
+  text-align: left;
+}
+
+#debug {
+  font-size: 10px;
+  color: red;
+  text-align: left;
+  overflow: auto;
+  height: 100px;
+  border: 1px solid red;
+  padding: 3px;
+}
+
+#loading {
+  font-size: 11px;
+  color: red;
+}
+
+#display {
+	display: none;
+}
+
+.solutionCell {
+  color: #0066cc;
+}
+
+#cellOpenBox {
+	width: 27px;
+	height: 27px;
+	padding-left: 5px;
+}
+
+table
+{
+	border-collapse: collapse;
+}
+
+td
+{
+	padding: 0;
+}
+
+table table
+{
+	border: 2px solid #bbbbbb;
+}
+
+#grid1
+{
+	border-top: 0 none #ffffff;
+	border-left: 0 none #ffffff;
+}
+
+#grid2
+{
+	border-top: 0 none #ffffff;
+	background-color: #e5e5e5;
+}
+
+#grid3
+{
+	border-top: 0 none #ffffff;
+	border-right: 0 none #ffffff;
+}
+
+#grid4
+{
+	border-left: 0 none #ffffff;
+	background-color: #e5e5e5;
+}
+
+#grid6
+{
+	border-right: 0 none #ffffff;
+	background-color: #e5e5e5;
+}
+
+#grid7
+{
+	border-bottom: 0 none #ffffff;
+	border-left: 0 none #ffffff;
+}
+
+#grid8
+{
+	border-bottom: 0 none #ffffff;
+	background-color: #e5e5e5;
+}
+
+#grid9
+{
+	border-bottom: 0 none #ffffff;
+	border-right: 0 none #ffffff;
+}
+
+td td
+{
+	position: relative;
+	width: 2em;
+	height: 2em;
+	border: 1px solid #cccccc;
+	text-align: center;
+	line-height: 2em;
+	cursor: text;
+	color: black;
+	font-weight: bold;
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Default Vote Widget</title>
+		<link rel="stylesheet" href="vote.css" type="text/css" />
+		<script type="text/javascript" src="vote.js"></script>
+	</head>
+	<body onload="init()">
+		<div id="maincanvas">
+			<div id="form">
+				<p class="q">
+					<input id="question-input" type="text" value="Type question here..."/>
+				</p>
+				<p>
+					1:
+					<input id="answer_1" type="text" />
+					<br />
+					2:
+					<input id="answer_2" type="text" />
+					<br />
+					3:
+					<input id="answer_3" type="text" />
+					<br />
+					4:
+					<input id="answer_4" type="text" />
+					<br />
+					5:
+					<input id="answer_5" type="text" />
+					<br />
+				</p>
+				<p>(Leave answer fields blank if you don't need them)</p>
+				<p><button onClick="setupQuestion()">Start the voting</button></p>
+			</div>
+			<div id="results">
+
+			</div>
+			<div id="question">
+				<div id="question-text">There isn't a vote set yet</div>
+				<div id="answers"></div>
+				<div id="question-notice"></div>
+			</div>
+		</div>
+		<div id="admin"></div>
+	</body>
+</html>
