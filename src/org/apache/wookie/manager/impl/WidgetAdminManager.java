@@ -65,14 +65,6 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 		return service.save();
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#addNewWidget(java.lang.String, java.lang.String, java.lang.String, int, int)
-	 */
-	public void addNewWidget(IManifestModel model) {
-		addNewWidget(model, null);
-	}
-
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.manager.IWidgetAdminManager#addNewWidget(java.lang.String, java.lang.String, java.lang.String, int, int, java.lang.String[])
 	 */
@@ -187,15 +179,6 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#doesWidgetAlreadyExistInSystem(java.lang.String)
-	 */
-	public boolean doesWidgetAlreadyExistInSystem(String guid){
-		Widget[] widget = Widget.findByValue("guid", guid);
-		if (widget == null || widget.length!=1) return false;
-		return true;		
-	}
-	
-	/* (non-Javadoc)
 	 * @see org.apache.wookie.manager.IWidgetAdminManager#isWidgetMaximized(int)
 	 */
 	public boolean isWidgetMaximized(int dbKey){
@@ -204,29 +187,6 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 		if (widget == null) return false;
 		return widget.isMaximize();
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#printOutAllWidgets(org.apache.wookie.manager.IWidgetAdminManager)
-	 */	
-	@SuppressWarnings("unchecked")
-	public void printOutAllWidgets(IWidgetAdminManager magr){				
-		Widget[] widgets = Widget.findAll();
-	    for (int i = 0; i < widgets.length; i++) {
-	        Widget theWidget = (Widget) widgets[i];		        
-	        _logger.debug(
-	        				   "\n\t Name: " + theWidget.getWidgetTitle() +
-	        				   "\n\t URL: " + theWidget.getUrl() +
-	                           "\n\t Height: " + theWidget.getHeight() +		          
-	                           "\n\t width: " + theWidget.getWidth() + "\n\t Types:");
-	        
-	        Set<WidgetType> types = theWidget.getWidgetTypes();
-	        WidgetType[] widgetTypes = types.toArray(new WidgetType[types.size()]);
-	        for(int j=0;j<widgetTypes.length;j++){
-	        	_logger.debug("\n\t "+widgetTypes[j].getWidgetContext());
-	        }			     
-	    }		    
-	}
-	
 	
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.manager.IWidgetAdminManager#removeServiceAndReferences(int)
@@ -379,15 +339,6 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 				}
 			}
 		}			
-	}
-
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#getWidgetGuid(int)
-	 */
-	public String getWidgetGuid(int dbKey) {
-		//Widget widget = Widget.findById(String.valueOf(dbKey));
-		Widget widget = Widget.findById(Integer.valueOf(dbKey));
-		return widget.getGuid();
 	}
 
 }

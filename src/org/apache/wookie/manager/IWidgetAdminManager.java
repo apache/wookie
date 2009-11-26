@@ -27,14 +27,6 @@ public interface IWidgetAdminManager {
 
 	boolean addNewService(String serviceName);
 
-	/**
-	 * Add a new widget to the system - without the widget type
-	 * @param widgetName - the name of this widget
-	 * @param url - the url which it resides
-	 * @param height - the height at which it is supposed to be displayed
-	 * @param width - the width at which it is supposed to be displayed
-	 */
-	void addNewWidget(IManifestModel model);
 
 	/**
 	 * Add a new widget to the system
@@ -82,24 +74,11 @@ public interface IWidgetAdminManager {
 			String serviceType);
 
 	/**
-	 * using the GIUD found in the config.xml file, ascertain if this widget already exists
-	 * @param guid
-	 * @return
-	 */
-	boolean doesWidgetAlreadyExistInSystem(String guid);
-
-	/**
 	 * Find if this widget is maximizable, from given key
 	 * @param dbKey
 	 * @return
 	 */
 	boolean isWidgetMaximized(int dbKey);
-
-	/**
-	 * Prints the details of all widgets
-	 * @param magr - a widgetAdminManager instance
-	 */
-	void printOutAllWidgets(IWidgetAdminManager magr);
 
 	/**
 	 * Remove from the system the service & any other places it may reside in the DB
@@ -146,11 +125,5 @@ public interface IWidgetAdminManager {
 	void setWidgetTypesForWidget(int dbKey,
 			String[] widgetTypes, boolean maximize);
 
-	/**
-	 * Get this widgets GUID
-	 * @param parseInt
-	 * @return
-	 */
-	String getWidgetGuid(int parseInt);
 
 }

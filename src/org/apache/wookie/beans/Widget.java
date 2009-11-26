@@ -216,4 +216,10 @@ public class Widget extends AbstractKeyBean<Widget> {
 		Widget widget = (Widget)dbManager.createSQLQuery(sqlQuery).addEntity(Widget.class).uniqueResult();	
 		return widget;		 
 	}
+	
+	public static boolean exists(String guid){
+		Widget[] widget = Widget.findByValue("guid", guid);
+		if (widget == null || widget.length!=1) return false;
+		return true;	
+	}
 }

@@ -359,7 +359,8 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		final String WIDGETFOLDER = request.getSession().getServletContext().getRealPath(properties.getString("widget.widgetfolder"));//$NON-NLS-1$
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		String widgetId = request.getParameter("widgetId"); //$NON-NLS-1$
-		String guid = manager.getWidgetGuid(Integer.parseInt(widgetId));
+		Widget widget = Widget.findById(Integer.parseInt(widgetId));
+		String guid = widget.getGuid();
 		if(manager.removeWidgetAndReferences(Integer.parseInt(widgetId))){
 			if(WidgetPackageUtils.removeWidgetResources(WIDGETFOLDER, guid)){			
 				session.setAttribute("message_value", localizedMessages.getString("WidgetAdminServlet.12"));			 //$NON-NLS-1$ //$NON-NLS-2$ 
@@ -464,7 +465,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		try {	
 			if(zipFile.exists()){
 				IManifestModel widgetModel = WidgetPackageUtils.processWidgetPackage(zipFile,properties.getString("widget.widgetfolder"), WIDGETFOLDER,UPLOADFOLDER);//$NON-NLS-1$
-				if(!manager.doesWidgetAlreadyExistInSystem(widgetModel.getIdentifier())){	
+				if(!Widget.exists(widgetModel.getIdentifier())){	
 					// ADD
 					int dbkey = manager.addNewWidget(widgetModel, new String[]{});
 					// widget added
