@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" id="http://www.getwookie.org/widgets/chat" height="350	" width="500">
+	<name>Vote</name>
+	<description>basic voting widget</description>
+	<icon src="icon.png"/>
+	<content src="index.htm"/>
+	<author>Paul Sharples</author>
+	<license>Licensed under the Apache 2.0 License (see http://www.apache.org/licenses/LICENSE-2.0).</license>
+    <feature name="http://wave.google.com" required="true"/>
+    <preference name="moderator" value="false"/>
+</widget>

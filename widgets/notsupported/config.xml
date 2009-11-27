@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" id="http://unsupported" height="358" width="500">
+	<name>Unsupported</name>
+	<description>Unsupported widget widget</description>
+	<icon src="icon.png"/>
+	<content src="index.htm"/>
+	<author>Paul Sharples</author>
+	<license>Licensed under the Apache 2.0 License (see http://www.apache.org/licenses/LICENSE-2.0).</license>
+</widget>
