@@ -27,7 +27,7 @@
 	<property name="project.build.classes.dir" location="${project.build.dir}/classes" />
 
 	<property name="compile.debug" value="on" />
-	<property name="wookie.jvmargs" value="" />
+	<property name="jvmargs" value="" />
 	
 	<property name="dist.dir" location="dist"/>
 	
@@ -104,7 +104,7 @@
         	classpathref="run.path.id"
             fork="true"
             failonerror="true">
-            <jvmarg line="${wookie.jvmargs}"/>
+            <jvmarg line="${jvmargs}"/>
         </java>    	
     </target>
     
