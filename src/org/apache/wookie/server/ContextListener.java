@@ -17,11 +17,14 @@ package org.apache.wookie.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import org.apache.log4j.Logger;
+import org.apache.wookie.Messages;
+import org.apache.wookie.beans.Widget;
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.manager.impl.WidgetAdminManager;
@@ -78,8 +81,14 @@ public class ContextListener implements ServletContextListener {
 		 	 * Initialise the locale handler
 		 	 */
 		 	LocaleHandler.getInstance().initialize(configuration);
+			final Locale locale = new Locale(configuration.getString("widget.default.locale"));
+			final Messages localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
 	
-		 	if (configuration.getBoolean("widget.hot_deploy")) startWatcher(context, configuration);
+		 	if (configuration.getBoolean("widget.hot_deploy")) {
+		 		startWatcher(context, configuration, localizedMessages);
+		 	} else {
+		 		_logger.info(localizedMessages.getString("WidgetHotDeploy.0"));
+		 	}
 		 	
 		 	/* 
 			 *  load the opensocial.properties file and put it into this context
@@ -110,7 +119,7 @@ public class ContextListener implements ServletContextListener {
 	 * @param context the current servlet context
 	 * @param configuration the configuration properties
 	 */
-	private void startWatcher(ServletContext context, Configuration configuration){
+	private void startWatcher(ServletContext context, Configuration configuration, final Messages localizedMessages){
 	 	/*
 	 	 * Start watching for widget deployment
 	 	 */
@@ -127,20 +136,24 @@ public class ContextListener implements ServletContextListener {
 	 			watcher.setWatchDir(deploy);
 	 			watcher.setListener(new WgtWatcher.FileChangeListener(){
 	 				public void fileModified(File f) {
-	 					_logger.info("Deploying widget:"+f.getName());	
 	 					try{
 	 						dbManager.beginTransaction();
 	 						File upload = WidgetPackageUtils.dealWithDroppedFile(UPLOADFOLDER, f);
 	 						IManifestModel model = WidgetPackageUtils.processWidgetPackage(upload, localWidgetFolderPath, WIDGETFOLDER, UPLOADFOLDER);
 	 						WidgetAdminManager manager = new WidgetAdminManager(null);
-	 						manager.addNewWidget(model, null);	
+	 						if(!Widget.exists(model.getIdentifier())) {
+	 							manager.addNewWidget(model, null);	
+	 							_logger.info(model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19"));
+	 						} else {
+	 							_logger.info(model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.20"));
+	 						}
 	 						dbManager.commitTransaction();
 	 					} catch (IOException e) {
-	 						_logger.error("Hot deploy error: Unable to move dropped .wgt file to upload folder");
+	 						_logger.error(f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.1"));
 	 					} catch (BadWidgetZipFileException e) {
-	 						_logger.warn("Hot deploy error: file is not a valid widget packge");
+	 						_logger.error(f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.2"));
 	 					} catch (BadManifestException e) {
-	 						_logger.warn("Hot deploy error: widget has invalid manifest");
+	 						_logger.error(f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.3"));
 	 					}
 	 				}
 	 				public void fileRemoved(File f) {
