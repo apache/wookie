@@ -16,11 +16,14 @@ package org.apache.wookie.server;
 
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import org.apache.log4j.Logger;
+import org.apache.wookie.exceptions.BadManifestException;
+import org.apache.wookie.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.manager.impl.WidgetAdminManager;
 import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.util.WgtWatcher;
@@ -124,22 +127,21 @@ public class ContextListener implements ServletContextListener {
 	 			watcher.setWatchDir(deploy);
 	 			watcher.setListener(new WgtWatcher.FileChangeListener(){
 	 				public void fileModified(File f) {
-	 					_logger.info("Deploying widget:"+f.getName());
-	 					try {
-							try {			
-								dbManager.beginTransaction();
-								File upload = WidgetPackageUtils.dealWithDroppedFile(UPLOADFOLDER, f);
-								IManifestModel model = WidgetPackageUtils.processWidgetPackage(upload, localWidgetFolderPath, WIDGETFOLDER, UPLOADFOLDER);
-								WidgetAdminManager manager = new WidgetAdminManager(null);
-								manager.addNewWidget(model, null);	
-								dbManager.commitTransaction();
-							}
-							catch (Exception e) {
-								_logger.error("error: " + e.getCause());
-							}
-						} catch (Exception e) {
-							_logger.error("error: "+e.getCause());
-						}
+	 					_logger.info("Deploying widget:"+f.getName());	
+	 					try{
+	 						dbManager.beginTransaction();
+	 						File upload = WidgetPackageUtils.dealWithDroppedFile(UPLOADFOLDER, f);
+	 						IManifestModel model = WidgetPackageUtils.processWidgetPackage(upload, localWidgetFolderPath, WIDGETFOLDER, UPLOADFOLDER);
+	 						WidgetAdminManager manager = new WidgetAdminManager(null);
+	 						manager.addNewWidget(model, null);	
+	 						dbManager.commitTransaction();
+	 					} catch (IOException e) {
+	 						_logger.error("Hot deploy error: Unable to move dropped .wgt file to upload folder");
+	 					} catch (BadWidgetZipFileException e) {
+	 						_logger.warn("Hot deploy error: file is not a valid widget packge");
+	 					} catch (BadManifestException e) {
+	 						_logger.warn("Hot deploy error: widget has invalid manifest");
+	 					}
 	 				}
 	 				public void fileRemoved(File f) {
 	 					// Not implemented - the .wgt files are removed as part of the deployment process

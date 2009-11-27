@@ -100,7 +100,7 @@ public class WidgetPackageUtils {
 		return folder;
 	}
 	
-	public static File dealWithDroppedFile(String uploadPath, File file) throws Exception{	
+	public static File dealWithDroppedFile(String uploadPath, File file) throws IOException{	
 		String serverPath = convertPathToPlatform(uploadPath);
 		File uFile = new File(serverPath + File.separator + file.getName());
 		FileUtils.copyFile(file, uFile);
