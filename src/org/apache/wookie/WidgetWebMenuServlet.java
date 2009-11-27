@@ -160,7 +160,7 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 				else {
 					// Otherwise, good to go
 					WidgetKeyManager.createKey(request, email, localizedMessages);
-					session.setAttribute("message_value", localizedMessages.getString("WidgetWebMenuServlet.2")); //$NON-NLS-1$ //$NON-NLS-2$
+					session.setAttribute("message_value", localizedMessages.getString("WidgetWebMenuServlet.3")); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
 		}
