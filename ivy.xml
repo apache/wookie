@@ -12,6 +12,8 @@
         </dependency>
         <dependency org="cglib" name="cglib" rev="2.2" conf="deploy->default">
         </dependency>
+        <dependency org="commons-email" name="commons-email" rev="1.1" conf="deploy->default">
+        </dependency> 
         <dependency org="commons-codec" name="commons-codec" rev="1.3" conf="deploy->default">
         </dependency>
         <dependency org="commons-collections" name="commons-collections" rev="3.2" conf="deploy->default">

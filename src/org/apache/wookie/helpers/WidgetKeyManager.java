@@ -14,14 +14,16 @@
 
 package org.apache.wookie.helpers;
 
-import java.io.PrintWriter;
-import java.net.Socket;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.SimpleEmail;
+
 import org.apache.wookie.Messages;
 import org.apache.wookie.beans.ApiKey;
+import org.apache.wookie.exceptions.SystemUnavailableException;
 import org.apache.wookie.util.HashGenerator;
 import org.apache.wookie.util.RandomGUID;
 
@@ -56,12 +58,14 @@ public class WidgetKeyManager{
 	}
 	
 	/**
-	 * Registers a new API key
+	 * Registers a new API key and notifies the requestor via email of the key values.
+	 * 
 	 * @param key
 	 * @param domain
-	 * @throws Exception
+	 * @throws EmailException if there is a problem sending the email notification about this key
+	 * @throws SystemUnavailableException if there is a problem generating the key
 	 */
-	public static void createKey(HttpServletRequest request, String email, Messages localizedMessages) throws Exception{
+	public static void createKey(HttpServletRequest request, String email, Messages localizedMessages) throws SystemUnavailableException, EmailException {
 		
 		ApiKey key = new ApiKey();
 		key.setEmail(email);
@@ -87,7 +91,10 @@ public class WidgetKeyManager{
 		
 		Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
 		
-		sendEmail(properties.getString("widget.email.server"), properties.getInt("widget.email.port"), properties.getString("widget.email.contact"), email, message); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		String server = properties.getString("widget.email.server");
+		int port = properties.getInt("widget.email.port");
+		String contact = properties.getString("widget.email.contact");
+		sendEmail(server, port, contact, email, message, properties.getString("widget.email.username"), properties.getString("widget.email.password")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	/**
@@ -118,36 +125,27 @@ public class WidgetKeyManager{
 
 	/**
 	 * Send email.
-	 * TODO use JavaMail or similar to do this PROPERLY
+	 * 
+	 * @param mailserver - the SMTP mail server address
 	 * @param from
 	 * @param to
 	 * @param message
 	 * @throws Exception
 	 */
-	private static void sendEmail(String mailserver, int port, String from, String to, String message) throws Exception
-	{
-		try
-		{
-			// get a socket connection to the mail
-			// server at SMTP port 25
-			Socket socket = new Socket(mailserver, port);
-
-			// Create an output stream for sending message
-			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-
-			// send mail using SMTP protocol
-			out.println("MAIL FROM: " + from); //$NON-NLS-1$
-			out.println("RCPT TO: " + to); //$NON-NLS-1$
-			out.println("DATA\n");  // Skip line after DATA //$NON-NLS-1$
-			out.println(message);
-			out.println(".");       // End message with a single period //$NON-NLS-1$
-			out.flush();
+	private static void sendEmail(String mailserver, int port, String from, String to, String message, String username, String password) throws EmailException {	
+		Email email = new SimpleEmail();
+		email.setDebug(false); // true if you want to debug
+        email.setHostName(mailserver);
+        if (username != null) {
+			email.setAuthentication(username, password);
+	        email.getMailSession().getProperties().put(
+	           "mail.smtp.starttls.enable", "true");
 		}
-		catch (Exception e)
-		{
-			System.out.println("Failed to send email: " + e); //$NON-NLS-1$
-		}
-
+        email.setFrom(from, "Wookie Server");
+        email.setSubject("Wookie API Key");
+        email.setMsg(message);
+        email.addTo(to);
+        email.send();
 	}
 
 }
