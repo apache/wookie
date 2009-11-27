@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<widget xmlns="http://www.w3.org/ns/widgets" id="http://unsupported" height="358" width="500">
-	<name>Unsupported</name>
-	<description>Unsupported widget widget</description>
+<widget xmlns="http://www.w3.org/ns/widgets" id="http://notsupported" height="358" width="500">
+	<name>Unsupported widget widget</name>
+	<description>This widget is a placeholder for when no corresponding widget is found for a given type</description>
 	<icon src="icon.png"/>
 	<content src="index.htm"/>
 	<author>Paul Sharples</author>
