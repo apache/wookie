@@ -18,7 +18,7 @@
 <project default="build-widget" basedir="." name="Wookie_widgets_build_file">
 	<property name="wookie.widgets.dir" location="."/>
 	<property name="widget.template.dir" value="${wookie.widgets.dir}/widget-template"/>
-    <property name="widget.build.dir" value="${wookie.widgets.dir}/build"/>
+    <property name="widget.build.dir" value="${project.build.dir}/widgets"/>
 
 	<target name="_get-widget-name" unless="widget.shortname">
 		<input message="What is the short name of the widget you wish to work with?" 
@@ -60,4 +60,10 @@
 	    />
    		<echo>Widget package created at ${widget.build.dir}/${widget.shortname}.wgt</echo>
     </target>
+	
+	<target name="deploy-widget" depends="build-widget">
+		<copy tofile="${widget.deploy.dir}/${widget.shortname}.wgt" 
+			  file="${widget.build.dir}/${widget.shortname}.wgt"/>
+   		<echo>Deployed ${widget.shortname} to ${project.build.classes.dir}/${widget.deploy.dir}/${widget.shortname}.wgt</echo>
+	</target>
 </project>

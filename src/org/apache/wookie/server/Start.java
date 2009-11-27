@@ -74,7 +74,7 @@ public class Start {
 		WebAppContext context = new WebAppContext();
 		context.setServer(server);
 		context.setContextPath("/wookie");
-		context.setWar("WebContent");
+		context.setWar("build/webapp/wookie");
 		server.addHandler(context);
 		
 		HashUserRealm authedRealm = new HashUserRealm("Authentication Required","etc/jetty-realm.properties");

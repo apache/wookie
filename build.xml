@@ -20,19 +20,38 @@
     Ivy based build system for Apache Wookie.
   </description>
   
+  <property file="local.build.properties"/> 
   <property file="build.properties"/>
   <property name="db.name" value="widgetDB" />
+  <property file="${project.core.src.dir}/widgetserver.properties"/>
 	
   <import file="ant/ivy-webapp-common.xml"/>
 	
  <target name="set-mysql-script-dir" if="project.using.mysql">
  	<property name="project.scripts.dir" value="scripts/mysql"/>
  </target>
+	
   <target name="set-derby-script-dir" if="project.using.derby">
 	 	<property name="project.scripts.dir" value="scripts/derby"/>
   </target>
 	
+  <target name="run" depends="deploy-webapp">    
+  	<ant antfile="ant/ivy-java-common.xml" target="run"/>
+  </target>
+
+  <target name="post-deploy-webapp">  
+  	<!-- deploy widgets -->
+  	<delete dir="${widget.build.dir}"/>
+  	<subant antfile="build.xml" target="deploy-widget" inheritall="true">
+  	  <fileset dir="${wookie.widgets.dir}">
+  	  	<include name="${widget.deploy.include}"/>
+  	  	<exclude name="${widget.deploy.exclude}"/>
+  	  </fileset>
+  	</subant>
+  </target>
+	
   <target name="post-compile-core" depends="set-mysql-script-dir, set-derby-script-dir">
+  	<!-- copy database resources -->
   	<copy file="${project.scripts.dir}/widgetdb.sql" tofile="${project.build.classes.dir}/widgetdb.sql"/>
   	<copy file="${project.scripts.dir}/hibernate.cfg.xml" tofile="${project.build.classes.dir}/hibernate.cfg.xml"/>
   </target>

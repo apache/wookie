@@ -36,7 +36,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	        int code = get.getStatusCode();
 	        assertEquals(200,code);
 	        String response = get.getResponseBodyAsString();
-	        assertTrue(response.contains("<widget id=\"1\" identifier=\"http://www.tencompetence.org/widgets/default/notsupported\""));
+	        assertTrue(response.contains("<widget id=\"1\" identifier=\"http://notsupported\""));
 	        get.releaseConnection();
 	    }
 	    catch (Exception e) {
@@ -54,7 +54,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	        int code = get.getStatusCode();
 	        assertEquals(200,code);
 	        String response = get.getResponseBodyAsString();
-	        assertTrue(response.contains("<widget id=\"1\" identifier=\"http://www.tencompetence.org/widgets/default/notsupported\""));
+	        assertTrue(response.contains("<widget id=\"1\" identifier=\"http://notsupported\""));
 	        get.releaseConnection();
 	    }
 	    catch (Exception e) {
@@ -88,7 +88,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	        int code = get.getStatusCode();
 	        assertEquals(200,code);
 	        String response = get.getResponseBodyAsString();
-	        assertTrue(response.contains("<widget id=\"1\" identifier=\"http://www.tencompetence.org/widgets/default/notsupported\""));
+	        assertTrue(response.contains("<widget id=\"1\" identifier=\"http://notsupported\""));
 	        get.releaseConnection();
 	    }
 	    catch (Exception e) {
