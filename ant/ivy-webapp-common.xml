@@ -40,11 +40,8 @@
 		<copy todir="${servletEngine.webapp.dir}/${ant.project.name}">
 			<fileset dir="${project.webapp.dir}" />
 		</copy>
-		<ivy:retrieve conf="deploy" pattern="${project.weblib.dir}/[artifact]-[revision].[ext]"/>
-		<copy todir="${servletEngine.webapp.dir}/${ant.project.name}/WEB-INF/lib">
-			<fileset dir="${project.weblib.dir}" />
-		</copy>
-
+		<ivy:retrieve conf="deploy" pattern="${servletEngine.webapp.dir}/${ant.project.name}/WEB-INF/lib/[artifact]-[revision].[ext]"/>
+		
 		<antcall target="post-deploy-webapp" />
 	</target>
 
