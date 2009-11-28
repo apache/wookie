@@ -67,7 +67,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	public void getSpecificWidget_nonexisting(){
 	    try {
 	        HttpClient client = new HttpClient();
-	        GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/99");
+	        GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/9999");
 	        client.executeMethod(get);
 	        int code = get.getStatusCode();
 	        assertEquals(404,code);
