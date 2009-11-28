@@ -46,6 +46,10 @@ public interface IManifestModel extends IManifestModelBase{
 
 	public String getAuthor();
 
+	public String getAuthorEmail();
+	
+	public String getAuthorHref();
+	
 	public String getFirstIconPath();
 
 	public List<IPreferenceEntity> getPrefences();

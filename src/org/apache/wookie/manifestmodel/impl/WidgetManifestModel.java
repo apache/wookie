@@ -131,6 +131,16 @@ public class WidgetManifestModel implements IManifestModel {
 		return fAuthor.getAuthorName();
 	}
 	
+	public String getAuthorEmail() {
+		if (fAuthor == null) return null;
+		return fAuthor.getEmail();
+	}
+
+	public String getAuthorHref() {
+		if (fAuthor == null) return null;
+		return fAuthor.getHref();
+	}
+
 	public void updateIconPaths(String path){
 		for(IIconEntity icon : fIconsList){
 			if(!icon.getSrc().startsWith("http:")){

@@ -37,6 +37,8 @@ public class Widget extends AbstractKeyBean<Widget> {
 	private String widgetShortName;
 	private String widgetDescription;
 	private String widgetAuthor;
+	private String widgetAuthorEmail;
+	private String widgetAuthorHref;
 	private String widgetIconLocation;
 	private String url;
 	private String guid;	
@@ -143,6 +145,26 @@ public class Widget extends AbstractKeyBean<Widget> {
 	}
 
 
+	public String getWidgetAuthorEmail() {
+		return widgetAuthorEmail;
+	}
+
+
+	public void setWidgetAuthorEmail(String widgetAuthorEmail) {
+		this.widgetAuthorEmail = widgetAuthorEmail;
+	}
+
+
+	public String getWidgetAuthorHref() {
+		return widgetAuthorHref;
+	}
+
+
+	public void setWidgetAuthorHref(String widgetAuthorHref) {
+		this.widgetAuthorHref = widgetAuthorHref;
+	}
+
+
 	public String getWidgetIconLocation() {
 		return widgetIconLocation;
 	}
@@ -196,8 +218,7 @@ public class Widget extends AbstractKeyBean<Widget> {
 	 */
 	public static Widget[] findByType(String typeToSearch) {
 		final IDBManager dbManager = DBManagerFactory.getDBManager();			
-		String sqlQuery = "SELECT widget.id, widget.widget_title,  widget.widget_short_name, widget_description, widget_author, widget_icon_location, widget.url, widget.maximize, widget.guid, " +
-								"widget.height, widget.width, widget_version, widgettype.widget_context "
+		String sqlQuery = "SELECT widget.*, widgettype.widget_context "
 						+ "FROM Widget widget, WidgetType widgettype "
 						+ "WHERE widget.id = widgettype.widget_id "
 						+ "AND widgettype.widget_context='" + typeToSearch + "'";		
@@ -209,7 +230,7 @@ public class Widget extends AbstractKeyBean<Widget> {
 	
 	public static Widget findDefaultByType(String typeToSearch) {
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		String sqlQuery = "SELECT widget.id, widget.widget_title, widget.widget_short_name, widget_version, widget_description, widget_author, widget_icon_location, widget.url, widget.height, widget.width, widget.maximize, widget.guid " //$NON-NLS-1$
+		String sqlQuery = "SELECT widget.* " //$NON-NLS-1$
 			+ "FROM Widget widget, WidgetDefault widgetdefault " //$NON-NLS-1$
 			+ "WHERE widget.id = widgetdefault.widgetId " //$NON-NLS-1$
 			+ "AND widgetdefault.widgetContext='" + typeToSearch + "'";		 //$NON-NLS-1$ //$NON-NLS-2$

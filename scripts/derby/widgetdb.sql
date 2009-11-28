@@ -1,4 +1,4 @@
-INSERT INTO Widget VALUES (1,'Unsupported widget widget','','This widget is a placeholder for when no corresponding widget is found for a given type','Paul Sharples','/wookie/shared/images/defaultwidget.png','/wookie/wservices/notsupported/index.htm','http://notsupported',350,500,'f','v1.0');
+INSERT INTO Widget VALUES (1,'Unsupported widget widget','','This widget is a placeholder for when no corresponding widget is found for a given type','Paul Sharples','psharples@bolton.ac.uk','http://iec.bolton.ac.uk','/wookie/shared/images/defaultwidget.png','/wookie/wservices/notsupported/index.htm','http://notsupported',350,500,'f','v1.0');
 INSERT INTO WidgetDefault VALUES ('unsupported',1);
 INSERT INTO WidgetService VALUES (1,'unsupported'),(2,'chat'),(3,'games'),(4,'voting'),(5,'weather');
 INSERT INTO WidgetType VALUES (1,1,'unsupported');

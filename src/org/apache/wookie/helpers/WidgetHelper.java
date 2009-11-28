@@ -104,7 +104,10 @@ public class WidgetHelper {
 		}
 		
 		// Do author
-		out += "\t\t<author>"+widget.getWidgetAuthor()+"</author>";
+		out += "\t\t<author";
+		if (widget.getWidgetAuthorEmail() != null) out+= " email=\""+widget.getWidgetAuthorEmail()+"\"";
+		if (widget.getWidgetAuthorHref() != null) out+= " href=\""+widget.getWidgetAuthorHref()+"\"";
+		out += ">"+widget.getWidgetAuthor()+"</author>\n";
 		
 		// TODO license
 		

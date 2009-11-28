@@ -61,37 +61,14 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertFalse(err == null||err.equals(""));
 	}	
 
-	// Seems to have been pulled
-	// 3 Start files
-	//@Test
-	//public void taGVVIvsdEUo2(){
-	//	Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-GVVIvsdEUo/000/test");
-	//	String start = locateStartFile(widget);
-	//	assertEquals("index.htm",start);
-	//}
-	//@Test
-	//public void taGVVIvsdEUo1(){
-	//	Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-GVVIvsdEUo/001/test.html");
-	//	String start = locateStartFile(widget);
-	//	assertEquals("index.htm",start);
-	//}
-
-	// Seems to have been pulled
-	// 4 MIME
-	//@Test
-	//public void di(){
-	//	String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-YrdwUYRXwc/000/di.wgt");
-	//	assertFalse(err == null||err.equals(""));
-	//}	
-
-	// 5 bad magic number
+	// 3 bad magic number
 	@Test
 	public void dk(){
 		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-qxLSCRCHlN/000/dk.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 
-	// 6 start files
+	// 4 start files
 	@Test
 	public void dn(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FDGQBROtzW/000/dn.test");
@@ -106,14 +83,14 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}
 
 
-	// 7
+	// 5
 	@Test
 	public void dl(){
 		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-uLHyIMvLwz/000/dl.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 	@Test
-	public void split(){
+	public void doh(){
 		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-uLHyIMvLwz/001/split.wgt.001");
 		assertFalse(err == null||err.equals(""));
 	}	
@@ -122,7 +99,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-uLHyIMvLwz/002/dp.wgt");
 		assertFalse(err == null||err.equals(""));
 	}
-	// 8 defaults
+	// 6 defaults
 	@Test 
 	@Ignore
 	public void ds(){
@@ -152,7 +129,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		// user agent locales must contain at least one item whose value is 'en' 
 	}
 
-	// 9 config.xml
+	// 7 config.xml
 	@Test
 	public void dq(){
 		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-ZjcdAxFMSx/000/dq.wgt");
@@ -164,7 +141,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertFalse(err == null||err.equals(""));
 	}
 
-	// 10 xml
+	// 8 xml
 	@Test
 	public void bt(){
 		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-klLDaEgJeU/000/bt.wgt");
@@ -187,7 +164,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-klLDaEgJeU/003/bw.wgt");
 		assertEquals("PASS", widget.getChild("author").getText());
 	}
-	// 11 widget
+	// 9 widget
 	@Test
 	public void aa(){
 		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-ACCJfDGwDQ/000/aa.wgt");
@@ -204,7 +181,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertTrue(err.contains("bad namespace"));
 	}
 
-	// 12 id
+	// 10 id
 	@Test
 	public void b1(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RawAIWHoMs/000/b1.wgt");
@@ -223,7 +200,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 
 	}
 
-	// 13 Version
+	// 11 Version
 
 	@Test
 	public void cf(){
@@ -242,7 +219,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}
 
 
-	// 14  Height
+	// 12  Height
 
 	@Test
 	public void ax(){
@@ -279,7 +256,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-BxjoiWHaMr/006/a4.wgt");
 		assertEquals("0", getWidgetHeight(widget));
 	}	
-	// 15 Width
+	// 13 Width
 
 	@Test
 	public void c9(){
@@ -318,7 +295,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}
 
 
-	// 16 empty widget config
+	// 14 empty widget config
 
 	@Test
 	public void d3(){
@@ -327,7 +304,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("index.htm",start);
 	}
 
-	// 17 Title
+	// 15 Title
 
 	@Test
 	public void bx(){
@@ -347,7 +324,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("PASS", getWidgetTitle(widget));
 	}
 
-	// 18 Title
+	// 16 Title
 
 	@Test
 	public void ao(){
@@ -405,7 +382,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("PASS", getWidgetTitle(widget));
 	}
 
-	// 19 Description
+	// 17 Description
 
 	@Test
 	public void c6(){
@@ -428,7 +405,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("PASS", widget.getChild("description").getText());
 	}
 
-	// 20 Description
+	// 18 Description
 	@Test
 	public void cp(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-VdCEyDVSA/000/cp.wgt");
@@ -460,7 +437,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("PASS",  widget.getChild("description").getText());
 	}
 
-	// 21 License TODO can't test without license exposed in metadata
+	// 19 License TODO can't test without license exposed in metadata
 	@Test
 	@Ignore
 	public void cu(){
@@ -483,7 +460,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}
 	
 	
-	// 22 License TODO can't test without license exposed in metadata
+	// 20 License TODO can't test without license exposed in metadata
 	@Test
 	@Ignore
 	public void cj(){
@@ -510,23 +487,123 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		
 	}
 
-	// 23 Icon
+	// 21 Icon
 	@Test
 	public void d1(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-iipTwNshRg/000/d1.wgt");
 		assertEquals("icon.png",getIcon(widget));
 	}
 
-	// 24 Icon
+	@Test
+	public void ga(){
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-iipTwNshRg/001/ga.wgt");
+		assertEquals("icon.png",getIcon(widget));
+	}
+	
+	// 22 Icon
 	@Test
 	public void d2(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-roCaKRxZhS/000/d2.wgt");
 		assertEquals("icon.png",getIcon(widget));
 	}
-
-	// 25-28 IGNORE
-
-	// 29 Author
+	
+	//23
+	@Test
+	@Ignore
+	public void zz(){
+		// TODO
+	}
+	@Test
+	@Ignore
+	public void za(){
+		// TODO
+	}
+	@Test
+	@Ignore
+	public void zb(){
+		// TODO
+	}
+	@Test
+	@Ignore
+	public void zc(){
+		// TODO
+	}
+	
+	//24
+	@Test
+	@Ignore
+	public void ix(){
+		// TODO
+	}
+	@Test
+	@Ignore
+	public void iy2(){
+		// TODO
+	}
+	@Test
+	@Ignore
+	public void iz(){
+		// TODO
+	}
+	@Test
+	@Ignore
+	public void i1(){
+		// TODO
+	}
+	@Test
+	@Ignore
+	public void i2(){
+		// TODO
+	}
+	@Test
+	@Ignore
+	public void i3(){
+		// TODO
+	}
+	@Test
+	@Ignore
+	public void i4(){
+		// TODO
+	}
+	
+	//25
+	@Test
+	@Ignore
+	public void iq(){
+		// TODO
+	}
+	@Test
+	@Ignore
+	public void i9(){
+		// TODO
+	}
+	@Test
+	@Ignore
+	public void iw(){
+		// TODO
+	}
+	@Test
+	@Ignore
+	public void ie(){
+		// TODO
+	}
+	@Test
+	@Ignore
+	public void ir(){
+		// TODO
+	}
+	@Test
+	@Ignore
+	public void it(){
+		// TODO
+	}
+	@Test
+	@Ignore
+	public void iy(){
+		// TODO
+	}
+	
+	// 26 Author
 	@Test
 	public void b7(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-sdwhMozwIc/000/b7.wgt");
@@ -545,7 +622,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 
 	}
 
-	// 30 Author  
+	// 27 Author  
 	@Test
 	public void af(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/000/af.wgt");
@@ -562,37 +639,38 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("PASS", widget.getChild("author").getText());
 	}
 	@Test
-	@Ignore
 	public void ai(){
-		// TODO can't test without author exposed in metadata
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/003/ai.wgt");
+		assertEquals("PASS", widget.getChild("author").getAttributeValue("email"));
 	}
 	@Test
-	@Ignore
 	public void aj(){
-		// TODO can't test without author exposed in metadata
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/004/aj.wgt");
+		assertEquals("PASS", widget.getChild("author").getText());
+		assertEquals("PASS", widget.getChild("author").getAttributeValue("email"));
+		assertEquals("PASS:PASS", widget.getChild("author").getAttributeValue("href"));
 	}
 	@Test
-	@Ignore
 	public void ak(){
-		// TODO can't test without author exposed in metadata
-	}
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/005/ak.wgt");
+		assertEquals("PASS", widget.getChild("author").getText());
+		assertEquals("PASS", widget.getChild("author").getAttributeValue("email"));
+		assertEquals("PASS:PASS", widget.getChild("author").getAttributeValue("href"));	}
 	@Test
-	@Ignore
 	public void al(){
-		// TODO can't test without author exposed in metadata	
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/006/al.wgt");
+		assertEquals("", widget.getChild("author").getText());
 	}
 	@Test
-	@Ignore
 	public void am(){
-		// TODO can't test without author exposed in metadata	
-	}
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/007/am.wgt");
+		assertEquals("PASS:PASS", widget.getChild("author").getAttributeValue("href"));	}
 	@Test
-	@Ignore
 	public void an(){
-		// TODO can't test without author exposed in metadata
-	}
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/008/an.wgt");
+		assertEquals(null, widget.getChild("author").getAttribute("href"));	}
 
-	// 31 Preference
+	// 28 Preference
 	@Test
 	public void a5(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/000/a5.wgt");
@@ -686,7 +764,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));
 	}
 
-	// 32
+	// 29
 	@Test
 	public void bq(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-hkWmGJgfve/000/bq.wgt");
@@ -705,21 +783,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("pass.html",start);
 	}
 
-	// These have been pulled
-	//33
-//	@Test
-//	public void dz(){
-//		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UJGJCaaFLT/000/dz.wgt");
-//		String start = locateStartFile(widget);
-//		assertEquals("pass.html",start);
-//	}
-//	@Test
-//	public void da(){
-//		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UJGJCaaFLT/001/da.wgt");
-//		String start = locateStartFile(widget);
-//		assertEquals("pass.html",start);
-//	}
-	//34
+	//30
 	@Test
 	public void d7(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-LTUJGJFCOU/000/d7.wgt");
@@ -732,14 +796,20 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		String start = locateStartFile(widget);
 		assertEquals("index.htm",start);
 	}
-	//35
+	@Test
+	@Ignore
+	public void gb(){
+		// TODO
+	}
+	
+	//31
 	@Test
 	public void db(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-pIffQywZin/000/db.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("index.htm",start);
 	}
-	//36
+	//32
 	@Test
 	public void d9(){
 		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-LQcjNKBLUZ/000/d9.wgt");
@@ -752,21 +822,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("index.htm",start);
 	}
 
-	//38
-	@Test
-	public void dc(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-paIabGIIMC/000/dc.wgt");
-		String start = locateStartFile(widget);
-		assertEquals("index.php",start);
-		assertEquals("text/html",getStartFileContentType(widget));
-	}
-	@Test
-	public void dv(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-paIabGIIMC/001/dv.wgt");
-		assertFalse(err == null||err.equals(""));
-	}	
-
-	// 37 TODO Start File Text Encoding
+	// 33 TODO Start File Text Encoding
 	@Test
 	@Ignore
 	public void e4(){
@@ -792,13 +848,41 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("UTF-8",getStartFileEncoding(widget));
 	}
 
-	//39
+	
+	
+	//34
+	@Test
+	public void dc(){
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-paIabGIIMC/000/dc.wgt");
+		String start = locateStartFile(widget);
+		assertEquals("index.php",start);
+		assertEquals("text/html",getStartFileContentType(widget));
+	}
+	@Test
+	public void dv(){
+		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-paIabGIIMC/001/dv.wgt");
+		assertFalse(err == null||err.equals(""));
+	}	
+	
+	//35
+	@Test
+	@Ignore
+	public void z1(){
+		// TODO
+	}
+	@Test
+	@Ignore
+	public void z2(){
+		// TODO
+	}
+
+	//36
 	@Test
 	@Ignore
 	public void e1(){
 		// TODO needs to test features
 	}
-	//40
+	//37
 	@Test
 	@Ignore
 	public void df(){
@@ -810,25 +894,25 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		// TODO needs to test features
 	}
 
-	//41
+	//38
 	@Test
 	public void d4(){
 		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-paWbGHyVrG/000/d4.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
-	//42
+	//39
 	@Test
 	public void e8(){
 		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-vOBaOcWfll/000/e8.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
-	//43
+	//40
 	@Test
 	@Ignore
 	public void d5(){
 		// TODO needs to test features
 	}
-	//44
+	//41
 	@Test
 	@Ignore
 	public void dt(){
@@ -839,14 +923,14 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	public void dg(){
 		// TODO needs to test features
 	}	
-	//45
+	//42
 	@Test
 	@Ignore
 	public void d6(){
 		// TODO needs to test features
 	}
 
-	// 47 Feature
+	// 43 Feature
 	@Test
 	@Ignore
 	public void e2(){
@@ -858,7 +942,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		// TODO needs to test features
 	}
 	
-	//48
+	//44
 	@Test
 	public void xx(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-bbbbbbbbbb/000/xx.wgt");
@@ -866,7 +950,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("pass.html",start);
 	}
 	
-	//49 Start file and icons
+	//45 Start file and icons
 	@Test
 	public void aw(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-BnWPqNvNVo/000/aw.wgt");
@@ -875,7 +959,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("icon.png",getIcon(widget));
 	}
 
-	//48  Start file
+	//46  Start file
 	@Test
 	public void cc(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RGNHRBWNZV/008/cc.wgt");
@@ -934,7 +1018,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		String start = locateStartFile(widget);
 		assertEquals("index.html",start);
 	}
-	// 49 Icons
+	// 47 Icons
 	@Test
 	public void bj(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/000/bj.wgt");

@@ -14,6 +14,9 @@
 
 package org.apache.wookie.manifestmodel.impl;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.wookie.manifestmodel.IAuthorEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.apache.wookie.util.UnicodeUtils;
@@ -71,7 +74,13 @@ public class AuthorEntity implements IAuthorEntity {
 	
 	public void fromXML(Element element) {
 		fAuthorName = UnicodeUtils.normalizeWhitespace(element.getText());		
-		fHref = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.HREF_ATTRIBUTE));			
+		fHref = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.HREF_ATTRIBUTE));	
+		try {
+			@SuppressWarnings("unused")
+			URI uri = new URI(fHref);
+		} catch (URISyntaxException e) {
+			fHref = null;
+		}
 		fEmail = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.EMAIL_ATTRIBUTE));
 	}
 

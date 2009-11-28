@@ -14,6 +14,8 @@
 		<property name="widgetShortName" column="widget_short_name" type="string" />
 		<property name="widgetDescription" column="widget_description" type="string" />
 		<property name="widgetAuthor" column="widget_author" type="string" />
+		<property name="widgetAuthorEmail" column="widget_author_email" type="string" />
+		<property name="widgetAuthorHref" column="widget_author_href" type="string" />
 		<property name="widgetIconLocation" column="widget_icon_location" type="string" />
 		<property name="url" column="url" type="string" />
 		<property name="guid" column="guid" type="string" />
