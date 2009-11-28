@@ -105,6 +105,20 @@
 		<servlet-name>PropertiesServlet</servlet-name>
 		<url-pattern>/properties</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<description></description>
+		<display-name>WidgetServices</display-name>
+		<servlet-name>WidgetServiceController</servlet-name>
+		<servlet-class>
+			org.apache.wookie.controller.WidgetServicesController
+		</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>WidgetServiceController</servlet-name>
+		<url-pattern>/services/*</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<description></description>
@@ -221,6 +235,19 @@
 				<role-name>widgetadmin</role-name>
 			</auth-constraint>
 		</security-constraint>	
+		
+		<security-constraint>		
+			<web-resource-collection>
+				<web-resource-name>WidgetServices Controller</web-resource-name>
+				<url-pattern>/services/*</url-pattern>
+				<http-method>DELETE</http-method>
+				<http-method>PUT</http-method>
+				<http-method>POST</http-method>
+			</web-resource-collection>		
+			<auth-constraint>
+				<role-name>widgetadmin</role-name>
+			</auth-constraint>
+		</security-constraint>
 		
 		<login-config>
 			<auth-method>BASIC</auth-method>

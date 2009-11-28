@@ -25,9 +25,6 @@ import org.apache.wookie.manifestmodel.IManifestModel;
  */
 public interface IWidgetAdminManager {
 
-	boolean addNewService(String serviceName);
-
-
 	/**
 	 * Add a new widget to the system
 	 * @param widgetName - the name of this widget
@@ -60,11 +57,6 @@ public interface IWidgetAdminManager {
 			String serviceType);
 
 	/**
-	 * delete any default types that belong to a given service name
-	 */
-	void deleteWidgetDefaultByServiceName(String serviceName);
-
-	/**
 	 * Check to see if a service type is currently listed for a particular widget
 	 * @param dbkey
 	 * @param serviceType
@@ -81,26 +73,11 @@ public interface IWidgetAdminManager {
 	boolean isWidgetMaximized(int dbKey);
 
 	/**
-	 * Remove from the system the service & any other places it may reside in the DB
-	 *  - i.e in widgetDefault 
-	 * @param serviceId
-	 * @return
-	 */
-	boolean removeServiceAndReferences(int serviceId);
-
-	/**
 	 * 
 	 * @param widgetId
 	 * @param widgetType
 	 */
 	boolean removeSingleWidgetType(int widgetId, String widgetType);
-
-	/**
-	 * Remove a whitelist entry from the DB
-	 * @param entryId
-	 * @return
-	 */
-	boolean removeWhiteListEntry(int entryId);
 
 	/**
 	 * Remove a widget and any references in the DB - i.e. WidgetInstances 

@@ -30,7 +30,6 @@ import org.apache.wookie.beans.Whitelist;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetDefault;
 import org.apache.wookie.beans.WidgetInstance;
-import org.apache.wookie.beans.WidgetService;
 import org.apache.wookie.beans.WidgetType;
 import org.apache.wookie.manager.IWidgetAdminManager;
 import org.apache.wookie.manifestmodel.IFeatureEntity;
@@ -54,15 +53,6 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 
 	public WidgetAdminManager(Messages localizedMessages) {
 		this.localizedMessages = localizedMessages;	
-	}
-				
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#addNewService(java.lang.String)
-	 */
-	public boolean addNewService(String serviceName) {
-		WidgetService service = new WidgetService();
-		service.setServiceName(serviceName);
-		return service.save();
 	}
 	
 	/* (non-Javadoc)
@@ -160,14 +150,6 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#deleteWidgetDefaultByServiceName(java.lang.String)
-	 */
-	public void deleteWidgetDefaultByServiceName(String serviceName){
-		WidgetDefault[] widgetDefaults = WidgetDefault.findByValue("widgetContext", serviceName);
-		WidgetDefault.delete(widgetDefaults);
-	}
-	
-	/* (non-Javadoc)
 	 * @see org.apache.wookie.manager.IWidgetAdminManager#doesServiceExistForWidget(int, java.lang.String)
 	 */
 	public boolean doesServiceExistForWidget(int dbkey, String serviceType){
@@ -189,34 +171,6 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 		if (widget == null) return false;
 		return widget.isMaximize();
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#removeServiceAndReferences(int)
-	 */
-	public boolean removeServiceAndReferences(int serviceId){
-		WidgetService service = WidgetService.findById(Integer.valueOf(serviceId));
-		String serviceName = service.getServiceName();
-		
-		// if exists, remove from widget default table
-		deleteWidgetDefaultByServiceName(serviceName);
-		
-		// delete from the widget service table
-		service.delete();	
-		// remove any widgetTypes for each widget that match
-		Widget[] widgets = Widget.findByType(serviceName);
-		if (widgets == null||widgets.length==0) return true;
-		for(Widget widget : widgets){
-			// remove any widget types for this widget
-			Set<?> types = widget.getWidgetTypes();
-		    WidgetType[] widgetTypes = types.toArray(new WidgetType[types.size()]);		        
-		    for(int j=0;j<widgetTypes.length;++j){	
-		    	if(serviceName.equalsIgnoreCase(widgetTypes[j].getWidgetContext())){
-		    		widgetTypes[j].delete();
-		    	}
-			}
-		}					
-		return true;
-	}	
 	
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.manager.IWidgetAdminManager#removeSingleWidgetType(int, java.lang.String)
@@ -241,14 +195,6 @@ public class WidgetAdminManager implements IWidgetAdminManager {
         // if it exists as a service default, then remove it
         deleteWidgetDefaultByIdAndServiceType(widgetId, widgetType);
         return response;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#removeWhiteListEntry(int)
-	 */
-	public boolean removeWhiteListEntry(int entryId) {
-		Whitelist entry = Whitelist.findById(Integer.valueOf(entryId));
-		return entry.delete();
 	}
 	
 	/* (non-Javadoc)
