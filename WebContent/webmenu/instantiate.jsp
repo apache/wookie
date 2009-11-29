@@ -1,6 +1,6 @@
-<%@ page import='org.apache.wookie.Messages,org.apache.wookie.beans.WidgetDefault' %>
+<%@ page import='org.apache.wookie.Messages,org.apache.wookie.beans.Widget' %>
 <% Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName()); %>
-<% WidgetDefault[] defaults = (WidgetDefault[])session.getAttribute("defaults"); %>
+<% Widget[] widgets = (Widget[])session.getAttribute("widgets"); %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -105,12 +105,12 @@
 			    		<div class="adminLayerTitle"><%=localizedMessages.getString("webmenu.instantiate.8")%></div>
 			    		<div class="adminLayerDetail">
 				    		
-								  <select class="ui-widget input ui-state-default ui-corner-all" name="servicetype"  id="servicetype">
+								  <select class="ui-widget input ui-state-default ui-corner-all" name="widgetid"  id="widgetid">
 								  <% 
-								  for (WidgetDefault def : defaults){ 
-									  if(!def.getWidgetContext().equalsIgnoreCase("unsupported")){
+								  for (Widget widget : widgets){ 
+									  if(!widget.getGuid().equalsIgnoreCase("http://notsupported")){
 								  %>
-								  <option><%=def.getWidgetContext()%></option>
+								  <option value="<%=widget.getGuid()%>"><%=widget.getWidgetTitle()%></option>
 								  <%} %>
 								  <%} %>
 								  </select>

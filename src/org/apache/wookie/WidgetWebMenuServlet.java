@@ -128,8 +128,8 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 	}
 
 	private void instantiateOperation(HttpSession session, IWidgetAdminManager manager){
-		WidgetDefault[] def = WidgetDefault.findAll();
-		session.setAttribute("defaults", def); //$NON-NLS-1$
+		Widget[] widgets = Widget.findAll();
+		session.setAttribute("widgets", widgets); //$NON-NLS-1$
 	}
 
 	private void listOperation(HttpSession session, IWidgetAdminManager manager){
