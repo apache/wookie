@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<widget xmlns="http://www.w3.org/ns/widgets" id="http://www.getwookie.org/widgets/chat" height="350	" width="500">
+<widget xmlns="http://www.w3.org/ns/widgets" id="http://www.getwookie.org/widgets/vote" height="350	" width="500">
 	<name>Vote</name>
 	<description>basic voting widget</description>
 	<icon src="icon.png"/>
