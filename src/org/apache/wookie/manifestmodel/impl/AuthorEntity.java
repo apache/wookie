@@ -75,13 +75,17 @@ public class AuthorEntity implements IAuthorEntity {
 	public void fromXML(Element element) {
 		fAuthorName = UnicodeUtils.normalizeWhitespace(element.getText());		
 		fHref = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.HREF_ATTRIBUTE));	
-		try {
-			@SuppressWarnings("unused")
-			URI uri = new URI(fHref);
-		} catch (URISyntaxException e) {
-			fHref = null;
+		if (fHref.equals("")) fHref = null;
+		if (fHref != null){
+			try {
+				@SuppressWarnings("unused")
+				URI uri = new URI(fHref);
+			} catch (URISyntaxException e) {
+				fHref = null;
+			}
 		}
 		fEmail = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.EMAIL_ATTRIBUTE));
+		if (fEmail.equals("")) fEmail = null;
 	}
 
 }
