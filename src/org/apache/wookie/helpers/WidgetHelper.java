@@ -18,6 +18,7 @@ import java.net.URL;
 
 import org.apache.wookie.beans.PreferenceDefault;
 import org.apache.wookie.beans.Widget;
+import org.apache.wookie.beans.WidgetIcon;
 import org.apache.wookie.beans.WidgetType;
 
 /**
@@ -83,18 +84,25 @@ public class WidgetHelper {
 		out += "\t\t<title short=\""+widget.getWidgetShortName()+"\">" + widget.getWidgetTitle() + "</title>\n";
 		out += "\t\t<description>" + widget.getWidgetDescription()
 				+ "</description>\n";
-		String iconPath = widget.getWidgetIconLocation();
 		
-		try {
-			// If local...
-			if (!iconPath.startsWith("http")) {
-				urlWidgetIcon = new URL(localIconPath+iconPath);
-			} else {
-				urlWidgetIcon = new URL(iconPath);
+		WidgetIcon[] icons = WidgetIcon.findForWidget(widget);
+		if (icons!=null){
+		for (WidgetIcon icon: icons){
+			try {
+				// If local...
+				if (!icon.getSrc().startsWith("http")) {
+					urlWidgetIcon = new URL(localIconPath+icon.getSrc());
+				} else {
+					urlWidgetIcon = new URL(icon.getSrc());
+				}
+				out += "\t\t<icon";
+				if (icon.getHeight()!=null) out += " height=\""+icon.getHeight()+"\"";
+				if (icon.getWidth()!=null) out += " width=\""+icon.getWidth()+"\"";
+				out += ">"+urlWidgetIcon.toString() + "</icon>\n";
+			} catch (MalformedURLException e) {
+				// don't export icon field if its not a valid URL
 			}
-			out += "\t\t<icon>" + urlWidgetIcon.toString() + "</icon>\n";
-		} catch (MalformedURLException e) {
-			// don't export icon field if its not a valid URL
+		}
 		}
 		
 		// Do tags/services/categories

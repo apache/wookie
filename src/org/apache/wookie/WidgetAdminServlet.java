@@ -470,7 +470,8 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 
 		try {	
 			if(zipFile.exists()){
-				IManifestModel widgetModel = WidgetPackageUtils.processWidgetPackage(zipFile,properties.getString("widget.widgetfolder"), WIDGETFOLDER,UPLOADFOLDER);//$NON-NLS-1$
+				final String[] locales = properties.getString("widget.locales").split(",");
+				IManifestModel widgetModel = WidgetPackageUtils.processWidgetPackage(zipFile,properties.getString("widget.widgetfolder"), WIDGETFOLDER,UPLOADFOLDER,locales);//$NON-NLS-1$
 				if(!Widget.exists(widgetModel.getIdentifier())){	
 					// ADD
 					int dbkey = manager.addNewWidget(widgetModel, new String[]{});

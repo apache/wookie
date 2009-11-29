@@ -509,98 +509,102 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	
 	//23
 	@Test
-	@Ignore
 	public void zz(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-iuJHnskSHq/000/zz.wgt");
+		assertEquals("pass.png",getIcon(widget));
 	}
 	@Test
-	@Ignore
 	public void za(){
-		// TODO
+		// TODO this is actually pretty hard to validate as it requires a list of all icons
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-iuJHnskSHq/001/za.wgt");
+		assertEquals("pass.png",getIcon(widget));
 	}
 	@Test
-	@Ignore
 	public void zb(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-iuJHnskSHq/002/zb.wgt");
+		assertEquals("locales/en/icon.png",getIcon(widget));
+		assertEquals(null, widget.getChild("icon").getAttribute("width"));
+		assertEquals(null, widget.getChild("icon").getAttribute("height"));
 	}
 	@Test
-	@Ignore
 	public void zc(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-iuJHnskSHq/003/zc.wgt");
+		assertEquals("locales/en/custom.png",getIcon(widget));
+		assertEquals(null, widget.getChild("icon").getAttribute("width"));
+		assertEquals(null, widget.getChild("icon").getAttribute("height"));
 	}
 	
 	//24
 	@Test
-	@Ignore
 	public void ix(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-eHUaPbgfKg/000/ix.wgt");
+		assertEquals("1234", widget.getChild("icon").getAttributeValue("height"));
 	}
 	@Test
-	@Ignore
 	public void iy2(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-eHUaPbgfKg/001/iy.wgt");
+		assertEquals("0", widget.getChild("icon").getAttributeValue("height"));
 	}
 	@Test
-	@Ignore
 	public void iz(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-eHUaPbgfKg/002/iz.wgt");
+		assertEquals("100", widget.getChild("icon").getAttributeValue("height"));
 	}
 	@Test
-	@Ignore
 	public void i1(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-eHUaPbgfKg/003/i1.wgt");
+		assertEquals("123", widget.getChild("icon").getAttributeValue("height"));
 	}
 	@Test
-	@Ignore
 	public void i2(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-eHUaPbgfKg/004/i2.wgt");
+		assertEquals(null, widget.getChild("icon").getAttribute("height"));
 	}
 	@Test
-	@Ignore
 	public void i3(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-eHUaPbgfKg/005/i3.wgt");
+		assertEquals(null, widget.getChild("icon").getAttribute("height"));
 	}
 	@Test
-	@Ignore
 	public void i4(){
-		// TODO
-	}
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-eHUaPbgfKg/006/i4.wgt");
+		assertEquals("0", widget.getChild("icon").getAttributeValue("height"));	}
 	
 	//25
 	@Test
-	@Ignore
 	public void iq(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-nYAcofihvj/000/iq.wgt");
+		assertEquals("1234", widget.getChild("icon").getAttributeValue("width"));	
 	}
 	@Test
-	@Ignore
 	public void i9(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-nYAcofihvj/001/i9.wgt");
+		assertEquals("0", widget.getChild("icon").getAttributeValue("width"));	
 	}
 	@Test
-	@Ignore
 	public void iw(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-nYAcofihvj/002/iw.wgt");
+		assertEquals("100", widget.getChild("icon").getAttributeValue("width"));	
 	}
 	@Test
-	@Ignore
 	public void ie(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-nYAcofihvj/003/ie.wgt");
+		assertEquals("123", widget.getChild("icon").getAttributeValue("width"));	
 	}
 	@Test
-	@Ignore
 	public void ir(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-nYAcofihvj/004/ir.wgt");
+		assertEquals(null, widget.getChild("icon").getAttribute("width"));	
 	}
 	@Test
-	@Ignore
 	public void it(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-nYAcofihvj/005/it.wgt");
+		assertEquals(null, widget.getChild("icon").getAttribute("width"));	
 	}
 	@Test
-	@Ignore
 	public void iy(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-nYAcofihvj/006/iy.wgt");
+		assertEquals("0", widget.getChild("icon").getAttributeValue("width"));	
 	}
 	
 	// 26 Author
@@ -797,9 +801,10 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("index.htm",start);
 	}
 	@Test
-	@Ignore
 	public void gb(){
-		// TODO
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-LTUJGJFCOU/002/gb.wgt");
+		String start = locateStartFile(widget);
+		assertEquals("index.htm",start);
 	}
 	
 	//31
@@ -1031,38 +1036,50 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}
 	@Test
 	public void bl(){
-		//Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/002/bl.wgt");
-		// TODO requires an icons list = we just currently have one icon.
-		fail("multiple icons not supported");
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/002/bl.wgt");
+		List icons = widget.getChildren("icon");
+		assertTrue(icons.size() == 2);
+		assertEquals("locales/en/icon.jpg",getLocalIconPath(widget,((Element)icons.get(0))));
+		assertEquals("icon.png",getLocalIconPath(widget,((Element)icons.get(1))));
 	}
 	@Test
 	public void bm(){
-		//Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/003/bm.wgt");
-		// TODO requires an icons list = we just currently have one icon.
-		fail("multiple icons not supported");
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/003/bm.wgt");
+		List icons = widget.getChildren("icon");
+		assertTrue(icons.size() == 2);
+		assertEquals("locales/en/icon.jpg",getLocalIconPath(widget,((Element)icons.get(0))));
+		assertEquals("icon.png",getLocalIconPath(widget,((Element)icons.get(1))));
 	}
 	@Test
 	public void bn(){
-		//Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/004/bn.wgt");
-		// TODO requires an icons list = we just currently have one icon.
-		fail("multiple icons not supported");
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/004/bn.wgt");
+		List icons = widget.getChildren("icon");
+		assertTrue(icons.size() == 2);
+		assertEquals("icons/pass.png",getLocalIconPath(widget,((Element)icons.get(0))));
+		assertEquals("icon.png",getLocalIconPath(widget,((Element)icons.get(1))));
 	}
 	@Test
 	public void bo(){
-		//Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/005/bo.wgt");
-		// TODO requires an icons list = we just currently have one icon.
-		fail("multiple icons not supported");
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/005/bo.wgt");
+		List icons = widget.getChildren("icon");
+		assertTrue(icons.size() == 2);
+		assertEquals("icon.png", getLocalIconPath(widget,((Element)icons.get(0))));
+		assertEquals("icon.jpg", getLocalIconPath(widget,((Element)icons.get(1))));
 	}
 	@Test
 	public void bp(){
-		//Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/006/bp.wgt");
-		// TODO requires an icons list = we just currently have one icon.
-		fail("multiple icons not supported");
+		// Note the original test case is in error here
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/006/bp.wgt");
+		List icons = widget.getChildren("icon");
+		assertTrue(icons.size() == 2);
+		assertEquals("icon.png",getLocalIconPath(widget,((Element)icons.get(0))));
+		assertEquals("locales/en/icon.jpg",getLocalIconPath(widget,((Element)icons.get(1))));
 	}
 	@Test
 	public void ad(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/007/ad.wgt");
 		assertEquals("icon.png",getIcon(widget));	}
+
 	@Test
 	public void ae(){
 		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/008/ae.wgt");
@@ -1193,8 +1210,18 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		// split off the end icon path
 		// http://localhost:8080/wookie/wservices/ + uid + / 
 		String baseUrl = "http://localhost:8080/wookie/wservices/"+widget.getAttributeValue("identifier")+"/";
-		String iconUrl = widget.getChild("icon").getText();
+		Element iconElem = widget.getChild("icon");
+		if(iconElem == null) return null;
+		String iconUrl = iconElem.getText();
 		icon = StringUtils.difference(baseUrl,iconUrl);
+		return icon;
+	}
+	
+	private String getLocalIconPath(Element widget, Element iconElem){
+		String baseUrl = "http://localhost:8080/wookie/wservices/"+widget.getAttributeValue("identifier")+"/";	
+		if(iconElem == null) return null;
+		String iconUrl = iconElem.getText();
+		String icon = StringUtils.difference(baseUrl,iconUrl);
 		return icon;
 	}
 

@@ -20,6 +20,17 @@ CREATE TABLE `Widget` (
   PRIMARY KEY  (`id`)
 );
 
+CREATE TABLE `WidgetIcon` (
+  `id` int(11) NOT NULL auto_increment,
+  `src` text default NULL,
+  `height` int(11) default NULL,
+  `width` int(11) default NULL,
+  `widget_id` int(11) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `FKwidgeticonwidget` (`widget_id`),
+  CONSTRAINT `FKwidgeticonwidgetc` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)
+);
+
 CREATE TABLE `WidgetInstance` (
   `id` int(11) NOT NULL auto_increment,
   `apikey` varchar(255) NOT NULL,
@@ -174,6 +185,7 @@ INSERT INTO `Widget` VALUES (1,'Unsupported widget widget','','/wookie/wservices
 INSERT INTO `WidgetDefault` VALUES ('unsupported',1);
 INSERT INTO `WidgetService` VALUES (1,'unsupported'),(2,'chat'),(3,'games'),(4,'voting'),(5,'weather');
 INSERT INTO `WidgetType` VALUES (1,1,'unsupported');
+INSERT INTO `WidgetIcon` VALUES (1,'/wookie/shared/images/defaultwidget.png',80,80,1);
 INSERT INTO `Whitelist` VALUES (1,'http://127.0.0.1'),(2,'http://localhost'),(3,'http://feeds.bbc.co.uk/weather/feeds/rss');
 INSERT INTO `ServerFeature` VALUES (1,'http://wave.google.com','org.apache.wookie.feature.wave.WaveAPIImpl'),(2,'http://www.getwookie.org/usefeature/polling','org.apache.wookie.feature.polling.impl.WookiePollingImpl');
 INSERT INTO `ApiKey` VALUES (1,'TEST','test@127.0.0.1');

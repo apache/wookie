@@ -16,6 +16,9 @@ package org.apache.wookie.manifestmodel;
 
 import java.util.List;
 
+import org.apache.wookie.exceptions.BadManifestException;
+import org.jdom.Element;
+
 /**
  * @author Paul Sharples
  * @version $Id: IManifestModel.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
@@ -63,4 +66,12 @@ public interface IManifestModel extends IManifestModelBase{
 	public List<IDescriptionEntity> getDescriptions();
 	
 	public void setContent(IContentEntity content);
+	
+    /**
+     * Unmarshall the given XML Element to this Object
+     * 
+     * @param element The Element to unmarshall
+     * @param locales the set of supported locales
+     */
+	public void fromXML(Element element, String[] locales) throws BadManifestException;
 }

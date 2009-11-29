@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.apache.wookie.util.hibernate.DBManagerFactory;
 import org.apache.wookie.util.hibernate.IDBManager;
 
@@ -39,7 +40,6 @@ public class Widget extends AbstractKeyBean<Widget> {
 	private String widgetAuthor;
 	private String widgetAuthorEmail;
 	private String widgetAuthorHref;
-	private String widgetIconLocation;
 	private String url;
 	private String guid;	
 	private Integer height;
@@ -163,16 +163,6 @@ public class Widget extends AbstractKeyBean<Widget> {
 	public void setWidgetAuthorHref(String widgetAuthorHref) {
 		this.widgetAuthorHref = widgetAuthorHref;
 	}
-
-
-	public String getWidgetIconLocation() {
-		return widgetIconLocation;
-	}
-
-
-	public void setWidgetIconLocation(String widgetIconLocation) {
-		this.widgetIconLocation = widgetIconLocation;
-	}
 	
 	public String getVersion() {
 		return version;
@@ -201,6 +191,22 @@ public class Widget extends AbstractKeyBean<Widget> {
 	}
 	
 	////// Special queries
+	
+	/**
+	 * Temporary convenience method for getting an icon; this
+	 * should be replaced with an algorithm that returns an appropriate
+	 * icon that matches the user locale so its marked as deprecated
+	 */
+	@Deprecated
+	public String getWidgetIconLocation(){
+		WidgetIcon[] icons = WidgetIcon.findForWidget(this);
+		if (icons != null && icons.length > 0){
+			return icons[0].getSrc();
+		} else {
+			return IW3CXMLConfiguration.DEFAULT_ICON_PATH;
+		}
+	}
+	
 	
 	/**
 	 * Find one widget by guid

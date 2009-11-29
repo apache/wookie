@@ -247,8 +247,8 @@ public class GadgetUtils {
 			widget.setHeight(height);
 			widget.setWidth(width);
 			widget.setWidgetTitle(title);
-			widget.setWidgetDescription(description);
-			widget.setWidgetIconLocation(icon);
+			widget.setWidgetDescription(description);		
+			//widget.setWidgetIconLocation(icon); //TODO fix this later
 			widget.setWidgetAuthor(author);
 
 		}

@@ -14,9 +14,13 @@
 
 package org.apache.wookie.manifestmodel.impl;
 
+import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.manifestmodel.IIconEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.NumberUtils;
 import org.apache.wookie.util.UnicodeUtils;
+import org.apache.wookie.util.WidgetPackageUtils;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
@@ -25,16 +29,16 @@ import org.jdom.Element;
 public class IconEntity implements IIconEntity{
 	
 	private String fSrc;
-	private int fHeight;
-	private int fWidth;
+	private Integer fHeight;
+	private Integer fWidth;
 	
 	public IconEntity(){
 		fSrc = "";
-		fHeight = IW3CXMLConfiguration.DEFAULT_HEIGHT_SMALL;
-		fWidth = IW3CXMLConfiguration.DEFAULT_WIDTH_SMALL;
+		fHeight = null;
+		fWidth = null;
 	}
 	
-	public IconEntity(String src, int height, int width) {
+	public IconEntity(String src, Integer height, Integer width) {
 		super();
 		fSrc = src;
 		fHeight = height;
@@ -47,16 +51,16 @@ public class IconEntity implements IIconEntity{
 	public void setSrc(String src) {
 		fSrc = src;
 	}
-	public int getHeight() {
+	public Integer getHeight() {
 		return fHeight;
 	}
-	public void setHeight(int height) {
+	public void setHeight(Integer height) {
 		fHeight = height;
 	}
-	public int getWidth() {
+	public Integer getWidth() {
 		return fWidth;
 	}
-	public void setWidth(int width) {
+	public void setWidth(Integer width) {
 		fWidth = width;
 	}
 
@@ -64,34 +68,40 @@ public class IconEntity implements IIconEntity{
 		return IW3CXMLConfiguration.ICON_ELEMENT;
 	}
 	
-	public void fromXML(Element element) {		
+	public void fromXML(Element element) throws BadManifestException{
+	}
+	
+	public void fromXML(Element element,String[] locales, ZipFile zip) throws BadManifestException{		
 		// src is required
 		fSrc = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.SOURCE_ATTRIBUTE));
-		// TODO - do we test that this file exists?
+
+		// Check custom icon file exists; remove the src value if it doesn't
+		try {
+			fSrc = WidgetPackageUtils.locateFilePath(fSrc,locales, zip);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fSrc = null;
+		}
+
 		// height is optional
-		String tempHeight = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.HEIGHT_ATTRIBUTE));
-		if(tempHeight.equals("")){
-			fHeight = IW3CXMLConfiguration.DEFAULT_HEIGHT_SMALL;
+		String height  = element.getAttributeValue(IW3CXMLConfiguration.HEIGHT_ATTRIBUTE);
+		if(height != null){
+			try { 
+				fHeight = NumberUtils.processNonNegativeInteger(height); 
+			} catch (NumberFormatException e) { 
+				// Not a valid number - pass through without setting 
+			} 
 		}
-		else{
-			try {
-				fHeight = Integer.valueOf(tempHeight);
-			} catch (NumberFormatException e) {
-				fHeight = IW3CXMLConfiguration.DEFAULT_HEIGHT_SMALL;
-			}
-		}
+
 		// width is optional
-		String tempWidth = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.WIDTH_ATTRIBUTE));
-		if(tempWidth.equals("")){
-			fWidth = IW3CXMLConfiguration.DEFAULT_WIDTH_SMALL;
-		}
-		else{
+		String width  = element.getAttributeValue(IW3CXMLConfiguration.WIDTH_ATTRIBUTE);
+		if(width != null){
 			try {
-				fWidth = Integer.valueOf(tempWidth);
+				fWidth = NumberUtils.processNonNegativeInteger(width); 
 			} catch (NumberFormatException e) {
-				fWidth = IW3CXMLConfiguration.DEFAULT_WIDTH_SMALL;
+				// Not a valid number - pass through without setting 
 			}
-		}	
+		}
 	}
 
 

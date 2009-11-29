@@ -38,6 +38,7 @@ import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.apache.wookie.util.NumberUtils;
 import org.apache.wookie.util.RandomGUID;
 import org.apache.wookie.util.UnicodeUtils;
+import org.apache.wookie.util.WidgetPackageUtils;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
@@ -86,7 +87,7 @@ public class WidgetManifestModel implements IManifestModel {
 	 * @throws IOException
 	 * @throws BadManifestException
 	 */
-	public WidgetManifestModel (String xmlText, ZipFile zip) throws JDOMException, IOException, BadManifestException {
+	public WidgetManifestModel (String xmlText, String[] locales, ZipFile zip) throws JDOMException, IOException, BadManifestException {
 		super();
 		this.zip = zip;
 		fNamesList = new ArrayList<INameEntity>();
@@ -98,7 +99,19 @@ public class WidgetManifestModel implements IManifestModel {
 		fPreferencesList = new ArrayList<IPreferenceEntity>();
 		SAXBuilder builder = new SAXBuilder();
 		Element root = builder.build(new StringReader(xmlText)).getRootElement();				
-		fromXML(root);	
+		fromXML(root,locales);	
+		
+		// Add default icons
+		for (String iconpath:WidgetPackageUtils.locateAllDefaultIcons(zip, locales)){
+			if (iconpath != null) {
+				// don't add it if its a duplicate
+				boolean exists = false;
+				for (IIconEntity icon: fIconsList){
+					if (icon.getSrc().equals(iconpath)) exists = true;
+				}
+				if (!exists) fIconsList.add(new IconEntity(iconpath,null,null));	
+			}
+		}
 	}
 	
 	public String getViewModes() {
@@ -234,9 +247,14 @@ public class WidgetManifestModel implements IManifestModel {
 	public String getXMLTagName() {
 		return IW3CXMLConfiguration.WIDGET_ELEMENT;
 	}
+	
+	public void fromXML(Element element) throws BadManifestException{
+		fLogger.warn("WidgetManifestModel.fromXML() called with no locales");
+		fromXML(element, new String[]{"en"});
+	}
 
 	@SuppressWarnings("deprecation")
-	public void fromXML(Element element) throws BadManifestException {						
+	public void fromXML(Element element, String[] locales) throws BadManifestException {						
 		// check the namespace uri 
 		if(!element.getNamespace().getURI().equals(IW3CXMLConfiguration.MANIFEST_NAMESPACE)){			
 			throw new BadManifestException("'"+element.getNamespace().getURI() 
@@ -339,8 +357,8 @@ public class WidgetManifestModel implements IManifestModel {
 			// ICON IS OPTIONAL - can be many
 			if(tag.equals(IW3CXMLConfiguration.ICON_ELEMENT)) {						
 				IIconEntity anIcon = new IconEntity();
-				anIcon.fromXML(child);
-				fIconsList.add(anIcon);
+				anIcon.fromXML(child,locales,zip);
+				if (anIcon.getSrc()!=null) fIconsList.add(anIcon);
 			}
 			
 			// ACCESS IS OPTIONAL  can be many 

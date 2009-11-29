@@ -29,10 +29,12 @@ import org.apache.wookie.beans.SharedData;
 import org.apache.wookie.beans.Whitelist;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetDefault;
+import org.apache.wookie.beans.WidgetIcon;
 import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.beans.WidgetType;
 import org.apache.wookie.manager.IWidgetAdminManager;
 import org.apache.wookie.manifestmodel.IFeatureEntity;
+import org.apache.wookie.manifestmodel.IIconEntity;
 import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.manifestmodel.IParamEntity;
 import org.apache.wookie.manifestmodel.IPreferenceEntity;
@@ -71,7 +73,6 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 		widget.setWidgetAuthor(model.getAuthor());
 		widget.setWidgetAuthorEmail(model.getAuthorEmail());
 		widget.setWidgetAuthorHref(model.getAuthorHref());
-		widget.setWidgetIconLocation(model.getFirstIconPath());
 		widget.setUrl(model.getContent().getSrc());
 		widget.setGuid(model.getIdentifier());
 		widget.setHeight(model.getHeight());
@@ -89,6 +90,12 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 			}
 		}
 		newWidgetIdx = widget.getId();
+		
+		// Icons
+		for(IIconEntity icon: model.getIconsList()){
+			WidgetIcon widgetIcon = new WidgetIcon(icon.getSrc(),icon.getHeight(),icon.getWidth(),widget);
+			widgetIcon.save();
+		}
 
 		// Save default preferences				
 		for(IPreferenceEntity prefEntity : model.getPrefences()){

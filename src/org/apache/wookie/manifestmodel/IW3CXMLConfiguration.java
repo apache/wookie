@@ -84,6 +84,7 @@ public interface IW3CXMLConfiguration {
 	public static final String MANIFEST_NAMESPACE = "http://www.w3.org/ns/widgets";
 	public static final String[] SUPPORTED_CONTENT_TYPES = {"text/html", "image/svg+xml","application/xhtml+xml"};
 	public static final String[] START_FILES = {"index.htm","index.html","index.svg","index.xhtml","index.xht"};
+	public static final String[] DEFAULT_ICON_FILES = {"icon.svg","icon.ico","icon.png","icon.gif","icon.jpg"};
 	
 	// Deprecated: used in early drafts of spec:
 	

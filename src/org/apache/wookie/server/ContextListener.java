@@ -127,6 +127,7 @@ public class ContextListener implements ServletContextListener {
 		final String UPLOADFOLDER = context.getRealPath(configuration.getString("widget.useruploadfolder"));
 		final String WIDGETFOLDER = context.getRealPath(configuration.getString("widget.widgetfolder"));
 		final String localWidgetFolderPath = configuration.getString("widget.widgetfolder");
+		final String[] locales = configuration.getString("widget.locales").split(",");
 		Thread thr = new Thread(){
 	 		public void run() {
 	 			/** Get a DBManager for this thread. */
@@ -139,7 +140,7 @@ public class ContextListener implements ServletContextListener {
 	 					try{
 	 						dbManager.beginTransaction();
 	 						File upload = WidgetPackageUtils.dealWithDroppedFile(UPLOADFOLDER, f);
-	 						IManifestModel model = WidgetPackageUtils.processWidgetPackage(upload, localWidgetFolderPath, WIDGETFOLDER, UPLOADFOLDER);
+	 						IManifestModel model = WidgetPackageUtils.processWidgetPackage(upload, localWidgetFolderPath, WIDGETFOLDER, UPLOADFOLDER, locales);
 	 						WidgetAdminManager manager = new WidgetAdminManager(null);
 	 						if(!Widget.exists(model.getIdentifier())) {
 	 							manager.addNewWidget(model, null);	

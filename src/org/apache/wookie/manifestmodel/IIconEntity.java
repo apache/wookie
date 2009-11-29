@@ -13,6 +13,11 @@
  */
 
 package org.apache.wookie.manifestmodel;
+
+import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.apache.wookie.exceptions.BadManifestException;
+import org.jdom.Element;
+
 /**
  * @author Paul Sharples
  * @version $Id: IIconEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
@@ -23,12 +28,14 @@ public interface IIconEntity extends IManifestModelBase {
 
 	void setSrc(String src);
 
-	int getHeight();
+	Integer getHeight();
 
-	void setHeight(int height);
+	void setHeight(Integer height);
 
-	int getWidth();
+	Integer getWidth();
 
-	void setWidth(int width);
+	void setWidth(Integer width);
+	
+	public void fromXML(Element element, String[] locales, ZipFile zip) throws BadManifestException;
 
 }

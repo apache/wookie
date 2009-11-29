@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -48,6 +49,62 @@ import org.apache.wookie.manifestmodel.impl.WidgetManifestModel;
  */
 public class WidgetPackageUtils {
 	static Logger _logger = Logger.getLogger(WidgetPackageUtils.class.getName());
+	
+	/**
+	 * Implements the rule for finding a file within a widget; it returns the first localized version 
+	 * first before returning a root version. An exception is thrown if the path points to a folder, and
+	 * null is returned if no file is found
+	 * @param path
+	 * @param locales the supported locales, in list of preference
+	 * @param zip
+	 * @return
+	 * @throws Exception
+	 */
+	public static String locateFilePath(String path, String[] locales, ZipFile zip) throws Exception{
+		if (path.startsWith("/")) path = path.substring(1, path.length());
+		String[] pathComponents = path.split("/");
+		if ("locales".equalsIgnoreCase(pathComponents[0])){
+			if (pathComponents.length < 2) return null;
+			// TODO validate the language string
+		}
+		// Look in localized folders first
+		for (String locale:locales){
+			String localePath = "locales/"+locale.trim()+"/"+path;
+			if (zip.getEntry(localePath) != null){
+				if (zip.getEntry(localePath).isDirectory()) throw new Exception();
+				return localePath;
+			}
+		}
+		// Look in root folder
+		if (zip.getEntry(path) == null) return null;
+		if (zip.getEntry(path).isDirectory()) throw new Exception();
+		return path;
+	}
+	
+	public static String locateDefaultIcon(ZipFile zip, String[] locales){
+		for (String icon: IW3CXMLConfiguration.DEFAULT_ICON_FILES){
+			try {
+				icon = locateFilePath(icon, locales, zip);
+				if (icon != null) return icon;
+			} catch (Exception e) {
+				// ignore and move onto next
+			}
+		}
+		return IW3CXMLConfiguration.DEFAULT_ICON_PATH;
+	}
+	
+	public static String[] locateAllDefaultIcons(ZipFile zip, String[] locales){
+		ArrayList<String> icons = new ArrayList<String>();
+		for (String icon: IW3CXMLConfiguration.DEFAULT_ICON_FILES){
+			try {
+				icon = locateFilePath(icon, locales, zip);
+				if (icon != null) icons.add(icon);
+			} catch (Exception e) {
+				// ignore and move onto next
+			}
+		}
+		return (String[]) icons.toArray(new String[icons.size()]);
+	}
 	
 	/**
 	 * Identify the start file for a given zipfile and manifest, or throw an exception
@@ -171,7 +228,7 @@ public class WidgetPackageUtils {
 		return true;
 	}
 	
-	public static IManifestModel processWidgetPackage(File zipFile, String localWidgetPath, String WIDGETFOLDER, String UPLOADFOLDER) throws BadWidgetZipFileException, BadManifestException{
+	public static IManifestModel processWidgetPackage(File zipFile, String localWidgetPath, String WIDGETFOLDER, String UPLOADFOLDER, String[] locales) throws BadWidgetZipFileException, BadManifestException{
 		ZipFile zip;
 		try {
 			zip = new ZipFile(zipFile);
@@ -181,7 +238,7 @@ public class WidgetPackageUtils {
 		if (WidgetPackageUtils.hasManifest(zip)){
 			try {
 				// build the model
-				IManifestModel widgetModel = new WidgetManifestModel(WidgetPackageUtils.extractManifest(zip), zip);															
+				IManifestModel widgetModel = new WidgetManifestModel(WidgetPackageUtils.extractManifest(zip), locales, zip);															
 				// get the start file; if there is no valid start file an exception will be thrown
 				String src = WidgetPackageUtils.locateStartFile(widgetModel, zip);
 				// get the widget identifier
