@@ -389,7 +389,15 @@ public class WidgetManifestModel implements IManifestModel {
 			if(tag.equals(IW3CXMLConfiguration.PREFERENCE_ELEMENT)) {
 				IPreferenceEntity preference = new PreferenceEntity();
 				preference.fromXML(child);
-				fPreferencesList.add(preference);
+				// Skip preferences without names
+				if (preference.getName() != null){
+					// Skip preferences already defined
+					boolean found = false;
+					for (IPreferenceEntity pref:getPrefences()){
+						if (pref.getName().equals(preference.getName())) found = true;
+					}
+					if (!found) fPreferencesList.add(preference);
+				}
 			}
 			
 		}

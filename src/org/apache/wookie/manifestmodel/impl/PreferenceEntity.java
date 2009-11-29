@@ -47,19 +47,13 @@ public class PreferenceEntity extends ParamEntity implements IPreferenceEntity {
 	public void fromXML(Element element) throws BadManifestException {
 		super.fromXML(element);
 		String isReadOnly = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.READONLY_ATTRIBUTE));
-		if(isReadOnly.equals("")){
+		if (isReadOnly.equals("true")){
+			fReadOnly = true;
+		} else {
 			fReadOnly = false;
 		}
-		else{
-			try {				
-				fReadOnly = Boolean.valueOf(isReadOnly);				
-			} 
-			catch (Exception ex) {
-				fReadOnly = false;
-			}
-		}
 		if (super.getName().equals("")){
-			throw new BadManifestException("A <preference> element is declared in the manifest, but it has an empty name attribute.");
+			setName(null);
 		}		
 	}
 }
