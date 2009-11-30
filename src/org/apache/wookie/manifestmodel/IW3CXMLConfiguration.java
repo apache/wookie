@@ -70,7 +70,7 @@ public interface IW3CXMLConfiguration {
 	public static final String VALUE_ATTRIBUTE = "value"; // param, preference
 	public static final String LANG_ATTRIBUTE = "lang"; // any with xml:lang
 	public static final String DEFAULT_LANG = "en"; // any with xml:lang
-	
+	public static final String DIR_ATRRIBUTE = "dir"; // any with its:dir	
 	//
 	// Other values used
 	public static final String DEFAULT_WIDGET_VERSION = "1.0";

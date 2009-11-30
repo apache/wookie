@@ -21,6 +21,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
 import org.apache.wookie.beans.Feature;
+import org.apache.wookie.beans.License;
 import org.apache.wookie.beans.Param;
 import org.apache.wookie.beans.Participant;
 import org.apache.wookie.beans.Preference;
@@ -35,6 +36,7 @@ import org.apache.wookie.beans.WidgetType;
 import org.apache.wookie.manager.IWidgetAdminManager;
 import org.apache.wookie.manifestmodel.IFeatureEntity;
 import org.apache.wookie.manifestmodel.IIconEntity;
+import org.apache.wookie.manifestmodel.ILicenseEntity;
 import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.manifestmodel.IParamEntity;
 import org.apache.wookie.manifestmodel.IPreferenceEntity;
@@ -95,6 +97,12 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 		for(IIconEntity icon: model.getIconsList()){
 			WidgetIcon widgetIcon = new WidgetIcon(icon.getSrc(),icon.getHeight(),icon.getWidth(),widget);
 			widgetIcon.save();
+		}
+		
+		// Licenses
+		for(ILicenseEntity licenseModel: model.getLicensesList()){
+			License license = new License(licenseModel.getLicenseText(),licenseModel.getHref(), licenseModel.getLanguage(), licenseModel.getDir(), widget);
+			license.save();
 		}
 
 		// Save default preferences				

@@ -437,54 +437,58 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("PASS",  widget.getChild("description").getText());
 	}
 
-	// 19 License TODO can't test without license exposed in metadata
+	// 19 License
 	@Test
-	@Ignore
 	public void cu(){
-		
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-vcYJAPVEym/000/cu.wgt");
+		assertEquals("PASS",  widget.getChild("license").getText());	
+		assertEquals("PASS:",  widget.getChild("license").getAttributeValue("href"));
 	}
 	@Test
-	@Ignore
 	public void ci(){
-		
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-vcYJAPVEym/001/ci.wgt");
+		assertEquals("",  widget.getChild("license").getText());	
+		assertEquals(null, widget.getChild("license").getAttribute("href"));
 	}
 	@Test
-	@Ignore
 	public void ra(){
-		
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-vcYJAPVEym/002/ra.wgt");
+		assertEquals("PASS",  widget.getChild("license").getText());	
 	}
 	@Test
-	@Ignore
 	public void co(){
-		
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-vcYJAPVEym/003/co.wgt");
+		assertEquals("PASS",  widget.getChild("license").getText());			
 	}
 	
 	
-	// 20 License TODO can't test without license exposed in metadata
+	// 20 License
 	@Test
-	@Ignore
 	public void cj(){
-		
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-YUMJAPVEgI/000/cj.wgt");
+		assertEquals("PASS",  widget.getChild("license").getText());	
 	}
 	@Test
-	@Ignore
 	public void ck(){
-		
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-YUMJAPVEgI/001/ck.wgt");
+		assertEquals("PASS",  widget.getChild("license").getText());			
 	}
 	@Test
-	@Ignore
 	public void cl(){
-		
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-YUMJAPVEgI/002/cl.wgt");
+		assertEquals("",  widget.getChild("license").getText());	
 	}
 	@Test
-	@Ignore
 	public void cz(){
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-YUMJAPVEgI/003/cz.wgt");
+		assertEquals("P A S S",  widget.getChild("license").getText());	
 		
 	}
 	@Test
-	@Ignore
 	public void cx(){
-		
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-YUMJAPVEgI/004/cx.wgt");
+		assertEquals("",  widget.getChild("license").getText());	
+		assertEquals("license/pass.html", widget.getChild("license").getAttributeValue("href"));
 	}
 
 	// 21 Icon

@@ -205,6 +205,11 @@ public class WidgetManifestModel implements IManifestModel {
 		return fIconsList;
 	}
 
+	public List<ILicenseEntity> getLicensesList() {
+		return fLicensesList;
+	}
+
+	
 	public void setIconsList(List<IIconEntity> iconsList) {
 		fIconsList = iconsList;
 	}

@@ -30,6 +30,8 @@ public interface IManifestModel extends IManifestModelBase{
 	public String getIdentifier();
 
 	public List<IIconEntity> getIconsList();
+	
+	public List<ILicenseEntity> getLicensesList();
 
 	public void setIconsList(List<IIconEntity> iconsList);
 

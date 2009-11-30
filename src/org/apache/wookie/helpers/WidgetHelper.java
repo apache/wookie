@@ -16,6 +16,7 @@ package org.apache.wookie.helpers;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.wookie.beans.License;
 import org.apache.wookie.beans.PreferenceDefault;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetIcon;
@@ -117,7 +118,15 @@ public class WidgetHelper {
 		if (widget.getWidgetAuthorHref() != null) out+= " href=\""+widget.getWidgetAuthorHref()+"\"";
 		out += ">"+widget.getWidgetAuthor()+"</author>\n";
 		
-		// TODO license
+		// Do license
+		License[] licenses = License.findByValue("widget", widget);
+		for (License license: licenses){
+			out +="\t\t<license ";
+			if (license.getLang()!=null) out+=" xml:lang=\""+license.getLang()+"\"";
+			if (license.getHref()!=null) out+=" href=\""+license.getHref()+"\"";
+			if (license.getDir()!=null) out+=" its:dir=\""+license.getDir()+"\"";
+			out+=">"+license.getText()+"</license>\n";
+		}
 		
 		// TODO features
 

@@ -35,8 +35,9 @@ public abstract class LocalizedEntity implements ILocalizedEntity {
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.manifestmodel.IManifestModelBase#fromXML(org.jdom.Element)
 	 */
-	public void fromXML(Element element) {				
-		setLanguage( UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.LANG_ATTRIBUTE, Namespace.XML_NAMESPACE)));
+	public void fromXML(Element element) {
+		String lang =  UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.LANG_ATTRIBUTE, Namespace.XML_NAMESPACE));
+		if (!lang.equals("")) setLanguage(lang);
 	}
 
 }

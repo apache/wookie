@@ -31,6 +31,18 @@ CREATE TABLE `WidgetIcon` (
   CONSTRAINT `FKwidgeticonwidgetc` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)
 );
 
+CREATE TABLE `License` (
+  `id` int(11) NOT NULL auto_increment,
+  `href` text default NULL,
+  `text` longtext default NULL,
+  `dir` varchar(255) default NULL,
+  `lang` varchar(2) default NULL,
+  `widget_id` int(11) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `FKwidgetlicensewidget` (`widget_id`),
+  CONSTRAINT `FKwidgetlicensewidgetc` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)
+);
+
 CREATE TABLE `WidgetInstance` (
   `id` int(11) NOT NULL auto_increment,
   `apikey` varchar(255) NOT NULL,

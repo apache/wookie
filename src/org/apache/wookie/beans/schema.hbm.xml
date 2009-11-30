@@ -85,6 +85,17 @@
 		<property name="width"/>	
 		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />		
 	</class>
+	
+	<class name="License" table="License">
+		<id name="id" column="id">
+			<generator class="increment" />
+		</id>		
+		<property name="text" type="text" length="20480"/>	
+		<property name="href" type="text" length="2048"/>				
+		<property name="lang"/>				
+		<property name="dir"/>	
+		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />		
+	</class>
 
 	<class name="SharedData" table="SharedData">
 		<id name="id" column="id">
