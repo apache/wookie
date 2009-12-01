@@ -17,6 +17,7 @@ package org.apache.wookie.manifestmodel.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wookie.beans.ServerFeature;
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.manifestmodel.IFeatureEntity;
 import org.apache.wookie.manifestmodel.IParamEntity;
@@ -91,20 +92,21 @@ public class FeatureEntity implements IFeatureEntity {
 	
 	public void fromXML(Element element) throws BadManifestException {
 		fName = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.NAME_ATTRIBUTE));
-		if(fName == null || fName.equals("")){
-			throw new BadManifestException("A Feature is defined in the manifest, but its name attribute is empty.");
-		}
+		fRequired = true;
 		String isRequired = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.REQUIRED_ATTRIBUTE));
-		if(isRequired.equals("")){
-			fRequired = true;
-		}
-		else{
-			try {
-				fRequired = Boolean.valueOf(isRequired);
-			} 
-			catch (Exception e) {
-				fRequired = true;
-			}
+		if(isRequired.equals("false")) fRequired = false;
+		
+		if(fName.equals("")){
+			fName = null;
+		} else {
+			// Not supported?
+			if (ServerFeature.findByName(fName)==null){
+				if (fRequired){
+					throw new BadManifestException();
+				} else {
+					fName = null;
+				}
+			}	
 		}
 		
 		// parse the children (look for <param> elements)
@@ -116,7 +118,7 @@ public class FeatureEntity implements IFeatureEntity {
 			if(tag.equals(IW3CXMLConfiguration.PARAM_ELEMENT)) {	
 				IParamEntity aParam = new ParamEntity();
 				aParam.fromXML(child);
-				fParams.add(aParam);
+				if (aParam.getName()!=null && aParam.getValue()!=null) fParams.add(aParam);
 			}
 		}
 		

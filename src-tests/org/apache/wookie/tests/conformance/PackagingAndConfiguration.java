@@ -31,6 +31,8 @@ import org.junit.Test;
  * You need to be online to run these tests as they download test widgets hosted externally.
  * For more information see http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/index.html
  * 
+ * Note that in order to run the Feature tests, a ServerFeature named "feature:a9bb79c1" must be set up in the DB
+ * 
  * @author scott
  *
  */
@@ -831,33 +833,27 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("index.htm",start);
 	}
 
-	// 33 TODO Start File Text Encoding
+	// 33 Start File Text Encoding
 	@Test
-	@Ignore
 	public void e4(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-CEGwkNQcWo/000/e2.wgt");
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-dPOgiLQKNK/000/e4.wgt");
 		assertEquals("UTF-8",getStartFileEncoding(widget));
 	}
 	@Test
-	@Ignore
 	public void e5(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-CEGwkNQcWo/001/e3.wgt");
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-dPOgiLQKNK/001/e5.wgt");
 		assertEquals("ISO-8859-1",getStartFileEncoding(widget));
 	}
 	@Test
-	@Ignore
 	public void e6(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-CEGwkNQcWo/002/e4.wgt");
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-dPOgiLQKNK/002/e6.wgt");
 		assertEquals("ISO-8859-1",getStartFileEncoding(widget));
 	}
 	@Test
-	@Ignore
 	public void e7(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-CEGwkNQcWo/003/e5.wgt");
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-dPOgiLQKNK/003/e7.wgt");
 		assertEquals("UTF-8",getStartFileEncoding(widget));
 	}
-
-	
 	
 	//34
 	@Test
@@ -887,20 +883,21 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 
 	//36
 	@Test
-	@Ignore
 	public void e1(){
-		// TODO needs to test features
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-KNiLPOKdgQ/000/e1.wgt");
+		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature feature:a9bb79c1 must not have any params associated with it.");
 	}
 	//37
 	@Test
-	@Ignore
 	public void df(){
-		// TODO needs to test features
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-rZdcMBExBX/000/df.wgt");
+		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":To pass, the feature list must remain empty. ");
+
 	}
 	@Test
-	@Ignore
 	public void dr(){
-		// TODO needs to test features
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-rZdcMBExBX/001/dr.wgt");
+		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature list must contain one feature named 'feature:a9bb79c1' whose required value is false.");
 	}
 
 	//38
@@ -917,38 +914,38 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}	
 	//40
 	@Test
-	@Ignore
 	public void d5(){
-		// TODO needs to test features
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-luyKMFABLX/000/d5.wgt");
+		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the user agent must not contain any values in the feature list (i.e., the unknown feature is skipped).");
 	}
 	//41
 	@Test
-	@Ignore
 	public void dt(){
-		// TODO needs to test features
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-EGkPfzCBOz/000/dt.wgt");
+		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature list must contain one feature named 'feature:a9bb79c1' with no associated parameters. ");
 	}
 	@Test
-	@Ignore
 	public void dg(){
-		// TODO needs to test features
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-EGkPfzCBOz/001/dg.wgt");
+		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature list must contain one feature named 'feature:a9bb79c1' with one associated parameter whose name is 'PASS' and whose value is 'PASS'. ");
 	}	
 	//42
 	@Test
-	@Ignore
 	public void d6(){
-		// TODO needs to test features
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-xlgUWUVzCY/000/d6.wgt");
+		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":feature 'feature:a9bb79c1' must not have any associated parameters.");
 	}
 
 	// 43 Feature
 	@Test
-	@Ignore
 	public void e2(){
-		// TODO needs to test features
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-CEGwkNQcWo/000/e2.wgt");
+		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature feature:a9bb79c1 must not have any associated params. ");
 	}
 	@Test
-	@Ignore
 	public void e3(){
-		// TODO needs to test features
+		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-CEGwkNQcWo/001/e3.wgt");
+		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature feature:a9bb79c1 must not have any associated params. ");
 	}
 	
 	//44

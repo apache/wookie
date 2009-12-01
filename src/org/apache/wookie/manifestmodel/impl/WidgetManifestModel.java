@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.wookie.beans.ServerFeature;
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.manifestmodel.IAccessEntity;
 import org.apache.wookie.manifestmodel.IAuthorEntity;
@@ -33,6 +34,7 @@ import org.apache.wookie.manifestmodel.ILicenseEntity;
 import org.apache.wookie.manifestmodel.ILocalizedEntity;
 import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.manifestmodel.INameEntity;
+import org.apache.wookie.manifestmodel.IParamEntity;
 import org.apache.wookie.manifestmodel.IPreferenceEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.apache.wookie.util.NumberUtils;
@@ -87,8 +89,8 @@ public class WidgetManifestModel implements IManifestModel {
 	 * @throws IOException
 	 * @throws BadManifestException
 	 */
-	public WidgetManifestModel (String xmlText, String[] locales, ZipFile zip) throws JDOMException, IOException, BadManifestException {
-		super();
+	public WidgetManifestModel (String xmlText, String[] locales, ZipFile zip) throws JDOMException, IOException, BadManifestException {		
+		super();		
 		this.zip = zip;
 		fNamesList = new ArrayList<INameEntity>();
 		fDescriptionsList = new ArrayList<IDescriptionEntity>();
@@ -112,6 +114,25 @@ public class WidgetManifestModel implements IManifestModel {
 				if (!exists) fIconsList.add(new IconEntity(iconpath,null,null));	
 			}
 		}
+		//Uncomment this when performing conformance testing
+		//outputFeatureList();
+	}
+	
+	/**
+	 * Used to check output during conformance testing
+	 */
+	private void outputFeatureList(){
+		if (fFeaturesList.size()==0) return;
+		String out = "";
+		out+=("id:"+this.fIdentifier+":"+this.getLocalName("en"));
+		for (IFeatureEntity feature: fFeaturesList){
+			String params = "";
+			for (IParamEntity param:feature.getParams()){
+				params+="["+param.getName()+":"+param.getValue()+"]";
+			}
+			out+=("feature:"+feature.getName()+"required="+feature.isRequired()+"{"+params+"}");
+		}
+		System.out.println(out);
 	}
 	
 	public String getViewModes() {
@@ -387,7 +408,7 @@ public class WidgetManifestModel implements IManifestModel {
 			if(tag.equals(IW3CXMLConfiguration.FEATURE_ELEMENT)) {
 				IFeatureEntity feature = new FeatureEntity();
 				feature.fromXML(child);
-				fFeaturesList.add(feature);
+				if (feature.getName()!=null) fFeaturesList.add(feature);
 			}
 			
 			// PREFERENCE IS OPTIONAL - can be many

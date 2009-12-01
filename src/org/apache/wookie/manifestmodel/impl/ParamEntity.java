@@ -29,8 +29,8 @@ public class ParamEntity implements IParamEntity {
 	private String fValue;
 	
 	public ParamEntity(){
-		fName = "";
-		fValue = "";
+		fName = null;
+		fValue = null;
 	}
 	
 	public ParamEntity(String name, String value) {
@@ -61,7 +61,9 @@ public class ParamEntity implements IParamEntity {
 	
 	public void fromXML(Element element) throws BadManifestException {
 		fName = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.NAME_ATTRIBUTE));
+		if (fName.equals("")) fName = null;
 		fValue = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.VALUE_ATTRIBUTE));
+		if (fValue.equals("")) fValue = null;
 	}	
 
 }
