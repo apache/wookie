@@ -51,9 +51,6 @@ public class PreferenceEntity extends ParamEntity implements IPreferenceEntity {
 			fReadOnly = true;
 		} else {
 			fReadOnly = false;
-		}
-		if (super.getName().equals("")){
-			setName(null);
-		}		
+		}	
 	}
 }
