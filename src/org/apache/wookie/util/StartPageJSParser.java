@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.ServerFeature;
 import org.apache.wookie.feature.IFeature;
@@ -96,7 +97,8 @@ public class StartPageJSParser implements IStartPageConfiguration {
 		fProps = fCleaner.getProperties();
 		fProps.setOmitDoctypeDeclaration(false);
 		fProps.setOmitXmlDeclaration(true);
-		fProps.setUseCdataForScriptAndStyle(false);
+		fProps.setUseCdataForScriptAndStyle(true);
+		
 		fProps.setUseEmptyElementTags(false);		
 		try {
 			TagNode htmlNode = fCleaner.clean(fStartPage);			
@@ -164,8 +166,16 @@ public class StartPageJSParser implements IStartPageConfiguration {
 				for(TagNode node : fScriptList){
 					headNode.addChild(node);
 				}				
-				PrettyXmlSerializer ser = new PrettyXmlSerializer(fProps);						
+				PrettyXmlSerializer ser = new PrettyXmlSerializer(fProps);	
 				ser.writeXmlToFile(htmlNode, fStartPage.getAbsolutePath());		
+				
+				// go back and strip out the CDATA sections we wrapped our scripts in
+				File file = new File(fStartPage.getAbsolutePath());
+				String result = FileUtils.readFileToString(file);
+		        String contentResult = result.toString().replaceAll("<!\\[CDATA\\[", "");
+		        contentResult = contentResult.toString().replaceAll("\\]\\]>", "");
+				FileUtils.writeStringToFile(file, contentResult);
+
 			}
 		} 
 		catch (IOException ex) {
