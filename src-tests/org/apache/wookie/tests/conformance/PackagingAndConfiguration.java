@@ -42,7 +42,7 @@ import org.junit.Test;
  * Conformance testing for the Packaging and Configuration spec
  * These are functional tests and need to run against a running Wookie server on localhost:8080
  * You need to be online to run these tests as they download test widgets hosted externally.
- * For more information see http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/index.html
+ * For more information see http://dev.w3.org/2006/waf/widgets/test-suite/index.html
  * 
  * Note that in order to run the Feature tests, a ServerFeature named "feature:a9bb79c1" must be set up in the DB
  * 
@@ -53,12 +53,12 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	// 1 files
 	@Test
 	public void b5(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RRZxvvTFHx/000/b5.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RRZxvvTFHx/000/b5.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 	@Test
 	public void b6(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RRZxvvTFHx/001/b6.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RRZxvvTFHx/001/b6.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("index.html",start);
 	}
@@ -66,33 +66,33 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	// 2 files
 	@Test
 	public void bg(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-dxzVDWpaWg/000/bg.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-dxzVDWpaWg/000/bg.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 
 	@Test
 	public void bh(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-dxzVDWpaWg/001/bh.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-dxzVDWpaWg/001/bh.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 
 	// 3 bad magic number
 	@Test
 	public void dk(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-qxLSCRCHlN/000/dk.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-qxLSCRCHlN/000/dk.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 
 	// 4 start files
 	@Test
 	public void dn(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FDGQBROtzW/000/dn.test");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FDGQBROtzW/000/dn.test");
 		String start = locateStartFile(widget);
 		assertEquals("index.htm",start);
 	}
 	@Test
 	public void dm(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FDGQBROtzW/001/dm");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FDGQBROtzW/001/dm");
 		String start = locateStartFile(widget);
 		assertEquals("index.htm",start);
 	}
@@ -101,24 +101,24 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	// 5
 	@Test
 	public void dl(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-uLHyIMvLwz/000/dl.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-uLHyIMvLwz/000/dl.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 	@Test
 	public void doh(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-uLHyIMvLwz/001/split.wgt.001");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-uLHyIMvLwz/001/split.wgt.001");
 		assertFalse(err == null||err.equals(""));
 	}	
 	@Test
 	public void dp(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-uLHyIMvLwz/002/dp.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-uLHyIMvLwz/002/dp.wgt");
 		assertFalse(err == null||err.equals(""));
 	}
 	// 6 defaults
 	@Test 
 	@Ignore
 	public void ds(){
-		// Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-klLDaEgJeU/002/bv.wgt");
+		// Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-klLDaEgJeU/002/bv.wgt");
 		// TODO 
 		// To pass, author email must be null, 
 		// author href must be null, 
@@ -147,70 +147,70 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	// 7 config.xml
 	@Test
 	public void dq(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-ZjcdAxFMSx/000/dq.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-ZjcdAxFMSx/000/dq.wgt");
 		assertFalse(err == null||err.equals(""));
 	}
 	@Test
 	public void dw(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-ZjcdAxFMSx/001/dw.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-ZjcdAxFMSx/001/dw.wgt");
 		assertFalse(err == null||err.equals(""));
 	}
 
 	// 8 xml
 	@Test
 	public void bt(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-klLDaEgJeU/000/bt.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-klLDaEgJeU/000/bt.wgt");
 		assertFalse(err == null||err.equals(""));
 	}
 	@Test
 	public void bu(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-klLDaEgJeU/001/bu.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-klLDaEgJeU/001/bu.wgt");
 		assertFalse(err == null||err.equals(""));
 	}
 
 	@Test 
 	public void bv(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-klLDaEgJeU/002/bv.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-klLDaEgJeU/002/bv.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("pass&.html",start);
 	}
 	@Test
 	public void bw(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-klLDaEgJeU/003/bw.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-klLDaEgJeU/003/bw.wgt");
 		assertEquals("PASS", widget.getChild("author").getText());
 	}
 	// 9 widget
 	@Test
 	public void aa(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-ACCJfDGwDQ/000/aa.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-ACCJfDGwDQ/000/aa.wgt");
 		assertTrue(err.contains("bad namespace"));
 	}
 	@Test
 	public void ab(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-ACCJfDGwDQ/001/ab.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-ACCJfDGwDQ/001/ab.wgt");
 		assertTrue(err.contains("bad namespace"));
 	}
 	@Test
 	public void ac(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-ACCJfDGwDQ/002/ac.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-ACCJfDGwDQ/002/ac.wgt");
 		assertTrue(err.contains("bad namespace"));
 	}
 
 	// 10 id
 	@Test
 	public void b1(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RawAIWHoMs/000/b1.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RawAIWHoMs/000/b1.wgt");
 		assertEquals("pass:", widget.getAttributeValue("identifier"));
 	}
 	@Test
 	public void rd(){
 		// We can't allow null ids, we use generated IDs where they aren't valid
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RawAIWHoMs/001/rd.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RawAIWHoMs/001/rd.wgt");
 		assertTrue(widget.getAttributeValue("identifier").contains("generated"));
 	}
 	@Test
 	public void b2(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RawAIWHoMs/002/b2.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RawAIWHoMs/002/b2.wgt");
 		assertEquals("pass:", widget.getAttributeValue("identifier"));
 
 	}
@@ -219,17 +219,17 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 
 	@Test
 	public void cf(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-VerEfVGeTc/000/cf.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-VerEfVGeTc/000/cf.wgt");
 		assertEquals("PASS", widget.getAttributeValue("version"));
 	}
 	@Test
 	public void cg(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-VerEfVGeTc/001/cg.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-VerEfVGeTc/001/cg.wgt");
 		assertEquals("", widget.getAttributeValue("version"));
 	}
 	@Test
 	public void ch(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-VerEfVGeTc/002/ch.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-VerEfVGeTc/002/ch.wgt");
 		assertEquals("PASS", widget.getAttributeValue("version"));
 	}
 
@@ -238,74 +238,74 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 
 	@Test
 	public void ax(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-BxjoiWHaMr/000/ax.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-BxjoiWHaMr/000/ax.wgt");
 		assertEquals("1234", getWidgetHeight(widget));
 	}
 	@Test
 	public void ay(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-BxjoiWHaMr/001/ay.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-BxjoiWHaMr/001/ay.wgt");
 		assertEquals("0", getWidgetHeight(widget));
 	}
 	@Test
 	public void az(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-BxjoiWHaMr/002/az.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-BxjoiWHaMr/002/az.wgt");
 		assertEquals("100", getWidgetHeight(widget));
 	}
 	@Test
 	public void a1(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-BxjoiWHaMr/003/a1.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-BxjoiWHaMr/003/a1.wgt");
 		assertEquals("123", getWidgetHeight(widget));
 	}
 	@Test
 	public void a2(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-BxjoiWHaMr/004/a2.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-BxjoiWHaMr/004/a2.wgt");
 		assertEquals("", getWidgetHeight(widget));
 	}
 	@Test
 	public void a3(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-BxjoiWHaMr/005/a3.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-BxjoiWHaMr/005/a3.wgt");
 		assertEquals("", getWidgetHeight(widget));
 	}
 	@Test
 	public void a4(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-BxjoiWHaMr/006/a4.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-BxjoiWHaMr/006/a4.wgt");
 		assertEquals("0", getWidgetHeight(widget));
 	}	
 	// 13 Width
 
 	@Test
 	public void c9(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UScJfQHPPy/000/c9.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-UScJfQHPPy/000/c9.wgt");
 		assertEquals("0", getWidgetWidth(widget));
 	}
 	@Test
 	public void cq(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UScJfQHPPy/001/cq.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-UScJfQHPPy/001/cq.wgt");
 		assertEquals("1234", getWidgetWidth(widget));
 	}
 	@Test
 	public void cw(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UScJfQHPPy/002/cw.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-UScJfQHPPy/002/cw.wgt");
 		assertEquals("100", getWidgetWidth(widget));
 	}
 	@Test
 	public void ce(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UScJfQHPPy/003/ce.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-UScJfQHPPy/003/ce.wgt");
 		assertEquals("123", getWidgetWidth(widget));
 	}
 	@Test
 	public void cr(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UScJfQHPPy/004/cr.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-UScJfQHPPy/004/cr.wgt");
 		assertEquals("", getWidgetWidth(widget));
 	}
 	@Test
 	public void ct(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UScJfQHPPy/005/ct.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-UScJfQHPPy/005/ct.wgt");
 		assertEquals("", getWidgetWidth(widget));
 	}
 	@Test
 	public void cy(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UScJfQHPPy/006/cy.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-UScJfQHPPy/006/cy.wgt");
 		assertEquals("0", getWidgetWidth(widget));
 	}
 
@@ -314,7 +314,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 
 	@Test
 	public void d3(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-MFcsScFEaC/000/d3.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-MFcsScFEaC/000/d3.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("index.htm",start);
 	}
@@ -323,19 +323,19 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 
 	@Test
 	public void bx(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-LYLMhryBBT/000/bx.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-LYLMhryBBT/000/bx.wgt");
 		assertEquals("PASS", getWidgetTitle(widget));
 	}
 
 	@Test
 	public void by(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-LYLMhryBBT/001/by.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-LYLMhryBBT/001/by.wgt");
 		assertEquals("", getWidgetTitle(widget));
 	}
 
 	@Test
 	public void bz(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-LYLMhryBBT/002/bz.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-LYLMhryBBT/002/bz.wgt");
 		assertEquals("PASS", getWidgetTitle(widget));
 	}
 
@@ -343,57 +343,57 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 
 	@Test
 	public void ao(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-AYLMhryBnD/000/ao.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-AYLMhryBnD/000/ao.wgt");
 		assertEquals("PASS", getWidgetTitle(widget));
 	}
 
 	@Test
 	public void ap(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-AYLMhryBnD/001/ap.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-AYLMhryBnD/001/ap.wgt");
 		assertEquals("P A S S", getWidgetTitle(widget));
 	}
 
 	@Test
 	public void aq(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-AYLMhryBnD/002/aq.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-AYLMhryBnD/002/aq.wgt");
 		assertEquals("PASS", getWidgetTitle(widget));
 	}
 
 	@Test
 	public void ar(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-AYLMhryBnD/003/ar.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-AYLMhryBnD/003/ar.wgt");
 		assertEquals("PASS", getWidgetShortName(widget));
 	}
 
 	@Test
 	public void as(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-AYLMhryBnD/004/as.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-AYLMhryBnD/004/as.wgt");
 		assertEquals("PASS", getWidgetTitle(widget));
 		assertEquals("PASS", getWidgetShortName(widget));
 	}
 
 	@Test
 	public void at(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-AYLMhryBnD/005/at.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-AYLMhryBnD/005/at.wgt");
 		assertEquals("PASS", getWidgetTitle(widget));
 		assertEquals("PASS", getWidgetShortName(widget));
 	}
 
 	@Test
 	public void au(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-AYLMhryBnD/006/au.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-AYLMhryBnD/006/au.wgt");
 		assertEquals("", getWidgetShortName(widget));
 	}
 
 	@Test
 	public void av(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-AYLMhryBnD/007/av.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-AYLMhryBnD/007/av.wgt");
 		assertEquals("", getWidgetTitle(widget));
 	}
 
 	@Test
 	public void oa(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-AYLMhryBnD/008/oa.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-AYLMhryBnD/008/oa.wgt");
 		assertEquals("PASS", getWidgetTitle(widget));
 	}
 
@@ -401,78 +401,78 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 
 	@Test
 	public void c6(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UEMbyHERkI/000/c6.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-UEMbyHERkI/000/c6.wgt");
 		assertEquals("PASS",  widget.getChild("description").getText());
 	}
 	@Test
 	public void c7(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UEMbyHERkI/001/c7.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-UEMbyHERkI/001/c7.wgt");
 		assertEquals("",  widget.getChild("description").getText());
 	}
 	@Test
 	public void rb(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UEMbyHERkI/002/rb.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-UEMbyHERkI/002/rb.wgt");
 		assertEquals("PASS",  widget.getChild("description").getText());
 	}
 	@Test
 	public void c8(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-UEMbyHERkI/003/c8.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-UEMbyHERkI/003/c8.wgt");
 		assertEquals("PASS", widget.getChild("description").getText());
 	}
 
 	// 18 Description
 	@Test
 	public void cp(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-VdCEyDVSA/000/cp.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-VdCEyDVSA/000/cp.wgt");
 		assertEquals("PASS",  widget.getChild("description").getText());
 	}
 	@Test
 	public void ca(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-VdCEyDVSA/001/ca.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-VdCEyDVSA/001/ca.wgt");
 		assertEquals("PASS",  widget.getChild("description").getText());
 	}
 	@Test
 	public void cs(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-VdCEyDVSA/002/cs.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-VdCEyDVSA/002/cs.wgt");
 		assertEquals("",  widget.getChild("description").getText());
 	}
 	@Test
 	public void cd(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-VdCEyDVSA/003/cd.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-VdCEyDVSA/003/cd.wgt");
 		assertEquals("P A S S",  widget.getChild("description").getText());
 	}
 	@Test
 	public void x1(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-VdCEyDVSA/004/x1.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-VdCEyDVSA/004/x1.wgt");
 		assertEquals("PASS",  widget.getChild("description").getText());
 	}
 	@Test
 	public void x2(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-VdCEyDVSA/005/x2.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-VdCEyDVSA/005/x2.wgt");
 		assertEquals("PASS",  widget.getChild("description").getText());
 	}
 
 	// 19 License
 	@Test
 	public void cu(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-vcYJAPVEym/000/cu.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-vcYJAPVEym/000/cu.wgt");
 		assertEquals("PASS",  widget.getChild("license").getText());	
 		assertEquals("PASS:",  widget.getChild("license").getAttributeValue("href"));
 	}
 	@Test
 	public void ci(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-vcYJAPVEym/001/ci.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-vcYJAPVEym/001/ci.wgt");
 		assertEquals("",  widget.getChild("license").getText());	
 		assertEquals(null, widget.getChild("license").getAttribute("href"));
 	}
 	@Test
 	public void ra(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-vcYJAPVEym/002/ra.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-vcYJAPVEym/002/ra.wgt");
 		assertEquals("PASS",  widget.getChild("license").getText());	
 	}
 	@Test
 	public void co(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-vcYJAPVEym/003/co.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-vcYJAPVEym/003/co.wgt");
 		assertEquals("PASS",  widget.getChild("license").getText());			
 	}
 	
@@ -480,28 +480,28 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	// 20 License
 	@Test
 	public void cj(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-YUMJAPVEgI/000/cj.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-YUMJAPVEgI/000/cj.wgt");
 		assertEquals("PASS",  widget.getChild("license").getText());	
 	}
 	@Test
 	public void ck(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-YUMJAPVEgI/001/ck.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-YUMJAPVEgI/001/ck.wgt");
 		assertEquals("PASS",  widget.getChild("license").getText());			
 	}
 	@Test
 	public void cl(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-YUMJAPVEgI/002/cl.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-YUMJAPVEgI/002/cl.wgt");
 		assertEquals("",  widget.getChild("license").getText());	
 	}
 	@Test
 	public void cz(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-YUMJAPVEgI/003/cz.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-YUMJAPVEgI/003/cz.wgt");
 		assertEquals("P A S S",  widget.getChild("license").getText());	
 		
 	}
 	@Test
 	public void cx(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-YUMJAPVEgI/004/cx.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-YUMJAPVEgI/004/cx.wgt");
 		assertEquals("",  widget.getChild("license").getText());	
 		assertEquals("license/pass.html", widget.getChild("license").getAttributeValue("href"));
 	}
@@ -509,45 +509,45 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	// 21 Icon
 	@Test
 	public void d1(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-iipTwNshRg/000/d1.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-iipTwNshRg/000/d1.wgt");
 		assertEquals("icon.png",getIcon(widget));
 	}
 
 	@Test
 	public void ga(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-iipTwNshRg/001/ga.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-iipTwNshRg/001/ga.wgt");
 		assertEquals("icon.png",getIcon(widget));
 	}
 	
 	// 22 Icon
 	@Test
 	public void d2(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-roCaKRxZhS/000/d2.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-roCaKRxZhS/000/d2.wgt");
 		assertEquals("icon.png",getIcon(widget));
 	}
 	
 	//23
 	@Test
 	public void zz(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-iuJHnskSHq/000/zz.wgt");
-		assertEquals("pass.png",getIcon(widget));
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-iuJHnskSHq/000/zz.wgt");
+		assertEquals(null,getIcon(widget));
 	}
 	@Test
 	public void za(){
 		// TODO this is actually pretty hard to validate as it requires a list of all icons
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-iuJHnskSHq/001/za.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-iuJHnskSHq/001/za.wgt");
 		assertEquals("pass.png",getIcon(widget));
 	}
 	@Test
 	public void zb(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-iuJHnskSHq/002/zb.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-iuJHnskSHq/002/zb.wgt");
 		assertEquals("locales/en/icon.png",getIcon(widget));
 		assertEquals(null, widget.getChild("icon").getAttribute("width"));
 		assertEquals(null, widget.getChild("icon").getAttribute("height"));
 	}
 	@Test
 	public void zc(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-iuJHnskSHq/003/zc.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-iuJHnskSHq/003/zc.wgt");
 		assertEquals("locales/en/custom.png",getIcon(widget));
 		assertEquals(null, widget.getChild("icon").getAttribute("width"));
 		assertEquals(null, widget.getChild("icon").getAttribute("height"));
@@ -556,91 +556,91 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	//24
 	@Test
 	public void ix(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-eHUaPbgfKg/000/ix.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-eHUaPbgfKg/000/ix.wgt");
 		assertEquals("1234", widget.getChild("icon").getAttributeValue("height"));
 	}
 	@Test
-	public void iy2(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-eHUaPbgfKg/001/iy.wgt");
+	public void iy(){
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-eHUaPbgfKg/001/iy.wgt");
 		assertEquals("0", widget.getChild("icon").getAttributeValue("height"));
 	}
 	@Test
 	public void iz(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-eHUaPbgfKg/002/iz.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-eHUaPbgfKg/002/iz.wgt");
 		assertEquals("100", widget.getChild("icon").getAttributeValue("height"));
 	}
 	@Test
 	public void i1(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-eHUaPbgfKg/003/i1.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-eHUaPbgfKg/003/i1.wgt");
 		assertEquals("123", widget.getChild("icon").getAttributeValue("height"));
 	}
 	@Test
 	public void i2(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-eHUaPbgfKg/004/i2.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-eHUaPbgfKg/004/i2.wgt");
 		assertEquals(null, widget.getChild("icon").getAttribute("height"));
 	}
 	@Test
 	public void i3(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-eHUaPbgfKg/005/i3.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-eHUaPbgfKg/005/i3.wgt");
 		assertEquals(null, widget.getChild("icon").getAttribute("height"));
 	}
 	@Test
 	public void i4(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-eHUaPbgfKg/006/i4.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-eHUaPbgfKg/006/i4.wgt");
 		assertEquals("0", widget.getChild("icon").getAttributeValue("height"));	}
 	
 	//25
 	@Test
 	public void iq(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-nYAcofihvj/000/iq.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-nYAcofihvj/000/iq.wgt");
 		assertEquals("1234", widget.getChild("icon").getAttributeValue("width"));	
 	}
 	@Test
 	public void i9(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-nYAcofihvj/001/i9.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-nYAcofihvj/001/i9.wgt");
 		assertEquals("0", widget.getChild("icon").getAttributeValue("width"));	
 	}
 	@Test
 	public void iw(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-nYAcofihvj/002/iw.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-nYAcofihvj/002/iw.wgt");
 		assertEquals("100", widget.getChild("icon").getAttributeValue("width"));	
 	}
 	@Test
 	public void ie(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-nYAcofihvj/003/ie.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-nYAcofihvj/003/ie.wgt");
 		assertEquals("123", widget.getChild("icon").getAttributeValue("width"));	
 	}
 	@Test
 	public void ir(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-nYAcofihvj/004/ir.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-nYAcofihvj/004/ir.wgt");
 		assertEquals(null, widget.getChild("icon").getAttribute("width"));	
 	}
 	@Test
 	public void it(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-nYAcofihvj/005/it.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-nYAcofihvj/005/it.wgt");
 		assertEquals(null, widget.getChild("icon").getAttribute("width"));	
 	}
 	@Test
-	public void iy(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-nYAcofihvj/006/iy.wgt");
+	public void ib(){
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-nYAcofihvj/006/ib.wgt");
 		assertEquals("0", widget.getChild("icon").getAttributeValue("width"));	
 	}
 	
 	// 26 Author
 	@Test
 	public void b7(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-sdwhMozwIc/000/b7.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-sdwhMozwIc/000/b7.wgt");
 		assertEquals("PASS", widget.getChild("author").getText());
 	}
 	@Test
 	public void b8(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-sdwhMozwIc/001/b8.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-sdwhMozwIc/001/b8.wgt");
 		assertEquals("", widget.getChild("author").getText());
 
 	}
 	@Test
 	public void b9(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-sdwhMozwIc/002/b9.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-sdwhMozwIc/002/b9.wgt");
 		assertEquals("PASS", widget.getChild("author").getText());
 
 	}
@@ -648,61 +648,61 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	// 27 Author  
 	@Test
 	public void af(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/000/af.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/000/af.wgt");
 		assertEquals("PASS", widget.getChild("author").getText());
 	}
 	@Test
 	public void ag(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/001/ag.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/001/ag.wgt");
 		assertEquals("P A S S", widget.getChild("author").getText());
 	}
 	@Test
 	public void ah(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/002/ah.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/002/ah.wgt");
 		assertEquals("PASS", widget.getChild("author").getText());
 	}
 	@Test
 	public void ai(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/003/ai.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/003/ai.wgt");
 		assertEquals("PASS", widget.getChild("author").getAttributeValue("email"));
 	}
 	@Test
 	public void aj(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/004/aj.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/004/aj.wgt");
 		assertEquals("PASS", widget.getChild("author").getText());
 		assertEquals("PASS", widget.getChild("author").getAttributeValue("email"));
 		assertEquals("PASS:PASS", widget.getChild("author").getAttributeValue("href"));
 	}
 	@Test
 	public void ak(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/005/ak.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/005/ak.wgt");
 		assertEquals("PASS", widget.getChild("author").getText());
 		assertEquals("PASS", widget.getChild("author").getAttributeValue("email"));
 		assertEquals("PASS:PASS", widget.getChild("author").getAttributeValue("href"));	}
 	@Test
 	public void al(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/006/al.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/006/al.wgt");
 		assertEquals("", widget.getChild("author").getText());
 	}
 	@Test
 	public void am(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/007/am.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/007/am.wgt");
 		assertEquals("PASS:PASS", widget.getChild("author").getAttributeValue("href"));	}
 	@Test
 	public void an(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-argMozRiC/008/an.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/008/an.wgt");
 		assertEquals(null, widget.getChild("author").getAttribute("href"));	}
 
 	// 28 Preference
 	@Test
 	public void a5(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/000/a5.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/000/a5.wgt");
 		assertTrue(widget.getChildren("preference") == null || widget.getChildren("preference").size() == 0);
 	}
 
 	@Test
 	public void a6(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/001/a6.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/001/a6.wgt");
 		assertTrue(widget.getChildren("preference").size() == 1);
 		assertEquals("PASS", widget.getChild("preference").getAttributeValue("name"));
 		assertEquals("PASS", widget.getChild("preference").getAttributeValue("value")); 
@@ -710,7 +710,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}		
 	@Test
 	public void a7(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/002/a7.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/002/a7.wgt");
 		assertTrue(widget.getChildren("preference").size() == 1);
 		assertEquals("PASS", widget.getChild("preference").getAttributeValue("name"));
 		assertEquals("PASS", widget.getChild("preference").getAttributeValue("value")); 
@@ -718,7 +718,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}			
 	@Test
 	public void a8(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/003/a8.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/003/a8.wgt");
 		assertTrue(widget.getChildren("preference").size() == 1);
 		assertEquals("PASS", widget.getChild("preference").getAttributeValue("name"));
 		assertEquals("PASS", widget.getChild("preference").getAttributeValue("value")); 
@@ -726,7 +726,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}	
 	@Test
 	public void a9(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/004/a9.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/004/a9.wgt");
 		assertTrue(widget.getChildren("preference").size() == 1);
 		assertEquals("PASS", widget.getChild("preference").getAttributeValue("name"));
 		assertEquals("PASS", widget.getChild("preference").getAttributeValue("value")); 
@@ -734,7 +734,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}	
 	@Test
 	public void ba(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/005/ba.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/005/ba.wgt");
 		assertTrue(widget.getChildren("preference").size() == 1);
 		assertEquals("a", widget.getChild("preference").getAttributeValue("name"));
 		assertEquals("a", widget.getChild("preference").getAttributeValue("value")); 
@@ -743,7 +743,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void bb(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/006/bb.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/006/bb.wgt");
 		List<Element> preferences = widget.getChildren("preference");
 		assertTrue(preferences.size() == 2);
 		Element pref1 = preferences.get(0);
@@ -759,7 +759,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void bc(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/007/bc.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/007/bc.wgt");
 		List<Element> preferences = widget.getChildren("preference");
 		assertTrue(preferences.size() == 1);
 		Element pref1 = preferences.get(0);
@@ -770,19 +770,19 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}
 	@Test
 	public void bd(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/008/bd.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/008/bd.wgt");
 		assertTrue(widget.getChildren("preference").size() == 1);
 		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));
 	}
 	@Test
 	public void be(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/009/be.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/009/be.wgt");
 		assertTrue(widget.getChildren("preference").size() == 1);
 		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));
 	}
 	@Test
 	public void bf(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-DwhJBIJRQN/010/bf.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/010/bf.wgt");
 		assertTrue(widget.getChildren("preference").size() == 1);
 		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));
 	}
@@ -790,18 +790,18 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	// 29
 	@Test
 	public void bq(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-hkWmGJgfve/000/bq.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-hkWmGJgfve/000/bq.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("pass.html",start);
 	}
 	@Test
 	public void br(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-hkWmGJgfve/001/br.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-hkWmGJgfve/001/br.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 	@Test
 	public void bs(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-hkWmGJgfve/002/bs.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-hkWmGJgfve/002/bs.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("pass.html",start);
 	}
@@ -809,19 +809,19 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	//30
 	@Test
 	public void d7(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-LTUJGJFCOU/000/d7.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-LTUJGJFCOU/000/d7.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("index.htm",start);
 	}
 	@Test
 	public void d8(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-LTUJGJFCOU/001/d8.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-LTUJGJFCOU/001/d8.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("index.htm",start);
 	}
 	@Test
 	public void gb(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-LTUJGJFCOU/002/gb.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-LTUJGJFCOU/002/gb.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("index.htm",start);
 	}
@@ -829,19 +829,19 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	//31
 	@Test
 	public void db(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-pIffQywZin/000/db.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-pIffQywZin/000/db.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("index.htm",start);
 	}
 	//32
 	@Test
 	public void d9(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-LQcjNKBLUZ/000/d9.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-LQcjNKBLUZ/000/d9.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 	@Test
 	public void d0(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-LQcjNKBLUZ/001/d0.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-LQcjNKBLUZ/001/d0.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("index.htm",start);
 	}
@@ -849,36 +849,36 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	// 33 Start File Text Encoding
 	@Test
 	public void e4(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-dPOgiLQKNK/000/e4.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-dPOgiLQKNK/000/e4.wgt");
 		assertEquals("UTF-8",getStartFileEncoding(widget));
 	}
 	@Test
 	public void e5(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-dPOgiLQKNK/001/e5.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-dPOgiLQKNK/001/e5.wgt");
 		assertEquals("ISO-8859-1",getStartFileEncoding(widget));
 	}
 	@Test
 	public void e6(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-dPOgiLQKNK/002/e6.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-dPOgiLQKNK/002/e6.wgt");
 		assertEquals("ISO-8859-1",getStartFileEncoding(widget));
 	}
 	@Test
 	public void e7(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-dPOgiLQKNK/003/e7.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-dPOgiLQKNK/003/e7.wgt");
 		assertEquals("UTF-8",getStartFileEncoding(widget));
 	}
 	
 	//34
 	@Test
 	public void dc(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-paIabGIIMC/000/dc.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-paIabGIIMC/000/dc.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("index.php",start);
 		assertEquals("text/html",getStartFileContentType(widget));
 	}
 	@Test
 	public void dv(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-paIabGIIMC/001/dv.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-paIabGIIMC/001/dv.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 	
@@ -897,74 +897,74 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	//36
 	@Test
 	public void e1(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-KNiLPOKdgQ/000/e1.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-KNiLPOKdgQ/000/e1.wgt");
 		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature feature:a9bb79c1 must not have any params associated with it.");
 	}
 	//37
 	@Test
 	public void df(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-rZdcMBExBX/000/df.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-rZdcMBExBX/000/df.wgt");
 		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":To pass, the feature list must remain empty. ");
 
 	}
 	@Test
 	public void dr(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-rZdcMBExBX/001/dr.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-rZdcMBExBX/001/dr.wgt");
 		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature list must contain one feature named 'feature:a9bb79c1' whose required value is false.");
 	}
 
 	//38
 	@Test
 	public void d4(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-paWbGHyVrG/000/d4.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-paWbGHyVrG/000/d4.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 	//39
 	@Test
 	public void e8(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-vOBaOcWfll/000/e8.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-vOBaOcWfll/000/e8.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 	//40
 	@Test
 	public void d5(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-luyKMFABLX/000/d5.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-luyKMFABLX/000/d5.wgt");
 		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the user agent must not contain any values in the feature list (i.e., the unknown feature is skipped).");
 	}
 	//41
 	@Test
 	public void dt(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-EGkPfzCBOz/000/dt.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-EGkPfzCBOz/000/dt.wgt");
 		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature list must contain one feature named 'feature:a9bb79c1' with no associated parameters. ");
 	}
 	@Test
 	public void dg(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-EGkPfzCBOz/001/dg.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-EGkPfzCBOz/001/dg.wgt");
 		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature list must contain one feature named 'feature:a9bb79c1' with one associated parameter whose name is 'PASS' and whose value is 'PASS'. ");
 	}	
 	//42
 	@Test
 	public void d6(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-xlgUWUVzCY/000/d6.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-xlgUWUVzCY/000/d6.wgt");
 		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":feature 'feature:a9bb79c1' must not have any associated parameters.");
 	}
 
 	// 43 Feature
 	@Test
 	public void e2(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-CEGwkNQcWo/000/e2.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-CEGwkNQcWo/000/e2.wgt");
 		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature feature:a9bb79c1 must not have any associated params. ");
 	}
 	@Test
 	public void e3(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-CEGwkNQcWo/001/e3.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-CEGwkNQcWo/001/e3.wgt");
 		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature feature:a9bb79c1 must not have any associated params. ");
 	}
 	
 	//44
 	@Test
 	public void xx(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-bbbbbbbbbb/000/xx.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-bbbbbbbbbb/000/xx.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("pass.html",start);
 	}
@@ -972,7 +972,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	//45 Start file and icons
 	@Test
 	public void aw(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-BnWPqNvNVo/000/aw.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-BnWPqNvNVo/000/aw.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("pass.html",start);
 		assertEquals("icon.png",getIcon(widget));
@@ -981,76 +981,76 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	//46  Start file
 	@Test
 	public void cc(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RGNHRBWNZV/008/cc.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RGNHRBWNZV/008/cc.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("index.htm",start);
 	}
 	@Test
 	public void cv(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RGNHRBWNZV/009/cv.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RGNHRBWNZV/009/cv.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("index.html",start);
 	}
 	@Test
 	public void b3(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RGNHRBWNZV/000/b3.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RGNHRBWNZV/000/b3.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("index.htm",start);
 		assertEquals("text/html",getStartFileContentType(widget));
 	}
 	@Test
 	public void b4(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RGNHRBWNZV/001/b4.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RGNHRBWNZV/001/b4.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("index.html",start);
 		assertEquals("text/html",getStartFileContentType(widget));
 	}
 	@Test
 	public void b0(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RGNHRBWNZV/002/b0.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RGNHRBWNZV/002/b0.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 	@Test
 	public void c1(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RGNHRBWNZV/003/c1.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RGNHRBWNZV/003/c1.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 	@Test
 	public void c2(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RGNHRBWNZV/004/c2.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RGNHRBWNZV/004/c2.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 	@Test
 	public void c3(){
-		String err = processWidgetWithErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RGNHRBWNZV/005/c3.wgt");
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RGNHRBWNZV/005/c3.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 	@Test
 	public void c4(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RGNHRBWNZV/006/c4.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RGNHRBWNZV/006/c4.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("index.html",start);
 	}
 	@Test
 	public void c5(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-RGNHRBWNZV/007/c5.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RGNHRBWNZV/007/c5.wgt");
 		String start = locateStartFile(widget);
 		assertEquals("index.html",start);
 	}
 	// 47 Icons
 	@Test
 	public void bj(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/000/bj.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/000/bj.wgt");
 		assertEquals("icon.png",getIcon(widget));	
 	}
 	@Test
 	public void bk(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/001/bk.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/001/bk.wgt");
 		assertEquals("locales/en/icon.png",getIcon(widget));	
 	}
 	@Test
 	public void bl(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/002/bl.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/002/bl.wgt");
 		List icons = widget.getChildren("icon");
 		assertTrue(icons.size() == 2);
 		assertEquals("locales/en/icon.jpg",getLocalIconPath(widget,((Element)icons.get(0))));
@@ -1058,7 +1058,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}
 	@Test
 	public void bm(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/003/bm.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/003/bm.wgt");
 		List icons = widget.getChildren("icon");
 		assertTrue(icons.size() == 2);
 		assertEquals("locales/en/icon.jpg",getLocalIconPath(widget,((Element)icons.get(0))));
@@ -1066,15 +1066,15 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}
 	@Test
 	public void bn(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/004/bn.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/004/bn.wgt");
 		List icons = widget.getChildren("icon");
 		assertTrue(icons.size() == 2);
 		assertEquals("icons/pass.png",getLocalIconPath(widget,((Element)icons.get(0))));
-		assertEquals("icon.png",getLocalIconPath(widget,((Element)icons.get(1))));
+		assertEquals("locales/en/icon.png",getLocalIconPath(widget,((Element)icons.get(1))));
 	}
 	@Test
 	public void bo(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/005/bo.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/005/bo.wgt");
 		List icons = widget.getChildren("icon");
 		assertTrue(icons.size() == 2);
 		assertEquals("icon.png", getLocalIconPath(widget,((Element)icons.get(0))));
@@ -1083,7 +1083,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	@Test
 	public void bp(){
 		// Note the original test case is in error here
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/006/bp.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/006/bp.wgt");
 		List icons = widget.getChildren("icon");
 		assertTrue(icons.size() == 2);
 		assertEquals("icon.png",getLocalIconPath(widget,((Element)icons.get(0))));
@@ -1091,12 +1091,12 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}
 	@Test
 	public void ad(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/007/ad.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/007/ad.wgt");
 		assertEquals("icon.png",getIcon(widget));	}
 
 	@Test
 	public void ae(){
-		Element widget = processWidgetNoErrors("http://samaxes.svn.beanstalkapp.com/widgets_compatibility_matrix/trunk/test-cases/ta-FAFYMEGELU/008/ae.wgt");
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/008/ae.wgt");
 		assertEquals("locales/en/icon.png",getIcon(widget));
 	}
 
