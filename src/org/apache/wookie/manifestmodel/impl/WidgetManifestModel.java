@@ -37,6 +37,7 @@ import org.apache.wookie.manifestmodel.INameEntity;
 import org.apache.wookie.manifestmodel.IParamEntity;
 import org.apache.wookie.manifestmodel.IPreferenceEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.IRIValidator;
 import org.apache.wookie.util.NumberUtils;
 import org.apache.wookie.util.RandomGUID;
 import org.apache.wookie.util.UnicodeUtils;
@@ -292,13 +293,16 @@ public class WidgetManifestModel implements IManifestModel {
 			// try the old one
 			fIdentifier = element.getAttributeValue(IW3CXMLConfiguration.UID_ATTRIBUTE);
 		}
+		// Normalize spaces
+		if(fIdentifier != null) fIdentifier = UnicodeUtils.normalizeSpaces(fIdentifier);
+		// Not a valid IRI?
+		if (!IRIValidator.isValidIRI(fIdentifier)){
+			fIdentifier = null;
+		}
 		if(fIdentifier == null){
 			//give up & generate one
 			RandomGUID r = new RandomGUID();
 			fIdentifier = "generated-uid-" + r.toString();
-		} else {
-			//normalize spaces
-			fIdentifier = UnicodeUtils.normalizeSpaces(fIdentifier);
 		}
 		// VERSION IS OPTIONAL		
 		fVersion = element.getAttributeValue(IW3CXMLConfiguration.VERSION_ATTRIBUTE);

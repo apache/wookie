@@ -22,6 +22,7 @@ import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.manifestmodel.IFeatureEntity;
 import org.apache.wookie.manifestmodel.IParamEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.IRIValidator;
 import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
 /**
@@ -95,10 +96,18 @@ public class FeatureEntity implements IFeatureEntity {
 		fRequired = true;
 		String isRequired = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.REQUIRED_ATTRIBUTE));
 		if(isRequired.equals("false")) fRequired = false;
-		
+
 		if(fName.equals("")){
 			fName = null;
 		} else {
+			// Not a valid IRI?
+			if (!IRIValidator.isValidIRI(fName)){
+				if (fRequired) {
+					throw new BadManifestException();
+				} else {
+					fName = null;	
+				}
+			}
 			// Not supported?
 			if (ServerFeature.findByName(fName)==null){
 				if (fRequired){

@@ -211,7 +211,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	@Test
 	public void b2(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RawAIWHoMs/002/b2.wgt");
-		assertEquals("pass:", widget.getAttributeValue("identifier"));
+		assertEquals("pass:", widget.getAttributeValue("identifier")); //Note that this test will pass on its own, but not if run in a series including b1, as it will update b1 rather than create a new widget");
 
 	}
 

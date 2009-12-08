@@ -14,11 +14,9 @@
 
 package org.apache.wookie.manifestmodel.impl;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import org.apache.wookie.manifestmodel.IAuthorEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.IRIValidator;
 import org.apache.wookie.util.UnicodeUtils;
 import org.apache.wookie.util.XmlUtils;
 import org.jdom.Element;
@@ -77,14 +75,7 @@ public class AuthorEntity implements IAuthorEntity {
 		fAuthorName = UnicodeUtils.normalizeWhitespace(XmlUtils.getTextContent(element));		
 		fHref = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.HREF_ATTRIBUTE));	
 		if (fHref.equals("")) fHref = null;
-		if (fHref != null){
-			try {
-				@SuppressWarnings("unused")
-				URI uri = new URI(fHref);
-			} catch (URISyntaxException e) {
-				fHref = null;
-			}
-		}
+		if (!IRIValidator.isValidIRI(fHref)) fHref = null;
 		fEmail = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.EMAIL_ATTRIBUTE));
 		if (fEmail.equals("")) fEmail = null;
 	}
