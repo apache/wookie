@@ -17,6 +17,7 @@ package org.apache.wookie.manifestmodel.impl;
 import org.apache.wookie.manifestmodel.IDescriptionEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.apache.wookie.util.UnicodeUtils;
+import org.apache.wookie.util.XmlUtils;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
@@ -51,7 +52,7 @@ public class DescriptionEntity extends LocalizedEntity  implements IDescriptionE
 	
 	public void fromXML(Element element) {
 		super.fromXML(element);
-		fDescription = UnicodeUtils.normalizeWhitespace(element.getText());
+		fDescription = UnicodeUtils.normalizeWhitespace(XmlUtils.getTextContent(element));
 	}
 
 

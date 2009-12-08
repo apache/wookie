@@ -20,6 +20,7 @@ import java.net.URISyntaxException;
 import org.apache.wookie.manifestmodel.IAuthorEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.apache.wookie.util.UnicodeUtils;
+import org.apache.wookie.util.XmlUtils;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
@@ -73,7 +74,7 @@ public class AuthorEntity implements IAuthorEntity {
 	}
 	
 	public void fromXML(Element element) {
-		fAuthorName = UnicodeUtils.normalizeWhitespace(element.getText());		
+		fAuthorName = UnicodeUtils.normalizeWhitespace(XmlUtils.getTextContent(element));		
 		fHref = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.HREF_ATTRIBUTE));	
 		if (fHref.equals("")) fHref = null;
 		if (fHref != null){
