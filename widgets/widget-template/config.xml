@@ -15,12 +15,13 @@
   limitations under the License.
 -->
 <widget xmlns="http://www.w3.org/ns/widgets"
- 		id="http://www.getwookie.org/widgets@widget.shortname@"
-        network="public">
-  <widgetname>@widget.shortname@</widgetname>
+ 		id="http://www.getwookie.org/widgets/@widget.shortname@"
+        width="@widget.width"
+        height="@widget.height"
+        >
+  <name>@widget.shortname@</name>
+  <description>@widget.description</description>
   <content src="index.html"/>
-  <width>@widget.width@</width>
-  <height>@widget.height@</height>
 </widget>
 
 

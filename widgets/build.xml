@@ -40,6 +40,7 @@
 
     <target name="seed-widget" description="Seed a new widget">
     	<input message="What is the short name of the widget you wish to create?" addproperty="widget.shortname"/>
+    	<input message="Provide a brief description of the purpose of the ${widget.shortname} widget" addproperty="widget.description"/>
     	<input message="What is the default height of the ${widget.shortname} widget?" addproperty="widget.height" defaultvalue="320"/>
     	<input message="What is the default width of the widget you wish to create?" addproperty="widget.width" defaultvalue="200"/>
     	    	
@@ -48,6 +49,7 @@
     		<fileset dir="${widget.template.dir}"/>
     		<filterset>
     			<filter token="widget.shortname" value="${widget.shortname}"/>
+    			<filter token="widget.description" value="${widget.description}"/>
     			<filter token="widget.height" value="${widget.height}"/>
     			<filter token="widget.width" value="${widget.width}"/>
     		</filterset>

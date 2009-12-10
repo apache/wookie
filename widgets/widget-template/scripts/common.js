@@ -1,4 +1,4 @@
-var city = “Manchester”;
+var city = "Manchester";
 
 function init(){
 	Widget.preferenceForKey(instanceid_key, "city", setLocation);
