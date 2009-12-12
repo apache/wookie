@@ -231,9 +231,9 @@ public class PropertiesController extends Controller {
 	
 	private static boolean isPublic(HttpServletRequest request){
 		String is_public = request.getParameter("is_public"); //$NON-NLS-1$	
-		if (is_public != null && is_public.equals("true")|| is_public.equals("1")) return true;
+		if (is_public != null) if (is_public.equals("true")|| is_public.equals("1")) return true;
 		String requestId = request.getParameter("requestid"); //$NON-NLS-1$
-		if (requestId != null && requestId.equals("setpublicproperty")) return true;
+		if (requestId != null) if (requestId.equals("setpublicproperty")) return true;
 		return false;
 	}
 
