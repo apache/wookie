@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
+import org.apache.wookie.exceptions.UnauthorizedAccessException;
 
 /**
  * Base class of RESTful controllers with common utility methods
@@ -54,10 +55,16 @@ public abstract class Controller extends HttpServlet{
 				response.setStatus(HttpServletResponse.SC_OK);
 			} catch (ResourceNotFoundException e) {
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			} catch (UnauthorizedAccessException e){
+				response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 			}
 		} else {
-			index(request, response);
-			response.setStatus(HttpServletResponse.SC_OK);
+			try {
+				index(request, response);
+				response.setStatus(HttpServletResponse.SC_OK);
+			} catch (UnauthorizedAccessException e){
+				response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			}
 		}
 	}
 	
@@ -73,6 +80,10 @@ public abstract class Controller extends HttpServlet{
 			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (ResourceNotFoundException e) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+		} catch (UnauthorizedAccessException e){
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+		} catch (InvalidParametersException e){
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 		}
 	}
 
@@ -83,15 +94,16 @@ public abstract class Controller extends HttpServlet{
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String name = locateRESTname(request);
-		if (name == null || name.trim().equals("")) {response.sendError(HttpServletResponse.SC_NOT_FOUND); return;} // no resource
 		try {
 			create(name, request);
+			response.setStatus(HttpServletResponse.SC_CREATED);
 		} catch (ResourceDuplicationException e) {
 			response.sendError(HttpServletResponse.SC_CONFLICT);// already exists with same name - need error message for this
 		} catch (InvalidParametersException e){
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST); 
+		} catch (UnauthorizedAccessException e){
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 		}
-		response.setStatus(201);
 	}
 
 	/* (non-Javadoc)
@@ -107,7 +119,9 @@ public abstract class Controller extends HttpServlet{
 		} catch (ResourceNotFoundException e) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		} catch (InvalidParametersException e){
-		response.sendError(HttpServletResponse.SC_BAD_REQUEST); 
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST); 
+		} catch (UnauthorizedAccessException e){
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 		}
 	}
 	
@@ -119,7 +133,7 @@ public abstract class Controller extends HttpServlet{
 	 * @param request
 	 * @param response
 	 */
-	protected void show(String resource_id, HttpServletRequest request, HttpServletResponse response) throws ResourceNotFoundException, IOException{
+	protected void show(String resource_id, HttpServletRequest request, HttpServletResponse response) throws ResourceNotFoundException, UnauthorizedAccessException,IOException{
 	}
 
 	/**
@@ -128,7 +142,7 @@ public abstract class Controller extends HttpServlet{
 	 * @param request
 	 * @param response
 	 */
-	protected void index(HttpServletRequest request, HttpServletResponse response) throws IOException{
+	protected void index(HttpServletRequest request, HttpServletResponse response) throws UnauthorizedAccessException, IOException{
 	}
 	
 	/**
@@ -138,7 +152,7 @@ public abstract class Controller extends HttpServlet{
 	 @return true if the resource was successfully created
 	 * @throws ResourceDuplicationException
 	 */
-	protected boolean create(String resource_id, HttpServletRequest request) throws ResourceDuplicationException, InvalidParametersException{return false;};
+	protected boolean create(String resource_id, HttpServletRequest request) throws ResourceDuplicationException, InvalidParametersException, UnauthorizedAccessException{return false;};
 	
 	/**
 	 * Delete a resource
@@ -146,7 +160,7 @@ public abstract class Controller extends HttpServlet{
 	 * @return true if the resource was successfully deleted
 	 * @throws ResourceNotFoundException
 	 */
-	protected boolean remove(String resource_id, HttpServletRequest request) throws ResourceNotFoundException{return false;};
+	protected boolean remove(String resource_id, HttpServletRequest request) throws ResourceNotFoundException,UnauthorizedAccessException,InvalidParametersException{return false;};
 	
 	/**
 	 * Update a resource
@@ -154,7 +168,7 @@ public abstract class Controller extends HttpServlet{
 	 * @param request
 	 * @throws ResourceNotFoundException
 	 */
-	protected void update(String resource_id, HttpServletRequest request) throws ResourceNotFoundException,InvalidParametersException{};
+	protected void update(String resource_id, HttpServletRequest request) throws ResourceNotFoundException,InvalidParametersException,UnauthorizedAccessException{};
 	
 	// Utilities
 

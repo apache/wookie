@@ -73,7 +73,7 @@ public class WidgetServicesController extends Controller{
 	 */
 	@Override
 	protected boolean create(String resourceId, HttpServletRequest request)
-			throws ResourceDuplicationException {
+			throws ResourceDuplicationException,InvalidParametersException {
 		return create(resourceId);
 	}
 	
@@ -82,7 +82,8 @@ public class WidgetServicesController extends Controller{
 	 * @return
 	 * @throws ResourceDuplicationException
 	 */
-	public static boolean create(String resourceId) throws ResourceDuplicationException{
+	public static boolean create(String resourceId) throws ResourceDuplicationException,InvalidParametersException{
+		if (resourceId == null || resourceId.trim().equals("")) throw new InvalidParametersException();
 		WidgetService ws;
 		try {
 			ws = getWidgetService(resourceId);

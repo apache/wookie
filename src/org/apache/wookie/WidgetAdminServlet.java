@@ -37,6 +37,7 @@ import org.apache.wookie.controller.WidgetServicesController;
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.exceptions.InvalidContentTypeException;
+import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.InvalidStartFileException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
@@ -110,6 +111,8 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 			WidgetServicesController.create(serviceName);
 			session.setAttribute("message_value", localizedMessages.getString("WidgetAdminServlet.0")); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch (ResourceDuplicationException e) {
+			session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.1")); //$NON-NLS-1$ //$NON-NLS-2$ 
+		} catch (InvalidParametersException e) {
 			session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.1")); //$NON-NLS-1$ //$NON-NLS-2$ 
 		}
 	}

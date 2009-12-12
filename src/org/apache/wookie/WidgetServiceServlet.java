@@ -24,6 +24,8 @@ import org.apache.log4j.Logger;
 import org.apache.wookie.controller.ParticipantsController;
 import org.apache.wookie.controller.PropertiesController;
 import org.apache.wookie.controller.WidgetInstancesController;
+import org.apache.wookie.exceptions.InvalidParametersException;
+import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.WidgetKeyManager;
 
 /**
@@ -64,12 +66,16 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 				else if(requestId.equals("resumewidget")){ //$NON-NLS-1$
 					WidgetInstancesController.doResumeWidget(request, response);
 				}
-				else if(requestId.equals("setpublicproperty")){ //$NON-NLS-1$
-					PropertiesController.doSetProperty(request, response, false);
+				else if(requestId.equals("setpublicproperty") || requestId.equals("setpersonalproperty")){ //$NON-NLS-1$
+					try {
+						PropertiesController.createOrUpdate(request);
+						response.setStatus(HttpServletResponse.SC_OK);
+					} catch (UnauthorizedAccessException e) {
+						response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+					} catch (InvalidParametersException e){
+						response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+					}
 				}		
-				else if(requestId.equals("setpersonalproperty")){ //$NON-NLS-1$
-					PropertiesController.doSetProperty(request, response, true );
-				}
 				else if(requestId.equals("addparticipant")){ //$NON-NLS-1$
 					ParticipantsController.addParticipant(request, response );
 				}
