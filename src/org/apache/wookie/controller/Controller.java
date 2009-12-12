@@ -95,8 +95,11 @@ public abstract class Controller extends HttpServlet{
 			throws ServletException, IOException {
 		String name = locateRESTname(request);
 		try {
-			create(name, request);
-			response.setStatus(HttpServletResponse.SC_CREATED);
+			if (create(name, request)){
+				response.setStatus(HttpServletResponse.SC_CREATED);
+			} else {
+				response.setStatus(HttpServletResponse.SC_OK);				
+			}
 		} catch (ResourceDuplicationException e) {
 			response.sendError(HttpServletResponse.SC_CONFLICT);// already exists with same name - need error message for this
 		} catch (InvalidParametersException e){
