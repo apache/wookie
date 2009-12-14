@@ -116,32 +116,52 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}
 	// 6 defaults
 	@Test 
-	@Ignore
 	public void ds(){
-		// Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-klLDaEgJeU/002/bv.wgt");
-		// TODO 
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-xGYcVTMoAX/000/ds.wgt");
 		// To pass, author email must be null, 
 		// author href must be null, 
 		// author name must be null, 
+		assertEquals("", widget.getChild("author").getText());
 		// feature list must be empty (null)
+		/// Check manually
+		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+": feature list must be empty ");
 		// icons must be null, 
+		assertEquals(null, widget.getChild("icon"));
 		// start file encoding must be UTF-8, 
+		assertEquals("UTF-8", getStartFileEncoding(widget));
 		// start file content-type must be text/html, 
+		assertEquals("text/html", getStartFileContentType(widget));
 		// widget config doc must be 'config.xml' at the root of the widget package, 
 		// widget description must be null, 
+		assertEquals("", widget.getChild("description").getText());
 		// widget height must be null, 
+		assertEquals("", getWidgetHeight(widget));
 		// widget id must be null, 
+		/// We have to use generated ids - no nulls allowed
+		assertTrue(widget.getAttributeValue("identifier").contains("generated"));
 		// widget license must be null, 
 		// widget license file must be null, 
 		// widget license href must be null, 
+		assertEquals(null, widget.getChild("license"));
 		// widget name must be null, 
+		/// We put a default of "unknown" when exporting this when the value is "null"
+		assertEquals("unknown", getWidgetTitle(widget));
 		// widget preferences must be null, 
+		assertEquals(null, widget.getChild("license"));
 		// widget short name must be null, 
+		/// We put a default of "unknown" when exporting this when the value is "null"
+		assertEquals(null, getWidgetShortName(widget));
 		// widget version must be null, 
+		assertEquals("", widget.getAttributeValue("version"));
 		// widget width must be null, 
+		assertEquals("", getWidgetHeight(widget));
 		// widget window modes must a list with one entry whose value is 'floating', 
+		// ???
 		// widget start file must be index.htm at the root of the widget, 
+		String start = locateStartFile(widget);
+		assertEquals("index.htm",start);
 		// user agent locales must contain at least one item whose value is 'en' 
+		// ???
 	}
 
 	// 7 config.xml
