@@ -200,8 +200,8 @@ public class WidgetManifestModel implements IManifestModel {
 	
 	public String getLocalShortName(String locale){
 		INameEntity name = getLocalNameEntity(locale);
-		if (name != null) return name.getShort();
-		return IW3CXMLConfiguration.UNKNOWN;		
+		if (name == null) return null;
+		return name.getShort();	
 	}
 	
 	private INameEntity getLocalNameEntity(String locale){
@@ -305,13 +305,8 @@ public class WidgetManifestModel implements IManifestModel {
 			fIdentifier = "generated-uid-" + r.toString();
 		}
 		// VERSION IS OPTIONAL		
-		fVersion = element.getAttributeValue(IW3CXMLConfiguration.VERSION_ATTRIBUTE);
-		if(fVersion == null){
-			// give up 
-			fVersion = IW3CXMLConfiguration.DEFAULT_WIDGET_VERSION;
-		} else {
-			fVersion = UnicodeUtils.normalizeSpaces(fVersion);
-		}
+		fVersion = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.VERSION_ATTRIBUTE));
+		
 		// HEIGHT IS OPTIONAL	
 		String height  = element.getAttributeValue(IW3CXMLConfiguration.HEIGHT_ATTRIBUTE);
 		if(height != null){
