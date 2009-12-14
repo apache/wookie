@@ -82,7 +82,9 @@ public class WidgetHelper {
 				+"\" height=\"" + height
 				+ "\" version=\"" + widget.getVersion() 
 				+ "\">\n";
-		out += "\t\t<title short=\""+widget.getWidgetShortName()+"\">" + widget.getWidgetTitle() + "</title>\n";
+		out += "\t\t<title "; 
+		if (widget.getWidgetShortName() != null) out +="short=\""+widget.getWidgetShortName() + "\"";
+		out +=">" + widget.getWidgetTitle() + "</title>\n";
 		out += "\t\t<description>" + widget.getWidgetDescription()
 				+ "</description>\n";
 		
@@ -116,7 +118,9 @@ public class WidgetHelper {
 		out += "\t\t<author";
 		if (widget.getWidgetAuthorEmail() != null) out+= " email=\""+widget.getWidgetAuthorEmail()+"\"";
 		if (widget.getWidgetAuthorHref() != null) out+= " href=\""+widget.getWidgetAuthorHref()+"\"";
-		out += ">"+widget.getWidgetAuthor()+"</author>\n";
+		out += ">";
+		if (widget.getWidgetAuthor()!=null) out += widget.getWidgetAuthor();
+		out += "</author>\n";
 		
 		// Do license
 		License[] licenses = License.findByValue("widget", widget);
@@ -127,8 +131,6 @@ public class WidgetHelper {
 			if (license.getDir()!=null) out+=" its:dir=\""+license.getDir()+"\"";
 			out+=">"+license.getText()+"</license>\n";
 		}
-		
-		// TODO features
 
 		// Do preference defaults
 		PreferenceDefault[] prefs = PreferenceDefault.findByValue("widget",widget);
