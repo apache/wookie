@@ -26,6 +26,7 @@ import org.apache.wookie.beans.Participant;
 import org.apache.wookie.beans.SharedData;
 import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.controller.PropertiesController;
+import org.apache.wookie.helpers.ParticipantHelper;
 import org.apache.wookie.server.LocaleHandler;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
@@ -106,14 +107,7 @@ public class WaveAPIImpl implements IWaveAPI{
 		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
 		if(widgetInstance==null) return localizedMessages.getString("WidgetAPIImpl.0");
 		Participant[] participants = Participant.getParticipants(widgetInstance);
-		String json = "{\"Participants\":[";
-		String delimit = "";
-		for (Participant participant: participants){
-			json+=delimit+toJson(participant);
-			delimit = ",";
-		}
-		json+="]}";
-		return json;
+		return ParticipantHelper.createJSONParticipantsDocument(participants);
 	}
 	
 	/* (non-Javadoc)
@@ -126,7 +120,7 @@ public class WaveAPIImpl implements IWaveAPI{
 		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
 		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
 		Participant participant = Participant.getViewer(widgetInstance);
-		if (participant != null) return "{\"Participant\":"+toJson(participant)+"}"; //$NON-NLS-1$
+		if (participant != null) return ParticipantHelper.createJSONParticipantDocument(participant); //$NON-NLS-1$
 		return null; // no viewer i.e. widget is anonymous
 	}
 	
@@ -144,19 +138,6 @@ public class WaveAPIImpl implements IWaveAPI{
 		 	PropertiesController.updateSharedDataEntry(widgetInstance, key, map.get(key), false);
 		notifyWidgets(widgetInstance);
 		return "okay"; //$NON-NLS-1$
-	}
-	
-	/**
-	 * Converts a participant to JSON representation
-	 * @param participant
-	 * @return
-	 */
-	private String toJson(Participant participant){
-		String json = "{"+
-		"\"participant_id\":\""+participant.getParticipant_id()+
-		"\", \"participant_display_name\":\""+participant.getParticipant_display_name()+
-		"\", \"participant_thumbnail_url\":\""+participant.getParticipant_thumbnail_url()+"\"}";
-		return json;
 	}
 	
 	/**

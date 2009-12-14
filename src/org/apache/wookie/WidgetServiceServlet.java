@@ -25,6 +25,7 @@ import org.apache.wookie.controller.ParticipantsController;
 import org.apache.wookie.controller.PropertiesController;
 import org.apache.wookie.controller.WidgetInstancesController;
 import org.apache.wookie.exceptions.InvalidParametersException;
+import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.WidgetKeyManager;
 
@@ -77,10 +78,24 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 					}
 				}		
 				else if(requestId.equals("addparticipant")){ //$NON-NLS-1$
-					ParticipantsController.addParticipant(request, response );
+					try {
+						ParticipantsController.create(request);
+					} catch (UnauthorizedAccessException e) {
+						response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+					} catch (InvalidParametersException e){
+						response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+					}
 				}
 				else if(requestId.equals("removeparticipant")){ //$NON-NLS-1$
-					ParticipantsController.removeParticipant(request, response );
+					try {
+						ParticipantsController.remove(request);
+					} catch (UnauthorizedAccessException e) {
+						response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+					} catch (InvalidParametersException e){
+						response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+					} catch (ResourceNotFoundException e){
+						response.sendError(HttpServletResponse.SC_NOT_FOUND);
+					}
 				}
 				else if(requestId.equals("cloneshareddata")){ //$NON-NLS-1$
 					WidgetInstancesController.cloneSharedData(request, response );

@@ -15,7 +15,6 @@
 package org.apache.wookie.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,177 +26,128 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.Participant;
 import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.exceptions.InvalidParametersException;
+import org.apache.wookie.exceptions.ResourceDuplicationException;
+import org.apache.wookie.exceptions.ResourceNotFoundException;
+import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.Notifier;
+import org.apache.wookie.helpers.ParticipantHelper;
 import org.apache.wookie.helpers.WidgetKeyManager;
 
 /**
- * Participant REST Implementation
- * Methods: 
- * 	POST (participant, instance) add a participant
- *  DELETE (participant) deletes a participant
- * Security:
- * 	Requires API Key
+ * Implementation of the REST API for working with Participants. For a description of the methods implemented by this controller see 
+ * http://incubator.apache.org/wookie/wookie-rest-api.html 
  * @author Scott Wilson
  *
  */
-public class ParticipantsController extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
-	
-	private static final String XMLDECLARATION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-	private static final String CONTENT_TYPE = "text/xml;charset=\"UTF-8\""; 
+public class ParticipantsController extends Controller {
 
 	private static final long serialVersionUID = 308590474406800659L;		
-	static Logger _logger = Logger.getLogger(ParticipantsController.class.getName());	
-
-	/* (non-Java-doc)
-	 * @see javax.servlet.http.HttpServlet#HttpServlet()
-	 */
-	public ParticipantsController() {
-		super();
-	}   	
+	static Logger _logger = Logger.getLogger(ParticipantsController.class.getName());	 	
 
 	/**
-	 * The default action for GET is to return participant IDs for an instance.
-	 * We also check for a command param and re-route to POST or DELETE
-	 */
-	/* (non-Java-doc)
-	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response){					
-		if (!WidgetKeyManager.isValidRequest(request)){
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		} else {
-			try {
-				String requestId = request.getParameter("requestid"); //$NON-NLS-1$
-				if (requestId == null || requestId.equals("")){
-					getParticipants(request, response);
-				} else {
-					if(requestId.equals("addparticipant")){ //$NON-NLS-1$
-						doPost(request, response );
-					} else if(requestId.equals("removeparticipant")){ //$NON-NLS-1$
-						doDelete(request, response );
-					} else {
-						response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-					}
-				}
-			} catch (Exception e) {
-				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			}
-		}
-	}
-
-
-	/**
-	 * The POST method is used to create a new Participant
-	 */
-	/* (non-Java-doc)
-	 * @see javax.servlet.http.HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		addParticipant(request, response);
-	}
-
-	/**
-	 * DELETE removes a participant
-	 */
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * We only override doGet as we don't use a REST resource but the instance params to 
+	 * locate the resource
 	 */
 	@Override
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-	throws ServletException, IOException {
-		removeParticipant(request, response);
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{					
+		try {
+			show("", request, response);
+			response.setStatus(HttpServletResponse.SC_OK);
+		} catch (ResourceNotFoundException e) {
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+		} catch (UnauthorizedAccessException e){
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+		}
+	}
+	
+	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 	}
 	
 	// Implementation
 	
-	public static void getParticipants(HttpServletRequest request, HttpServletResponse response){
-		if (!WidgetKeyManager.isValidRequest(request)){
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			return;
-		} else {					
-			
-			WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
-			if(instance != null){
-				Participant[] participants = Participant.getParticipants(instance);
-				try {
-					response.setContentType(CONTENT_TYPE);
-					PrintWriter out = response.getWriter();
-					out.println(XMLDECLARATION);		
-					out.println("<participants>\n");	
+	@Override
+	public void show(String resourceId,HttpServletRequest request, HttpServletResponse response) throws UnauthorizedAccessException,ResourceNotFoundException, IOException{
+		if (!WidgetKeyManager.isValidRequest(request)) throw new UnauthorizedAccessException();
+		WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
+		if (instance == null) throw new ResourceNotFoundException();
+		Participant[] participants = Participant.getParticipants(instance);
+		returnXml(ParticipantHelper.createXMLParticipantsDocument(participants), response);
+	}
 
-						for(Participant participant : participants){
-								out.println("<participant id=\""+participant.getParticipant_id()+"\" display_name=\""+participant.getParticipant_display_name()+"\" thumbnail_url=\""+participant.getParticipant_thumbnail_url()+"\" />");
-						}					
-					out.println("</participants>");
-					response.setStatus(HttpServletResponse.SC_OK);
-				} catch (IOException e) {
-					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				}
-			} else {
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			}
+	@Override
+	protected boolean create(String resourceId, HttpServletRequest request)
+			throws ResourceDuplicationException, InvalidParametersException,
+			UnauthorizedAccessException {
+		return create(request);
+	}
+	public static boolean create(HttpServletRequest request)
+			throws ResourceDuplicationException, InvalidParametersException,
+			UnauthorizedAccessException {
+		if (!WidgetKeyManager.isValidRequest(request)) throw new UnauthorizedAccessException();
+
+		WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
+		if (instance == null) throw new InvalidParametersException();
+		
+		HttpSession session = request.getSession(true);						
+		String participant_id = request.getParameter("participant_id"); //$NON-NLS-1$
+		String participant_display_name = request.getParameter("participant_display_name"); //$NON-NLS-1$
+		String participant_thumbnail_url = request.getParameter("participant_thumbnail_url"); //$NON-NLS-1$
+		
+		// Check required params
+		if (participant_id == null || participant_id.trim().equals("")) throw new InvalidParametersException();
+
+		if (addParticipantToWidgetInstance(instance, participant_id, participant_display_name, participant_thumbnail_url)){
+			Notifier.notifyWidgets(session, instance, Notifier.PARTICIPANTS_UPDATED);
+			return true;
+		} else {
+			// No need to create a new participant, it already existed
+			return false;
 		}
 	}
 	
-	public static void addParticipant(HttpServletRequest request, HttpServletResponse response){
-		if (!WidgetKeyManager.isValidRequest(request)){
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			return;
-		} else {
-			HttpSession session = request.getSession(true);						
-			String participant_id = request.getParameter("participant_id"); //$NON-NLS-1$
-			String participant_display_name = request.getParameter("participant_display_name"); //$NON-NLS-1$
-			String participant_thumbnail_url = request.getParameter("participant_thumbnail_url"); //$NON-NLS-1$
-			// Check required params
-			if (participant_id == null || participant_id.trim().equals("")){
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				return;
-			}
-			
-			WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
-			if(instance != null){
-				if (addParticipantToWidgetInstance(instance, participant_id, participant_display_name, participant_thumbnail_url)){
-					Notifier.notifyWidgets(session, instance, Notifier.PARTICIPANTS_UPDATED);
-					response.setStatus(HttpServletResponse.SC_CREATED);
-				} else {
-					// No need to create a new participant, it already existed
-					response.setStatus(HttpServletResponse.SC_OK);
-				}
-			} else {
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			}
-		}
+	@Override
+	protected boolean remove(String resourceId, HttpServletRequest request)
+	throws ResourceNotFoundException, UnauthorizedAccessException,
+	InvalidParametersException {
+		return remove(request);
 	}
-	
-	public static void removeParticipant(HttpServletRequest request, HttpServletResponse response){
-		if (!WidgetKeyManager.isValidRequest(request)){
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		} else {
-			HttpSession session = request.getSession(true);						
-			String participant_id = request.getParameter("participant_id"); //$NON-NLS-1$
-			WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
-			if(instance != null){
-				if(removeParticipantFromWidgetInstance(instance, participant_id)){
-					Notifier.notifyWidgets(session, instance, Notifier.PARTICIPANTS_UPDATED);
-					response.setStatus(HttpServletResponse.SC_OK);
-				}else{
-					response.setStatus(HttpServletResponse.SC_NOT_FOUND);					
-				}
-			}else{
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			}
+	public static boolean remove(HttpServletRequest request)
+			throws ResourceNotFoundException, UnauthorizedAccessException,
+			InvalidParametersException {
+		if (!WidgetKeyManager.isValidRequest(request)) throw new UnauthorizedAccessException();
+		WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
+		if (instance == null) throw new InvalidParametersException();
+		HttpSession session = request.getSession(true);						
+		String participant_id = request.getParameter("participant_id"); //$NON-NLS-1$
+		if(removeParticipantFromWidgetInstance(instance, participant_id)){
+			Notifier.notifyWidgets(session, instance, Notifier.PARTICIPANTS_UPDATED);
+			return true;
+		}else{
+			throw new ResourceNotFoundException();				
 		}
 	}
 
-	public static boolean addParticipantToWidgetInstance(WidgetInstance instance,
+	/**
+	 * Add a participant to a widget instance
+	 * @param instance the widget instance
+	 * @param participantId the id property of the participant to add
+	 * @param participantDisplayName the display name property of the participant to add
+	 * @param participantThumbnailUrl the thumbnail url property of the participant to add
+	 * @return true if the participant was successfully added, otherwise false
+	 */
+	private static boolean addParticipantToWidgetInstance(WidgetInstance instance,
 			String participantId, String participantDisplayName,
 			String participantThumbnailUrl) {
 
 		// Does participant already exist?
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("sharedDataKey", instance.getSharedDataKey());
-		map.put("widgetGuid", instance.getWidget().getGuid());
-		map.put("participant_id", participantId);
+		map.put("sharedDataKey", instance.getSharedDataKey());//$NON-NLS-1$
+		map.put("widgetGuid", instance.getWidget().getGuid());//$NON-NLS-1$
+		map.put("participant_id", participantId);//$NON-NLS-1$
 		if (Participant.findByValues(map).length != 0) return false;		
 
 		// Add participant
@@ -211,14 +161,20 @@ public class ParticipantsController extends javax.servlet.http.HttpServlet imple
 		return true;
 	}
 
-	public static boolean removeParticipantFromWidgetInstance(WidgetInstance instance,
+	/**
+	 * Removes a participant from a widget instance
+	 * @param instance the instance from which to remove the participant
+	 * @param participantId the id property of the participant
+	 * @return true if the participant is successfully removed, otherwise false
+	 */
+	private static boolean removeParticipantFromWidgetInstance(WidgetInstance instance,
 			String participantId) {
 		Participant[] participants;
 		// Does participant exist?
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("sharedDataKey", instance.getSharedDataKey());
-		map.put("widgetGuid", instance.getWidget().getGuid());
-		map.put("participant_id", participantId);
+		map.put("sharedDataKey", instance.getSharedDataKey());//$NON-NLS-1$
+		map.put("widgetGuid", instance.getWidget().getGuid());//$NON-NLS-1$
+		map.put("participant_id", participantId);//$NON-NLS-1$
 		participants = Participant.findByValues(map);
 		if (participants.length != 1) return false;	
 		// Remove participant
