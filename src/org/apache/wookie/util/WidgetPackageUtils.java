@@ -81,6 +81,22 @@ public class WidgetPackageUtils {
 		return path;
 	}
 	
+	/**
+	 * Return the language tag for a given path
+	 * @param path
+	 * @return
+	 */
+	public static String languageTagForPath(String path){
+		if (path == null) return null;
+		String locale = null;
+		String[] pathComponents = path.split("/");
+		if ("locales".equalsIgnoreCase(pathComponents[0])){
+			if (pathComponents.length < 2) return null;
+			return pathComponents[1];
+		}
+		return locale;
+	}
+	
 	public static String locateDefaultIcon(ZipFile zip, String[] locales){
 		for (String icon: IW3CXMLConfiguration.DEFAULT_ICON_FILES){
 			try {

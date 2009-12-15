@@ -8,6 +8,8 @@
 	</configurations>
     
     <dependencies>
+        <dependency org="com.ibm.icu" name="icu4j" rev="4_2_1" conf="deploy->default">
+        </dependency>
         <dependency org="antlr" name="antlr" rev="2.7.7" conf="deploy->default">
         </dependency>
         <dependency org="cglib" name="cglib" rev="2.2" conf="deploy->default">

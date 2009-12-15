@@ -15,6 +15,7 @@ package org.apache.wookie.manifestmodel.impl;
 
 import org.apache.wookie.manifestmodel.ILocalizedEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.LocalizationUtils;
 import org.apache.wookie.util.UnicodeUtils;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -30,6 +31,16 @@ public abstract class LocalizedEntity implements ILocalizedEntity {
 
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+	
+	/**
+	 * Checks whether the language tag for the entity is OK.
+	 * A null value is OK, as is a BCP47 tag
+	 */
+	public boolean isValid(){
+		if (getLanguage() == null) return true;
+		if (LocalizationUtils.isValidLanguageTag(getLanguage())) return true;
+		return false;
 	}
 	
 	/* (non-Javadoc)

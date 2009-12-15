@@ -18,5 +18,7 @@ public interface ILocalizedEntity extends IManifestModelBase {
 	public String getLanguage();
 
 	public void setLanguage(String language);
+	
+	public boolean isValid();
 
 }
