@@ -1078,16 +1078,19 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/002/bl.wgt");
 		List icons = widget.getChildren("icon");
 		assertTrue(icons.size() == 2);
-		assertEquals("locales/en/icon.jpg",getLocalIconPath(widget,((Element)icons.get(0))));
-		assertEquals("icon.png",getLocalIconPath(widget,((Element)icons.get(1))));
+		String icon1 = getLocalIconPath(widget,((Element)icons.get(0)));
+		String icon2 = getLocalIconPath(widget,((Element)icons.get(1))); 
+		assertTrue((icon1.equals("locales/en/icon.jpg") && (icon2.equals("icon.png"))) || (icon2.equals("locales/en/icon.jpg") && (icon1.equals("icon.png"))));
 	}
 	@Test
 	public void bm(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/003/bm.wgt");
 		List icons = widget.getChildren("icon");
 		assertTrue(icons.size() == 2);
-		assertEquals("locales/en/icon.jpg",getLocalIconPath(widget,((Element)icons.get(0))));
-		assertEquals("icon.png",getLocalIconPath(widget,((Element)icons.get(1))));
+		String icon1 = getLocalIconPath(widget,((Element)icons.get(0)));
+		String icon2 = getLocalIconPath(widget,((Element)icons.get(1))); 
+		assertTrue((icon1.equals("locales/en/icon.jpg") && (icon2.equals("icon.png"))) || (icon2.equals("locales/en/icon.jpg") && (icon1.equals("icon.png"))));
+
 	}
 	@Test
 	public void bn(){
