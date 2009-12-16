@@ -62,8 +62,9 @@ public class LocalizationUtils {
 	 * @return
 	 */
 	public static ILocalizedElement[] processElementsByDefaultLocales(ILocalizedElement[] elements){
-		Arrays.sort(elements, new LocaleComparator(getDefaultLocaleList()));
-		return elements;
+		List<ULocale> localesList = getDefaultLocaleList();
+		Arrays.sort(elements, new LocaleComparator(localesList));
+		return filter(elements,localesList);
 	}
 	
 	/**
@@ -141,9 +142,13 @@ public class LocalizationUtils {
 		
 		ArrayList<ULocale> ulocales = new ArrayList<ULocale>();
 		for (String locale:locales){
-			ULocale ulocale = ULocale.forLanguageTag(locale);
-			ulocales.add(ulocale);
+			if (locale != null){
+				ULocale ulocale = ULocale.forLanguageTag(locale);
+				if (!ulocale.getLanguage().equals(""))
+					ulocales.add(ulocale);
+			}
 		}	
+		if (ulocales.isEmpty()) return getDefaultLocaleList();
 		prefs.setLocales(ulocales.toArray(new ULocale[ulocales.size()]));
 		return prefs.getLocales();
 	}

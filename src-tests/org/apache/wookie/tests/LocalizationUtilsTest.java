@@ -35,6 +35,7 @@ public class LocalizationUtilsTest {
 	public static final String[] LANG_LIST_7 = {null, "za", "fr", "nl"};
 	public static final String[] LANG_LIST_8 = {"en-us-POSIX"};
 	public static final String[] LANG_LIST_9 = {null, "en", "en-gb", "en-US-POSIX"};
+	public static final String[] LANG_LIST_10 = {"de"};
 	
 	public ILocalizedElement[] elements(String[] langs){
 		ArrayList<ILocalizedElement> licenses = new ArrayList<ILocalizedElement>();
@@ -47,23 +48,49 @@ public class LocalizationUtilsTest {
 	}
 	
 	@Test
+	public void nullTest1(){
+		ILocalizedElement[] elements = elements(LANG_LIST_1);
+		elements = LocalizationUtils.processElementsByLocales(elements,null);
+		assertEquals("en", elements[0].getLang());
+		assertEquals(1, elements.length);	
+	}
+	
+	@Test
+	public void nullTest2(){
+		ILocalizedElement[] elements = elements(LANG_LIST_1);
+		elements = LocalizationUtils.processElementsByLocales(elements,new String[]{null});
+		assertEquals("en", elements[0].getLang());
+		assertEquals(1, elements.length);	
+	}
+
+	@Test
+	public void nullTest3(){
+		ILocalizedElement[] elements = elements(LANG_LIST_1);
+		elements = LocalizationUtils.processElementsByLocales(elements,new String[]{null,null,""});
+		assertEquals("en", elements[0].getLang());
+		assertEquals(1, elements.length);	
+	}
+	
+	@Test
 	public void defaultOrder1(){	
 		ILocalizedElement[] elements = elements(LANG_LIST_1);
 		elements = LocalizationUtils.processElementsByDefaultLocales(elements);
-		assertEquals(null, elements[3].getLang());
+		assertEquals("en", elements[0].getLang());
+		assertEquals(1, elements.length);
 	}
 	@Test
 	public void defaultOrder2(){	
 		ILocalizedElement[] elements = elements(LANG_LIST_2);
 		elements = LocalizationUtils.processElementsByDefaultLocales(elements);
-		assertEquals(null, elements[3].getLang());
+		assertEquals("en", elements[0].getLang());
+		assertEquals(1, elements.length);
 	}
 	@Test
 	public void defaultOrder3(){	
 		ILocalizedElement[] elements = elements(LANG_LIST_3);
 		elements = LocalizationUtils.processElementsByDefaultLocales(elements);
-		assertEquals(null, elements[2].getLang());
-		assertEquals(null, elements[3].getLang());
+		assertEquals("en", elements[0].getLang());
+		assertEquals(1, elements.length);
 	}
 	
 	@Test
@@ -99,9 +126,18 @@ public class LocalizationUtilsTest {
 	@Test
 	public void noMatch2(){
 		ILocalizedElement[] elements = elements(LANG_LIST_1);
+		elements = LocalizationUtils.processElementsByLocales(elements, LANG_LIST_10);
+		assertEquals(null, elements[0].getLang());
+		assertEquals(1, elements.length);
+	}
+	
+	@Test
+	public void noMatch1(){
+		ILocalizedElement[] elements = elements(LANG_LIST_2);
 		elements = LocalizationUtils.processElementsByLocales(elements, LANG_LIST_4);
 		assertEquals(1, elements.length);
 	}
+	
 	
 	@Test
 	public void specifiedOrderM4(){	
