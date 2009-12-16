@@ -195,7 +195,7 @@ public class PropertiesControllerTest extends AbstractControllerTest {
 	    try {
 	        HttpClient client = new HttpClient();
 	        PostMethod post = new PostMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&is_public=true&shareddatakey=propstest&propertyname=    &propertyvalue=garfield");
+	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&is_public=true&shareddatakey=propstest&propertyname=%20%20&propertyvalue=garfield");
 	        client.executeMethod(post);
 	        int code = post.getStatusCode();
 	        assertEquals(400,code);
