@@ -74,7 +74,7 @@ public class WidgetsController extends Controller{
 		}
 		Widget widget = Widget.findById(Integer.valueOf(id));
 		if (widget == null) throw new ResourceNotFoundException();
-		returnXml(WidgetHelper.createXMLWidgetsDocument(widget, getLocalPath(request)),response);
+		returnXml(WidgetHelper.createXMLWidgetsDocument(widget, getLocalPath(request), getLocales(request)),response);
 	}	
 
 	/* (non-Javadoc)
@@ -122,6 +122,6 @@ public class WidgetsController extends Controller{
 			}
 			widgets = (Widget[])widgetsarr.toArray(new Widget[widgetsarr.size()]);
 		}
-		returnXml(WidgetHelper.createXMLWidgetsDocument(widgets, getLocalPath(request)),response);
+		returnXml(WidgetHelper.createXMLWidgetsDocument(widgets, getLocalPath(request), getLocales(request)),response);
 	}
 }

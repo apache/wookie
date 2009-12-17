@@ -24,7 +24,7 @@ import org.jdom.Element;
  * @author Paul Sharples
  * @version $Id: NameEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
-public class NameEntity extends LocalizedEntity implements INameEntity {
+public class NameEntity extends AbstractLocalizedEntity implements INameEntity {
 	
 	private String fName;
 	private String fShort;
@@ -33,14 +33,14 @@ public class NameEntity extends LocalizedEntity implements INameEntity {
 	public NameEntity(){
 		fName = "";
 		fShort = "";
-		setLanguage("");
+		setLang("");
 	}
 	
 	public NameEntity(String name, String short1, String language) {
 		super();
 		fName = name;
 		fShort = short1;
-		setLanguage(language);
+		setLang(language);
 	}
 	
 	public String getName() {

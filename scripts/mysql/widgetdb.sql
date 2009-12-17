@@ -4,18 +4,13 @@ use widgetdb;
 
 CREATE TABLE `Widget` (
   `id` int(11) NOT NULL auto_increment,
-  `widget_title` varchar(255) default NULL,
-  `widget_short_name` varchar(255) default NULL,
-  `url` varchar(255) default NULL,
   `height` int(11) default NULL,
   `width` int(11) default NULL,
   `maximize` varchar(1) default NULL,
   `guid` varchar(255) NOT NULL,
-  `widget_description` varchar(255) default NULL,
   `widget_author` varchar(255) default NULL,
   `widget_author_email` varchar(320) default NULL,
   `widget_author_href` text default NULL,
-  `widget_icon_location` varchar(255) default NULL,
   `widget_version` varchar(255) default NULL,
   PRIMARY KEY  (`id`)
 );
@@ -25,6 +20,7 @@ CREATE TABLE `WidgetIcon` (
   `src` text default NULL,
   `height` int(11) default NULL,
   `width` int(11) default NULL,
+  `lang` varchar(255) default NULL,
   `widget_id` int(11) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `FKwidgeticonwidget` (`widget_id`),
@@ -36,11 +32,45 @@ CREATE TABLE `License` (
   `href` text default NULL,
   `text` longtext default NULL,
   `dir` varchar(255) default NULL,
-  `lang` varchar(2) default NULL,
+  `lang` varchar(255) default NULL,
   `widget_id` int(11) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `FKwidgetlicensewidget` (`widget_id`),
   CONSTRAINT `FKwidgetlicensewidgetc` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)
+);
+
+CREATE TABLE `Name` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` longtext default NULL,
+  `shortName` varchar(255) default NULL,
+  `lang` varchar(255) default NULL,
+  `dir` varchar(255) default NULL,
+  `widget_id` int(11) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `FKwidgetnamewidget` (`widget_id`),
+  CONSTRAINT `FKwidgetnamewidgetc` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)
+);
+
+CREATE TABLE `Description` (
+  `id` int(11) NOT NULL auto_increment,
+  `content` longtext default NULL,
+  `lang` varchar(255) default NULL,
+  `dir` varchar(255) default NULL,
+  `widget_id` int(11) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `FKwidgetdescriptionwidget` (`widget_id`),
+  CONSTRAINT `FKwidgetdescriptionwidgetc` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)
+);
+
+CREATE TABLE `StartFile` (
+  `id` int(11) NOT NULL auto_increment,
+  `url` longtext default NULL,
+  `charset` varchar(255) default NULL,
+  `lang` varchar(255) default NULL,
+  `widget_id` int(11) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `FKwidgetstartwidget` (`widget_id`),
+  CONSTRAINT `FKwidgetstartwidgetc` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)
 );
 
 CREATE TABLE `WidgetInstance` (
@@ -193,11 +223,14 @@ CREATE TABLE `Token` (
 );
 
 
-INSERT INTO `Widget` VALUES (1,'Unsupported widget widget','','/wookie/wservices/notsupported/index.htm',350,500,'f','http://notsupported','This widget is a placeholder for when no corresponding widget is found for a given type','Paul Sharples','p.sharples@bolton.ac.uk','http://iec.bolton.ac.uk','/wookie/shared/images/defaultwidget.png', 'v1.0');
+INSERT INTO `Widget` VALUES (1,350,500,'f','http://notsupported','Paul Sharples','p.sharples@bolton.ac.uk','http://iec.bolton.ac.uk', 'v1.0');
+INSERT INTO `Name` VALUES(1, 'Unsupported widget widget','Unsupported','','',1);
+INSERT INTO `Description` VALUES(1, 'This widget is a placeholder for when no corresponding widget is found for a given type','','',1);
+INSERT INTO `StartFile` VALUES(1,'/wookie/wservices/notsupported/index.htm','','',1);
 INSERT INTO `WidgetDefault` VALUES ('unsupported',1);
 INSERT INTO `WidgetService` VALUES (1,'unsupported'),(2,'chat'),(3,'games'),(4,'voting'),(5,'weather');
 INSERT INTO `WidgetType` VALUES (1,1,'unsupported');
-INSERT INTO `WidgetIcon` VALUES (1,'/wookie/shared/images/defaultwidget.png',80,80,1);
+INSERT INTO `WidgetIcon` VALUES (1,'/wookie/shared/images/defaultwidget.png',80,80,'en',1);
 INSERT INTO `Whitelist` VALUES (1,'http://127.0.0.1'),(2,'http://localhost'),(3,'http://feeds.bbc.co.uk/weather/feeds/rss');
-INSERT INTO `ServerFeature` VALUES (1,'http://wave.google.com','org.apache.wookie.feature.wave.WaveAPIImpl'),(2,'http://www.getwookie.org/usefeature/polling','org.apache.wookie.feature.polling.impl.WookiePollingImpl');
+INSERT INTO `ServerFeature` VALUES (1,'http://wave.google.com','org.apache.wookie.feature.wave.WaveAPIImpl'),(2,'http://www.getwookie.org/usefeature/polling','org.apache.wookie.feature.polling.impl.WookiePollingImpl'),(3,'feature:a9bb79c1','org.apache.wookie.feature.conformance.Test');
 INSERT INTO `ApiKey` VALUES (1,'TEST','test@127.0.0.1');

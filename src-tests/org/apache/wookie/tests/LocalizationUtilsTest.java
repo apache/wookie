@@ -36,6 +36,9 @@ public class LocalizationUtilsTest {
 	public static final String[] LANG_LIST_8 = {"en-us-POSIX"};
 	public static final String[] LANG_LIST_9 = {null, "en", "en-gb", "en-US-POSIX"};
 	public static final String[] LANG_LIST_10 = {"de"};
+	public static final String[] LANG_LIST_INV_1 = {"x-gb-a-a"};
+	public static final String[] LANG_LIST_INV_2 = {"x-gb-a-a","12345567889"};
+	public static final String[] LANG_LIST_INV_3 = {"x-gb-a-a","i-argserg45ggadfgdfsg-4t534","fr"};	
 	
 	public ILocalizedElement[] elements(String[] langs){
 		ArrayList<ILocalizedElement> licenses = new ArrayList<ILocalizedElement>();
@@ -68,6 +71,29 @@ public class LocalizationUtilsTest {
 		ILocalizedElement[] elements = elements(LANG_LIST_1);
 		elements = LocalizationUtils.processElementsByLocales(elements,new String[]{null,null,""});
 		assertEquals("en", elements[0].getLang());
+		assertEquals(1, elements.length);	
+	}
+	
+	// Invalid locales are skipped - if this creates an empty list, then use defaults
+	@Test
+	public void invalid(){
+		ILocalizedElement[] elements = elements(LANG_LIST_1);
+		elements = LocalizationUtils.processElementsByLocales(elements,LANG_LIST_INV_1);
+		assertEquals("en", elements[0].getLang());
+		assertEquals(1, elements.length);	
+	}
+	@Test
+	public void invalid2(){
+		ILocalizedElement[] elements = elements(LANG_LIST_1);
+		elements = LocalizationUtils.processElementsByLocales(elements,LANG_LIST_INV_2);
+		assertEquals("en", elements[0].getLang());
+		assertEquals(1, elements.length);	
+	}
+	@Test
+	public void invalid3(){
+		ILocalizedElement[] elements = elements(LANG_LIST_1);
+		elements = LocalizationUtils.processElementsByLocales(elements,LANG_LIST_INV_3);
+		assertEquals("fr", elements[0].getLang());
 		assertEquals(1, elements.length);	
 	}
 	

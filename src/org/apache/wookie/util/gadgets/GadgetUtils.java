@@ -197,7 +197,7 @@ public class GadgetUtils {
 			// We should be able to use the "iframeUrl" property here, but
 			// it isn't very reliable at generating a usable value, so we construct
 			// a very basic URL instead
-			widget.setUrl(shindig+"/gadgets/ifr?url="+gadget.getString("url")+"&amp;lang=en&amp;country=UK");
+			//widget.setUrl(shindig+"/gadgets/ifr?url="+gadget.getString("url")+"&amp;lang=en&amp;country=UK"); //TODO FIXME Later
 
 			if (gadget.has("height")) if (gadget.getInt("height") != 0) height = gadget.getInt("height");
 			if (gadget.has("width")) if (gadget.getInt("width") != 0) width = gadget.getInt("width");
@@ -246,9 +246,9 @@ public class GadgetUtils {
 			widget.setMaximize(false);
 			widget.setHeight(height);
 			widget.setWidth(width);
-			widget.setWidgetTitle(title);
-			widget.setWidgetDescription(description);		
-			//widget.setWidgetIconLocation(icon); //TODO fix this later
+			//widget.setWidgetTitle(title); // TODO FIXME 
+			//widget.setWidgetDescription(description);	//TODO FIXME	
+			//widget.setWidgetIconLocation(icon); //TODO FIXME
 			widget.setWidgetAuthor(author);
 
 		}

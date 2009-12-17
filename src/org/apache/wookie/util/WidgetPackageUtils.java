@@ -37,9 +37,9 @@ import org.apache.log4j.Logger;
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.exceptions.InvalidStartFileException;
+import org.apache.wookie.manifestmodel.IContentEntity;
 import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
-import org.apache.wookie.manifestmodel.impl.ContentEntity;
 import org.apache.wookie.manifestmodel.impl.WidgetManifestModel;
 
 /**
@@ -65,7 +65,7 @@ public class WidgetPackageUtils {
 		String[] pathComponents = path.split("/");
 		if ("locales".equalsIgnoreCase(pathComponents[0])){
 			if (pathComponents.length < 2) return null;
-			// TODO validate the language string
+			if (!LocalizationUtils.isValidLanguageTag(pathComponents[1])) return null;
 		}
 		// Look in localized folders first
 		for (String locale:locales){
@@ -97,59 +97,24 @@ public class WidgetPackageUtils {
 		return locale;
 	}
 	
-	public static String locateDefaultIcon(ZipFile zip, String[] locales){
-		for (String icon: IW3CXMLConfiguration.DEFAULT_ICON_FILES){
-			try {
-				icon = locateFilePath(icon, locales, zip);
-				if (icon != null) return icon;
-			} catch (Exception e) {
-				// ignore and move onto next
-			}
-		}
-		return IW3CXMLConfiguration.DEFAULT_ICON_PATH;
-	}
-	
-	public static String[] locateAllDefaultIcons(ZipFile zip, String[] locales){
-		ArrayList<String> icons = new ArrayList<String>();
-		for (String icon: IW3CXMLConfiguration.DEFAULT_ICON_FILES){
-			try {
-				icon = locateFilePath(icon, locales, zip);
-				if (icon != null) icons.add(icon);
-			} catch (Exception e) {
-				// ignore and move onto next
-			}
-		}
-		return (String[]) icons.toArray(new String[icons.size()]);
-	}
-	
 	/**
-	 * Identify the start file for a given zipfile and manifest, or throw an exception
-	 * @param widgetModel
+	 * Return the set of valid default files for each locale in the zip
 	 * @param zip
-	 * @param localizedMessages
-	 * @return the name of the start file
-	 * @throws BadWidgetZipFileException if a custom start file is specified, but is not present
-	 * @throws BadManifestException if no custom start file is found, and no default start file can be located
+	 * @param locales
+	 * @param defaults
+	 * @return
 	 */
-	public static String locateStartFile(IManifestModel widgetModel, ZipFile zip) throws BadWidgetZipFileException, InvalidStartFileException{
-		String startFile = null;
-		// Check for a custom start file
-		if (widgetModel.getContent() != null) {
-			if (widgetModel.getContent().getSrc() != null && !widgetModel.getContent().getSrc().equals("")){
-				return widgetModel.getContent().getSrc();
+	public static String[] getDefaults(ZipFile zip, String[] locales, String[] defaults){
+		ArrayList<String> content = new ArrayList<String>();
+		for (String start: defaults){
+			try {
+				start = locateFilePath(start, locales, zip);
+				if (start != null) content.add(start);
+			} catch (Exception e) {
+				// ignore and move onto next
 			}
 		}
-		
-		// If no custom start file exists, look for defaults
-		for (String s: IW3CXMLConfiguration.START_FILES){
-			if (startFile == null && zip.getEntry(s)!=null){
-				startFile = s;
-			}
-		}
-		// If no start file has been found, throw an exception
-		if (startFile == null) 
-			throw new InvalidStartFileException(); //$NON-NLS-1$
-		return startFile;
+		return (String[]) content.toArray(new String[content.size()]);	
 	}
 	
 	public static File createUnpackedWidgetFolder(String widgetFolder, String folder) throws IOException{
@@ -255,29 +220,34 @@ public class WidgetPackageUtils {
 			try {
 				// build the model
 				IManifestModel widgetModel = new WidgetManifestModel(WidgetPackageUtils.extractManifest(zip), locales, zip);															
-				// get the start file; if there is no valid start file an exception will be thrown
-				String src = WidgetPackageUtils.locateStartFile(widgetModel, zip);
+
 				// get the widget identifier
 				String manifestIdentifier = widgetModel.getIdentifier();						
 				// create the folder structure to unzip the zip into
 				File newWidgetFolder = WidgetPackageUtils.createUnpackedWidgetFolder(WIDGETFOLDER, manifestIdentifier);
 				// now unzip it into that folder
-				WidgetPackageUtils.unpackZip(zip, newWidgetFolder);							
-				// get the url to the start page
-				String relativestartUrl = (WidgetPackageUtils.getURLForWidget(localWidgetPath, manifestIdentifier, src));
-				// update the model version of the start page (or create one if none exists)
-				if (widgetModel.getContent() == null) widgetModel.setContent(new ContentEntity()); 
-				widgetModel.getContent().setSrc(relativestartUrl);
-				// now update the js links in the start page
-				File startFile = new File(newWidgetFolder.getCanonicalPath() + File.separator + src);							
-				if(startFile.exists()){								
-					StartPageJSParser parser = new StartPageJSParser(startFile, widgetModel);
-					parser.doParse();
-				}							
+				WidgetPackageUtils.unpackZip(zip, newWidgetFolder);	
+				
+				// Iterate over all start files and update paths
+				for (IContentEntity content: widgetModel.getContentList()){
+					// now update the js links in the start page
+					File startFile = new File(newWidgetFolder.getCanonicalPath() + File.separator + content.getSrc());
+					String relativestartUrl = (WidgetPackageUtils.getURLForWidget(localWidgetPath, manifestIdentifier, content.getSrc())); 					
+					content.setSrc(relativestartUrl);
+					if(startFile.exists()){								
+						StartPageJSParser parser = new StartPageJSParser(startFile, widgetModel);
+						parser.doParse();
+					}	
+				}
+				if (widgetModel.getContentList().isEmpty()){
+					throw new InvalidStartFileException();
+				}
+				
 				// get the path to the root of the unzipped folder
 				String localPath = WidgetPackageUtils.getURLForWidget(localWidgetPath, manifestIdentifier, "");
 				// now pass this to the model which will prepend the path to local resources (not web icons)
-				widgetModel.updateIconPaths(localPath);							
+				widgetModel.updateIconPaths(localPath);				
+				
 				// check to see if this widget already exists in the DB - using the ID (guid) key from the manifest
 				return widgetModel;
 			} catch (InvalidStartFileException e) {

@@ -27,7 +27,7 @@ import org.apache.wookie.util.hibernate.IDBManager;
  * @author Paul Sharples
  * @version $Id: WidgetInstance.java,v 1.2 2009-07-28 16:05:22 scottwilson Exp $
  */
-public class WidgetInstance extends AbstractKeyBean<WidgetInstance> {
+public class WidgetInstance extends AbstractKeyBean<WidgetInstance> implements ILocalizedElement {
 
 		private static final long serialVersionUID = 1L;
 		
@@ -37,12 +37,13 @@ public class WidgetInstance extends AbstractKeyBean<WidgetInstance> {
 		private String idKey; // aka SHAKey
 		private String apiKey;
 		private String opensocialToken; // Token used with OpenSocial gadgets;
+		private String lang;
 		private boolean updated;
 		private boolean shown;
 		private boolean hidden;
 		private boolean locked;
 		private Widget widget;
-
+		
 		public WidgetInstance(){}
 		
 		
@@ -53,6 +54,15 @@ public class WidgetInstance extends AbstractKeyBean<WidgetInstance> {
 		public void setWidget(Widget widget) {
 			this.widget = widget;
 		}
+		
+		public String getLang() {
+			return lang;
+		}
+
+		public void setLang(String lang) {
+			this.lang = lang;
+		}
+
 		
 		public String getSharedDataKey() {
 			return sharedDataKey;

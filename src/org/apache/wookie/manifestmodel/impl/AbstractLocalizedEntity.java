@@ -21,16 +21,28 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 
 
-public abstract class LocalizedEntity implements ILocalizedEntity {
+public abstract class AbstractLocalizedEntity implements ILocalizedEntity {
 	
-	private String language;
-
-	public String getLanguage() {
-		return language;
+	/**
+	 * a Language string conforming to BCP47
+	 */
+	protected String lang;
+	/**
+	 * Text direction conforming to http://www.w3.org/TR/2007/REC-its-20070403/
+	 */
+	protected String dir;
+	
+	public String getLang() {
+		return lang;
 	}
-
-	public void setLanguage(String language) {
-		this.language = language;
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+	public String getDir() {
+		return dir;
+	}
+	public void setDir(String dir) {
+		this.dir = dir;
 	}
 	
 	/**
@@ -38,8 +50,8 @@ public abstract class LocalizedEntity implements ILocalizedEntity {
 	 * A null value is OK, as is a BCP47 tag
 	 */
 	public boolean isValid(){
-		if (getLanguage() == null) return true;
-		if (LocalizationUtils.isValidLanguageTag(getLanguage())) return true;
+		if (getLang() == null) return true;
+		if (LocalizationUtils.isValidLanguageTag(getLang())) return true;
 		return false;
 	}
 	
@@ -48,7 +60,9 @@ public abstract class LocalizedEntity implements ILocalizedEntity {
 	 */
 	public void fromXML(Element element) {
 		String lang =  UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.LANG_ATTRIBUTE, Namespace.XML_NAMESPACE));
-		if (!lang.equals("")) setLanguage(lang);
+		if (!lang.equals("")) setLang(lang);
+		dir = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.DIR_ATRRIBUTE));
+		if (dir.equals("")) dir = null;
 	}
 
 }

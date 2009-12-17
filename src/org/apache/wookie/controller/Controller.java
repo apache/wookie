@@ -244,6 +244,20 @@ public abstract class Controller extends HttpServlet{
 		PrintWriter out = response.getWriter();
 		out.println(xml);
 	}
+	
+	/**
+	 * Get any localization parameters for the request. Currently this 
+	 * only accepts a single locale rather than a list, support for
+	 * lists of preferred locales could be added later, for example
+	 * using the accept-header format
+	 * @param request
+	 * @return an array of locales, or null if no parameter present
+	 */
+	protected String[] getLocales(HttpServletRequest request){
+		String locale = request.getParameter("locale");
+		if (locale == null) return null;
+		return new String[]{locale};
+	}
 
 
 }

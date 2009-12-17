@@ -11,16 +11,24 @@
  *  See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.wookie.manifestmodel;
+package org.apache.wookie.feature.conformance;
 
-import org.apache.wookie.beans.ILocalizedElement;
+import org.apache.wookie.feature.IFeature;
 
-public interface ILocalizedEntity extends IManifestModelBase, ILocalizedElement {
+/**
+ * This is used for W3C conformance checking of added features. It currently does
+ * nothing, but could be used in future as a test harness for W3C specs.
+ * @author Scott Wilson
+ *
+ */
+public class Test implements IFeature {
 
-	public void setLang(String language);
-	
-	public String getDir();
-	
-	public boolean isValid();
+	public String getJavaScriptImpl() {
+		return null;
+	}
+
+	public String getJavaScriptWrapper() {
+		return null;
+	}
 
 }

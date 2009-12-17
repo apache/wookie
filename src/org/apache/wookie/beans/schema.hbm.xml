@@ -10,13 +10,9 @@
 		<id name="id" column="id">
 			<generator class="increment" />
 		</id>
-		<property name="widgetTitle" column="widget_title" type="string" />
-		<property name="widgetShortName" column="widget_short_name" type="string" />
-		<property name="widgetDescription" column="widget_description" type="string" />
 		<property name="widgetAuthor" column="widget_author" type="string" />
 		<property name="widgetAuthorEmail" column="widget_author_email" type="string" />
 		<property name="widgetAuthorHref" column="widget_author_href" type="string" />
-		<property name="url" column="url" type="string" />
 		<property name="guid" column="guid" type="string" />
 		<property name="height" column="height" />
 		<property name="width" column="width" />
@@ -83,6 +79,7 @@
 		<property name="src" type="text" length="2048"/>				
 		<property name="height"/>				
 		<property name="width"/>	
+		<property name="lang"/>	
 		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />		
 	</class>
 	
@@ -94,6 +91,37 @@
 		<property name="href" type="text" length="2048"/>				
 		<property name="lang"/>				
 		<property name="dir"/>	
+		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />		
+	</class>
+	
+	<class name="Name" table="Name">
+		<id name="id" column="id">
+			<generator class="increment" />
+		</id>		
+		<property name="name" type="text" length="20480"/>	
+		<property name="shortName" type="text" length="2048"/>				
+		<property name="lang"/>	
+		<property name="dir"/>					
+		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />		
+	</class>
+	
+	<class name="Description" table="Description">
+		<id name="id" column="id">
+			<generator class="increment" />
+		</id>		
+		<property name="content" type="text" length="20480"/>				
+		<property name="lang"/>	
+		<property name="dir"/>					
+		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />		
+	</class>
+	
+	<class name="StartFile" table="StartFile">
+		<id name="id" column="id">
+			<generator class="increment" />
+		</id>		
+		<property name="url" type="text" length="20480"/>	
+		<property name="charset" type="text" length="255"/>				
+		<property name="lang"/>					
 		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />		
 	</class>
 

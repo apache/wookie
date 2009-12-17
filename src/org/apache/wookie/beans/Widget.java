@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.LocalizationUtils;
 import org.apache.wookie.util.hibernate.DBManagerFactory;
 import org.apache.wookie.util.hibernate.IDBManager;
 
@@ -34,13 +35,9 @@ public class Widget extends AbstractKeyBean<Widget> {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String widgetTitle;
-	private String widgetShortName;
-	private String widgetDescription;
 	private String widgetAuthor;
 	private String widgetAuthorEmail;
 	private String widgetAuthorHref;
-	private String url;
 	private String guid;	
 	private Integer height;
 	private Integer width;
@@ -50,15 +47,6 @@ public class Widget extends AbstractKeyBean<Widget> {
 	private String version;
 	
 	public Widget(){}
-	
-	
-	public String getUrl(){
-		return url;
-	}
-	
-	public void setUrl(String url){
-		this.url = url;
-	}
 	
 	public Integer getHeight(){
 		return height;
@@ -105,35 +93,6 @@ public class Widget extends AbstractKeyBean<Widget> {
 	public void setGuid(String guid) {
 		this.guid = guid;
 	}
-
-
-	public String getWidgetTitle() {
-		return widgetTitle;
-	}
-
-
-	public void setWidgetTitle(String widgetTitle) {
-		this.widgetTitle = widgetTitle;
-	}
-
-	public String getWidgetShortName() {
-		return widgetShortName;
-	}
-
-
-	public void setWidgetShortName(String name) {
-		this.widgetShortName = name;
-	}
-	
-	public String getWidgetDescription() {
-		return widgetDescription;
-	}
-
-
-	public void setWidgetDescription(String widgetDescription) {
-		this.widgetDescription = widgetDescription;
-	}
-
 
 	public String getWidgetAuthor() {
 		return widgetAuthor;
@@ -190,8 +149,6 @@ public class Widget extends AbstractKeyBean<Widget> {
 		return (Widget[]) findAll(Widget.class);
 	}
 	
-	////// Special queries
-	
 	/**
 	 * Temporary convenience method for getting an icon; this
 	 * should be replaced with an algorithm that returns an appropriate
@@ -207,6 +164,56 @@ public class Widget extends AbstractKeyBean<Widget> {
 		}
 	}
 	
+	/**
+	 * Temporary convenience method for getting a widget title; calls to this
+	 * method should be replaced with calls to getWidgetTitle(locale)
+	 */
+	@Deprecated
+	public String getWidgetTitle(){
+		String title = IW3CXMLConfiguration.UNKNOWN;
+		Name name = (Name) LocalizationUtils.getLocalizedElement(Name.findByValue("widget", this),new String[]{"en"});
+		if (name != null) title = name.getName();
+		return title;
+	}
+	
+	/**
+	 * Temporary convenience method for getting a widget description; calls to this
+	 * method should be replaced with calls to getWidgetDescription(locale)
+	 */
+	@Deprecated
+	public String getWidgetDescription(){
+		String value = null;
+		Description desc = (Description) LocalizationUtils.getLocalizedElement(Description.findByValue("widget", this),new String[]{"en"});
+		if (desc != null) value = desc.getContent();
+		return value;
+	}
+	
+	/**
+	 * Temporary convenience method for getting a widget url; calls to this
+	 * method should be replaced with calls to locate a localized start file 
+	 * for a widget instance
+	 * @return
+	 */
+	@Deprecated
+	public String getUrl(){
+		StartFile startPage = (StartFile) LocalizationUtils.getLocalizedElement(StartFile.findByValue("widget", this), new String[]{"en"});	
+		return startPage.getUrl();
+	}
+	
+	/**
+	 * Convenience method for obtaining a title for a widget using the given language tag. This method
+	 * will always return a String.
+	 * @param locale
+	 * @return
+	 */
+	public String getWidgetTitle(String locale){
+		String title = IW3CXMLConfiguration.UNKNOWN;
+		Name name = (Name) LocalizationUtils.getLocalizedElement(Name.findByValue("widget", this),new String[]{locale});
+		if (name != null) title = name.getName();
+		return title;
+	}
+	
+	////// Special queries
 	
 	/**
 	 * Find one widget by guid

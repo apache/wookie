@@ -22,7 +22,7 @@ import org.jdom.Element;
  * @author Paul Sharples
  * @version $Id: IContentEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
-public interface IContentEntity extends IManifestModelBase {
+public interface IContentEntity extends ILocalizedEntity {
 
 	public String getSrc();
 
@@ -36,6 +36,6 @@ public interface IContentEntity extends IManifestModelBase {
 
 	public void setType(String type);
 	
-	public void fromXML(Element element, ZipFile zip) throws BadManifestException;
+	public void fromXML(Element element, String[] locales, ZipFile zip) throws BadManifestException;
 
 }

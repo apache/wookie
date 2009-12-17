@@ -15,14 +15,12 @@ package org.apache.wookie.beans;
 
 import java.util.Map;
 
-public class License extends AbstractKeyBean<License> {
+public class License extends AbstractLocalizedKeyBean<License> {
 
 	private static final long serialVersionUID = 5896306127658105242L;
 	
 	private String text;
 	private String href;
-	private String lang;
-	private String dir;
 	private Widget widget;
 	
 	public License(){}
@@ -47,18 +45,6 @@ public class License extends AbstractKeyBean<License> {
 	}
 	public void setHref(String href) {
 		this.href = href;
-	}
-	public String getLang() {
-		return lang;
-	}
-	public void setLang(String lang) {
-		this.lang = lang;
-	}
-	public String getDir() {
-		return dir;
-	}
-	public void setDir(String dir) {
-		this.dir = dir;
 	}
 	public Widget getWidget() {
 		return widget;

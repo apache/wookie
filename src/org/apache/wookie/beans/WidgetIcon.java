@@ -35,7 +35,7 @@ import java.util.Map;
  * @author Scott Wilson
  *
  */
-public class WidgetIcon extends AbstractKeyBean<WidgetIcon> {
+public class WidgetIcon extends AbstractKeyBean<WidgetIcon> implements ILocalizedElement{
 	
 	private static final long serialVersionUID = 9080382124923145538L;
 	
@@ -43,6 +43,7 @@ public class WidgetIcon extends AbstractKeyBean<WidgetIcon> {
 	private Integer height;
 	private Integer width;
 	private Widget widget;
+	private String lang;
 	
 	public Widget getWidget() {
 		return widget;
@@ -68,10 +69,17 @@ public class WidgetIcon extends AbstractKeyBean<WidgetIcon> {
 	public void setWidth(Integer width) {
 		this.width = width;
 	}
-	public WidgetIcon(String src, Integer height, Integer width, Widget widget){
+	public void setLang(String lang){
+		this.lang = lang;
+	}
+	public String getLang(){
+		return lang;
+	}
+	public WidgetIcon(String src, Integer height, Integer width, String lang, Widget widget){
 		setSrc(src);
 		setHeight(height);
 		setWidth(width);
+		setLang(lang);
 		setWidget(widget);
 	}
 	public WidgetIcon(){};

@@ -26,7 +26,7 @@ import org.jdom.Element;
  * @author Paul Sharples
  * @version $Id: IconEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
-public class IconEntity implements IIconEntity{
+public class IconEntity extends AbstractLocalizedEntity implements IIconEntity{
 	
 	private String fSrc;
 	private Integer fHeight;
@@ -68,7 +68,7 @@ public class IconEntity implements IIconEntity{
 		return IW3CXMLConfiguration.ICON_ELEMENT;
 	}
 	
-	public void fromXML(Element element) throws BadManifestException{
+	public void fromXML(Element element){
 	}
 	
 	public void fromXML(Element element,String[] locales, ZipFile zip) throws BadManifestException{		
@@ -78,6 +78,7 @@ public class IconEntity implements IIconEntity{
 		// Check custom icon file exists; remove the src value if it doesn't
 		try {
 			fSrc = WidgetPackageUtils.locateFilePath(fSrc,locales, zip);
+			setLang(WidgetPackageUtils.languageTagForPath(fSrc));
 		} catch (Exception e) {
 			e.printStackTrace();
 			fSrc = null;

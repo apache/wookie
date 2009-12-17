@@ -16,11 +16,14 @@ package org.apache.wookie.helpers;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.wookie.beans.Description;
 import org.apache.wookie.beans.License;
+import org.apache.wookie.beans.Name;
 import org.apache.wookie.beans.PreferenceDefault;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetIcon;
 import org.apache.wookie.beans.WidgetType;
+import org.apache.wookie.util.LocalizationUtils;
 
 /**
  * A helper for Widgets
@@ -37,9 +40,9 @@ public class WidgetHelper {
 	 * @param localIconPath
 	 * @return
 	 */
-	public static String createXMLWidgetsDocument(Widget widget, String localIconPath){
+	public static String createXMLWidgetsDocument(Widget widget, String localIconPath, String[] locales){
 		Widget[] widgets = {widget};
-		return createXMLWidgetsDocument(widgets, localIconPath);
+		return createXMLWidgetsDocument(widgets, localIconPath, locales);
 	}
 	
 	/**
@@ -49,11 +52,11 @@ public class WidgetHelper {
 	 * @param localIconPath
 	 * @return
 	 */
-	public static String createXMLWidgetsDocument(Widget[] widgets, String localIconPath){
+	public static String createXMLWidgetsDocument(Widget[] widgets, String localIconPath, String[] locales){
 		String document = XMLDECLARATION;
 		document += "\n<widgets>\n";
 		for (Widget widget:widgets){
-			document += toXml(widget, localIconPath);
+			document += toXml(widget, localIconPath, locales);
 		}
 		document += "</widgets>\n";
 		return document;
@@ -66,13 +69,24 @@ public class WidgetHelper {
 	 * @param localIconPath the local path to prefix any local icons, typically the server URL
 	 * @return the XML representation of the widget
 	 */
-	public static String toXml(Widget widget, String localIconPath){
+	public static String toXml(Widget widget, String localIconPath, String[] locales){
 		String width = "";
 		String height = "";
 		if (widget.getWidth()!=null)  width = widget.getWidth().toString();
 		if (widget.getHeight()!=null) height = widget.getHeight().toString();
 		
 		if (widget == null) return null;
+		
+		// Get localized name
+		Name name = (Name) LocalizationUtils.getLocalizedElement(Name.findByValue("widget", widget),locales);
+		String shortName = null;
+		String longName = null;
+		if (name != null) {
+			shortName = name.getShortName();
+			longName = name.getName();
+		}
+		
+		
 		String out = "";
 		URL urlWidgetIcon = null;
 		out += "\t<widget " +
@@ -83,12 +97,20 @@ public class WidgetHelper {
 				+ "\" version=\"" + widget.getVersion() 
 				+ "\">\n";
 		out += "\t\t<title "; 
-		if (widget.getWidgetShortName() != null) out +="short=\""+widget.getWidgetShortName() + "\"";
-		out +=">" + widget.getWidgetTitle() + "</title>\n";
-		out += "\t\t<description>" + widget.getWidgetDescription()
-				+ "</description>\n";
+		if (shortName != null) out +="short=\""+shortName + "\"";
+		out +=">";
+		if(longName != null) out += longName; 
+		out += "</title>\n";
 		
+		// Do description
+		Description desc = (Description) LocalizationUtils.getLocalizedElement(Description.findByValue("widget", widget), locales);	
+		out += "\t\t<description>";
+		if (desc != null) out += desc.getContent();
+		out += "</description>\n";
+		
+		// Do icons
 		WidgetIcon[] icons = WidgetIcon.findForWidget(widget);
+		icons = (WidgetIcon[]) LocalizationUtils.processElementsByLocales(icons, locales);
 		if (icons!=null){
 		for (WidgetIcon icon: icons){
 			try {
@@ -101,6 +123,7 @@ public class WidgetHelper {
 				out += "\t\t<icon";
 				if (icon.getHeight()!=null) out += " height=\""+icon.getHeight()+"\"";
 				if (icon.getWidth()!=null) out += " width=\""+icon.getWidth()+"\"";
+				if (icon.getLang()!=null) out += " xml:lang=\""+icon.getLang()+"\"";
 				out += ">"+urlWidgetIcon.toString() + "</icon>\n";
 			} catch (MalformedURLException e) {
 				// don't export icon field if its not a valid URL
@@ -123,7 +146,8 @@ public class WidgetHelper {
 		out += "</author>\n";
 		
 		// Do license
-		License[] licenses = License.findByValue("widget", widget);
+		License[] licenses = License.findByValue("widget", widget);		
+		licenses = (License[]) LocalizationUtils.processElementsByLocales(licenses, locales);
 		for (License license: licenses){
 			out +="\t\t<license ";
 			if (license.getLang()!=null) out+=" xml:lang=\""+license.getLang()+"\"";

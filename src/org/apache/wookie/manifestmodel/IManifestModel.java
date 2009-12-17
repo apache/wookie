@@ -25,50 +25,38 @@ import org.jdom.Element;
  */
 public interface IManifestModel extends IManifestModelBase{
 
-	public IContentEntity getContent();
-
-	public String getIdentifier();
-
+	public List<IContentEntity> getContentList();
 	public List<IIconEntity> getIconsList();
-	
+	public String getIdentifier();
 	public List<ILicenseEntity> getLicensesList();
-
-	public void setIconsList(List<IIconEntity> iconsList);
-
-	public void updateIconPaths(String path);
-
+	public List<INameEntity> getNames();
+	public List<IDescriptionEntity> getDescriptions();
+	public Integer getHeight();
+	public Integer getWidth();
+	public String getAuthor();
+	public String getAuthorEmail();
+	public String getAuthorHref();
+	public List<IPreferenceEntity> getPrefences();
+	public List<IFeatureEntity> getFeatures();
+	public String getVersion();
+	public String getViewModes();
+	
+	/**
+	 * A convenience method typically used
+	 * for generating debug messages during import.
+	 * This method will never return null, however
+	 * the name may be an empty String.
+	 * @param locale
+	 * @return the name of the widget to be used in the given locale
+	 */
 	public String getLocalName(String locale);
 	
-	public String getLocalShortName(String locale);
-	
-	public List<INameEntity> getNames();
+	/**
+	 * Update icons to use paths using the given base path
+	 * @param path the base path for icons
+	 */
+	public void updateIconPaths(String path);
 
-	public String getLocalDescription(String locale);
-
-	public Integer getHeight();
-
-	public Integer getWidth();
-
-	public String getAuthor();
-
-	public String getAuthorEmail();
-	
-	public String getAuthorHref();
-	
-	public String getFirstIconPath();
-
-	public List<IPreferenceEntity> getPrefences();
-
-	public List<IFeatureEntity> getFeatures();
-
-	public String getVersion();
-
-	public String getViewModes();
-
-	public List<IDescriptionEntity> getDescriptions();
-	
-	public void setContent(IContentEntity content);
-	
     /**
      * Unmarshall the given XML Element to this Object
      * 

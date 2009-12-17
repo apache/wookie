@@ -20,13 +20,16 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
+import org.apache.wookie.beans.Description;
 import org.apache.wookie.beans.Feature;
 import org.apache.wookie.beans.License;
+import org.apache.wookie.beans.Name;
 import org.apache.wookie.beans.Param;
 import org.apache.wookie.beans.Participant;
 import org.apache.wookie.beans.Preference;
 import org.apache.wookie.beans.PreferenceDefault;
 import org.apache.wookie.beans.SharedData;
+import org.apache.wookie.beans.StartFile;
 import org.apache.wookie.beans.Whitelist;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetDefault;
@@ -34,10 +37,13 @@ import org.apache.wookie.beans.WidgetIcon;
 import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.beans.WidgetType;
 import org.apache.wookie.manager.IWidgetAdminManager;
+import org.apache.wookie.manifestmodel.IContentEntity;
+import org.apache.wookie.manifestmodel.IDescriptionEntity;
 import org.apache.wookie.manifestmodel.IFeatureEntity;
 import org.apache.wookie.manifestmodel.IIconEntity;
 import org.apache.wookie.manifestmodel.ILicenseEntity;
 import org.apache.wookie.manifestmodel.IManifestModel;
+import org.apache.wookie.manifestmodel.INameEntity;
 import org.apache.wookie.manifestmodel.IParamEntity;
 import org.apache.wookie.manifestmodel.IPreferenceEntity;
 
@@ -65,17 +71,12 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 	@SuppressWarnings("unchecked")
 	public int addNewWidget(IManifestModel model, String[] widgetTypes) {
 		// NOTE: we pass the whole model here, so that we can create all the DB hooks more easily.
-		// FOR now just use the first name, description, etc elements found in the manifest.
 		int newWidgetIdx = -1;			
 		Widget widget;
 		widget = new Widget();												
-		widget.setWidgetTitle(model.getLocalName("en"));
-		widget.setWidgetShortName(model.getLocalShortName("en"));
-		widget.setWidgetDescription(model.getLocalDescription("en"));
 		widget.setWidgetAuthor(model.getAuthor());
 		widget.setWidgetAuthorEmail(model.getAuthorEmail());
 		widget.setWidgetAuthorHref(model.getAuthorHref());
-		widget.setUrl(model.getContent().getSrc());
 		widget.setGuid(model.getIdentifier());
 		widget.setHeight(model.getHeight());
 		widget.setWidth(model.getWidth());
@@ -93,15 +94,46 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 		}
 		newWidgetIdx = widget.getId();
 		
+		// Start Files
+		for (IContentEntity page:model.getContentList()){
+			StartFile start = new StartFile();
+			start.setCharset(page.getCharSet());
+			start.setLang(page.getLang());
+			start.setUrl(page.getSrc());
+			start.setWidget(widget);
+			start.save();
+		}
+		
+		// Names
+		for (INameEntity name:model.getNames()){
+			Name widgetName = new Name();
+			widgetName.setLang(name.getLang());
+			widgetName.setDir(name.getDir());
+			widgetName.setName(name.getName());
+			widgetName.setShortName(name.getShort());
+			widgetName.setWidget(widget);
+			widgetName.save();
+		}
+		
+		// Descriptions
+		for (IDescriptionEntity desc:model.getDescriptions()){
+			Description widgetDesc = new Description();
+			widgetDesc.setContent(desc.getDescription());
+			widgetDesc.setLang(desc.getLang());
+			widgetDesc.setDir(desc.getDir());
+			widgetDesc.setWidget(widget);
+			widgetDesc.save();
+		}
+		
 		// Icons
 		for(IIconEntity icon: model.getIconsList()){
-			WidgetIcon widgetIcon = new WidgetIcon(icon.getSrc(),icon.getHeight(),icon.getWidth(),widget);
+			WidgetIcon widgetIcon = new WidgetIcon(icon.getSrc(),icon.getHeight(),icon.getWidth(),icon.getLang(), widget);
 			widgetIcon.save();
 		}
 		
 		// Licenses
 		for(ILicenseEntity licenseModel: model.getLicensesList()){
-			License license = new License(licenseModel.getLicenseText(),licenseModel.getHref(), licenseModel.getLanguage(), licenseModel.getDir(), widget);
+			License license = new License(licenseModel.getLicenseText(),licenseModel.getHref(), licenseModel.getLang(), licenseModel.getDir(), widget);
 			license.save();
 		}
 

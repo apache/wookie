@@ -22,7 +22,7 @@ import org.jdom.Element;
  * @author Paul Sharples
  * @version $Id: IIconEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
-public interface IIconEntity extends IManifestModelBase {
+public interface IIconEntity extends ILocalizedEntity {
 		
 	String getSrc();
 

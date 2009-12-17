@@ -34,7 +34,7 @@ public class OpenSocialUtilsTest{
 	@BeforeClass 
 	public static void setUp(){
 		Widget widget = new Widget();
-		widget.setUrl("http://getwookie.org/test/index.html");
+		//widget.setUrl("http://getwookie.org/test/index.html"); FIXME
 		widget.setGuid("http://getwookie.org/test");
 		widget.setId(1);
 		

@@ -21,12 +21,13 @@ import org.apache.wookie.exceptions.InvalidContentTypeException;
 import org.apache.wookie.manifestmodel.IContentEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.apache.wookie.util.UnicodeUtils;
+import org.apache.wookie.util.WidgetPackageUtils;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
  * @version $Id: ContentEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
-public class ContentEntity implements IContentEntity {
+public class ContentEntity extends AbstractLocalizedEntity implements IContentEntity {
 	
 	private String fSrc;
 	private String fCharSet;
@@ -73,7 +74,7 @@ public class ContentEntity implements IContentEntity {
 		return IW3CXMLConfiguration.CONTENT_ELEMENT;
 	}
 	
-	public void fromXML(Element element) throws BadManifestException{
+	public void fromXML(Element element){
 
 	}
 	
@@ -85,10 +86,17 @@ public class ContentEntity implements IContentEntity {
 		return supported;
 	}
 
-	public void fromXML(Element element, ZipFile zip) throws BadManifestException {
+	public void fromXML(Element element, String[] locales, ZipFile zip) throws BadManifestException {
 		fSrc = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.SOURCE_ATTRIBUTE));
-		// Check custom start file exists; remove the src value if it doesn't
-		if(!fSrc.equals("")) if (zip.getEntry(fSrc) == null) fSrc = "";
+		
+		// Check custom icon file exists; remove the src value if it doesn't
+		try {
+			fSrc = WidgetPackageUtils.locateFilePath(fSrc,locales, zip);
+			setLang(WidgetPackageUtils.languageTagForPath(fSrc));
+		} catch (Exception e) {
+			e.printStackTrace();
+			fSrc = null;
+		}
 
 		fCharSet = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.CHARSET_ATTRIBUTE));
 		if(fCharSet.equals("")){

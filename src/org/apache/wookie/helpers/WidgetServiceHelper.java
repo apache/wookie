@@ -26,8 +26,8 @@ public class WidgetServiceHelper {
 	 * @param localIconPath
 	 * @return
 	 */
-	public static String createXMLWidgetServiceDocument(WidgetService service, String localIconPath){
-		return XMLDECLARATION + WidgetServiceHelper.toXml(service, localIconPath);
+	public static String createXMLWidgetServiceDocument(WidgetService service, String localIconPath, String[] locales){
+		return XMLDECLARATION + WidgetServiceHelper.toXml(service, localIconPath, locales);
 	}
 	
 	/**
@@ -36,11 +36,11 @@ public class WidgetServiceHelper {
 	 * @param localIconPath
 	 * @return
 	 */
-	public static String createXMLWidgetServicesDocument(WidgetService[] services, String localIconPath, boolean defaults){
+	public static String createXMLWidgetServicesDocument(WidgetService[] services, String localIconPath, boolean defaults, String[] locales){
 		String out = XMLDECLARATION;
 		out+="<services>\n";
 		for (WidgetService service: services){
-			out += WidgetServiceHelper.toXml(service,localIconPath,defaults);
+			out += WidgetServiceHelper.toXml(service,localIconPath,defaults, locales);
 		}
 		out+="</services>\n";
 		return out;
@@ -52,8 +52,8 @@ public class WidgetServiceHelper {
 	 * @param localIconPath
 	 * @return
 	 */
-	private static String toXml(WidgetService service, String localIconPath){
-		return toXml(service, localIconPath,false);
+	private static String toXml(WidgetService service, String localIconPath, String[] locales){
+		return toXml(service, localIconPath,false, locales);
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class WidgetServiceHelper {
 	 * @param localIconPath
 	 * @return
 	 */
-	private static String toXml(WidgetService service, String localIconPath, boolean defaults){
+	private static String toXml(WidgetService service, String localIconPath, boolean defaults, String[] locales){
 		String out = "\n<service name=\""+service.getServiceName()+"\">\n";
 		Widget[] widgets;
 		if (defaults){
@@ -70,7 +70,7 @@ public class WidgetServiceHelper {
 		} else {
 			widgets = Widget.findByType(service.getServiceName());
 		}
-		for (Widget widget:widgets) out += WidgetHelper.toXml(widget, localIconPath);
+		for (Widget widget:widgets) out += WidgetHelper.toXml(widget, localIconPath, locales);
 		out +="</service>\n";
 		return out;
 	}

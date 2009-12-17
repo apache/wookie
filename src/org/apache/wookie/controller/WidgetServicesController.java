@@ -56,7 +56,7 @@ public class WidgetServicesController extends Controller{
 	 */
 	protected void show(String id, HttpServletRequest request, HttpServletResponse response) throws ResourceNotFoundException, IOException{
 		WidgetService ws = getWidgetService(id);
-		returnXml(WidgetServiceHelper.createXMLWidgetServiceDocument(ws, getLocalPath(request)), response);
+		returnXml(WidgetServiceHelper.createXMLWidgetServiceDocument(ws, getLocalPath(request),getLocales(request)), response);
 	}
 
 	/* (non-Javadoc)
@@ -65,7 +65,7 @@ public class WidgetServicesController extends Controller{
 	protected void index(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		WidgetService[] ws = WidgetService.findAll();
 		boolean defaults = (request.getParameter("defaults") != null);
-		returnXml(WidgetServiceHelper.createXMLWidgetServicesDocument(ws, getLocalPath(request),defaults), response);
+		returnXml(WidgetServiceHelper.createXMLWidgetServicesDocument(ws, getLocalPath(request),defaults, getLocales(request)), response);
 	}
 	
 	/* (non-Javadoc)

@@ -23,25 +23,21 @@ import org.jdom.Element;
  * @author Paul Sharples
  * @version $Id: LicenseEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
-public class LicenseEntity extends LocalizedEntity implements ILicenseEntity {
+public class LicenseEntity extends AbstractLocalizedEntity implements ILicenseEntity {
 	
 	private String fLicenseText;
 	private String fHref;
-	private String fDir;
 	
 	public LicenseEntity(){
 		fLicenseText = "";
-		fHref = null;
-		setLanguage(null);
-		fDir = null;
 	}
 	
 	public LicenseEntity(String licenseText, String href, String language, String dir) {
 		super();
 		fLicenseText = licenseText;
 		fHref = href;
-		fDir = dir;
-		setLanguage(language);
+		setDir(dir);
+		setLang(language);
 	}
 
 	public String getLicenseText() {
@@ -59,15 +55,6 @@ public class LicenseEntity extends LocalizedEntity implements ILicenseEntity {
 	public void setHref(String href) {
 		fHref = href;
 	}
-	
-	public String getDir() {
-		return fDir;
-	}
-
-	public void setDir(String dir) {
-		fDir = dir;
-	}
-
 
 	public String getXMLTagName() {
 		return IW3CXMLConfiguration.LICENSE_ELEMENT;
@@ -78,12 +65,6 @@ public class LicenseEntity extends LocalizedEntity implements ILicenseEntity {
 		fLicenseText = UnicodeUtils.normalizeWhitespace(XmlUtils.getTextContent(element));
 		fHref = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.HREF_ATTRIBUTE));		
 		if (fHref.equals("")) fHref = null;
-		// Text direction (e.g. for Arabic)
-		fDir = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.DIR_ATRRIBUTE));
-		if (fDir.equals("")) fDir = null;
 	}
-
-	
-	
 
 }

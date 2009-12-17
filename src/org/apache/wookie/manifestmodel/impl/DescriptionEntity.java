@@ -23,19 +23,19 @@ import org.jdom.Element;
  * @author Paul Sharples
  * @version $Id: DescriptionEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
-public class DescriptionEntity extends LocalizedEntity  implements IDescriptionEntity {
+public class DescriptionEntity extends AbstractLocalizedEntity  implements IDescriptionEntity {
 	
 	private String fDescription;
 	
 	public DescriptionEntity(){
 		fDescription = "";
-		setLanguage("");
+		setLang(null);
 	}
 	
 	public DescriptionEntity(String description, String language) {
 		super();
 		fDescription = description;
-		setLanguage(language);
+		setLang(language);
 	}
 	
 	public String getDescription() {
