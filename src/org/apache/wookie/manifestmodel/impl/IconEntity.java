@@ -18,6 +18,7 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.manifestmodel.IIconEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.ContentTypeUtils;
 import org.apache.wookie.util.NumberUtils;
 import org.apache.wookie.util.UnicodeUtils;
 import org.apache.wookie.util.WidgetPackageUtils;
@@ -80,8 +81,13 @@ public class IconEntity extends AbstractLocalizedEntity implements IIconEntity{
 			fSrc = WidgetPackageUtils.locateFilePath(fSrc,locales, zip);
 			setLang(WidgetPackageUtils.languageTagForPath(fSrc));
 		} catch (Exception e) {
-			e.printStackTrace();
 			fSrc = null;
+		}
+		try {
+			if (!ContentTypeUtils.isSupportedImageType(fSrc)) fSrc = null;
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 
 		// height is optional
