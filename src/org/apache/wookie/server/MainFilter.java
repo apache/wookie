@@ -42,8 +42,6 @@ public class MainFilter implements Filter {
 
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) 
 	throws IOException, ServletException {
-		request.setCharacterEncoding("UTF-8");
-		//response.setContentType("text/xml;charset=\"UTF-8\""); << screws up CSS and JS!
 		/** Get a DBManager for this thread. */
 		final IDBManager dbManager = DBManagerFactory.getDBManager();
 		try {							

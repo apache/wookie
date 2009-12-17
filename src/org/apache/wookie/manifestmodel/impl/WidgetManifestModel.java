@@ -121,6 +121,7 @@ public class WidgetManifestModel implements IManifestModel {
 		}
 		//Uncomment this when performing conformance testing
 		//outputFeatureList();
+		//outputEncodings();
 	}
 	
 	/**
@@ -136,6 +137,18 @@ public class WidgetManifestModel implements IManifestModel {
 				params+="["+param.getName()+":"+param.getValue()+"]";
 			}
 			out+=("feature:"+feature.getName()+"required="+feature.isRequired()+"{"+params+"}");
+		}
+		System.out.println(out);
+	}
+	
+	/**
+	 * Used to check output during conformance testing
+	 */
+	private void outputEncodings(){
+		String out = "";
+		out+=("id:"+this.fIdentifier+":"+this.getLocalName("en"));
+		for (IContentEntity startFile:getContentList()){
+			out+=startFile.getSrc()+" "+startFile.getCharSet();
 		}
 		System.out.println(out);
 	}

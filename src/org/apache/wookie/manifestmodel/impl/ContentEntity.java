@@ -35,7 +35,6 @@ public class ContentEntity extends AbstractLocalizedEntity implements IContentEn
 	
 	public ContentEntity(){
 		fSrc = "";
-		fCharSet = "";
 		fType = "";
 	}
 	
@@ -59,7 +58,7 @@ public class ContentEntity extends AbstractLocalizedEntity implements IContentEn
 	}
 
 	public void setCharSet(String charSet) {
-		fCharSet = charSet;
+		if (isSupported(charSet, IW3CXMLConfiguration.SUPPORTED_ENCODINGS)) fCharSet = charSet;
 	}
 
 	public String getType() {
@@ -77,39 +76,58 @@ public class ContentEntity extends AbstractLocalizedEntity implements IContentEn
 	public void fromXML(Element element){
 
 	}
-	
-	private static boolean isSupportedContentType(String atype){
-		boolean supported = false;
-		for (String type: IW3CXMLConfiguration.SUPPORTED_CONTENT_TYPES){
-			if (StringUtils.equals(atype, type)) supported = true;
-		}
-		return supported;
-	}
 
 	public void fromXML(Element element, String[] locales, ZipFile zip) throws BadManifestException {
-		fSrc = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.SOURCE_ATTRIBUTE));
 		
-		// Check custom icon file exists; remove the src value if it doesn't
+		// Src
+		fSrc = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.SOURCE_ATTRIBUTE));
+		// Check file exists; remove the src value if it doesn't
 		try {
 			fSrc = WidgetPackageUtils.locateFilePath(fSrc,locales, zip);
 			setLang(WidgetPackageUtils.languageTagForPath(fSrc));
 		} catch (Exception e) {
-			e.printStackTrace();
 			fSrc = null;
 		}
 
-		fCharSet = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.CHARSET_ATTRIBUTE));
-		if(fCharSet.equals("")){
-			fCharSet = IW3CXMLConfiguration.DEFAULT_CHARSET;
-		}
+		String charsetParameter = null;
+		
+		// Content Type
 		fType = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.TYPE_ATTRIBUTE));
 		if(fType.equals("")){
 			fType = IW3CXMLConfiguration.DEFAULT_MEDIA_TYPE;
 		} else {
+			// Split the content type, as we may also have a charset parameter
+			String[] type = fType.split(";");
 			// If a type attribute is specified, and is either invalid or unsupported, we must treat it as an invalid widget
-			if (!isSupportedContentType(fType)) throw new InvalidContentTypeException();
+			if (!isSupported(type[0], IW3CXMLConfiguration.SUPPORTED_CONTENT_TYPES)) throw new InvalidContentTypeException();
+			fType = type[0];
+			// Get the charset parameter if present
+			if (type.length > 1){
+				String charset[] = type[type.length-1].split("=");
+				charsetParameter = charset[charset.length-1];	
+			}
 		}
 		
+		// Charset encoding. Use encoding attribute by preference, and the use the charset parameter of the content type
+		String charset = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.CHARSET_ATTRIBUTE));
+		setCharSet(charset);
+		if (getCharSet()==null) setCharSet(charsetParameter);		
+		if (getCharSet()==null) setCharSet(IW3CXMLConfiguration.DEFAULT_CHARSET);
+	}
+	
+	/**
+	 * Checks to see if the supplied value is one of the supported values
+	 * @param value
+	 * @param supportedValues
+	 * @return true if the value is one of the supported values
+	 */
+	private boolean isSupported(String value, String[] supportedValues){
+		if (value == null) return false;
+		boolean supported = false;
+		for (String type: supportedValues){
+			if (StringUtils.equals(value, type)) supported = true;
+		}
+		return supported;
 	}
 
 }
