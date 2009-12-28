@@ -15,7 +15,9 @@ package org.apache.wookie.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
@@ -36,6 +38,7 @@ public class LocalizationUtilsTest {
 	public static final String[] LANG_LIST_8 = {"en-us-POSIX"};
 	public static final String[] LANG_LIST_9 = {null, "en", "en-gb", "en-US-POSIX"};
 	public static final String[] LANG_LIST_10 = {"de"};
+	public static final String[] LANG_LIST_11 = {"bu",null};
 	public static final String[] LANG_LIST_INV_1 = {"x-gb-a-a"};
 	public static final String[] LANG_LIST_INV_2 = {"x-gb-a-a","12345567889"};
 	public static final String[] LANG_LIST_INV_3 = {"x-gb-a-a","i-argserg45ggadfgdfsg-4t534","fr"};	
@@ -72,6 +75,54 @@ public class LocalizationUtilsTest {
 		elements = LocalizationUtils.processElementsByLocales(elements,new String[]{null,null,""});
 		assertEquals("en", elements[0].getLang());
 		assertEquals(1, elements.length);	
+	}
+	
+	@Test
+	public void nullTest4(){
+		ILocalizedElement[] elements = elements(LANG_LIST_11);
+		elements = LocalizationUtils.processElementsByLocales(elements,null);
+		assertEquals(null, elements[0].getLang());
+		assertEquals(1, elements.length);	
+	}
+	
+	@Test
+	public void nullTest5(){
+		ILocalizedElement[] elements = elements(LANG_LIST_11);
+		ILocalizedElement element = LocalizationUtils.getLocalizedElement(elements,null);
+		assertEquals(null, element.getLang());
+	}
+	
+	@Test
+	public void nullTest6(){
+		try {
+			ILocalizedElement[] elements = null;
+			ILocalizedElement element = LocalizationUtils.getLocalizedElement(elements,null);
+			assertNull(element);
+		} catch (Exception e) {
+			fail();
+		}
+	}
+	
+	@Test
+	public void nullTest7(){
+		try {
+			ILocalizedElement[] elements = null;
+			elements = LocalizationUtils.processElementsByDefaultLocales(elements);
+			assertNull(elements);
+		} catch (Exception e) {
+			fail();
+		}
+	}
+
+	@Test
+	public void nullTest8(){
+		try {
+			ILocalizedElement[] elements = null;
+			elements = LocalizationUtils.processElementsByLocales(elements,null);
+			assertNull(elements);
+		} catch (Exception e) {
+			fail();
+		}
 	}
 	
 	// Invalid locales are skipped - if this creates an empty list, then use defaults
@@ -147,6 +198,13 @@ public class LocalizationUtilsTest {
 		elements = LocalizationUtils.processElementsByLocales(elements, LANG_LIST_4);
 		assertEquals(null, elements[0].getLang());
 		assertEquals(1, elements.length);
+	}
+	
+	@Test
+	public void noMatch3(){
+		ILocalizedElement[] elements = elements(LANG_LIST_11);
+		ILocalizedElement element = LocalizationUtils.getLocalizedElement(elements, LANG_LIST_4);
+		assertEquals(null,element.getLang());
 	}
 	
 	@Test

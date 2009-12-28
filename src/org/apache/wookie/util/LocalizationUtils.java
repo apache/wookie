@@ -39,7 +39,8 @@ public class LocalizationUtils {
 	 * @return an ILocalizedElement, or null if there are no valid entries
 	 */
 	public static ILocalizedElement getLocalizedElement(ILocalizedElement[] elements,String[] locales){
-		processElementsByLocales(elements,locales);
+		if (elements == null) return null;
+		elements = processElementsByLocales(elements,locales);
 		if (elements.length == 0) return null;
 		return elements[0];
 	}
@@ -51,6 +52,7 @@ public class LocalizationUtils {
 	 * @return
 	 */
 	public static ILocalizedElement[] processElementsByLocales(ILocalizedElement[] elements,String[] locales){
+		if (elements == null) return null;
 		List<ULocale> localesList = getProcessedLocaleList(locales);
 		Arrays.sort(elements, new LocaleComparator(localesList));
 		return filter(elements,localesList);
@@ -62,6 +64,7 @@ public class LocalizationUtils {
 	 * @return
 	 */
 	public static ILocalizedElement[] processElementsByDefaultLocales(ILocalizedElement[] elements){
+		if (elements == null) return null;
 		List<ULocale> localesList = getDefaultLocaleList();
 		Arrays.sort(elements, new LocaleComparator(localesList));
 		return filter(elements,localesList);

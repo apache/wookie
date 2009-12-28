@@ -33,7 +33,7 @@ public class NameEntity extends AbstractLocalizedEntity implements INameEntity {
 	public NameEntity(){
 		fName = "";
 		fShort = "";
-		setLang("");
+		setLang(null);
 	}
 	
 	public NameEntity(String name, String short1, String language) {
