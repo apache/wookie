@@ -127,7 +127,7 @@ public class ContextListener implements ServletContextListener {
 		final String UPLOADFOLDER = context.getRealPath(configuration.getString("widget.useruploadfolder"));
 		final String WIDGETFOLDER = context.getRealPath(configuration.getString("widget.widgetfolder"));
 		final String localWidgetFolderPath = configuration.getString("widget.widgetfolder");
-		final String[] locales = configuration.getString("widget.locales").split(",");
+		final String[] locales = configuration.getStringArray("widget.locales");
 		Thread thr = new Thread(){
 	 		public void run() {
 	 			/** Get a DBManager for this thread. */
