@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.log4j.Logger;
 import org.apache.wookie.beans.ILocalizedElement;
 
 import com.ibm.icu.util.GlobalizationPreferences;
@@ -30,6 +31,7 @@ import com.ibm.icu.util.ULocale;
  *
  */
 public class LocalizationUtils {
+	static Logger _logger = Logger.getLogger(LocalizationUtils.class.getName());
 	
 	/**
 	 * Returns the first (best) match for an element given the set of locales, or null
@@ -46,10 +48,12 @@ public class LocalizationUtils {
 	}
 	
 	/**
-	 * Filters and sorts a list of localized elements using the given locale list
+	 * Filters and sorts a list of localized elements using the given locale list; only localized elements
+	 * are returned unless no appropriate localized elements are found, in which case nonlocalized elements
+	 * are returned
 	 * 
 	 * @param locales
-	 * @return
+	 * @return the sorted and filtered set of elements
 	 */
 	public static ILocalizedElement[] processElementsByLocales(ILocalizedElement[] elements,String[] locales){
 		if (elements == null) return null;
@@ -139,16 +143,23 @@ public class LocalizationUtils {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	protected static List<ULocale> getProcessedLocaleList(String[] locales){
+	public static List<ULocale> getProcessedLocaleList(String[] locales){
 		if (locales == null) return getDefaultLocaleList();
 		GlobalizationPreferences prefs = new GlobalizationPreferences();
 		
 		ArrayList<ULocale> ulocales = new ArrayList<ULocale>();
 		for (String locale:locales){
 			if (locale != null){
-				ULocale ulocale = ULocale.forLanguageTag(locale);
-				if (!ulocale.getLanguage().equals(""))
-					ulocales.add(ulocale);
+				try {
+					ULocale ulocale = ULocale.forLanguageTag(locale);
+					if (!ulocale.getLanguage().equals(""))
+						ulocales.add(ulocale);
+				} catch (Exception e) {
+					// There can be intermittent problems with the internal
+					// functioning of the ULocale class with some
+					// language tags; best to just log these and continue
+					_logger.error("icu4j:ULocale.forLanguageTag("+locale+") threw Exception:",e);
+				}
 			}
 		}	
 		if (ulocales.isEmpty()) return getDefaultLocaleList();
