@@ -86,6 +86,7 @@ CREATE TABLE `WidgetInstance` (
   `shown` char(1) default NULL,
   `hidden` char(1) default NULL,
   `locked` char(1) default NULL,
+  `lang` varchar(255) default NULL,
   PRIMARY KEY  (`id`),
   KEY `FKEA564ED9E2C2E1E5` (`widget_id`),
   CONSTRAINT `FKEA564ED9E2C2E1E5` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)

@@ -70,6 +70,7 @@
 		<property name="shown" type="true_false" />
 		<property name="hidden" type="true_false" />
 		<property name="locked" type="true_false" />
+		<property name="lang"/>	
 	</class>
 	
 	<class name="WidgetIcon" table="WidgetIcon">
