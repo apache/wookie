@@ -61,6 +61,22 @@ public class WidgetPackageUtils {
 	 * @throws Exception
 	 */
 	public static String locateFilePath(String path, String[] locales, ZipFile zip) throws Exception{
+		String[] paths = locateFilePaths(path, locales, zip);
+		if (paths != null && paths.length != 0) return paths[0];
+		return null;
+	}
+	
+	/**
+	 * Returns the set of valid file paths for a given resource. All valid paths are returned, starting
+	 * with localized versions for supported locales before the root version (if present).
+	 * @param path
+	 * @param locales
+	 * @param zip
+	 * @return
+	 * @throws Exception
+	 */
+	public static String[] locateFilePaths(String path, String[] locales, ZipFile zip) throws Exception{
+		ArrayList<String> paths = new ArrayList<String>();
 		if (path.startsWith("/")) path = path.substring(1, path.length());
 		String[] pathComponents = path.split("/");
 		if ("locales".equalsIgnoreCase(pathComponents[0])){
@@ -72,13 +88,12 @@ public class WidgetPackageUtils {
 			String localePath = "locales/"+locale.trim()+"/"+path;
 			if (zip.getEntry(localePath) != null){
 				if (zip.getEntry(localePath).isDirectory()) throw new Exception();
-				return localePath;
+				paths.add(localePath);
 			}
 		}
 		// Look in root folder
-		if (zip.getEntry(path) == null) return null;
-		if (zip.getEntry(path).isDirectory()) throw new Exception();
-		return path;
+		if (zip.getEntry(path) != null && !zip.getEntry(path).isDirectory()) paths.add(path);
+		return (String[]) paths.toArray(new String[paths.size()]);
 	}
 	
 	/**
@@ -108,8 +123,10 @@ public class WidgetPackageUtils {
 		ArrayList<String> content = new ArrayList<String>();
 		for (String start: defaults){
 			try {
-				start = locateFilePath(start, locales, zip);
-				if (start != null) content.add(start);
+				String[] paths = locateFilePaths(start, locales, zip);
+				if (paths != null){
+					for (String path:paths) content.add(path);
+				}
 			} catch (Exception e) {
 				// ignore and move onto next
 			}
