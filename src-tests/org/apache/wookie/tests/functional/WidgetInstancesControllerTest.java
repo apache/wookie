@@ -52,6 +52,25 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	}
 	
 	@Test
+	// Tests if specifying "early modern french" locale returns standard FR start file
+	public void getGracefulLocalizedInstance(){
+	    try {
+	        HttpClient client = new HttpClient();
+	        PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
+	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+LOCALIZED_WIDGET+"&userid=localetest1b&shareddatakey=localetest1b&locale=fr-1694acad");
+	        client.executeMethod(post);
+	        int code = post.getStatusCode();
+	        assertEquals(201,code);
+	        assertTrue(post.getResponseBodyAsString().contains("locales/fr/index.htm"));
+	        post.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    	fail("post failed");
+	    }		
+	}
+	
+	@Test
 	public void getNonLocalizedInstance(){
 	    try {
 	        HttpClient client = new HttpClient();
@@ -62,6 +81,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	        assertEquals(201,code);
 	        assertFalse(post.getResponseBodyAsString().contains("locales/fr/index.htm"));
 	        assertFalse(post.getResponseBodyAsString().contains("locales/en/index.htm"));
+	        assertTrue(post.getResponseBodyAsString().contains("index.htm"));
 	        post.releaseConnection();
 	    }
 	    catch (Exception e) {

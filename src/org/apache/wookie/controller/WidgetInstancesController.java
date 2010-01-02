@@ -275,7 +275,13 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	 */
 	protected static String getUrl(HttpServletRequest request, WidgetInstance instance) throws IOException{
 		String url = "";
+		
 		StartFile sf = (StartFile) LocalizationUtils.getLocalizedElement(StartFile.findByValue("widget", instance.getWidget()), new String[]{instance.getLang()});
+		// Try default locale if no appropriate localization found
+		if (sf == null) sf = (StartFile) LocalizationUtils.getLocalizedElement(StartFile.findByValue("widget", instance.getWidget()), null);
+		// No start file found, so throw an exception
+		if (sf == null) throw new IOException("No start file located for widget "+instance.getWidget().getGuid());
+		
 		URL urlWidget =  new URL(request.getScheme() ,
 				request.getServerName() ,
 				request.getServerPort() , sf.getUrl());
