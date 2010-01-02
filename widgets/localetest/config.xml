@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" id="http://www.getwookie.org/widgets/localetest" height="383" width="255">
+	<name>localetest</name>
+	<description>widget for testing localization</description>
+	<icon src="icon.png"/>
+	<author>Scott Wilson</author>
+	<license>Licensed under the Apache 2.0 License (see http://www.apache.org/licenses/LICENSE-2.0)</license>
+</widget>

@@ -28,6 +28,7 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
 import org.apache.wookie.beans.SharedData;
+import org.apache.wookie.beans.StartFile;
 import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.exceptions.InvalidWidgetCallException;
 import org.apache.wookie.helpers.Notifier;
@@ -35,6 +36,7 @@ import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetInstanceHelper;
 import org.apache.wookie.helpers.WidgetKeyManager;
 import org.apache.wookie.server.LocaleHandler;
+import org.apache.wookie.util.LocalizationUtils;
 
 /**
  * REST implementation for widgetInstance
@@ -198,7 +200,8 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		// Widget exists
 		if(instance==null){
 			String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
-			instance = WidgetFactory.getWidgetFactory(session, localizedMessages).newInstance(apiKey, userId, sharedDataKey, serviceType, widgetId);
+			String locale = request.getParameter("locale");//$NON-NLS-1$
+			instance = WidgetFactory.getWidgetFactory(session, localizedMessages).newInstance(apiKey, userId, sharedDataKey, serviceType, widgetId, locale);
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
 			response.setStatus(HttpServletResponse.SC_OK);			
@@ -272,9 +275,10 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	 */
 	protected static String getUrl(HttpServletRequest request, WidgetInstance instance) throws IOException{
 		String url = "";
+		StartFile sf = (StartFile) LocalizationUtils.getLocalizedElement(StartFile.findByValue("widget", instance.getWidget()), new String[]{instance.getLang()});
 		URL urlWidget =  new URL(request.getScheme() ,
 				request.getServerName() ,
-				request.getServerPort() , instance.getWidget().getUrl());
+				request.getServerPort() , sf.getUrl());
 		
 		if (urlWidget.getQuery() != null){
 			url+= urlWidget + "&amp;idkey=" + instance.getIdKey()  //$NON-NLS-1$

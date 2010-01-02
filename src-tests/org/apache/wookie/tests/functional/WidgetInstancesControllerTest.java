@@ -31,6 +31,63 @@ import org.junit.Test;
  */
 public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	
+	private static final String LOCALIZED_WIDGET = "http://www.getwookie.org/widgets/localetest";
+	
+	@Test
+	public void getLocalizedInstance(){
+	    try {
+	        HttpClient client = new HttpClient();
+	        PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
+	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+LOCALIZED_WIDGET+"&userid=localetest&shareddatakey=localetest&locale=fr");
+	        client.executeMethod(post);
+	        int code = post.getStatusCode();
+	        assertEquals(201,code);
+	        assertTrue(post.getResponseBodyAsString().contains("locales/fr/index.htm"));
+	        post.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    	fail("post failed");
+	    }		
+	}
+	
+	@Test
+	public void getNonLocalizedInstance(){
+	    try {
+	        HttpClient client = new HttpClient();
+	        PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
+	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+LOCALIZED_WIDGET+"&userid=localetest2&shareddatakey=localetest2&locale=bu");
+	        client.executeMethod(post);
+	        int code = post.getStatusCode();
+	        assertEquals(201,code);
+	        assertFalse(post.getResponseBodyAsString().contains("locales/fr/index.htm"));
+	        assertFalse(post.getResponseBodyAsString().contains("locales/en/index.htm"));
+	        post.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    	fail("post failed");
+	    }		
+	}
+	
+	@Test
+	public void getDefaultLocalizedInstance(){
+	    try {
+	        HttpClient client = new HttpClient();
+	        PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
+	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+LOCALIZED_WIDGET+"&userid=localetest3&shareddatakey=localetest3");
+	        client.executeMethod(post);
+	        int code = post.getStatusCode();
+	        assertEquals(201,code);
+	        assertTrue(post.getResponseBodyAsString().contains("locales/en/index.htm"));
+	        post.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    	fail("post failed");
+	    }		
+	}
+	
 	@Test
 	public void getInstanceById(){
 	    try {

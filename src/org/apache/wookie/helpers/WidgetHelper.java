@@ -109,8 +109,12 @@ public class WidgetHelper {
 		out += "</description>\n";
 		
 		// Do icons
-		WidgetIcon[] icons = WidgetIcon.findForWidget(widget);
-		icons = (WidgetIcon[]) LocalizationUtils.processElementsByLocales(icons, locales);
+		WidgetIcon[] icons;
+		if (locales != null && locales.length != 0){
+			icons = (WidgetIcon[]) LocalizationUtils.processElementsByLocales(WidgetIcon.findForWidget(widget), locales);
+		} else {
+			icons = WidgetIcon.findForWidget(widget);
+		}
 		if (icons!=null){
 		for (WidgetIcon icon: icons){
 			try {

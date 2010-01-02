@@ -24,6 +24,7 @@ import org.apache.wookie.beans.PreferenceDefault;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.util.HashGenerator;
+import org.apache.wookie.util.LocalizationUtils;
 import org.apache.wookie.util.RandomGUID;
 import org.apache.wookie.util.opensocial.OpenSocialUtils;
 
@@ -83,7 +84,7 @@ public class WidgetFactory{
 	 * @param localizedMessages
 	 * @return
 	 */
-	public WidgetInstance newInstance(String apiKey, String userId, String sharedDataKey, String serviceType, String widgetId){
+	public WidgetInstance newInstance(String apiKey, String userId, String sharedDataKey, String serviceType, String widgetId, String lang){
 		try {
 			Widget widget;
 			WidgetInstance widgetInstance;
@@ -114,7 +115,7 @@ public class WidgetFactory{
 
 			Configuration properties = (Configuration) session.getServletContext().getAttribute("opensocial"); //$NON-NLS-1$
 			
-			widgetInstance = addNewWidgetInstance(apiKey, userId, sharedDataKey, widget, nonce, hashKey, properties);
+			widgetInstance = addNewWidgetInstance(apiKey, userId, sharedDataKey, widget, nonce, hashKey, properties, lang);
 			return widgetInstance;
 		} catch (Exception ex) {
 			return null;
@@ -132,13 +133,14 @@ public class WidgetFactory{
 	 * @param properties
 	 * @return
 	 */
-	private WidgetInstance addNewWidgetInstance(String api_key, String userId, String sharedDataKey, Widget widget, String nonce, String idKey, Configuration properties) {		
+	private WidgetInstance addNewWidgetInstance(String api_key, String userId, String sharedDataKey, Widget widget, String nonce, String idKey, Configuration properties, String lang) {		
 		WidgetInstance widgetInstance = new WidgetInstance();
 		widgetInstance.setUserId(userId);
 		widgetInstance.setSharedDataKey(sharedDataKey);
 		widgetInstance.setIdKey(idKey);
 		widgetInstance.setNonce(nonce);
 		widgetInstance.setApiKey(api_key);
+		if (LocalizationUtils.isValidLanguageTag(lang)) widgetInstance.setLang(lang);
 		// set the defaults widget for this type			
 		widgetInstance.setWidget(widget);						
 		widgetInstance.setHidden(false);
