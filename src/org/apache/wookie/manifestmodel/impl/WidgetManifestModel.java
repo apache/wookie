@@ -104,7 +104,12 @@ public class WidgetManifestModel implements IManifestModel {
 				for (IIconEntity icon: fIconsList){
 					if (icon.getSrc().equals(iconpath)) exists = true;
 				}
-				if (!exists) fIconsList.add(new IconEntity(iconpath,null,null));	
+				if (!exists){
+					IconEntity i = new IconEntity();
+					i.setLang(WidgetPackageUtils.languageTagForPath(iconpath));
+					i.setSrc(iconpath);
+					fIconsList.add(i);	
+				}
 			}
 		}
 		
@@ -116,7 +121,12 @@ public class WidgetManifestModel implements IManifestModel {
 				for (IContentEntity content: fContentList){
 					if (content.getSrc().equals(startpath)) exists = true;
 				}
-				if (!exists) fContentList.add(new ContentEntity(startpath,null,null));	
+				if (!exists){
+					ContentEntity c = new ContentEntity();
+					c.setLang(WidgetPackageUtils.languageTagForPath(startpath));
+					c.setSrc(startpath);
+					fContentList.add(c);	
+				}
 			}
 		}
 		//Uncomment this when performing conformance testing
