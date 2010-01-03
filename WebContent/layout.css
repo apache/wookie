@@ -300,11 +300,19 @@ a.menulink:focus {
 .wookie-description{
 	margin-top: 20px;
     font-size: 10px;
-    padding: 20px;
-    height: 90px;    
+    padding: 10px;
+    height: 70px;    
     vertical-align: top;
     font-family: Verdana,Arial,sans-serif;
-}   
+}
+
+.wookie-demo-link{
+    font-family: Verdana,Arial,sans-serif;
+	height: 24px;
+	text-align:center;
+    font-size: 12px;
+    text-decoration: underline;
+}
 
 .wookie-choose{
     text-align:center;

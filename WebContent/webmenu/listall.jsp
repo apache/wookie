@@ -51,9 +51,9 @@
 	ArrayList<String> guids = new ArrayList<String>();
 	int count = -1;
 	for(Enumeration e = widgetsHash.keys(); e.hasMoreElements();){				
-		String widgetType = (String) e.nextElement();		
-		if (!widgetType.equalsIgnoreCase("http://www.tencompetence.org/widgets/default/notsupported")){
-			Widget widget  = (Widget)widgetsHash.get(widgetType);
+		String id = (String) e.nextElement();
+		Widget widget = (Widget) widgetsHash.get(id);
+		if (!widget.getGuid().equalsIgnoreCase("http://www.tencompetence.org/widgets/default/notsupported")){
 			String guid = widget.getGuid();
 			if(!guids.contains(guid)){
 				guids.add(guid);
@@ -67,7 +67,8 @@
 							</td>
 						</tr>
 				    	<tr align="center"><td class="wookie-title" align="center" valign="top"><%=widget.getWidgetTitle()%></td></tr>
-				    	<tr align="center"><td class="wookie-description" align="center" valign="top"><%=widget.getWidgetDescription()%></td></tr>				    			    
+				    	<tr align="center"><td class="wookie-description" align="center" valign="top"><%=widget.getWidgetDescription()%></td></tr>
+				    	<tr align="right"><td class="wookie-demo-link"><a href="WidgetWebMenuServlet?operation=DEMO_WIDGET&amp;idkey=<%= id %>">Demo</a></td></tr>
 				    </table>			    
 				 </td> 		 		   
 				<%

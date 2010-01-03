@@ -28,7 +28,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.Widget;
-import org.apache.wookie.beans.WidgetDefault;
+import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetKeyManager;
 import org.apache.wookie.manager.IWidgetAdminManager;
 import org.apache.wookie.manager.impl.WidgetAdminManager;
@@ -46,7 +47,7 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 
 	// our list of allowed operations
 	private enum Operation {
-		LISTWIDGETS, INDEX, INSTANTIATE, REQUESTAPIKEY,
+		LISTWIDGETS, INDEX, INSTANTIATE, REQUESTAPIKEY, DEMO_WIDGET
 	}
 
 	// Get the logger
@@ -55,6 +56,7 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 	// jsp page handles
 	private static final String fMainPage = "/webmenu/index.jsp"; //$NON-NLS-1$
 	private static final String fListWidgetsPage = "/webmenu/listall.jsp"; //$NON-NLS-1$
+	private static final String fDemoWidgetPage = "/webmenu/demoWidget.jsp"; //$NON-NLS-1$
 	private static final String fInstantiateWidgetsPage = "/webmenu/instantiate.jsp"; //$NON-NLS-1$
 	private static final String fRequestApiKeyPage = "/webmenu/requestapikey.jsp"; //$NON-NLS-1$
 
@@ -91,8 +93,17 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 					break;
 				}
 				case LISTWIDGETS: {
-					listOperation(session, manager);
+					listOperation(request, session, manager);
 					doForward(request, response, fListWidgetsPage);
+					break;
+				}
+				case DEMO_WIDGET:{
+					String key = request.getParameter("idkey");
+					WidgetInstance widget = WidgetInstance.findByIdKey(key);
+					request.setAttribute("widgetURL", widget.getWidget().getUrl());
+					request.setAttribute("widgetHeight", widget.getWidget().getHeight());
+					request.setAttribute("widgetWidth", widget.getWidget().getWidth());
+					doForward(request, response, fDemoWidgetPage);
 					break;
 				}
 				case INSTANTIATE: {
@@ -132,11 +143,20 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 		session.setAttribute("widgets", widgets); //$NON-NLS-1$
 	}
 
-	private void listOperation(HttpSession session, IWidgetAdminManager manager){
+	private void listOperation(HttpServletRequest request, HttpSession session, IWidgetAdminManager manager){
 		Hashtable<String, Widget> widgetsHash = new Hashtable<String, Widget>();
 
 		for(Widget widget:Widget.findAll()){
-			widgetsHash.put(widget.getGuid(), widget);
+			// Create an instance of the widget so that we can display it as the demo widget
+			WidgetInstance instance = null;
+			String apiKey = "TEST"; //$NON-NLS-1$
+			String userId = "testuser"; //$NON-NLS-1$
+			String sharedDataKey = "myshareddata"; //$NON-NLS-1$
+			String widgetId = widget.getGuid();
+			instance = WidgetFactory.getWidgetFactory(session, LocaleHandler.localizeMessages(request)).newInstance(apiKey, userId, sharedDataKey, null, widgetId, null);
+			if (instance != null) {
+				widgetsHash.put(instance.getIdKey(), widget);
+			}
 		}
 
 		//for(WidgetDefault defaultWidget : manager.getAllDefaultWidgets()){
