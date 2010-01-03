@@ -196,11 +196,11 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		checkProxy(request);
 		
 		WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
-
+		String locale = request.getParameter("locale");//$NON-NLS-1$
+		
 		// Widget exists
 		if(instance==null){
 			String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
-			String locale = request.getParameter("locale");//$NON-NLS-1$
 			instance = WidgetFactory.getWidgetFactory(session, localizedMessages).newInstance(apiKey, userId, sharedDataKey, serviceType, widgetId, locale);
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
@@ -209,7 +209,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		
 		// Return the default widget if not created by now
 		if(instance==null){
-			instance = WidgetFactory.getWidgetFactory(session, localizedMessages).defaultInstance();
+			instance = WidgetFactory.defaultInstance(locale);
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);	
 		}
 		

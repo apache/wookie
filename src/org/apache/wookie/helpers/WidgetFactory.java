@@ -65,10 +65,11 @@ public class WidgetFactory{
 	 * Return the "default widget" instance
 	 * @return
 	 */
-	public WidgetInstance defaultInstance(){
+	public static WidgetInstance defaultInstance(String locale){
 		WidgetInstance instance = new WidgetInstance();
 		instance.setWidget(Widget.findDefaultByType("unsupported")); //$NON-NLS-1$
 		instance.setIdKey("0000");
+		instance.setLang(locale);
 		instance.setOpensocialToken("");
 		return instance;
 	}

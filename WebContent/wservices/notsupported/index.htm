@@ -2,38 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Widget type not supported</title>
-<script type='text/javascript' src='/wookie/dwr/util.js'> </script>  
-<script type='text/javascript' src='/wookie/dwr/engine.js'> </script>
-<script type='text/javascript' src='/wookie/dwr/interface/WidgetImpl.js'> </script>
-<script type='text/javascript' src='/wookie/shared/js/wookie-wrapper.js'> </script>   
-
-<script type='text/javascript' src='locales/en/localizedStrings.js'> </script>
-<script type='text/javascript' src='locales/bu/localizedStrings.js'> </script>
-<script>
-
-
-function init(){
-	document.title = LanguageHelper.getLocalizedString('Widget type not supported');
-	var mainText = "<h3>"+ LanguageHelper.getLocalizedString('Widget Server') +"</div></h3>";
-	mainText += "<p>"+ LanguageHelper.getLocalizedString('Sorry, but the widget server does not support this type of widget') +"</p>";
-	document.getElementById('maindiv').innerHTML = mainText
-
-	var langText = LanguageHelper.getLangOpts(updateLanguage)
-	document.getElementById('langdiv').innerHTML = langText;
-}
-
-function updateLanguage(){
-	init();
-}
-
-  </script>
- </head>
-<body onload="init()">
+<title>Widget type not supported</title> 
+</head>
+<body>
 	<div id="wrapper">
-		<div id="langdiv">		
-		</div>
-		<div id="maindiv"></div>
+		<div id="maindiv"><h3>Widget Server</h3><p>Sorry, but the widget server does not support this type of widget</p></div>
 	</div>
 </body>
 </html>
