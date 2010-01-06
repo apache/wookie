@@ -69,7 +69,7 @@ public class ContentTypeUtils {
 		if (filename == null) return null;
 		if (filename.length() == 0) return null;
 		if (filename.endsWith(".")) return null;
-		if (filename.startsWith(",") && filename.lastIndexOf(".")==0) return null;
+		if (filename.startsWith(".") && filename.lastIndexOf(".")==0) return null;
 		if (filename.contains(".")){
 			String type = null;
 			String[] parts = filename.split("\\.");
