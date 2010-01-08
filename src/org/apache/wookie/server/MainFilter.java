@@ -23,19 +23,13 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.apache.log4j.Logger;
 import org.apache.wookie.util.hibernate.DBManagerFactory;
 import org.apache.wookie.util.hibernate.IDBManager;
 
 /**
  * Filter to set DB transactions
- * @author Paul Sharples
- * @version $Id: MainFilter.java,v 1.2 2009-07-28 16:05:23 scottwilson Exp $
- *
  */
 public class MainFilter implements Filter {
-	
-	static final private Logger logger = Logger.getLogger(MainFilter.class);
 
 	public void destroy() {
 	}
@@ -43,20 +37,12 @@ public class MainFilter implements Filter {
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) 
 	throws IOException, ServletException {
 		/** Get a DBManager for this thread. */
-		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		try {							
+		final IDBManager dbManager = DBManagerFactory.getDBManager();							
 			dbManager.beginTransaction();
 			chain.doFilter(request, response);		
 			dbManager.commitTransaction();
-		}
-		catch (Exception e) {
-			logger.error("error: " + e.getCause());
-			e.printStackTrace();
-		}
-		finally {
 			// Close the session [This method checks if the session is open]
 			dbManager.closeSession();
-		}
 	}
 
 	public void init(FilterConfig arg0) throws ServletException {		
