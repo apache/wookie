@@ -22,12 +22,16 @@ import org.apache.wookie.feature.IFeature;
  *
  */
 public class Test implements IFeature {
+	
+	public String getName() {
+		return "feature:a9bb79c1";
+	}
 
-	public String getJavaScriptImpl() {
+	public String[] scripts() {
 		return null;
 	}
 
-	public String getJavaScriptWrapper() {
+	public String[] stylesheets() {
 		return null;
 	}
 

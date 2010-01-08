@@ -16,13 +16,10 @@ package org.apache.wookie.feature.wave;
 
 import java.util.Map;
 
-import org.apache.wookie.feature.IFeature;
-
 /**
- * @author scott
- *
+ * Wave API - see http://code.google.com/apis/wave/extensions/gadgets/reference.html
  */
-public interface IWaveAPI extends IFeature{
+public interface IWaveAPI{
 	
 	/**
 	 * Submits a map of key/value pairs for shared state
@@ -38,11 +35,26 @@ public interface IWaveAPI extends IFeature{
 	 */
 	public Map<String, String> state(String id_key);
 	
-	
+	/**
+	 * Returns the viewer (current user) of the widget
+	 * @param id_key
+	 * @return
+	 */
 	public String getViewer(String id_key);
 	
+	/**
+	 * Returns all participants of the widget and its siblings
+	 * @param id_key
+	 * @return
+	 */
 	public String getParticipants(String id_key);
 	
+	/**
+	 * Returns the host (owner) of the widget, typically the
+	 * owner of the context in which it has been instantiated
+	 * @param id_key
+	 * @return
+	 */
 	public String getHost(String id_key);
 
 }

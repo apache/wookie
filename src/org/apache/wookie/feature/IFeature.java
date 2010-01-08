@@ -16,12 +16,23 @@ package org.apache.wookie.feature;
 
 /**
  * Interface supported by features
- * @author scott
- *
  */
 public interface IFeature {
 	
-	public String getJavaScriptWrapper();
-	public String getJavaScriptImpl();
+	/**
+	 * The name (IRI) of the feature
+	 * @return
+	 */
+	public String getName();
+	/**
+	 * An array of Strings representing the path to each script required by the feature
+	 * @return
+	 */
+	public String[] scripts();
+	/**
+	 * An array of Strings representing the path to each stylesheet required by the feature
+	 * @return
+	 */
+	public String[] stylesheets();
 
 }

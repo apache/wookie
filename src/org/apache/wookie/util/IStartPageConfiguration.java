@@ -23,9 +23,14 @@ package org.apache.wookie.util;
 public interface IStartPageConfiguration {
 	final String HEAD_TAG = "head";
 	final String SCRIPT_TAG = "script";	
+	final String LINK_TAG = "link";	
 	final String TYPE_ATTRIBUTE = "type";
 	final String TYPE_ATTRIBUTE_VALUE = "text/javascript";	
+	final String CSS_TYPE_ATTRIBUTE_VALUE = "text/css";	
+	final String REL_ATTRIBUTE = "rel";		
+	final String CSS_REL_ATTRIBUTE_VALUE = "stylesheet";	
 	final String SRC_ATTRIBUTE = "src";	
+	final String HREF_ATTRIBUTE = "href";	
 	final String DWR_UTIL_SRC_VALUE = "/wookie/dwr/util.js";
 	final String DWR_ENGINE_SRC_VALUE = "/wookie/dwr/engine.js";
 	final String WIDGET_IMPL_SRC_VALUE = "/wookie/dwr/interface/WidgetImpl.js";

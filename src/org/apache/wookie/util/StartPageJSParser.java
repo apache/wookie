@@ -74,6 +74,14 @@ public class StartPageJSParser implements IStartPageConfiguration {
 		return js;
 	}
 	
+	private TagNode createStylesheetTag(String srcAttribute){
+		TagNode js = new TagNode(LINK_TAG);
+		js.addAttribute(TYPE_ATTRIBUTE, CSS_TYPE_ATTRIBUTE_VALUE);
+		js.addAttribute(REL_ATTRIBUTE, CSS_REL_ATTRIBUTE_VALUE);
+		js.addAttribute(HREF_ATTRIBUTE, srcAttribute);
+		return js;
+	}
+	
 	@SuppressWarnings("unchecked")
 	private void findNonWookieScriptTags(TagNode headNode){		
 		List<TagNode> children = headNode.getChildren();		
@@ -143,16 +151,20 @@ public class StartPageJSParser implements IStartPageConfiguration {
 						try {
 							klass = (Class<? extends IFeature>) Class.forName(sf.getClassName());
 							IFeature theFeature = (IFeature) klass.newInstance();
-							if(theFeature.getJavaScriptImpl() != null){
-								if(!doesAttributeValueExistsInNode(headNode, SRC_ATTRIBUTE, theFeature.getJavaScriptImpl())){
-									TagNode jsTag = createScriptTag(theFeature.getJavaScriptImpl());
-									headNode.addChild(jsTag);
+							if (theFeature.scripts() != null){
+								for (String script: theFeature.scripts()){
+									if(!doesAttributeValueExistsInNode(headNode, SRC_ATTRIBUTE, script)){
+										TagNode jsTag = createScriptTag(script);
+										headNode.addChild(jsTag);
+									}
 								}
 							}
-							if(theFeature.getJavaScriptWrapper() != null){
-								if(!doesAttributeValueExistsInNode(headNode, SRC_ATTRIBUTE, theFeature.getJavaScriptWrapper())){
-									TagNode jsTag = createScriptTag(theFeature.getJavaScriptWrapper());
-									headNode.addChild(jsTag);
+							if (theFeature.stylesheets() != null){
+								for (String style: theFeature.stylesheets()){
+									if(!doesAttributeValueExistsInNode(headNode, HREF_ATTRIBUTE, style)){
+										TagNode cssTag = createStylesheetTag(style);
+										headNode.addChild(cssTag);
+									}
 								}
 							}
 						} catch (Exception e) {

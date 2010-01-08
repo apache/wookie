@@ -15,11 +15,25 @@
 package org.apache.wookie.feature.polling;
 
 import org.apache.wookie.feature.IFeature;
+
 /**
- * Polling 
+ * Polling Support - turned on by using a 
+ * <feature name="http://www.getwookie.org/usefeature/polling"> tag in the manifest file
+ *   
  * @author Paul Sharples
- * @version $Id: IWookiePolling.java,v 1.2 2009-07-28 16:05:23 scottwilson Exp $ 
+ * @version $Id: WookiePollingImpl.java,v 1.2 2009-07-28 16:05:23 scottwilson Exp $ 
  */
-public interface IWookiePolling extends IFeature {
-	// place holder for now as Ifeature need to be extended
+public class Polling implements IFeature{
+	
+	public String getName() {
+		return "http://www.getwookie.org/usefeature/polling";
+	}
+
+	public String[] scripts() {
+		return new String[]{"/wookie/shared/js/wookie-polling-feature.js"};
+	}
+
+	public String[] stylesheets() {
+		return null;
+	}
 }

@@ -26,6 +26,7 @@ import org.apache.wookie.beans.Participant;
 import org.apache.wookie.beans.SharedData;
 import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.controller.PropertiesController;
+import org.apache.wookie.feature.IFeature;
 import org.apache.wookie.helpers.ParticipantHelper;
 import org.apache.wookie.server.LocaleHandler;
 import org.directwebremoting.ScriptBuffer;
@@ -37,33 +38,22 @@ import org.directwebremoting.WebContextFactory;
  * @author scott
  *
  */
-public class WaveAPIImpl implements IWaveAPI{
+public class WaveAPIImpl implements IFeature, IWaveAPI{
 
-	/**
-	 * 
-	 */
 	public WaveAPIImpl() {
 	}
 	
-	
-
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.feature.IFeature#getJavaScriptImpl()
-	 */
-	public String getJavaScriptImpl() {
-		return "/wookie/dwr/interface/WaveImpl.js";
+	public String getName() {
+		return "http://wave.google.com";
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.feature.IFeature#getJavaScriptWrapper()
-	 */
-	public String getJavaScriptWrapper() {
-		return "/wookie/shared/js/wave.js";
+	public String[] scripts() {
+		return new String[]{"/wookie/dwr/interface/WaveImpl.js", "/wookie/shared/js/wave.js"};
 	}
 
-
+	public String[] stylesheets() {
+		return null;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.feature.wave.IWaveAPI#getHost(java.lang.String)
