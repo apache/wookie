@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <widget xmlns="http://www.w3.org/ns/widgets" 
-        uid="http://www.opera.com/widgets/bubbles" 
+        id="http://www.opera.com/widgets/bubbles" 
         version="2006-07-26" 
         height="320" 
         width="240">
