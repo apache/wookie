@@ -35,7 +35,7 @@
 	 	<property name="project.scripts.dir" value="scripts/derby"/>
   </target>
 	
-  <target name="run" depends="deploy-webapp">    
+  <target name="run" depends="deploy-webapp" description="Run in standalone mode">    
   	<ant antfile="ant/ivy-java-common.xml" target="run"/>
   </target>
 
