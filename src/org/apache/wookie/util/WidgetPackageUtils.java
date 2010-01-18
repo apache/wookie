@@ -41,6 +41,7 @@ import org.apache.wookie.manifestmodel.IContentEntity;
 import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
 import org.apache.wookie.manifestmodel.impl.WidgetManifestModel;
+import org.apache.wookie.util.html.StartPageProcessor;
 
 /**
  * Utilities for working with Widget packages, i.e. Zip Files with an XML manifest
@@ -251,9 +252,8 @@ public class WidgetPackageUtils {
 					File startFile = new File(newWidgetFolder.getCanonicalPath() + File.separator + content.getSrc());
 					String relativestartUrl = (WidgetPackageUtils.getURLForWidget(localWidgetPath, manifestIdentifier, content.getSrc())); 					
 					content.setSrc(relativestartUrl);
-					if(startFile.exists()){								
-						StartPageJSParser parser = new StartPageJSParser(startFile, widgetModel);
-						parser.doParse();
+					if(startFile.exists()){		
+						StartPageProcessor.processStartFile(startFile, widgetModel);
 					}	
 				}
 				if (widgetModel.getContentList().isEmpty()){
