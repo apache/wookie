@@ -50,7 +50,10 @@ WidgetPreferences = new function WidgetPreferences(){
         
 	    var existing = this.prefs[key];
         if (existing){
-            if (existing["readOnly"] == true) throw "NO_MODIFICATION_ALLOWED_ERR";
+            if (existing["readOnly"] == true){
+            	window.DOMException.code = DOMException.NO_MODIFICATION_ALLOWED_ERR;
+            	throw (window.DOMException);
+            }
         } else {
         	// Setup prototype methods
             eval("Widget.preferences.__defineGetter__('"+key+"', function(){return Widget.preferences.getItem('"+key+"')})");
@@ -62,13 +65,25 @@ WidgetPreferences = new function WidgetPreferences(){
 		this.calcLength();
 	}
 	this.removeItem = function(key){
-        this.prefs[key] = null;
-		Widget.setPreferenceForKey(key,null);
-		this.calcLength();
+		var existing = (this.prefs[key]);
+        if (existing){
+            if (existing["readOnly"] == true){
+            	window.DOMException.code = DOMException.NO_MODIFICATION_ALLOWED_ERR;
+            	throw (window.DOMException);
+            } else {
+            	this.prefs[key] = null;
+            	Widget.setPreferenceForKey(key,null);
+            	this.calcLength();
+            }
+        }
 	}
 	this.clear = function(){
 		for (key in this.prefs){
-			this.removeItem(key);
+			try{
+				this.removeItem(key);
+			} catch (e){
+				// swallow errors, as this method must never throw them according to spec.
+			}
 		}
 	}
 }
@@ -196,6 +211,10 @@ var Widget = {
 		
 	proxify : function(url){
 			return this.proxyUrl + "?instanceid_key=" + this.instanceid_key + "&url=" + url;
+	},
+	
+	toString: function(){
+		return "[object Widget]";
 	}
 	
 }
