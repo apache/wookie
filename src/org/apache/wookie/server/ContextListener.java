@@ -27,6 +27,7 @@ import org.apache.wookie.Messages;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.exceptions.BadWidgetZipFileException;
+import org.apache.wookie.feature.FeatureLoader;
 import org.apache.wookie.manager.impl.WidgetAdminManager;
 import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.util.WgtWatcher;
@@ -106,6 +107,22 @@ public class ContextListener implements ServletContextListener {
 				_logger.info("Using default open social properties, configure your local server using: " + localOpenSocialPropsFile.toString());
 			}
 			context.setAttribute("opensocial", (Configuration) opensocialConfiguration);
+			
+			/*
+			 * Load installed features
+			 */
+			PropertiesConfiguration featuresConfiguration;
+			File localFeaturesPropsFile = new File(System.getProperty("user.dir") + File.separator + "local.features.properties");
+			if (localFeaturesPropsFile.exists()) {
+				featuresConfiguration = new PropertiesConfiguration(localFeaturesPropsFile);
+				_logger.info("Loading local features file: " + localOpenSocialPropsFile.toString());
+			} else {
+				featuresConfiguration = new PropertiesConfiguration("features.properties");
+				featuresConfiguration.setFile(localFeaturesPropsFile);
+				featuresConfiguration.save();
+				_logger.info("Loading default features, configure your local server using: " + localFeaturesPropsFile.toString());
+			}
+			FeatureLoader.loadFeatures(featuresConfiguration);
 		} 
 		catch (ConfigurationException ex) {
 			_logger.error("ConfigurationException thrown: "+ ex.toString());

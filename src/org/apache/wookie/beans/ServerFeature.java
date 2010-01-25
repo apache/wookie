@@ -40,6 +40,10 @@ public class ServerFeature extends AbstractKeyBean<ServerFeature> {
 		if (features == null || features.length != 1) return null;
 		return features[0];
 	}
+	
+	public static ServerFeature[] findAll(){
+		 return (ServerFeature[]) findAll(ServerFeature.class);
+	}
 
 	/**
 	 * @return the className
