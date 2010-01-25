@@ -105,6 +105,7 @@
             fork="true"
             failonerror="true">
             <jvmarg line="${jvmargs}"/>
+        	<arg value="${run.args}"/>
         </java>    	
     </target>
     

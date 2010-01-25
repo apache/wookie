@@ -29,10 +29,17 @@ import org.mortbay.jetty.webapp.WebAppContext;
 
 public class Start {
 	static final private Logger logger = Logger.getLogger(Start.class);
+	private static int port = 8080;
 
 	private static Server server;
 
 	public static void main(String[] args) throws Exception {
+		for (int i = 0; i < args.length; i++) {
+			String arg = args[0];
+			if (arg.startsWith("port=")) {
+			  port = new Integer(arg.substring(5));
+			}
+		}
 		configureDatabase();
 		configureServer();
 		startServer();
@@ -65,12 +72,12 @@ public class Start {
 		logger.info("Starting Wookie Server");
 		server.start();  
 		server.join();  
-		logger.info("point your browser at http://localhost:8080/wookie");
+		logger.info("point your browser at http://localhost:" + port + "/wookie");
 	}
 
 	private static void configureServer() throws Exception {
 		logger.info("Configuring Jetty server");
-		server = new Server(8080);
+		server = new Server(port);
 		WebAppContext context = new WebAppContext();
 		context.setServer(server);
 		context.setContextPath("/wookie");
