@@ -53,6 +53,6 @@ public class ContentTypeUtilsTest {
 		assertFalse(ContentTypeUtils.isSupportedImageType("test.p n g"));
 		assertFalse(ContentTypeUtils.isSupportedImageType("test.p3ng"));
 		assertFalse(ContentTypeUtils.isSupportedImageType("test.png0"));
-		assertFalse(ContentTypeUtils.isSupportedImageType("test.pñg"));
+		assertFalse(ContentTypeUtils.isSupportedImageType("test.p√±g"));
 	}
 }
