@@ -2,7 +2,7 @@
   <settings defaultResolver="wookie-chain" />
   <resolvers>
     <chain name="wookie-chain">
-      <filesystem name="main">
+      <filesystem name="local">
         <artifact pattern="${basedir}/${ivy.repository.dir}/lib/[artifact]-[revision].[type]" />
       </filesystem>>
       <ibiblio name="public" m2compatible="true"/>

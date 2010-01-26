@@ -1,5 +1,5 @@
 <ivy-module version="2.0">
-    <info organisation="org.apache.incubator" module="wookie-server"/>
+    <info organisation="org.apache.incubator" module="wookie"/>
     
     <configurations>
       <conf name="deploy"/>
