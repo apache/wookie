@@ -84,12 +84,6 @@ public class ContextListener implements ServletContextListener {
 		 	LocaleHandler.getInstance().initialize(configuration);
 			final Locale locale = new Locale(configuration.getString("widget.default.locale"));
 			final Messages localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-	
-		 	if (configuration.getBoolean("widget.hot_deploy")) {
-		 		startWatcher(context, configuration, localizedMessages);
-		 	} else {
-		 		_logger.info(localizedMessages.getString("WidgetHotDeploy.0"));
-		 	}
 		 	
 		 	/* 
 			 *  load the opensocial.properties file and put it into this context
@@ -123,6 +117,15 @@ public class ContextListener implements ServletContextListener {
 				_logger.info("Loading default features, configure your local server using: " + localFeaturesPropsFile.toString());
 			}
 			FeatureLoader.loadFeatures(featuresConfiguration);
+			
+			/*
+			 * Start hot-deploy widget watcher
+			 */
+		 	if (configuration.getBoolean("widget.hot_deploy")) {
+		 		startWatcher(context, configuration, localizedMessages);
+		 	} else {
+		 		_logger.info(localizedMessages.getString("WidgetHotDeploy.0"));
+		 	}
 		} 
 		catch (ConfigurationException ex) {
 			_logger.error("ConfigurationException thrown: "+ ex.toString());
