@@ -144,8 +144,8 @@ var Widget = {
 		Widget.name = map["name"];
 		Widget.description = map["description"];
 		Widget.version = map["version"];
-		Widget.height = map["height"];
-		Widget.width = map["width"];
+		Widget.height = parseInt(map["height"]);
+		Widget.width = parseInt(map["width"]);
 	},
 	
 	setPrefs: function(map){
