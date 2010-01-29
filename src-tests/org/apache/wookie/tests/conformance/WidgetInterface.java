@@ -52,10 +52,14 @@ public class WidgetInterface extends AbstractControllerTest{
 		html += "</body></html>";
 		System.out.println(html);
 	}
-	
+
+	@Test
+	public void az(){
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-az/aa/aa.wgt");
+	}
 	@Test
 	public void za(){
-		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-az/aa/aa.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/za/za.wgt");
 	}
 	@Test
 	public void ab(){
