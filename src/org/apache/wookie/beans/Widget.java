@@ -177,6 +177,18 @@ public class Widget extends AbstractKeyBean<Widget> {
 	}
 	
 	/**
+	 * Temporary convenience method for getting a widget short name; calls to this
+	 * method should be replaced with calls to retrieve the localized Name object for the Widget
+	 */
+	@Deprecated
+	public String getWidgetShortName(){
+		String title = IW3CXMLConfiguration.UNKNOWN;
+		Name name = (Name) LocalizationUtils.getLocalizedElement(Name.findByValue("widget", this),new String[]{"en"});
+		if (name != null) title = name.getShortName();
+		return title;
+	}
+	
+	/**
 	 * Temporary convenience method for getting a widget description; calls to this
 	 * method should be replaced with calls to getWidgetDescription(locale)
 	 */

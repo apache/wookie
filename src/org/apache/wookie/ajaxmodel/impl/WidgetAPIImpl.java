@@ -98,6 +98,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		map.put("authorHref", String.valueOf(widget.getWidgetAuthorHref()));//$NON-NLS-1$
 		map.put("name", String.valueOf(widget.getWidgetTitle()));//$NON-NLS-1$
 		map.put("description", String.valueOf(widget.getWidgetDescription()));//$NON-NLS-1$	
+		map.put("shortName", String.valueOf(widget.getWidgetShortName())); //$NON-NLS-1$
 		map.put("version", widget.getVersion());//$NON-NLS-1$
 		map.put("width", String.valueOf(widget.getWidth()));//$NON-NLS-1$
 		map.put("height", String.valueOf(widget.getHeight()));//$NON-NLS-1$

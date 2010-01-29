@@ -142,6 +142,7 @@ var Widget = {
 		Widget.authorEmail = map["authorEmail"];
 		Widget.authorHref = map["authorHref"];
 		Widget.name = map["name"];
+		Widget.shortName = map["shortName"];
 		Widget.description = map["description"];
 		Widget.version = map["version"];
 		Widget.height = parseInt(map["height"]);
