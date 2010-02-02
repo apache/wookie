@@ -53,7 +53,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	protected static final String CONTENT_TYPE = "text/xml;charset=\"UTF-8\""; 	 //$NON-NLS-1$
 	protected static URL urlWidgetProxyServer = null;	
 	
-	protected static void checkProxy(HttpServletRequest request){
+	public static String checkProxy(HttpServletRequest request){
 		// set the proxy url.
 		if(urlWidgetProxyServer==null){
 			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
@@ -69,6 +69,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 				// ignore errors
 			} 
 		}
+		return urlWidgetProxyServer.toExternalForm();
 	}
 
 	/* (non-Javadoc)

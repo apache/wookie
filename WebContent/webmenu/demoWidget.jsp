@@ -50,7 +50,7 @@
 
 <div id="content">
 
-  <iframe width="<%= request.getAttribute("widgetWidth") %>" height="<%= request.getAttribute("widgetHeight") %>" src="<%= request.getAttribute("widgetURL") %>?idkey=<%= request.getParameter("idkey") %>">
+  <iframe width="<%= request.getAttribute("widgetWidth") %>" height="<%= request.getAttribute("widgetHeight") %>" src="<%= request.getAttribute("widgetURL") %>?idkey=<%= request.getParameter("idkey") %>&proxy=<%=request.getAttribute("proxy")%>">
   </iframe>
 
 </div>

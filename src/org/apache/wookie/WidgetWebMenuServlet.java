@@ -29,6 +29,7 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.controller.WidgetInstancesController;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetKeyManager;
 import org.apache.wookie.manager.IWidgetAdminManager;
@@ -103,6 +104,7 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 					request.setAttribute("widgetURL", widget.getWidget().getUrl());
 					request.setAttribute("widgetHeight", widget.getWidget().getHeight());
 					request.setAttribute("widgetWidth", widget.getWidget().getWidth());
+					request.setAttribute("proxy", WidgetInstancesController.checkProxy(request));
 					doForward(request, response, fDemoWidgetPage);
 					break;
 				}
