@@ -939,6 +939,12 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-rZdcMBExBX/001/dr.wgt");
 		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature list must contain one feature named 'feature:a9bb79c1' whose required value is false.");
 	}
+	
+	@Test
+	public void ha(){
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-rZdcMBExBX/002/ha.wgt");
+		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":To pass, the feature list must contain two features. Both are named 'feature:a9bb79c1'. One feature must have a parameter named \"test\" whose value is \"pass1\" The other feature must have a parameter named \"test\" whose value is \"pass2\" (the order in which the features appear in the feature list in not relevant).");
+	}
 
 	//38
 	@Test
