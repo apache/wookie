@@ -1145,6 +1145,16 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/008/ae.wgt");
 		assertEquals("locales/en/icon.png",getIcon(widget));
 	}
+	
+	@Test
+	//"Test the UA's ability to correctly find config document. To pass, the
+	//user agent must correctly load "pass.html" from "config.xml" and
+	//treat "CONFIG.xml" as an arbitrary file.
+	public void hh(){
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-ZjcdAxFMSx/002/hh.wgt");
+		String start = locateStartFile(widget);
+		assertEquals("pass.html",start);
+	}
 
 	// Utility methods
 	private Element processWidgetNoErrors(String widgetfname){
