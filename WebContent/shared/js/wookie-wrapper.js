@@ -38,7 +38,7 @@ WidgetPreferences = new function WidgetPreferences(){
 		};
 	}
 	this.getItem = function(key){
-		if (!this.prefs[key]) return null;
+		if (!this.prefs[key]) return undefined;
 		return this.prefs[key]["dvalue"];
 	}
 	this.setItem = function(key,value){
@@ -71,7 +71,7 @@ WidgetPreferences = new function WidgetPreferences(){
             	window.DOMException.code = DOMException.NO_MODIFICATION_ALLOWED_ERR;
             	throw (window.DOMException);
             } else {
-            	this.prefs[key] = null;
+            	delete this.prefs[key];
             	Widget.setPreferenceForKey(key,null);
             	this.calcLength();
             }
