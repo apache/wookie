@@ -24,10 +24,11 @@
     <property name="ivy.home" value="${user.home}/.ant" />
     <property name="ivy.jar.dir" value="${ivy.home}/lib" />
     <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
-    
+
+	<property file="${basedir}/local.build.properties" />
+		
 	<property file="${ivy.repository.dir}/build.properties"/>
 	
-	<property file="${basedir}/local.build.properties" />
 	
 	<property name="project.build.dir" location="build"/>
 
