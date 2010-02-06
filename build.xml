@@ -50,6 +50,18 @@
   	</subant>
   </target>
 	
+  <target name="deploy-widget">
+  	<input message="What is the short name of the widget you wish to deploy?" 
+  		   addproperty="widget.shortname"/>
+  	<ant antfile="${wookie.widgets.dir}/${widget.shortname}/build.xml" target="deploy-widget"/>
+  </target>
+	
+  <target name="build-widget">
+  	<input message="What is the short name of the widget you wish to build?" 
+  		   addproperty="widget.shortname"/>
+  	<ant antfile="${wookie.widgets.dir}/${widget.shortname}/build.xml" target="build-widget"/>
+  </target>
+	
   <target name="post-compile-core" depends="set-mysql-script-dir, set-derby-script-dir">
   	<!-- copy database resources -->
   	<copy file="${project.scripts.dir}/widgetdb.sql" tofile="${project.build.classes.dir}/widgetdb.sql"/>

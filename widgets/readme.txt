@@ -22,22 +22,22 @@ resource and javascript files.
 Build a Widget
 ==============
 
-cd WIDGET_SHORTNAME
-ant
+cd $WOOKIE_HOME
+ant build-widget
 
-Your widget package will be created in the build directory.
+You will be asked for the name of the widget you wish to build. this name should be the
+name of the folder containing the widget.
 
-Note, you can also run ant from the widget directory, in which case you will
-be asked for the shortname of the widget you wish to work with.
+Your widget package will be created in the widgets/build directory.
 
 Deploy a widget
 ===============
 
-At present it is not possible to automatically deploy to a running widget server (we welcome
-your help on this).
+To deploy a widget to a running widget server use:
 
-To deploy to a running server you will need to use the admin interface of the server.
+cd £WOOKIE_HOME
+ant deploy-widget
 
-
-
+You will be asked for the name of the widget you wish to build. this name should be the
+name of the folder containing the widget.
  
