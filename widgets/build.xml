@@ -46,13 +46,22 @@
     	    	
     	<mkdir dir="${wookie.widgets.dir}/${widget.shortname}"/>
     	<copy todir="${wookie.widgets.dir}/${widget.shortname}" filtering="true">
-    		<fileset dir="${widget.template.dir}"/>
+    		<fileset dir="${widget.template.dir}">
+    			<exclude name="**/*.png"/>
+    			<exclude name="**/*.zip"/>
+    		</fileset>
     		<filterset>
     			<filter token="widget.shortname" value="${widget.shortname}"/>
     			<filter token="widget.description" value="${widget.description}"/>
     			<filter token="widget.height" value="${widget.height}"/>
     			<filter token="widget.width" value="${widget.width}"/>
     		</filterset>
+    	</copy>
+    	<copy todir="${wookie.widgets.dir}/${widget.shortname}">
+    		<fileset dir="${widget.template.dir}">
+    			<include name="**/*.png"/>
+    			<include name="**/*.zip"/>
+    		</fileset>
     	</copy>
     </target>
    
