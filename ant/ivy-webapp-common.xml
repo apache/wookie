@@ -15,7 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns:ivy="antlib:fr.jayasoft.ivy.ant">
+<project xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<property name="project.webapp.dir" location="WebContent" />
 
