@@ -1,0 +1,55 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>part1</title>
+<link rel="stylesheet" href="style/screen.css" type="text/css" />
+
+<script src="http://code.google.com/apis/gears/gears_init.js"
+	type="text/javascript"></script>
+<script src="scripts/geo.js" type="text/javascript"></script>
+</head>
+<body>
+    <h1>Javascript geo sample</h1>
+    <p><span id="message"></span></p>
+    
+    <div id="locationData">
+      <p>Latitude: <span id="latitude">Unkown</span>, Longitude: <span id="longitude">Unknown</span></p>
+    </div>
+
+	<script>
+		if(geo_position_js.init()){
+			geo_position_js.getCurrentPosition(success_callback,error_callback,{enableHighAccuracy:true});
+		} else{
+			document.getElementById("message").innerHTML = "Geo-Location functionality not available";
+		}
+	
+		function success_callback(p) {
+			document.getElementById("latitude").innerHTML = p.coords.latitude.toFixed(2);
+			document.getElementById("longitude").innerHTML = p.coords.longitude.toFixed(2);
+		}
+		
+		function error_callback(p) {
+			document.getElementById("message").innerHTML = p.message;
+		}		
+	</script>
+ 
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>part1</title>
+<link rel="stylesheet" href="style/screen.css" type="text/css" />
+
+<script src="http://code.google.com/apis/gears/gears_init.js"
+	type="text/javascript"></script>
+<script src="scripts/geo.js" type="text/javascript"></script>
+<script src="scripts/geo_position_js_simulator.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+    <h1>Javascript geo sample</h1>
+    <p><span id="message"></span></p>
+    
+    <div id="locationData">
+      <p>Latitude: <span id="latitude">Unkown</span>, Longitude: <span id="longitude">Unknown</span></p>
+    </div>
+
+	<script>
+	    var last_position = null;
+	    
+		if(geo_position_js.init()){
+			setInterval(retrieve,1000);
+		} else{
+			document.getElementById("message").innerHTML = "Geo-Location functionality not available";
+		}
+
+		function retrieve() {
+			document.getElementById('message').innerHTML="Receiving...";
+			geo_position_js.getCurrentPosition(success_callback,error_callback,{enableHighAccuracy:true});
+		}
+	
+		function success_callback(p) {
+			if(last_position && last_position.coords.latitude==p.coords.latitude && last_position.coords.longitude==p.coords.longitude) {
+				document.getElementById('message').innerHTML="User has not moved, checking again in 1s";
+				return;
+			}
+			
+			last_position = p;
+			document.getElementById('message').innerHTML="User has moved, checking again in 1s";
+
+			document.getElementById("latitude").innerHTML = p.coords.latitude.toFixed(4);
+			document.getElementById("longitude").innerHTML = p.coords.longitude.toFixed(4);
+		}
+		
+		function error_callback(p) {
+			document.getElementById("message").innerHTML = p.message;
+		}		
+
+		// Set the simulated locations
+		locations=new Array();
+		locations.push({ coords:{latitude:41.399856290690956,longitude:2.1961069107055664},duration:5000 });
+		locations.push({ coords:{latitude:41.400634242252046,longitude:2.1971797943115234},duration:5000 });
+		locations.push({ coords:{latitude:41.40124586762545,longitude:2.197995185852051},duration:5000 }); 
+		geo_position_js_simulator.init(locations);
+		
+	</script>
+ 
+</body>
+</html>
