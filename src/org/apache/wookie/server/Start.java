@@ -21,7 +21,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.wookie.util.hibernate.DBManagerFactory;
 import org.apache.wookie.util.hibernate.IDBManager;
-import org.hibernate.SQLQuery;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.security.HashUserRealm;
 import org.mortbay.jetty.security.UserRealm;
@@ -40,7 +39,16 @@ public class Start {
 			  port = new Integer(arg.substring(5));
 			}
 		}
-		configureDatabase();
+		try {
+			configureDatabase();
+		} catch (Exception e) {
+			if (e.getCause().getMessage().contains("duplicate key value")){ 
+				throw new IOException("There was a problem setting up the database.\n If this is not the first time you are running Wookie in" + 
+						" standalone mode, then you should run \"ant clean-db\" before \"ant run\" to clear the database.");
+			} else {
+				throw e;
+			}
+		}
 		configureServer();
 		startServer();
 	}
@@ -50,22 +58,16 @@ public class Start {
 	 * 
 	 * @throws IOException  if the file is not found or is unreadable
 	 */
-	private static void configureDatabase() throws IOException {
+	private static void configureDatabase() throws Exception {
 		logger.debug("Configuring Derby Database");
 		String sqlScript = IOUtils.toString(Start.class.getClassLoader().getResourceAsStream("widgetdb.sql"));
-		
-		
-        final IDBManager dbManager = DBManagerFactory.getDBManager();
-
-		StringTokenizer st = new StringTokenizer(sqlScript, ";");
-		while (st.hasMoreTokens()) {
-			String q = st.nextToken();
-            dbManager.beginTransaction();
-        	SQLQuery query = dbManager.createSQLQuery(q);
-        	query.executeUpdate();
-        	dbManager.commitTransaction();
-        }
-		
+		final IDBManager dbManager = DBManagerFactory.getDBManager();
+		StringTokenizer st = new StringTokenizer(sqlScript, ";"); 
+		while (st.hasMoreTokens()) { 
+			dbManager.beginTransaction(); 
+			dbManager.createSQLQuery(st.nextToken()).executeUpdate(); 
+			dbManager.commitTransaction(); 
+		} 
 	}
 
 	private static void startServer() throws Exception, InterruptedException {
