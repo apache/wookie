@@ -127,7 +127,7 @@ public class HtmlCleaner implements IHtmlProcessor{
 	private void getUserScripts(){
 		List<TagNode> children = headNode.getChildren();		
 		for(TagNode child : children){						
-			if(child.getName().equals(SCRIPT_TAG) && child.getAttributeByName(SRC_ATTRIBUTE)!=null){				
+			if(child.getName().equals(SCRIPT_TAG)){				
 				scriptList.add(child);	
 			}			
 		}

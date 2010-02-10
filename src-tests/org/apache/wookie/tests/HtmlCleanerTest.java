@@ -67,6 +67,26 @@ public class HtmlCleanerTest {
 			fail();
 		}
 	}
+	
+	/**
+	 * tests that user scripts are placed after injected scripts and are not reordered
+	 */
+	@Test
+	public void injectScriptWithUserScriptNoReorder(){
+		HtmlCleaner cleaner = new HtmlCleaner();
+		String content = "<head><script type=\"text/javascript\" src=\"user.js\"></script><script type=\"text/javascript\">google.load(\"dojo\", \"1.4.1\");</script></head>";
+		String out = "";
+		StringWriter writer = new StringWriter();
+		try {
+			cleaner.setReader(new StringReader(content));
+			cleaner.injectScript("inject.js");
+			cleaner.process(writer);
+			out = writer.getBuffer().toString();
+			assertEquals("<html><head><script type=\"text/javascript\" src=\"inject.js\"></script><script type=\"text/javascript\" src=\"user.js\"></script><script type=\"text/javascript\">google.load(\"dojo\", \"1.4.1\");</script></head><body></body></html>", out);
+		} catch (IOException e) {
+			fail();
+		}
+	}
 
 	/**
 	 * tests injecting stylesheet
