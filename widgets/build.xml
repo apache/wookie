@@ -23,16 +23,17 @@
 	<target name="_get-widget-name" unless="widget.shortname">
 		<input message="What is the short name of the widget you wish to work with?" 
 			   addproperty="widget.shortname"/>
+		<fail unless="widget.shortname" message="Property widget.shortname has not been set"/>
     </target>
 		
-	<target name="_validate" depends="_get-widget-name">
-		<fail unless="widget.shortname" message="Property widget.shortname has not been set"/>
+	<target name="_validate">
+		<fail unless="widget.deploy.directory" message="Please run your ant targets from within the root directory of Wookie to ensure your environment is correctly set up."/>
 	</target>
 	   
 	<target name="_clean">
    </target>
    
-   <target name="_init" depends="_validate, _clean">
+   <target name="_init" depends="_validate, _get-widget-name, _clean">
      <delete file="${widget.build.dir}/${widget_name}" failonerror="false"/>
      <mkdir dir="${widget.build.dir}"/>
    </target>
