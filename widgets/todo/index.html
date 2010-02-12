@@ -1,0 +1,97 @@
+<html>
+    <head>
+        <script type="text/javascript" src="todo.js"></script>
+        <style>
+            body{
+                margin:0px;
+                padding:0px;
+                font-family: sans-serif;
+            }
+            #wrapper{
+                width: 310px;
+                height: 450px;
+                overflow: hidden;
+                color: #FFF;
+                background-color: #000;
+            }
+            #tasklist{
+                width:308px;
+                height: 300px;
+                overflow-y:scroll;
+                border: 1px solid #666;
+                background-color: #FF3;
+                color: #000;
+            }
+            .filter{
+                font-size: 0.8em;
+                text-align: center;
+            }
+            h1 {
+                font-size: 1.5em; 
+                text-align: center;           
+            }
+            .task{
+                position:relative;
+                padding: 4px;
+                width: 284px;
+                height: 32px;
+            }
+            .taskname{
+                position:absolute;
+                font-size: 0.9em;
+                margin-top: 0px;
+                width: 200px;
+                height: 20px;
+                overflow:hidden;
+                margin-left: 40px;
+            }
+            .taskowner{
+                position:absolute;
+                margin-left: 40px;
+                margin-top: 15px;
+                color: #333;
+                font-size: 0.8em;
+                width: 200px;
+                height: 16px;
+                overflow:hidden;
+            }
+            .action{
+                position:absolute;
+                margin-left: 236px;
+                margin-top: 8px;
+            }
+            .status{
+                position:absolute;
+                margin-left: 0px;
+                margin-top: 0px;
+            }
+            .user{
+                position:absolute;
+                margin-left:254px;
+                margin-top: 0px;
+                height: 32px;
+                width: 32px;
+            }
+            #newtaskform{
+                margin-top: 20px;
+                padding: 10px;
+                text-align: center;
+            }   
+            #taskinput{
+                font-size: 0.9em;
+            }
+            
+        </style>
+    </head>
+    
+    <body onload="Controller.init()">
+        <div id="wrapper">
+        <h1>Ta-Da!!</h1>
+            <div id="tasklist"></div>
+            <div id="newtaskform">
+                    <input id="taskinput" type="text" size="30" value="new task"/><br/>
+                    <input type="submit" value="create task" onClick="Controller.newTask()"/>
+            </div>
+        </div>
+    </body>
+</html>
