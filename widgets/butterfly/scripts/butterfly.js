@@ -9,6 +9,11 @@ var Controller = {
     setRGB: function(r,g,b){
         this.red=r;this.green=g;this.blue=b;
     },
+    
+    fill: function(){
+        context.fillStyle = "rgb("+this.red+","+this.green+","+this.blue+")";
+    	context.fillRect(0,0,400,300);
+    },
 
     init: function(){
         init_canvas();

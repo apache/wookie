@@ -35,11 +35,16 @@
       #toolbox{
         position:absolute;
         margin-top: 300px;
+        text-align:center;
+        background: black;
+        width: 400px;
+        height: 26px;
       }
       button {
         border: 0;
-        width: 41px;
-        height: 10px;
+        width: 32px;
+        border: 1px solid gray;
+        height: 20px;
         cursor: pointer;
       }
     --></style>
@@ -65,6 +70,8 @@
         <button style="background-color: #909"  onclick="Controller.setRGB(128,0,128)"></button>
         <button style="background-color: #9CF"  onclick="Controller.setRGB(128,192,255)"></button>
         <button style="background-color: black"  onclick="Controller.setRGB(0,0,0)"></button>
+        <button style="background-color: white"  onclick="Controller.setRGB(255,255,255)"></button>
+        <button style="background: url(images/splat.png) no-repeat"  onclick="Controller.fill()"></button>
     </div>
   </body>
 </html>
