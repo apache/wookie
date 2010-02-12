@@ -1,0 +1,70 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Butterfly</title>
+    <style type="text/css"><!--
+      body{
+        margin:0px;
+        padding:0px;
+        cursor: crosshair;
+      }
+      #imageView { 
+        display: block;
+        margin: 0; border: 0; 
+        background: url(images/background.jpg);
+        cursor: crosshair;
+        position:absolute;
+      }
+      #toolbox{
+        position:absolute;
+        margin-top: 300px;
+      }
+      button {
+        border: 0;
+        width: 41px;
+        height: 10px;
+        cursor: pointer;
+      }
+    --></style>
+        <script type="text/javascript" src="scripts/butterfly.js"></script>
+  </head>
+  <body onload="Controller.init()">
+      <canvas id="imageView" width="400" height="300">
+        <p>Unfortunately, your browser is currently unsupported by this widget.  
+        We are sorry for the inconvenience. Please use one of the 
+        supported browsers listed below:</p>
+        <p>Supported browsers: <a href="http://www.opera.com">Opera</a>, <a 
+          href="http://www.mozilla.com">Firefox</a>, <a 
+          href="http://www.apple.com/safari">Safari</a>, and <a 
+          href="http://www.konqueror.org">Konqueror</a>.</p>
+      </canvas>
+    <div id="toolbox">
+        <button style="background-color: #F66" onclick="Controller.setRGB(255,64,64)"></button>
+        <button style="background-color: #66F"  onclick="Controller.setRGB(64,64,255)"></button>
+        <button style="background-color: #6F6"  onclick="Controller.setRGB(64,255,64)"></button>
+        <button style="background-color: #F96"  onclick="Controller.setRGB(255,128,64)"></button>
+        <button style="background-color: #FF6"  onclick="Controller.setRGB(255,255,64)"></button>
+        <button style="background-color: #F6F"  onclick="Controller.setRGB(255,64,255)"></button>
+        <button style="background-color: #909"  onclick="Controller.setRGB(128,0,128)"></button>
+        <button style="background-color: #9CF"  onclick="Controller.setRGB(128,192,255)"></button>
+        <button style="background-color: black"  onclick="Controller.setRGB(0,0,0)"></button>
+    </div>
+  </body>
+</html>
