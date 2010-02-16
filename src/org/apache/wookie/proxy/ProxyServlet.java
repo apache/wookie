@@ -30,13 +30,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.httpclient.auth.AuthenticationException;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
 import org.apache.wookie.beans.Whitelist;
 import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.server.LocaleHandler;
-
-import java.io.BufferedReader;
 
 /**
  * A web proxy servlet which will translate calls for content and return them as if they came from
@@ -105,7 +104,11 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 		}
 		catch (Exception ex) {
 			try {
-				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+				if (ex instanceof AuthenticationException){
+					response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+				} else {
+					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+				}
 				fLogger.error(ex.getMessage());
 				throw new ServletException(ex);
 			} catch (IOException e) {
@@ -123,17 +126,14 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 	 * @throws IOException
 	 */
 	private String getXmlData(HttpServletRequest request) throws IOException{
-		BufferedReader br = request.getReader();  
-		StringBuffer sb = new StringBuffer();  
-		String line;
-		while ((line = br.readLine()) != null) {  
-			sb.append(line);  
-		}  
-		br.close();  
-		String xml = sb.toString();	
+		// Note that we cannot use a Reader for this as we already
+		// call getParameter() which works on an InputStream - and you
+		// can only use an InputStream OR a Reader, not both.
+		byte[] b = new byte[request.getContentLength()];
+		request.getInputStream().read(b, 0, request.getContentLength());
+		String xml = new String(b);
 		return xml;
 	}
-
 
 	private boolean isValidUser(HttpServletRequest request, boolean checkDomain){
 		return isSameDomain(request, checkDomain) && isValidWidgetInstance(request);
@@ -206,41 +206,40 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 		}	
 
 		private void doParse(HttpServletRequest request) throws MalformedURLException, UnsupportedEncodingException{
-
 			URL proxiedEndPointURL = null;
 			String endPointURL = null;
 
+			// Try to find a "url" parameter from the QueryString of the request
 			String file = request.getRequestURI();
 			if (request.getQueryString() != null) {
 				file += '?' + request.getQueryString();
+				// build the requested path
+				proxiedEndPointURL = new URL(request.getScheme(),request.getServerName(),request.getServerPort() , file);
+				// find where the url parameter is ..
+				int idx = proxiedEndPointURL.toString().indexOf("url=");
+				if(idx>-1){
+					// reconstruct the path to be proxied by removing the reference to this servlet
+					endPointURL=proxiedEndPointURL.toString().substring(idx+4,proxiedEndPointURL.toString().length());
+				}
 			}
-			// the request didn't contain any params
-			else{	
+
+			// try to locate a POST form parameter instead
+			if (endPointURL == null)	
+				endPointURL=request.getParameter("url");
+			
+			// the request didn't contain any params, so throw an exception
+			if (endPointURL == null)	
 				throw new MalformedURLException("Unable to obtain url from args");
-			}
 
-			// build the requested path
-			proxiedEndPointURL = new URL(request.getScheme() ,
-					request.getServerName() ,
-					request.getServerPort() , file);
-
-			// find where the url parameter is ..
-			int idx = proxiedEndPointURL.toString().indexOf("url=");
-			if(idx>-1){
-				// reconstruct the path to be proxied by removing the reference to this servlet
-				endPointURL=proxiedEndPointURL.toString().substring(idx+4,proxiedEndPointURL.toString().length());
-			}												
 			try {
 				fNewUrl = new URL(endPointURL);
-			} 
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				// try decoding the URL
 				fNewUrl = new URL(URLDecoder.decode(endPointURL, "UTF-8"));
 			}
 		}
 
 		public URL getNewUrl() {
-
 			return fNewUrl;
 		}
 

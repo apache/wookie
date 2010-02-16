@@ -16,10 +16,14 @@ package org.apache.wookie.tests.functional;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -34,7 +38,7 @@ public class ProxyTest extends AbstractControllerTest {
 	private static final String VALID_SITE_URL = "http://incubator.apache.org/wookie/";
 	private static final String INVALID_SITE_URL = "DFASFAFEQ3FQ32145235123452";
 	private static final String BLOCKED_SITE_URL = "http://very.bad.place";
-	private static final String PROTECTED_SITE_URL = "http://localhost:8080/wookie/admin";
+	private static final String PROTECTED_SITE_URL = "http://localhost:8080/wookie/admin/";
 
 	/**
 	 * Create an instance of a widget
@@ -89,12 +93,55 @@ public class ProxyTest extends AbstractControllerTest {
 		String url = PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+BLOCKED_SITE_URL;
 		assertEquals(403,send(url,"GET"));
 	}
+	
+	@Test
+	public void postWithMixedQueryAndParameters() throws Exception{
+		HttpClient client = new HttpClient();
+		List<String> authPrefs =  new ArrayList<String>(2);
+		authPrefs.add(AuthPolicy.DIGEST );
+		authPrefs.add(AuthPolicy.BASIC);
+		client.getParams().setParameter (AuthPolicy.AUTH_SCHEME_PRIORITY, authPrefs);
+		// send the basic authentication response even before the server gives an unauthorized response
+		client.getParams().setAuthenticationPreemptive(true);
+		client.getState().setCredentials(
+				new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM),
+				new UsernamePasswordCredentials("java", "java"));
+		PostMethod req;
+		req = new PostMethod(PROXY_URL+"?instanceid_key="+instance_id_key);
+		req.addParameter("url", PROTECTED_SITE_URL);
+		client.executeMethod(req);
+		int code = req.getStatusCode();
+		req.releaseConnection();
+		assertEquals(200,code);
+	}
+
+	@Test
+	public void postWithOnlyParameters() throws Exception{
+		HttpClient client = new HttpClient();
+		List<String> authPrefs =  new ArrayList<String>(2);
+		authPrefs.add(AuthPolicy.DIGEST );
+		authPrefs.add(AuthPolicy.BASIC);
+		client.getParams().setParameter (AuthPolicy.AUTH_SCHEME_PRIORITY, authPrefs);
+		// send the basic authentication response even before the server gives an unauthorized response
+		client.getParams().setAuthenticationPreemptive(true);
+		client.getState().setCredentials(
+				new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM),
+				new UsernamePasswordCredentials("java", "java"));
+		PostMethod req;
+		req = new PostMethod(PROXY_URL);
+		req.addParameter("url", PROTECTED_SITE_URL);
+		req.addParameter("instanceid_key", instance_id_key);
+		client.executeMethod(req);
+		int code = req.getStatusCode();
+		req.releaseConnection();
+		assertEquals(200,code);
+	}
 
 	@Test
 	public void getProtectedSiteWithoutAuth() throws Exception{
 		HttpClient client = new HttpClient();
 		HttpMethod req;
-		req = new GetMethod(PROTECTED_SITE_URL);
+		req = new GetMethod(PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+PROTECTED_SITE_URL);
 		client.executeMethod(req);
 		int code = req.getStatusCode();
 		req.releaseConnection();
@@ -104,10 +151,17 @@ public class ProxyTest extends AbstractControllerTest {
 	@Test
 	public void getProtectedSiteWithBasicAuth() throws Exception{
 		HttpClient client = new HttpClient();
-		Credentials defaultcreds = new UsernamePasswordCredentials("java", "java");
-		client.getState().setCredentials(new AuthScope("localhost", 8080, AuthScope.ANY_REALM), defaultcreds);
+		List<String> authPrefs =  new ArrayList<String>(2);
+		authPrefs.add(AuthPolicy.DIGEST );
+		authPrefs.add(AuthPolicy.BASIC);
+		client.getParams().setParameter (AuthPolicy.AUTH_SCHEME_PRIORITY, authPrefs);
+		// send the basic authentication response even before the server gives an unauthorized response
+		client.getParams().setAuthenticationPreemptive(true);
+		client.getState().setCredentials(
+				new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM),
+				new UsernamePasswordCredentials("java", "java"));		
 		HttpMethod req;
-		req = new GetMethod(PROTECTED_SITE_URL);
+		req = new GetMethod(PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+PROTECTED_SITE_URL);
 		client.executeMethod(req);
 		int code = req.getStatusCode();
 		req.releaseConnection();

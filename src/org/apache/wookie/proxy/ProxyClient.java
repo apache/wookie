@@ -16,6 +16,7 @@ package org.apache.wookie.proxy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.auth.AuthenticationException;
 import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -57,7 +59,7 @@ public class ProxyClient {
 		String proxyUserName = request.getParameter("username");
 		String proxyPassword = request.getParameter("password");
 		String base64Auth = request.getHeader("Authorization");  
-		if(proxyUserName != null && proxyPassword != null )							
+		if(proxyUserName != null && proxyPassword != null )	
 			this.setProxyAuthConfig(proxyUserName, proxyPassword);
 		if(base64Auth != null)
 			this.setBase64AuthConfig(base64Auth);
@@ -102,8 +104,7 @@ public class ProxyClient {
 	}
 
 
-	@SuppressWarnings("unchecked")
-	private String executeMethod(HttpMethod method, Configuration properties) throws Exception {
+	private String executeMethod(HttpMethod method, Configuration properties) throws Exception, AuthenticationException {
 		// Execute the method.
 		try {		
 			HttpClient client = new HttpClient();
@@ -115,7 +116,7 @@ public class ProxyClient {
 					method.setRequestHeader("Authorization", fBase64Auth);
 				}
 				else {
-					List authPrefs =  new ArrayList(2);
+					List<String> authPrefs =  new ArrayList<String>(2);
 					authPrefs.add(AuthPolicy.DIGEST );
 					authPrefs.add(AuthPolicy.BASIC);
 					client.getParams().setParameter (AuthPolicy.AUTH_SCHEME_PRIORITY, authPrefs);
@@ -124,11 +125,9 @@ public class ProxyClient {
 					// Pass our credentials to HttpClient
 					client.getState().setCredentials(
 							new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM),
-							// this needs to be tenc username & password!
 							new UsernamePasswordCredentials(fProxyUsername, fProxyPassword));
 				}
 			}
-
 
 			// Add user language to http request in order to notify server of user's language
 			Locale locale = Locale.getDefault();
@@ -138,23 +137,20 @@ public class ProxyClient {
 			int statusCode = client.executeMethod(method);
 
 			if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
-
 				Header hType = method.getResponseHeader("Content-type");					
 				fContentType = hType.getValue();
 				// for now we are only expecting Strings					
-				return method.getResponseBodyAsString();
-				//return readFully(new InputStreamReader(method.getResponseBodyAsStream(), "UTF-8"));
+				//return method.getResponseBodyAsString();
+				return readFully(new InputStreamReader(method.getResponseBodyAsStream(), "UTF-8"));
 			}
-			else if (statusCode == HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED)
-				throw new Exception("ERROR_PROXY"); 
-			else if (statusCode == HttpStatus.SC_UNAUTHORIZED)
-				throw new Exception("ERROR_INVALID_PASSWORD"); 																			
+			else if (statusCode == HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED || statusCode == HttpStatus.SC_UNAUTHORIZED)
+				throw new AuthenticationException();																			
 			else {
 				throw new Exception("Method failed: " + method.getStatusLine() + ' ' + method.getURI() + ' ' + method.getStatusText() + method.getResponseBodyAsString()); //$NON-NLS-1$
 			}
 		} 
 		catch (IOException e) {
-			throw new Exception("ERROR_CONNECT", e);
+			throw e;
 		} 
 		finally {
 			// Release the connection.
