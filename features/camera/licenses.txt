@@ -1,0 +1,12 @@
+thickbox.js, thickbox.css 
+	Containing project URL: http://www.codylindley.com
+	License: MIT (see: http://www.opensource.org/licenses/mit-license.php)
+
+jquery.js
+	Containing Project URL: http://jquery.com/
+	License: MIT (see http://dev.jquery.com/browser/trunk/jquery/MIT-LICENSE.txt)
+	
+camcanvas.html, camcavas.swf
+	Containing Project URL: http://www.taboca.com/p/camcanvas/
+	License: MIT (see http://github.com/taboca/CamCanvas-API-/blob/master/MIT-LICENSE.txt)
+	

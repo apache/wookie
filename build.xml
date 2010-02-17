@@ -48,6 +48,13 @@
   	  	<exclude name="${widget.deploy.exclude}"/>
   	  </fileset>
   	</subant>
+  	<!-- deploy features -->
+  	<echo>deploy feature</echo>
+  	<subant antfile="build.xml" target="deploy-feature" inheritall="true">
+  	  <fileset dir="${wookie.features.dir}">
+  	  	<include name="${widget.deploy.include}"/>
+  	  </fileset>
+  	</subant>
   </target>
 	
   <target name="deploy-widget">

@@ -87,6 +87,14 @@
 			<src path="${project.core.src.dir}" />
 		</javac>
 		
+      	<!-- compile features -->
+      	<subant antfile="build.xml" target="build-feature" inheritall="true">
+      	  <fileset dir="${wookie.features.dir}">
+      	  	<include name="${widget.deploy.include}"/>
+      	  </fileset>
+      	</subant>  	
+    	
+    	
 		<echo>Copying resources from source directory</echo>
 		<copy todir="${project.build.classes.dir}">
 			<fileset dir="${project.core.src.dir}">

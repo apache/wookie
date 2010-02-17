@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+  
+  <script>
+  	var gCtx = null;
+	var gCanvas = null;
+
+	var imageData = null;
+	var ii=0;
+	var jj=0;
+	var c=0;
+
+	function pageLoad() { 
+		initCanvas(320,240);
+	} 
+
+
+	function initCanvas(ww,hh)
+	{
+		gCanvas = document.getElementById("canvas");
+		var w = ww;
+		var h = hh;
+		gCanvas.style.width = w + "px";
+		gCanvas.style.height = h + "px";
+		gCanvas.width = w;
+		gCanvas.height = h;
+		gCtx = gCanvas.getContext("2d");
+		gCtx.clearRect(0, 0, w, h);
+		imageData = gCtx.getImageData( 0,0,320,240);
+	}
+
+	function passLine(stringPixels) { 
+		//a = (intVal >> 24) & 0xff;
+
+		var coll = stringPixels.split("-");
+	
+		for(var i=0;i<320;i++) { 
+			var intVal = parseInt(coll[i]);
+			r = (intVal >> 16) & 0xff;
+			g = (intVal >> 8) & 0xff;
+			b = (intVal ) & 0xff;
+			imageData.data[c+0]=r;
+			imageData.data[c+1]=g;
+			imageData.data[c+2]=b;
+			imageData.data[c+3]=255;
+			c+=4;
+		} 
+
+		if(c>=320*240*4) { 
+			c=0;
+      			gCtx.putImageData(imageData, 0,0);
+		} 
+ 	} 
+
+        function capture() {
+            flash = document.getElementById("embedflash");
+            flash.ccCapture();
+            var strDataURI = gCanvas.toDataURL(); 
+            image = document.getElementById("dataImage")
+            image.src = strDataURI;
+            document.getElementById("image").style.display="block";
+            document.getElementById("iembedflash").style.display="none";
+            document.getElementById("capture_button").style.display="none";
+            document.getElementById("save_retake_button").style.display="block";  
+        }
+        
+        function reset(){
+            document.getElementById("image").style.display="none";
+            document.getElementById("iembedflash").style.display="block";
+            document.getElementById("capture_button").style.display="block";      
+            document.getElementById("save_retake_button").style.display="none";            
+        }
+        
+        function save(){
+            self.parent.bondi.camera.getCameras()[0].snapped(gCanvas.toDataURL());
+        }
+        
+        function cancel(){
+            self.parent.bondi.camera.getCameras()[0].cancelled();
+        }
+
+    </script>
+  <link rel="stylesheet" href="thickbox.css" type="text/css" media="screen" />
+  
+  <title>Camcanvas - Webcam to Canvas JavaScript API</title>
+
+  </head>
+
+  <body style="background-color:#ddd; text-align:center" onLoad="pageLoad()">
+  
+  <div>
+<div class="webcam-target" style="display: none;">
+   <canvas id="canvas" width="320" height="240" style="width: 320px; height: 240px; "></canvas>
+</div>
+	
+<div class="webcam-target" style="position:absolute; margin-top:1em;border:12px; background-color:#ddd;width:360px;text-align:center;height:260px;padding-top:15px;;">
+  	<object  id="iembedflash" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" width="320" height="240">
+  		<param name="movie" value="camcanvas.swf" />
+  		<param name="quality" value="high" />
+		<param name="allowScriptAccess" value="always" />
+  		<embed  allowScriptAccess="always"  id="embedflash" src="camcanvas.swf" quality="high" width="320" height="240" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" mayscript="true"  />
+    </object>
+</div>
+
+<div id="image" style="position: absolute; display: none; margin-top:1em;border:12px; background-color:#ddd;width:360px;text-align:center;height:260px;padding-top:15px;;">
+    <img id="dataImage" src=""/>
+</div>
+
+<div id="capture_button" style="position: absolute; width: 360px; margin-top: 270px; text-align: center">
+    <button onclick="capture()"><img src="snap.png" title="capture image" alt="capture image"/></button>
+</div>
+
+<div id="save_retake_button" style="display: none; position: absolute; width: 360px; margin-top: 270px; text-align: center">
+    <button onclick="save()">keep image</button>
+    <button onclick="reset()">try again</button>
+</div>
+
+
+</div>
+  </body>
+</html>
