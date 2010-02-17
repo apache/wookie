@@ -93,6 +93,38 @@ public class ProxyTest extends AbstractControllerTest {
 		String url = PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+BLOCKED_SITE_URL;
 		assertEquals(403,send(url,"GET"));
 	}
+
+	@Test
+	public void postWithOnlyQueryStringParameters() throws Exception{
+		HttpClient client = new HttpClient();
+		List<String> authPrefs =  new ArrayList<String>(2);
+		authPrefs.add(AuthPolicy.DIGEST );
+		authPrefs.add(AuthPolicy.BASIC);
+		client.getParams().setParameter (AuthPolicy.AUTH_SCHEME_PRIORITY, authPrefs);
+		// send the basic authentication response even before the server gives an unauthorized response
+		client.getParams().setAuthenticationPreemptive(true);
+		client.getState().setCredentials(
+				new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM),
+				new UsernamePasswordCredentials("java", "java"));
+		PostMethod req;
+		req = new PostMethod(PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+PROTECTED_SITE_URL);
+		client.executeMethod(req);
+		int code = req.getStatusCode();
+		req.releaseConnection();
+		assertEquals(200,code);
+	}
+	
+	@Test
+	public void getWithEncodedParameters(){
+		String url = PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+VALID_SITE_URL+"%3Fx=1%26y=2";
+		assertEquals(200,send(url,"GET"));
+	}
+	
+	@Test
+	public void getWithUnencodedParameters(){
+		String url = PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+VALID_SITE_URL+"?x=1&y=2";
+		assertEquals(200,send(url,"GET"));
+	}
 	
 	@Test
 	public void postWithMixedQueryAndParameters() throws Exception{
