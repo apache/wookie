@@ -230,12 +230,12 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			// the request didn't contain any params, so throw an exception
 			if (endPointURL == null)	
 				throw new MalformedURLException("Unable to obtain url from args");
-
+			
 			try {
-				fNewUrl = new URL(endPointURL);
-			} catch (Exception ex) {
 				// try decoding the URL
 				fNewUrl = new URL(URLDecoder.decode(endPointURL, "UTF-8"));
+			} catch (Exception ex) {
+				fNewUrl = new URL(endPointURL);
 			}
 		}
 
