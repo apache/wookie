@@ -53,7 +53,6 @@ public class ProxyClient {
 	private String fProxyPassword = null;
 	private String fBase64Auth = null;
 	private NameValuePair[] parameters = null;
-
 	private boolean fUseProxyAuthentication = false;
 
 	@SuppressWarnings("unchecked")
@@ -66,6 +65,7 @@ public class ProxyClient {
 		if(base64Auth != null)
 			this.setBase64AuthConfig(base64Auth);
 		filterParameters(request.getParameterMap());
+		fContentType = request.getContentType();
 	}
 
 	private void setProxyAuthConfig(String username, String password){
@@ -149,11 +149,11 @@ public class ProxyClient {
 			Locale locale = Locale.getDefault();
 
 			method.setRequestHeader("Accept-Language", locale.getLanguage()); //$NON-NLS-1$ 
-
+			method.setRequestHeader("Content-Type", fContentType);
 			int statusCode = client.executeMethod(method);
 
 			if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
-				Header hType = method.getResponseHeader("Content-type");					
+				Header hType = method.getResponseHeader("Content-Type");	
 				if (hType != null) fContentType = hType.getValue();
 				// for now we are only expecting Strings					
 				//return method.getResponseBodyAsString();

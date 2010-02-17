@@ -95,12 +95,14 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			ProxyClient proxyclient = new ProxyClient(request);
 			PrintWriter out = response.getWriter();	
 			//TODO - find all the links etc & make them absolute - to make request come thru this servlet
-			response.setContentType(proxyclient.getCType());
+			String output = "";
 			if(httpMethod.equals("get")){
-				out.print(proxyclient.get(bean.getNewUrl().toExternalForm(), properties));
+				output = proxyclient.get(bean.getNewUrl().toExternalForm(), properties);
 			}else{	
-				out.print(proxyclient.post(bean.getNewUrl().toExternalForm(),getXmlData(request), properties));
+				output = proxyclient.post(bean.getNewUrl().toExternalForm(),getXmlData(request), properties);
 			}
+			response.setContentType(proxyclient.getCType());
+			out.print(output);
 		}
 		catch (Exception ex) {
 			try {

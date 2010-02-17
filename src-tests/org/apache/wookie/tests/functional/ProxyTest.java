@@ -14,6 +14,7 @@
 package org.apache.wookie.tests.functional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class ProxyTest extends AbstractControllerTest {
 	private static String instance_id_key;
 	private static final String PROXY_URL = "http://localhost:8080/wookie/proxy";
 	private static final String VALID_SITE_URL = "http://incubator.apache.org/wookie/";
+	private static final String VALID_SITE_XML_URL = "http://localhost:8080/wookie/widgets?all=true";
 	private static final String INVALID_SITE_URL = "DFASFAFEQ3FQ32145235123452";
 	private static final String BLOCKED_SITE_URL = "http://very.bad.place";
 	private static final String PROTECTED_SITE_URL = "http://localhost:8080/wookie/admin/";
@@ -64,6 +66,29 @@ public class ProxyTest extends AbstractControllerTest {
 		String url = PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+VALID_SITE_URL;
 		assertEquals(200,send(url,"GET"));
 		assertEquals(500,send(url,"POST")); // This URL doesn't support POST
+	}
+	
+	@Test
+	public void getValidSiteAndValidXMLContentType() throws Exception{
+		String url = PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+VALID_SITE_XML_URL;
+		HttpClient client = new HttpClient();
+		HttpMethod req = new GetMethod(url);
+		client.executeMethod(req);
+		int code = req.getStatusCode();
+		req.releaseConnection();
+		assertEquals(200,code);
+		assertTrue(req.getResponseHeader("Content-Type").toString().contains("text/xml"));
+	}
+	@Test
+	public void getValidSiteAndValidHTMLContentType() throws Exception{
+		String url = PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+VALID_SITE_URL;
+		HttpClient client = new HttpClient();
+		HttpMethod req = new GetMethod(url);
+		client.executeMethod(req);
+		int code = req.getStatusCode();
+		req.releaseConnection();
+		assertEquals(200,code);
+		assertTrue(req.getResponseHeader("Content-Type").toString().contains("text/html"));
 	}
 
 	@Test
