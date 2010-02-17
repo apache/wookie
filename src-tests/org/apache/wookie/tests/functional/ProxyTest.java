@@ -151,6 +151,13 @@ public class ProxyTest extends AbstractControllerTest {
 	}
 	
 	@Test
+	public void getWithJQueryEncodedParameters(){
+		String url = PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+VALID_SITE_URL+"&x=y";
+		assertEquals(200,send(url,"GET"));
+		assertEquals(500,send(url,"POST")); // This URL doesn't support POST
+	}
+	
+	@Test
 	public void postWithMixedQueryAndParameters() throws Exception{
 		HttpClient client = new HttpClient();
 		List<String> authPrefs =  new ArrayList<String>(2);

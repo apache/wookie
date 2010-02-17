@@ -222,6 +222,11 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 				if(idx>-1){
 					// reconstruct the path to be proxied by removing the reference to this servlet
 					endPointURL=proxiedEndPointURL.toString().substring(idx+4,proxiedEndPointURL.toString().length());
+					// fix initial querystring component - this is a hack for JQuery support. See WOOKIE-118 for
+					// more information about this.
+					if (endPointURL.contains("&") && !endPointURL.contains("?")){
+						endPointURL = endPointURL.replaceFirst("&", "?");
+					}
 				}
 			}
 
