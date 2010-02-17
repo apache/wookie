@@ -19,7 +19,6 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -145,6 +144,50 @@ public class ProxyTest extends AbstractControllerTest {
 		int code = req.getStatusCode();
 		req.releaseConnection();
 		assertEquals(200,code);
+	}
+	
+	/**
+	 * This tests accessing a site passing through POST parameters
+	 * @throws Exception
+	 */
+	@Test
+	public void postWithPassingParameters() throws Exception{
+	    try {
+	    	String url = PROXY_URL;
+	    	//String url = TEST_PROPERTIES_SERVICE_URL_VALID;
+	        HttpClient client = new HttpClient();
+	        PostMethod post = new PostMethod(url);
+	        post.addParameter("instanceid_key", instance_id_key);
+	        post.addParameter("url", TEST_PROPERTIES_SERVICE_URL_VALID);
+	        post.addParameter("api_key", API_KEY_VALID);
+	        post.addParameter("widgetid", WIDGET_ID_VALID);
+	        post.addParameter("userid", "test");
+	        post.addParameter("is_public", "false");
+	        post.addParameter("shareddatakey","proxytest");
+	        post.addParameter("propertyname", "pass");
+	        post.addParameter("propertyvalue","pass");
+	        client.executeMethod(post);
+	        int code = post.getStatusCode();
+	        assertEquals(200,code);
+	        post.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	fail("POST via proxy failed");
+	    }	 
+	    try {
+	        HttpClient client = new HttpClient();
+	        GetMethod get = new GetMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
+	        get.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&shareddatakey=proxytest&propertyname=pass");
+	        client.executeMethod(get);
+	        int code = get.getStatusCode();
+	        assertEquals(200, code);
+	        String resp = get.getResponseBodyAsString();
+	        assertEquals("pass",resp);
+	        get.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	fail("POST via proxy failed to set info correctly");
+	    }
 	}
 
 	@Test

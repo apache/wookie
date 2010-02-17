@@ -18,10 +18,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,13 +30,12 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.auth.AuthenticationException;
-import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
@@ -48,13 +48,15 @@ public class ProxyClient {
 
 	static Logger fLogger = Logger.getLogger(ProxyClient.class.getName());
 
-	private String fContentType;	
+	private String fContentType = "text/plain";	
 	private String fProxyUsername = null;
 	private String fProxyPassword = null;
 	private String fBase64Auth = null;
+	private NameValuePair[] parameters = null;
 
 	private boolean fUseProxyAuthentication = false;
 
+	@SuppressWarnings("unchecked")
 	public ProxyClient(HttpServletRequest request){
 		String proxyUserName = request.getParameter("username");
 		String proxyPassword = request.getParameter("password");
@@ -63,6 +65,7 @@ public class ProxyClient {
 			this.setProxyAuthConfig(proxyUserName, proxyPassword);
 		if(base64Auth != null)
 			this.setBase64AuthConfig(base64Auth);
+		filterParameters(request.getParameterMap());
 	}
 
 	private void setProxyAuthConfig(String username, String password){
@@ -82,27 +85,40 @@ public class ProxyClient {
 
 	public String get(String url, Configuration properties) throws Exception {
 		fLogger.debug("GET from " + url); //$NON-NLS-1$
-		return fetchData(new GetMethod(url), properties);
-	}
-
-	public String post(String uri, String xmlData, Configuration properties) throws Exception {
-		PostMethod post = new PostMethod(uri);
-		fLogger.debug("POST to " + uri); //$NON-NLS-1$
-		return sendXmlData(xmlData, post, properties);
-	}
-
-	private String sendXmlData(String xmlData, EntityEnclosingMethod method, Configuration properties) throws Exception {
-		// Tell the method to automatically handle authentication.
+		GetMethod method = new GetMethod(url);
 		method.setDoAuthentication(true);
-		try {
-			method.setRequestEntity(new StringRequestEntity(xmlData, "text/xml", "UTF8"));//$NON-NLS-1$  //$NON-NLS-2$
-		}
-		catch (UnsupportedEncodingException e) {
-			throw new Exception(e);
-		}
 		return executeMethod(method, properties);
 	}
 
+	public String post(String uri, String xmlData, Configuration properties) throws Exception {
+		fLogger.debug("POST to " + uri); //$NON-NLS-1$
+		PostMethod method = new PostMethod(uri);
+		method.setDoAuthentication(true);
+		method.setRequestEntity(new StringRequestEntity(xmlData, "text/xml", "UTF8"));//$NON-NLS-1$  //$NON-NLS-2$
+		method.addParameters(this.parameters);
+		return executeMethod(method, properties);
+	}
+
+	/**
+	 * Processes the parameters passed through to the request,
+	 * removing the parameters used by the proxy itself
+	 * @return
+	 */
+	private void filterParameters(Map<Object,Object> umap){
+		Map<Object, Object> map = new HashMap<Object, Object>(umap);
+		map.remove("instanceid_key");
+		map.remove("url");
+		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		for (Object key:map.keySet().toArray()){
+			for (String value:(String[])map.get(key)){
+				NameValuePair param = new NameValuePair();
+				param.setName((String)key);
+				param.setValue(value);
+				params.add(param);				
+			}
+		}
+		parameters = params.toArray(new NameValuePair[params.size()]);
+	}
 
 	private String executeMethod(HttpMethod method, Configuration properties) throws Exception, AuthenticationException {
 		// Execute the method.
@@ -138,7 +154,7 @@ public class ProxyClient {
 
 			if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
 				Header hType = method.getResponseHeader("Content-type");					
-				fContentType = hType.getValue();
+				if (hType != null) fContentType = hType.getValue();
 				// for now we are only expecting Strings					
 				//return method.getResponseBodyAsString();
 				return readFully(new InputStreamReader(method.getResponseBodyAsStream(), "UTF-8"));
@@ -158,18 +174,6 @@ public class ProxyClient {
 		}
 	}
 
-	private String fetchData(HttpMethodBase method, Configuration properties) throws Exception {			
-		// Provide custom retry handler is necessary
-		//TODO: the line below was causing an error under jboss (not tomcat)
-		//method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(1, false));
-
-		// Tell the method to automatically handle authentication.
-		method.setDoAuthentication(true);
-
-		return executeMethod(method, properties);
-
-	}
-
 	/**
 	 * This is supposed to be the correct way to read the response instead of using getResponseBody() - which gives a runtime warning;
 	 * 
@@ -178,7 +182,6 @@ public class ProxyClient {
 	 * @return
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unused")
 	private String readFully(Reader input) throws IOException {
 		BufferedReader bufferedReader = input instanceof BufferedReader ? (BufferedReader) input
 				: new BufferedReader(input);

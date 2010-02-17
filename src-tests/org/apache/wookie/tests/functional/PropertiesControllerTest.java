@@ -44,6 +44,44 @@ public class PropertiesControllerTest extends AbstractControllerTest {
 	}
 	
 	@Test
+	public void setPreferenceUsingPostParameters() throws Exception{
+	    try {
+	    	String url = TEST_PROPERTIES_SERVICE_URL_VALID;
+	    	//String url = TEST_PROPERTIES_SERVICE_URL_VALID;
+	        HttpClient client = new HttpClient();
+	        PostMethod post = new PostMethod(url);
+	        post.addParameter("api_key", API_KEY_VALID);
+	        post.addParameter("widgetid", WIDGET_ID_VALID);
+	        post.addParameter("userid", "test");
+	        post.addParameter("is_public", "false");
+	        post.addParameter("shareddatakey","propstest");
+	        post.addParameter("propertyname", "testpost");
+	        post.addParameter("propertyvalue","pass");
+	        client.executeMethod(post);
+	        int code = post.getStatusCode();
+	        assertEquals(201,code);
+	        post.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	fail("POST failed");
+	    }	 
+	    try {
+	        HttpClient client = new HttpClient();
+	        GetMethod get = new GetMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
+	        get.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&shareddatakey=propstest&propertyname=testpost");
+	        client.executeMethod(get);
+	        int code = get.getStatusCode();
+	        assertEquals(200, code);
+	        String resp = get.getResponseBodyAsString();
+	        assertEquals("pass",resp);
+	        get.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	fail("POST  failed to set info correctly");
+	    }
+	}
+	
+	@Test
 	public void setPreference(){
 		// Set some shared data
 	    try {
