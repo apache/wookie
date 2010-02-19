@@ -43,6 +43,7 @@
   	<!-- deploy widgets -->
   	<delete dir="${widget.build.dir}"/>
   	<subant antfile="build.xml" target="deploy-widget" inheritall="true">
+  	  <property name="deployToDev" value="true"/>
   	  <fileset dir="${wookie.widgets.dir}">
   	  	<include name="${widget.deploy.include}"/>
   	  	<exclude name="${widget.deploy.exclude}"/>

@@ -27,7 +27,7 @@
     </target>
 		
 	<target name="_validate">
-		<fail unless="widget.deploy.directory" message="Please run your ant targets from within the root directory of Wookie to ensure your environment is correctly set up."/>
+		<fail unless="deployToDev" message="Please run your ant targets from within the root directory of Wookie to ensure your environment is correctly set up."/>
 	</target>
 	   
 	<target name="_clean">
