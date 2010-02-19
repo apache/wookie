@@ -179,6 +179,10 @@ public class WidgetManifestModel implements IManifestModel {
 		return fFeaturesList;
 	}
 	
+	public List<IAccessEntity> getAccessList(){
+		return fAccessList;
+	}
+	
 	public String getAuthor(){
 		if (fAuthor == null) return null;
 		return fAuthor.getAuthorName();
@@ -355,11 +359,10 @@ public class WidgetManifestModel implements IManifestModel {
 			}
 			
 			// ACCESS IS OPTIONAL  can be many 
-			// (not sure if this has been removed from the spec?)
 			if(tag.equals(IW3CXMLConfiguration.ACCESS_ELEMENT)) {											
 				IAccessEntity access = new AccessEntity();
 				access.fromXML(child);
-				fAccessList.add(access);
+				if (access.getOrigin()!=null) fAccessList.add(access);
 			}
 			
 			// CONTENT IS OPTIONAL - can be 0 or 1

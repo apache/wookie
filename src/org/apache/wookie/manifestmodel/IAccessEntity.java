@@ -19,9 +19,9 @@ package org.apache.wookie.manifestmodel;
  */
 public interface IAccessEntity extends IManifestModelBase {
 
-	public String getUri();
+	public String getOrigin();
 
-	public void setUri(String uri);
+	public void setOrigin(String uri);
 
 	public boolean hasSubDomains();
 

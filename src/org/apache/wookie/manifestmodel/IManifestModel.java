@@ -25,6 +25,7 @@ import org.jdom.Element;
  */
 public interface IManifestModel extends IManifestModelBase{
 
+	public List<IAccessEntity> getAccessList();
 	public List<IContentEntity> getContentList();
 	public List<IIconEntity> getIconsList();
 	public String getIdentifier();

@@ -14,62 +14,90 @@
 
 package org.apache.wookie.manifestmodel.impl;
 
+import java.net.URI;
+
 import org.apache.wookie.manifestmodel.IAccessEntity;
 import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.util.IRIValidator;
 import org.apache.wookie.util.UnicodeUtils;
+import org.jdom.Attribute;
 import org.jdom.Element;
 /**
- * @author Paul Sharples
- * @version $Id: AccessEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
+ * The Access element is defined in: http://www.w3.org/TR/widgets-access/
  */
 public class AccessEntity implements IAccessEntity {
-	
-	private String fUri;
+
+	private String fOrigin;
 	private boolean fSubDomains;
-	
+
 	public AccessEntity(){
-		fUri = "";
+		fOrigin = null;
 		fSubDomains = false;
 	}
-	
+
 	public AccessEntity(String uri, boolean subDomains) {
 		super();
-		fUri = uri;
+		fOrigin = uri;
 		fSubDomains = subDomains;
 	}
-	
-	public String getUri() {
-		return fUri;
+
+	public String getOrigin() {
+		return fOrigin;
 	}
-	public void setUri(String uri) {
-		fUri = uri;
+	public void setOrigin(String uri) {
+		fOrigin = uri;
 	}
 	public boolean hasSubDomains() {
 		return fSubDomains;
 	}
-
 	public void setSubDomains(boolean subDomains) {
 		fSubDomains = subDomains;
 	}
-
 	public String getXMLTagName() {
 		return IW3CXMLConfiguration.ACCESS_ELEMENT;
 	}
-	
-	public void fromXML(Element element) {		
-		fUri = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.URI_ATTRIBUTE));
-		//TODO this is required, but may need to be checked
-		String subDomains = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.SUBDOMAINS_ATTRIBUTE));
-		if(subDomains.equals("")){
-			fSubDomains = false;
+
+	public void fromXML(Element element) {	
+		// Origin is required
+		if (element.getAttribute(IW3CXMLConfiguration.ORIGIN_ATTRIBUTE)==null) return;
+		fOrigin = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.ORIGIN_ATTRIBUTE));
+		if (fOrigin.equals("*")) return;
+		try {
+			processOrigin();
+		} catch (Exception e) {
+			fOrigin =  null;
+			return;
 		}
-		else{
-			try {
-				fSubDomains = Boolean.valueOf(subDomains);
-			} 
-			catch (Exception e) {
-				fSubDomains = false;
-			}
-		}	
+		// Subdomains is optional
+		try {
+			processSubdomains(element.getAttribute(IW3CXMLConfiguration.SUBDOMAINS_ATTRIBUTE));
+		} catch (Exception e) {
+			fSubDomains = false;
+		}			
+	}
+
+	/**
+	 * Processes an origin attribute
+	 * @throws Exception if the origin attribute is not valid
+	 */
+	private void processOrigin() throws Exception{
+		if (!IRIValidator.isValidIRI(fOrigin)) throw new Exception("origin is not a valid IRI");
+		URI uri = new URI(fOrigin);
+		if (uri.getHost() == null) throw new Exception("origin has no host");
+		if (uri.getUserInfo()!=null) throw new Exception("origin has userinfo");
+		URI processedURI = new URI(uri.getScheme(),null,uri.getHost(),uri.getPort(),null,null,null);
+		fOrigin = processedURI.toString();
+	}
+
+	/**
+	 * Processes a subdomains attribute
+	 * @param subDomains
+	 * @throws Exception if the attribute is not valid
+	 */
+	private void processSubdomains(Attribute attr) throws Exception{
+		if (attr != null){
+			String subDomains = UnicodeUtils.normalizeSpaces(attr.getValue());
+			fSubDomains = Boolean.valueOf(subDomains);
+		}
 	}
 }
