@@ -160,9 +160,9 @@ public class ProxyClient {
 				return readFully(new InputStreamReader(method.getResponseBodyAsStream(), "UTF-8"));
 			}
 			else if (statusCode == HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED || statusCode == HttpStatus.SC_UNAUTHORIZED)
-				throw new AuthenticationException();																			
+				throw new AuthenticationException("Authentication failed:"+ method.getStatusLine() + ' ' + method.getURI() + ' ' + method.getStatusText());																			
 			else {
-				throw new Exception("Method failed: " + method.getStatusLine() + ' ' + method.getURI() + ' ' + method.getStatusText() + method.getResponseBodyAsString()); //$NON-NLS-1$
+				throw new Exception("Method failed: " + method.getStatusLine() + ' ' + method.getURI() + ' ' + method.getStatusText()); //$NON-NLS-1$
 			}
 		} 
 		catch (IOException e) {
