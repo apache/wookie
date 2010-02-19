@@ -21,9 +21,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.wookie.exceptions.SystemUnavailableException;
-
-import sun.misc.BASE64Encoder;
 
 /**
  * A class for generating digests/hashing
@@ -71,7 +70,7 @@ public final class HashGenerator {
 		}
 
 		byte raw[] = md.digest(); //step 4
-		String hash = (new BASE64Encoder()).encode(raw); 
+		String hash = new String((new Base64()).encode(raw)); 
 		return hash; //step 6
 	}
 
