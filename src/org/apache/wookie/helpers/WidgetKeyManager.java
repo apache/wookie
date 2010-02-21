@@ -20,6 +20,7 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
+import org.apache.log4j.Logger;
 
 import org.apache.wookie.Messages;
 import org.apache.wookie.beans.ApiKey;
@@ -32,6 +33,7 @@ import org.apache.wookie.util.RandomGUID;
  *
  */
 public class WidgetKeyManager{
+  static Logger _logger = Logger.getLogger(WidgetKeyManager.class.getName());
 	
 	/**
 	 * Revoke the given key
@@ -105,12 +107,18 @@ public class WidgetKeyManager{
 	 */
 	public static boolean isValid(String key) {
 		// No key/n
-		if (key == null) return false;
+		if (key == null) {
+		  _logger.info("No API key supplied");
+		  return false;
+		}
 
 		// Empty key/empty origin
 		if (key.trim().equals("")) return false; //$NON-NLS-1$
 		ApiKey[] apiKey = ApiKey.findByValue("value", key);
-		if (apiKey == null || apiKey.length !=1) return false;
+		if (apiKey == null || apiKey.length !=1) {
+		  _logger.info("Invalid API key supplied: " + key);
+		  return false;
+		}
 		return true;
 	}
 
