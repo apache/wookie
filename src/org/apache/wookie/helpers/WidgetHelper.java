@@ -97,6 +97,7 @@ public class WidgetHelper {
 				+ "\" version=\"" + widget.getVersion() 
 				+ "\">\n";
 		out += "\t\t<title "; 
+		if (name.getDir()!=null) out+=" dir=\""+name.getDir()+"\"";
 		if (shortName != null) out +="short=\""+shortName + "\"";
 		out +=">";
 		if(longName != null) out += longName; 
@@ -104,7 +105,9 @@ public class WidgetHelper {
 		
 		// Do description
 		Description desc = (Description) LocalizationUtils.getLocalizedElement(Description.findByValue("widget", widget), locales);	
-		out += "\t\t<description>";
+		out += "\t\t<description";
+		if (desc.getDir()!=null) out+=" dir=\""+desc.getDir()+"\"";
+		out += ">";
 		if (desc != null) out += desc.getContent();
 		out += "</description>\n";
 		
@@ -156,7 +159,7 @@ public class WidgetHelper {
 			out +="\t\t<license ";
 			if (license.getLang()!=null) out+=" xml:lang=\""+license.getLang()+"\"";
 			if (license.getHref()!=null) out+=" href=\""+license.getHref()+"\"";
-			if (license.getDir()!=null) out+=" its:dir=\""+license.getDir()+"\"";
+			if (license.getDir()!=null) out+=" dir=\""+license.getDir()+"\"";
 			out+=">"+license.getText()+"</license>\n";
 		}
 
