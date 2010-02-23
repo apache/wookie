@@ -35,9 +35,9 @@ import org.apache.wookie.util.opensocial.OpenSocialUtils;
  * @version $Id
  *
  */
-public class WidgetFactory{
+public class WidgetInstanceFactory{
 
-	static Logger _logger = Logger.getLogger(WidgetFactory.class.getName());
+	static Logger _logger = Logger.getLogger(WidgetInstanceFactory.class.getName());
 	
 	private Messages localizedMessages;
 	private HttpSession session;
@@ -50,13 +50,13 @@ public class WidgetFactory{
 	 * @param localizedMessages
 	 * @return
 	 */
-	public static WidgetFactory getWidgetFactory(HttpSession session, Messages localizedMessages){
-		WidgetFactory factory = (WidgetFactory)session.getAttribute(WidgetFactory.class.getName());				
+	public static WidgetInstanceFactory getWidgetFactory(HttpSession session, Messages localizedMessages){
+		WidgetInstanceFactory factory = (WidgetInstanceFactory)session.getAttribute(WidgetInstanceFactory.class.getName());				
 		if(factory == null){
-			factory = new WidgetFactory();
+			factory = new WidgetInstanceFactory();
 			factory.localizedMessages = localizedMessages;
 			factory.session = session;
-			session.setAttribute(WidgetFactory.class.getName(), factory);
+			session.setAttribute(WidgetInstanceFactory.class.getName(), factory);
 		}
 		return factory;
 	}

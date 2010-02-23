@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.controller.WidgetInstancesController;
-import org.apache.wookie.helpers.WidgetFactory;
+import org.apache.wookie.helpers.WidgetInstanceFactory;
 import org.apache.wookie.helpers.WidgetKeyManager;
 import org.apache.wookie.manager.IWidgetAdminManager;
 import org.apache.wookie.manager.impl.WidgetAdminManager;
@@ -155,7 +155,7 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 			String userId = "testuser"; //$NON-NLS-1$
 			String sharedDataKey = "myshareddata"; //$NON-NLS-1$
 			String widgetId = widget.getGuid();
-			instance = WidgetFactory.getWidgetFactory(session, LocaleHandler.localizeMessages(request)).newInstance(apiKey, userId, sharedDataKey, null, widgetId, null);
+			instance = WidgetInstanceFactory.getWidgetFactory(session, LocaleHandler.localizeMessages(request)).newInstance(apiKey, userId, sharedDataKey, null, widgetId, null);
 			if (instance != null) {
 				widgetsHash.put(instance.getIdKey(), widget);
 			}

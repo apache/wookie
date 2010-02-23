@@ -32,7 +32,7 @@ import org.apache.wookie.beans.StartFile;
 import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.exceptions.InvalidWidgetCallException;
 import org.apache.wookie.helpers.Notifier;
-import org.apache.wookie.helpers.WidgetFactory;
+import org.apache.wookie.helpers.WidgetInstanceFactory;
 import org.apache.wookie.helpers.WidgetInstanceHelper;
 import org.apache.wookie.helpers.WidgetKeyManager;
 import org.apache.wookie.server.LocaleHandler;
@@ -202,7 +202,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		// Widget exists
 		if(instance==null){
 			String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
-			instance = WidgetFactory.getWidgetFactory(session, localizedMessages).newInstance(apiKey, userId, sharedDataKey, serviceType, widgetId, locale);
+			instance = WidgetInstanceFactory.getWidgetFactory(session, localizedMessages).newInstance(apiKey, userId, sharedDataKey, serviceType, widgetId, locale);
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
 			response.setStatus(HttpServletResponse.SC_OK);			
@@ -210,7 +210,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		
 		// Return the default widget if not created by now
 		if(instance==null){
-			instance = WidgetFactory.defaultInstance(locale);
+			instance = WidgetInstanceFactory.defaultInstance(locale);
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);	
 		}
 		
