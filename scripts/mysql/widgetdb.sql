@@ -51,6 +51,17 @@ CREATE TABLE `Name` (
   CONSTRAINT `FKwidgetnamewidgetc` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)
 );
 
+CREATE TABLE `AccessRequest` (
+  `id` int(11) NOT NULL auto_increment,
+  `origin` varchar(2048) default NULL,
+  `subdomains` varchar(1) default NULL,
+  `granted` varchar(1) default NULL,
+  `widget_id` int(11) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `FKwidgetaccesswidget` (`widget_id`),
+  CONSTRAINT `FKwidgetaccesswidgetc` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)
+);
+
 CREATE TABLE `Description` (
   `id` int(11) NOT NULL auto_increment,
   `content` longtext default NULL,
@@ -235,5 +246,5 @@ INSERT INTO `WidgetDefault` VALUES ('unsupported',1);
 INSERT INTO `WidgetService` VALUES (1,'unsupported'),(2,'chat'),(3,'games'),(4,'voting'),(5,'weather');
 INSERT INTO `WidgetType` VALUES (1,1,'unsupported');
 INSERT INTO `WidgetIcon` VALUES (1,'/wookie/shared/images/defaultwidget.png',80,80,'en',1);
-INSERT INTO `Whitelist` VALUES (1,'http://127.0.0.1'),(2,'http://localhost'),(3,'http://feeds.bbc.co.uk/weather/feeds/rss'),(4,'http://incubator.apache.org/wookie');
+INSERT INTO `Whitelist` VALUES (1,'http://127.0.0.1'),(2,'http://localhost'),(3,'http://incubator.apache.org/wookie');
 INSERT INTO `ApiKey` VALUES (1,'TEST','test@127.0.0.1');

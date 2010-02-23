@@ -26,15 +26,27 @@ import org.apache.wookie.manifestmodel.IManifestModel;
 public interface IWidgetAdminManager {
 
 	/**
-	 * Add a new widget to the system
-	 * @param widgetName - the name of this widget
-	 * @param url - the url which it resides
-	 * @param height - the height at which it is supposed to be displayed
-	 * @param width - the width at which it is supposed to be displayed
-	 * @param widgetTypes - a string array containing the types this widget can perform as
-	 * @return - the new key created for this widget
+	 * Adds a new widget
+	 * @param model the model of the widget to add
+	 * @param widgetTypes the types to allocate the widget to
+	 * @return true if successfully added, otherwise false
 	 */
 	int addNewWidget(IManifestModel model, String[] widgetTypes);
+	
+	/**
+	 * Adds a new widget
+	 * @param model the model of the widget to add
+	 * @return true if successfully added, otherwise false
+	 */
+	int addNewWidget(IManifestModel model);
+	
+	/**
+	 * Adds a new widget
+	 * @param model the model of the widget to add
+	 * @param grantAccessRequests whether to automatically grant access requests for the widget
+	 * @return true if successfully added, otherwise false
+	 */
+	int addNewWidget(IManifestModel model, boolean grantAccessRequests);
 
 	/**
 	 * Add a new whitelist entry

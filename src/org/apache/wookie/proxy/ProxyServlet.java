@@ -18,24 +18,23 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.Locale;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.httpclient.auth.AuthenticationException;
 import org.apache.log4j.Logger;
-import org.apache.wookie.Messages;
+import org.apache.wookie.beans.AccessRequest;
 import org.apache.wookie.beans.Whitelist;
+import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetInstance;
-import org.apache.wookie.server.LocaleHandler;
 
 /**
  * A web proxy servlet which will translate calls for content and return them as if they came from
@@ -48,11 +47,6 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 
 	static Logger fLogger = Logger.getLogger(ProxyServlet.class.getName());
 
-	public void init(){}
-
-	/* (non-Java-doc)
-	 * @see javax.servlet.http.HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		dealWithRequest(request, response, "post");	
 	}  
@@ -72,11 +66,20 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 		try {
 			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties");
 
-			if(!isValidUser(request, properties.getBoolean("widget.proxy.checkdomain"))){
+			// Check that the request is coming from the same domain (i.e. from a widget served by this server)
+			if (properties.getBoolean("widget.proxy.checkdomain") && !isSameDomain(request)){
+				response.sendError(HttpServletResponse.SC_FORBIDDEN,"<error>"+UNAUTHORISED_MESSAGE+"</error>");	
+				return;				
+			}
+
+			// Check that the request is coming from a valid widget
+			WidgetInstance instance = WidgetInstance.findByIdKey(request.getParameter("instanceid_key"));	
+			if(instance == null && !isDefaultGadget(request)){
 				response.sendError(HttpServletResponse.SC_FORBIDDEN,"<error>"+UNAUTHORISED_MESSAGE+"</error>");	
 				return;
 			}
 
+			// Create the proxy bean for the request
 			ProxyURLBean bean;
 			try {
 				bean = new ProxyURLBean(request);
@@ -86,9 +89,9 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			}		
 
 			// should we filter urls?
-			if (properties.getBoolean("widget.proxy.usewhitelist") && !isAllowed(bean.getNewUrl().toExternalForm())){
+			if (properties.getBoolean("widget.proxy.usewhitelist") && !isAllowed(bean.getNewUrl().toURI(), instance)){
 				response.sendError(HttpServletResponse.SC_FORBIDDEN,"<error>URL Blocked</error>");
-				fLogger.warn("URL" + bean.getNewUrl().toExternalForm() + "Blocked");
+				fLogger.warn("URL " + bean.getNewUrl().toExternalForm() + " Blocked");
 				return;
 			}	
 
@@ -112,7 +115,6 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
 				}
 				fLogger.error(ex.getMessage());
-				throw new ServletException(ex);
 			} catch (IOException e) {
 				// give up!
 				fLogger.error(ex.getMessage());	
@@ -137,47 +139,26 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 		return xml;
 	}
 
-	private boolean isValidUser(HttpServletRequest request, boolean checkDomain){
-		return isSameDomain(request, checkDomain) && isValidWidgetInstance(request);
-	}
-
-	private boolean isSameDomain(HttpServletRequest request, boolean checkDomain){
-		if(!checkDomain) return true;
+	/**
+	 * Checks that the request is from the same domain as this service
+	 * @param request
+	 * @param checkDomain
+	 * @return
+	 */
+	private boolean isSameDomain(HttpServletRequest request){
 		String remoteHost = request.getRemoteHost();
 		String serverHost = request.getServerName();
-		fLogger.debug("remote host:"+remoteHost);
-		fLogger.debug("server host:"+ serverHost);
-		if(remoteHost.equals(serverHost)){
-			return true;
-		}
+		if(remoteHost.equals(serverHost)) return true;
 		return false;
 	}
 
-	private boolean isValidWidgetInstance(HttpServletRequest request){
-		HttpSession session = request.getSession(true);						
-		Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName());
-		if(localizedMessages == null){
-			Locale locale = request.getLocale();
-			localizedMessages = LocaleHandler.getInstance().getResourceBundle(locale);
-			session.setAttribute(Messages.class.getName(), localizedMessages);			
-		}
+	private boolean isDefaultGadget(HttpServletRequest request){
 		String instanceId = request.getParameter("instanceid_key");
-		if(instanceId == null) return false;
-		// check if instance is valid
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(instanceId);			
-		if(widgetInstance!=null){
+		// check  if the default Shindig gadget key is being used
+		Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("opensocial");
+		if (properties.getBoolean("opensocial.enable") && properties.getString("opensocial.proxy.id").equals(instanceId))
 			return true;
-		}
-		else{
-			// check  if the default Shindig gadget key is being used
-			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("opensocial");
-			if (properties.getBoolean("opensocial.enable") && properties.getString("opensocial.proxy.id").equals(instanceId)) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-
+		return false;
 	}
 
 	/**
@@ -185,13 +166,31 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 	 * @param aUrl
 	 * @return
 	 */
-	public boolean isAllowed(String aUrl){					
+	public boolean isAllowed(URI requestedUri, WidgetInstance instance){
+		// Check global whitelist
 		for (Whitelist whiteList : Whitelist.findAll()){
 			// TODO - make this better then just comparing the beginning...
-			if(aUrl.toLowerCase().startsWith(whiteList.getfUrl().toLowerCase()))			
+			if(requestedUri.toString().toLowerCase().startsWith(whiteList.getfUrl().toLowerCase()))			
 				return true;
 		}
+
+		// Check widget-specific policies using W3C WARP
+		if (instance != null && isAllowedByPolicy(requestedUri, instance.getWidget())) return true;
+
 		return false;		
+	}
+
+	/**
+	 * Check widget-specific policies using W3C WARP
+	 * @param requestedUri the URI requested
+	 * @param widget the Widget requesting access to the URI
+	 * @return true if a policy grants access to the requested URI
+	 */
+	private boolean isAllowedByPolicy(URI requestedUri, Widget widget){
+		for (AccessRequest policy: AccessRequest.findAllApplicable(widget))
+			if (policy.isAllowed(requestedUri)) return true;
+		fLogger.warn("No policy grants widget "+widget.getWidgetTitle("en")+" access to: "+requestedUri.toString());
+		return false;
 	}
 
 	/**
@@ -233,11 +232,11 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			// try to locate a POST form parameter instead
 			if (endPointURL == null)	
 				endPointURL=request.getParameter("url");
-			
+
 			// the request didn't contain any params, so throw an exception
 			if (endPointURL == null)	
 				throw new MalformedURLException("Unable to obtain url from args");
-			
+
 			try {
 				// try decoding the URL
 				fNewUrl = new URL(URLDecoder.decode(endPointURL, "UTF-8"));

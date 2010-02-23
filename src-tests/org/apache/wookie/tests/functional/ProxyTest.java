@@ -34,11 +34,15 @@ import org.junit.Test;
 public class ProxyTest extends AbstractControllerTest {
 
 	private static String instance_id_key;
+	private static String other_instance_id_key;
+	private static final String OTHER_WIDGET_ID = "http://www.getwookie.org/widgets/natter";
 	private static final String PROXY_URL = "http://localhost:8080/wookie/proxy";
 	private static final String VALID_SITE_URL = "http://incubator.apache.org/wookie/";
 	private static final String VALID_SITE_XML_URL = "http://localhost:8080/wookie/widgets?all=true";
 	private static final String INVALID_SITE_URL = "DFASFAFEQ3FQ32145235123452";
 	private static final String BLOCKED_SITE_URL = "http://very.bad.place";
+	private static final String POLICY_ALLOWED_SITE_URL = "http://www.bbc.co.uk/weather/feeds/rss.shtml?world=11";
+	private static final String POLICY_DISALLOWED_SITE_URL = "http://news.bbc.co.uk";
 	private static final String PROTECTED_SITE_URL = "http://localhost:8080/wookie/admin/";
 
 	/**
@@ -59,6 +63,19 @@ public class ProxyTest extends AbstractControllerTest {
 			e.printStackTrace();
 			fail("post failed");
 		}
+		try {
+			HttpClient client = new HttpClient();
+			PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
+			post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+OTHER_WIDGET_ID+"&userid=test&shareddatakey=proxytest");
+			client.executeMethod(post);
+			String response = post.getResponseBodyAsString();
+			other_instance_id_key = response.substring(response.indexOf("<identifier>")+12, response.indexOf("</identifier>"));
+			post.releaseConnection();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail("post failed");
+		}
 	}
 
 	@Test
@@ -66,6 +83,28 @@ public class ProxyTest extends AbstractControllerTest {
 		String url = PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+VALID_SITE_URL;
 		assertEquals(200,send(url,"GET"));
 		assertEquals(500,send(url,"POST")); // This URL doesn't support POST
+	}
+	
+	@Test
+	public void getAllowedSite(){
+		String url = PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+POLICY_ALLOWED_SITE_URL;
+		assertEquals(200,send(url,"GET"));
+		assertEquals(200,send(url,"POST"));
+	}
+	
+	@Test
+	public void getDisallowedSite(){
+		String url = PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+POLICY_DISALLOWED_SITE_URL;
+		assertEquals(403,send(url,"GET"));
+		assertEquals(403,send(url,"POST")); // This URL doesn't support POST
+	}
+	
+	// Test trying to get to a site allowed for a different widget, but not this one
+	@Test
+	public void getAllowedSiteWrongInstance(){
+		String url = PROXY_URL+"?instanceid_key="+other_instance_id_key+"&url="+POLICY_ALLOWED_SITE_URL;
+		assertEquals(403,send(url,"GET"));
+		assertEquals(403,send(url,"POST"));
 	}
 	
 	@Test

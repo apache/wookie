@@ -163,7 +163,7 @@ public class ContextListener implements ServletContextListener {
 	 						IManifestModel model = WidgetPackageUtils.processWidgetPackage(upload, localWidgetFolderPath, WIDGETFOLDER, UPLOADFOLDER, locales);
 	 						WidgetAdminManager manager = new WidgetAdminManager(null);
 	 						if(!Widget.exists(model.getIdentifier())) {
-	 							manager.addNewWidget(model, null);	
+	 							manager.addNewWidget(model, true);	
 	 							_logger.info(model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19"));
 	 						} else {
 	 							_logger.info(model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.20"));

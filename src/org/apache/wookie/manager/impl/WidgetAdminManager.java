@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
+import org.apache.wookie.beans.AccessRequest;
 import org.apache.wookie.beans.Description;
 import org.apache.wookie.beans.Feature;
 import org.apache.wookie.beans.License;
@@ -37,6 +38,7 @@ import org.apache.wookie.beans.WidgetIcon;
 import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.beans.WidgetType;
 import org.apache.wookie.manager.IWidgetAdminManager;
+import org.apache.wookie.manifestmodel.IAccessEntity;
 import org.apache.wookie.manifestmodel.IContentEntity;
 import org.apache.wookie.manifestmodel.IDescriptionEntity;
 import org.apache.wookie.manifestmodel.IFeatureEntity;
@@ -65,11 +67,20 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 		this.localizedMessages = localizedMessages;	
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#addNewWidget(java.lang.String, java.lang.String, java.lang.String, int, int, java.lang.String[])
-	 */
+	public int addNewWidget(IManifestModel model, boolean grantAccessRequests) {
+		return addNewWidget(model,null, grantAccessRequests);
+	}
+
+	public int addNewWidget(IManifestModel model) {
+		return addNewWidget(model,null,false);
+	}
+	
+	public int addNewWidget(IManifestModel model,String[] widgetTypes) {
+		return addNewWidget(model,widgetTypes,false);
+	}	
+
 	@SuppressWarnings("unchecked")
-	public int addNewWidget(IManifestModel model, String[] widgetTypes) {
+	public int addNewWidget(IManifestModel model, String[] widgetTypes, boolean grantAccessRequests) {
 		// NOTE: we pass the whole model here, so that we can create all the DB hooks more easily.
 		int newWidgetIdx = -1;			
 		Widget widget;
@@ -162,6 +173,19 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 				param.setParentFeature(feature);
 				param.save();
 			}
+		}
+		
+		// Save Access Requests
+		for(IAccessEntity accessEntity:model.getAccessList()){
+			AccessRequest acc = new AccessRequest();
+			acc.setOrigin(accessEntity.getOrigin());
+			acc.setSubdomains(accessEntity.hasSubDomains());
+			acc.setWidget(widget);
+			acc.setGranted(grantAccessRequests);
+			if (grantAccessRequests){
+				_logger.info("access policy granted for "+widget.getWidgetTitle("en")+" to access "+acc.getOrigin());
+			}
+			acc.save();
 		}
 
 		return newWidgetIdx;	       

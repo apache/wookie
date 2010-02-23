@@ -28,7 +28,7 @@ public abstract class AbstractControllerTest{
 		
 	protected static final String API_KEY_VALID = "TEST";
 	protected static final String API_KEY_INVALID = "rubbish";
-	protected static final String WIDGET_ID_VALID = "http://www.getwookie.org/widgets/natter";
+	protected static final String WIDGET_ID_VALID = "http://www.getwookie.org/widgets/weather";
 	protected static final String WIDGET_ID_INVALID = "http://www.getwookie.org/widgets/nosuchwidget";
 
 }
