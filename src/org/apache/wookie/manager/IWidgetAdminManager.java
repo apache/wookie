@@ -49,13 +49,6 @@ public interface IWidgetAdminManager {
 	int addNewWidget(IManifestModel model, boolean grantAccessRequests);
 
 	/**
-	 * Add a new whitelist entry
-	 * @param uri
-	 * @return
-	 */
-	boolean addWhiteListEntry(String uri);
-
-	/**
 	 * delete any default types that belong to a given widgetid
 	 */
 	void deleteWidgetDefaultById(int widgetKey);

@@ -192,15 +192,6 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#addWhiteListEntry(java.lang.String)
-	 */
-	public boolean addWhiteListEntry(String uri) {
-		Whitelist list = new Whitelist();
-		list.setfUrl(uri);
-		return list.save();
-	}
-	
-	/* (non-Javadoc)
 	 * @see org.apache.wookie.manager.IWidgetAdminManager#deleteWidgetDefaultById(int)
 	 */
 	public void deleteWidgetDefaultById(int widgetKey){		
