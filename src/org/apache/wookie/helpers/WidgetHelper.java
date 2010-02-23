@@ -97,7 +97,7 @@ public class WidgetHelper {
 				+ "\" version=\"" + widget.getVersion() 
 				+ "\">\n";
 		out += "\t\t<title "; 
-		if (name.getDir()!=null) out+=" dir=\""+name.getDir()+"\"";
+		if (name != null && name.getDir()!=null) out+=" dir=\""+name.getDir()+"\"";
 		if (shortName != null) out +="short=\""+shortName + "\"";
 		out +=">";
 		if(longName != null) out += longName; 
@@ -106,7 +106,7 @@ public class WidgetHelper {
 		// Do description
 		Description desc = (Description) LocalizationUtils.getLocalizedElement(Description.findByValue("widget", widget), locales);	
 		out += "\t\t<description";
-		if (desc.getDir()!=null) out+=" dir=\""+desc.getDir()+"\"";
+		if (desc!= null && desc.getDir()!=null) out+=" dir=\""+desc.getDir()+"\"";
 		out += ">";
 		if (desc != null) out += desc.getContent();
 		out += "</description>\n";
