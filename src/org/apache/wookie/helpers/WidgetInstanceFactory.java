@@ -19,8 +19,10 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
+import org.apache.wookie.beans.Participant;
 import org.apache.wookie.beans.Preference;
 import org.apache.wookie.beans.PreferenceDefault;
+import org.apache.wookie.beans.SharedData;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.util.HashGenerator;
@@ -193,6 +195,17 @@ public class WidgetInstanceFactory{
 		pref.setDvalue(value);
 		pref.setReadOnly(readOnly);
 		pref.save();	
+	}
+	
+	/**
+	 * Destroy a widget instance and all references to it
+	 * @param instance
+	 */
+	public static void destroy(WidgetInstance instance){
+		SharedData.delete(SharedData.findByValue("widgetInstance", instance));
+		Preference.delete(Preference.findByValue("widgetInstance", instance));
+		Participant.delete(Participant.findByValue("widgetInstance", instance));
+		instance.delete();
 	}
 
 }

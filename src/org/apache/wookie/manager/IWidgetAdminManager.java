@@ -14,8 +14,6 @@
 
 package org.apache.wookie.manager;
 
-import org.apache.wookie.manifestmodel.IManifestModel;
-
 /**
  * Interface for admin functions
  * 
@@ -24,51 +22,6 @@ import org.apache.wookie.manifestmodel.IManifestModel;
  *
  */
 public interface IWidgetAdminManager {
-
-	/**
-	 * Adds a new widget
-	 * @param model the model of the widget to add
-	 * @param widgetTypes the types to allocate the widget to
-	 * @return true if successfully added, otherwise false
-	 */
-	int addNewWidget(IManifestModel model, String[] widgetTypes);
-	
-	/**
-	 * Adds a new widget
-	 * @param model the model of the widget to add
-	 * @return true if successfully added, otherwise false
-	 */
-	int addNewWidget(IManifestModel model);
-	
-	/**
-	 * Adds a new widget
-	 * @param model the model of the widget to add
-	 * @param grantAccessRequests whether to automatically grant access requests for the widget
-	 * @return true if successfully added, otherwise false
-	 */
-	int addNewWidget(IManifestModel model, boolean grantAccessRequests);
-
-	/**
-	 * delete any default types that belong to a given widgetid
-	 */
-	void deleteWidgetDefaultById(int widgetKey);
-
-	/**
-	 * from a given widgetKey & service type, remove the default widget entry
-	 * @param widgetKey
-	 * @param serviceType
-	 */
-	void deleteWidgetDefaultByIdAndServiceType(int widgetKey,
-			String serviceType);
-
-	/**
-	 * Check to see if a service type is currently listed for a particular widget
-	 * @param dbkey
-	 * @param serviceType
-	 * @return
-	 */
-	boolean doesServiceExistForWidget(int dbkey,
-			String serviceType);
 
 	/**
 	 * Find if this widget is maximizable, from given key
@@ -83,13 +36,6 @@ public interface IWidgetAdminManager {
 	 * @param widgetType
 	 */
 	boolean removeSingleWidgetType(int widgetId, String widgetType);
-
-	/**
-	 * Remove a widget and any references in the DB - i.e. WidgetInstances 
-	 * @param widgetId
-	 * @return
-	 */
-	boolean removeWidgetAndReferences(int widgetId);
 
 	/**
 	 * Sets a given widget to be the default for a given context - i.e. chat or discussion etc...

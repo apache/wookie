@@ -20,34 +20,10 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
-import org.apache.wookie.beans.AccessRequest;
-import org.apache.wookie.beans.Description;
-import org.apache.wookie.beans.Feature;
-import org.apache.wookie.beans.License;
-import org.apache.wookie.beans.Name;
-import org.apache.wookie.beans.Param;
-import org.apache.wookie.beans.Participant;
-import org.apache.wookie.beans.Preference;
-import org.apache.wookie.beans.PreferenceDefault;
-import org.apache.wookie.beans.SharedData;
-import org.apache.wookie.beans.StartFile;
-import org.apache.wookie.beans.Whitelist;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetDefault;
-import org.apache.wookie.beans.WidgetIcon;
-import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.beans.WidgetType;
 import org.apache.wookie.manager.IWidgetAdminManager;
-import org.apache.wookie.manifestmodel.IAccessEntity;
-import org.apache.wookie.manifestmodel.IContentEntity;
-import org.apache.wookie.manifestmodel.IDescriptionEntity;
-import org.apache.wookie.manifestmodel.IFeatureEntity;
-import org.apache.wookie.manifestmodel.IIconEntity;
-import org.apache.wookie.manifestmodel.ILicenseEntity;
-import org.apache.wookie.manifestmodel.IManifestModel;
-import org.apache.wookie.manifestmodel.INameEntity;
-import org.apache.wookie.manifestmodel.IParamEntity;
-import org.apache.wookie.manifestmodel.IPreferenceEntity;
 
 /**
  * WidgetAdminManager
@@ -67,142 +43,7 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 		this.localizedMessages = localizedMessages;	
 	}
 	
-	public int addNewWidget(IManifestModel model, boolean grantAccessRequests) {
-		return addNewWidget(model,null, grantAccessRequests);
-	}
-
-	public int addNewWidget(IManifestModel model) {
-		return addNewWidget(model,null,false);
-	}
-	
-	public int addNewWidget(IManifestModel model,String[] widgetTypes) {
-		return addNewWidget(model,widgetTypes,false);
-	}	
-
-	@SuppressWarnings("unchecked")
-	public int addNewWidget(IManifestModel model, String[] widgetTypes, boolean grantAccessRequests) {
-		// NOTE: we pass the whole model here, so that we can create all the DB hooks more easily.
-		int newWidgetIdx = -1;			
-		Widget widget;
-		widget = new Widget();												
-		widget.setWidgetAuthor(model.getAuthor());
-		widget.setWidgetAuthorEmail(model.getAuthorEmail());
-		widget.setWidgetAuthorHref(model.getAuthorHref());
-		widget.setGuid(model.getIdentifier());
-		widget.setHeight(model.getHeight());
-		widget.setWidth(model.getWidth());
-		widget.setVersion(model.getVersion());
-		widget.save();	
-		WidgetType widgetType;
-		if (widgetTypes!=null){
-			for(int i=0;i<widgetTypes.length;i++){
-				widgetType = new WidgetType();
-				widgetType.setWidgetContext(widgetTypes[i]);
-				widgetType.setWidget(widget);
-				widget.getWidgetTypes().add(widgetType);
-				widgetType.save();
-			}
-		}
-		newWidgetIdx = widget.getId();
-		
-		// Start Files
-		for (IContentEntity page:model.getContentList()){
-			StartFile start = new StartFile();
-			start.setCharset(page.getCharSet());
-			start.setLang(page.getLang());
-			start.setUrl(page.getSrc());
-			start.setWidget(widget);
-			start.save();
-		}
-		
-		// Names
-		for (INameEntity name:model.getNames()){
-			Name widgetName = new Name();
-			widgetName.setLang(name.getLang());
-			widgetName.setDir(name.getDir());
-			widgetName.setName(name.getName());
-			widgetName.setShortName(name.getShort());
-			widgetName.setWidget(widget);
-			widgetName.save();
-		}
-		
-		// Descriptions
-		for (IDescriptionEntity desc:model.getDescriptions()){
-			Description widgetDesc = new Description();
-			widgetDesc.setContent(desc.getDescription());
-			widgetDesc.setLang(desc.getLang());
-			widgetDesc.setDir(desc.getDir());
-			widgetDesc.setWidget(widget);
-			widgetDesc.save();
-		}
-		
-		// Icons
-		for(IIconEntity icon: model.getIconsList()){
-			WidgetIcon widgetIcon = new WidgetIcon(icon.getSrc(),icon.getHeight(),icon.getWidth(),icon.getLang(), widget);
-			widgetIcon.save();
-		}
-		
-		// Licenses
-		for(ILicenseEntity licenseModel: model.getLicensesList()){
-			License license = new License(licenseModel.getLicenseText(),licenseModel.getHref(), licenseModel.getLang(), licenseModel.getDir(), widget);
-			license.save();
-		}
-
-		// Save default preferences				
-		for(IPreferenceEntity prefEntity : model.getPrefences()){
-			PreferenceDefault prefenceDefault = new PreferenceDefault();
-			prefenceDefault.setPreference(prefEntity.getName());
-			prefenceDefault.setValue(prefEntity.getValue());
-			prefenceDefault.setReadOnly(prefEntity.isReadOnly());
-			prefenceDefault.setWidget(widget);
-			prefenceDefault.save();
-		}
-
-		// Save Features
-		for(IFeatureEntity featureEntity: model.getFeatures()){
-			Feature feature = new Feature();
-			feature.setFeatureName(featureEntity.getName());
-			feature.setRequired(featureEntity.isRequired());
-			feature.setWidget(widget);
-			feature.save();			
-			// now attach all parameters to this feature.
-			for(IParamEntity paramEntity : featureEntity.getParams()){
-				Param param = new Param();
-				param.setParameterName(paramEntity.getName());
-				param.setParameterValue(paramEntity.getValue());
-				param.setParentFeature(feature);
-				param.save();
-			}
-		}
-		
-		// Save Access Requests
-		for(IAccessEntity accessEntity:model.getAccessList()){
-			AccessRequest acc = new AccessRequest();
-			acc.setOrigin(accessEntity.getOrigin());
-			acc.setSubdomains(accessEntity.hasSubDomains());
-			acc.setWidget(widget);
-			acc.setGranted(grantAccessRequests);
-			if (grantAccessRequests){
-				_logger.info("access policy granted for "+widget.getWidgetTitle("en")+" to access "+acc.getOrigin());
-			}
-			acc.save();
-		}
-
-		return newWidgetIdx;	       
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#deleteWidgetDefaultById(int)
-	 */
-	public void deleteWidgetDefaultById(int widgetKey){		
-		WidgetDefault[] widgetDefault = WidgetDefault.findByValue("widgetId", widgetKey);
-		if (widgetDefault.length == 1) widgetDefault[0].delete();
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#deleteWidgetDefaultByIdAndServiceType(int, java.lang.String)
-	 */
-	public void deleteWidgetDefaultByIdAndServiceType(int widgetKey, String serviceType){
+	private void deleteWidgetDefaultByIdAndServiceType(int widgetKey, String serviceType){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("widgetId", widgetKey);
 		map.put("widgetContext", serviceType);
@@ -211,10 +52,7 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 		WidgetDefault.delete(widgetDefaults);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#doesServiceExistForWidget(int, java.lang.String)
-	 */
-	public boolean doesServiceExistForWidget(int dbkey, String serviceType){
+	private boolean doesServiceExistForWidget(int dbkey, String serviceType){
 		Widget widget = Widget.findById(Integer.valueOf(dbkey));
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("widget", widget);
@@ -258,49 +96,6 @@ public class WidgetAdminManager implements IWidgetAdminManager {
         deleteWidgetDefaultByIdAndServiceType(widgetId, widgetType);
         return response;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#removeWidgetAndReferences(int)
-	 */
-	public boolean removeWidgetAndReferences(int widgetId){
-		// get the widget
-		Widget widget = Widget.findById(Integer.valueOf(widgetId));
-		// remove any defaults for this widget
-		deleteWidgetDefaultById(widgetId);
-		
-		if(widget==null) return false;
-		// find any widget instances for this widget
-		WidgetInstance[] instances = WidgetInstance.findByValue("widget", widget);		
-		// try to remove prefs, shareddata and then the instances
-		for(WidgetInstance inst : instances){
-			SharedData.delete(SharedData.findByValue("widgetInstance", inst));
-			Preference.delete(Preference.findByValue("widgetInstance", inst));
-			Participant.delete(Participant.findByValue("widgetInstance", inst));
-			inst.delete();
-		}
-		// remove any widget types for this widget
-		Set<?> types = widget.getWidgetTypes();
-        WidgetType[] widgetTypes = types.toArray(new WidgetType[types.size()]);		        
-        for(int j=0;j<widgetTypes.length;++j){	
-        	widgetTypes[j].delete();
-		}
-        
-        //Delete any PreferenceDefaults
-        PreferenceDefault.delete(PreferenceDefault.findByValue("widget", widget));
-        
-        // next do the features & children params
-        for(Feature feature :Feature.findByValue("widget", widget)){
-        	Param.delete(Param.findByValue("parentFeature", feature));
-        	feature.delete();
-        }
-        
-		// remove the widget itself
-        widget.delete();
-		return true;
-	} 
-	
-	
-	
 	
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.manager.IWidgetAdminManager#setDefaultWidget(int, java.lang.String)

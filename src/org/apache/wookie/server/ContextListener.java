@@ -28,7 +28,7 @@ import org.apache.wookie.beans.Widget;
 import org.apache.wookie.exceptions.BadManifestException;
 import org.apache.wookie.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.feature.FeatureLoader;
-import org.apache.wookie.manager.impl.WidgetAdminManager;
+import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.util.WgtWatcher;
 import org.apache.wookie.util.WidgetPackageUtils;
@@ -161,9 +161,8 @@ public class ContextListener implements ServletContextListener {
 	 						dbManager.beginTransaction();
 	 						File upload = WidgetPackageUtils.dealWithDroppedFile(UPLOADFOLDER, f);
 	 						IManifestModel model = WidgetPackageUtils.processWidgetPackage(upload, localWidgetFolderPath, WIDGETFOLDER, UPLOADFOLDER, locales);
-	 						WidgetAdminManager manager = new WidgetAdminManager(null);
 	 						if(!Widget.exists(model.getIdentifier())) {
-	 							manager.addNewWidget(model, true);	
+	 							WidgetFactory.addNewWidget(model, true);	
 	 							_logger.info(model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19"));
 	 						} else {
 	 							_logger.info(model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.20"));

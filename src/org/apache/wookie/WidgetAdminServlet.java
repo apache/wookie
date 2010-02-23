@@ -41,6 +41,7 @@ import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.InvalidStartFileException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
+import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetKeyManager;
 import org.apache.wookie.manager.IWidgetAdminManager;
 import org.apache.wookie.manager.impl.WidgetAdminManager;
@@ -370,7 +371,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		String widgetId = request.getParameter("widgetId"); //$NON-NLS-1$
 		Widget widget = Widget.findById(Integer.parseInt(widgetId));
 		String guid = widget.getGuid();
-		if(manager.removeWidgetAndReferences(Integer.parseInt(widgetId))){
+		if(WidgetFactory.destroy(Integer.parseInt(widgetId))){
 			if(WidgetPackageUtils.removeWidgetResources(WIDGETFOLDER, guid)){			
 				session.setAttribute("message_value", localizedMessages.getString("WidgetAdminServlet.12"));			 //$NON-NLS-1$ //$NON-NLS-2$ 
 			}
@@ -477,7 +478,8 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 				IManifestModel widgetModel = WidgetPackageUtils.processWidgetPackage(zipFile,properties.getString("widget.widgetfolder"), WIDGETFOLDER,UPLOADFOLDER,locales);//$NON-NLS-1$
 				if(!Widget.exists(widgetModel.getIdentifier())){	
 					// ADD
-					int dbkey = manager.addNewWidget(widgetModel, new String[]{});
+					Widget widget = WidgetFactory.addNewWidget(widgetModel);
+					int dbkey = widget.getId();
 					// widget added
 					session.setAttribute("message_value", "'"+ widgetModel.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					retrieveServices(session);
