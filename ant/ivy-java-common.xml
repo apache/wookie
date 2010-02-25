@@ -31,9 +31,7 @@
 	
 	<property name="dist.dir" location="dist"/>
 	
-    <property name="jar.file" location="${dist.dir}/${ant.project.name}.jar"/>
-	
-	<property name="java.source.version" value="1.5"/>
+    <property name="java.source.version" value="1.5"/>
 	<property name="java.target.version" value="1.5"/>
 	
 	<target name="init">
@@ -119,30 +117,35 @@
     
     <target name="jar" depends="clean-dist, version, compile-core" description="--> make a jar file for this project">
     	<mkdir dir="${dist.dir}"/>
-        <jar destfile="${jar.file}">
+        <jar destfile="${dist.dir}/${ant.project.name}-${version}.jar">
             <fileset dir="${project.build.classes.dir}"/>
         </jar>
     </target>
 	
     <target name="publish" depends="clean-build, new-version, jar" description="--> publish this project in the ivy repository">
-        <property name="revision" value="${version}"/>
-    	<ivy:publish
+        <ivy:publish
     	   artifactspattern="[artifact].[ext]"
            resolver="shared"
-           pubrevision="${revision}" 
+           pubrevision="${version}" 
     	/>
         <echo message="project ${ant.project.name} released with version ${revision}" />
     </target>
 
-    <target name="publish-local" depends="clean-dist, local-version, jar" description="--> publish this project in the local ivy repository">
+    <target name="publish-local" depends="clean-dist, jar" description="--> publish this project in the local ivy repository">
 		<delete file="${build.dir}/ivy.xml"/> <!-- delete last produced ivy file to be sure a new one will be generated -->
+    	<tstamp>
+			<format property="now" pattern="yyyyMMddHHmmss"/>
+		</tstamp>
+    	<ivy:makepom ivyfile="${basedir}/ivy.xml" pomfile="${dist.dir}/wookie.pom"/>
     	<ivy:publish resolver="local"
     		artifactspattern="${dist.dir}/[artifact].[ext]"
-    		pubrevision="${revision}"
+    		pubrevision="${version}"
     		forcedeliver="true"
 			pubdate="${now}"
-    	/>
-        <echo message="project ${ant.project.name} published locally with version ${revision}" />
+    		overwrite="true">
+    		<artifact name="wookie" type="pom" ext="pom"/> 
+    	</ivy:publish>
+        <echo message="project ${ant.project.name} published locally with version ${version}" />
     </target>
 
 </project>

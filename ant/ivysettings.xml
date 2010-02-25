@@ -3,7 +3,7 @@
   
   <resolvers>
     <chain name="wookie-chain">
-      <filesystem name="local">
+      <filesystem name="local" m2compatible="true" local="true">
           <artifact pattern="${user.home}/.m2/repository/[organisation]/[module]/[revision]/[module]-[revision].[ext]" />
       </filesystem>
       <filesystem name="wookie-local">

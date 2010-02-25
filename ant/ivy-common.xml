@@ -88,18 +88,6 @@
         <property file="${project.build.classes.dir}/${ant.project.name}.properties" />
     </target>
 
-    <target name="local-version">
-		<tstamp>
-			<format property="now" pattern="yyyyMMddHHmmss"/>
-		</tstamp>
-        <property name="revision" value="${now}"/>
-    	<!-- used only to create a local version and put the corresponding file in the jar so that it will be displayed by the module -->
-        <mkdir dir="${project.build.classes.dir}"/>
-		<echo message="version=${revision}" file="${project.build.classes.dir}/${ant.project.name}.properties" append="false" />
-
-        <property file="${project.build.classes.dir}/${ant.project.name}.properties" />
-    </target>
-
 	<target name="clean-local" depends="configure" description="cleans the local repository for the current module">
 	   <delete dir="${ivy.local.default.root}/${ant.project.name}"/>
 	</target>
