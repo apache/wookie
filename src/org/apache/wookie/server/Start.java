@@ -33,22 +33,33 @@ public class Start {
 	private static Server server;
 
 	public static void main(String[] args) throws Exception {
+	  boolean initDB = true;
 		for (int i = 0; i < args.length; i++) {
-			String arg = args[0];
+			String arg = args[i];
 			if (arg.startsWith("port=")) {
 			  port = new Integer(arg.substring(5));
+			} else if (arg.startsWith("initDB=")) {
+			  initDB = !arg.substring(7).toLowerCase().equals("false");
 			}
 		}
-		try {
-			configureDatabase();
-		} catch (Exception e) {
-			if (e.getCause().getMessage().contains("duplicate key value")){ 
-				throw new IOException("There was a problem setting up the database.\n If this is not the first time you are running Wookie in" + 
-						" standalone mode, then you should run \"ant clean-db\" before \"ant run\" to clear the database.");
-			} else {
-				throw e;
-			}
+		
+		if (initDB) {
+  		try {
+  			configureDatabase();
+  		} catch (Exception e) {
+  			if (e.getCause().getMessage().contains("duplicate key value")){
+  			  StringBuilder sb = new StringBuilder("There was a problem setting up the database.\n");
+  			  sb.append("If this is not the first time you are running Wookie in");
+  			  sb.append(" standalone mode, then you should run \"ant clean-db\" before \"ant run\"");
+  			  sb.append(" to clear the database.\n");
+  			  sb.append("To run without re-configuring the database set \"initDB=false\" in the command line");
+  				throw new IOException(sb.toString());
+  			} else {
+  				throw e;
+  			}
+  		}
 		}
+		
 		configureServer();
 		startServer();
 	}
