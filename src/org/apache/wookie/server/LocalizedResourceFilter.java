@@ -130,7 +130,13 @@ public class LocalizedResourceFilter implements Filter {
 		// Strip out the widget base path to obtain just the resource itself
 		String widgetPath = getWidgetInstanceBasePath(instance);
 		int start = originalPath.indexOf(widgetPath)+widgetPath.length();
-		String resource = originalPath.substring(start);
+
+		String resource;
+		try {
+			resource = originalPath.substring(start);
+		} catch (Exception e) {
+			return originalPath;
+		}
 
 		// If the resource already contains a locale, remove it for the purposes of searching
 		// This is because local links witin widgets can target localized files - e.g.
