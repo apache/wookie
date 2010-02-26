@@ -181,7 +181,7 @@ public abstract class Controller extends HttpServlet{
 	 * @param the request
 	 * @return the resource name
 	 */
-	protected String locateRESTname(HttpServletRequest request) {
+	public static String locateRESTname(HttpServletRequest request) {
 		String path = request.getPathInfo(); // may be null, plain name or name plus
 		// params
 		if (path == null) {

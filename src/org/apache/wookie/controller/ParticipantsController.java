@@ -139,7 +139,7 @@ public class ParticipantsController extends Controller {
 	 * @param participantThumbnailUrl the thumbnail url property of the participant to add
 	 * @return true if the participant was successfully added, otherwise false
 	 */
-	private static boolean addParticipantToWidgetInstance(WidgetInstance instance,
+	public static boolean addParticipantToWidgetInstance(WidgetInstance instance,
 			String participantId, String participantDisplayName,
 			String participantThumbnailUrl) {
 
