@@ -138,7 +138,7 @@
 		</tstamp>
     	<ivy:makepom ivyfile="${basedir}/ivy.xml" pomfile="${dist.dir}/wookie.pom"/>
     	<ivy:publish resolver="local"
-    		artifactspattern="${dist.dir}/[artifact].[ext]"
+    		artifactspattern="${dist.dir}/${ant.project.name}-${version}.jar"
     		pubrevision="${version}"
     		forcedeliver="true"
 			pubdate="${now}"
