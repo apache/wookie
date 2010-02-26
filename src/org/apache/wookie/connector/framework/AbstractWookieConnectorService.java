@@ -13,6 +13,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -21,6 +23,7 @@ import org.xml.sax.SAXException;
 
 public abstract class AbstractWookieConnectorService implements
     IWookieConnectorService {
+  private static final Logger logger = LoggerFactory.getLogger(AbstractWookieConnectorService.class);
   WookieServerConnection conn;
   WidgetInstances instances = new WidgetInstances();
   
@@ -37,6 +40,7 @@ public abstract class AbstractWookieConnectorService implements
   }
   
   public void setConnection(WookieServerConnection newConn) {
+    logger.debug("Setting wookie connection to " + conn);
     this.conn = newConn;
   }
   
@@ -65,6 +69,8 @@ public abstract class AbstractWookieConnectorService implements
       postdata.append(URLEncoder.encode(getCurrentUser().getLoginName(), "UTF-8"));
       postdata.append("&widgetid=");
       postdata.append(URLEncoder.encode(widget.getIdentifier(), "UTF-8"));
+      
+      logger.debug("Makeing Wookie REST query using: " + postdata);
       
       url = new URL(conn.getURL() + "/widgetinstances");
       URLConnection conn = url.openConnection();

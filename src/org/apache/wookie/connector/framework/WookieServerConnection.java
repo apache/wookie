@@ -52,7 +52,7 @@ public class WookieServerConnection implements Serializable {
    * @return
    * @throws WookieConnectionException
    */
-  public String getURL() throws WookieConnectorException {
+  public String getURL() {
     return url;
   }
   
@@ -97,4 +97,16 @@ public class WookieServerConnection implements Serializable {
    */
   public void setSharedDataKey(String newKey) {
     sharedDataKey = newKey;
-  }}
+  }
+
+  public String toString() {
+    StringBuilder sb = new StringBuilder("Wookie Server Connection - ");
+    sb.append("URL: ");
+    sb.append(getURL());
+    sb.append("API Key: ");
+    sb.append(getApiKey());
+    sb.append("Shared Data Key: ");
+    sb.append(getSharedDataKey());
+    return sb.toString();
+  }
+}
