@@ -132,18 +132,19 @@
     </target>
 
     <target name="publish-local" depends="clean-dist, jar" description="--> publish this project in the local ivy repository">
-		<delete file="${build.dir}/ivy.xml"/> <!-- delete last produced ivy file to be sure a new one will be generated -->
+		<delete file="${dist.dir}/ivy.xml"/> <!-- delete last produced ivy file to be sure a new one will be generated -->
     	<tstamp>
 			<format property="now" pattern="yyyyMMddHHmmss"/>
 		</tstamp>
     	<ivy:makepom ivyfile="${basedir}/ivy.xml" pomfile="${dist.dir}/wookie.pom"/>
     	<ivy:publish resolver="local"
-    		artifactspattern="${dist.dir}/${ant.project.name}-${version}.jar"
     		pubrevision="${version}"
     		forcedeliver="true"
+    		srcivypattern="${dist.dir}/ivy.xml"
 			pubdate="${now}"
     		overwrite="true">
-    		<artifact name="wookie" type="pom" ext="pom"/> 
+    		<artifact name="wookie" type="pom" ext="pom"/>
+    		<artifacts pattern="${dist.dir}/${ant.project.name}-${version}.jar"/>
     	</ivy:publish>
         <echo message="project ${ant.project.name} published locally with version ${version}" />
     </target>
