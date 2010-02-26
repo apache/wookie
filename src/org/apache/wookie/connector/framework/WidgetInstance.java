@@ -72,4 +72,8 @@ public class WidgetInstance {
   public void setMaximize(String maximize) {
     this.maximize = maximize;
   }
+  
+  public boolean isMaximizable() {
+    return this.maximize.toLowerCase().equals("true");
+  }
 }
