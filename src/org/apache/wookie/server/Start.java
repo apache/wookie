@@ -36,10 +36,13 @@ public class Start {
 	  boolean initDB = true;
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];
+			System.out.println("Runtime argmuent: " + arg);
 			if (arg.startsWith("port=")) {
 			  port = new Integer(arg.substring(5));
 			} else if (arg.startsWith("initDB=")) {
 			  initDB = !arg.substring(7).toLowerCase().equals("false");
+			} else {
+			  System.out.println("argument UNRECOGNISED - ignoring");
 			}
 		}
 		
