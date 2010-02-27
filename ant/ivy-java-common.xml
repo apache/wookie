@@ -106,12 +106,12 @@
     <target name="post-compile-core" description="Run after compile-core. Intended to be overridden if your project needs any post compile processing"/>
     	
     <target name="run" depends="version, compile-core" description="--> compile and run the project">
-        <java classname="${main.class.name}"
+		<java classname="${main.class.name}"
         	classpathref="run.path.id"
             fork="true"
             failonerror="true">
             <jvmarg line="${jvmargs}"/>
-        	<arg value="${run.args}"/>
+        	<arg line="${run.args}"/>
         </java>    	
     </target>
     
