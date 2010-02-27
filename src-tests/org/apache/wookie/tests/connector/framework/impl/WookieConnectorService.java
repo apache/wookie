@@ -13,7 +13,6 @@
  */
 package org.apache.wookie.tests.connector.framework.impl;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -28,11 +27,11 @@ import org.junit.Test;
 
 public class WookieConnectorService {
 
-  private static MockWookieConnectorService service;
+  private static TestWookieConnectorService service;
 
   @BeforeClass
-  public static void setup() throws WookieConnectorException {
-    service = MockWookieConnectorService.getInstance();
+  public static void setup() throws Exception {
+    service = TestWookieConnectorService.getInstance();
   }
   
   @Test
