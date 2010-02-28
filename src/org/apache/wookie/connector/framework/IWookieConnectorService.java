@@ -56,7 +56,7 @@ public interface IWookieConnectorService {
   public User getUser(String login);
 
   /**
-   * Get or create an instance of a widget.
+   * Get or create an instance of a widget. The current user will be added as a participant.
    * 
    * @param widget
    * @return the ID of the widget instance
@@ -65,6 +65,16 @@ public interface IWookieConnectorService {
    */
   public WidgetInstance getOrCreateInstance(Widget widget) throws IOException,
       WookieConnectorException;
+  
+  /**
+   * Add a participant to a widget.
+   * 
+   * @param instance the Widget Instance to add the participant to
+   * @param user the user to add as a participant
+   * 
+   * @throws WookieConnectorexception
+   */
+  public void addParticipant(WidgetInstance widget, User user) throws WookieConnectorException;
   
   /**
    * Get a set of all the available widgets in the server. If there is an error

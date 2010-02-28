@@ -65,5 +65,14 @@ public class User {
    */
   public void setScreenName(String screenName) {
     this.screenName = screenName;
+  }
+
+  /**
+   * Get the URL for a thumbnail representing this user.
+   * @return
+   */
+  public String getThumbnailUrl() {
+    // FIXME: manage user thumbnails
+    return "http://fixme.org/thumbnail";
   } 
 }

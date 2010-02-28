@@ -85,7 +85,7 @@ public class Widget {
   public WidgetInstance addInstance(Document xml) {
     Element rootEl = xml.getDocumentElement();
     String url = rootEl.getElementsByTagName("url").item(0).getTextContent();
-    String id = rootEl.getElementsByTagName("identifier").item(0).getTextContent();
+    String id = getIdentifier();
     String title = rootEl.getElementsByTagName("title").item(0).getTextContent();
     String height = rootEl.getElementsByTagName("height").item(0).getTextContent();
     String width = rootEl.getElementsByTagName("width").item(0).getTextContent();
