@@ -57,21 +57,16 @@
   <p>Remember, not all widgets are designed to be multi-user and thus you may not see any
   interaction between the two widget instances.</p>
   
-  <h1>IMPORTANT NOTE</h1>
-  
-  <p>The code for this page is currently in development and at the time of writing both
-  widgets instances are owned by the same user.</p>
-  
   <table>
       <tr>
         <td>
-          <h2>Widget for user Test User</h2>
-		  <iframe width="<%= request.getAttribute("widgetWidth") %>" height="<%= request.getAttribute("widgetHeight") %>" src="<%= request.getAttribute("widgetURL") %>?idkey=<%= request.getParameter("idkey") %>&proxy=<%=request.getAttribute("proxy")%>">
+          <h2>Widget for first test user</h2>
+		  <iframe width="<%= request.getAttribute("widgetWidth") %>" height="<%= request.getAttribute("widgetHeight") %>" src="<%= request.getAttribute("firstWidgetURL") %>?idkey=<%= request.getParameter("idkey") %>&proxy=<%=request.getAttribute("proxy")%>">
 		  </iframe>
 		</td>
         <td>
-          <h2>Widget for user Test User</h2>
-		  <iframe width="<%= request.getAttribute("widgetWidth") %>" height="<%= request.getAttribute("widgetHeight") %>" src="<%= request.getAttribute("widgetURL") %>?idkey=<%= request.getParameter("idkey") %>&proxy=<%=request.getAttribute("proxy")%>">
+          <h2>Widget for second test user</h2>
+		  <iframe width="<%= request.getAttribute("widgetWidth") %>" height="<%= request.getAttribute("widgetHeight") %>" src="<%= request.getAttribute("secondWidgetURL") %>?idkey=<%= request.getParameter("idkey") %>&proxy=<%=request.getAttribute("proxy")%>">
 		  </iframe>
         </td>
       </tr>
