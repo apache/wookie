@@ -33,7 +33,7 @@ import org.apache.wookie.connector.framework.WookieConnectorException;
 public class TestWookieConnectorService extends AbstractWookieConnectorService {
 
   private static TestWookieConnectorService instance;
-  User testUser = new User("test", "test_user");
+  User testUser = new User("testuser", "Test User");
   
   private TestWookieConnectorService(String url, String apiKey,
       String sharedDataKey) throws WookieConnectorException {
