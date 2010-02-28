@@ -49,10 +49,20 @@
 <!--  END HEADER --></div>
 
 <div id="content">
-
-  <iframe width="<%= request.getAttribute("widgetWidth") %>" height="<%= request.getAttribute("widgetHeight") %>" src="<%= request.getAttribute("widgetURL") %>?idkey=<%= request.getParameter("idkey") %>&proxy=<%=request.getAttribute("proxy")%>">
-  </iframe>
-
+  <table>
+      <tr>
+        <td>
+          <h2>Widget for user A</h2>
+		  <iframe width="<%= request.getAttribute("widgetWidth") %>" height="<%= request.getAttribute("widgetHeight") %>" src="<%= request.getAttribute("widgetURL") %>?idkey=<%= request.getParameter("idkey") %>&proxy=<%=request.getAttribute("proxy")%>">
+		  </iframe>
+		</td>
+        <td>
+          <h2>Widget for user B</h2>
+		  <iframe width="<%= request.getAttribute("widgetWidth") %>" height="<%= request.getAttribute("widgetHeight") %>" src="<%= request.getAttribute("widgetURL") %>?idkey=<%= request.getParameter("idkey") %>&proxy=<%=request.getAttribute("proxy")%>">
+		  </iframe>
+        </td>>
+      </tr>
+  </table>
 </div>
  
 <div id="footer">
