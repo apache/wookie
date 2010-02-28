@@ -87,5 +87,11 @@ public interface IWookieConnectorService {
    */
   public HashMap<String, Widget> getAvailableWidgets()
       throws WookieConnectorException;
+  /**
+   * Get all the instances of widgets that are currently managed by this service.
+   *
+   * @return
+   */
+  public WidgetInstances getInstances();
 
 }

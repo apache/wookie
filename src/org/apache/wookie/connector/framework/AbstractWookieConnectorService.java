@@ -254,6 +254,10 @@ public abstract class AbstractWookieConnectorService implements
     }
     return widgets;
   }
+  
+  public WidgetInstances getInstances() {
+    return instances;
+  }
 
   
 }
