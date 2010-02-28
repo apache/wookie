@@ -49,6 +49,10 @@
 <!--  END HEADER --></div>
 
 <div id="content">
+  <p>Below are two instances of the widget. They are both instantiated with anonymous users, 
+  a well implemented widget has sensible fallback behaviour for unknown users. This page
+  allows you to both see the widgets in operation and, during development, you can test
+  them here too.</p>
   <table>
       <tr>
         <td>
