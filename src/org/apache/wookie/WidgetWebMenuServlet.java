@@ -65,7 +65,9 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 	private static final String fInstantiateWidgetsPage = "/webmenu/instantiate.jsp"; //$NON-NLS-1$
 	private static final String fRequestApiKeyPage = "/webmenu/requestapikey.jsp"; //$NON-NLS-1$
 
-  private WookieConnectorService connectorService;
+  private WookieConnectorService testUserConnectorService;
+
+  private WookieConnectorService secondTestUserConnectorService;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(true);
@@ -108,10 +110,12 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
           String idKey = request.getParameter("idkey");
           try {
             String guid = WidgetInstance.findByIdKey(idKey).getWidget().getGuid();
-            org.apache.wookie.connector.framework.WidgetInstance instance = getConnectorService(request).getOrCreateInstance(guid);
-            request.setAttribute("widgetURL", instance.getUrl());
-            request.setAttribute("widgetHeight", instance.getHeight());
-            request.setAttribute("widgetWidth", instance.getWidth());
+            org.apache.wookie.connector.framework.WidgetInstance instanceOne = getFirstTestUserConnectorService(request).getOrCreateInstance(guid);
+            org.apache.wookie.connector.framework.WidgetInstance instanceTwo = getSecondTestUserConnectorService(request).getOrCreateInstance(guid);
+            request.setAttribute("firstWidgetURL", instanceOne.getUrl());
+            request.setAttribute("secondWidgetURL", instanceTwo.getUrl());
+            request.setAttribute("widgetHeight", instanceOne.getHeight());
+            request.setAttribute("widgetWidth", instanceOne.getWidth());
             request.setAttribute("proxy", WidgetInstancesController.checkProxy(request));
             doForward(request, response, fDemoWidgetPage);
           } catch (WookieConnectorException e) {
@@ -141,21 +145,46 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 		}
 	}
 
-
-	private AbstractWookieConnectorService getConnectorService(HttpServletRequest request) throws WookieConnectorException {
-	  if (connectorService == null) {
+	/**
+	 * Get a connector service for the first test user.
+	 * 
+	 * @param request
+	 * @return
+	 * @throws WookieConnectorException
+	 */
+	private AbstractWookieConnectorService getFirstTestUserConnectorService(HttpServletRequest request) throws WookieConnectorException {
+	  if (testUserConnectorService == null) {
       StringBuilder sbUrl = new StringBuilder(request.getScheme());
       sbUrl.append("://");
       sbUrl.append(request.getServerName());
       sbUrl.append(":");
       sbUrl.append(request.getServerPort());
       sbUrl.append(request.getContextPath());
-      connectorService = new WookieConnectorService(sbUrl.toString(), "TEST", "myshareddata");
+      testUserConnectorService = new WookieConnectorService(sbUrl.toString(), "TEST", "myshareddata", "testuser");
 	  }
-	  return connectorService;
+	  return testUserConnectorService;
   }
 
-
+	/**
+	 * Get a connector service for the second test user.
+	 * 
+	 * @param request
+	 * @return
+	 * @throws WookieConnectorException
+	 */
+  private AbstractWookieConnectorService getSecondTestUserConnectorService(HttpServletRequest request) throws WookieConnectorException {
+    if (secondTestUserConnectorService == null) {
+      StringBuilder sbUrl = new StringBuilder(request.getScheme());
+      sbUrl.append("://");
+      sbUrl.append(request.getServerName());
+      sbUrl.append(":");
+      sbUrl.append(request.getServerPort());
+      sbUrl.append(request.getContextPath());
+      secondTestUserConnectorService = new WookieConnectorService(sbUrl.toString(), "TEST", "myshareddata", "testuser2");
+    }
+    return secondTestUserConnectorService;
+  }
+  
   /*
 	 * (non-Java-doc)
 	 *
