@@ -53,6 +53,9 @@
   a well implemented widget has sensible fallback behaviour for unknown users. This page
   allows you to both see the widgets in operation and, during development, you can test
   them here too.</p>
+  
+  <p>Remember, not all widgets are designed to be multi-user and thus you may not see any
+  interaction between the two widget instances.</p>
   <table>
       <tr>
         <td>
@@ -64,7 +67,7 @@
           <h2>Widget for user B</h2>
 		  <iframe width="<%= request.getAttribute("widgetWidth") %>" height="<%= request.getAttribute("widgetHeight") %>" src="<%= request.getAttribute("widgetURL") %>?idkey=<%= request.getParameter("idkey") %>&proxy=<%=request.getAttribute("proxy")%>">
 		  </iframe>
-        </td>>
+        </td>
       </tr>
   </table>
 </div>
