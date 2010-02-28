@@ -61,6 +61,11 @@ public abstract class AbstractWookieConnectorService implements
    */
   public WidgetInstance getOrCreateInstance(Widget widget) throws IOException,
       WookieConnectorException {
+    return getOrCreateInstance(widget.identifier);
+  }
+      
+  public WidgetInstance getOrCreateInstance(String guid) throws IOException,
+      WookieConnectorException {
     URL url;
     WidgetInstance instance;
     try {
@@ -71,7 +76,7 @@ public abstract class AbstractWookieConnectorService implements
       postdata.append("&userid=");
       postdata.append(URLEncoder.encode(getCurrentUser().getLoginName(), "UTF-8"));
       postdata.append("&widgetid=");
-      postdata.append(URLEncoder.encode(widget.getIdentifier(), "UTF-8"));
+      postdata.append(URLEncoder.encode(guid, "UTF-8"));
       
       logger.debug("Makeing Wookie REST query using: " + postdata);
       
@@ -86,7 +91,7 @@ public abstract class AbstractWookieConnectorService implements
 
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       DocumentBuilder db = dbf.newDocumentBuilder();
-      instance = widget.addInstance(db.parse(is));
+      instance = parseInstance(guid, db.parse(is));
       
       instances.put(instance);
 
@@ -106,6 +111,30 @@ public abstract class AbstractWookieConnectorService implements
     return instance;
   }
 
+  /**
+   * Parse an XML document returned from the Wookie server that describes a widget instance.
+   * 
+   * @param widgetId the identifier of the widget this document represents
+   * @param xml description of the instance as returned by the widget server when the widget was instantiated.
+   * 
+   * @return the identifier for this instance
+   */
+  public WidgetInstance parseInstance(String widgetId, Document xml) {
+    Element rootEl = xml.getDocumentElement();
+    String url = rootEl.getElementsByTagName("url").item(0).getTextContent();
+    String title = rootEl.getElementsByTagName("title").item(0).getTextContent();
+    String height = rootEl.getElementsByTagName("height").item(0).getTextContent();
+    String width = rootEl.getElementsByTagName("width").item(0).getTextContent();
+    String maximize = rootEl.getElementsByTagName("maximize").item(0).getTextContent();
+    WidgetInstance instance = new WidgetInstance(url, widgetId, title, height, width, maximize);
+    return instance;
+  }
+
+  /**
+   * @refactor At time of writing the REST API for adding a participant is broken so we are
+   * using the non-REST approach. The code for REST API is commented out and should be used
+   * in the future.
+   */
   public void addParticipant(WidgetInstance widget, User user) throws WookieConnectorException {
     StringBuilder postdata;
     try {

@@ -17,11 +17,6 @@ package org.apache.wookie.connector.framework;
  * under the License.                                                *
  */
 import java.net.URL;
-import java.util.Collection;
-import java.util.HashMap;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * A client side representation of a widget. 
@@ -33,7 +28,6 @@ public class Widget {
   String title;
   String description;
   URL icon;
-  HashMap<String, WidgetInstance> instances = new HashMap<String, WidgetInstance>();
 
   public Widget(String identifier, String title, String description, URL icon) {
     this.identifier = identifier;
@@ -74,33 +68,5 @@ public class Widget {
    */
   public String getDescription() {
     return description;
-  }
-
-  /**
-   * Record an instance of the given widget.
-   * 
-   * @param xml description of the instance as returned by the widget server when the widget was instantiated.
-   * @return the identifier for this instance
-   */
-  public WidgetInstance addInstance(Document xml) {
-    Element rootEl = xml.getDocumentElement();
-    String url = rootEl.getElementsByTagName("url").item(0).getTextContent();
-    String id = getIdentifier();
-    String title = rootEl.getElementsByTagName("title").item(0).getTextContent();
-    String height = rootEl.getElementsByTagName("height").item(0).getTextContent();
-    String width = rootEl.getElementsByTagName("width").item(0).getTextContent();
-    String maximize = rootEl.getElementsByTagName("maximize").item(0).getTextContent();
-    WidgetInstance instance = new WidgetInstance(url, id, title, height, width, maximize);
-    instances.put(id, instance);
-    
-    return instance;
-  }
-
-  /**
-   * Get all instances of a widget available in this server.
-   * @return
-   */
-  public Collection<WidgetInstance> getInstances() {
-    return instances.values();
   }
 }

@@ -59,11 +59,22 @@ public interface IWookieConnectorService {
    * Get or create an instance of a widget. The current user will be added as a participant.
    * 
    * @param widget
-   * @return the ID of the widget instance
+   * @return the widget instance
    * @throws IOException
    * @throws SimalRepositoryException
    */
   public WidgetInstance getOrCreateInstance(Widget widget) throws IOException,
+      WookieConnectorException;
+
+  /**
+   * Get or create an instance of a widget. The current user will be added as a participant.
+   * 
+   * @param guid global identifier for widget to be instantiated
+   * @return the widget instance
+   * @throws IOException
+   * @throws SimalRepositoryException
+   */
+  public WidgetInstance getOrCreateInstance(String guid) throws IOException,
       WookieConnectorException;
   
   /**
