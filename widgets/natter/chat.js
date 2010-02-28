@@ -50,7 +50,6 @@ function init() {
     wave.setParticipantCallback(refreshMemberList);
     Widget.onLocked = handleLocked;
     Widget.onUnlocked = handleUnlocked;
-    wave.getState().submitDelta({"test":"testvalue"});
 	if(!isActive){
 		isActive = true;
         if (wave.getViewer() != null){
