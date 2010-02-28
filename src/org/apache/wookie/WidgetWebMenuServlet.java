@@ -15,6 +15,7 @@
 package org.apache.wookie;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Hashtable;
 
 import javax.servlet.RequestDispatcher;
@@ -29,6 +30,9 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.connector.framework.AbstractWookieConnectorService;
+import org.apache.wookie.connector.framework.WookieConnectorException;
+import org.apache.wookie.connector.framework.WookieConnectorService;
 import org.apache.wookie.controller.WidgetInstancesController;
 import org.apache.wookie.helpers.WidgetInstanceFactory;
 import org.apache.wookie.helpers.WidgetKeyManager;
@@ -60,6 +64,8 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 	private static final String fDemoWidgetPage = "/webmenu/demoWidget.jsp"; //$NON-NLS-1$
 	private static final String fInstantiateWidgetsPage = "/webmenu/instantiate.jsp"; //$NON-NLS-1$
 	private static final String fRequestApiKeyPage = "/webmenu/requestapikey.jsp"; //$NON-NLS-1$
+
+  private WookieConnectorService connectorService;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(true);
@@ -99,13 +105,19 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 					break;
 				}
 				case DEMO_WIDGET:{
-					String key = request.getParameter("idkey");
-					WidgetInstance widget = WidgetInstance.findByIdKey(key);
-					request.setAttribute("widgetURL", widget.getWidget().getUrl());
-					request.setAttribute("widgetHeight", widget.getWidget().getHeight());
-					request.setAttribute("widgetWidth", widget.getWidget().getWidth());
-					request.setAttribute("proxy", WidgetInstancesController.checkProxy(request));
-					doForward(request, response, fDemoWidgetPage);
+          String idKey = request.getParameter("idkey");
+          try {
+            String guid = WidgetInstance.findByIdKey(idKey).getWidget().getGuid();
+            org.apache.wookie.connector.framework.WidgetInstance instance = getConnectorService(request).getOrCreateInstance(guid);
+            request.setAttribute("widgetURL", instance.getUrl());
+            request.setAttribute("widgetHeight", instance.getHeight());
+            request.setAttribute("widgetWidth", instance.getWidth());
+            request.setAttribute("proxy", WidgetInstancesController.checkProxy(request));
+            doForward(request, response, fDemoWidgetPage);
+          } catch (WookieConnectorException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
 					break;
 				}
 				case INSTANTIATE: {
@@ -130,7 +142,21 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 	}
 
 
-	/*
+	private AbstractWookieConnectorService getConnectorService(HttpServletRequest request) throws WookieConnectorException {
+	  if (connectorService == null) {
+      StringBuilder sbUrl = new StringBuilder(request.getScheme());
+      sbUrl.append("://");
+      sbUrl.append(request.getServerName());
+      sbUrl.append(":");
+      sbUrl.append(request.getServerPort());
+      sbUrl.append(request.getContextPath());
+      connectorService = new WookieConnectorService(sbUrl.toString(), "TEST", "myshareddata");
+	  }
+	  return connectorService;
+  }
+
+
+  /*
 	 * (non-Java-doc)
 	 *
 	 * @see javax.servlet.http.HttpServlet#doPost(HttpServletRequest request,
