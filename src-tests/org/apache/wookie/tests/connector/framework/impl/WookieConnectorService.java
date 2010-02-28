@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.apache.wookie.connector.framework.User;
 import org.apache.wookie.connector.framework.Widget;
 import org.apache.wookie.connector.framework.WidgetInstance;
 import org.apache.wookie.connector.framework.WookieConnectorException;
@@ -41,7 +42,7 @@ public class WookieConnectorService {
   
   @Test
   public void getUser() {
-    assertNotNull("Test user is null", service.getUser("test"));
+    assertNotNull("Test user is null", service.getUser("testuser"));
   }
   
   @Test
@@ -56,5 +57,19 @@ public class WookieConnectorService {
     HashMap<String, Widget> widgets = service.getAvailableWidgets();
     WidgetInstance instance = service.getOrCreateInstance((Widget)widgets.values().toArray()[0]);
     assertNotNull("Retrieved widget instance is null", instance);
+  }
+  
+  @Test
+  public void addParticipant() throws WookieConnectorException, IOException {
+	HashMap<String, Widget> widgets = service.getAvailableWidgets();
+	WidgetInstance instance = service.getOrCreateInstance((Widget)widgets.values().toArray()[0]);
+    assertNotNull("Retrieved widget instance is null", instance);
+    
+	User user = new User("test1","test user 1");
+    service.addParticipant(instance, user);
+    User[] users = service.getUsers(instance);
+    assertTrue("Wrong number of users returned",users.length==2);
+    assertTrue("Wrong user returned", users[0].getLoginName().equals("testuser"));
+    assertTrue("Wrong user returned", users[1].getLoginName().equals("test1"));
   }
 }

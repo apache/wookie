@@ -106,14 +106,7 @@ public abstract class AbstractWookieConnectorService implements
     return instance;
   }
 
-  /**
-   * @refactor At time of writing the REST API for adding a participant is broken so we are
-   * using the non-REST approach. The code for REST API is commented out and should be used
-   * in the future.
-   */
   public void addParticipant(WidgetInstance widget, User user) throws WookieConnectorException {
-    /* 
-     * REST API approach - REST API is broken at time of writing
     StringBuilder postdata;
     try {
       postdata = new StringBuilder("api_key=");
@@ -137,18 +130,12 @@ public abstract class AbstractWookieConnectorService implements
     URL url = null;
     try {
       url = new URL(conn.getURL() + "/participants");
-      URLConnection conn = url.openConnection();
+      HttpURLConnection conn = (HttpURLConnection)url.openConnection();
       conn.setDoOutput(true);
       OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
       wr.write(postdata.toString());
       wr.flush();
-  
-      InputStream is = conn.getInputStream();
-  
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      DocumentBuilder db;
-      db = dbf.newDocumentBuilder();
-      Document xml = db.parse(is);
+      if (conn.getResponseCode() > 201) throw new IOException(conn.getResponseMessage());
     } catch (MalformedURLException e) {
       throw new WookieConnectorException("Participants rest URL is incorrect: " + url, e);
     } catch (IOException e) {
@@ -158,47 +145,7 @@ public abstract class AbstractWookieConnectorService implements
       sb.append(" data: ");
       sb.append(postdata);
       throw new WookieConnectorException(sb.toString(), e);
-    } catch (ParserConfigurationException e) {
-      throw new RuntimeException("Unable to configure XML parser", e);
-    } catch (SAXException e) {
-      throw new RuntimeException("Problem parsing XML from Wookie Server", e);
-    }
-    */
-    
-    StringBuilder url;
-    try {
-      url = new StringBuilder(conn.getURL());
-      url.append("/WidgetServiceServlet?");
-      url.append("requestid=addparticipant");
-      url.append("&api_key=");
-      url.append(URLEncoder.encode(getConnection().getApiKey(), "UTF-8"));
-      url.append("&shareddatakey=");
-      url.append(URLEncoder.encode(getConnection().getSharedDataKey(), "UTF-8"));
-      url.append("&userid=");
-      url.append(URLEncoder.encode(getCurrentUser().getLoginName(), "UTF-8"));
-      url.append("&widgetid=");
-      url.append(URLEncoder.encode(widget.getId(), "UTF-8"));
-      url.append("&participant_id=");
-      url.append(URLEncoder.encode(user.getLoginName(), "UTF-8"));
-      url.append("&participant_display_name=");
-      url.append(URLEncoder.encode(user.getScreenName(), "UTF-8"));
-      url.append("&participant_thumbnail_url=");
-      url.append(URLEncoder.encode(user.getThumbnailUrl(), "UTF-8"));
-    } catch (UnsupportedEncodingException e) {
-      throw new WookieConnectorException("Must support UTF-8 encoding", e);
-    }
-    
-    try {
-      HttpURLConnection conn = (HttpURLConnection)new URL(url.toString()).openConnection();
-      conn.disconnect();
-    } catch (MalformedURLException e) {
-      throw new WookieConnectorException("Participants rest URL is incorrect: " + url, e);
-    } catch (IOException e) {
-      StringBuilder sb = new StringBuilder("Problem adding a participant. ");
-      sb.append("URL: ");
-      sb.append(url);
-      throw new WookieConnectorException(sb.toString(), e);
-    }
+    } 
   }
   
   /**
@@ -257,6 +204,65 @@ public abstract class AbstractWookieConnectorService implements
   
   public WidgetInstances getInstances() {
     return instances;
+  }
+  
+  /**
+   * Get the array of users for a widget instance
+   * @param instance
+   * @return an array of users
+   * @throws WookieConnectorException
+   */
+  public User[] getUsers(WidgetInstance instance) throws WookieConnectorException{
+	    String queryString;
+	    try {
+	    	queryString = new String("?api_key=");
+	    	queryString+=(URLEncoder.encode(getConnection().getApiKey(), "UTF-8"));
+	    	queryString+=("&shareddatakey=");
+	    	queryString+=(URLEncoder.encode(getConnection().getSharedDataKey(), "UTF-8"));
+	    	queryString+=("&userid=");
+	    	queryString+=(URLEncoder.encode(getCurrentUser().getLoginName(), "UTF-8"));
+	    	queryString+=("&widgetid=");
+	    	queryString+=(URLEncoder.encode(instance.getId(), "UTF-8"));
+	    } catch (UnsupportedEncodingException e) {
+	      throw new WookieConnectorException("Must support UTF-8 encoding", e);
+	    }
+	    
+	    URL url = null;
+	    try {
+	      url = new URL(conn.getURL() + "/participants"+queryString);
+	      HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+	      InputStream is = conn.getInputStream();
+	      if (conn.getResponseCode() > 200) throw new IOException(conn.getResponseMessage());
+	      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+	      DocumentBuilder db = dbf.newDocumentBuilder();
+	      Document widgetsDoc = db.parse(is);
+	      Element root = widgetsDoc.getDocumentElement();
+	      NodeList participantsList = root.getElementsByTagName("participant");
+	      if (participantsList == null || participantsList.getLength() == 0) return new User[0];
+	      User[] users = new User[participantsList.getLength()];
+	      for (int idx = 0; idx < participantsList.getLength(); idx = idx + 1) {
+	        Element participantEl = (Element) participantsList.item(idx);
+	        String id = participantEl.getAttribute("id");
+	        String name = participantEl.getAttribute("display_name");
+	        //FIXME implement: String thumbnail = participantEl.getAttribute("thumbnail_url");
+	        User user = new User(id,name);
+	        users[idx] = user;
+	      }
+	      return users;
+	    } catch (MalformedURLException e) {
+	      throw new WookieConnectorException("Participants rest URL is incorrect: " + url, e);
+	    } catch (IOException e) {
+	      StringBuilder sb = new StringBuilder("Problem getting participants. ");
+	      sb.append("URL: ");
+	      sb.append(url);
+	      sb.append(" data: ");
+	      sb.append(queryString);
+	      throw new WookieConnectorException(sb.toString(), e);
+	    } catch (ParserConfigurationException e) {
+		      throw new WookieConnectorException("Problem parsing data: " + url, e);
+		} catch (SAXException e) {
+		      throw new WookieConnectorException("Problem parsing data: " + url, e);
+		} 
   }
 
   
