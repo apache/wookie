@@ -19,25 +19,42 @@ package org.apache.wookie.connector.framework;
  */
 public class WookieConnectorService extends AbstractWookieConnectorService {
   User currentUser;
-  
-  public WookieConnectorService(String url, String apiKey, String sharedDataKey) throws WookieConnectorException {
+  String userLogin;
+ 
+  /**
+   * Create a connector service used locally within Wookie.
+   * Since the Wookie server does not currently support multiple users we provide
+   * a userLogin to allows us to simulate multiple users during widget demonstration.
+   * 
+   * @param url
+   * @param apiKey
+   * @param sharedDataKey
+   * @param userLogin - the user login to use for this connection
+   * @throws WookieConnectorException
+   */
+  public WookieConnectorService(String url, String apiKey, String sharedDataKey, String userLogin) throws WookieConnectorException {
     setConnection(new WookieServerConnection(url, apiKey, sharedDataKey));
+    this.userLogin = userLogin;
+    currentUser = getUser(userLogin);
   }
   
   public User getCurrentUser() {
-    if (currentUser == null) {
-      currentUser = getTestUser();
-    }
     return currentUser;
   }
 
-  private User getTestUser() {
-    return new User("testuser", "Test User");
+  private User getFirstTestUser() {
+    return new User("testuser", "First Test User");
+  }
+
+  private User getSecondTestUser() {
+    return new User("testuser2", "Second Test User");
   }
   
   public User getUser(String login) {
     if (login.toLowerCase().equals("testuser")) {
-      return getCurrentUser();
+      return getFirstTestUser();
+    } else if (login.toLowerCase().equals("testuser2")) {
+      return getSecondTestUser();
     }
     return null;
   }
