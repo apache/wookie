@@ -47,11 +47,11 @@ public abstract class Controller extends HttpServlet{
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException {
-		String resource_id = locateRESTname(request);
+		String resourceId = getResourceId(request);
 		// If the resource identifier is not null, show otherwise index
-		if (resource_id != null && resource_id.length() > 0) {
+		if (resourceId != null && resourceId.length() > 0) {
 			try {
-				show(resource_id, request, response);
+				show(resourceId, request, response);
 				response.setStatus(HttpServletResponse.SC_OK);
 			} catch (ResourceNotFoundException e) {
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -74,9 +74,9 @@ public abstract class Controller extends HttpServlet{
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String id = locateRESTname(request);
+		String resourceId = getResourceId(request);
 		try {
-			remove(id,request);
+			remove(resourceId,request);
 			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (ResourceNotFoundException e) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -93,9 +93,9 @@ public abstract class Controller extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String name = locateRESTname(request);
+		String resourceId = getResourceId(request);
 		try {
-			if (create(name, request)){
+			if (create(resourceId, request)){
 				response.setStatus(HttpServletResponse.SC_CREATED);
 			} else {
 				response.setStatus(HttpServletResponse.SC_OK);				
@@ -115,9 +115,9 @@ public abstract class Controller extends HttpServlet{
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String id = locateRESTname(request);
+		String resourceId = getResourceId(request);
 		try {
-			update(id,request);
+			update(resourceId,request);
 			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (ResourceNotFoundException e) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -136,7 +136,7 @@ public abstract class Controller extends HttpServlet{
 	 * @param request
 	 * @param response
 	 */
-	protected void show(String resource_id, HttpServletRequest request, HttpServletResponse response) throws ResourceNotFoundException, UnauthorizedAccessException,IOException{
+	protected void show(String resourceId, HttpServletRequest request, HttpServletResponse response) throws ResourceNotFoundException, UnauthorizedAccessException,IOException{
 	}
 
 	/**
@@ -155,7 +155,7 @@ public abstract class Controller extends HttpServlet{
 	 @return true if the resource was successfully created
 	 * @throws ResourceDuplicationException
 	 */
-	protected boolean create(String resource_id, HttpServletRequest request) throws ResourceDuplicationException, InvalidParametersException, UnauthorizedAccessException{return false;};
+	protected boolean create(String resourceId, HttpServletRequest request) throws ResourceDuplicationException, InvalidParametersException, UnauthorizedAccessException{return false;};
 	
 	/**
 	 * Delete a resource
@@ -163,7 +163,7 @@ public abstract class Controller extends HttpServlet{
 	 * @return true if the resource was successfully deleted
 	 * @throws ResourceNotFoundException
 	 */
-	protected boolean remove(String resource_id, HttpServletRequest request) throws ResourceNotFoundException,UnauthorizedAccessException,InvalidParametersException{return false;};
+	protected boolean remove(String resourceId, HttpServletRequest request) throws ResourceNotFoundException,UnauthorizedAccessException,InvalidParametersException{return false;};
 	
 	/**
 	 * Update a resource
@@ -171,7 +171,7 @@ public abstract class Controller extends HttpServlet{
 	 * @param request
 	 * @throws ResourceNotFoundException
 	 */
-	protected void update(String resource_id, HttpServletRequest request) throws ResourceNotFoundException,InvalidParametersException,UnauthorizedAccessException{};
+	protected void update(String resourceId, HttpServletRequest request) throws ResourceNotFoundException,InvalidParametersException,UnauthorizedAccessException{};
 	
 	// Utilities
 
@@ -181,7 +181,7 @@ public abstract class Controller extends HttpServlet{
 	 * @param the request
 	 * @return the resource name
 	 */
-	public static String locateRESTname(HttpServletRequest request) {
+	public static String getResourceId(HttpServletRequest request) {
 		String path = request.getPathInfo(); // may be null, plain name or name plus
 		// params
 		if (path == null) {

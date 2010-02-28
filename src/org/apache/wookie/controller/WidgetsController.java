@@ -66,13 +66,13 @@ public class WidgetsController extends Controller{
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.controller.Controller#show(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	protected void show(String id, HttpServletRequest request,
+	protected void show(String resourceId, HttpServletRequest request,
 			HttpServletResponse response) throws ResourceNotFoundException, IOException {
-		if (!isAnInteger(id)){
-			index(id, request, response);
+		if (!isAnInteger(resourceId)){
+			index(resourceId, request, response);
 			return;
 		}
-		Widget widget = Widget.findById(Integer.valueOf(id));
+		Widget widget = Widget.findById(Integer.valueOf(resourceId));
 		if (widget == null) throw new ResourceNotFoundException();
 		returnXml(WidgetHelper.createXMLWidgetsDocument(widget, getLocalPath(request), getLocales(request)),response);
 	}	
@@ -88,13 +88,13 @@ public class WidgetsController extends Controller{
 
 	/**
 	 * Returns a list of widgets
-	 * @param type
+	 * @param resourceId
 	 * @param request
 	 * @param response
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	private void index(String type, HttpServletRequest request,
+	private void index(String resourceId, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		Widget widget = null;
 		Widget[] widgets;
@@ -103,9 +103,9 @@ public class WidgetsController extends Controller{
 		// If the request contains a String resource identifier
 		// such as "/chat", return all matching widgets
 		if (request.getParameter("all") != null
-				|| (type != null && !type.equals(""))) {
-			if (type != null && !type.equals("")) {
-				widgets = Widget.findByType(type);
+				|| (resourceId != null && !resourceId.equals(""))) {
+			if (resourceId != null && !resourceId.equals("")) {
+				widgets = Widget.findByType(resourceId);
 			} else {
 				widgets = Widget.findAll();
 			}

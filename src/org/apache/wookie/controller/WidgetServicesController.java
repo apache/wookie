@@ -54,8 +54,8 @@ public class WidgetServicesController extends Controller{
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.controller.Controller#show(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	protected void show(String id, HttpServletRequest request, HttpServletResponse response) throws ResourceNotFoundException, IOException{
-		WidgetService ws = getWidgetService(id);
+	protected void show(String resourceId, HttpServletRequest request, HttpServletResponse response) throws ResourceNotFoundException, IOException{
+		WidgetService ws = getWidgetService(resourceId);
 		returnXml(WidgetServiceHelper.createXMLWidgetServiceDocument(ws, getLocalPath(request),getLocales(request)), response);
 	}
 
@@ -156,16 +156,16 @@ public class WidgetServicesController extends Controller{
 	/**
 	 * Find a widget service matching the supplied parameter either as the
 	 * service name or service id
-	 * @param id
+	 * @param resourceId
 	 * @return
 	 */
-	private static WidgetService getWidgetService(String id) throws ResourceNotFoundException{
-		if (id == null) throw new ResourceNotFoundException();
+	private static WidgetService getWidgetService(String resourceId) throws ResourceNotFoundException{
+		if (resourceId == null) throw new ResourceNotFoundException();
 		WidgetService ws = null;
-		if (isAnInteger(id)){
-			ws = WidgetService.findById(Integer.valueOf(id));
+		if (isAnInteger(resourceId)){
+			ws = WidgetService.findById(Integer.valueOf(resourceId));
 		} else {
-			WidgetService[] wsa = WidgetService.findByValue("serviceName", id);
+			WidgetService[] wsa = WidgetService.findByValue("serviceName", resourceId);
 			if (wsa != null && wsa.length == 1) ws = wsa[0];
 		}
 		if (ws == null) throw new ResourceNotFoundException();
