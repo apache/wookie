@@ -29,34 +29,39 @@ public class WookieConnectorService extends AbstractWookieConnectorService {
    * @param url
    * @param apiKey
    * @param sharedDataKey
-   * @param userLogin - the user login to use for this connection
    * @throws WookieConnectorException
    */
-  public WookieConnectorService(String url, String apiKey, String sharedDataKey, String userLogin) throws WookieConnectorException {
+  public WookieConnectorService(String url, String apiKey, String sharedDataKey) throws WookieConnectorException {
     setConnection(new WookieServerConnection(url, apiKey, sharedDataKey));
-    this.userLogin = userLogin;
-    currentUser = getUser(userLogin);
   }
   
   public User getCurrentUser() {
     return currentUser;
   }
+  
+  public void setCurrentUser(User user) {
+    this.currentUser = user; 
+  }
 
+  public void setCurrentUser(String userId) {
+    setCurrentUser(this.getUser(userId));
+  }
+  
+  public User getUser(String userId) {
+    if (userId.toLowerCase().equals("testuser")) {
+      return getFirstTestUser();
+    } else if (userId.toLowerCase().equals("testuser2")) {
+      return getSecondTestUser();
+    }
+    return null;
+  }
+  
   private User getFirstTestUser() {
     return new User("testuser", "First Test User");
   }
 
   private User getSecondTestUser() {
     return new User("testuser2", "Second Test User");
-  }
-  
-  public User getUser(String login) {
-    if (login.toLowerCase().equals("testuser")) {
-      return getFirstTestUser();
-    } else if (login.toLowerCase().equals("testuser2")) {
-      return getSecondTestUser();
-    }
-    return null;
   }
   
 

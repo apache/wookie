@@ -51,9 +51,25 @@ public interface IWookieConnectorService {
   public User getCurrentUser();
 
   /**
-   * Retrieve the details of a specific user, identified by their login name.
+   * Set the current user.
+   * 
+   * @param user - the current user
    */
-  public User getUser(String login);
+  public void setCurrentUser(User user);
+
+  /**
+   * Set the current user.
+   * 
+   * @param userId - id of the current user. Usually this would be the login
+   * name of the user, but it need not be, it simply needs to be a unique identifier
+   * for theis user.
+   */
+  public void setCurrentUser(String userId);
+  
+  /**
+   * Retrieve the details of a specific user, identified by their userId.
+   */
+  public User getUser(String userId);
 
   /**
    * Get or create an instance of a widget. The current user will be added as a participant.

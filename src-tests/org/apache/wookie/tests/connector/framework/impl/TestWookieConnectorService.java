@@ -50,6 +50,18 @@ public class TestWookieConnectorService extends AbstractWookieConnectorService {
     }
     return null;
   }
+
+  public void setCurrentUser(User user) {
+    this.testUser = user;
+  }
+
+  public void setCurrentUser(String userId) {
+    if (userId.equals("testuser")) {
+      setCurrentUser(new User("testuser", "Test User"));
+    } else {
+      setCurrentUser((User)null);
+    }
+  }
   
   public static TestWookieConnectorService getInstance() throws WookieConnectorException, MalformedURLException, IOException {
     if (instance == null) {
