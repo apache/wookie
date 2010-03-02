@@ -64,29 +64,6 @@
     <target name="report" depends="resolve" description="--> generates a report of dependencies">
         <ivy:report todir="${build.dir}"/>
     </target>
-	
-    <target name="new-version">
-        <propertyfile file="${basedir}/version.properties">
-	        <entry  key="version" type="int" operation="+" default="0" />
-		</propertyfile>
-    </target>
-
-    <target name="check-version">
-    	<!-- test existence of version file -->
-    	<available file="${basedir}/version.properties" property="version.exists"/>
-    </target>
-
-    <target name="init-version" depends="check-version" unless="version.exists">
-    	<!-- init version file if it doesn't exist -->
-		<echo message="version=1" file="${basedir}/version.properties" />
-    </target>
-
-	<target name="version" depends="init-version">
-    	<!-- copy version file in classpath for later inclusion in jar -->
-        <mkdir dir="${project.build.classes.dir}"/>
-		<copy file="${basedir}/version.properties" tofile="${project.build.classes.dir}/${ant.project.name}.properties" overwrite="true" />
-        <property file="${project.build.classes.dir}/${ant.project.name}.properties" />
-    </target>
 
 	<target name="clean-local" depends="configure" description="cleans the local repository for the current module">
 	   <delete dir="${ivy.local.default.root}/${ant.project.name}"/>
@@ -104,8 +81,7 @@
         <delete includeemptydirs="true" dir="${dist.dir}"/>
     </target>
 
-    <target name="clean" depends="clean-build, clean-lib" description="--> clean the project and reset version number">
-      <delete file="${basedir}/version.properties"/>
+    <target name="clean" depends="clean-build, clean-lib" description="--> clean the project">
       <ivy:cleancache />
     </target>
 </project>
