@@ -1,0 +1,16 @@
+<ivy-module version="2.0">
+    <info organisation="org.apache.incubator" module="wookieJavaConnector" revision="0.1.0-SNAPSHOT" status="integration" publication="20100302211110"/>
+    
+    <configurations>
+      <conf name="deploy"/>
+	  <conf name="default" extends="deploy"/>
+	  <conf name="test" extends="default"/>
+	</configurations>
+    
+    <dependencies>
+        <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="deploy->default">
+        </dependency>
+        <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.5.2" conf="deploy->default">
+        </dependency> 
+    </dependencies>
+</ivy-module>
