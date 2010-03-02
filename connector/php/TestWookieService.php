@@ -29,7 +29,7 @@ $availableWidgets = $test->getAvailableWidgets();
 //print_r($availableWidgets);
 
 //create select menus
-
+echo '<pre>';
 echo '<form action="" method="GET">';
 echo '<select name="widget_id">';
 echo '<option value="">No widget selected</option>';
@@ -58,36 +58,39 @@ foreach($availableWidgets as $Widget) {
 		$sel = 'selected="selected"';
 	}
 	echo '<option value="'.$Widget->getIdentifier().'" '.$sel.'>'.$Widget->getTitle().'</option>';
-
 }
 
 echo '</select>';
-
 echo '<input type="submit" value="Select" />';
 echo '</form>';
 
 if($_GET['widget_id'] != '') {
+	//setup different userName for current user
+	$test->getUser()->setLoginName("demo_2");
 	$widget = $test->getOrCreateInstance($_GET['widget_id']);
 	echo '<iframe src="'.$widget->getUrl().'" width="'.$widget->getWidth().'" height="'.$widget->getHeight().'"></iframe><br />';
+	
+	//add participant
+	$testUser = new User('demo_2', 'demo_2');
+	$test->addParticipant($widget, $testUser);
+	print_r($test->getUsers($widget));
 }
 
 if($_GET['widget_id2'] != '') {
-
+	//setup different userName for current user
+	$test->getUser()->setLoginName("demo_3");
 	$widget2 = $test->getOrCreateInstance($_GET['widget_id2']);
 	echo '<iframe src="'.$widget2->getUrl().'" width="'.$widget2->getWidth().'" height="'.$widget2->getHeight().'"></iframe><br />';
+	
+	//add participant
+	$testUser = new User('demo_3', 'demo_3');
+	$test->addParticipant($widget2, $testUser);
+	print_r($test->getUsers($widget2));
 }
 
 //call WidgetInstances->get <-- after widgets has been initialized
-echo '<pre>';
+
 print_r($test->WidgetInstances->get());
 
 
-//add participant
-$testUser = new User('proov1', 'proov2');
-
-
-//NOTHING BELOW THIS LINE WORKS PROPERLY.
-//$test->addParticipant($widget, $testUser);
-
-//$test->getUsers($widget);
 ?>

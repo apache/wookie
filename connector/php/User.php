@@ -22,6 +22,7 @@
 class User {
   private $loginName = "UNKNOWN";
   private $screenName = "UNKNOWN";
+  private $thumbnailURL = "";
   
   /**
    * Create a new user.
@@ -29,9 +30,10 @@ class User {
    * @param loginName
    * @param screenName
    */
-  function __construct($loginName, $screenName) {
+  function __construct($loginName, $screenName, $thumbnail_url = null) {
     $this->setLoginName($loginName);
     $this->setScreenName($screenName);
+    $this->setThumbnailURL($thumbnail_url);
   }
 
   /**
@@ -76,7 +78,16 @@ class User {
   public function getThumbnailUrl() {
     // FIXME: manage user thumbnails
     return "http://fixme.org/thumbnail";
-  }   
+  }  
+
+  /**
+   * Set the URL for a thumbnail representing this user.
+   * @return
+   */
+  public function setThumbnailUrl($thumbnail_url) {
+    // FIXME: manage user thumbnails
+    $this->thumbnailURL = $thumbnail_url;
+  }    
 }
 
 ?>

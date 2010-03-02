@@ -21,13 +21,13 @@ require("WidgetInstances.php");
 require("Widget.php");
 require("WidgetInstance.php");
 require("User.php");
-require("xmlFunctions.php");
+require("HTTP_Response.php");
+
 
 class WookieConnectorService {
   private $conn;
   public  $WidgetInstances;
   private $user;
-  private $requestStatusCode;
   
   function __construct($url, $apiKey, $sharedDataKey, $loginName, $screenName = null) {
     $this->setConnection(new WookieServerConnection($url, $apiKey, $sharedDataKey));
@@ -59,29 +59,32 @@ class WookieConnectorService {
   }
   
   /* Do POST request
-  /* @return response XML */
+  /* @return new HTTP_Response instance */
   
   private function do_post_request($url, $data, $optional_headers = null)
   {
+	if(is_array($data)) {
+		 // convert variables array to string:
+		$_data = array();    
+		while(list($n,$v) = each($data)){
+			$_data[] = urlencode($n)."=".urlencode($v);
+		}    
+		$data = implode('&', $_data);
+	}
+	
      $params = array('http' => array(
                   'method' => 'POST',
                   'content' => $data
                ));
+	
      if ($optional_headers !== null) {
         $params['http']['header'] = $optional_headers;
      }
-     $ctx = stream_context_create($params);
-    // $fp = @file_get_contents($url, 'rb', false, $ctx);
+     $ctx = @stream_context_create($params);
+    // $fp = @@file_get_contents($url, 'rb', false, $ctx);
      $response = @file_get_contents($url, false, $ctx);
-     if ($response === false) {
-     //  throw new Exception("Problem with $url, $php_errormsg");
-     }
-  //   $response = @stream_get_contents($fp);
-     if ($response === false) {
-     //   throw new Exception("Problem reading data from $url, $php_errormsg");
-     }
-	 $this->requestStatusCode = $http_response_header[0];
-     return $response;
+
+     return new HTTP_Response($response, $http_response_header);
   }
   
   
@@ -104,40 +107,29 @@ class WookieConnectorService {
 		if($guid == '') {
 			throw new WookieConnectorException("No GUID nor Widget object");
 		}
-		$requestUrl = $this->getConnection()->getURL();
-		$requestUrl .= '/widgetinstances?';
-		$request = 'requestid=getwidget';
+		$requestUrl = $this->getConnection()->getURL().'/widgetinstances';
 		$request.= '&api_key='.$this->getConnection()->getApiKey();
 		$request.= '&servicetype=';
 		$request.= '&userid='.$this->getUser()->getLoginName();
 		$request.= '&shareddatakey='.$this->getConnection()->getSharedDataKey();
 		$request.= '&widgetid='.$guid;
 		
-		//$response = file_get_contents($requestUrl.$request);
+		if(!$this->checkURL($requestUrl)) {
+			throw new WookieConnectorException("URL for supplied Wookie Server is malformed: ".$requestUrl);
+		}	
 		$response = $this->do_post_request($requestUrl, $request);
 		
-		//try again, if first time fails
-		if(!$response) {
-		//	$response = file_get_contents($request);
+		//if instance was created, perform second request to get widget instance
+		if($response->getStatusCode() == 201) {
+			$response = $this->do_post_request($requestUrl, $request);
 		}
-		$instance = $this->parseInstance(XML_unserialize($response));
+		$instance = $this->parseInstance($guid, $response->getResponseText());
 		$this->WidgetInstances->put($instance);
+		return $instance;
 	} catch (WookieConnectorException $e) {
 		echo $e->errorMessage();
 	}
-	return $instance;
-	
-  /*
-    } catch (MalformedURLException e) {
-      throw new RuntimeException("URL for supplied Wookie Server is malformed",
-          e);
-    } catch (ParserConfigurationException e) {
-      throw new RuntimeException("Unable to configure XML parser", e);
-    } catch (SAXException e) {
-      throw new RuntimeException("Problem parsing XML from Wookie Server", e);
-    }
-
-    return instance;*/
+		return false;
   }
   
   
@@ -145,64 +137,87 @@ class WookieConnectorService {
    * Record an instance of the given widget.
    * 
    * @param xml description of the instance as returned by the widget server when the widget was instantiated.
-   * @return the identifier for this instance
+   * @return new Widget instance
    */
-  private function parseInstance($xml) {
-    $url = $xml['widgetdata']['url'];
-    $id = $xml['widgetdata']['identifier'];
-    $title = $xml['widgetdata']['title'];
-    $height = $xml['widgetdata']['height'];
-    $width = $xml['widgetdata']['width'];
-    $maximize = $xml['widgetdata']['maximize'];
-    $instance = new WidgetInstance($url, $id, $title, $height, $width, $maximize);
- 
-    return $instance;
+  private function parseInstance($widgetGuid, $xml) {
+	$xmlWidgetData = @simplexml_load_string($xml);
+	if(is_object($xmlWidgetData)) {
+		$url = (string) $xmlWidgetData->url;
+		$title = (string) $xmlWidgetData->title;
+		$height = (string) $xmlWidgetData->height;
+		$width = (string) $xmlWidgetData->width;
+		$maximize = (string) $xmlWidgetData->maximize;
+		$instance = new WidgetInstance($url, $widgetGuid, $title, $height, $width, $maximize);
+		return $instance;
+	} 
+	return false;
   }
-
+  
+   /**
+   * Check if URL is parsable.
+   * 
+   * @param url
+   * @return boolean
+   */
+  
+  private function checkURL($url) {
+	$UrlCheck = parse_url($url);
+	if($UrlCheck['scheme'] != 'http' || $UrlCheck['host'] == null || $UrlCheck['path'] == null) {
+		return false;
+	}
+	return true;
+  }
+  
    /**
    * @refactor At time of writing the REST API for adding a participant is broken so we are
    * using the non-REST approach. The code for REST API is commented out and should be used
    * in the future.
    */
+   
   public function addParticipant($widgetInstance, $User)  {
 	$Url = $this->getConnection()->getURL().'/participants';
-
-	try {
 	
+	try {
 		if(!is_object($widgetInstance)) throw new WookieWidgetInstanceException('No Widget instance');
 		if(!is_object($User)) throw new WookieConnectorException('No User object');
 		
-		$request = 'api_key='.$this->getConnection()->getApiKey();
-		$request .= '&shareddatakey='.$this->getConnection()->getSharedDataKey();
-		$request .= '&userid='.$this->getUser()->getLoginName();
-		$request .= '&widgetid='.$widgetInstance->getId();
-		$request .= '&participant_id='.$User->getLoginName();
-		$request .= '&participant_display_name='.$User->getScreenName();
-		$request .= '&participant_thumbnail_url='.$User->getThumbnailUrl();
+		$data = array(
+				'api_key' => $this->getConnection()->getApiKey(),
+				'shareddatakey' => $this->getConnection()->getSharedDataKey(),
+				'userid' => $this->getUser()->getLoginName(),
+				'widgetid' => $widgetInstance->getIdentifier(),
+				'participant_id' => $this->getUser()->getLoginName(),
+				'participant_display_name' => $User->getScreenName(),
+				'participant_thumbnail_url' => $User->getThumbnailUrl(),
+		);	
 		
+		if(!$this->checkURL($Url)) {
+			throw new WookieConnectorException("Participants rest URL is incorrect: ".$Url);
+		}	
+		
+		$response = $this->do_post_request($Url, $data);
+		$statusCode = $response->getStatusCode();
+		
+		switch($statusCode) {
+		  case 200: //participant already exists
+			return true;
+			break;
+		  case 201:
+			return true; //new participant added
+			break;
+		  case ($statusCode > 201):
+			throw new WookieConnectorException($response->headerToString().'<br />'.$response->getResponseText());
+			break;
+		  default:
+			return false;
+		}
+
 	} catch (WookieConnectorException $e) {
 		echo $e->errorMessage();
 	} catch (WookieWidgetInstanceException $e) {
 		echo '<b>function.addParticipant:</b> '.$e->getMessage().'<br />';
 	}
-	//FIXME: request failes, "400 Bad request"
-  //TODO: implement error handling, statuscodes
-	$response = $this->do_post_request($Url, $request);
-	echo $this->requestStatusCode;
-	print_r($response);
     
-/*	if (conn.getResponseCode() > 201) throw new IOException(conn.getResponseMessage());
-    } catch (MalformedURLException e) {
-      throw new WookieConnectorException("Participants rest URL is incorrect: " + url, e);
-    } catch (IOException e) {
-      StringBuilder sb = new StringBuilder("Problem adding a participant. ");
-      sb.append("URL: ");
-      sb.append(url);
-      sb.append(" data: ");
-      sb.append(postdata);
-      throw new WookieConnectorException(sb.toString(), e);
-    } 
-	*/
   }
   
    /**
@@ -213,57 +228,44 @@ class WookieConnectorService {
    */
   public function getUsers($widgetInstance) {
 	$Url = $this->getConnection()->getURL().'/participants';
+	$Users = array();
 		try {
 			if(!is_object($widgetInstance)) throw new WookieWidgetInstanceException('No Widget instance');
 			$request = '?api_key='.$this->getConnection()->getApiKey();
 			$request .= '&shareddatakey='.$this->getConnection()->getSharedDataKey();
 			$request .= '&userid='.$this->getUser()->getLoginName();
-			$request .= '&widgetid='.$widgetInstance->getId();
+			$request .= '&widgetid='.$widgetInstance->getIdentifier();
 			
-			$response = file_get_contents($Url.$request);
-			$xmlDoc = XML_unserialize($response);
+			if(!$this->checkURL($Url)) {
+				throw new WookieConnectorException("Participants rest URL is incorrect: ".$Url);
+			}
+			
+			$response = new HTTP_Response(@file_get_contents($Url.$request), $http_response_header);
+			if($response->getStatusCode() > 200) throw new WookieConnectorException($response->headerToString().'<br />'.$response->getResponseText());
+			
+			$xmlObj = @simplexml_load_string($response->getResponseText());
+			
+			if(is_object($xmlObj)) {
+				foreach($xmlObj->children() as $participant) {
+				  $participantAttr = $participant->attributes();
+				  
+				  $id = (string) $participantAttr->id;
+				  $name = (string) $participantAttr->display_name;
+				  $thumbnail_url = (string) $participantAttr->thumbnail_url;
+				  
+				  $newUser = new User($id, $name, $thumbnail_url);
+				  array_push($Users, $newUser);
+				}
+			} else {
+				throw new WookieConnectorException('Problem getting participants');
+			}
+			
+			return $Users;
 		} catch (WookieWidgetInstanceException $e) {
 			echo '<b>function.getUsers:</b> '.$e->getMessage().'<br />';
+		} catch (WookieConnectorException $e) {
+			echo $e->errorMessage();
 		}
-	    print_r($http_response_header);
-		//FIXME: retrieve participants
-	print_r($xmlDoc);
-	 /*   URL url = null;
-	    try {
-	      url = new URL(conn.getURL() + "/participants"+queryString);
-	      HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-	      InputStream is = conn.getInputStream();
-	      if (conn.getResponseCode() > 200) throw new IOException(conn.getResponseMessage());
-	      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	      DocumentBuilder db = dbf.newDocumentBuilder();
-	      Document widgetsDoc = db.parse(is);
-	      Element root = widgetsDoc.getDocumentElement();
-	      NodeList participantsList = root.getElementsByTagName("participant");
-	      if (participantsList == null || participantsList.getLength() == 0) return new User[0];
-	      User[] users = new User[participantsList.getLength()];
-	      for (int idx = 0; idx < participantsList.getLength(); idx = idx + 1) {
-	        Element participantEl = (Element) participantsList.item(idx);
-	        String id = participantEl.getAttribute("id");
-	        String name = participantEl.getAttribute("display_name");
-	        //FIXME implement: String thumbnail = participantEl.getAttribute("thumbnail_url");
-	        User user = new User(id,name);
-	        users[idx] = user;
-	      }
-	      return users;
-	    } catch (MalformedURLException e) {
-	      throw new WookieConnectorException("Participants rest URL is incorrect: " + url, e);
-	    } catch (IOException e) {
-	      StringBuilder sb = new StringBuilder("Problem getting participants. ");
-	      sb.append("URL: ");
-	      sb.append(url);
-	      sb.append(" data: ");
-	      sb.append(queryString);
-	      throw new WookieConnectorException(sb.toString(), e);
-	    } catch (ParserConfigurationException e) {
-		      throw new WookieConnectorException("Problem parsing data: " + url, e);
-		} catch (SAXException e) {
-		      throw new WookieConnectorException("Problem parsing data: " + url, e);
-		} */
   }
 
  
@@ -274,49 +276,41 @@ class WookieConnectorService {
    * far in order to allow the application to proceed. The application should
    * display an appropriate message in this case.
    * 
-   * @return
-   * @throws SimalException
+   * @return array of available widgets
+   * @throws WookieConnectorException
    */
+   
   public function getAvailableWidgets() {
 	$widgets = array();
 	try {
 		$request = $this->getConnection()->getURL().'/widgets?all=true';
-		$xmlDoc = XML_unserialize(file_get_contents($request));
 		
-		foreach ($xmlDoc['widgets']['widget'] as $key=>$data){
-			if(is_int($key)) {
-				$id = $xmlDoc['widgets']['widget'][$key.' attr']['identifier'];
-				$title = $data['title'];
-				$description = $data['description'];
-				$iconURL = $data['icon'];
-				if($iconURL == '') {
-					$iconURL = 'http://www.oss-watch.ac.uk/images/logo2.gif';
-				}
+		if(!$this->checkURL($request)) {
+			throw new WookieConnectorException("URL for Wookie is malformed");
+		}
+		
+		$response = new HTTP_Response(@file_get_contents($request), $http_response_header);
+		$xmlObj = @simplexml_load_string($response->getResponseText());
+		
+		if(is_object($xmlObj)) {
+			foreach($xmlObj->children() as $widget) {
+				 $id = (string) $widget->attributes()->identifier;
+				 $title = (string) $widget->title;
+				 $description = (string) $widget->description;
+				 $iconURL = (string) $widget->attributes()->icon;
+				 if($iconURL == '') {
+						$iconURL = (string) 'http://www.oss-watch.ac.uk/images/logo2.gif';
+					}
 				$Widget = new Widget($id, $title, $description, $iconURL);
 				$widgets[$id] = $Widget;
 			}
+		} else {
+				throw new WookieConnectorException('Problem getting available widgets');
+			}
+			
+	 } catch(WookieConnectorException $e) {
+			echo $e->errorMessage();
 		}
-	}
-		
-	 catch(WookieServerException $e) {
-		// do something
-	}
-  /*
-      }
-    } catch (ParserConfigurationException e) {
-      throw new WookieConnectorException("Unable to create XML parser", e);
-    } catch (MalformedURLException e) {
-      throw new WookieConnectorException("URL for Wookie is malformed", e);
-    } catch (IOException e) {
-      // return an empty set, or the set received so far in order to allow
-      // the application to proceed. The application should display an
-      // appropriate message in this case.
-      return widgets;
-    } catch (SAXException e) {
-      throw new WookieConnectorException(
-          "Unable to parse the response from Wookie", e);
-    }
-	*/
     return $widgets;
   }
     

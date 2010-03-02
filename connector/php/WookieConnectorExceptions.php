@@ -19,7 +19,7 @@ class WookieConnectorException extends Exception {
 
 	public function errorMessage() {
 		//error message
-		$errorMsg = 'Error on line '.$this->getLine().' in '.$this->getFile()
+		$errorMsg = 'Exception thrown on line: '.$this->getLine().' in '.$this->getFile()
 		.': <b>'.$this->getMessage().'</b>';
 		return $errorMsg;
 	}
@@ -29,10 +29,11 @@ class WookieWidgetInstanceException extends Exception {
 
 	public function errorMessage() {
 		//error message
-		$errorMsg = 'Error on line '.$this->getLine().' in '.$this->getFile()
+		$errorMsg = 'Exception thrown on line: '.$this->getLine().' in '.$this->getFile()
 		.': <b>'.$this->getMessage().'</b>';
 		return $errorMsg;
 	}
 }
+
 
 ?>

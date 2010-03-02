@@ -28,7 +28,7 @@ class WidgetInstances {
    * @return the identifier for this instance
    */
  public function put($instance) {
-    $this->WidgetInstances[$instance->getId()] = $instance;
+    $this->WidgetInstances[$instance->getIdentifier()] = $instance;
   }
   
   /* Get all Widget instances */

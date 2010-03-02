@@ -18,17 +18,20 @@
 /**
  * An instance of a widget for use on the client.
  * 
+ * @refactor this class duplicates code in the widget bean o nthe server side
+ *
  */
+ 
 class WidgetInstance {
   var $url;
-  var $id;
+  var $guid;
   var $title;
   var $height;
   var $width;
   var $maximize;
 
-  public function WidgetInstance($url, $id, $title, $height, $width, $maximize) {
-    $this->setId($id);
+  public function WidgetInstance($url, $guid, $title, $height, $width, $maximize) {
+    $this->setIdentifier($guid);
     $this->setUrl($url);
     $this->setTitle($title);
     $this->setHeight($height);
@@ -44,12 +47,12 @@ class WidgetInstance {
     $this->url = $url;
   }
 
-  public function getId() {
-    return $this->id;
+  public function getIdentifier() {
+    return $this->guid;
   }
 
-  public function setId($id) {
-    $this->id = $id;
+  public function setIdentifier($guid) {
+    $this->guid = $guid;
   }
 
   public function getTitle() {

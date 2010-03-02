@@ -17,6 +17,7 @@
 /**
  * A client side representation of a widget. 
  * 
+ * @refactor this duplicates data stored in the Widget bean on the server side.
  */
 class Widget { 
   var $identifier;
