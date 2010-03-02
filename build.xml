@@ -59,18 +59,32 @@
   </target>
 	
   <target name="deploy-widget">
+  	<property name="deployToDev" value="true"/>
   	<input message="What is the short name of the widget you wish to deploy?" 
   		   addproperty="widget.shortname"/>
   	<ant antfile="${wookie.widgets.dir}/${widget.shortname}/build.xml" target="deploy-widget"/>
   </target>
 	
   <target name="build-widget">
+  	<property name="deployToDev" value="true"/>
   	<input message="What is the short name of the widget you wish to build?" 
   		   addproperty="widget.shortname"/>
   	<ant antfile="${wookie.widgets.dir}/${widget.shortname}/build.xml" target="build-widget"/>
   </target>
 	
+  <target name="pre-compile-core">
+  	<!-- localy publish Java connector -->
+  	<ant dir="${wookie.connector.dir}/java" target="publish-local" inheritAll="false"/>
+  </target>
+  	
   <target name="post-compile-core" depends="set-mysql-script-dir, set-derby-script-dir">
+  	<!-- compile features -->
+  	<subant antfile="build.xml" target="build-feature" inheritall="true">
+  	  <fileset dir="${wookie.features.dir}">
+  	  	<include name="${widget.deploy.include}"/>
+  	  </fileset>
+  	</subant>  	
+  	
   	<!-- copy database resources -->
   	<copy file="${project.scripts.dir}/widgetdb.sql" tofile="${project.build.classes.dir}/widgetdb.sql"/>
   	<copy file="${project.scripts.dir}/hibernate.cfg.xml" tofile="${project.build.classes.dir}/hibernate.cfg.xml"/>

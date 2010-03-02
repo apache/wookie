@@ -69,12 +69,15 @@
     	<antcall target="post-compile-test"/>
     </target>
     
-    <target name="post-compile-test" description="Run after compile-test. Intended to be overridden if your project needs any post compile processing"/>
-    
+	<target name="post-compile-test" description="Run after compile-test. Intended to be overridden if your project needs any post compile processing"/>
+	
     <target name="compile-core" 
     	depends="resolve, init" description="--> compile the project"
     	if="project.core.src.dir.exists">
+    	<antcall target="pre-compile-core"/>
+    	
     	<echo>Compiling files in ${project.core.src.dir}</echo>
+    	<echo>Build directory is ${project.build.classes.dir}</echo>
         <mkdir dir="${project.build.classes.dir}" />
 		<javac 
 			source="${java.source.version}" 
@@ -84,14 +87,6 @@
 			classpathref="project.core.class.path">
 			<src path="${project.core.src.dir}" />
 		</javac>
-		
-      	<!-- compile features -->
-      	<subant antfile="build.xml" target="build-feature" inheritall="true">
-      	  <fileset dir="${wookie.features.dir}">
-      	  	<include name="${widget.deploy.include}"/>
-      	  </fileset>
-      	</subant>  	
-    	
     	
 		<echo>Copying resources from source directory</echo>
 		<copy todir="${project.build.classes.dir}">
@@ -103,9 +98,11 @@
     	<antcall target="post-compile-core"/>
     </target>
     
-    <target name="post-compile-core" description="Run after compile-core. Intended to be overridden if your project needs any post compile processing"/>
+
+	<target name="pre-compile-core" description="Run before compile-core. intended to be overridden if your project needs any post compile processing"/> 
+	<target name="post-compile-core" description="Run after compile-core. Intended to be overridden if your project needs any post compile processing"/>
     	
-    <target name="run" depends="version, compile-core" description="--> compile and run the project">
+    <target name="run" depends="compile-core" description="--> compile and run the project">
 		<java classname="${main.class.name}"
         	classpathref="run.path.id"
             fork="true"
@@ -115,14 +112,14 @@
         </java>    	
     </target>
     
-    <target name="jar" depends="clean-dist, version, compile-core" description="--> make a jar file for this project">
+    <target name="jar" depends="clean-dist, compile-core" description="--> make a jar file for this project">
     	<mkdir dir="${dist.dir}"/>
         <jar destfile="${dist.dir}/${ant.project.name}-${version}.jar">
             <fileset dir="${project.build.classes.dir}"/>
         </jar>
     </target>
 	
-    <target name="publish" depends="clean-build, new-version, jar" description="--> publish this project in the ivy repository">
+    <target name="publish" depends="clean-build, jar" description="--> publish this project in the ivy repository">
         <ivy:publish
     	   artifactspattern="[artifact].[ext]"
            resolver="shared"
