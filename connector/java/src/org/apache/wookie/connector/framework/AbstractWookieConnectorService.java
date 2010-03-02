@@ -23,6 +23,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+
 public abstract class AbstractWookieConnectorService implements
     IWookieConnectorService {
   private static final Logger logger = LoggerFactory.getLogger(AbstractWookieConnectorService.class);

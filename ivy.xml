@@ -8,6 +8,8 @@
 	</configurations>
     
     <dependencies>
+        <dependency org="org.apache.incubator" name="wookieJavaConnector" rev="0.1.0-SNAPSHOT" conf="deploy->default">
+        </dependency>
         <dependency org="com.ibm.icu" name="icu4j" rev="4_2_1" conf="deploy->default">
         </dependency>
         <dependency org="antlr" name="antlr" rev="2.7.7" conf="deploy->default">

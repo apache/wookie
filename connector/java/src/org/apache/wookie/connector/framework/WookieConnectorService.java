@@ -13,6 +13,7 @@
  */
 package org.apache.wookie.connector.framework;
 
+
 /**
  * An implementation of the WookieConnectorService for use by Wookie itself.
  * 
