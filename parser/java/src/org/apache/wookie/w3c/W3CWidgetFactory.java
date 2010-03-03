@@ -41,7 +41,7 @@ public class W3CWidgetFactory {
 	public W3CWidgetFactory(){
 		// Defaults
 		this.locales = new String[]{"en"};
-		this.features = new String[];
+		this.features = new String[0];
 		this.localPath = "/widgets";
 		this.outputDirectory = null;
 		this.startPageProcessor = new IStartPageProcessor(){
