@@ -11,7 +11,7 @@
  *  See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.wookie.tests;
+package org.apache.wookie.w3c.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -21,7 +21,6 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
-import org.apache.wookie.beans.License;
 import org.apache.wookie.w3c.ILocalizedElement;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 import org.junit.Test;
@@ -42,6 +41,20 @@ public class LocalizationUtilsTest {
 	public static final String[] LANG_LIST_INV_1 = {"x-gb-a-a"};
 	public static final String[] LANG_LIST_INV_2 = {"x-gb-a-a","12345567889"};
 	public static final String[] LANG_LIST_INV_3 = {"x-gb-a-a","i-argserg45ggadfgdfsg-4t534","fr"};	
+	
+	class License implements ILocalizedElement{
+
+		private String lang;
+		
+		public String getLang() {
+			return lang;
+		}
+		
+		public void setLang(String lang){
+			this.lang=lang;
+		}
+		
+	}
 	
 	public ILocalizedElement[] elements(String[] langs){
 		ArrayList<ILocalizedElement> licenses = new ArrayList<ILocalizedElement>();
