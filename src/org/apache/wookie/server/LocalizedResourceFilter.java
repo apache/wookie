@@ -180,7 +180,7 @@ public class LocalizedResourceFilter implements Filter {
 	private String getWidgetInstanceBasePath(WidgetInstance instance){
 		String guid = instance.getWidget().getGuid();
 		Configuration config = (Configuration) filterConfig.getServletContext().getAttribute("properties");
-		final String localWidgetFolderPath = config.getString("widget.widgetfolder");
+		final String localWidgetFolderPath = filterConfig.getServletContext().getContextPath()+config.getString("widget.widgetfolder");
 		return WidgetPackageUtils.getURLForWidget(localWidgetFolderPath, guid, "");
 	}
 

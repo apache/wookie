@@ -480,7 +480,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 				final String[] locales = properties.getStringArray("widget.locales");
 				W3CWidgetFactory fac = new W3CWidgetFactory();
 				fac.setLocales(locales);
-				fac.setLocalPath(properties.getString("widget.widgetfolder"));
+				fac.setLocalPath(session.getServletContext().getContextPath()+properties.getString("widget.widgetfolder"));
 				fac.setOutputDirectory(WIDGETFOLDER);
 				fac.setFeatures(ServerFeature.getFeatureNames());
 				fac.setStartPageProcessor(new StartPageProcessor());

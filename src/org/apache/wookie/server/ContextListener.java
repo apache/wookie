@@ -151,6 +151,7 @@ public class ContextListener implements ServletContextListener {
 		final String WIDGETFOLDER = context.getRealPath(configuration.getString("widget.widgetfolder"));
 		final String localWidgetFolderPath = configuration.getString("widget.widgetfolder");
 		final String[] locales = configuration.getStringArray("widget.locales");
+		final String contextPath = context.getContextPath();
 		Thread thr = new Thread(){
 	 		public void run() {
 	 			/** Get a DBManager for this thread. */
@@ -165,7 +166,7 @@ public class ContextListener implements ServletContextListener {
 	 						File upload = WidgetPackageUtils.dealWithDroppedFile(UPLOADFOLDER, f);
 	 						W3CWidgetFactory fac = new W3CWidgetFactory();
 	 						fac.setLocales(locales);
-	 						fac.setLocalPath(localWidgetFolderPath);
+	 						fac.setLocalPath(contextPath+localWidgetFolderPath);
 	 						fac.setOutputDirectory(WIDGETFOLDER);
 	 						fac.setFeatures(ServerFeature.getFeatureNames());
 	 						fac.setStartPageProcessor(new StartPageProcessor());

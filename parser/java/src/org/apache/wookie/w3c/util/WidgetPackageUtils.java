@@ -145,7 +145,7 @@ public class WidgetPackageUtils {
 
 	public static String getURLForWidget(String widgetFolder, String folder, String file){
 		folder = convertIdToFolderName(folder);
-		String path = convertPathToRelativeUri("/wookie" + widgetFolder + File.separator + folder + File.separator + file); //$NON-NLS-1$ //$NON-NLS-2$
+		String path = convertPathToRelativeUri(widgetFolder + File.separator + folder + File.separator + file); //$NON-NLS-1$ //$NON-NLS-2$
 		return path;
 	}
 	
