@@ -15,6 +15,8 @@ package org.apache.wookie.beans;
 
 import java.util.Map;
 
+import org.apache.wookie.w3c.ILocalizedElement;
+
 public class Name extends AbstractLocalizedKeyBean<Name> implements ILocalizedElement {
 	
 	private static final long serialVersionUID = -1205834267479594166L;

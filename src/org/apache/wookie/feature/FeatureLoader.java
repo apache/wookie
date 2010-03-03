@@ -16,9 +16,9 @@ package org.apache.wookie.feature;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.ServerFeature;
-import org.apache.wookie.util.IRIValidator;
 import org.apache.wookie.util.hibernate.DBManagerFactory;
 import org.apache.wookie.util.hibernate.IDBManager;
+import org.apache.wookie.w3c.util.IRIValidator;
 
 import java.util.Iterator;
 

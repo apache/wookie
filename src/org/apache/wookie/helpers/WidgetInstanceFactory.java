@@ -26,9 +26,9 @@ import org.apache.wookie.beans.SharedData;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.util.HashGenerator;
-import org.apache.wookie.util.LocalizationUtils;
-import org.apache.wookie.util.RandomGUID;
 import org.apache.wookie.util.opensocial.OpenSocialUtils;
+import org.apache.wookie.w3c.util.LocalizationUtils;
+import org.apache.wookie.w3c.util.RandomGUID;
 
 /**
  * A class to create widget instances

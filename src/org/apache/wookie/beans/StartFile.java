@@ -15,6 +15,8 @@ package org.apache.wookie.beans;
 
 import java.util.Map;
 
+import org.apache.wookie.w3c.ILocalizedElement;
+
 /**
  * Represents a localized start page for a widget
  * 

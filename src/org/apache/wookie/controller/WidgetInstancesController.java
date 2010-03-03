@@ -36,7 +36,7 @@ import org.apache.wookie.helpers.WidgetInstanceFactory;
 import org.apache.wookie.helpers.WidgetInstanceHelper;
 import org.apache.wookie.helpers.WidgetKeyManager;
 import org.apache.wookie.server.LocaleHandler;
-import org.apache.wookie.util.LocalizationUtils;
+import org.apache.wookie.w3c.util.LocalizationUtils;
 
 /**
  * REST implementation for widgetInstance

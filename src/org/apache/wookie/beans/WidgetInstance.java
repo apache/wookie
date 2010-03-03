@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.apache.wookie.util.hibernate.DBManagerFactory;
 import org.apache.wookie.util.hibernate.IDBManager;
+import org.apache.wookie.w3c.ILocalizedElement;
 
 /**
  * WidgetInstance - a simple bean to model an actual widgets instance attributes

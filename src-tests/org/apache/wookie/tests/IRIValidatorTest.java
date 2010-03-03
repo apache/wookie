@@ -16,7 +16,7 @@ package org.apache.wookie.tests;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.wookie.util.IRIValidator;
+import org.apache.wookie.w3c.util.IRIValidator;
 import org.junit.Test;
 
 

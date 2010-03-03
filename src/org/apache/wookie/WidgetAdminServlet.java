@@ -29,26 +29,29 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.ApiKey;
+import org.apache.wookie.beans.ServerFeature;
 import org.apache.wookie.beans.Whitelist;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetDefault;
 import org.apache.wookie.beans.WidgetService;
 import org.apache.wookie.controller.WidgetServicesController;
-import org.apache.wookie.exceptions.BadManifestException;
-import org.apache.wookie.exceptions.BadWidgetZipFileException;
-import org.apache.wookie.exceptions.InvalidContentTypeException;
 import org.apache.wookie.exceptions.InvalidParametersException;
-import org.apache.wookie.exceptions.InvalidStartFileException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetKeyManager;
 import org.apache.wookie.manager.IWidgetAdminManager;
 import org.apache.wookie.manager.impl.WidgetAdminManager;
-import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.server.LocaleHandler;
-import org.apache.wookie.util.WidgetPackageUtils;
 import org.apache.wookie.util.gadgets.GadgetUtils;
+import org.apache.wookie.util.html.StartPageProcessor;
+import org.apache.wookie.w3c.W3CWidget;
+import org.apache.wookie.w3c.W3CWidgetFactory;
+import org.apache.wookie.w3c.exceptions.BadManifestException;
+import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
+import org.apache.wookie.w3c.exceptions.InvalidContentTypeException;
+import org.apache.wookie.w3c.exceptions.InvalidStartFileException;
+import org.apache.wookie.w3c.util.WidgetPackageUtils;
 
 /**
  * Servlet implementation class for Servlet: WidgetAdminServlet
@@ -475,7 +478,13 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		try {	
 			if(zipFile.exists()){
 				final String[] locales = properties.getStringArray("widget.locales");
-				IManifestModel widgetModel = WidgetPackageUtils.processWidgetPackage(zipFile,properties.getString("widget.widgetfolder"), WIDGETFOLDER,UPLOADFOLDER,locales);//$NON-NLS-1$
+				W3CWidgetFactory fac = new W3CWidgetFactory();
+				fac.setLocales(locales);
+				fac.setLocalPath(properties.getString("widget.widgetfolder"));
+				fac.setOutputDirectory(WIDGETFOLDER);
+				fac.setFeatures(ServerFeature.getFeatureNames());
+				fac.setStartPageProcessor(new StartPageProcessor());
+				W3CWidget widgetModel = fac.parse(zipFile);
 				if(!Widget.exists(widgetModel.getIdentifier())){	
 					// ADD
 					Widget widget = WidgetFactory.addNewWidget(widgetModel);

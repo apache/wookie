@@ -29,16 +29,16 @@ import org.apache.wookie.beans.WidgetDefault;
 import org.apache.wookie.beans.WidgetIcon;
 import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.beans.WidgetType;
-import org.apache.wookie.manifestmodel.IAccessEntity;
-import org.apache.wookie.manifestmodel.IContentEntity;
-import org.apache.wookie.manifestmodel.IDescriptionEntity;
-import org.apache.wookie.manifestmodel.IFeatureEntity;
-import org.apache.wookie.manifestmodel.IIconEntity;
-import org.apache.wookie.manifestmodel.ILicenseEntity;
-import org.apache.wookie.manifestmodel.IManifestModel;
-import org.apache.wookie.manifestmodel.INameEntity;
-import org.apache.wookie.manifestmodel.IParamEntity;
-import org.apache.wookie.manifestmodel.IPreferenceEntity;
+import org.apache.wookie.w3c.IAccessEntity;
+import org.apache.wookie.w3c.IContentEntity;
+import org.apache.wookie.w3c.IDescriptionEntity;
+import org.apache.wookie.w3c.IFeatureEntity;
+import org.apache.wookie.w3c.IIconEntity;
+import org.apache.wookie.w3c.ILicenseEntity;
+import org.apache.wookie.w3c.W3CWidget;
+import org.apache.wookie.w3c.INameEntity;
+import org.apache.wookie.w3c.IParamEntity;
+import org.apache.wookie.w3c.IPreferenceEntity;
 
 /**
  * Factory for creating and destroying Widgets
@@ -52,7 +52,7 @@ public class WidgetFactory {
 	 * @param grantAccessRequests whether to automatically grant access requests for the widget
 	 * @return the widget
 	 */
-	public static Widget addNewWidget(IManifestModel model, boolean grantAccessRequests) {
+	public static Widget addNewWidget(W3CWidget model, boolean grantAccessRequests) {
 		return addNewWidget(model,null, grantAccessRequests);
 	}
 
@@ -61,7 +61,7 @@ public class WidgetFactory {
 	 * @param model the model of the widget to add
 	 * @return the widget
 	 */
-	public static Widget addNewWidget(IManifestModel model) {
+	public static Widget addNewWidget(W3CWidget model) {
 		return addNewWidget(model,null,false);
 	}
 
@@ -71,7 +71,7 @@ public class WidgetFactory {
 	 * @param widgetTypes the types to allocate the widget to
 	 * @return the widget
 	 */
-	public static Widget addNewWidget(IManifestModel model,String[] widgetTypes) {
+	public static Widget addNewWidget(W3CWidget model,String[] widgetTypes) {
 		return addNewWidget(model,widgetTypes,false);
 	}	
 
@@ -83,7 +83,7 @@ public class WidgetFactory {
 	 * @param grantAccessRequests whether to grant access requests created for the widget
 	 * @return the widget
 	 */
-	public static Widget addNewWidget(IManifestModel model, String[] widgetTypes, boolean grantAccessRequests) {	
+	public static Widget addNewWidget(W3CWidget model, String[] widgetTypes, boolean grantAccessRequests) {	
 		Widget widget = createWidget(model);
 		createTypes(widgetTypes, widget);
 		createStartFiles(model,widget);
@@ -97,7 +97,7 @@ public class WidgetFactory {
 		return widget;	       
 	}
 
-	private static Widget createWidget(IManifestModel model){
+	private static Widget createWidget(W3CWidget model){
 		Widget widget;
 		widget = new Widget();												
 		widget.setWidgetAuthor(model.getAuthor());
@@ -125,7 +125,7 @@ public class WidgetFactory {
 		}
 	}
 
-	private static void createStartFiles(IManifestModel model, Widget widget){
+	private static void createStartFiles(W3CWidget model, Widget widget){
 		for (IContentEntity page:model.getContentList()){
 			StartFile start = new StartFile();
 			start.setCharset(page.getCharSet());
@@ -136,7 +136,7 @@ public class WidgetFactory {
 		}
 	}
 
-	private static void createNames(IManifestModel model, Widget widget){
+	private static void createNames(W3CWidget model, Widget widget){
 		for (INameEntity name:model.getNames()){
 			Name widgetName = new Name();
 			widgetName.setLang(name.getLang());
@@ -148,7 +148,7 @@ public class WidgetFactory {
 		}
 	}
 
-	private static void createDescriptions(IManifestModel model, Widget widget){
+	private static void createDescriptions(W3CWidget model, Widget widget){
 		for (IDescriptionEntity desc:model.getDescriptions()){
 			Description widgetDesc = new Description();
 			widgetDesc.setContent(desc.getDescription());
@@ -159,21 +159,21 @@ public class WidgetFactory {
 		}
 	}
 
-	private static void createIcons(IManifestModel model, Widget widget){
+	private static void createIcons(W3CWidget model, Widget widget){
 		for(IIconEntity icon: model.getIconsList()){
 			WidgetIcon widgetIcon = new WidgetIcon(icon.getSrc(),icon.getHeight(),icon.getWidth(),icon.getLang(), widget);
 			widgetIcon.save();
 		}
 	}
 
-	private static void createLicenses(IManifestModel model, Widget widget){
+	private static void createLicenses(W3CWidget model, Widget widget){
 		for(ILicenseEntity licenseModel: model.getLicensesList()){
 			License license = new License(licenseModel.getLicenseText(),licenseModel.getHref(), licenseModel.getLang(), licenseModel.getDir(), widget);
 			license.save();
 		}
 	}
 
-	private static void createPreferences(IManifestModel model, Widget widget){
+	private static void createPreferences(W3CWidget model, Widget widget){
 		for(IPreferenceEntity prefEntity : model.getPrefences()){
 			PreferenceDefault prefenceDefault = new PreferenceDefault();
 			prefenceDefault.setPreference(prefEntity.getName());
@@ -184,7 +184,7 @@ public class WidgetFactory {
 		}
 	}
 
-	private static void createFeatures(IManifestModel model, Widget widget){
+	private static void createFeatures(W3CWidget model, Widget widget){
 		for(IFeatureEntity featureEntity: model.getFeatures()){
 			Feature feature = new Feature();
 			feature.setFeatureName(featureEntity.getName());
@@ -202,7 +202,7 @@ public class WidgetFactory {
 		}
 	}
 
-	private static void createAccessRequests(IManifestModel model, Widget widget, boolean grantAccessRequests){
+	private static void createAccessRequests(W3CWidget model, Widget widget, boolean grantAccessRequests){
 		for(IAccessEntity accessEntity:model.getAccessList()){
 			AccessRequest acc = new AccessRequest();
 			acc.setOrigin(accessEntity.getOrigin());

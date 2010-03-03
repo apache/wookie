@@ -30,6 +30,8 @@ import java.util.HashMap;
  */
 import java.util.Map;
 
+import org.apache.wookie.w3c.ILocalizedElement;
+
 /**
  * An object representing an icon for a widget
  * @author Scott Wilson

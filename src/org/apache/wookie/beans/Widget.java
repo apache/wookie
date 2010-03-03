@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
-import org.apache.wookie.util.LocalizationUtils;
 import org.apache.wookie.util.hibernate.DBManagerFactory;
 import org.apache.wookie.util.hibernate.IDBManager;
+import org.apache.wookie.w3c.IW3CXMLConfiguration;
+import org.apache.wookie.w3c.util.LocalizationUtils;
 
 
 /**

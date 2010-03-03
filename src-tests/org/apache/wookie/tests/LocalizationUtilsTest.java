@@ -21,9 +21,9 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
-import org.apache.wookie.beans.ILocalizedElement;
 import org.apache.wookie.beans.License;
-import org.apache.wookie.util.LocalizationUtils;
+import org.apache.wookie.w3c.ILocalizedElement;
+import org.apache.wookie.w3c.util.LocalizationUtils;
 import org.junit.Test;
 
 public class LocalizationUtilsTest {

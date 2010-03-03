@@ -35,6 +35,15 @@ public class ServerFeature extends AbstractKeyBean<ServerFeature> {
 		this.featureName = featureName;
 	}
 	
+	public static String[] getFeatureNames(){
+		ServerFeature[] features = ServerFeature.findAll();
+		String[] featureNames = new String[features.length];
+		for (int idx=0;idx<features.length;idx++){
+			featureNames[idx] = features[idx].getFeatureName();
+		}
+		return featureNames;
+	}
+	
 	public static ServerFeature findByName(String name){
 		ServerFeature[] features = (ServerFeature[]) findByValue(ServerFeature.class, "featureName", name);
 		if (features == null || features.length != 1) return null;

@@ -15,7 +15,7 @@ package org.apache.wookie.helpers;
 
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetInstance;
-import org.apache.wookie.manifestmodel.IW3CXMLConfiguration;
+import org.apache.wookie.w3c.IW3CXMLConfiguration;
 
 /**
  * A helper to create representations of Widget Instance resources

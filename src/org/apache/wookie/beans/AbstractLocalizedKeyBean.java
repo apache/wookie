@@ -13,6 +13,8 @@
  */
 package org.apache.wookie.beans;
 
+import org.apache.wookie.w3c.ILocalizedElement;
+
 public abstract class AbstractLocalizedKeyBean<T> extends AbstractKeyBean<T> implements ILocalizedElement {
 	
 	private static final long serialVersionUID = -6974753058632187787L;

@@ -24,17 +24,20 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
+import org.apache.wookie.beans.ServerFeature;
 import org.apache.wookie.beans.Widget;
-import org.apache.wookie.exceptions.BadManifestException;
-import org.apache.wookie.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.feature.FeatureLoader;
 import org.apache.wookie.helpers.WidgetFactory;
-import org.apache.wookie.manifestmodel.IManifestModel;
 import org.apache.wookie.util.WgtWatcher;
-import org.apache.wookie.util.WidgetPackageUtils;
 import org.apache.wookie.util.hibernate.DBManagerFactory;
 import org.apache.wookie.util.hibernate.HibernateUtil;
 import org.apache.wookie.util.hibernate.IDBManager;
+import org.apache.wookie.util.html.StartPageProcessor;
+import org.apache.wookie.w3c.W3CWidget;
+import org.apache.wookie.w3c.W3CWidgetFactory;
+import org.apache.wookie.w3c.exceptions.BadManifestException;
+import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
+import org.apache.wookie.w3c.util.WidgetPackageUtils;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -160,7 +163,13 @@ public class ContextListener implements ServletContextListener {
 	 					try{
 	 						dbManager.beginTransaction();
 	 						File upload = WidgetPackageUtils.dealWithDroppedFile(UPLOADFOLDER, f);
-	 						IManifestModel model = WidgetPackageUtils.processWidgetPackage(upload, localWidgetFolderPath, WIDGETFOLDER, UPLOADFOLDER, locales);
+	 						W3CWidgetFactory fac = new W3CWidgetFactory();
+	 						fac.setLocales(locales);
+	 						fac.setLocalPath(localWidgetFolderPath);
+	 						fac.setOutputDirectory(WIDGETFOLDER);
+	 						fac.setFeatures(ServerFeature.getFeatureNames());
+	 						fac.setStartPageProcessor(new StartPageProcessor());
+	 						W3CWidget model = fac.parse(upload);
 	 						if(!Widget.exists(model.getIdentifier())) {
 	 							WidgetFactory.addNewWidget(model, true);	
 	 							_logger.info(model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19"));
@@ -173,6 +182,7 @@ public class ContextListener implements ServletContextListener {
 	 					} catch (BadWidgetZipFileException e) {
 	 						_logger.error(f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.2"));
 	 					} catch (BadManifestException e) {
+	 						e.printStackTrace();
 	 						_logger.error(f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.3"));
 	 					}
 	 				}

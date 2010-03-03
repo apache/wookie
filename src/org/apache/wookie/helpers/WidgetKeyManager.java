@@ -26,7 +26,7 @@ import org.apache.wookie.Messages;
 import org.apache.wookie.beans.ApiKey;
 import org.apache.wookie.exceptions.SystemUnavailableException;
 import org.apache.wookie.util.HashGenerator;
-import org.apache.wookie.util.RandomGUID;
+import org.apache.wookie.w3c.util.RandomGUID;
 
 /**
  * @author scott

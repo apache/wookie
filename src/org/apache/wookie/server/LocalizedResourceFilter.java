@@ -30,8 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.wookie.beans.WidgetInstance;
-import org.apache.wookie.util.LocalizationUtils;
-import org.apache.wookie.util.WidgetPackageUtils;
+import org.apache.wookie.w3c.util.LocalizationUtils;
+import org.apache.wookie.w3c.util.WidgetPackageUtils;
 
 import com.ibm.icu.util.ULocale;
 
