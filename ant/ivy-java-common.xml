@@ -71,15 +71,22 @@
     
 	<target name="post-compile-test" description="Run after compile-test. Intended to be overridden if your project needs any post compile processing"/>
 	
+	<target name="local-publish-subprojects" description="Build all sub-projects of this project and deploy them locally.">
+		<echo>No sub-projects of ${ant.project.name}-${version} to publish.</echo>
+	</target>
+	
     <target name="compile-core" 
-    	depends="resolve, init" description="--> compile the project"
+    	depends="local-publish-subprojects, resolve, init" description="--> compile the project"
     	if="project.core.src.dir.exists">
+    	<echo>Preparing to compile core of ${ant.project.name}-${version}.</echo>
     	<antcall target="pre-compile-core"/>
     	
     	<echo>Compiling files in ${project.core.src.dir}</echo>
     	<echo>Build directory is ${project.build.classes.dir}</echo>
         <mkdir dir="${project.build.classes.dir}" />
-		<javac 
+		
+    	<echo>Compile core of ${ant.project.name}-${version}.</echo>
+    	<javac 
 			source="${java.source.version}" 
 			target="${java.target.version}" 
 		    destdir="${project.build.classes.dir}" 
@@ -129,6 +136,7 @@
     </target>
 
     <target name="publish-local" depends="clean-dist, jar" description="--> publish this project in the local ivy repository">
+    	<echo>Locally publishing ${ant.project.name}-${version}</echo>
 		<delete file="${dist.dir}/ivy.xml"/> <!-- delete last produced ivy file to be sure a new one will be generated -->
     	<tstamp>
 			<format property="now" pattern="yyyyMMddHHmmss"/>

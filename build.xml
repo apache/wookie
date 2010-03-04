@@ -72,9 +72,10 @@
   	<ant antfile="${wookie.widgets.dir}/${widget.shortname}/build.xml" target="build-widget"/>
   </target>
 	
-  <target name="pre-compile-core">
-  	<!-- localy publish Java connector -->
+  <target name="local-publish-subprojects">
+  	<!-- localy publish sub-projects -->
   	<ant dir="${wookie.connector.dir}/java" target="publish-local" inheritAll="false"/>
+  	<ant dir="${wookie.parser.w3c.dir}/java" target="publish-local" inheritAll="false"/>
   </target>
   	
   <target name="post-compile-core" depends="set-mysql-script-dir, set-derby-script-dir">
