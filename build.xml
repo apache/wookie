@@ -23,9 +23,9 @@
   <property file="local.build.properties"/> 
   <property file="build.properties"/>
   <property name="db.name" value="widgetDB" />
-  <property file="${project.core.src.dir}/widgetserver.properties"/>
 	
   <import file="ant/ivy-webapp-common.xml"/>
+  <property file="${project.core.src.dir}/widgetserver.properties"/>
 	
  <target name="set-mysql-script-dir" if="project.using.mysql">
  	<property name="project.scripts.dir" value="scripts/mysql"/>
