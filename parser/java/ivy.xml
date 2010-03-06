@@ -2,9 +2,9 @@
     <info organisation="org.apache.incubator" module="wookieW3CParser" revision="0.1.0-SNAPSHOT"/>
     
     <configurations>
-      <conf name="deploy"/>
-	  <conf name="default" extends="deploy"/>
-	  <conf name="test" extends="default"/>
+      <conf name="deploy" description="Provide the necessary files and libraries to deploy in a production environment"/>
+	  <conf name="dev" extends="deploy" description="Provide the necessary files and libraries to run in standalone (development) mode"/>
+	  <conf name="test" extends="dev" visibility="private" description="for our testing frameowrk"/>
 	</configurations>
     
     <dependencies>
@@ -26,7 +26,7 @@
         </dependency>
         <dependency org="org.jdom" name="jdom" rev="1.1" conf="deploy->default">
         </dependency>
-        <dependency org="org.mortbay.jetty" name="servlet-api-2.5" rev="6.1.3" conf="default->default">
+        <dependency org="org.mortbay.jetty" name="servlet-api-2.5" rev="6.1.3" conf="dev->default">
         </dependency>
     </dependencies>
 </ivy-module>
