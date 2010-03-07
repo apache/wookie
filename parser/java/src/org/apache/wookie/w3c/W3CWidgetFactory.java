@@ -21,6 +21,32 @@ import org.apache.wookie.w3c.util.WidgetPackageUtils;
 
 /**
  * Factory for parsing W3C Widget packages (.wgt files).
+ * 
+ * <p>To use the factory you MUST supply a valid output directory into which the Factory will unpack the widget. Other factory
+ * properties are optional.<p>
+ * 
+ * <p>Factory properties:</p>
+ * 
+ * <dl>
+ *   <dt>outputDirectory</dt>
+ *   <dd>The directory where the widget will be saved. The factory will expand the widget archive into this
+ *   directory, using the widget's identifier to generate a directory name and structure in which to place it</dd>
+ *   <dt>startPageProcessor</dt>
+ *   <dd>An implementation of the IStartPageProcessor interface. Setting this property allows you to inject a class that can pre-process
+ *   start pages for the widget; for example to inject javascript, tidy up HTML, insert template code etc. If this is not set, 
+ *   no pre-processing is done by the factory.</dd>
+ *   <dt>locales</dt>
+ *   <dd>The supported locales (as BCP47 language-tags) to be processed for the widget. This determines which start files, icons, and other localized elements
+ *   will be processed and expanded. This is set to "en" by default</dd>
+ *   <dt>localPath</dt>
+ *   <dd>The base URL from which unpacked widgets will be served, e.g. "/myapp/widgets". The URLs of start files will be appended to
+ *   this base URL to create the widget URL. The default value of this property is "/widgets"</dd>
+ *   <dt>features</dt>
+ *   <dd>The features supported by the implementation; this should be supplied as IRIs e.g. "http://wave.google.com". The features
+ *   are matched against features requested by the widget; if the widget requires features that are unsupported, an Exception will be
+ *   thrown when parsing the widget package. The default value of this property is an empty String array.</dd>
+ * </dl>
+ * 
  */
 public class W3CWidgetFactory {
 	

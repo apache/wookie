@@ -16,53 +16,95 @@ package org.apache.wookie.w3c;
 
 import java.util.List;
 
-import org.apache.wookie.w3c.exceptions.BadManifestException;
-import org.jdom.Element;
-
 /**
- * @author Paul Sharples
- * @version $Id: IManifestModel.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
+ * A W3C Widget object
+ * 
+ * This represents the information model for a W3C widget that has been
+ * unpacked using the W3CWidgetFactory.
  */
 public interface W3CWidget extends IManifestModelBase{
 
+	/**
+	 * Get the list of access request entities for the widget
+	 */
 	public List<IAccessEntity> getAccessList();
+	/**
+	 * Get the list of start pages for the widget
+	 */
 	public List<IContentEntity> getContentList();
+	/**
+	 * Get the list of icons for the widget
+	 */
 	public List<IIconEntity> getIconsList();
+	/**
+	 * Get the widget identifier (IRI)
+	 */
 	public String getIdentifier();
+	/**
+	 * Get the list of Licenses for the widget
+	 */
 	public List<ILicenseEntity> getLicensesList();
+	/**
+	 * Get the list of Names for the widget
+	 */
 	public List<INameEntity> getNames();
+	/**
+	 * Get the list of Descriptions for the widget
+	 */
 	public List<IDescriptionEntity> getDescriptions();
+	/**
+	 * Get the widget height as an Integer. Note this may be Null.
+	 */
 	public Integer getHeight();
+	/**
+	 * Get the widget width as an Integer. Note this may be Null.
+	 */
 	public Integer getWidth();
+	/**
+	 * Get the Author information for the widget
+	 */
 	public String getAuthor();
+	/**
+	 * Get the email address of the Widget's author
+	 */
 	public String getAuthorEmail();
+	/**
+	 * Get the url for the Widget's author
+	 */
 	public String getAuthorHref();
+	/**
+	 * Get the list of Preferences defined for the widget
+	 */
 	public List<IPreferenceEntity> getPrefences();
+	/**
+	 * Get a list of Features requested by the widget. Note that only valid
+	 * features are included (e.g. ones supported by the platform, or that are defined by the widget as optional)
+	 */
 	public List<IFeatureEntity> getFeatures();
+	/**
+	 * Get the version of the widget
+	 */
 	public String getVersion();
+	
+	/**
+	 * Gets the widget viewmodes attribute. A keyword list attribute that denotes the author's preferred view mode, 
+	 * followed by the next most preferred view mode and so forth
+	 */
 	public String getViewModes();
 	
 	/**
-	 * A convenience method typically used
-	 * for generating debug messages during import.
-	 * This method will never return null, however
-	 * the name may be an empty String.
+	 * A convenience method typically used for generating debug messages during import. This method will never return null, however the name may be an empty String.
+	 * 
+	 * This is equivalent to:
+	 * 
+	 * <code>
+	 * 	  List<INameEntity> names = widget.getNames();
+	 * 	  INameEntity name = (INameEntity)LocalizationUtils.getLocalizedElement(names.toArray(new INameEntity[fNamesList.size()]), new String[]{"en"});
+	 * </code>
+	 * 
 	 * @param locale
 	 * @return the name of the widget to be used in the given locale
 	 */
 	public String getLocalName(String locale);
 	
-	/**
-	 * Update icons to use paths using the given base path
-	 * @param path the base path for icons
-	 */
-	public void updateIconPaths(String path);
-
-    /**
-     * Unmarshall the given XML Element to this Object
-     * 
-     * @param element The Element to unmarshall
-     * @param locales the set of supported locales
-     */
-	public void fromXML(Element element, String[] locales) throws BadManifestException;
 }

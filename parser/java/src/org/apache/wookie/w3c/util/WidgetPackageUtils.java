@@ -238,7 +238,7 @@ public class WidgetPackageUtils {
 		if (WidgetPackageUtils.hasManifest(zip)){
 			try {
 				// build the model
-				W3CWidget widgetModel = new WidgetManifestModel(WidgetPackageUtils.extractManifest(zip), locales, features, zip);															
+				WidgetManifestModel widgetModel = new WidgetManifestModel(WidgetPackageUtils.extractManifest(zip), locales, features, zip);															
 
 				// get the widget identifier
 				String manifestIdentifier = widgetModel.getIdentifier();						
