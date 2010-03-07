@@ -32,7 +32,7 @@
     </target>
 
 	<target name="deploy-webapp" depends="compile-core, clean-webapp-lib">
-		<ivy:cachepath pathid="project.core.class.path" conf="default" />
+		<ivy:cachepath pathid="project.core.class.path" conf="dev" />
 		<copy todir="${servletEngine.webapp.dir}/${ant.project.name}/WEB-INF/classes">
 			<fileset dir="${project.build.classes.dir}" />
 		</copy>

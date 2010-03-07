@@ -37,7 +37,7 @@
 	<target name="init">
     	<available file="${project.core.src.dir}" property="project.core.src.dir.exists"/>
     	<available file="${project.test.src.dir}" property="project.test.src.dir.exists"/>
-		<ivy:cachepath pathid="project.core.class.path" conf="default" />
+		<ivy:cachepath pathid="project.core.class.path" conf="dev" />
 		<ivy:cachepath pathid="project.test.class.path" conf="test" />
 		
 	    <path id="run.path.id">
