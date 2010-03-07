@@ -175,12 +175,14 @@ public class PropertiesController extends Controller {
         		found=true;
         	}
         }
-        if(!found){        	
-    		Preference pref = new Preference();
-    		pref.setWidgetInstance(widgetInstance);
-    		pref.setDkey(name);
-    		pref.setDvalue(value);	
-    		pref.save();	
+        if(!found){  
+        	if (value != null){
+        		Preference pref = new Preference();
+        		pref.setWidgetInstance(widgetInstance);
+        		pref.setDkey(name);
+        		pref.setDvalue(value);	
+        		pref.save();
+        	}
         }  
         return found;
 	}
