@@ -48,11 +48,13 @@
         </dependency>
         <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.5.2" conf="deploy->default">
         </dependency> 
-        <dependency org="org.apache.incubator" name="shindig-common" rev="1.1-SNAPSHOT">
+        <dependency org="org.apache.shindig" name="shindig-common" rev="1.1-BETA5-incubating" conf="deploy->default">
         </dependency>
         <dependency org="org.jdom" name="jdom" rev="1.1" conf="deploy->default">
         </dependency>
         <dependency org="org.json" name="json" rev="20080701" conf="deploy->default">
+        </dependency>
+        <dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="deploy->default">
         </dependency>
         
         <!-- Libraries used in a development/test environment but not in deployment -->
@@ -64,8 +66,8 @@
         </dependency>
         <dependency org="org.mortbay.jetty" name="jsp-api-2.1" rev="6.1.3" conf="dev->default">
         </dependency>
-        <dependency org="org.mortbay.jetty" name="servlet-api-2.5" rev="6.1.3" conf="dev->default">
-        </dependency>
+       <!--<dependency org="org.mortbay.jetty" name="servlet-api-2.5" rev="6.1.3" conf="dev->default">
+        </dependency>-->
         <dependency org="org.apache.derby" name="derby" rev="10.4.2.0" conf="dev->default">
 		</dependency>
 		
