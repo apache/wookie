@@ -27,6 +27,7 @@ import org.apache.wookie.Messages;
 import org.apache.wookie.beans.ServerFeature;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.feature.FeatureLoader;
+import org.apache.wookie.helpers.FlashMessage;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.util.WgtWatcher;
 import org.apache.wookie.util.hibernate.DBManagerFactory;
@@ -173,18 +174,27 @@ public class ContextListener implements ServletContextListener {
 	 						W3CWidget model = fac.parse(upload);
 	 						if(!Widget.exists(model.getIdentifier())) {
 	 							WidgetFactory.addNewWidget(model, true);	
-	 							_logger.info(model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19"));
+	 							String message = model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19");
+	 							_logger.info(message);
+	 							FlashMessage.getInstance().message(message);
 	 						} else {
-	 							_logger.info(model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.20"));
+	 							String message = model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.20");
+	 							_logger.info(message);
+	 							FlashMessage.getInstance().message(message);
 	 						}
 	 						dbManager.commitTransaction();
 	 					} catch (IOException e) {
-	 						_logger.error(f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.1"));
+	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.1");
+	 						FlashMessage.getInstance().error(error);
+	 						_logger.error(error);
 	 					} catch (BadWidgetZipFileException e) {
-	 						_logger.error(f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.2"));
+	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.2");
+	 						FlashMessage.getInstance().error(error);
+	 						_logger.error(error);
 	 					} catch (BadManifestException e) {
-	 						e.printStackTrace();
-	 						_logger.error(f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.3"));
+	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.3");
+	 						FlashMessage.getInstance().error(error);
+	 						_logger.error(error);
 	 					}
 	 				}
 	 				public void fileRemoved(File f) {

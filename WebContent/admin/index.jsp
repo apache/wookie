@@ -19,6 +19,8 @@ if (version == null){
 	version="";
 }
 %>
+<%@ page import='org.apache.wookie.helpers.FlashMessage' %>
+<% FlashMessage.getInstance().appendFlashMessages(session);%>
 <% String errors = (String)session.getAttribute("error_value");%>
 <% String messages = (String)session.getAttribute("message_value");%>
 <html>
