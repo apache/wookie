@@ -21,7 +21,9 @@ import org.apache.log4j.Logger;
 import org.apache.shindig.auth.BlobCrypterSecurityToken;
 import org.apache.shindig.common.crypto.BasicBlobCrypter;
 import org.apache.wookie.Messages;
+import org.apache.wookie.beans.StartFile;
 import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.w3c.util.LocalizationUtils;
 
 /**
  * Utilities for supporting OpenSocial integration, such as creation of security tokens that
@@ -36,8 +38,6 @@ public class OpenSocialUtils {
 	private static final String DOMAIN_ID = "wookie"; //$NON-NLS-1$
 	// TODO once we have an API Key implementation, we can convey the actual container id rather than Wookie
 	private static final String CONTAINER_ID = "wookie"; //$NON-NLS-1$
-	// TODO once we get plugins to send owner Id, we can remove this
-	private static final String OWNER_ID = "0"; //$NON-NLS-1$
 	
 	
 	/**
@@ -65,15 +65,11 @@ public class OpenSocialUtils {
 			throw new Exception(localizedMessages.getString("OpenSocialUtils.1")); //$NON-NLS-1$
 		}
 
-		// We really need to implement viewer/owner info
-		String userid = "@anon"; //$NON-NLS-1$
-		if (instance.getUserId()!=null) if(!instance.getUserId().equals("")) userid = instance.getUserId(); //$NON-NLS-1$
-		
 		// Order of fields is:
 		// owner, viewer, app_id, domain, app_url, mod_id, container
 		// NOTE that we're hacking this now to push the id_key through the container value as Shindig won't let us use Strings for mod_id, only Longs
 		// TODO replace hack with a real solution
-		String[] fields = {OWNER_ID, userid, instance.getWidget().getGuid(), DOMAIN_ID, instance.getWidget().getUrl(), "0", String.valueOf(instance.getIdKey())}; //$NON-NLS-1$
+		String[] fields = {getOwnerId(instance), getUserId(instance), instance.getWidget().getGuid(), DOMAIN_ID, getUrl(instance), "0", String.valueOf(instance.getIdKey())}; //$NON-NLS-1$
 		for (int i = 0; i < fields.length; i++) {
 			// escape each field individually, for metachars in URL
 			fields[i] = URLEncoder.encode(fields[i], "UTF-8"); //$NON-NLS-1$
@@ -86,7 +82,7 @@ public class OpenSocialUtils {
 	
 	/**
 	 * Utility method for producing an encrypted token for OpenSocial applications
-	 * TODO Fix this method, its broken
+	 * TODO FIXME this method is broken, or at least a pain to test in real deployment
 	 * @param instance the widget instance to generate a token for
 	 * @return the encrypted token for the widget instance
 	 * @throws Exception
@@ -99,22 +95,39 @@ public class OpenSocialUtils {
 			throw new Exception(localizedMessages.getString("OpenSocialUtils.1")); //$NON-NLS-1$
 		}
 		
-		@SuppressWarnings("unused")
-		String userid = "@anon"; //$NON-NLS-1$
-		if (instance.getUserId()!=null) if(!instance.getUserId().equals("")) userid = instance.getUserId(); //$NON-NLS-1$
-		
 		BasicBlobCrypter crypter = new BasicBlobCrypter(key.getBytes());
 		BlobCrypterSecurityToken token = new BlobCrypterSecurityToken(crypter, CONTAINER_ID, DOMAIN_ID);
-		token.setAppUrl(instance.getWidget().getUrl());
+		token.setAppUrl(getUrl(instance));
 		// The ModuleId only takes a long, so we just have to hash the idKey for now. We could use the instance id,
 		// but this would involve updating the instance object in a two-step create, which is more fiddly and expensive.
-		token.setModuleId(0);
-		token.setOwnerId(OWNER_ID);
-		token.setViewerId(instance.getUserId());
-		String encryptedToken = null;
-		encryptedToken = token.encrypt();
+		token.setModuleId(instance.getIdKey().hashCode());
+		token.setOwnerId(getOwnerId(instance));
+		token.setViewerId(getUserId(instance));
+		// The URL used in the active request
+		token.setActiveUrl(getUrl(instance));
+		
+		String encryptedToken = token.encrypt();
+		
 		encryptedToken = URLEncoder.encode(encryptedToken, "UTF-8"); //$NON-NLS-1$
+		
 		return encryptedToken;
+	}
+	
+	private static String getOwnerId(WidgetInstance instance){
+		//TODO FIXME
+		return getUserId(instance);
+	}
+	
+	private static String getUserId(WidgetInstance instance){
+		String userid = "@anon"; //$NON-NLS-1$
+		if (instance.getUserId()!=null) if(!instance.getUserId().equals("")) userid = instance.getUserId(); //$NON-NLS-1$
+		return userid;
+	}
+	
+	private static String getUrl(WidgetInstance instance){
+		StartFile[] files = StartFile.findByValue("widget", instance.getWidget());
+		StartFile start = (StartFile) LocalizationUtils.getLocalizedElement(files, new String[]{"en"});
+		return start.getUrl();
 	}
 
 }

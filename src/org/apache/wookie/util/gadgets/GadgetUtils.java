@@ -27,7 +27,11 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.wookie.beans.Name;
+import org.apache.wookie.beans.Description;
+import org.apache.wookie.beans.StartFile;
 import org.apache.wookie.beans.Widget;
+import org.apache.wookie.beans.WidgetIcon;
 import org.json.JSONArray;
 import org.json.JSONObject;
 /**
@@ -72,6 +76,7 @@ public class GadgetUtils {
 			if (properties.getString("widget.metadata.url")!=null) svc = properties.getString("widget.metadata.url");
 			if (properties.getString("widget.shindig.url")!=null) shindig = properties.getString("widget.shindig.url");
 		} catch (Exception e) {
+			e.printStackTrace();
 			// Problem with the servlet context; we'll just let it go for now
 			// TODO log this error
 		}
@@ -120,7 +125,7 @@ public class GadgetUtils {
 			post.setRequestHeader("Content-Length", String.valueOf(req.getContentLength()));
 			response = executeMethod(post);
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			e.printStackTrace();
 			throw new Exception("There was a problem connecting to the Shindig metadata service");
 		}
 		return response;
@@ -173,6 +178,7 @@ public class GadgetUtils {
 		if (gadgets.length() > 0){
 			gadget = gadgets.getJSONObject(0);
 			if (gadget.has("errors")) throw new Exception("Invalid gadget - Shindig error");
+			
 			widget = new Widget();
 			// Defaults
 			String title = "Untitled Gadget";
@@ -197,8 +203,11 @@ public class GadgetUtils {
 			// We should be able to use the "iframeUrl" property here, but
 			// it isn't very reliable at generating a usable value, so we construct
 			// a very basic URL instead
-			//widget.setUrl(shindig+"/gadgets/ifr?url="+gadget.getString("url")+"&amp;lang=en&amp;country=UK"); //TODO FIXME Later
-
+			StartFile sf = new StartFile();
+			sf.setWidget(widget);
+			// FIXME we need to use real locales in these URLs
+			sf.setUrl(shindig+"/gadgets/ifr?url="+gadget.getString("url")+"&amp;lang=en&amp;country=UK");
+			
 			if (gadget.has("height")) if (gadget.getInt("height") != 0) height = gadget.getInt("height");
 			if (gadget.has("width")) if (gadget.getInt("width") != 0) width = gadget.getInt("width");
 
@@ -246,11 +255,23 @@ public class GadgetUtils {
 			widget.setMaximize(false);
 			widget.setHeight(height);
 			widget.setWidth(width);
-			//widget.setWidgetTitle(title); // TODO FIXME 
-			//widget.setWidgetDescription(description);	//TODO FIXME	
-			//widget.setWidgetIconLocation(icon); //TODO FIXME
+			Name name = new Name();
+			name.setWidget(widget);
+			name.setName(title);
+			Description desc = new Description();
+			desc.setWidget(widget);
+			desc.setContent(description);
+			WidgetIcon wicon = new WidgetIcon();
+			wicon.setSrc(icon);
+			wicon.setWidget(widget);
 			widget.setWidgetAuthor(author);
-
+			
+			widget.save();
+			sf.save();
+			name.save();
+			wicon.save();
+			desc.save();
+			
 		}
 		return widget;
 	}
