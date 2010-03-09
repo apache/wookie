@@ -88,7 +88,7 @@ function getInactiveToolsStr(){
 }
 
 function getActiveToolsStr(){
-	var activeToolsStr = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + LanguageHelper.getLangOpts(getActiveToolsStrUpdated);
+	var activeToolsStr = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 	activeToolsStr += "<a href=\"#\" onclick=\"postNewTopic(-1)\"><img border=\"0\" src=\"/wookie/shared/images/plus.gif\">&nbsp;" + LanguageHelper.getLocalizedString('Post new topic') + "</a>";
 	activeToolsStr += "&nbsp;&nbsp;<a href=\"#\" onclick=\"forum.getNodeTree('"+instanceid_key+"', getTreeData);\"><img border=\"0\" src=\"/wookie/shared/images/refresh.gif\">&nbsp;" + LanguageHelper.getLocalizedString('Refresh') + "</a>";
 	if(isAdminUser()){

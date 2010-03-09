@@ -143,7 +143,7 @@ function doValidation(){
 function showNotReadyYet(){
 	var notReadytext = "<div id='legendDiv'>" + LanguageHelper.getLocalizedString('This vote instance has not yet been initialised') + "</div>";
 	notReadytext += "<div id='responseDivFull'></div>";
-	notReadytext += "<div id='submitDiv'><div align=\"left\" id=\"lang_opts\">" + LanguageHelper.getLangOpts(showNotReadyYetLangChanged) + "</div></div>";
+	notReadytext += "<div id='submitDiv'></div>";
 	dwr.util.setValue("maincanvas", notReadytext, { escapeHtml:false });
 }
 
@@ -155,7 +155,7 @@ function createQuestions(){
 	var authorVoteText = "<div id='legendDiv'>" + LanguageHelper.getLocalizedString('Setup vote widget') + "</div>";
 	authorVoteText += "<div id='questionDiv'>" + LanguageHelper.getLocalizedString('Step One: Enter the question here') + ":&nbsp;<input type='text' size='50' maxlength='100' id='questionfield'></div>";
 	authorVoteText += "<div id='responseDiv'>" + LanguageHelper.getLocalizedString('Step Two: Create the responses') + ":&nbsp;(<a href='#' onClick='createNewInput()'>" + LanguageHelper.getLocalizedString('Click here to add more response fields') + "</a>)<div id='dynForm'></div></div>";
-	authorVoteText += "<div id='submitDiv'><div align=\"left\" id=\"lang_opts\">" + LanguageHelper.getLangOpts(createQuestionsLangChanged) + "&nbsp;</div><a href='#' onClick='doValidation()'>" + LanguageHelper.getLocalizedString('Step Three: Click here to check and finish') + "</a></div>";
+	authorVoteText += "<div id='submitDiv'><a href='#' onClick='doValidation()'>" + LanguageHelper.getLocalizedString('Step Three: Click here to check and finish') + "</a></div>";
 	dwr.util.setValue("maincanvas", authorVoteText, { escapeHtml:false });
 }
 
@@ -187,7 +187,7 @@ function setupVoteDisplayStageThree(pAnswers){
     	}
     }
     answerText += "</form></div>";    
-    var submitText= questionText+ answerText + "<div id='submitDiv'><div align=\"left\" id=\"lang_opts\">" + LanguageHelper.getLangOpts(setupVoteDisplayStageOne) + "&nbsp;</div><a href='#' onClick='doVote()'>" + LanguageHelper.getLocalizedString('Click here to vote') + "</a></div>";		
+    var submitText= questionText+ answerText + "<div id='submitDiv'><a href='#' onClick='doVote()'>" + LanguageHelper.getLocalizedString('Click here to vote') + "</a></div>";		
 	dwr.util.setValue("maincanvas", submitText, { escapeHtml:false });
 	var respDiv = dwr.util.byId('responseDiv');
 	respDiv.style.height = "200px"; 
@@ -262,7 +262,7 @@ function showVoteDisplayStageThree(pAnswers){
     	}
     }
     answerText += "</table></form></div>";  
-    submitDiv = "<div id='submitDiv'><div align=\"left\" id=\"lang_opts\">" + LanguageHelper.getLangOpts(showVoteDisplayStageOne) + "&nbsp;</div><a href='#' onClick='showVoteDisplayStageOne()'><img border=\"0\" src=\"/wookie/shared/images/refresh.gif\">&nbsp;" + LanguageHelper.getLocalizedString('Refresh') + "</a></div>";
+    submitDiv = "<div id='submitDiv'><a href='#' onClick='showVoteDisplayStageOne()'><img border=\"0\" src=\"/wookie/shared/images/refresh.gif\">&nbsp;" + LanguageHelper.getLocalizedString('Refresh') + "</a></div>";
       
     var endText= questionText+ answerText + submitDiv;		
 	dwr.util.setValue("maincanvas", endText, { escapeHtml:false });

@@ -8,6 +8,7 @@ iconTable['sunny'] = 'images/sunny.png';
 iconTable['sunnyintervals'] = 'images/sunny.png';
 iconTable['rainy'] = 'images/rainy.png';
 iconTable['drizzle'] = 'images/rainy.png';
+iconTable['sleet'] = 'images/rainy.png';
 iconTable['lightrain'] = 'images/rainy.png';
 iconTable['heavyrain'] = 'images/rainy.png';
 iconTable['lightshowers'] = 'images/rainy.png';
@@ -80,7 +81,8 @@ function showBack(event)
 	var back = document.getElementById("back");
 	front.style.display="none";
 	back.style.display="block";	
-	WidgetUtil.setValue("controls", getDropDownList(),  { escapeHtml:false });
+	document.getElementById("controls").innerHTML = getDropDownList();
+	//WidgetUtil.setValue("controls", getDropDownList(),  { escapeHtml:false });
 }
 
 function showFront(event)

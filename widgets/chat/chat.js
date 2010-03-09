@@ -94,27 +94,12 @@ function getInputInactiveDiv() {
 }
 
 function getInputActiveDiv(){
-	var inputactivediv = LanguageHelper.getLangOpts(updateLanguage) + "<input id=\"text\" size=\"30\" onkeypress=\"WidgetUtil.onReturn(event, sendMessage)\"/>";
+	var inputactivediv = "<input id=\"text\" size=\"30\" onkeypress=\"WidgetUtil.onReturn(event, sendMessage)\"/>";
 	inputactivediv += "<input type=\"button\" value=\"" + LanguageHelper.getLocalizedString('Send') + "\" onclick=\"sendMessage()\"/>&nbsp;";
 	if(isAdminUser()){
 		inputactivediv += getAdminLockText();
 	}
 	return inputactivediv;
-}
-
-function updateLanguage(){
-	WidgetUtil.setValue("memberslegend", LanguageHelper.getLocalizedString('online users'),  { escapeHtml:false });
-	// check to see if we are locked or not first and call callback function
-	Widget.sharedDataForKey("isLocked", updateLanguageLockedOrNot);
-}
-
-function updateLanguageLockedOrNot(isLockedValue){
-	if(isLockedValue!="true"){	
-		WidgetUtil.setValue("joined", getInputActiveDiv(),  { escapeHtml:false });
-	}
-	else{
-		WidgetUtil.setValue("joined", getInputInactiveDiv(), { escapeHtml:false });
-	}		
 }
 
 function confirmClearChat(){
@@ -154,9 +139,6 @@ function cleanup() {
 		var removed = userList.replace(currentUser,"");
 		Widget.setSharedDataForKey("defaultChatPresence",removed);	
 		Widget.appendSharedDataForKey("defaultChatLog", chatSeparator + "<" + username + " " + LanguageHelper.getLocalizedString('has left the chatroom') + ">" + chatSeparator);
-		if(!BrowserDetect.isBrowser('Firefox')){
-			alert(LanguageHelper.getLocalizedString('You have now logged out'));
-		}
 		if (isDebug) DebugHelper.debug("<function cleanup> end");																							
 	}
 }
