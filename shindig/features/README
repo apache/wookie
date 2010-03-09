@@ -1,16 +1,28 @@
 Shindig Features README
+=======================
 
-The files in the folders /features/core and /features/setprefs replace the Shindig preference handling
+The files in the folders /features/core.prefs replace the Shindig preference handling
 stubs with an interface to the Widget.preferences HTML 5 object implemented in Wookie.
 
-In Core:
+In core.prefs:
 	- prefs.js has been altered to make the W3C Widget calls
-	- wookie-xxxxx.js has been added
-	- features.xml has had the wookie-xxxx.js libs included
-
-In SetPrefs
-	- setprefs.js the rpc calls have been removed
+	- features.xml includes links to the wookie core JS injected code. Note that these are 
+	           absolute URLs are should be replaced with URLs to your own Wookie server
 	
-Replace or merge these files with the standard Shindig features files to add W3C widget persistence
+Edit the URLs in features.xml, and then replace or merge these files with the standard Shindig features files to add 
+W3C widget persistence. A ready-built shindig-features jar is located in the dist/ folder which you can use as the basis
+for your own shindig-features.jar file.
+	
+To enable this functionality to work it is currently necessary to turn off cross-site session security for DWR, or you
+will get a "Session Error" whenever using Gadgets with Wookie as the two webapps do not share sessions. 
 
-A ready-built Shindig-features jar accompanies these source files.
+To do this, add the following parameter in web.xml for the dwr-invoker serlvet:
+
+		<init-param>
+			<param-name>crossDomainSessionSecurity</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		
+(You can also avoid this problem by merging the Wookie and Shindig applications into a single webapp, combining the
+web.xml files into one.)
+		
