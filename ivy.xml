@@ -84,6 +84,7 @@
         <dependency org="mysql" name="mysql-connector-java" rev="5.1.6" conf="deploy->default">
         </dependency>
         
+        <exclude module="juel-api"/>
         <exclude module="spring"/>
         <exclude module="struts"/>
         <exclude module="webwork"/>
