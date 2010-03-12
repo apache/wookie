@@ -276,7 +276,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 			}
 			case REGISTERGADGET:{
 				registerOperation(request, properties, session);
-				doForward(request, response,fRegisterGadgetPage);
+				doForward(request, response,fMainPage);
 				break;
 			}
 			case LISTAPIKEYS:{
@@ -430,18 +430,17 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 
 	private void registerOperation(HttpServletRequest request, Configuration properties, HttpSession session){
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		session.setAttribute("metadata", null); //$NON-NLS-1$
 		try {
 			W3CWidget widgetModel = GadgetUtils.createWidget(request);
 			if(!Widget.exists(widgetModel.getIdentifier())){
 				WidgetFactory.addNewWidget(widgetModel);
-				session.setAttribute("metadata", localizedMessages.getString("WidgetAdminServlet.16")); //$NON-NLS-1$ //$NON-NLS-2$
+				session.setAttribute("message_value", widgetModel.getLocalName("en")+": "+localizedMessages.getString("WidgetAdminServlet.16")); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
-				session.setAttribute("metadata", localizedMessages.getString("WidgetAdminServlet.17")); //$NON-NLS-1$ //$NON-NLS-2$				
+				session.setAttribute("message_value", widgetModel.getLocalName("en")+": "+localizedMessages.getString("WidgetAdminServlet.17")); //$NON-NLS-1$ //$NON-NLS-2$				
 			}
 		} catch (Exception e1) {
 			e1.printStackTrace();
-			session.setAttribute("metadata", localizedMessages.getString("WidgetAdminServlet.18")); //$NON-NLS-1$ //$NON-NLS-2$
+			session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.18")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
