@@ -19,14 +19,12 @@ import static org.junit.Assert.*;
 import org.apache.wookie.beans.Widget;
 import org.apache.wookie.tests.helpers.MockHttpServletRequest;
 import org.apache.wookie.util.gadgets.GadgetUtils;
+import org.apache.wookie.w3c.W3CWidget;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import junit.framework.TestCase;
 
 /**
  * Tests for Gadget utility methods
@@ -46,6 +44,8 @@ public class GadgetUtilsTest {
 	private static String TEST_SERVICE_URL_VALID;
 	private static String TEST_SERVICE_URL_INVALID;
 	private static String TEST_GADGET_URL_VALID;
+	private static String TEST_GADGET_URL_VALID2;
+	private static String TEST_GADGET_URL_VALID3;
 	private static String TEST_GADGET_URL_INVALID;
 	private static String TEST_GADGET_URL_MALFORMED;
 
@@ -60,9 +60,13 @@ public class GadgetUtilsTest {
 		TEST_METADATA_INVALID = "{\"gadgets\"[{\"showInDirectory\":false,\"width\":0,\"title\":\"hello world example\",\"singleton\":false,\"categories\":[\"\",\"\"],\"views\":{\"default\":{\"preferredWidth\":0,\"preferredHeight\":0,\"type\":\"html\",\"quirks\":true}},\"screenshot\":\"\",\"links\":{},\"thumbnail\":\"\",\"authorLink\":\"\",\"height\":0,\"scaling\":false,\"moduleId\":1,\"features\":[],\"showStats\":false,\"authorPhoto\":\"\",\"scrolling\":false,\"url\":\"http://www.google.com/ig/modules/hello.xml\",\"titleUrl\":\"\",\"iframeUrl\":\"/gadgets/ifr?container=default&mid=1&v=db18c863f15d5d1e758a91f2a44881b4&lang=en&country=US&view=default&url=http%3A%2F%2Fwww.google.com%2Fig%2Fmodules%2Fhello.xml\",\"userPrefs\":{}}]}";
 		TEST_METADATA_NO_GADGETS = "{\"gadgets\":[]}";
 
-		TEST_SERVICE_URL_VALID = "http://localhost:8080/wookie/gadgets/metadata";
+		TEST_SERVICE_URL_VALID = "http://localhost:8080/gadgets/metadata";
 		TEST_SERVICE_URL_INVALID = "http://localhost:8080/shindig/gadgets/madeupname";
+		
 		TEST_GADGET_URL_VALID = "http://www.google.com/ig/modules/hello.xml";
+		TEST_GADGET_URL_VALID2 = "http://hosting.gmodules.com/ig/gadgets/file/112581010116074801021/hamster.xml";
+		TEST_GADGET_URL_VALID3 = "http://www.google.com/ig/modules/facebook.xml";
+		
 		TEST_GADGET_URL_INVALID = "http://localhost:8080/gadgets/madeupname";
 		TEST_GADGET_URL_MALFORMED = "ttp://www.google.com/ig/modules/hello.xml";
 
@@ -78,11 +82,12 @@ public class GadgetUtilsTest {
 		request.setServerName("localhost");
 		request.setServerPort(8080);
 		request.setParameter("url", TEST_GADGET_URL_VALID);
-
+		
 		try {
-			Widget widget = GadgetUtils.createWidget(request);
+			W3CWidget widget = GadgetUtils.createWidget(request);
 			assertNotNull(widget);
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail("Couldn't create widget from valid request");
 		}
 	}
@@ -96,7 +101,7 @@ public class GadgetUtilsTest {
 		request.setServerPort(8080);
 		request.setParameter("url", TEST_GADGET_URL_INVALID);
 		@SuppressWarnings("unused")
-		Widget widget = GadgetUtils.createWidget(request);
+		W3CWidget widget = GadgetUtils.createWidget(request);
 		// Uh-oh! No exception was thrown so we
 		// better make this test fail!
 		fail("should've thrown an exception!");
@@ -111,7 +116,7 @@ public class GadgetUtilsTest {
 		request.setServerPort(8888);
 		request.setParameter("url", TEST_GADGET_URL_VALID);
 		@SuppressWarnings("unused")
-		Widget widget = GadgetUtils.createWidget(request);
+		W3CWidget widget = GadgetUtils.createWidget(request);
 		// Uh-oh! No exception was thrown so we
 		// better make this test fail!
 		fail("should've thrown an exception!");
@@ -203,7 +208,7 @@ public class GadgetUtilsTest {
 	@Test(expected = Exception.class)
 	public void getWidgetWithErrorMetadata() throws Exception {
 		@SuppressWarnings("unused")
-		Widget widget = GadgetUtils.getWidget(GadgetUtils.getMetadata(
+		W3CWidget widget = GadgetUtils.getWidget(GadgetUtils.getMetadata(
 				TEST_SERVICE_URL_VALID, TEST_GADGET_URL_INVALID), SHINDIG);
 		// Uh-oh! No exception was thrown so we
 		// better make this test fail!
@@ -223,10 +228,10 @@ public class GadgetUtilsTest {
 
 	@Test
 	public void getWidgetWithValidMetadataAndDefaults() {
-		Widget widget = null;
+		W3CWidget widget = null;
 		try {
 			widget = GadgetUtils.getWidget(TEST_METADATA_VALID, SHINDIG);
-			assertEquals(widget.getHeight().intValue(), 200);
+			assertEquals(320, widget.getHeight().intValue(), 200);
 			assertEquals(widget.getWidth().intValue(), 320);
 		} catch (Exception e) {
 			fail("Create widget from basic valid metadata - defaults not used");
@@ -235,7 +240,7 @@ public class GadgetUtilsTest {
 
 	@Test
 	public void getWidgetWithValidMetadataAndOverrides() {
-		Widget widget = null;
+		W3CWidget widget = null;
 		try {
 			widget = GadgetUtils.getWidget(TEST_METADATA_SET_HEIGHT_WIDTH,
 					SHINDIG);
@@ -249,7 +254,7 @@ public class GadgetUtilsTest {
 	@Test(expected = Exception.class)
 	public void getWidgetWithEmptyURL() throws Exception {
 		@SuppressWarnings("unused")
-		Widget widget = GadgetUtils.getWidget(TEST_METADATA_URL_EMPTY, SHINDIG);
+		W3CWidget widget = GadgetUtils.getWidget(TEST_METADATA_URL_EMPTY, SHINDIG);
 		// Uh-oh! No exception was thrown so we
 		// better make this test fail!
 		fail("should've thrown an exception!");
@@ -258,7 +263,7 @@ public class GadgetUtilsTest {
 	@Test(expected = Exception.class)
 	public void getWidgetWithMissingURL() throws Exception {
 		@SuppressWarnings("unused")
-		Widget widget = GadgetUtils.getWidget(TEST_METADATA_URL_NULL, SHINDIG);
+		W3CWidget widget = GadgetUtils.getWidget(TEST_METADATA_URL_NULL, SHINDIG);
 		// Uh-oh! No exception was thrown so we
 		// better make this test fail!
 		fail("should've thrown an exception!");
@@ -267,7 +272,7 @@ public class GadgetUtilsTest {
 	@Test(expected = Exception.class)
 	public void getWidgetWithInvalidJSON() throws Exception {
 		@SuppressWarnings("unused")
-		Widget widget = GadgetUtils.getWidget(TEST_METADATA_INVALID, SHINDIG);
+		W3CWidget widget = GadgetUtils.getWidget(TEST_METADATA_INVALID, SHINDIG);
 		// Uh-oh! No exception was thrown so we
 		// better make this test fail!
 		fail("should've thrown an exception!");
