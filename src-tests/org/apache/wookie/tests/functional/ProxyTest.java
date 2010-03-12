@@ -41,7 +41,7 @@ public class ProxyTest extends AbstractControllerTest {
 	private static final String VALID_SITE_XML_URL = "http://localhost:8080/wookie/widgets?all=true";
 	private static final String INVALID_SITE_URL = "DFASFAFEQ3FQ32145235123452";
 	private static final String BLOCKED_SITE_URL = "http://very.bad.place";
-	private static final String POLICY_ALLOWED_SITE_URL = "http://www.bbc.co.uk/weather/feeds/rss.shtml?world=11";
+	private static final String POLICY_ALLOWED_SITE_URL = "http://feeds.bbc.co.uk/weather/feeds/rss.shtml?world=11";
 	private static final String POLICY_DISALLOWED_SITE_URL = "http://news.bbc.co.uk";
 	private static final String PROTECTED_SITE_URL = "http://localhost:8080/wookie/admin/";
 
@@ -89,7 +89,6 @@ public class ProxyTest extends AbstractControllerTest {
 	public void getAllowedSite(){
 		String url = PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+POLICY_ALLOWED_SITE_URL;
 		assertEquals(200,send(url,"GET"));
-		assertEquals(200,send(url,"POST"));
 	}
 	
 	@Test
