@@ -1,11 +1,14 @@
 <ivysettings>
   <settings defaultResolver="wookie-chain" />
-  
+  <caches>
+  	<cache useOrigin="true" name="null"/>
+  </caches>
   <resolvers>
-    <chain name="wookie-chain">
-      <filesystem name="local" m2compatible="true" local="true">
+      <filesystem name="local" m2compatible="true" local="true" cache="null">
           <artifact pattern="${user.home}/.m2/repository/[organisation]/[module]/[revision]/[module]-[revision].[ext]" />
       </filesystem>
+    <chain name="wookie-chain">
+      <resolver ref="local"></resolver>
       <filesystem name="wookie-local">
         <artifact pattern="${basedir}/${ivy.repository.dir}/lib/[artifact]-[revision].[type]" />
       </filesystem>
@@ -13,3 +16,5 @@
     </chain>
   </resolvers>
 </ivysettings>
+
+
