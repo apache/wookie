@@ -21,12 +21,6 @@
 
 	<import file="ivy-java-common.xml" />
 	
-	<target name="stopserver">
-		<parallel>
-			<java classname="org.apache.wookie.server.Stop" classpathref="run.path.id" />
-		</parallel>
-	</target>
-	
     <target name="clean-webapp-lib" description="--> clean the project webapp libs directory">
         <delete includeemptydirs="true" dir="${project.weblib.dir}"/>
     </target>
