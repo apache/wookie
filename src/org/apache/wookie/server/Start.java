@@ -14,7 +14,12 @@
 
 package org.apache.wookie.server;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.StringTokenizer;
 
 import org.apache.commons.io.IOUtils;
@@ -86,9 +91,14 @@ public class Start {
 
 	private static void startServer() throws Exception, InterruptedException {
 		logger.info("Starting Wookie Server");
-		server.start();  
-		server.join();  
 		logger.info("point your browser at http://localhost:" + port + "/wookie");
+		// The monitor thread will end this server instance when it receives a \n\r on port 8079
+		Thread monitor = new MonitorThread();
+	    monitor.start();
+		server.start(); 			
+		server.join();  			
+		monitor = null;
+		System.exit(0);
 	}
 
 	private static void configureServer() throws Exception {
@@ -102,5 +112,37 @@ public class Start {
 		
 		HashUserRealm authedRealm = new HashUserRealm("Authentication Required","etc/jetty-realm.properties");
 		server.setUserRealms(new UserRealm[]{authedRealm});
+	}
+	
+	private static class MonitorThread extends Thread {
+
+		private ServerSocket socket;
+
+		public MonitorThread() {
+			setDaemon(true);
+			setName("StopMonitor");
+			try {
+				socket = new ServerSocket(8079, 1, InetAddress.getByName("127.0.0.1"));
+			} catch(Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public void run() {
+			System.out.println("*** running jetty 'stop' thread");
+			Socket accept;
+			try {
+				accept = socket.accept();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(accept.getInputStream()));
+				reader.readLine();
+				System.out.println("*** stopping jetty embedded server");
+				server.stop();
+				accept.close();
+				socket.close();	                	                
+			} catch(Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 }
