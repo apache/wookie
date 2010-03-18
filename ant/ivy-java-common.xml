@@ -110,7 +110,7 @@
 	<target name="post-compile-core" description="Run after compile-core. Intended to be overridden if your project needs any post compile processing"/>
     	
     <target name="run" depends="compile-core" description="--> compile and run the project">
-		<java classname="${main.class.name}"
+		<java classname="${main.start.class.name}"
         	classpathref="run.path.id"
             fork="true"
             failonerror="true">
@@ -118,6 +118,16 @@
         	<arg line="${run.args}"/>
         </java>    	
     </target>
+	
+	<target name="stopserver" depends="init" description="--> stop the running server instance">
+		<java classname="${main.stop.class.name}"
+	        classpathref="run.path.id"
+	        fork="true"
+	        failonerror="true">
+	        <jvmarg line="${jvmargs}"/>
+	        <arg line="${run.args}"/>
+	       </java>    	    	
+	</target>	
     
     <target name="jar" depends="clean-dist, compile-core" description="--> make a jar file for this project">
     	<mkdir dir="${dist.dir}"/>
