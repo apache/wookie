@@ -145,7 +145,7 @@ public class WidgetHelper {
 		}
 		String out = "\t\t<title "; 
 		if (name != null && name.getDir()!=null) out+=" dir=\""+name.getDir()+"\"";
-		if (shortName != null) out +="short=\""+shortName + "\"";
+		if (shortName != null) out +=" short=\""+shortName + "\"";
 		out +=">";
 		if(longName != null) out += longName; 
 		out += "</title>\n";
