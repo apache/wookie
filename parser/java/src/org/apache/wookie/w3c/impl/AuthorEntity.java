@@ -18,13 +18,12 @@ import org.apache.wookie.w3c.IAuthorEntity;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.util.IRIValidator;
 import org.apache.wookie.w3c.util.UnicodeUtils;
-import org.apache.wookie.w3c.util.XmlUtils;
+
 import org.jdom.Element;
 /**
- * @author Paul Sharples
- * @version $Id: AuthorEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
+ * The <author> element
  */
-public class AuthorEntity implements IAuthorEntity {
+public class AuthorEntity extends AbstractLocalizedEntity implements IAuthorEntity {
 	
 	private String fAuthorName;
 	private String fHref;
@@ -72,7 +71,7 @@ public class AuthorEntity implements IAuthorEntity {
 	}
 	
 	public void fromXML(Element element) {
-		fAuthorName = UnicodeUtils.normalizeWhitespace(XmlUtils.getTextContent(element));		
+		fAuthorName = getLocalizedTextContent(element);		
 		fHref = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.HREF_ATTRIBUTE));	
 		if (fHref.equals("")) fHref = null;
 		if (!IRIValidator.isValidIRI(fHref)) fHref = null;

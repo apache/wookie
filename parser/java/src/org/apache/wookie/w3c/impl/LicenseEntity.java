@@ -17,11 +17,10 @@ package org.apache.wookie.w3c.impl;
 import org.apache.wookie.w3c.ILicenseEntity;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.util.UnicodeUtils;
-import org.apache.wookie.w3c.util.XmlUtils;
+
 import org.jdom.Element;
 /**
- * @author Paul Sharples
- * @version $Id: LicenseEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
+ * the <license> element
  */
 public class LicenseEntity extends AbstractLocalizedEntity implements ILicenseEntity {
 	
@@ -62,7 +61,7 @@ public class LicenseEntity extends AbstractLocalizedEntity implements ILicenseEn
 	
 	public void fromXML(Element element) {
 		super.fromXML(element);
-		fLicenseText = UnicodeUtils.normalizeWhitespace(XmlUtils.getTextContent(element));
+		fLicenseText = getLocalizedTextContent(element);
 		fHref = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.HREF_ATTRIBUTE));		
 		if (fHref.equals("")) fHref = null;
 	}

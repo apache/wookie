@@ -16,12 +16,9 @@ package org.apache.wookie.w3c.impl;
 
 import org.apache.wookie.w3c.IDescriptionEntity;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
-import org.apache.wookie.w3c.util.UnicodeUtils;
-import org.apache.wookie.w3c.util.XmlUtils;
 import org.jdom.Element;
 /**
- * @author Paul Sharples
- * @version $Id: DescriptionEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
+ * The <description> element
  */
 public class DescriptionEntity extends AbstractLocalizedEntity  implements IDescriptionEntity {
 	
@@ -52,7 +49,7 @@ public class DescriptionEntity extends AbstractLocalizedEntity  implements IDesc
 	
 	public void fromXML(Element element) {
 		super.fromXML(element);
-		fDescription = UnicodeUtils.normalizeWhitespace(XmlUtils.getTextContent(element));
+		fDescription = getLocalizedTextContent(element);
 	}
 
 

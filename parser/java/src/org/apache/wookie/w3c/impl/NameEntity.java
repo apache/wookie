@@ -17,12 +17,10 @@ package org.apache.wookie.w3c.impl;
 import org.apache.wookie.w3c.INameEntity;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.util.UnicodeUtils;
-import org.apache.wookie.w3c.util.XmlUtils;
 import org.jdom.Element;
 
 /**
- * @author Paul Sharples
- * @version $Id: NameEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
+ * the <name> element
  */
 public class NameEntity extends AbstractLocalizedEntity implements INameEntity {
 	
@@ -66,7 +64,7 @@ public class NameEntity extends AbstractLocalizedEntity implements INameEntity {
 	public void fromXML(Element element) {		
 		super.fromXML(element);
 		// Get the text value of name
-		fName = UnicodeUtils.normalizeWhitespace(XmlUtils.getTextContent(element));
+		fName = getLocalizedTextContent(element);
 		// Get the short attribute (if exists)
 		fShort = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.SHORT_ATTRIBUTE));
 	}
