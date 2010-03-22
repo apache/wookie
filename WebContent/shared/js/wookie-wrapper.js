@@ -56,9 +56,16 @@ WidgetPreferences = new function WidgetPreferences(){
             }
         } else {
         	// Setup prototype methods
-            eval("Widget.preferences.__defineGetter__('"+key+"', function(){return Widget.preferences.getItem('"+key+"')})");
-            eval("Widget.preferences.__defineSetter__('"+key+"', function(v){return Widget.preferences.setItem('"+key+"',v)})");
-            eval("Widget.preferences.prefs."+key+"=pref");
+        	try{
+        		eval("Widget.preferences.__defineGetter__('"+key+"', function(){return Widget.preferences.getItem('"+key+"')})");
+        		eval("Widget.preferences.__defineSetter__('"+key+"', function(v){return Widget.preferences.setItem('"+key+"',v)})");
+        		eval("Widget.preferences.prefs."+key+"=pref");
+            }
+            // Catch IE 8 error. See WOOKIE-44 
+            catch(err){
+            	eval("Widget.preferences." + key + "='" + value + "'");
+				eval("Widget.preferences.prefs." + key + "=pref");
+            }
         }
 		this.prefs[key] = pref;
 		Widget.setPreferenceForKey(key, value);
@@ -155,9 +162,16 @@ var Widget = {
 		for (i in map){
             obj = map[i];
             key = obj["dkey"];
-			eval("Widget.preferences.__defineGetter__('"+key+"', function(){return Widget.preferences.getItem('"+key+"')})");
-            eval("Widget.preferences.__defineSetter__('"+key+"', function(v){return Widget.preferences.setItem('"+key+"',v)})");
-            eval("this.preferences.prefs."+key+"=obj");
+            try{
+				eval("Widget.preferences.__defineGetter__('"+key+"', function(){return Widget.preferences.getItem('"+key+"')})");
+            	eval("Widget.preferences.__defineSetter__('"+key+"', function(v){return Widget.preferences.setItem('"+key+"',v)})");
+            	eval("this.preferences.prefs."+key+"=obj");
+            }
+            // Catch IE 8 error. See WOOKIE-44
+            catch(err){
+            	eval("Widget.preferences." + key + "='" + obj["dvalue"] + "'");
+            	eval("this.preferences.prefs."+key+"=obj");
+            }
 		}
 		this.preferences.calcLength();
 	},
