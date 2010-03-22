@@ -47,21 +47,39 @@ Function.prototype.bind = function( object )
 /*
  *  on load, instanciate a new BubbleGame
  */
-window.addEventListener
-(
-    'load',
-    function(/* load callback */)
-    {
-        if (screen.availHeight + screen.availWidth <= 800)
-        {
-            window.moveTo(0, 0);
-            window.resizeTo(screen.availWidth, screen.availHeight);
-            window.scrollTo(0,0);
-        }
-        new BubbleGame( 'gameArea', 'newGame', 'score', 'hiScore' );
-    },
-    false
-)
+if(window.addEventListener){
+	window.addEventListener
+	(
+	    'load',
+	    function(/* load callback */)
+	    {
+	        if (screen.availHeight + screen.availWidth <= 800)
+	        {
+	            window.moveTo(0, 0);
+	            window.resizeTo(screen.availWidth, screen.availHeight);
+	            window.scrollTo(0,0);
+	        }
+	        new BubbleGame( 'gameArea', 'newGame', 'score', 'hiScore' );
+	    },
+	    false
+	)
+}
+else{
+	window.attachEvent
+	(
+	    'onload',
+	    function(/* load callback */)
+	    {	 
+	        if (screen.availHeight + screen.availWidth <= 800)
+	        {	 
+	            window.moveTo(0, 0);
+	            window.resizeTo(screen.availWidth, screen.availHeight);
+	            window.scrollTo(0,0);
+	        }
+	        new BubbleGame( 'gameArea', 'newGame', 'score', 'hiScore' );
+	    }
+	)	
+}
 
 /*
  *  BubbleGame
@@ -103,8 +121,14 @@ function BubbleGame( gameAreaId, newGameId, scoreId, hiScoreId )
         hGameArea.className = '';
         hGameArea.innerHTML = '';
 
-        hGameArea.addEventListener( 'mouseover',    hoverTile.bind(this), false );
-        hGameArea.addEventListener( 'mouseout',     hoverTile.bind(this), false );
+        if(window.addEventListener){
+        	hGameArea.addEventListener( 'mouseover',    hoverTile.bind(this), false );
+        	hGameArea.addEventListener( 'mouseout',     hoverTile.bind(this), false );
+        }
+        else{
+	        hGameArea.attachEvent( 'onmouseover',    hoverTile.bind(this));
+	        hGameArea.attachEvent( 'onmouseout',     hoverTile.bind(this));        	
+        }
 
         var isFull  = false;
         while( !isFull )
@@ -117,8 +141,13 @@ function BubbleGame( gameAreaId, newGameId, scoreId, hiScoreId )
             newTile.setAttribute( 'data-index', tiles );
             hGameArea.appendChild( newTile );
 
-            newTile.addEventListener( 'click', clickTile.bind(this), false );
-
+    	    if(window.addEventListener){
+    	    	newTile.addEventListener( 'click', clickTile.bind(this), false );
+    	    }
+    	    else{
+	            newTile.attachEvent( 'onclick', clickTile.bind(this));	        	    	
+    	    }
+    	    
             //newTile.onclick= clickTile.bind(this);
             if( !newTile.offsetTop )
             {
@@ -347,15 +376,32 @@ function BubbleGame( gameAreaId, newGameId, scoreId, hiScoreId )
         hGameArea   = $(gameAreaId),
         hHiScore    = $(hiScoreId);
 
-    hiScore = widget.preferences.getItem('hiScore')||0;
+    var hiScore;
+    try{
+	    hiScore = widget.preferences.getItem('hiScore');
+	    if(hiScore == "undefined"){
+	    	hiScore = 0;
+	    }	    	
+    }
+    catch(err){
+    	hiScore = 0;
+    }
 
-    $(newGameId).addEventListener
-    (
-        'click',
-        this.newGame.bind(this),
-        false
-    );
-
+    if(window.addEventListener){
+	    $(newGameId).addEventListener
+	    (
+	        'click',
+	        this.newGame.bind(this),
+	        false
+	    );
+    }
+    else{
+        $(newGameId).attachEvent
+        (
+            'onclick',
+            this.newGame.bind(this)        
+        );    	
+    }
 
     this.newGame();
 }
