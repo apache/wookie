@@ -35,7 +35,7 @@ Task.prototype.getUser = function(){
     if (participant != null){
         user.id = participant.getId();
         user.username = participant.getDisplayName();
-        user.thumbnail  = participant.getThumbnailUrl();
+        user.thumbnail  = participant.getThumbnailUrl();      
     }
     // Unknown participant
     if (user.username == null || user.username == ""){
@@ -43,7 +43,9 @@ Task.prototype.getUser = function(){
         user.id = "anonymous";
     }
     // Default thumbnail image
-    if (user.thumbnail == "" || user.thumbnail == null) user.thumbnail = "anon.png";
+    if (user.thumbnail == "" || user.thumbnail == null || user.thumbnail == "http://fixme.org/thumbnail"){
+    	user.thumbnail = "anon.png";
+    }
     return user;
 }
     
