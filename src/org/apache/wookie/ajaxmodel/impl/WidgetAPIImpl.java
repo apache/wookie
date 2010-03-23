@@ -16,9 +16,7 @@ package org.apache.wookie.ajaxmodel.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,9 +30,9 @@ import org.apache.wookie.beans.Widget;
 import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.controller.PropertiesController;
 import org.apache.wookie.controller.WidgetInstancesController;
+import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.server.LocaleHandler;
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 
@@ -67,7 +65,6 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#preferences2(java.lang.String)
 	 */
-	@SuppressWarnings("unchecked")
 	public List<Preference> preferences(String id_key) {
 		ArrayList<Preference> prefs = new ArrayList<Preference>();
 		if(id_key == null) return prefs;
@@ -165,7 +162,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2");
 		//
 		PropertiesController.updateSharedDataEntry(widgetInstance, key, value, false);
-		notifyWidgets(widgetInstance);
+		Notifier.notifySiblings(widgetInstance);
 		return "okay"; //$NON-NLS-1$
 	}
 
@@ -181,7 +178,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2");
 		//
 		PropertiesController.updateSharedDataEntry(widgetInstance, key, value, true);
-		notifyWidgets(widgetInstance);
+		Notifier.notifySiblings(widgetInstance);
 		return "okay"; //$NON-NLS-1$
 	}
 
@@ -197,7 +194,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		//
 		String sharedDataKey = widgetInstance.getSharedDataKey();
 		WidgetInstancesController.lockWidgetInstance(widgetInstance);
-		callback(widgetInstance, "Widget.onLocked(\""+sharedDataKey+"\");");//$NON-NLS-1$
+		Notifier.callSiblings(widgetInstance,"Widget.onLocked(\""+sharedDataKey+"\");");//$NON-NLS-1$
         return "okay"; //$NON-NLS-1$
 	}
 
@@ -213,7 +210,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		//
 		String sharedDataKey = widgetInstance.getSharedDataKey();
 		WidgetInstancesController.unlockWidgetInstance(widgetInstance);
-		callback(widgetInstance, "Widget.onUnlocked(\""+sharedDataKey+"\");");//$NON-NLS-1$
+		Notifier.callSiblings(widgetInstance,"Widget.onUnlocked(\""+sharedDataKey+"\");");//$NON-NLS-1$
         return "okay"; //$NON-NLS-1$
 	}
 
@@ -227,7 +224,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
 		if (widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
 		//
-		callback(widgetInstance,"window.onHide()");//$NON-NLS-1$
+		Notifier.callSiblings(widgetInstance,"window.onHide()");//$NON-NLS-1$
 	    return "okay"; //$NON-NLS-1$
 	}
 
@@ -240,7 +237,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
 		if(widgetInstance==null) return localizedMessages.getString("WidgetAPIImpl.0");
-		callback(widgetInstance,"window.onShow()"); //$NON-NLS-1$
+		Notifier.callSiblings(widgetInstance,"window.onShow()"); //$NON-NLS-1$
 	    return "okay"; //$NON-NLS-1$
 	}
 
@@ -294,34 +291,6 @@ public class WidgetAPIImpl implements IWidgetAPI {
         .appendScript(");");        //$NON-NLS-1$
         wctx.getScriptSession().addScript(script);
         return ""; //$NON-NLS-1$
-	}
-	
-	/**
-	 * Send notifications to other widgets of shared data updates
-	 * TODO consider reusing the Notifier
-	 */
-	private void notifyWidgets(WidgetInstance widgetInstance){
-		String sharedDataKey = widgetInstance.getSharedDataKey();
-		String script = "Widget.onSharedUpdate(\""+sharedDataKey+"\");"; //$NON-NLS-1$ //$NON-NLS-2$
-		callback(widgetInstance, script);
-	}
-	
-	/**
-	 * Sends a callback script
-	 * @param widgetInstance
-	 * @param call
-	 */
-	private void callback(WidgetInstance widgetInstance, String call){
-		WebContext wctx = WebContextFactory.get();
-        String currentPage = wctx.getCurrentPage();
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendScript(call);
-        // Loop over all the users on the current page
-        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
-        for (Iterator<?> it = pages.iterator(); it.hasNext();){
-            ScriptSession otherSession = (ScriptSession) it.next();
-            otherSession.addScript(script);
-        }	
 	}
 
 }

@@ -14,9 +14,7 @@
 
 package org.apache.wookie.feature.wave;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,16 +25,13 @@ import org.apache.wookie.beans.SharedData;
 import org.apache.wookie.beans.WidgetInstance;
 import org.apache.wookie.controller.PropertiesController;
 import org.apache.wookie.feature.IFeature;
+import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.helpers.ParticipantHelper;
 import org.apache.wookie.server.LocaleHandler;
-import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.ScriptSession;
-import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 
 /**
- * @author scott
- *
+ * Implementation of the Wave API
  */
 public class WaveAPIImpl implements IFeature, IWaveAPI{
 
@@ -59,7 +54,7 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 	 * @see org.apache.wookie.feature.wave.IWaveAPI#getHost(java.lang.String)
 	 */
 	public String getHost(String idKey) {
-		// TODO Auto-generated method stub
+		// TODO FIXME see WOOKIE-66
 		return null;
 	}
 
@@ -93,9 +88,9 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 	public String getParticipants(String id_key) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0");
+		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
 		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
-		if(widgetInstance==null) return localizedMessages.getString("WidgetAPIImpl.0");
+		if(widgetInstance==null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
 		Participant[] participants = Participant.getParticipants(widgetInstance);
 		return ParticipantHelper.createJSONParticipantsDocument(participants);
 	}
@@ -106,9 +101,9 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 	public String getViewer(String id_key) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0");
+		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
 		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
-		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
+		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
 		Participant participant = Participant.getViewer(widgetInstance);
 		if (participant != null) return ParticipantHelper.createJSONParticipantDocument(participant); //$NON-NLS-1$
 		return null; // no viewer i.e. widget is anonymous
@@ -121,40 +116,13 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
-		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
-		if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2");
+		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
+		if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2"); //$NON-NLS-1$
 		//
 		for (String key: map.keySet())
 		 	PropertiesController.updateSharedDataEntry(widgetInstance, key, map.get(key), false);
-		notifyWidgets(widgetInstance);
+		Notifier.notifySiblings(widgetInstance);
 		return "okay"; //$NON-NLS-1$
-	}
-	
-	/**
-	 * Send notifications to other widgets of shared data updates
-	 */
-	private void notifyWidgets(WidgetInstance widgetInstance){
-		String sharedDataKey = widgetInstance.getSharedDataKey();
-		String script = "Widget.onSharedUpdate(\""+sharedDataKey+"\");"; //$NON-NLS-1$ //$NON-NLS-2$
-		callback(widgetInstance, script);
-	}
-	
-	/**
-	 * Sends a callback script
-	 * @param widgetInstance
-	 * @param call
-	 */
-	private void callback(WidgetInstance widgetInstance, String call){
-		WebContext wctx = WebContextFactory.get();
-        String currentPage = wctx.getCurrentPage();
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendScript(call);
-        // Loop over all the users on the current page
-        Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
-        for (Iterator<?> it = pages.iterator(); it.hasNext();){
-            ScriptSession otherSession = (ScriptSession) it.next();
-            otherSession.addScript(script);
-        }	
 	}
 
 }

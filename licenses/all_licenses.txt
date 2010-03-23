@@ -66,6 +66,10 @@ jquery.js
 	Containing Project URL: http://jquery.com/
 	License: MIT (see http://dev.jquery.com/browser/trunk/jquery/MIT-LICENSE.txt)
 	
+UrlEncodedQueryString.java
+	By Richard Kennard; see https://urlencodedquerystring.dev.java.net/
+	License: BSD (see bsd.txt)
+	
 icu4j.jar
 	Containing Project URL: http://site.icu-project.org/
 	License: X (see http://source.icu-project.org/repos/icu/icu4j/tags/release-4-2-1/license.html)

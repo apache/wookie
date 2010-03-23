@@ -75,7 +75,11 @@
 			<param-name>activeReverseAjaxEnabled</param-name>
 			<param-value>true</param-value>
 		</init-param>
-		 
+		
+		<init-param>
+       		<param-name>org.directwebremoting.extend.PageNormalizer</param-name>
+       		<param-value>org.apache.wookie.util.SiblingPageNormalizer</param-value>
+  		</init-param>
 		<init-param>
   			<param-name>org.directwebremoting.extend.ServerLoadMonitor</param-name>
   			<param-value>org.directwebremoting.impl.PollingServerLoadMonitor</param-value>
