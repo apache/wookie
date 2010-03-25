@@ -36,7 +36,6 @@ public class FolderLocalizationTest extends AbstractControllerTest {
 	
 	private static final String LOCALIZED_WIDGET = "http://www.getwookie.org/widgets/localetest";
 	private static String WIDGET_START_URL_ROOT;
-	protected static final String SERVER_URL = "http://localhost:8080";
 	
 	private static HttpClient client;
 	private static GetMethod get;
@@ -94,7 +93,7 @@ public class FolderLocalizationTest extends AbstractControllerTest {
 		get.setFollowRedirects(true);
 		try {
 			client.executeMethod(get);
-			return SERVER_URL + get.getPath();
+			return TEST_SERVER_ORIGIN + get.getPath();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 

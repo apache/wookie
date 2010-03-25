@@ -17,28 +17,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.junit.Test;
 
-/**
- * @author scott
- *
- */
 public class WidgetServicesControllerTest extends AbstractControllerTest {
 
 	@Test
 	public void addService(){
 		 try {
 		        HttpClient client = new HttpClient();
-				Credentials defaultcreds = new UsernamePasswordCredentials("java", "java");
-				client.getState().setCredentials(new AuthScope("localhost", 8080, AuthScope.ANY_REALM), defaultcreds);
+		        setAuthenticationCredentials(client);
 		        PostMethod post = new PostMethod(TEST_SERVICES_SERVICE_URL_VALID+"/test");
 		        post.setDoAuthentication(true);
 		        client.executeMethod(post);
@@ -71,8 +63,7 @@ public class WidgetServicesControllerTest extends AbstractControllerTest {
 	public void modifyService(){
 		 try {
 		        HttpClient client = new HttpClient();
-				Credentials defaultcreds = new UsernamePasswordCredentials("java", "java");
-				client.getState().setCredentials(new AuthScope("localhost", 8080, AuthScope.ANY_REALM), defaultcreds);
+		        setAuthenticationCredentials(client);
 		        PutMethod put = new PutMethod(TEST_SERVICES_SERVICE_URL_VALID+"/test");
 		        put.setQueryString("name=test2");
 		        put.setDoAuthentication(true);
@@ -108,8 +99,7 @@ public class WidgetServicesControllerTest extends AbstractControllerTest {
 	public void deleteService(){
 		 try {
 		        HttpClient client = new HttpClient();
-				Credentials defaultcreds = new UsernamePasswordCredentials("java", "java");
-				client.getState().setCredentials(new AuthScope("localhost", 8080, AuthScope.ANY_REALM), defaultcreds);
+		        setAuthenticationCredentials(client);
 		        DeleteMethod del = new DeleteMethod(TEST_SERVICES_SERVICE_URL_VALID+"/test2");
 		        del.setDoAuthentication(true);
 		        client.executeMethod(del);
@@ -190,8 +180,7 @@ public class WidgetServicesControllerTest extends AbstractControllerTest {
 	public void addServiceAlreadyExists(){
 		 try {
 		        HttpClient client = new HttpClient();
-				Credentials defaultcreds = new UsernamePasswordCredentials("java", "java");
-				client.getState().setCredentials(new AuthScope("localhost", 8080, AuthScope.ANY_REALM), defaultcreds);
+		        setAuthenticationCredentials(client);
 		        PostMethod post = new PostMethod(TEST_SERVICES_SERVICE_URL_VALID+"/test_add2");
 		        post.setDoAuthentication(true);
 		        client.executeMethod(post);
@@ -205,8 +194,7 @@ public class WidgetServicesControllerTest extends AbstractControllerTest {
 		    }
 			try {
 			        HttpClient client = new HttpClient();
-					Credentials defaultcreds = new UsernamePasswordCredentials("java", "java");
-					client.getState().setCredentials(new AuthScope("localhost", 8080, AuthScope.ANY_REALM), defaultcreds);
+			        setAuthenticationCredentials(client);
 			        PostMethod post = new PostMethod(TEST_SERVICES_SERVICE_URL_VALID+"/test_add2");
 			        post.setDoAuthentication(true);
 			        client.executeMethod(post);
@@ -221,8 +209,7 @@ public class WidgetServicesControllerTest extends AbstractControllerTest {
 			    // clean up
 				 try {
 				        HttpClient client = new HttpClient();
-						Credentials defaultcreds = new UsernamePasswordCredentials("java", "java");
-						client.getState().setCredentials(new AuthScope("localhost", 8080, AuthScope.ANY_REALM), defaultcreds);
+				        setAuthenticationCredentials(client);
 				        DeleteMethod del = new DeleteMethod(TEST_SERVICES_SERVICE_URL_VALID+"/test_add2");
 				        del.setDoAuthentication(true);
 				        client.executeMethod(del);
@@ -240,8 +227,7 @@ public class WidgetServicesControllerTest extends AbstractControllerTest {
 	public void modifyServiceNonExists(){
 		 try {
 		        HttpClient client = new HttpClient();
-				Credentials defaultcreds = new UsernamePasswordCredentials("java", "java");
-				client.getState().setCredentials(new AuthScope("localhost", 8080, AuthScope.ANY_REALM), defaultcreds);
+		        setAuthenticationCredentials(client);
 		        PutMethod put = new PutMethod(TEST_SERVICES_SERVICE_URL_VALID+"/test999");
 		        put.setQueryString("name=test2");
 		        put.setDoAuthentication(true);
@@ -260,8 +246,7 @@ public class WidgetServicesControllerTest extends AbstractControllerTest {
 	public void deleteServiceNonExists(){
 		 try {
 		        HttpClient client = new HttpClient();
-				Credentials defaultcreds = new UsernamePasswordCredentials("java", "java");
-				client.getState().setCredentials(new AuthScope("localhost", 8080, AuthScope.ANY_REALM), defaultcreds);
+		        setAuthenticationCredentials(client);
 		        DeleteMethod del = new DeleteMethod(TEST_SERVICES_SERVICE_URL_VALID+"/test999");
 		        del.setDoAuthentication(true);
 		        client.executeMethod(del);
@@ -279,8 +264,7 @@ public class WidgetServicesControllerTest extends AbstractControllerTest {
 	public void modifyServiceNoName(){
 		 try {
 		        HttpClient client = new HttpClient();
-				Credentials defaultcreds = new UsernamePasswordCredentials("java", "java");
-				client.getState().setCredentials(new AuthScope("localhost", 8080, AuthScope.ANY_REALM), defaultcreds);
+		        setAuthenticationCredentials(client);
 		        PutMethod put = new PutMethod(TEST_SERVICES_SERVICE_URL_VALID+"/test999");
 		        put.setDoAuthentication(true);
 		        client.executeMethod(put);

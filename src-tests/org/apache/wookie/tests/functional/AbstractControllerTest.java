@@ -14,21 +14,40 @@
 
 package org.apache.wookie.tests.functional;
 
+import org.apache.commons.httpclient.Credentials;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
+
 /**
- * @author scott
+ * Constants used in functional tests. Change these values to test servers
+ * at other locations.
  *
  */
 public abstract class AbstractControllerTest{
+	protected static final int TEST_SERVER_PORT = 8080;
+	protected static final String TEST_SERVER_HOST = "localhost";	
+	protected static final String TEST_SERVER_ORIGIN = "http://"+TEST_SERVER_HOST+":"+TEST_SERVER_PORT;
+	protected static final String TEST_SERVER_LOCATION = TEST_SERVER_ORIGIN+"/wookie/";
 	
-	protected static final String TEST_INSTANCES_SERVICE_URL_VALID = "http://localhost:8080/wookie/widgetinstances";
-	protected static final String TEST_PROPERTIES_SERVICE_URL_VALID = "http://localhost:8080/wookie/properties";
-	protected static final String TEST_PARTICIPANTS_SERVICE_URL_VALID = "http://localhost:8080/wookie/participants";
-	protected static final String TEST_WIDGETS_SERVICE_URL_VALID = "http://localhost:8080/wookie/widgets";
-	protected static final String TEST_SERVICES_SERVICE_URL_VALID = "http://localhost:8080/wookie/services";
+	protected static final String TEST_INSTANCES_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"widgetinstances";
+	protected static final String TEST_PROPERTIES_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"properties";
+	protected static final String TEST_PARTICIPANTS_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"participants";
+	protected static final String TEST_WIDGETS_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"widgets";
+	protected static final String TEST_SERVICES_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"services";
 		
 	protected static final String API_KEY_VALID = "TEST";
 	protected static final String API_KEY_INVALID = "rubbish";
 	protected static final String WIDGET_ID_VALID = "http://www.getwookie.org/widgets/weather";
 	protected static final String WIDGET_ID_INVALID = "http://www.getwookie.org/widgets/nosuchwidget";
 
+	/**
+	 * Set credentials for accessing Wookie admin functions
+	 * @param client
+	 */
+	protected static void setAuthenticationCredentials(HttpClient client){
+		Credentials defaultcreds = new UsernamePasswordCredentials("java", "java");
+		client.getState().setCredentials(new AuthScope(TEST_SERVER_HOST, TEST_SERVER_PORT, AuthScope.ANY_REALM), defaultcreds);
+	}
+	
 }

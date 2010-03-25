@@ -36,14 +36,14 @@ public class ProxyTest extends AbstractControllerTest {
 	private static String instance_id_key;
 	private static String other_instance_id_key;
 	private static final String OTHER_WIDGET_ID = "http://www.getwookie.org/widgets/natter";
-	private static final String PROXY_URL = "http://localhost:8080/wookie/proxy";
+	private static final String PROXY_URL = TEST_SERVER_LOCATION+"proxy";
 	private static final String VALID_SITE_URL = "http://incubator.apache.org/wookie/";
-	private static final String VALID_SITE_XML_URL = "http://localhost:8080/wookie/widgets?all=true";
+	private static final String VALID_SITE_XML_URL = TEST_SERVER_LOCATION+"widgets?all=true";
 	private static final String INVALID_SITE_URL = "DFASFAFEQ3FQ32145235123452";
 	private static final String BLOCKED_SITE_URL = "http://very.bad.place";
 	private static final String POLICY_ALLOWED_SITE_URL = "http://feeds.bbc.co.uk/weather/feeds/rss.shtml?world=11";
 	private static final String POLICY_DISALLOWED_SITE_URL = "http://news.bbc.co.uk";
-	private static final String PROTECTED_SITE_URL = "http://localhost:8080/wookie/admin/";
+	private static final String PROTECTED_SITE_URL = TEST_SERVER_LOCATION+"admin/";
 
 	/**
 	 * Create an instance of a widget
