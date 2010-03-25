@@ -30,8 +30,6 @@ import org.apache.wookie.exceptions.UnauthorizedAccessException;
 
 /**
  * Base class of RESTful controllers with common utility methods
- * @author Scott Wilson
- *
  */
 public abstract class Controller extends HttpServlet{
 
@@ -41,7 +39,17 @@ public abstract class Controller extends HttpServlet{
 	 * Content type for XML output
 	 */
 	protected final String XML_CONTENT_TYPE = "text/xml;charset=\"UTF-8\"";
+	
+	/**
+	 * Content type for JSON output
+	 */
+	protected final String JSON_CONTENT_TYPE = "application/json;charset=\"UTF-8\"";
 
+	/**
+	 * Content type for HTML output
+	 */
+	protected final String HTML_CONTENT_TYPE = "text/html;charset=\"UTF-8\"";
+	
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
@@ -246,6 +254,18 @@ public abstract class Controller extends HttpServlet{
 	}
 	
 	/**
+	 * Send HTML back to client
+	 * @param html
+	 * @param response
+	 * @throws IOException
+	 */
+	protected void returnHtml(String html, HttpServletResponse response) throws IOException{
+		response.setContentType(HTML_CONTENT_TYPE);
+		PrintWriter out = response.getWriter();
+		out.println(html);
+	}
+	
+	/**
 	 * Get any localization parameters for the request. Currently this 
 	 * only accepts a single locale rather than a list, support for
 	 * lists of preferred locales could be added later, for example
@@ -257,6 +277,26 @@ public abstract class Controller extends HttpServlet{
 		String locale = request.getParameter("locale");
 		if (locale == null) return null;
 		return new String[]{locale};
+	}
+	
+	protected static final int XML = 0;
+	protected static final int HTML = 1;
+	protected static final int JSON = 2;
+	
+	/**
+	 * Returns an int value for the content-type of a request; this 
+	 * can be used to create a switch statement that
+	 * returns different representations based on the 
+	 * request content-type. If no content-type is present in the
+	 * request, this method will return HTML (1)
+	 */
+	protected int format(HttpServletRequest request){
+		if (request.getContentType() == null) return HTML;
+		if (request.getContentType().contains("xml"))
+			return XML;
+		if (request.getContentType().contains("json"))
+			return JSON;
+		return HTML;
 	}
 
 
