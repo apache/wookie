@@ -123,6 +123,11 @@ public class ContextListener implements ServletContextListener {
 			FeatureLoader.loadFeatures(featuresConfiguration);
 			
 			/*
+			 * Run diagnostics
+			 */
+			Diagnostics.run(context, configuration);
+			
+			/*
 			 * Start hot-deploy widget watcher
 			 */
 		 	if (configuration.getBoolean("widget.hot_deploy")) {
