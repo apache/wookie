@@ -126,8 +126,7 @@ public abstract class AbstractWookieConnectorService implements
     String title = rootEl.getElementsByTagName("title").item(0).getTextContent();
     String height = rootEl.getElementsByTagName("height").item(0).getTextContent();
     String width = rootEl.getElementsByTagName("width").item(0).getTextContent();
-    String maximize = rootEl.getElementsByTagName("maximize").item(0).getTextContent();
-    WidgetInstance instance = new WidgetInstance(url, widgetId, title, height, width, maximize);
+    WidgetInstance instance = new WidgetInstance(url, widgetId, title, height, width);
     return instance;
   }
 

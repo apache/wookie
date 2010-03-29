@@ -13,16 +13,14 @@ public class WidgetInstance {
   String title;
   String height;
   String width;
-  String maximize;
 
   public WidgetInstance(String url, String id, String title, String height,
-      String width, String maximize) {
+      String width) {
     setId(id);
     setUrl(url);
     setTitle(title);
     setHeight(height);
     setWidth(width);
-    setMaximize(maximize);
   }
   
   public String getUrl() {
@@ -65,15 +63,4 @@ public class WidgetInstance {
     this.width = width;
   }
 
-  public String getMaximize() {
-    return maximize;
-  }
-
-  public void setMaximize(String maximize) {
-    this.maximize = maximize;
-  }
-  
-  public boolean isMaximizable() {
-    return this.maximize.toLowerCase().equals("true");
-  }
 }
