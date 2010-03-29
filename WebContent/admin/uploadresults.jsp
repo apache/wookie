@@ -19,7 +19,6 @@ Integer dbkey = (Integer)session.getAttribute("dbkey");
 String errors = (String)session.getAttribute("error_value");
 String messages = (String)session.getAttribute("message_value");
 Boolean hasValidated = (Boolean)session.getAttribute("hasValidated");
-Boolean isMaxable = (Boolean)session.getAttribute("isMaxable");
 Boolean closeWindow = (Boolean)session.getAttribute("closeWindow");
 WidgetService[] services = (WidgetService[])session.getAttribute("services");
 %>
@@ -89,16 +88,6 @@ When a client of the widget system asks for a widget, it will ask using one of t
   		<%}%>
 		</select>
 		</td>
-    </tr>
-    <tr>
-    	<td>Can maximize?</td>
-    	<td>
-    	<%if(isMaxable){%>
-    	<input type="checkbox" name="max" value="true" checked  class="ui-button ui-state-default ui-corner-all">
-    	<%} else { %>
-    	<input type="checkbox" name="max" value="true"  class="ui-button ui-state-default ui-corner-all">
-    	<%}%>
-    	</td>
     </tr>
      <tr> 
 		<td colspan="2"><div align="center"><input  class="ui-button ui-state-default ui-corner-all" type="submit" name="Submit" value="Submit"></div>

@@ -41,7 +41,6 @@ public class Widget extends AbstractKeyBean<Widget> {
 	private String guid;	
 	private Integer height;
 	private Integer width;
-	private boolean maximize;	
 	@SuppressWarnings("unchecked")
 	private Set widgetTypes = new HashSet();
 	private String version;
@@ -73,17 +72,6 @@ public class Widget extends AbstractKeyBean<Widget> {
 	public void setWidgetTypes(Set widgetTypes) {
 	    this.widgetTypes = widgetTypes;
 	}
-
-
-	public boolean isMaximize() {
-		return maximize;
-	}
-
-
-	public void setMaximize(boolean maximize) {
-		this.maximize = maximize;
-	}
-
 
 	public String getGuid() {
 		return guid;

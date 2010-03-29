@@ -50,7 +50,6 @@ public class WidgetInstanceHelper {
 		xml += "\t<title>"+widget.getWidgetTitle()+"</title>\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		xml += "\t<height>"+height+"</height>\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		xml += "\t<width>"+width+"</width>\n"; //$NON-NLS-1$ //$NON-NLS-2$
-		xml += "\t<maximize>"+widget.isMaximize()+"</maximize>\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		xml += "</widgetdata>"; //$NON-NLS-1$
 		
 		return xml;

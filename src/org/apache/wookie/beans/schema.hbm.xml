@@ -16,7 +16,6 @@
 		<property name="guid" column="guid" type="string" />
 		<property name="height" column="height" />
 		<property name="width" column="width" />
-		<property name="maximize" type="true_false" />
 		<set name="widgetTypes" inverse="true">
 			<key column="widget_id" not-null="true" />
 			<one-to-many class="WidgetType" />

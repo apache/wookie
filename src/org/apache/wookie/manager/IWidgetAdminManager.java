@@ -24,13 +24,6 @@ package org.apache.wookie.manager;
 public interface IWidgetAdminManager {
 
 	/**
-	 * Find if this widget is maximizable, from given key
-	 * @param dbKey
-	 * @return
-	 */
-	boolean isWidgetMaximized(int dbKey);
-
-	/**
 	 * 
 	 * @param widgetId
 	 * @param widgetType

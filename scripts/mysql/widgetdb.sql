@@ -6,7 +6,6 @@ CREATE TABLE `Widget` (
   `id` int(11) NOT NULL auto_increment,
   `height` int(11) default NULL,
   `width` int(11) default NULL,
-  `maximize` varchar(1) default NULL,
   `guid` varchar(255) NOT NULL,
   `widget_author` varchar(255) default NULL,
   `widget_author_email` varchar(320) default NULL,
@@ -235,7 +234,7 @@ CREATE TABLE `Token` (
 );
 
 
-INSERT INTO `Widget` VALUES (1,350,500,'f','http://notsupported','Paul Sharples','p.sharples@bolton.ac.uk','http://iec.bolton.ac.uk', 'v1.0');
+INSERT INTO `Widget` VALUES (1,350,500,'http://notsupported','Paul Sharples','p.sharples@bolton.ac.uk','http://iec.bolton.ac.uk', 'v1.0');
 INSERT INTO `Name` VALUES(1, 'Unsupported widget widget','Unsupported',NULL,NULL,1);
 INSERT INTO `Description` VALUES(1, 'This widget is a placeholder for when no corresponding widget is found for a given type',NULL,NULL,1);
 INSERT INTO `StartFile` VALUES(1,'/wookie/wservices/notsupported/index.htm',NULL,NULL,1);

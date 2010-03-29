@@ -402,8 +402,6 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		session.setAttribute("hasValidated", Boolean.valueOf(true)); //$NON-NLS-1$
 		session.setAttribute("closeWindow", Boolean.valueOf(false)); //$NON-NLS-1$
 		String dbkey = request.getParameter("dbkey"); //$NON-NLS-1$
-		boolean isMaxable = manager.isWidgetMaximized(Integer.parseInt(dbkey));
-		session.setAttribute("isMaxable", Boolean.valueOf(isMaxable)); //$NON-NLS-1$
 		session.setAttribute("dbkey", Integer.parseInt(dbkey)); //$NON-NLS-1$
 	}
 
@@ -493,8 +491,6 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 					retrieveServices(session);
 					session.setAttribute("hasValidated", Boolean.valueOf(true));																	 //$NON-NLS-1$
 					session.setAttribute("dbkey", dbkey); //$NON-NLS-1$
-					boolean isMaxable = manager.isWidgetMaximized(dbkey);
-					session.setAttribute("isMaxable", Boolean.valueOf(isMaxable)); //$NON-NLS-1$
 				}	
 				else{
 					// UPDATE

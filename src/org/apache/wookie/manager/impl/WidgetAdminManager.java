@@ -63,16 +63,6 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#isWidgetMaximized(int)
-	 */
-	public boolean isWidgetMaximized(int dbKey){
-		Widget widget = null;
-		widget = Widget.findById(dbKey);
-		if (widget == null) return false;
-		return widget.isMaximize();
-	}
-	
-	/* (non-Javadoc)
 	 * @see org.apache.wookie.manager.IWidgetAdminManager#removeSingleWidgetType(int, java.lang.String)
 	 */
 	public boolean removeSingleWidgetType(int widgetId, String widgetType) {
@@ -127,10 +117,6 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 	@SuppressWarnings("unchecked")
 	public void setWidgetTypesForWidget(int dbKey, String[] widgetTypes, boolean maximize){
 		Widget widget = Widget.findById(dbKey);
-		if(maximize){
-			widget.setMaximize(maximize);
-			widget.save();
-		}
 
 		WidgetType widgetType;
 		if (widgetTypes!=null){
