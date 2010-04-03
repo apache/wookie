@@ -1,0 +1,21 @@
+This is the email to commence a vote for a new PPMC member.
+We do this on the Wookie Private mailing list, so as to enable
+a frank discussion.
+
+Remember that this also needs to be forwarded to 
+private@incubator.apache.org
+
+------------------------------------------------------------
+To: wookie-private@incubator.apache.org
+Subject: [Vote] new PPMC member: Joe Bloggs
+
+ [ add the reasons behind your nomination here ]
+
+Voting ends one week from today, i.e. midnight UTC on YYYY-MM-DD
+http://www.timeanddate.com/counters/customcounter.html?year=YYYY&month=MM&day=DD
+
+See voting guidelines at
+https://svn.apache.org/repos/private/pmc/forrest/pmc-member-vote.txt
+(yes, this links to the Apache Forrest Guidelines, we don't have our own yet)
+
+------------------------------------------------------------
