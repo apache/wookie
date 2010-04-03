@@ -13,7 +13,7 @@ Cc: wookie-private@incubator.apache.org
 Subject: invitation to become Wookie committer: Joe Bloggs #####
 
 Hello #####, the Apache Wookie Podling Project Management Committee
-would like to invite you to become a Forrest committer and member
+would like to invite you to become a Wookie committer and member
 of the PPMC. We value your contributions and are aware that
 you are committed to the project.
 
