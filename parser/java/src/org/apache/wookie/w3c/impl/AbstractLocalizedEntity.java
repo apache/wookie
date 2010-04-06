@@ -104,10 +104,14 @@ public abstract class AbstractLocalizedEntity implements ILocalizedEntity {
 	
 	public static final String RIGHT_TO_LEFT = "rtl";
 	
+	public static final String LEFT_TO_RIGHT_OVERRIDE = "lro";
+	
+	public static final String RIGHT_TO_LEFT_OVERRIDE = "rlo";
+	
 	/**
-	 * Returns the direction (rtl or ltr) of the child text of an element
+	 * Returns the direction (rtl, ltr, lro, rlo) of the child text of an element
 	 * @param element the element to parse
-	 * @return the string "ltr" or "rtl"
+	 * @return the string "ltr", "rtl", "lro" or "rlo"
 	 */
 	public static String getTextDirection(Element element){
 		try {
@@ -119,6 +123,8 @@ public abstract class AbstractLocalizedEntity implements ILocalizedEntity {
 				String dirValue = UnicodeUtils.normalizeSpaces(dir.getValue());
 				if (dirValue.equals("rtl")) return RIGHT_TO_LEFT;
 				if (dirValue.equals("ltr")) return LEFT_TO_RIGHT;
+				if (dirValue.equals("rlo")) return RIGHT_TO_LEFT_OVERRIDE;
+				if (dirValue.equals("lro")) return LEFT_TO_RIGHT_OVERRIDE;
 				return getTextDirection(element.getParentElement());			
 			}
 		} catch (Exception e) {

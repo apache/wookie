@@ -41,6 +41,20 @@ public class DirectionalityUtilsTest {
 	}
 	
 	@Test
+	public void getDirectionalityRootElementOverrideLro(){
+		Element widget = new Element("widget");
+		widget.setAttribute("dir","rlo");
+		assertEquals(AbstractLocalizedEntity.getTextDirection(widget), AbstractLocalizedEntity.RIGHT_TO_LEFT_OVERRIDE);
+	}
+	
+	@Test
+	public void getDirectionalityRootElementOverrideRlo(){
+		Element widget = new Element("widget");
+		widget.setAttribute("dir","lro");
+		assertEquals(AbstractLocalizedEntity.getTextDirection(widget), AbstractLocalizedEntity.LEFT_TO_RIGHT_OVERRIDE);
+	}
+	
+	@Test
 	public void getDirectionalityChildElementDefault(){
 		Element widget = new Element("widget");
 		Element name = new Element("name");
