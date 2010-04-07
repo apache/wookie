@@ -1,12 +1,17 @@
 Summary
 =======
 
-1) email-member-vote.txt
-2) email-member-invite.txt
+1) templates/committerVote.txt
+1a) request lazy consensus from IPMC
+2) templates/committerInvite.txt
 
 after they accept, then do:
 
-3a) email-committer-accept.txt ... the normal process for dev-to-pmc
+3a) templates/committerAccept.txt ... the normal process for dev-to-pmc
+
+NOTE: templates below this line have not been ported from Forrest yet, see
+https://svn.apache.org/repos/private/pmc/forrest/template/
+
 3b) email-member-accept.txt ... for someone who is already a committer
 4) wait until we see that receipt of CLA is recorded
 5) email-member-create.txt
