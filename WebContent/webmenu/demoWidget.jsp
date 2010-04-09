@@ -49,8 +49,9 @@
 <!--  END HEADER --></div>
 
 <div id="content">
-  <p>Below are two instances of the widget. They are both instantiated with anonymous users, 
-  a well implemented widget has sensible fallback behaviour for unknown users. This page
+  <p>Below are two instances of the widget. They are both instantiated with anonymous users and 
+  if the widget supports it, the first user has been given extra privilages (i.e. can set the questions in a vote).  
+  A well implemented widget has sensible fallback behaviour for unknown users. This page
   allows you to both see the widgets in operation and, during development, you can test
   them here too.</p>
   
