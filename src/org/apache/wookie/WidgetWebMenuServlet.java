@@ -110,8 +110,9 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
             AbstractWookieConnectorService conn = getConnectorService(request);
             conn.setCurrentUser("testuser");
             org.apache.wookie.connector.framework.WidgetInstance instanceOne = conn.getOrCreateInstance(guid);
+            conn.setPropertyForInstance(instanceOne, "setpersonalproperty", "moderator", "true");
             conn.setCurrentUser("testuser2");
-            org.apache.wookie.connector.framework.WidgetInstance instanceTwo = conn.getOrCreateInstance(guid);
+            org.apache.wookie.connector.framework.WidgetInstance instanceTwo = conn.getOrCreateInstance(guid);            
             request.setAttribute("firstWidgetURL", instanceOne.getUrl());
             request.setAttribute("secondWidgetURL", instanceTwo.getUrl());
             request.setAttribute("widgetHeight", instanceOne.getHeight());
@@ -119,6 +120,7 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
             request.setAttribute("proxy", WidgetInstancesController.checkProxy(request));
             doForward(request, response, fDemoWidgetPage);
           } catch (WookieConnectorException e) {
+        	  e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
           }
 					break;
