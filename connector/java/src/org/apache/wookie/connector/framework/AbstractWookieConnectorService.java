@@ -64,6 +64,44 @@ public abstract class AbstractWookieConnectorService implements
       WookieConnectorException {
     return getOrCreateInstance(widget.identifier);
   }
+  
+  public void setPropertyForInstance(WidgetInstance instance, String propertyType, String fName, String fValue)
+  	throws WookieConnectorException{
+	    String queryString; 	    
+	    try {
+	       	if(!propertyType.equals("setpublicproperty") && !propertyType.equals("setpersonalproperty")){
+	       		logger.error("Incorrect requestId parameter.  Must be either 'setpublicproperty' or 'setprivateproperty'");
+	    		throw new Exception();	    		
+	    	}
+	    	queryString = new String("?requestid=" + propertyType + "&api_key=");
+	    	queryString+=(URLEncoder.encode(getConnection().getApiKey(), "UTF-8"));
+	    	queryString+=("&shareddatakey=");
+	    	queryString+=(URLEncoder.encode(getConnection().getSharedDataKey(), "UTF-8"));
+	    	queryString+=("&userid=");
+	    	queryString+=(URLEncoder.encode(getCurrentUser().getLoginName(), "UTF-8"));
+	    	queryString+=("&widgetid=");
+	    	queryString+=(URLEncoder.encode(instance.getId(), "UTF-8"));
+	    	queryString+=("&propertyname=");
+	    	queryString+=(URLEncoder.encode(fName, "UTF-8"));
+	    	queryString+=("&propertyvalue=");
+	    	queryString+=(URLEncoder.encode(fValue, "UTF-8"));
+	    } 
+	    catch (UnsupportedEncodingException e) {
+	      throw new WookieConnectorException("Must support UTF-8 encoding", e);
+	    }
+	    catch (Exception e) {
+		      throw new WookieConnectorException("Cannot set property type:" + fName + " using requestId " + propertyType, e);
+		}
+	    URL url = null;
+	    try {
+	      url = new URL(conn.getURL() + "/WidgetServiceServlet" + queryString);
+	      HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+	      if (conn.getResponseCode() > 200) throw new IOException(conn.getResponseMessage());	  	      
+	    } 
+	    catch (Exception e) {
+	      throw new WookieConnectorException("Unable to set property ", e);	      
+	    }   	    
+  }
       
   public WidgetInstance getOrCreateInstance(String guid) throws IOException,
       WookieConnectorException {
