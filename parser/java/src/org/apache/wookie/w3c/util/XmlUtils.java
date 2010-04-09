@@ -30,6 +30,7 @@ public class XmlUtils {
 	 * @return a string
 	 */
 	public static String getTextContent(Element element){
+		if (element == null) return "";
 		String content = "";
 		for (Object node:element.getContent()){
 			if (node instanceof Element){
