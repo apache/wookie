@@ -169,8 +169,8 @@ var Widget = {
             }
             // Catch IE 8 error. See WOOKIE-44
             catch(err){
-            	eval("Widget.preferences." + key + "='" + obj["dvalue"] + "'");
-            	eval("this.preferences.prefs."+key+"=obj");
+            	eval("Widget.preferences.setItem('" + key + "','" + obj["dvalue"] + "')");
+            	eval("Widget.preferences.getItem('" + key + "') == '" + obj["dvalue"] + "'");
             }
 		}
 		this.preferences.calcLength();
