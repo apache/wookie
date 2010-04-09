@@ -331,4 +331,21 @@ public class LocalizationUtilsTest {
 		assertFalse(LocalizationUtils.isValidLanguageTag(lang));
 		}
 	}
+	
+	@Test
+	public void nullTest(){
+		assertFalse(LocalizationUtils.isValidLanguageTag(null));
+	}
+	
+	@Test
+	public void emptyElementList(){
+		ILocalizedElement[] elements = elements(new String[0]);
+		assertNull(LocalizationUtils.getLocalizedElement(elements, LANG_LIST_1));
+	}
+	
+	@Test
+	public void classTest(){
+		@SuppressWarnings("unused")
+		LocalizationUtils utils = new LocalizationUtils();
+	}
 }

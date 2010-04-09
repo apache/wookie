@@ -23,6 +23,12 @@ import org.junit.Test;
 public class IRIValidatorTest {
 	
 	@Test
+	public void classTest(){
+		@SuppressWarnings("unused")
+		IRIValidator validator = new IRIValidator();
+	}
+	
+	@Test
 	public void url(){
 		assertTrue(IRIValidator.isValidIRI("http://incubator.apache.org"));
 	}
@@ -45,5 +51,9 @@ public class IRIValidatorTest {
 	@Test
 	public void utf8(){
 		assertTrue(IRIValidator.isValidIRI("http://אב.גד.הו/זח/טי/כל?מן=סע;פץ=קר#שת"));
+	}
+	@Test
+	public void badScheme(){
+		assertFalse(IRIValidator.isValidIRI(":FAIL"));
 	}
 }
