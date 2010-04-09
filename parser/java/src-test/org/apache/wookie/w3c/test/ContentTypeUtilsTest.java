@@ -16,18 +16,52 @@ package org.apache.wookie.w3c.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+
 import org.apache.wookie.w3c.util.ContentTypeUtils;
 import org.junit.Test;
 
 public class ContentTypeUtilsTest {
 	
 	@Test
+	public void classTest(){
+		@SuppressWarnings("unused")
+		ContentTypeUtils test = new ContentTypeUtils();
+	}
+	
+	@Test
+	public void Nulls(){
+		File nullFile = null;
+		String nullString = null;
+		assertFalse(ContentTypeUtils.isSupportedImageType(nullFile));
+		assertFalse(ContentTypeUtils.isSupportedImageType(nullString));
+	}
+	
+	@Test
+	public void Empty(){
+		assertFalse(ContentTypeUtils.isSupportedImageType(""));
+	}
+	
+	@Test
 	public void Dots(){
+		assertFalse(ContentTypeUtils.isSupportedImageType(".\\."));
+		assertFalse(ContentTypeUtils.isSupportedImageType(".\\."));
+		assertFalse(ContentTypeUtils.isSupportedImageType(".\\"));
+		assertFalse(ContentTypeUtils.isSupportedImageType("\\."));
+		assertFalse(ContentTypeUtils.isSupportedImageType("."));
+		assertFalse(ContentTypeUtils.isSupportedImageType(".."));
+		assertFalse(ContentTypeUtils.isSupportedImageType("test."));
+		assertFalse(ContentTypeUtils.isSupportedImageType(".test"));
 		assertTrue(ContentTypeUtils.isSupportedImageType("test.png"));
 		assertTrue(ContentTypeUtils.isSupportedImageType(".test.png"));
 		assertTrue(ContentTypeUtils.isSupportedImageType("...test.png"));
 		assertTrue(ContentTypeUtils.isSupportedImageType(".test.test.png"));
 		assertFalse(ContentTypeUtils.isSupportedImageType("test.png."));
+		assertTrue(ContentTypeUtils.isSupportedImageType(new File("test.png")));
+		assertTrue(ContentTypeUtils.isSupportedImageType(new File(".test.png")));
+		assertTrue(ContentTypeUtils.isSupportedImageType(new File("...test.png")));
+		assertTrue(ContentTypeUtils.isSupportedImageType(new File(".test.test.png")));
+		assertFalse(ContentTypeUtils.isSupportedImageType(new File("test.png.")));
 	}
 
 	@Test
@@ -36,6 +70,7 @@ public class ContentTypeUtilsTest {
 		assertTrue(ContentTypeUtils.isSupportedImageType("test.jpg"));
 		assertTrue(ContentTypeUtils.isSupportedImageType("test.svg"));
 		assertTrue(ContentTypeUtils.isSupportedImageType("test.png"));
+		assertTrue(ContentTypeUtils.isSupportedImageType("test.ico"));
 	}
 	
 	@Test
@@ -45,6 +80,13 @@ public class ContentTypeUtilsTest {
 		assertFalse(ContentTypeUtils.isSupportedImageType("test.wav"));
 		assertFalse(ContentTypeUtils.isSupportedImageType("test.html"));
 		assertFalse(ContentTypeUtils.isSupportedImageType("test.png.exe"));
+		assertFalse(ContentTypeUtils.isSupportedImageType("test.htm"));
+		assertFalse(ContentTypeUtils.isSupportedImageType("test.css"));
+		assertFalse(ContentTypeUtils.isSupportedImageType("test.js"));
+		assertFalse(ContentTypeUtils.isSupportedImageType("test.xml"));
+		assertFalse(ContentTypeUtils.isSupportedImageType("test.txt"));
+		assertFalse(ContentTypeUtils.isSupportedImageType("test.xhtml"));
+		assertFalse(ContentTypeUtils.isSupportedImageType("test.xht"));
 	}
 	
 	@Test

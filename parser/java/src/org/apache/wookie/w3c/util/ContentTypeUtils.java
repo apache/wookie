@@ -40,6 +40,7 @@ public class ContentTypeUtils {
 	 * @return true if the file is a supported image type
 	 */
 	public static boolean isSupportedImageType(File file){
+		if (file == null) return false;
 		String type = getContentType(file);
 		return isSupported(type, SUPPORTED_IMAGE_TYPES);
 	}	
@@ -73,7 +74,6 @@ public class ContentTypeUtils {
 		if (filename.contains(".")){
 			String type = null;
 			String[] parts = filename.split("\\.");
-			if (parts.length == 0) return null;
 			String ext = parts[parts.length-1];
 			if (ext.length() != 0){
 				if (StringUtils.isAlpha(ext)){
