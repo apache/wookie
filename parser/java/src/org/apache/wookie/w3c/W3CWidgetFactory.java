@@ -14,6 +14,8 @@
 package org.apache.wookie.w3c;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
@@ -50,16 +52,16 @@ import org.apache.wookie.w3c.util.WidgetPackageUtils;
  */
 public class W3CWidgetFactory {
 	
-	private String outputDirectory;
+	private File outputDirectory;
 	private IStartPageProcessor startPageProcessor;
 	private String[] locales;
 	private String localPath;
 	private String[] features;
 
-	public String[] getFeatures() {
-		return features;
-	}
-
+	/**
+	 * Set the features to be included when parsing widgets
+	 * @param features
+	 */
 	public void setFeatures(String[] features) {
 		this.features = features;
 	}
@@ -77,36 +79,45 @@ public class W3CWidgetFactory {
 			
 		};
 	}
-
-	public String getOutputDirectory() {
-		return outputDirectory;
+	
+	/**
+	 * Set the directory to use to save widgets.
+	 * @param outputDirectory
+	 * @throws IOException if the directory does not exist
+	 */
+	public void setOutputDirectory(final String outputDirectory) throws IOException {
+		if (outputDirectory == null) throw new NullPointerException();
+		File file = new File(outputDirectory);
+		if (!file.exists()) throw new FileNotFoundException("the output directory does not exist");
+		if (!file.canWrite()) throw new IOException("the output directory cannot be written to");
+		if (!file.isDirectory()) throw new IOException("the output directory is not a folder");
+		this.outputDirectory = file;
 	}
 
-	public void setOutputDirectory(String outputDirectory) {
-		this.outputDirectory = outputDirectory;
-	}
-
-	public IStartPageProcessor getStartPageProcessor() {
-		return startPageProcessor;
-	}
-
-	public void setStartPageProcessor(IStartPageProcessor startPageProcessor) {
+	/**
+	 * Set the start page processor to use when parsing widgets
+	 * @param startPageProcessor
+	 */
+	public void setStartPageProcessor(final IStartPageProcessor startPageProcessor) {
 		this.startPageProcessor = startPageProcessor;
 	}
 
-	public String[] getLocales() {
-		return locales;
-	}
-
-	public void setLocales(String[] locales) {
+	/**
+	 * Set the supported locales to be used when parsing widgets
+	 * @param locales
+	 */
+	public void setLocales(final String[] locales) {
+		if (locales == null) throw new NullPointerException("locales cannot be specified as Null");
 		this.locales = locales;
 	}
 
-	public String getLocalPath() {
-		return localPath;
-	}
-
-	public void setLocalPath(String localPath) {
+	/**
+	 * Set the base URL to use
+	 * @param localPath
+	 * @throws Exception 
+	 */
+	public void setLocalPath(final String localPath){
+		if (localPath == null) throw new NullPointerException("local path cannot be set to Null");
 		this.localPath = localPath;
 	};
 	
@@ -119,7 +130,8 @@ public class W3CWidgetFactory {
 	 * @throws BadWidgetZipFileException if there is a problem with the zip package
 	 * @throws BadManifestException if there is a problem with the config.xml manifest file in the package
 	 */
-	public W3CWidget parse(File zipFile) throws BadWidgetZipFileException, BadManifestException{
+	public W3CWidget parse(final File zipFile) throws Exception, BadWidgetZipFileException, BadManifestException{
+		if (outputDirectory == null) throw new Exception("No output directory has been set; use setOutputDirectory(File) to set the location to output widget files");
 		return WidgetPackageUtils.processWidgetPackage(zipFile, localPath, outputDirectory, locales, startPageProcessor, features);
 	}
 }

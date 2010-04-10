@@ -136,9 +136,9 @@ public class WidgetPackageUtils {
 		return (String[]) content.toArray(new String[content.size()]);	
 	}
 	
-	public static File createUnpackedWidgetFolder(String widgetFolder, String folder) throws IOException{
+	public static File createUnpackedWidgetFolder(File widgetFolder, String folder) throws IOException{
 		folder = convertIdToFolderName(folder);
-		String serverPath = widgetFolder + File.separator + folder;
+		String serverPath = widgetFolder.getPath() + File.separator + folder;
 		File file = new File(convertPathToPlatform(serverPath));
 		return file;
 	}
@@ -228,7 +228,7 @@ public class WidgetPackageUtils {
 		return true;
 	}
 	
-	public static W3CWidget processWidgetPackage(File zipFile, String localWidgetPath, String WIDGETFOLDER, String[] locales, IStartPageProcessor processor, String[] features) throws BadWidgetZipFileException, BadManifestException{
+	public static W3CWidget processWidgetPackage(File zipFile, String localWidgetPath, File WIDGETFOLDER, String[] locales, IStartPageProcessor processor, String[] features) throws BadWidgetZipFileException, BadManifestException{
 		ZipFile zip;
 		try {
 			zip = new ZipFile(zipFile);
@@ -253,7 +253,7 @@ public class WidgetPackageUtils {
 					File startFile = new File(newWidgetFolder.getCanonicalPath() + File.separator + content.getSrc());
 					String relativestartUrl = (WidgetPackageUtils.getURLForWidget(localWidgetPath, manifestIdentifier, content.getSrc())); 					
 					content.setSrc(relativestartUrl);
-					if(startFile.exists()){		
+					if(startFile.exists() && processor != null){		
 						processor.processStartFile(startFile, widgetModel);
 					}	
 				}
@@ -273,7 +273,7 @@ public class WidgetPackageUtils {
 			} catch (BadManifestException e) {
 				throw e;
 			} catch (Exception e){
-				throw new BadManifestException();
+				throw new BadManifestException(e);
 			}
 		}
 		else{
