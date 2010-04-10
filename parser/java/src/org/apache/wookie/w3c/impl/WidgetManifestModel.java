@@ -126,6 +126,11 @@ public class WidgetManifestModel implements W3CWidget {
 					ContentEntity c = new ContentEntity();
 					c.setLang(WidgetPackageUtils.languageTagForPath(startpath));
 					c.setSrc(startpath);
+					c.setCharSet(IW3CXMLConfiguration.DEFAULT_CHARSET);
+					// Set the default content type
+					if (startpath.endsWith(".htm") || startpath.endsWith(".html")) c.setType("text/html");
+					if (startpath.endsWith(".xht") || startpath.endsWith(".xhtml")) c.setType("application/xhtml+xml");
+					if (startpath.endsWith(".svg")) c.setType("image/svg+xml");
 					fContentList.add(c);	
 				}
 			}
