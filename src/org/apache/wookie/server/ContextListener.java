@@ -200,7 +200,11 @@ public class ContextListener implements ServletContextListener {
 	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.3");
 	 						FlashMessage.getInstance().error(error);
 	 						_logger.error(error);
-	 					}
+	 					} catch (Exception e) {
+	 						String error = f.getName()+":"+e.getLocalizedMessage();
+	 						FlashMessage.getInstance().error(error);
+	 						_logger.error(error);
+						}
 	 				}
 	 				public void fileRemoved(File f) {
 	 					// Not implemented - the .wgt files are removed as part of the deployment process
