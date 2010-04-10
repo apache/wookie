@@ -233,7 +233,7 @@ public class PackagingAndConfiguration{
 		// widget width must be null, 
 		assertEquals(null, widget.getHeight());
 		// widget window modes must a list with one entry whose value is 'floating', 
-		// ???
+		assertEquals("floating", widget.getViewModes());
 		// widget start file must be index.htm at the root of the widget, 
 		assertEquals("index.htm",getSrc(widget));
 		// user agent locales must contain at least one item whose value is 'en' 
