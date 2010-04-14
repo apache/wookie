@@ -14,7 +14,7 @@
 package org.apache.wookie.w3c.util;
 
 
-import antlr.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Utility for handling numbers according to W3C processing rules
@@ -26,7 +26,8 @@ public class NumberUtils {
 	public static int processNonNegativeInteger(String in) throws NumberFormatException {
 		int result = 0;
 		in = UnicodeUtils.normalizeSpaces(in);
-		StringUtils.stripFront(in, " ");
+		StringUtils.stripStart(in, "");
+		
 		
 		if (in.length() == 0) throw new NumberFormatException("no non-space characters");
 
