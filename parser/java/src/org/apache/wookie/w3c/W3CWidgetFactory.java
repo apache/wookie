@@ -16,9 +16,16 @@ package org.apache.wookie.w3c;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
+import org.apache.wookie.w3c.exceptions.InvalidContentTypeException;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
 
 /**
@@ -133,5 +140,62 @@ public class W3CWidgetFactory {
 	public W3CWidget parse(final File zipFile) throws Exception, BadWidgetZipFileException, BadManifestException{
 		if (outputDirectory == null) throw new Exception("No output directory has been set; use setOutputDirectory(File) to set the location to output widget files");
 		return WidgetPackageUtils.processWidgetPackage(zipFile, localPath, outputDirectory, locales, startPageProcessor, features);
+	}
+	
+	/**
+	 * Parse a widget at a given URL and return a W3CWidget object representing the processed information in the package.
+	 * The widget will be saved in the outputFolder.
+	 * @param url
+	 * @return
+	 * @throws BadWidgetZipFileException if there is a problem with the zip package
+	 * @throws BadManifestException if there is a problem with the config.xml manifest file in the package
+	 * @throws InvalidContentTypeException if the widget has an invalid content type
+	 * @throws IOException if the widget cannot be downloaded
+	 */
+	public W3CWidget parse(final URL url) throws BadWidgetZipFileException, BadManifestException, InvalidContentTypeException, IOException, Exception{
+		File file = download(url,false);
+		return parse(file);
+	}
+	
+	/**
+	 * Parse a widget at a given URL and return a W3CWidget object representing the processed information in the package.
+	 * The widget will be saved in the outputFolder.
+	 * @param url
+	 * @param ignoreContentType set to true to instruct the parser to ignore invalid content type exceptions
+	 * @return
+	 * @throws BadWidgetZipFileException if there is a problem with the zip package
+	 * @throws BadManifestException if there is a problem with the config.xml manifest file in the package
+	 * @throws InvalidContentTypeException if the widget has an invalid content type
+	 * @throws IOException if the widget cannot be downloaded
+	 */
+	public W3CWidget parse(final URL url, boolean ignoreContentType) throws BadWidgetZipFileException, BadManifestException, InvalidContentTypeException, IOException, Exception{
+		File file = download(url,ignoreContentType);
+		return parse(file);
+	}
+	
+	/**
+	 * The standard MIME type for a W3C Widget
+	 */
+	private static final String WIDGET_CONTENT_TYPE = "application/widget";
+	
+	/**
+	 * Download widget from given URL
+	 * @param url the URL to download
+	 * @param ignoreContentType if set to true, will ignore invalid content types (not application/widget)
+	 * @return the File downloaded
+	 * @throws InvalidContentTypeException 
+	 * @throws HttpException
+	 * @throws IOException
+	 */
+	private File download(URL url, boolean ignoreContentType) throws InvalidContentTypeException, HttpException, IOException {
+		HttpClient client = new HttpClient();
+		GetMethod method = new GetMethod(url.toString());
+		client.executeMethod(method);
+		String type = method.getResponseHeader("Content-Type").getValue();
+		if (!ignoreContentType && !type.startsWith(WIDGET_CONTENT_TYPE)) throw new InvalidContentTypeException("Problem downloading widget: expected a content type of "+WIDGET_CONTENT_TYPE+" but received:"+type);
+		File file = File.createTempFile("wookie", null);
+		FileUtils.writeByteArrayToFile(file, IOUtils.toByteArray(method.getResponseBodyAsStream()));
+		method.releaseConnection();
+		return file;
 	}
 }

@@ -22,6 +22,8 @@
         </dependency>
         <dependency org="commons-fileupload" name="commons-fileupload" rev="1.0" conf="deploy->default">
         </dependency>
+        <dependency org="commons-httpclient" name="commons-httpclient" rev="3.0.1" conf="deploy->default">
+        </dependency>
         <dependency org="org.jdom" name="jdom" rev="1.1" conf="deploy->default">
         </dependency>
         <dependency org="org.mortbay.jetty" name="servlet-api-2.5" rev="6.1.3" conf="dev->default">

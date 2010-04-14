@@ -20,19 +20,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.io.IOUtils;
 
 import org.apache.wookie.w3c.IContentEntity;
 import org.apache.wookie.w3c.IDescriptionEntity;
@@ -46,6 +38,7 @@ import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
+import org.apache.wookie.w3c.exceptions.InvalidContentTypeException;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -79,40 +72,28 @@ public class PackagingAndConfiguration{
 		output.delete();
 	}
 	
-	public W3CWidget getWidget(String url) throws BadWidgetZipFileException, BadManifestException, Exception{
+	private W3CWidget downloadWidget(String url) throws InvalidContentTypeException, BadWidgetZipFileException, BadManifestException, Exception{
+		return downloadWidget(url, true);
+	}
+	
+	private W3CWidget downloadWidget(String url, boolean ignoreContentType) throws InvalidContentTypeException, BadWidgetZipFileException, BadManifestException, Exception{
 		W3CWidgetFactory fac = new W3CWidgetFactory();
 		fac.setLocalPath("http:localhost/widgets");
 		fac.setFeatures(new String[]{"feature:a9bb79c1"});
-		
 		if (download.exists()) download.delete();
 		if (output.exists()) output.delete();
 		output.mkdir();
 		fac.setOutputDirectory(output.getAbsolutePath());
-		// Download widget to folder
-		HttpClient client = new HttpClient();
-		GetMethod get = new GetMethod(url);
-		client.executeMethod(get);
-		int code = get.getStatusCode();
-		assertEquals(200,code);
-		InputStream in = new BufferedInputStream(get.getResponseBodyAsStream());
-		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(download));
-		IOUtils.copy(in, out);
-		out.flush();
-		out.close();
-		in.close();
-		get.releaseConnection();
-		W3CWidget widget = fac.parse(download);
-		return widget;
+		return fac.parse(new URL(url),ignoreContentType);
 	}
 	
 	public String processWidgetWithErrors(String url){
 		try {
-			getWidget(url);
+			downloadWidget(url);
 		} catch (BadWidgetZipFileException e) {
 			if (e.getMessage()!=null) return e.getMessage();
 			return "Bad Widget Zip File";
 		} catch (BadManifestException e) {
-			// TODO Auto-generated catch block
 			if (e.getMessage()!=null) return e.getMessage();
 			return "Bad Manifest";
 		} catch (Exception e) {
@@ -123,7 +104,7 @@ public class PackagingAndConfiguration{
 	
 	public W3CWidget processWidgetNoErrors(String url){
 		try {
-			return getWidget(url);
+			return downloadWidget(url);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
@@ -322,7 +303,6 @@ public class PackagingAndConfiguration{
 	@Test
 	public void ch(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-VerEfVGeTc/002/ch.wgt");
-		System.out.println(widget.getVersion());
 		assertEquals("PASS", widget.getVersion());
 	}
 
@@ -1135,7 +1115,6 @@ public class PackagingAndConfiguration{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RGNHRBWNZV/000/b3.wgt");
 		String start = getSrc(widget);
 		assertEquals("index.htm",start);
-		System.out.println(getStartFileContentType(widget));
 		assertTrue(getStartFileContentType(widget).startsWith("text/html"));
 	}
 	@Test
@@ -1256,6 +1235,27 @@ public class PackagingAndConfiguration{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-ZjcdAxFMSx/002/hh.wgt");
 		String start = getSrc(widget);
 		assertEquals("pass.html",start);
+	}
+	
+	@Test
+	public void z3(){
+		try {
+			downloadWidget("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-GVVIvsdEUo/000/z3",false);
+		} catch (Exception e) {
+			fail();
+		}
+	}
+	@Test
+	public void z4(){
+		try {
+			downloadWidget("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-GVVIvsdEUo/001/z4.html",false);
+		} catch (Exception e) {
+			fail();
+		}
+	}
+	@Test(expected=InvalidContentTypeException.class)
+	public void z5() throws InvalidContentTypeException, BadWidgetZipFileException, BadManifestException, Exception{
+		downloadWidget("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-GVVIvsdEUo/002/z5.wgt",false);
 	}
 
 	// Utility methods
