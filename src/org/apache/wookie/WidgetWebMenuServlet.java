@@ -180,12 +180,26 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 		Widget[] widgets = Widget.findAll();
 		session.setAttribute("widgets", widgets); //$NON-NLS-1$
 	}
-
+	/**
+	 * Creates a table, looks for widget definitions with a string (the name of 
+	 * the widget) and an instance of the widget which references the actual widget 
+	 * object and its putting widgets in widgets_hash" 
+	 * Results are returned in the session.
+	 * 
+	 * @param request
+	 * @param session
+	 * @param manager
+	 */
 	private void listOperation(HttpServletRequest request, HttpSession session, IWidgetAdminManager manager){
 		Hashtable<String, Widget> widgetsHash = new Hashtable<String, Widget>();
 
 		for(Widget widget:Widget.findAll()){
+			
 			// Create an instance of the widget so that we can display it as the demo widget
+			// An instance of a widget refers to a widget that has data stored on
+			// to it and is going to be deployed on different platforms. In this 
+			// case its windows.  
+			
 			WidgetInstance instance = null;
 			String apiKey = "TEST"; //$NON-NLS-1$
 			String userId = "testuser"; //$NON-NLS-1$
@@ -194,6 +208,8 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 			instance = WidgetInstanceFactory.getWidgetFactory(session, LocaleHandler.localizeMessages(request)).newInstance(apiKey, userId, sharedDataKey, null, widgetId, null);
 			if (instance != null) {
 				widgetsHash.put(instance.getIdKey(), widget);
+				// widgets could be organised alphabetically here.
+			
 			}
 		}
 
