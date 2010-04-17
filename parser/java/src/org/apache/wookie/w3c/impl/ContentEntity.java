@@ -58,7 +58,7 @@ public class ContentEntity extends AbstractLocalizedEntity implements IContentEn
 	}
 
 	public void setCharSet(String charSet) {
-		if (isSupported(charSet, IW3CXMLConfiguration.SUPPORTED_ENCODINGS)) fCharSet = charSet;
+		fCharSet = charSet;
 	}
 
 	public String getType() {
@@ -77,7 +77,7 @@ public class ContentEntity extends AbstractLocalizedEntity implements IContentEn
 
 	}
 
-	public void fromXML(Element element, String[] locales, ZipFile zip) throws BadManifestException {
+	public void fromXML(Element element, String[] locales, String[] encodings, ZipFile zip) throws BadManifestException {
 		
 		// Src
 		fSrc = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.SOURCE_ATTRIBUTE));
@@ -110,8 +110,8 @@ public class ContentEntity extends AbstractLocalizedEntity implements IContentEn
 		
 		// Charset encoding. Use encoding attribute by preference, and the use the charset parameter of the content type
 		String charset = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.CHARSET_ATTRIBUTE));
-		setCharSet(charset);
-		if (getCharSet()==null) setCharSet(charsetParameter);		
+		if (isSupported(charset, encodings)) setCharSet(charset);
+		if (getCharSet()==null && isSupported(charsetParameter, encodings)) setCharSet(charsetParameter);		
 		if (getCharSet()==null) setCharSet(IW3CXMLConfiguration.DEFAULT_CHARSET);
 	}
 	

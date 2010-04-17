@@ -72,6 +72,8 @@ public class WidgetManifestModel implements W3CWidget {
 	private List<IFeatureEntity> fFeaturesList;
 	private List<IPreferenceEntity> fPreferencesList;
 	
+	private String[] supportedEncodings;
+	
 	private ZipFile zip;
 	
 	/**
@@ -81,10 +83,11 @@ public class WidgetManifestModel implements W3CWidget {
 	 * @throws IOException
 	 * @throws BadManifestException
 	 */
-	public WidgetManifestModel (String xmlText, String[] locales, String[] features, ZipFile zip) throws JDOMException, IOException, BadManifestException {		
+	public WidgetManifestModel (String xmlText, String[] locales, String[] features, String[] encodings, ZipFile zip) throws JDOMException, IOException, BadManifestException {		
 		super();		
 		this.zip = zip;
 		this.features = features;
+		this.supportedEncodings = encodings;
 		fNamesList = new ArrayList<INameEntity>();
 		fDescriptionsList = new ArrayList<IDescriptionEntity>();
 		fLicensesList = new ArrayList<ILicenseEntity>();
@@ -375,8 +378,8 @@ public class WidgetManifestModel implements W3CWidget {
 			if(tag.equals(IW3CXMLConfiguration.CONTENT_ELEMENT)) {	
 				if (!foundContent){
 					foundContent = true;
-					IContentEntity aContent = new ContentEntity();						
-					aContent.fromXML(child,locales,zip);
+					IContentEntity aContent = new ContentEntity();	
+					aContent.fromXML(child,locales,supportedEncodings,zip);
 					if (aContent.getSrc()!=null) fContentList.add(aContent);
 				}
 			}
