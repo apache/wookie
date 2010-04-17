@@ -73,7 +73,7 @@
 		<property name="nonce"/>
 		<property name="idKey" not-null="true"/>
 		<property name="apiKey"/>
-		<property name="opensocialToken" not-null="true" type="text" length="300"/>		
+		<property name="opensocialToken" not-null="true" type="text" length="400"/>		
 		<many-to-one name="widget" class="Widget" column="widget_id" not-null="true" />		
 		<property name="updated" type="true_false" />
 		<property name="shown" type="true_false" />
