@@ -205,6 +205,16 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 			instance = WidgetInstanceFactory.getWidgetFactory(session, localizedMessages).newInstance(apiKey, userId, sharedDataKey, serviceType, widgetId, locale);
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
+			// If the requested locale is different to the saved locale, update the "lang" attribute
+			// of the widget instance and save it
+			if (
+					(locale == null && instance.getLang()!=null) || 
+					(locale != null && instance.getLang()==null) || 					
+					(locale != null && !instance.getLang().equals(locale))
+			){
+					instance.setLang(locale);
+					instance.save();
+			}
 			response.setStatus(HttpServletResponse.SC_OK);			
 		}
 		

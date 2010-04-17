@@ -147,5 +147,77 @@ public class FolderLocalizationTest extends AbstractControllerTest {
 		String url = WIDGET_START_URL_ROOT + resource;
 		assertEquals(WIDGET_START_URL_ROOT+"locales/en/test.txt", getResource(url));
 	}
+	
+	@Test
+	// Request the instance with different locales, and check that the correct
+	// resources are returned in each case (i.e. that the locale of the instance has changed)
+	public void updateLocalizedResources(){
+		
+        // Update the widget instance localized to French 
+        try {
+	        PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
+	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+LOCALIZED_WIDGET+"&userid=foldertest1&shareddatakey=foldertest1&locale=fr");
+	        client.executeMethod(post);
+	      
+	        WIDGET_START_URL_ROOT = getStartFile(post.getResponseBodyAsString());
+	        // We have to load the start file in order to start the session
+	        getResource(WIDGET_START_URL_ROOT);
+	        // take off the resource bit
+	        String path = WIDGET_START_URL_ROOT.substring(WIDGET_START_URL_ROOT.indexOf("locales"));
+	        WIDGET_START_URL_ROOT= StringUtils.remove(WIDGET_START_URL_ROOT, path);
+	        post.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    }	
+		
+		String resource = "index.htm";
+		String url = WIDGET_START_URL_ROOT + resource;
+		assertEquals(WIDGET_START_URL_ROOT+"locales/fr/index.htm", getResource(url));
+		
+        // Update the widget instance localized to English 
+        try {
+	        PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
+	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+LOCALIZED_WIDGET+"&userid=foldertest1&shareddatakey=foldertest1&locale=en");
+	        client.executeMethod(post);
+	      
+	        WIDGET_START_URL_ROOT = getStartFile(post.getResponseBodyAsString());
+	        // We have to load the start file in order to start the session
+	        getResource(WIDGET_START_URL_ROOT);
+	        // take off the resource bit
+	        String path = WIDGET_START_URL_ROOT.substring(WIDGET_START_URL_ROOT.indexOf("locales"));
+	        WIDGET_START_URL_ROOT= StringUtils.remove(WIDGET_START_URL_ROOT, path);
+	        post.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    }	
+		
+		resource = "index.htm";
+		url = WIDGET_START_URL_ROOT + resource;
+		assertEquals(WIDGET_START_URL_ROOT+"locales/en/index.htm", getResource(url));
+		
+	     // Update the widget instance unlocalized (expecting the default locale here to be "en")
+        try {
+	        PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
+	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+LOCALIZED_WIDGET+"&userid=foldertest1&shareddatakey=foldertest1");
+	        client.executeMethod(post);
+	      
+	        WIDGET_START_URL_ROOT = getStartFile(post.getResponseBodyAsString());
+	        // We have to load the start file in order to start the session
+	        getResource(WIDGET_START_URL_ROOT);
+	        // take off the resource bit
+	        String path = WIDGET_START_URL_ROOT.substring(WIDGET_START_URL_ROOT.indexOf("locales"));
+	        WIDGET_START_URL_ROOT= StringUtils.remove(WIDGET_START_URL_ROOT, path);
+	        post.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    }	
+		
+		resource = "index.htm";
+		url = WIDGET_START_URL_ROOT + resource;
+		assertEquals(WIDGET_START_URL_ROOT+"locales/en/index.htm", getResource(url));
+	}
 
 }
