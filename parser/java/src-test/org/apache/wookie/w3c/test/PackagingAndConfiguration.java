@@ -80,6 +80,7 @@ public class PackagingAndConfiguration{
 		W3CWidgetFactory fac = new W3CWidgetFactory();
 		fac.setLocalPath("http:localhost/widgets");
 		fac.setFeatures(new String[]{"feature:a9bb79c1"});
+		fac.setEncodings(new String[]{"UTF-8", "ISO-8859-1","Windows-1252"});
 		if (download.exists()) download.delete();
 		if (output.exists()) output.delete();
 		output.mkdir();

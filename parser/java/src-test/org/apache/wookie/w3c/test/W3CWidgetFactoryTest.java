@@ -84,6 +84,18 @@ public class W3CWidgetFactoryTest {
 		fac.parse(wgt);
 	}
 	
+	@Test(expected = NullPointerException.class)
+	public void testSetNullEncodings() throws Exception{
+		W3CWidgetFactory fac = new W3CWidgetFactory();	
+		fac.setEncodings(null);
+	}
+	
+	@Test(expected = Exception.class)
+	public void testSetNoEncodings() throws Exception{
+		W3CWidgetFactory fac = new W3CWidgetFactory();		
+		fac.setEncodings(new String[]{});
+	}
+	
 	@Test
 	public void testSetFeaturesNull() throws Exception{
 		W3CWidgetFactory fac = new W3CWidgetFactory();	

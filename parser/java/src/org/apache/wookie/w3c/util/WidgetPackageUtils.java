@@ -35,14 +35,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.wookie.w3c.util.LocalizationUtils;
-import org.apache.wookie.w3c.IContentEntity;
-import org.apache.wookie.w3c.W3CWidget;
-import org.apache.wookie.w3c.IStartPageProcessor;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
-import org.apache.wookie.w3c.exceptions.BadManifestException;
-import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
-import org.apache.wookie.w3c.exceptions.InvalidStartFileException;
-import org.apache.wookie.w3c.impl.WidgetManifestModel;
 
 /**
  * Utilities for working with Widget packages, i.e. Zip Files with an XML manifest
@@ -226,60 +219,6 @@ public class WidgetPackageUtils {
 			_logger.error(ex);
 		}
 		return true;
-	}
-	
-	public static W3CWidget processWidgetPackage(File zipFile, String localWidgetPath, File WIDGETFOLDER, String[] locales, IStartPageProcessor processor, String[] features) throws BadWidgetZipFileException, BadManifestException{
-		ZipFile zip;
-		try {
-			zip = new ZipFile(zipFile);
-		} catch (IOException e) {
-			throw new BadWidgetZipFileException();
-		}
-		if (WidgetPackageUtils.hasManifest(zip)){
-			try {
-				// build the model
-				WidgetManifestModel widgetModel = new WidgetManifestModel(WidgetPackageUtils.extractManifest(zip), locales, features, zip);															
-
-				// get the widget identifier
-				String manifestIdentifier = widgetModel.getIdentifier();						
-				// create the folder structure to unzip the zip into
-				File newWidgetFolder = WidgetPackageUtils.createUnpackedWidgetFolder(WIDGETFOLDER, manifestIdentifier);
-				// now unzip it into that folder
-				WidgetPackageUtils.unpackZip(zip, newWidgetFolder);	
-				
-				// Iterate over all start files and update paths
-				for (IContentEntity content: widgetModel.getContentList()){
-					// now update the js links in the start page
-					File startFile = new File(newWidgetFolder.getCanonicalPath() + File.separator + content.getSrc());
-					String relativestartUrl = (WidgetPackageUtils.getURLForWidget(localWidgetPath, manifestIdentifier, content.getSrc())); 					
-					content.setSrc(relativestartUrl);
-					if(startFile.exists() && processor != null){		
-						processor.processStartFile(startFile, widgetModel);
-					}	
-				}
-				if (widgetModel.getContentList().isEmpty()){
-					throw new InvalidStartFileException();
-				}
-				
-				// get the path to the root of the unzipped folder
-				String localPath = WidgetPackageUtils.getURLForWidget(localWidgetPath, manifestIdentifier, "");
-				// now pass this to the model which will prepend the path to local resources (not web icons)
-				widgetModel.updateIconPaths(localPath);				
-				
-				// check to see if this widget already exists in the DB - using the ID (guid) key from the manifest
-				return widgetModel;
-			} catch (InvalidStartFileException e) {
-				throw e;
-			} catch (BadManifestException e) {
-				throw e;
-			} catch (Exception e){
-				throw new BadManifestException(e);
-			}
-		}
-		else{
-			// no manifest file found in zip archive
-			throw new BadWidgetZipFileException(); //$NON-NLS-1$ 
-		}
 	}
 	
 	/**

@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -26,6 +27,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.w3c.exceptions.InvalidContentTypeException;
+import org.apache.wookie.w3c.exceptions.InvalidStartFileException;
+import org.apache.wookie.w3c.impl.WidgetManifestModel;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
 
 /**
@@ -47,6 +50,9 @@ import org.apache.wookie.w3c.util.WidgetPackageUtils;
  *   <dt>locales</dt>
  *   <dd>The supported locales (as BCP47 language-tags) to be processed for the widget. This determines which start files, icons, and other localized elements
  *   will be processed and expanded. This is set to "en" by default</dd>
+ *   <dt>encodings</dt>
+ *   <dd>The supported encodings to be processed for the widget. This determines which custom encodings will be allowed for start files. 
+ *   This is set to UTF-8 by default.</dd>
  *   <dt>localPath</dt>
  *   <dd>The base URL from which unpacked widgets will be served, e.g. "/myapp/widgets". The URLs of start files will be appended to
  *   this base URL to create the widget URL. The default value of this property is "/widgets"</dd>
@@ -64,6 +70,7 @@ public class W3CWidgetFactory {
 	private String[] locales;
 	private String localPath;
 	private String[] features;
+	private String[] encodings;
 
 	/**
 	 * Set the features to be included when parsing widgets
@@ -79,6 +86,7 @@ public class W3CWidgetFactory {
 		this.features = new String[0];
 		this.localPath = "/widgets";
 		this.outputDirectory = null;
+		this.encodings = new String[]{"UTF-8"};
 		this.startPageProcessor = new IStartPageProcessor(){
 			public void processStartFile(File startFile, W3CWidget model)
 					throws Exception {
@@ -139,7 +147,7 @@ public class W3CWidgetFactory {
 	 */
 	public W3CWidget parse(final File zipFile) throws Exception, BadWidgetZipFileException, BadManifestException{
 		if (outputDirectory == null) throw new Exception("No output directory has been set; use setOutputDirectory(File) to set the location to output widget files");
-		return WidgetPackageUtils.processWidgetPackage(zipFile, localPath, outputDirectory, locales, startPageProcessor, features);
+		return processWidgetPackage(zipFile);
 	}
 	
 	/**
@@ -197,5 +205,72 @@ public class W3CWidgetFactory {
 		FileUtils.writeByteArrayToFile(file, IOUtils.toByteArray(method.getResponseBodyAsStream()));
 		method.releaseConnection();
 		return file;
+	}
+
+	public void setEncodings(final String[] encodings) throws Exception {
+		if (encodings == null) throw new NullPointerException("Supported encodings cannot be set to null");
+		if (encodings.length == 0) throw new Exception("At least one encoding must be specified");
+		this.encodings = encodings;
+	}
+
+	/**
+	 * Process a widget package for the given zip file
+	 * @param zipFile
+	 * @return a W3CWidget representing the widget
+	 * @throws BadWidgetZipFileException
+	 * @throws BadManifestException
+	 */
+	private W3CWidget processWidgetPackage(File zipFile) throws BadWidgetZipFileException, BadManifestException{
+		ZipFile zip;
+		try {
+			zip = new ZipFile(zipFile);
+		} catch (IOException e) {
+			throw new BadWidgetZipFileException();
+		}
+		if (WidgetPackageUtils.hasManifest(zip)){
+			try {
+				// build the model
+				WidgetManifestModel widgetModel = new WidgetManifestModel(WidgetPackageUtils.extractManifest(zip), locales, features, encodings, zip);															
+
+				// get the widget identifier
+				String manifestIdentifier = widgetModel.getIdentifier();						
+				// create the folder structure to unzip the zip into
+				File newWidgetFolder = WidgetPackageUtils.createUnpackedWidgetFolder(outputDirectory, manifestIdentifier);
+				// now unzip it into that folder
+				WidgetPackageUtils.unpackZip(zip, newWidgetFolder);	
+				
+				// Iterate over all start files and update paths
+				for (IContentEntity content: widgetModel.getContentList()){
+					// now update the js links in the start page
+					File startFile = new File(newWidgetFolder.getCanonicalPath() + File.separator + content.getSrc());
+					String relativestartUrl = (WidgetPackageUtils.getURLForWidget(localPath, manifestIdentifier, content.getSrc())); 					
+					content.setSrc(relativestartUrl);
+					if(startFile.exists() && startPageProcessor != null){		
+						startPageProcessor.processStartFile(startFile, widgetModel);
+					}	
+				}
+				if (widgetModel.getContentList().isEmpty()){
+					throw new InvalidStartFileException();
+				}
+				
+				// get the path to the root of the unzipped folder
+				String thelocalPath = WidgetPackageUtils.getURLForWidget(localPath, manifestIdentifier, "");
+				// now pass this to the model which will prepend the path to local resources (not web icons)
+				widgetModel.updateIconPaths(thelocalPath);				
+				
+				// check to see if this widget already exists in the DB - using the ID (guid) key from the manifest
+				return widgetModel;
+			} catch (InvalidStartFileException e) {
+				throw e;
+			} catch (BadManifestException e) {
+				throw e;
+			} catch (Exception e){
+				throw new BadManifestException(e);
+			}
+		}
+		else{
+			// no manifest file found in zip archive
+			throw new BadWidgetZipFileException(); //$NON-NLS-1$ 
+		}
 	}
 }

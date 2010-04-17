@@ -36,6 +36,6 @@ public interface IContentEntity extends ILocalizedEntity {
 
 	public void setType(String type);
 	
-	public void fromXML(Element element, String[] locales, ZipFile zip) throws BadManifestException;
+	public void fromXML(Element element, String[] locales, String[] encodings, ZipFile zip) throws BadManifestException;
 
 }
