@@ -25,15 +25,13 @@ namespace WookieService.Wookie
         private String title;
         private Int32 height;
         private Int32 width;
-        private String maximize;
 
-        public WidgetInstance(String url, String guid, String title, Int32 height, Int32 width, String maximize) {
+        public WidgetInstance(String url, String guid, String title, Int32 height, Int32 width) {
             this.setIdentifier(guid);
             this.setUrl(url);
             this.setTitle(title);
             this.setHeight(height);
             this.setWidth(width);
-            this.setMaximize(maximize);
         }
       
         public String getUrl() {
@@ -74,17 +72,6 @@ namespace WookieService.Wookie
 
         public void setWidth(Int32 width) {
             this.width = width;
-        }
-
-        public String getMaximize() {
-            return this.maximize;
-        }
-
-        public void setMaximize(String maximize) {
-            this.maximize = maximize;
-        }
-        public String isMaximizable() {
-            return this.getMaximize();
         }
     }
 }

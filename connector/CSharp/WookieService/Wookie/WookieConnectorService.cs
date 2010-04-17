@@ -72,11 +72,9 @@ namespace WookieService.Wookie
             String widgetTitle = doc.GetElementsByTagName("title")[0].InnerText;;
             Int32 widgetHeight = Int32.Parse(doc.GetElementsByTagName("height")[0].InnerText);
             Int32 widgetWidth = Int32.Parse(doc.GetElementsByTagName("width")[0].InnerText);
-            String widgetMaximize = doc.GetElementsByTagName("maximize")[0].InnerText;;
-
           
             WidgetInstance newInstance = new WidgetInstance(widgetInstanceUrl, guid, widgetTitle, 
-                                                            widgetHeight, widgetWidth, widgetMaximize);
+                                                            widgetHeight, widgetWidth);
             return newInstance;            
         }
 
