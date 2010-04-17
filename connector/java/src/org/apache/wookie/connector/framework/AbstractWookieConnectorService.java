@@ -120,13 +120,13 @@ public abstract class AbstractWookieConnectorService implements
       logger.debug("Makeing Wookie REST query using: " + postdata);
       
       url = new URL(conn.getURL() + "/widgetinstances");
-      URLConnection conn = url.openConnection();
-      conn.setDoOutput(true);
-      OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+      URLConnection urlConn = url.openConnection();
+      urlConn.setDoOutput(true);
+      OutputStreamWriter wr = new OutputStreamWriter(urlConn.getOutputStream());
       wr.write(postdata.toString());
       wr.flush();
 
-      InputStream is = conn.getInputStream();
+      InputStream is = urlConn.getInputStream();
 
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       DocumentBuilder db = dbf.newDocumentBuilder();
