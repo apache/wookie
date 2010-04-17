@@ -21,17 +21,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
-import org.apache.commons.fileupload.DiskFileUpload;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadBase;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.wookie.w3c.util.LocalizationUtils;
@@ -149,49 +141,6 @@ public class WidgetPackageUtils {
 		folder.replaceAll(" ", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		return folder;
 	}
-	
-	public static File dealWithDroppedFile(String uploadPath, File file) throws IOException{	
-		String serverPath = convertPathToPlatform(uploadPath);
-		File uFile = new File(serverPath + File.separator + file.getName());
-		FileUtils.copyFile(file, uFile);
-		file.delete();
-		return uFile;
-	}
-
-	public static File dealWithUploadFile(String uploadPath, HttpServletRequest request) throws Exception {
-		File uFile = null;
-		String serverPath = convertPathToPlatform(uploadPath);
-		_logger.debug(serverPath);
-		String archiveFileName = null;
-		if (FileUploadBase.isMultipartContent(request)) {
-			_logger.debug("uploading file..."); //$NON-NLS-1$
-			DiskFileUpload fu = new DiskFileUpload();
-			// maximum size before a FileUploadException will be thrown
-			fu.setSizeMax(1024 * 1024 * 1024);
-			// maximum size that will be stored in memory
-			fu.setSizeThreshold(1024 * 1024);
-			// the location for saving data that is larger than
-			// getSizeThreshold()
-			fu.setRepositoryPath(uploadPath);
-
-			List<?> fileItems = fu.parseRequest(request);
-			if (!fileItems.isEmpty()) {
-				Iterator<?> i = fileItems.iterator();
-				FileItem fi = (FileItem) i.next();
-				File file = new File(convertPathToPlatform(fi.getName()));
-				archiveFileName = file.getName();
-
-				uFile = new File(serverPath + File.separator + archiveFileName);
-
-				fi.write(uFile);
-				_logger.debug("Upload completed successfully" +  "[" //$NON-NLS-1$ //$NON-NLS-2$
-						+ archiveFileName + "]-" //$NON-NLS-1$
-						+ (fi.isInMemory() ? "M" : "D")); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-		}
-		return uFile;
-	}
-
 
 	public static String convertPathToRelativeUri(String path){
 		return path.replace('\\', '/');
@@ -206,20 +155,6 @@ public class WidgetPackageUtils {
 		return result;
 	}
 
-	public static boolean removeWidgetResources(String WIDGETFOLDER, String widgetGuid){
-		String folder = convertIdToFolderName(widgetGuid);
-		String serverPath = WIDGETFOLDER + File.separator + folder;
-		File pFolder = new File(convertPathToPlatform(serverPath));
-		try {
-			_logger.debug("Deleting folder:"+pFolder.getCanonicalFile().toString()); //$NON-NLS-1$
-			if (pFolder.getParent() != null) // never call on a root folder
-				FileUtils.deleteDirectory(pFolder);
-		}
-		catch (Exception ex) {
-			_logger.error(ex);
-		}
-		return true;
-	}
 	
 	/**
 	 * Checks for the existence of the Manifest.

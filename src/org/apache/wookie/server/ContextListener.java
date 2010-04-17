@@ -30,6 +30,7 @@ import org.apache.wookie.feature.FeatureLoader;
 import org.apache.wookie.helpers.FlashMessage;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.util.WgtWatcher;
+import org.apache.wookie.util.WidgetFileUtils;
 import org.apache.wookie.util.hibernate.DBManagerFactory;
 import org.apache.wookie.util.hibernate.HibernateUtil;
 import org.apache.wookie.util.hibernate.IDBManager;
@@ -169,7 +170,7 @@ public class ContextListener implements ServletContextListener {
 	 				public void fileModified(File f) {
 	 					try{
 	 						dbManager.beginTransaction();
-	 						File upload = WidgetPackageUtils.dealWithDroppedFile(UPLOADFOLDER, f);
+	 						File upload = WidgetFileUtils.dealWithDroppedFile(UPLOADFOLDER, f);
 	 						W3CWidgetFactory fac = new W3CWidgetFactory();
 	 						fac.setLocales(locales);
 	 						fac.setLocalPath(contextPath+localWidgetFolderPath);

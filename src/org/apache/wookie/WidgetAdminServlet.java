@@ -43,6 +43,7 @@ import org.apache.wookie.helpers.WidgetKeyManager;
 import org.apache.wookie.manager.IWidgetAdminManager;
 import org.apache.wookie.manager.impl.WidgetAdminManager;
 import org.apache.wookie.server.LocaleHandler;
+import org.apache.wookie.util.WidgetFileUtils;
 import org.apache.wookie.util.gadgets.GadgetUtils;
 import org.apache.wookie.util.html.StartPageProcessor;
 import org.apache.wookie.w3c.W3CWidget;
@@ -51,7 +52,6 @@ import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.w3c.exceptions.InvalidContentTypeException;
 import org.apache.wookie.w3c.exceptions.InvalidStartFileException;
-import org.apache.wookie.w3c.util.WidgetPackageUtils;
 
 /**
  * Servlet implementation class for Servlet: WidgetAdminServlet
@@ -375,7 +375,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		Widget widget = Widget.findById(Integer.parseInt(widgetId));
 		String guid = widget.getGuid();
 		if(WidgetFactory.destroy(Integer.parseInt(widgetId))){
-			if(WidgetPackageUtils.removeWidgetResources(WIDGETFOLDER, guid)){			
+			if(WidgetFileUtils.removeWidgetResources(WIDGETFOLDER, guid)){			
 				session.setAttribute("message_value", localizedMessages.getString("WidgetAdminServlet.12"));			 //$NON-NLS-1$ //$NON-NLS-2$ 
 			}
 			else{
@@ -465,7 +465,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		session.setAttribute("closeWindow", Boolean.valueOf(true)); //$NON-NLS-1$
 		File zipFile;
 		try {
-			zipFile = WidgetPackageUtils.dealWithUploadFile(UPLOADFOLDER, request);
+			zipFile = WidgetFileUtils.upload(UPLOADFOLDER, request);
 		} 
 		catch (Exception ex) {
 			session.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.28") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
