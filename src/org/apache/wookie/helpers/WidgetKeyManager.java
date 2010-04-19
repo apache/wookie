@@ -29,23 +29,22 @@ import org.apache.wookie.util.HashGenerator;
 import org.apache.wookie.w3c.util.RandomGUID;
 
 /**
- * @author scott
- *
+ * Helper methods for working with API keys
  */
 public class WidgetKeyManager{
   static Logger _logger = Logger.getLogger(WidgetKeyManager.class.getName());
 	
 	/**
-	 * Revoke the given key
-	 * @param id the api key value
+	 * Revoke the key matching the supplied key value
+	 * @param value the api key value
 	 * @return true if the key was successfully revoked
 	 */
-	public static boolean revokeKey(String id){
-		if (id == null) return false;
-		if (id.trim().equals("")) return false;
-		id = id.trim();
-		ApiKey[] key = ApiKey.findByValue("value", id);
-		if (key == null || key.length !=1);
+	public static boolean revokeKey(String value){
+		if (value == null) return false;
+		if (value.trim().equals("")) return false;
+		value = value.trim();
+		ApiKey[] key = ApiKey.findByValue("value", value);
+		if (key == null || key.length !=1) return false;
 		return revokeKey(key[0]);
 	}
 	
@@ -102,7 +101,6 @@ public class WidgetKeyManager{
 	/**
 	 * Check if the given key is valid
 	 * @param key the api key supplied with the request
-
 	 * @return true if valid, otherwise false
 	 */
 	public static boolean isValid(String key) {
