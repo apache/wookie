@@ -138,7 +138,7 @@ public class WidgetPackageUtils {
 		if(folder.startsWith("http://")){ //$NON-NLS-1$
 			folder = folder.substring(7, folder.length());
 		}
-		folder.replaceAll(" ", ""); //$NON-NLS-1$ //$NON-NLS-2$
+		folder = folder.replaceAll(" ", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		return folder;
 	}
 

@@ -41,12 +41,19 @@ public abstract class AbstractLocalizedEntity implements ILocalizedEntity {
 	public String getLang() {
 		return lang;
 	}
+	
+	/**
+	 * Set the language tag for the object
+	 * @param language the language tag to set; this should be a valid BCP-47 language tag
+	 */
 	public void setLang(String lang) {
 		this.lang = lang;
 	}
+	
 	public String getDir() {
 		return dir;
 	}
+	
 	public void setDir(String dir) {
 		this.dir = dir;
 	}
@@ -78,25 +85,25 @@ public abstract class AbstractLocalizedEntity implements ILocalizedEntity {
 	 * @return a string containing the element text
 	 */
 	public static String getLocalizedTextContent(Element element){
-		String content = "";
+		StringBuffer content = new StringBuffer();
 		for (Object node:element.getContent()){
 			if (node instanceof Element){
 				if ((((Element) node).getAttribute("dir")!= null || ((Element) node).getAttribute("lang")!= null)  && ((Element)node).getName().equals("span")){
-					content += "<span dir=\""+getTextDirection((Element)node)+"\"";
+					content.append("<span dir=\""+getTextDirection((Element)node)+"\"");
 					if (((Element)node).getAttribute("lang")!=null)
-						content += " xml:lang=\""+((Element)node).getAttribute("lang").getValue()+"\"";
-					content +=">";
-					content += getLocalizedTextContent((Element)node);
-					content += "</span>";
+						content.append(" xml:lang=\""+((Element)node).getAttribute("lang").getValue()+"\"");
+					content.append(">");
+					content.append(getLocalizedTextContent((Element)node));
+					content.append("</span>");
 				} else {
-					content += getLocalizedTextContent((Element)node);
+					content.append(getLocalizedTextContent((Element)node));
 				}
 			}
 			if (node instanceof Text){
-				content += ((Text)node).getText();
+				content.append(((Text)node).getText());
 			}
 		}
-		return UnicodeUtils.normalizeWhitespace(content);
+		return UnicodeUtils.normalizeWhitespace(content.toString());
 	}
 	
 

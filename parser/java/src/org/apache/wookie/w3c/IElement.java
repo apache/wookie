@@ -16,10 +16,10 @@ package org.apache.wookie.w3c;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.jdom.Element;
 
-public interface IManifestModelBase {
-	
-	
-	public String getXMLTagName();
+/**
+ * Base class for model objects that are unmarshalled from an XML element
+ */
+public interface IElement {
 	
     /**
      * Unmarshall the given XML Element to this Object

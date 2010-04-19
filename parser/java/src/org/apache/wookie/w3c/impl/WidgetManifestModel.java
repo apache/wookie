@@ -238,10 +238,6 @@ public class WidgetManifestModel implements W3CWidget {
 	public Integer getWidth() {
 		return fWidth;
 	}
-
-	public String getXMLTagName() {
-		return IW3CXMLConfiguration.WIDGET_ELEMENT;
-	}
 	
 	public void fromXML(Element element) throws BadManifestException{
 		fLogger.warn("WidgetManifestModel.fromXML() called with no locales");

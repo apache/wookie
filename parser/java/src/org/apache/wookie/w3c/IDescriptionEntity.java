@@ -14,8 +14,7 @@
 
 package org.apache.wookie.w3c;
 /**
- * @author Paul Sharples
- * @version $Id: IDescriptionEntity.java,v 1.3 2009-09-02 18:37:30 scottwilson Exp $
+ * a Description of a Widget
  */
 public interface IDescriptionEntity extends ILocalizedEntity {
 

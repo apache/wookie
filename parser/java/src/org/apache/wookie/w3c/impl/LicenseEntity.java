@@ -54,10 +54,6 @@ public class LicenseEntity extends AbstractLocalizedEntity implements ILicenseEn
 	public void setHref(String href) {
 		fHref = href;
 	}
-
-	public String getXMLTagName() {
-		return IW3CXMLConfiguration.LICENSE_ELEMENT;
-	}
 	
 	public void fromXML(Element element) {
 		super.fromXML(element);

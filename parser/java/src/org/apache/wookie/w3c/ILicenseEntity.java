@@ -14,8 +14,7 @@
 
 package org.apache.wookie.w3c;
 /**
- * @author Paul Sharples
- * @version $Id: ILicenseEntity.java,v 1.3 2009-09-02 18:37:30 scottwilson Exp $
+ * a License for a Widget
  */
 public interface ILicenseEntity extends ILocalizedEntity {
 

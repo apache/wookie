@@ -57,10 +57,6 @@ public class NameEntity extends AbstractLocalizedEntity implements INameEntity {
 		fShort = short1;
 	}
 	
-	public String getXMLTagName() {
-		return IW3CXMLConfiguration.NAME_ELEMENT;
-	}
-	
 	public void fromXML(Element element) {		
 		super.fromXML(element);
 		// Get the text value of name

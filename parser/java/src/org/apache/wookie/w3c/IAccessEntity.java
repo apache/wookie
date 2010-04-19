@@ -14,10 +14,9 @@
 
 package org.apache.wookie.w3c;
 /**
- * @author Paul Sharples
- * @version $Id: IAccessEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
+ * a Widget Access Request Policy (WARP) element
  */
-public interface IAccessEntity extends IManifestModelBase {
+public interface IAccessEntity extends IElement {
 
 	public String getOrigin();
 

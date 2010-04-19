@@ -14,10 +14,9 @@
 
 package org.apache.wookie.w3c;
 /**
- * @author Paul Sharples
- * @version $Id: IParamEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
+ * a Parameter of a Preference or Feature for a Widget
  */
-public interface IParamEntity extends IManifestModelBase {
+public interface IParamEntity extends IElement {
 
 	public String getName();
 

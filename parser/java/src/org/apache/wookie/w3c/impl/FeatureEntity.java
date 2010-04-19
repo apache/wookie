@@ -87,10 +87,6 @@ public class FeatureEntity implements IFeatureEntity {
 	public void setParams(List<IParamEntity> params) {
 		fParams = params;
 	}
-
-	public String getXMLTagName() {
-		return IW3CXMLConfiguration.FEATURE_ELEMENT;
-	}
 	
 	public void fromXML(Element element) throws BadManifestException {
 		fName = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.NAME_ATTRIBUTE));

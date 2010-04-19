@@ -64,10 +64,6 @@ public class IconEntity extends AbstractLocalizedEntity implements IIconEntity{
 	public void setWidth(Integer width) {
 		fWidth = width;
 	}
-
-	public String getXMLTagName() {
-		return IW3CXMLConfiguration.ICON_ELEMENT;
-	}
 	
 	public void fromXML(Element element){
 	}

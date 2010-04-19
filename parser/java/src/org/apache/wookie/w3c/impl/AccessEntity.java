@@ -53,9 +53,6 @@ public class AccessEntity implements IAccessEntity {
 	public void setSubDomains(boolean subDomains) {
 		fSubDomains = subDomains;
 	}
-	public String getXMLTagName() {
-		return IW3CXMLConfiguration.ACCESS_ELEMENT;
-	}
 
 	public void fromXML(Element element) {	
 		// Origin is required

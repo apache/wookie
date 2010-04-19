@@ -15,14 +15,13 @@ package org.apache.wookie.w3c;
 
 /**
  * An element that can be localized by language tag
- * @author scott
- *
+ * @see ILocalizedEntity
  */
 public interface ILocalizedElement {
 	
 	/**
 	 * Get the language tag for the element. This should conform to BCP47.
-	 * @return
+	 * @return the language tag, or null if no language tag has been set for the element
 	 */
 	public String getLang();
 

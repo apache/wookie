@@ -69,10 +69,6 @@ public class ContentEntity extends AbstractLocalizedEntity implements IContentEn
 		fType = type;
 	}
 	
-	public String getXMLTagName() {
-		return IW3CXMLConfiguration.CONTENT_ELEMENT;
-	}
-	
 	public void fromXML(Element element){
 
 	}

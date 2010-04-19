@@ -14,10 +14,9 @@
 
 package org.apache.wookie.w3c;
 /**
- * @author Paul Sharples
- * @version $Id: IPreferenceEntity.java,v 1.3 2009-09-02 18:37:30 scottwilson Exp $
+ * a Preference for a Widget
  */
-public interface IPreferenceEntity extends IParamEntity, IManifestModelBase {
+public interface IPreferenceEntity extends IParamEntity, IElement {
 
 	public boolean isReadOnly();
 

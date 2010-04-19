@@ -39,10 +39,6 @@ public class PreferenceEntity extends ParamEntity implements IPreferenceEntity {
 	public void setReadOnly(boolean readOnly) {
 		fReadOnly = readOnly;
 	}
-
-	public String getXMLTagName() {
-		return IW3CXMLConfiguration.PREFERENCE_ELEMENT;
-	}
 	
 	public void fromXML(Element element) throws BadManifestException {
 		super.fromXML(element);

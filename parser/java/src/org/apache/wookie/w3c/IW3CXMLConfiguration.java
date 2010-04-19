@@ -16,9 +16,6 @@ package org.apache.wookie.w3c;
 
 /**
  * Constants for widget elements found in the config.xml file
- *
- * @author Paul Sharples
- * @version $Id: IW3CXMLConfiguration.java,v 1.2 2009-07-28 16:05:22 scottwilson Exp $
  */
 public interface IW3CXMLConfiguration {
 	

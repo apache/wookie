@@ -66,10 +66,6 @@ public class AuthorEntity extends AbstractLocalizedEntity implements IAuthorEnti
 		fEmail = email;
 	}
 	
-	public String getXMLTagName() {
-		return IW3CXMLConfiguration.AUTHOR_ELEMENT;
-	}
-	
 	public void fromXML(Element element) {
 		fAuthorName = getLocalizedTextContent(element);		
 		fHref = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.HREF_ATTRIBUTE));	

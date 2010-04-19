@@ -14,8 +14,7 @@
 
 package org.apache.wookie.w3c;
 /**
- * @author Paul Sharples
- * @version $Id: INameEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
+ * a Name of a Widget
  */
 public interface INameEntity extends ILocalizedEntity {
 

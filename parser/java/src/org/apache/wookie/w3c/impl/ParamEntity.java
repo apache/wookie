@@ -54,10 +54,6 @@ public class ParamEntity implements IParamEntity {
 	public void setValue(String value) {
 		fValue = value;
 	}
-
-	public String getXMLTagName() {
-		return IW3CXMLConfiguration.PARAM_ELEMENT;
-	}
 	
 	public void fromXML(Element element) throws BadManifestException {
 		fName = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.NAME_ATTRIBUTE));

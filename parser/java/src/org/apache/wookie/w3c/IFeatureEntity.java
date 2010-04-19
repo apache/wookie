@@ -14,12 +14,11 @@
 
 package org.apache.wookie.w3c;
 /**
- * @author Paul Sharples
- * @version $Id: IFeatureEntity.java,v 1.3 2009-09-02 18:37:30 scottwilson Exp $
+ * a Feature of a Widget
  */
 import java.util.List;
 
-public interface IFeatureEntity extends IManifestModelBase {
+public interface IFeatureEntity extends IElement {
 
 	public String getName();
 

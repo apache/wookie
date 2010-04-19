@@ -13,11 +13,11 @@
  */
 
 package org.apache.wookie.w3c;
+
 /**
- * @author Paul Sharples
- * @version $Id: IAuthorEntity.java,v 1.3 2009-09-02 18:37:30 scottwilson Exp $
+ * an Author of a Widget
  */
-public interface IAuthorEntity extends IManifestModelBase {
+public interface IAuthorEntity extends IElement {
 
 	public String getAuthorName();
 
