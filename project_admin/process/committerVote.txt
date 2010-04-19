@@ -7,14 +7,16 @@ Summary
 
 after they accept, then do:
 
-3a) templates/committerAccept.txt ... the normal process for dev-to-pmc
+3) templates/committerAccept.txt ... the normal process for dev-to-pmc
+
+
+4) wait until we see that receipt of CLA is recorded
+5) email-member-create.txt
 
 NOTE: templates below this line have not been ported from Forrest yet, see
 https://svn.apache.org/repos/private/pmc/forrest/template/
 
-3b) email-member-accept.txt ... for someone who is already a committer
-4) wait until we see that receipt of CLA is recorded
-5) email-member-create.txt
+
 5a) now wait until root says it is done
 5b) chair to enable their svn access
 6) email-member-done.txt
