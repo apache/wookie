@@ -14,21 +14,11 @@
 
 package org.apache.wookie.w3c.exceptions;
 /**
- * Thrown when there is a problem with a manifest file 
- * @author Paul Sharples
- * @version $Id: BadManifestException.java,v 1.2 2009-07-28 16:05:23 scottwilson Exp $
+ * Thrown when there is a problem with a manifest file; typically an unsupported or invalid feature requirement, or using the wrong namespace
  */
 public class BadManifestException extends Exception {
 
 	private static final long serialVersionUID = 1L;
-
-	public BadManifestException() {
-		super();
-	}
-
-	public BadManifestException(String message, Throwable cause) {
-		super(message, cause);
-	}
 
 	public BadManifestException(String message) {
 		super(message);
@@ -38,6 +28,4 @@ public class BadManifestException extends Exception {
 		super(cause);
 	}
 	
-	
-
 }

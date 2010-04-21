@@ -100,7 +100,7 @@ public class FeatureEntity implements IFeatureEntity {
 			// Not a valid IRI?
 			if (!IRIValidator.isValidIRI(fName)){
 				if (fRequired) {
-					throw new BadManifestException();
+					throw new BadManifestException("Feature name is not a valid IRI");
 				} else {
 					fName = null;	
 				}
@@ -112,7 +112,7 @@ public class FeatureEntity implements IFeatureEntity {
 			}
 			if (!supported){
 				if (fRequired){
-					throw new BadManifestException();
+					throw new BadManifestException("Required feature is not supported");
 				} else {
 					fName = null;
 				}

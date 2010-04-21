@@ -95,7 +95,7 @@ public class ContentEntity extends AbstractLocalizedEntity implements IContentEn
 			// Split the content type, as we may also have a charset parameter
 			String[] type = fType.split(";");
 			// If a type attribute is specified, and is either invalid or unsupported, we must treat it as an invalid widget
-			if (!isSupported(type[0], IW3CXMLConfiguration.SUPPORTED_CONTENT_TYPES)) throw new InvalidContentTypeException();
+			if (!isSupported(type[0], IW3CXMLConfiguration.SUPPORTED_CONTENT_TYPES)) throw new InvalidContentTypeException("Content type is not supported");
 			fType = type[0];
 			// Get the charset parameter if present
 			if (type.length > 1){

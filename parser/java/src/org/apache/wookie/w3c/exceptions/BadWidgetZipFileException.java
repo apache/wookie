@@ -14,9 +14,7 @@
 
 package org.apache.wookie.w3c.exceptions;
 /**
- * Thrown when there is a problem with a zip
- * @author Paul Sharples
- * @version $Id: BadWidgetZipFileException.java,v 1.2 2009-07-28 16:05:23 scottwilson Exp $
+ * Thrown when there is a problem with a Widget's Zip archive
  */
 public class BadWidgetZipFileException extends Exception {
 
@@ -24,17 +22,5 @@ public class BadWidgetZipFileException extends Exception {
 	
 	public BadWidgetZipFileException() {
 		super();	
-	}
-
-	public BadWidgetZipFileException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public BadWidgetZipFileException(String message) {
-		super(message);
-	}
-
-	public BadWidgetZipFileException(Throwable cause) {
-		super(cause);
 	}
 }

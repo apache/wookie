@@ -250,7 +250,7 @@ public class W3CWidgetFactory {
 					}	
 				}
 				if (widgetModel.getContentList().isEmpty()){
-					throw new InvalidStartFileException();
+					throw new InvalidStartFileException("Widget has no start page");
 				}
 				
 				// get the path to the root of the unzipped folder
