@@ -57,7 +57,8 @@ public interface IW3CXMLConfiguration {
 	public static final String PREFERENCE_ELEMENT = "preference"; // widget [0..*]
 	 	public static final String READONLY_ATTRIBUTE = "readonly";	// preference
 
-
+	public static final String UPDATE_ELEMENT = "update-description";	// widget [0..1]
+	
 	// Re-used attributes:
 	public static final String HEIGHT_ATTRIBUTE = "height"; //widget, icon
 	public static final String WIDTH_ATTRIBUTE = "width"; //widget, icon
@@ -85,10 +86,6 @@ public interface IW3CXMLConfiguration {
 	
 	// Deprecated: used in early drafts of spec:
 	
-	/**
-	 * @deprecated
-	 */
-	public static final String UPDATE_ELEMENT = "update";
 	/**
 	 * @deprecated
 	 */
