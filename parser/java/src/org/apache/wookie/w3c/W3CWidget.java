@@ -107,4 +107,9 @@ public interface W3CWidget extends IElement{
 	 */
 	public String getLocalName(String locale);
 	
+	/**
+	 * @return the update description document URL for the widget, or null if no valid update URL has been set
+	 */
+	public String getUpdate();
+	
 }

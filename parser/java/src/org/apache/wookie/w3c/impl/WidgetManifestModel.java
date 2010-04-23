@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.wookie.w3c.updates.UpdateDescription;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 import org.apache.wookie.w3c.IAccessEntity;
 import org.apache.wookie.w3c.IAuthorEntity;
@@ -33,7 +34,6 @@ import org.apache.wookie.w3c.ILicenseEntity;
 import org.apache.wookie.w3c.ILocalizedEntity;
 import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.INameEntity;
-import org.apache.wookie.w3c.IParamEntity;
 import org.apache.wookie.w3c.IPreferenceEntity;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
@@ -71,6 +71,7 @@ public class WidgetManifestModel implements W3CWidget {
 	private List<IContentEntity> fContentList;
 	private List<IFeatureEntity> fFeaturesList;
 	private List<IPreferenceEntity> fPreferencesList;
+	private String fUpdate;
 	
 	private String[] supportedEncodings;
 	
@@ -138,40 +139,8 @@ public class WidgetManifestModel implements W3CWidget {
 				}
 			}
 		}
-		//Uncomment this when performing conformance testing
-		//outputFeatureList();
-		//outputEncodings();
 	}
-	
-	/**
-	 * Used to check output during conformance testing
-	 */
-	private void outputFeatureList(){
-		if (fFeaturesList.size()==0) return;
-		String out = "";
-		out+=("id:"+this.fIdentifier+":"+this.getLocalName("en"));
-		for (IFeatureEntity feature: fFeaturesList){
-			String params = "";
-			for (IParamEntity param:feature.getParams()){
-				params+="["+param.getName()+":"+param.getValue()+"]";
-			}
-			out+=("feature:"+feature.getName()+"required="+feature.isRequired()+"{"+params+"}");
-		}
-		System.out.println(out);
-	}
-	
-	/**
-	 * Used to check output during conformance testing
-	 */
-	private void outputEncodings(){
-		String out = "";
-		out+=("id:"+this.fIdentifier+":"+this.getLocalName("en"));
-		for (IContentEntity startFile:getContentList()){
-			out+=startFile.getSrc()+" "+startFile.getCharSet();
-		}
-		System.out.println(out);
-	}
-	
+
 	public String getViewModes() {
 		return fViewModes;
 	}
@@ -237,6 +206,10 @@ public class WidgetManifestModel implements W3CWidget {
 
 	public Integer getWidth() {
 		return fWidth;
+	}
+	
+	public String getUpdate(){
+		return fUpdate;
 	}
 	
 	public void fromXML(Element element) throws BadManifestException{
@@ -345,7 +318,15 @@ public class WidgetManifestModel implements W3CWidget {
 			if(tag.equals(IW3CXMLConfiguration.AUTHOR_ELEMENT) && fAuthor == null) {
 				fAuthor = new AuthorEntity();
 				fAuthor.fromXML(child);
-			}		
+			}	
+			
+			// UDPATE DESCRIPTION IS OPTONAL - can only be one, ignore subsequent repetitions
+			if(tag.equals(IW3CXMLConfiguration.UPDATE_ELEMENT) && fUpdate == null) {
+				UpdateDescription update = new UpdateDescription();
+				update.fromXML(child);
+				// It must have a valid HREF attribute, or it is ignored
+				if (update.getHref() != null) fUpdate = update.getHref();
+			}	
 		
 			// LICENSE IS OPTIONAL - can be many
 			if(tag.equals(IW3CXMLConfiguration.LICENSE_ELEMENT)) {				

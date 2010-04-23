@@ -211,4 +211,10 @@ public class GadgetAdapter implements W3CWidget {
 		return IW3CXMLConfiguration.UNKNOWN;
 	}
 
+	public String getUpdate() {
+		return null;
+	}
+	
+	
+
 }
