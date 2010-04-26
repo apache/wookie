@@ -13,15 +13,10 @@ after they accept, then do:
 5a) now wait until root says it is done
 5b) chair to enable their svn access
 6) template/committerDone.txt
-
-NOTE: templates below this line have not been ported from Forrest yet, see
-https://svn.apache.org/repos/private/pmc/forrest/template/
-
 7) chair send email to board@ asking for acknowledgement of new PMC member
    email-member-ack.txt
-8) email-member-created.txt
-9) email-member-announce.txt
-10) add them to the forrest-developers group in Jira.
+8) template/committerAnnounce.txt
+9) add them to the wookie-developers group in Jira.
 
 Discussion
 ==========

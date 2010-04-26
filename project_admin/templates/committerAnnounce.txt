@@ -1,0 +1,21 @@
+This is the email to announce to wookie-dev after the
+followup acceptance.
+
+Replace the Joe Blogs in the subject, the ### in the body.
+
+------------------------------------------------------------
+To: wookie-dev@incubator.apache.org
+Subject: new committer and PMC member: ###Joe Bloggs
+
+The Podling Project Management Committee (PPMC) for Apache Wookie
+has asked #### ####### to become a committer and
+member of the PPMC, and we are pleased to announce that
+they have accepted.
+
+### add specific details here ###
+
+Being a committer enables easier contribution to the
+project since there is no need to go via the patch
+submission process. This should enable better productivity.
+Being a PPMC member enables assistance with the management
+and to guide the direction of the project.
