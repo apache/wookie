@@ -49,6 +49,11 @@ public abstract class Controller extends HttpServlet{
 	 * Content type for HTML output
 	 */
 	protected final String HTML_CONTENT_TYPE = "text/html;charset=\"UTF-8\"";
+
+	/**
+	 * Content type for ATOM output
+	 */
+	protected final String ATOM_CONTENT_TYPE = "application/atom+xml;charset=\"UTF-8\"";
 	
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -248,9 +253,7 @@ public abstract class Controller extends HttpServlet{
 	 * @throws IOException
 	 */
 	protected void returnXml(String xml, HttpServletResponse response) throws IOException{
-		response.setContentType(XML_CONTENT_TYPE);
-		PrintWriter out = response.getWriter();
-		out.println(xml);
+		output(xml,response, XML_CONTENT_TYPE);
 	}
 	
 	/**
@@ -260,9 +263,40 @@ public abstract class Controller extends HttpServlet{
 	 * @throws IOException
 	 */
 	protected void returnHtml(String html, HttpServletResponse response) throws IOException{
-		response.setContentType(HTML_CONTENT_TYPE);
+		output(html,response, HTML_CONTENT_TYPE);
+	}
+	
+	/**
+	 * Send JSON back to client
+	 * @param json the JSON string
+	 * @param response the response object
+	 * @throws IOException
+	 */
+	protected void returnJson(String json, HttpServletResponse response) throws IOException{
+		output(json,response, JSON_CONTENT_TYPE);
+	}
+	
+	/**
+	 * Send Atom back to client
+	 * @param xml
+	 * @param response
+	 * @throws IOException
+	 */
+	protected void returnAtom(String xml, HttpServletResponse response) throws IOException{
+		output(xml,response, ATOM_CONTENT_TYPE);
+	}
+	
+	/**
+	 * Sends the output from the controller to the client
+	 * @param content the content to write
+	 * @param response the response object
+	 * @param contentType the content type for the response
+	 * @throws IOException
+	 */
+	private void output(String content, HttpServletResponse response, String contentType) throws IOException{
+		response.setContentType(contentType);
 		PrintWriter out = response.getWriter();
-		out.println(html);
+		out.println(content);	
 	}
 	
 	/**
@@ -282,6 +316,7 @@ public abstract class Controller extends HttpServlet{
 	protected static final int XML = 0;
 	protected static final int HTML = 1;
 	protected static final int JSON = 2;
+	protected static final int ATOM = 3;
 	
 	/**
 	 * Returns an int value for the content-type of a request; this 
@@ -291,11 +326,21 @@ public abstract class Controller extends HttpServlet{
 	 * request, this method will return HTML (1)
 	 */
 	protected int format(HttpServletRequest request){
-		if (request.getContentType() == null) return HTML;
-		if (request.getContentType().contains("xml"))
+		String type = request.getContentType();
+		if (type == null){
+			// check for format parameters in the request
+			if (request.getParameter("format")!=null){
+				type = request.getParameter("format");
+			} else {
+				return HTML;
+			}
+		}
+		if (type.contains("xml"))
 			return XML;
-		if (request.getContentType().contains("json"))
+		if (type.contains("json"))
 			return JSON;
+		if (type.contains("atom"))
+			return ATOM;
 		return HTML;
 	}
 
