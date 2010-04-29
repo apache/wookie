@@ -48,20 +48,33 @@ public class UnicodeUtils {
 		return normalize(in, false);
 	}
 	
+	/**
+	 * Normalizes all space characters (and whitespace if includeWhitespace is set to true) in the given string to 
+	 * U+0020, then collapses multiple adjacent spaces to a single space, and
+	 * removes any leading and trailing spaces. If the input string is null,
+	 * the method returns an empty string ("")
+	 * @param in the string to normalize
+	 * @param includeWhitespace set to true to normalize whitespace as well as space characters
+	 * @return the normalized string
+	 */
 	private static String normalize(String in, boolean includeWhitespace){
 		if (in == null) return "";
-		String out = "";
+		// Create a buffer for the string
+		StringBuffer buf = new StringBuffer();
+		// Iterate over characters in the string and append them to buffer, replacing matching characters with standard spaces
 		for (int x=0;x<in.length();x++){
-			String s = in.substring(x, x+1);
-			char ch = s.charAt(0);
+			char ch = in.charAt(x);
 			if (Character.isSpaceChar(ch) || (Character.isWhitespace(ch) && includeWhitespace)){
-				s = " ";
+				ch = new Character(' ');
 			}
-			out = out + s;
+			buf.append(ch);
 		}
-		out = CharSetUtils.squeeze(out, " ");
-		out = StringUtils.strip(out);
-		return out;
+		String str = buf.toString();
+		// Squeeze out extra spaces
+		str = CharSetUtils.squeeze(str, " ");
+		// Strip off trailing and leading spaces
+		str = StringUtils.strip(str);
+		return str;
 	}
 
 }
