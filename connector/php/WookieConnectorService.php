@@ -1,4 +1,5 @@
 <?php
+/** @package org.wookie.php */
 
 /*
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +15,7 @@
  * limitations under the License.
  */
 
+/** @ignore */
 require("WookieConnectorExceptions.php");
 require("WookieServerConnection.php");
 require("WidgetInstances.php");
@@ -22,54 +24,116 @@ require("WidgetInstance.php");
 require("WidgetProperties.php");
 require("User.php");
 require("HTTP_Response.php");
+require("Logger.php");
+require("WookieConnectorServiceInterface.php");
 
+/**
+ * Wookie connector service, handles all the data requests and responses 
+ * @package org.wookie.php 
+ */
 
-class WookieConnectorService {
+class WookieConnectorService implements WookieConnectorServiceInterface {
 	private $conn;
 	public  $WidgetInstances;
 	private $user;
 	private $httpStreamCtx;
+	private $logger;
+	
+	/** Create new connector
+	 * 
+	 * @param String url to Wookie host
+	 * @param String Wookie API key
+	 * @param String shareddatakey to use
+	 * @param String user login name
+	 * @param String user display name
+	 */
 
 	function __construct($url, $apiKey, $sharedDataKey, $loginName, $screenName = null) {
 		$this->setConnection(new WookieServerConnection($url, $apiKey, $sharedDataKey));
 		$this->setWidgetInstancesHolder();
 		$this->setUser($loginName, $screenName);
 		$this->setHttpStreamContext(array('http' => array('timeout' => 15)));
+		$this->logger = new Logger("");
 	}
 
-	public function setConnection($newConn) {
+	/** Initiate logger
+	 * @param String path to writeable folder 
+	 */
+	
+	public function setLogPath($path) {
+    	$this->getLogger()->setPath($path);
+	}
+
+	/** Get logger
+	 * @return Logger Simple logger for ConnectorService
+	 */
+	
+	private function getLogger() {
+    	return $this->logger;
+	}
+	
+	/** Set Wookie connection
+	 * 
+	 * @param WookieServerConnection new WookieServerConnection instance
+	 */
+	private function setConnection($newConn) {
 		$this->conn = $newConn;
 	}
+	
+	/** Get current Wookie connection
+	 * @return WookieServerConnection current Wookie server connection
+	 */
 
 	public function getConnection() {
 		return $this->conn;
 	}
-
-	public function setWidgetInstancesHolder() {
+	
+	/** Set WidgetInstances holder */
+	private function setWidgetInstancesHolder() {
 		$this->WidgetInstances = new WidgetInstances();
 	}
 
+	/** Set user for connection
+	 * 
+	 * @param String username
+	 * @param String optional display name
+	 */
 	public function setUser($loginName, $screenName = null) {
 		if($screenName == null) {
 			$screenName = $loginName;
 		}
 		$this->user = new User($loginName, $screenName);
 	}
-
+	
+	/** Get current user
+	 * @return User current connection user
+	 */
 	public function getUser() {
 		return $this->user;
 	}
 	
-	private function setHttpStreamContext($params = null) {
+	/** Set HttpStreamContext parameters
+	 * 
+	 * @param Array array of context parameters
+	 */
+	private function setHttpStreamContext($params) {
 		$this->httpStreamCtx = @stream_context_create($params);
 	}
+	
+	/** Get HttpStreamContext
+	 * @return StreamContextResource HttpStreamContext resource
+	 */
 	
 	private function getHttpStreamContext() {
 		return $this->httpStreamCtx;
 	}
 
-	/* Do HTTP request
-	 /* @return new HTTP_Response instance */
+	/** Do HTTP request
+	 * @param String url to request
+	 * @param String data to send
+	 * @param String method to use
+	 * @return HTTP_Response new HTTP_Response instance 
+	 */
 
 	private function do_request($url, $data, $method = 'POST')
 	{
@@ -100,15 +164,14 @@ class WookieConnectorService {
 	/**
 	 * Get or create an instance of a widget.
 	 *
-	 * @param widget
-	 * @return the ID of the widget instance
-	 * @throws IOException
-	 * @throws SimalRepositoryException
+	 * @param Widget|String instance of widget or guid
+	 * @return WidgetInstance WidgetInstance if successful, otherwise false
+	 * @throws WookieConnectorException
 	 */
 
-	public function getOrCreateInstance($Widget_or_GUID = null) {
+	public function getOrCreateInstance($Widget_or_GUID) {
 		try {
-			if(is_object($Widget_or_GUID)) {
+			if($Widget_or_GUID instanceof Widget) {
 				$guid = $Widget_or_GUID->getIdentifier();
 			} else {
 				$guid = $Widget_or_GUID;
@@ -118,7 +181,6 @@ class WookieConnectorService {
 			}
 			$requestUrl = $this->getConnection()->getURL().'widgetinstances';
 			$request.= '&api_key='.$this->getConnection()->getApiKey();
-			$request.= '&servicetype=';
 			$request.= '&userid='.$this->getUser()->getLoginName();
 			$request.= '&shareddatakey='.$this->getConnection()->getSharedDataKey();
 			$request.= '&widgetid='.$guid;
@@ -135,10 +197,15 @@ class WookieConnectorService {
 			if($response->getStatusCode() == 401) { throw new WookieConnectorException("Invalid API key"); }
 
 			$instance = $this->parseInstance($guid, $response->getResponseText());
-			$this->WidgetInstances->put($instance);
+			if($instance) {
+			  $this->WidgetInstances->put($instance);
+			
+			  //add current user as participant
+			  $this->addParticipant($instance, $this->getUser());
+			}
 			return $instance;
 		} catch (WookieConnectorException $e) {
-			echo $e->errorMessage();
+			$this->getLogger()->write($e->toString());
 		}
 		return false;
 	}
@@ -147,19 +214,18 @@ class WookieConnectorService {
 	/**
 	 * Record an instance of the given widget.
 	 *
-	 * @param xml description of the instance as returned by the widget server when the widget was instantiated.
-	 * @return new Widget instance
+	 * @param String widget guid
+	 * @param String xml description of the instance as returned by the widget server when the widget was instantiated.
+	 * @return new Widget instance or false
 	 */
 	private function parseInstance($widgetGuid, $xml) {
 		$xmlWidgetData = @simplexml_load_string($xml);
-		if(is_object($xmlWidgetData)) {
-			//print_r($xmlWidgetData);
+		if($xmlWidgetData instanceof SimpleXMLElement) {
 			$url = (string) $xmlWidgetData->url;
 			$title = (string) $xmlWidgetData->title;
 			$height = (string) $xmlWidgetData->height;
 			$width = (string) $xmlWidgetData->width;
-			$maximize = (string) $xmlWidgetData->maximize;
-			$instance = new WidgetInstance($url, $widgetGuid, $title, $height, $width, $maximize);
+			$instance = new WidgetInstance($url, $widgetGuid, $title, $height, $width);
 			return $instance;
 		}
 		return false;
@@ -168,8 +234,8 @@ class WookieConnectorService {
 	/**
 	 * Check if URL is parsable.
 	 *
-	 * @param url
-	 * @return boolean
+	 * @param String url to parse
+	 * @return boolean true if parseable, otherwise false
 	 */
 
 	private function checkURL($url) {
@@ -181,18 +247,20 @@ class WookieConnectorService {
 	}
 
 	/**
-	 * @refactor At time of writing the REST API for adding a participant is broken so we are
-	 * using the non-REST approach. The code for REST API is commented out and should be used
-	 * in the future.
+	 * Add new participant
+	 * @param WidgetInstance instance of WidgetInstance
+	 * @param User instance of User
 	 * @return boolean true - if added/exists - false if some error
+	 * @throws WookieConnectorException
+	 * @throws WookieWidgetInstanceException
 	 */
 
 	public function addParticipant($widgetInstance, $User)  {
 		$Url = $this->getConnection()->getURL().'participants';
 
 		try {
-			if(!is_object($widgetInstance)) throw new WookieWidgetInstanceException('No Widget instance');
-			if(!is_object($User)) throw new WookieConnectorException('No User object');
+			if(!$widgetInstance instanceof WidgetInstance) throw new WookieWidgetInstanceException('No Widget instance');
+			if(!$User instanceof User) throw new WookieConnectorException('No User object');
 
 			$data = array(
 				'api_key' => $this->getConnection()->getApiKey(),
@@ -224,32 +292,34 @@ class WookieConnectorService {
 			}
 
 		} catch (WookieConnectorException $e) {
-			echo $e->errorMessage();
+			$this->getLogger()->write($e->toString());
 		} catch (WookieWidgetInstanceException $e) {
-			echo '<b>function.addParticipant:</b> '.$e->getMessage().'<br />';
+			$this->getLogger()->write($e->toString());
 		}
 	return false;
 	}
 
 	/**
-	 * @refactor Delete participant
-	 * @param WidgetInstance $widgetInstance
-	 * @param UserInstance $User
+	 * Delete participant
+	 * @param WidgetInstance  instance of WidgetInstance
+	 * @param User instance of User
 	 * @return boolean true - if deleted, false - if not found
+	 * @throws WookieConnectorException
+	 * @throws WookieWidgetInstanceException
 	 */
 
 	public function deleteParticipant($widgetInstance, $User)  {
 		$Url = $this->getConnection()->getURL().'participants';
 
 		try {
-			if(!is_object($widgetInstance)) throw new WookieWidgetInstanceException('No Widget instance');
-			if(!is_object($User)) throw new WookieConnectorException('No User object');
+			if(!$widgetInstance instanceof WidgetInstance) throw new WookieWidgetInstanceException('No Widget instance');
+			if(!$User instanceof User) throw new WookieConnectorException('No User object');
 
 			$request = '?api_key='.$this->getConnection()->getApiKey();
 			$request .= '&shareddatakey='.$this->getConnection()->getSharedDataKey();
 			$request .= '&userid='.$this->getUser()->getLoginName();
 			$request .= '&widgetid='.$widgetInstance->getIdentifier();
-			$request .= '&participant_id='.$this->getUser()->getLoginName();
+			$request .= '&participant_id='.$User->getLoginName();
 
 
 			if(!$this->checkURL($Url)) {
@@ -272,24 +342,25 @@ class WookieConnectorService {
 		}
 
 		} catch (WookieConnectorException $e) {
-			echo $e->errorMessage();
+			$this->getLogger()->write($e->toString());
 		} catch (WookieWidgetInstanceException $e) {
-			echo '<b>function.deleteParticipant:</b> '.$e->getMessage().'<br />';
+			$this->getLogger()->write($e->toString());
 		}
 		return false;
 	}
 
 	/**
 	 * Get the array of users for a widget instance
-	 * @param instance
-	 * @return an array of users
+	 * @param WidgetInstance instance of WidgetInstance
+	 * @return Array an array of users
 	 * @throws WookieConnectorException
+	 * @throws WookieWidgetInstanceException
 	 */
 	public function getUsers($widgetInstance) {
 		$Url = $this->getConnection()->getURL().'participants';
 		$Users = array();
 		try {
-			if(!is_object($widgetInstance)) throw new WookieWidgetInstanceException('No Widget instance');
+			if(!$widgetInstance instanceof WidgetInstance) throw new WookieWidgetInstanceException('No Widget instance');
 			$request = '?api_key='.$this->getConnection()->getApiKey();
 			$request .= '&shareddatakey='.$this->getConnection()->getSharedDataKey();
 			$request .= '&userid='.$this->getUser()->getLoginName();
@@ -304,7 +375,7 @@ class WookieConnectorService {
 
 			$xmlObj = @simplexml_load_string($response->getResponseText());
 
-			if(is_object($xmlObj)) {
+			if($xmlObj instanceof SimpleXMLElement) {
 				foreach($xmlObj->children() as $participant) {
 					$participantAttr = $participant->attributes();
 
@@ -320,9 +391,9 @@ class WookieConnectorService {
 			}
 
 		} catch (WookieWidgetInstanceException $e) {
-			echo '<b>function.getUsers:</b> '.$e->getMessage().'<br />';
+			$this->getLogger()->write($e->toString());
 		} catch (WookieConnectorException $e) {
-			echo $e->errorMessage();
+			$this->getLogger()->write($e->toString());
 		}
 		return $Users;
 	}
@@ -335,7 +406,7 @@ class WookieConnectorService {
 	 * far in order to allow the application to proceed. The application should
 	 * display an appropriate message in this case.
 	 *
-	 * @return array of available widgets
+	 * @return array array of available widgets
 	 * @throws WookieConnectorException
 	 */
 
@@ -343,7 +414,6 @@ class WookieConnectorService {
 		$widgets = array();
 		try {
 			$request = $this->getConnection()->getURL().'widgets?all=true';
-
 			if(!$this->checkURL($request)) {
 				throw new WookieConnectorException("URL for Wookie is malformed");
 			}
@@ -351,7 +421,7 @@ class WookieConnectorService {
 			$response = new HTTP_Response(@file_get_contents($request, false, $this->getHttpStreamContext()), $http_response_header);
 			$xmlObj = @simplexml_load_string($response->getResponseText());
 
-			if(is_object($xmlObj)) {
+			if($xmlObj instanceof SimpleXMLElement) {
 				foreach($xmlObj->children() as $widget) {
 				 $id = (string) $widget->attributes()->identifier;
 				 $title = (string) $widget->title;
@@ -368,24 +438,25 @@ class WookieConnectorService {
 			}
 
 	 } catch(WookieConnectorException $e) {
-			echo $e->errorMessage();
+			$this->getLogger()->write($e->toString());
 		}
 		return $widgets;
 	}
 
 	/**
 	 * Set property for Widget instance
-	 *
-	 * @return new Property instance
+	 * @param WidgetInstance instance of WidgetInstance
+	 * @param Propety instance of Property
+	 * @return Property new Property instance
 	 * @throws WookieConnectorException, WookieWidgetInstanceException
 	 */
 
-	public function setProperty($widgetInstance = null, $propertyInstance = null) {
+	public function setProperty($widgetInstance, $propertyInstance) {
 		$Url = $this->getConnection()->getURL().'properties';
 
 		try {
-			if(!is_object($widgetInstance)) throw new WookieWidgetInstanceException('No Widget instance');
-			if(!is_object($propertyInstance)) throw new WookieConnectorException('No properties instance');
+			if(!$widgetInstance instanceof WidgetInstance) throw new WookieWidgetInstanceException('No Widget instance');
+			if(!$propertyInstance instanceof Property) throw new WookieConnectorException('No properties instance');
 
 			$data = array(
 				'api_key' => $this->getConnection()->getApiKey(),
@@ -394,11 +465,11 @@ class WookieConnectorService {
 				'widgetid' => $widgetInstance->getIdentifier(),
 				'propertyname' => $propertyInstance->getName(),
 				'propertyvalue' => $propertyInstance->getValue(),
-				'is_public' => $propertyInstance->isPublic(),
+				'is_public' => $propertyInstance->getIsPublic(),
 			);
 
 			if(!$this->checkURL($Url)) {
-				throw new WookieConnectorException("Properties rest URL is incorrect: ".$Url);
+				throw new WookieConnectorException("Properties rest URL is incorrect: ".$Url); 
 			}
 
 			$response = $this->do_request($Url, $data);
@@ -414,26 +485,27 @@ class WookieConnectorService {
 			}
 
 		} catch (WookieConnectorException $e) {
-			echo $e->errorMessage();
+			$this->getLogger()->write($e->toString());
 		} catch (WookieWidgetInstanceException $e) {
-			echo '<b>function.setProperty:</b> '.$e->getMessage().'<br />';
+			$this->getLogger()->write($e->toString());
 		}
 		return false;
 	}
 
 	/**
 	 * Get property for Widget instance
-	 *
-	 * @return new Property(), if request fails, return false;
+	 * @param WidgetInstance instance of WidgetInstance
+	 * @param Propety instance of Property
+	 * @return Property if request fails, return false;
 	 * @throws WookieConnectorException, WookieWidgetInstanceException
 	 */
 
-	public function getProperty($widgetInstance = null, $propertyInstance = null) {
+	public function getProperty($widgetInstance, $propertyInstance) {
 		$Url = $this->getConnection()->getURL().'properties';
 
 		try {
-			if(!is_object($widgetInstance)) throw new WookieWidgetInstanceException('No Widget instance');
-			if(!is_object($propertyInstance)) throw new WookieConnectorException('No properties instance');
+			if(!$widgetInstance instanceof WidgetInstance) throw new WookieWidgetInstanceException('No Widget instance');
+			if(!$propertyInstance instanceof Property) throw new WookieConnectorException('No properties instance');
 
 			$data = array(
 				'api_key' => $this->getConnection()->getApiKey(),
@@ -456,27 +528,27 @@ class WookieConnectorService {
 			return new Property($propertyInstance->getName(), $response->getResponseText());
 
 		} catch (WookieConnectorException $e) {
-			echo $e->errorMessage();
+			$this->getLogger()->write($e->toString());
 		} catch (WookieWidgetInstanceException $e) {
-			echo '<b>function.getProperty:</b> '.$e->getMessage().'<br />';
+			$this->getLogger()->write($e->toString());
 		}
 		return false;
 	}
 
 	/**
 	 * Delete property for Widget instance
-	 *
-	 * @access Public
+	 * @param WidgetInstance instance of WidgetInstance
+	 * @param Propety instance of Property
 	 * @return boolean true/false -- true if deleted, false if doesnt exist
 	 * @throws WookieConnectorException, WookieWidgetInstanceException
 	 */
 
-	public function deleteProperty($widgetInstance = null, $propertyInstance = null) {
+	public function deleteProperty($widgetInstance, $propertyInstance) {
 		$Url = $this->getConnection()->getURL().'properties';
 
 		try {
-			if(!is_object($widgetInstance)) throw new WookieWidgetInstanceException('No Widget instance');
-			if(!is_object($propertyInstance)) throw new WookieConnectorException('No properties instance');
+			if(!$widgetInstance instanceof WidgetInstance) throw new WookieWidgetInstanceException('No Widget instance');
+			if(!$propertyInstance instanceof Property) throw new WookieConnectorException('No properties instance');
 
 			$request = '?api_key='.$this->getConnection()->getApiKey();
 			$request .= '&shareddatakey='.$this->getConnection()->getSharedDataKey();
@@ -500,9 +572,9 @@ class WookieConnectorService {
 			return true;
 
 		} catch (WookieConnectorException $e) {
-			echo $e->errorMessage();
+			$this->getLogger()->write($e->toString());
 		} catch (WookieWidgetInstanceException $e) {
-			echo '<b>function.getProperty:</b> '.$e->getMessage().'<br />';
+			$this->getLogger()->write($e->toString());
 		}
 		return false;
 	}

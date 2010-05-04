@@ -1,4 +1,5 @@
 <?php
+/** @package org.wookie.php */
 
 /*
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,25 +15,58 @@
  * limitations under the License.
  */
 
+/** Class for handling exception information 
+ * @package org.wookie.php
+ **/
+
+class ExceptionString {
+	private $str;
+	
+	/**
+	 * Constructor for exception data handling
+	 * @param Exception $ex
+	 */
+	function __construct($ex) {
+		$this->str = @basename($ex->getFile()).':'.$ex->getLine().'::'.$ex->getMessage().'';
+	}
+	
+	/** Return exception data as string
+	 * @return String exception information
+	 */
+	public function getString() {
+		return (string) $this->str;
+	}
+}
+
+/** WookieConnectorException class 
+ * @package org.wookie.php
+ */
+
 class WookieConnectorException extends Exception {
+	
+	/** Convert exception data to String
+	 * @return String exception information
+	 */
 
-	public function errorMessage() {
-		//error message
-		$errorMsg = 'Exception thrown on line: '.$this->getLine().' in '.$this->getFile()
-		.': <b>'.$this->getMessage().'</b>';
-		return $errorMsg;
+	public function toString() {
+		$exStr = new ExceptionString($this);
+		return $exStr->getString();
 	}
 }
 
+/** WookieWidgetInstanceException class 
+ * @package org.wookie.php
+ */
 class WookieWidgetInstanceException extends Exception {
-
-	public function errorMessage() {
-		//error message
-		$errorMsg = 'Exception thrown on line: '.$this->getLine().' in '.$this->getFile()
-		.': <b>'.$this->getMessage().'</b>';
-		return $errorMsg;
+	
+	/** Convert exception data to String
+	 * @return String exception information
+	 */
+	
+	public function toString() {
+		$exStr = new ExceptionString($this);
+		return $exStr->getString();
 	}
 }
-
 
 ?>

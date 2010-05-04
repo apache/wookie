@@ -1,4 +1,5 @@
 <?php
+/** @package org.wookie.php */
 
 /*
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,21 +17,25 @@
 
 /**
  * A collection of known widget instances available to a host.
+ * @package org.wookie.php
  */
+
 class WidgetInstances {
 	private $WidgetInstances = array();
   
   /**
    * Record an instance of the given widget.
    * 
-   * @param xml description of the instance as returned by the widget server when the widget was instantiated.
-   * @return the identifier for this instance
+   * @param WidgetInstance instance of widget
    */
+	
  public function put($instance) {
     $this->WidgetInstances[$instance->getIdentifier()] = $instance;
   }
   
-  /* Get all Widget instances */
+  /** Get all Widget instances 
+   * @return array array of widget instances 
+   */
   
   public function get() {
 	return $this->WidgetInstances;

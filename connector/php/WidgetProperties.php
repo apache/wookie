@@ -1,4 +1,5 @@
 <?php
+/** @package org.wookie.php */
 
 /*
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,10 +15,20 @@
  * limitations under the License.
  */
 
+/** Property class 
+ * @package org.wookie.php
+ **/
+
  class Property {
 	private $propertyName = '';
 	private $propertyValue = '';
 	private $isPublic = 'false';
+	
+	/** Construct new property
+	 * @param String property name
+	 * @param String property value
+	 * @param String is property public (handled as shareddatakey) or private
+	 */
 	
 	function __construct($propertyName, $propertyValue = null, $isPublic = 'false') {
 		$this->propertyName = (string) $propertyName;
@@ -25,25 +36,54 @@
 		$this->isPublic = (string) $isPublic;
 	}
 	
+	/** Get property value
+	 * @return String value of property
+	 */
+	
 	public function getValue() {
 		return $this->propertyValue;
 	}
 	
+	/** Get property name
+	 * @return String name of property
+	 */
+	
 	public function getName() {
 		return $this->propertyName;
 	}
-	public function isPublic() {
+	
+	/** Get property isPublic flag
+	 * @return String isPublic flag of property
+	 */
+	
+	public function getIsPublic() {
 		return $this->isPublic;
 	}
+	
+	/** Set property value
+	 * 
+	 * @param String new value
+	 */
 	
 	public function setValue($value) {
 		$this->propertyValue = (string) $value;
 	}
 	
+	/** Set property name
+	 * 
+	 * @param String new name
+	 */
+	
 	public function setName($propertyName) {
 		$this->propertyName = (string) $propertyName;
 	}
-	public function set_isPublic($isPublic) {
+	
+	/** Set isPublic flag
+	 * 
+	 * @param String isPublic flag, "true" or "false"
+	 */
+	
+	public function setIsPublic($isPublic) {
 		$this->isPublic = (string) $isPublic;
 	}
 	

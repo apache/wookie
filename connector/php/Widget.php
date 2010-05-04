@@ -1,4 +1,5 @@
 <?php
+/** @package org.wookie.php */
 
 /*
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,15 +17,22 @@
  
 /**
  * A client side representation of a widget. 
- * 
- * @refactor this duplicates data stored in the Widget bean on the server side.
+ * @package org.wookie.php
  */
-class Widget { 
-  var $identifier;
-  var $title;
-  var $description;
-  var $icon;
 
+class Widget { 
+  private $identifier;
+  private $title;
+  private $description;
+  private $icon;
+
+  /** Init new Widget
+   * 
+   * @param String widget identifier/guid
+   * @param String widget title
+   * @param String widget description
+   * @param String widgeticon url
+   */
   function __construct($identifier, $title, $description, $icon) {
     $this->identifier = $identifier;
     $this->title = $title;
@@ -35,7 +43,7 @@ class Widget {
   /**
    * Get a unique identifier for this widget type.
    * 
-   * @return
+   * @return String widget identifier (guid)
    */
   public function getIdentifier() {
     return $this->identifier;
@@ -43,7 +51,7 @@ class Widget {
 
   /**
    * Get the human readable title of this widget.
-   * @return
+   * @return String widget title
    */
   public function getTitle() {
     return $this->title;
@@ -51,7 +59,7 @@ class Widget {
 
   /**
    * Get the location of a logo for this widget.
-   * @return
+   * @return String widget icon url
    */
   public function getIcon() {
     return $this->icon;
@@ -60,7 +68,7 @@ class Widget {
   /**
    * Get the description of the widget.
    * 
-   * @return
+   * @return String widget description
    */
   public function getDescription() {
     return $this->description;

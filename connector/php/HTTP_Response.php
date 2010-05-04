@@ -1,4 +1,5 @@
 <?php
+/** @package org.wookie.php */
 
 /*
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,32 +15,59 @@
  * limitations under the License.
  */
 
+/** 
+ * HTTP Response class, handles HTTP status codes and response text 
+ * @package org.wookie.php
+ */
+
 class HTTP_Response {
+
 	private $statusCode;
 	private $responseText;
 	private $header;
+	
+	/** Create new HTTP response
+	 * 
+	 * @param String response from server
+	 * @param String headers from server
+	 */
 	
 	function __construct($responseText, $header) {
 		 //get http status code
 		preg_match('|HTTP/\d\.\d\s+(\d+)\s+.*|',$header[0],$outcome);
 		
 		//store information
-		$this->statusCode = $outcome[1];
+		$this->statusCode = (int) $outcome[1];
 		$this->responseText = $responseText;
 		$this->header = $header;
 	}
+	
+	/** Get response text
+	 * @return String response text
+	 */
 	
 	public function getResponseText() {
 		return $this->responseText;
 	}
 	
+	/** Get HTTP status code
+	 * @return Integer status cde
+	 */
+	
 	public function getStatusCode() {
-		return $this->statusCode;
+		return (int) $this->statusCode;
 	}
 	
+	/** Get header
+	 * @return Array header array
+	 */
 	public function getHeader() {
 		return $this->header;
 	}
+	
+	/** Get header as string
+	 * @return String header as string
+	 */
 	
 	public function headerToString() {
 		return implode("\r\n", $this->getHeader());

@@ -1,4 +1,5 @@
 <?php
+/** @package org.wookie.php */
 
 /*
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +19,7 @@
  * A connection to a Wookie server. This maintains the necessary data for
  * connecting to the server and provides utility methods for making common calls
  * via the Wookie REST API.
- *
+ * @package org.wookie.php
  */
 
 
@@ -29,11 +30,9 @@ class WookieServerConnection {
 
 	/**
 	 * Create a connection to a Wookie server at a given URL.
-	 * @param url the URL of the wookie server
-	 * @param apiKey the API key for the server
-	 * @param sharedDataKey the sharedDataKey for the server connection
-	 *
-	 * @throws WookieConnectorException if there is a problem setting up this connection.
+	 * @param String the URL of the wookie server
+	 * @param String the API key for the server
+	 * @param String the sharedDataKey for the server connection
 	 */
 	function __construct($url, $apiKey, $sharedDataKey) {
 		$this->setURL($url);
@@ -44,8 +43,7 @@ class WookieServerConnection {
 	/**
 	 * Get the URL of the wookie server.
 	 *
-	 * @return
-	 * @throws WookieConnectionException
+	 * @return String current Wookie connection URL
 	 */
 	public function getURL() {
 		return $this->url;
@@ -54,8 +52,9 @@ class WookieServerConnection {
 	/**
 	 * Set the URL of the wookie server.
 	 *
-	 * @throws WookieConnectionException
+	 * @param String new Wookie server URL
 	 */
+	
 	public function setURL($newUrl) {
 		//parse url, if host == localhost, replace it with 127.0.0.1
 		// Bug causes Apache crash, while using file_get_contents function
@@ -70,16 +69,23 @@ class WookieServerConnection {
 	/**
 	 * Get the API key for this server.
 	 *
-	 * @return
+	 * @return String current Wookie connection API key
+	 * @throws WookieConnectorException
 	 */
+	
 	public function getApiKey() {
+		if(empty($this->apiKey)) {
+			throw new WookieConnectorException("API key not set");
+		}
 		return $this->apiKey;
 	}
 
 	/**
 	 * Set the API key for this server.
-	 *
+	 * 
+	 *@param String new API key for connection
 	 */
+	
 	public function setApiKey($newApiKey) {
 		$this->apiKey = (string) $newApiKey;
 	}
@@ -87,19 +93,28 @@ class WookieServerConnection {
 	/**
 	 * Get the shared data key for this server.
 	 *
-	 * @return
+	 * @return String current Wookie connection shareddatakey
+	 * @throws WookieConnectorException
 	 */
+	
 	public function getSharedDataKey() {
+		if(empty($this->sharedDataKey)) {
+			throw new WookieConnectorException("No shareddatakey set");
+		}
 		return $this->sharedDataKey;
 	}
 
 	/**
 	 * Set the shared data key for this server.
-	 *
+	 * @param String new shareddatakey for connection
 	 */
 	public function setSharedDataKey($newKey) {
 		$this->sharedDataKey = $newKey;
 	}
+	
+	/** Output connection information as string
+	 * @return String current connection information (url, apikey, shareddatakey)
+	 */
 
 	public function toString() {
 		$str = "Wookie Server Connection - ";
@@ -109,18 +124,21 @@ class WookieServerConnection {
 		return $str;
 	}
 
-	/* Test Wookie server connection
-	 *  @return boolean - true if success, otherwise false
+	/** Test Wookie server connection
+	 *  @return boolean true if success, otherwise false
 	 */
 
 	public function Test() {
 		$ctx = @stream_context_create(array('http' => array('timeout' => 15)));
-		$response = new HTTP_Response(@file_get_contents($this->getURL().'advertise?all=true', false, $ctx), $http_response_header);
-		if($response->getStatusCode() == 200) {
-			$xmlDoc = @simplexml_load_string($response->getResponseText());
-			if(is_object($xmlDoc) && $xmlDoc->getName() == 'widgets') {
-				return true;
-			}
+		$url = $this->getURL();
+		if(!empty($url)) {
+		  $response = new HTTP_Response(@file_get_contents($url.'advertise?all=true', false, $ctx), $http_response_header);
+		  if($response->getStatusCode() == 200) {
+			  $xmlDoc = @simplexml_load_string($response->getResponseText());
+			  if(is_object($xmlDoc) && $xmlDoc->getName() == 'widgets') {
+				  return true;
+			  }
+		  }
 		}
 		return false;
 	}

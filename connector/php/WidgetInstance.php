@@ -1,4 +1,5 @@
 <?php
+/** @package org.wookie.php */
 
 /*
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,77 +17,115 @@
 
 /**
  * An instance of a widget for use on the client.
- * 
- * @refactor this class duplicates code in the widget bean o nthe server side
- *
+ * @package org.wookie.php
  */
  
 class WidgetInstance {
-  var $url;
-  var $guid;
-  var $title;
-  var $height;
-  var $width;
-  var $maximize;
+  private $url;
+  private $guid;
+  private $title;
+  private $height;
+  private $width;
+  
+  /** Init new WidgetInstance
+   * @param String url of widget
+   * @param String guid of widget
+   * @param String title of widget
+   * @param String height of widget
+   * @param String width of widget
+   * @deprecated Maximize value is deprecated and should not be used. It's going to be removed in future.
+   */
 
-  public function WidgetInstance($url, $guid, $title, $height, $width, $maximize) {
+  function __construct($url, $guid, $title, $height, $width) {
     $this->setIdentifier($guid);
     $this->setUrl($url);
     $this->setTitle($title);
     $this->setHeight($height);
     $this->setWidth($width);
-    $this->setMaximize($maximize);
   }
+  
+  /** Get Widget instance url
+   * @return String widget instance url
+   */
   
   public function getUrl() {
     return $this->url;
   }
 
-  public function setUrl($url) {
+  /** Set widget instance url
+   * 
+   * @param String new url for instance
+   */
+  
+  private function setUrl($url) {
     $this->url = $url;
   }
 
+  /** Get widget guid value
+   * @return String guid of widget
+   */
+  
   public function getIdentifier() {
     return $this->guid;
   }
 
-  public function setIdentifier($guid) {
+  /** Set widget guid value
+   * 
+   * @param String guid value
+   */
+  
+  private function setIdentifier($guid) {
     $this->guid = $guid;
   }
 
+  /** Get widget title
+   * @return String widget title
+   */
+  
   public function getTitle() {
     return $this->title;
   }
 
+  /** Set widget title
+   * 
+   * @param String new widget title
+   */
+  
   public function setTitle($title) {
     $this->title = $title;
   }
 
+  /** Get widget height
+   * @return Integer widget height
+   */
+  
   public function getHeight() {
-    return $this->height;
+    return (int) $this->height;
   }
 
+  /** Set widget height
+   * @param Integer new widget height
+   */
+  
   public function setHeight($height) {
-    $this->height = $height;
+    $this->height = (int) $height;
   }
+  
+  /** Get wiget width
+   * @return Integer widget width
+   */
 
   public function getWidth() {
-    return $this->width;
+    return (int) $this->width;
   }
+  
+  /** Set widget width
+   * 
+   * @param Integer new widget width
+   */
 
   public function setWidth($width) {
-    $this->width = $width;
-  }
-
-  public function getMaximize() {
-    return $this->maximize;
-  }
-
-  public function setMaximize($maximize) {
-    $this->maximize = $maximize;
-  }
-  public function isMaximizable() {
-    return $this->getMaximize;
+    $this->width = (int) $width;
   }
 }
 
