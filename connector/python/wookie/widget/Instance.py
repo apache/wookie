@@ -17,48 +17,40 @@ class Instance:
     __title = ''
     __height = ''
     __width = ''
-    __maximize = ''
 
-    def __init__(self, newUrl, newGuid, newTitle, newHeight, newWidth, newMaximize):
+    def __init__(self, newUrl, newGuid, newTitle, newHeight, newWidth):
         self.setUrl(newUrl)
-	self.setGuid(newGuid)
+        self.setGuid(newGuid)
         self.setTitle(newTitle)
         self.setHeight(newHeight)
         self.setWidth(newWidth)
-        self.setMaximize(newMaximize)
 
     def setUrl(self, newUrl):
         self.__url = newUrl
-	
+
     def setGuid(self, newGuid):
-	    self.__guid = newGuid
-	    
+        self.__guid = newGuid
+
     def setTitle(self, newTitle):
-	    self.__title = newTitle
-	
+        self.__title = newTitle
+
     def setHeight(self, newHeight):
-	    self.__height = newHeight
-	
+        self.__height = newHeight
+
     def setWidth(self, newWidth):
-	    self.__width = newWidth
-	
-    def setMaximize(self, newMaximize):
-	    self.__maximize = newMaximize
-	
+        self.__width = newWidth
+
     def getUrl(self):
-	    return self.__url
-	
+        return self.__url
+
     def getGuid(self):
-	    return self.__guid
-		
+        return self.__guid
+
     def getTitle(self):
-	    return self.__title
-	
+        return self.__title
+
     def getHeight(self):
-	    return self.__height
-	
+        return self.__height
+
     def getWidth(self):
-	    return self.__width
-	
-    def isMaximize(self):
-	    return self.__maximize
+        return self.__width

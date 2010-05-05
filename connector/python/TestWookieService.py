@@ -16,7 +16,7 @@ from wookie.widget import Property
 from wookie.widget import User
 
 # @param host, path, api_key, shareddatakey
-WookieConn = WookieConnectorService.WookieConnectorService('localhost:8080', '/wookie', 'TEST','localhost_python')
+WookieConn = WookieConnectorService.WookieConnectorService('localhost:8081', '/wookie', 'TEST','localhost_python')
 # set Widget user
 WookieConn.setUser("demo_python", "demo_python_screenName")
 
@@ -27,49 +27,54 @@ print WookieConn.getCurrentUser().getScreenName()
 prop1 = Property.Property("test", "proov")
 print prop1.getName()+":"+prop1.getValue()+":"+prop1.getIsPublic()
 
-# get available widgets
-widgetList = WookieConn.getAvailableWidgets()
+connectionAlive = WookieConn.getConnection().Test()
 
-a = widgetList[12]
-b = widgetList[11]
-#a = 'http://www.getwookie.org/widgets/weather'   
+print connectionAlive
 
-# create or get instances
+if connectionAlive:
+    # get available widgets
+    widgetList = WookieConn.getAvailableWidgets()
 
-retrievedInstance = WookieConn.getOrCreateInstance(a)
-if retrievedInstance:
-    print retrievedInstance.getTitle()+'\n'+retrievedInstance.getUrl()
-    print retrievedInstance.getWidth()+'\n'+retrievedInstance.getHeight()
+    a = widgetList[12]
+    b = widgetList[11]
+    #a = 'http://www.getwookie.org/widgets/weather'
 
-    # add participant, returns string "true" (if exists, or created) or "false"
-    print WookieConn.addParticipant(retrievedInstance, User.User("ants_python", "ants_screenName"))
-    
-    # get participants, return list of participants
-    users = WookieConn.getParticipants(retrievedInstance)
-    print users[0].getLoginName()+":"+users[0].getScreenName()+":"+users[0].getThumbnail()
+    # create or get instances
 
-    # delete participant
-    WookieConn.deleteParticipant(retrievedInstance, User.User("ants_python"));
+    retrievedInstance = WookieConn.getOrCreateInstance(a)
+    if retrievedInstance:
+        print retrievedInstance.getTitle()+'\n'+retrievedInstance.getUrl()
+        print retrievedInstance.getWidth()+'\n'+retrievedInstance.getHeight()
 
-    # add property
-    # params: name, value, is_public
-    prop2 = Property.Property("python_prop", "demo")
-    WookieConn.setProperty(retrievedInstance, prop2)
+        # add participant, returns string "true" (if exists, or created) or "false"
+        print WookieConn.addParticipant(retrievedInstance, User.User("ants_python", "ants_screenName"))
 
-    # get property, return property objec, if failed then "false"
-    retrievedProp = WookieConn.getProperty(retrievedInstance, prop2)
-    print retrievedProp.getValue()
-    
-    #delete property, returns "true" or "false"
-    WookieConn.deleteProperty(retrievedInstance, prop2)
+        # get participants, return list of participants
+        users = WookieConn.getParticipants(retrievedInstance)
+        print users[0].getLoginName()+":"+users[0].getScreenName()+":"+users[0].getThumbnail()
 
-retrievedInstance2 = WookieConn.getOrCreateInstance(b)
-if retrievedInstance2:
-    print retrievedInstance2.getTitle()+'\n'+retrievedInstance2.getUrl()
-    print retrievedInstance2.getWidth()+'\n'+retrievedInstance2.getHeight()
+        # delete participant
+        WookieConn.deleteParticipant(retrievedInstance, User.User("ants_python"));
+
+        # add property
+        # params: name, value, is_public
+        prop2 = Property.Property("python_prop", "demo")
+        WookieConn.setProperty(retrievedInstance, prop2)
+
+        # get property, return property objec, if failed then "false"
+        retrievedProp = WookieConn.getProperty(retrievedInstance, prop2)
+        print retrievedProp.getValue()
+
+        #delete property, returns "true" or "false"
+        WookieConn.deleteProperty(retrievedInstance, prop2)
+
+    retrievedInstance2 = WookieConn.getOrCreateInstance(b)
+    if retrievedInstance2:
+        print retrievedInstance2.getTitle()+'\n'+retrievedInstance2.getUrl()
+        print retrievedInstance2.getWidth()+'\n'+retrievedInstance2.getHeight()
 
 
-retrievedInstance3 = WookieConn.getOrCreateInstance('http://www.getwookie.org/widgets/weather')
-if retrievedInstance3:
-    print retrievedInstance3.getTitle()+'\n'+retrievedInstance3.getUrl()
-    print retrievedInstance3.getWidth()+'\n'+retrievedInstance3.getHeight()
+    retrievedInstance3 = WookieConn.getOrCreateInstance('http://www.getwookie.org/widgets/weather')
+    if retrievedInstance3:
+        print retrievedInstance3.getTitle()+'\n'+retrievedInstance3.getUrl()
+        print retrievedInstance3.getWidth()+'\n'+retrievedInstance3.getHeight()

@@ -47,13 +47,13 @@ class WookieConnectorService:
 
     # get current connection object
     # @return WookieServerConnection
-    
+
     def getConnection(self):
         return self.__connection
-        
+
     # get all available widgets
     # @return list of widgets
-    
+
     def getAvailableWidgets(self):
         socket = httplib.HTTPConnection(self.getConnection().getUrl())
         socket.request('GET', self.getConnection().getPath()+'/widgets?all=true')
@@ -64,26 +64,26 @@ class WookieConnectorService:
         except Exception:
             print 'Error getting widgets XML'
         socket.close()
-        
+
         ##define widgetList
         widgetList = []
         if xmldoc:
             widgetsAvailable = xmldoc.getElementsByTagName('widget')
             if widgetsAvailable:
                 for widget in widgetsAvailable:
-                    
+
                     ##get widget title
                     widgetTitle = self.getText(widget.getElementsByTagName('title'));
-                        
+
                      ##get widget url
                     widgetGuid = widget.getAttribute('identifier')
-                        
+
                     ##get widget description
                     widgetDesc = self.getText(widget.getElementsByTagName('description'));
-                        
+
                     ##get widget icon
                     widgetIcon = self.getText(widget.getElementsByTagName('icon'));
-                    
+
                     if widgetTitle and widgetGuid:
                       widgetList.append(Widget.Widget(widgetGuid, widgetTitle, widgetDesc, widgetIcon))
             else:
@@ -128,7 +128,7 @@ class WookieConnectorService:
                 response = socket.getresponse()
             except ResponseNotReady:
                 response = socket.getresponse()
-                
+
             if response.status == 201:
                 response = socket.getresponse()
             instanceXml = response.read()
@@ -144,7 +144,7 @@ class WookieConnectorService:
     # Parse widget instance XML
     # @param xml, guid
     # @return new widget instance
-        
+
     def parseInstance(self, xml, guid):
         newInstance = ''
         xmlDoc = ''
@@ -157,8 +157,7 @@ class WookieConnectorService:
             title = self.getText(xmlDoc.getElementsByTagName('title'))
             height = self.getText(xmlDoc.getElementsByTagName('height'))
             width = self.getText(xmlDoc.getElementsByTagName('width'))
-            isMaximizable = self.getText(xmlDoc.getElementsByTagName('maximize'))
-            newInstance = Instance.Instance(url, guid, title, height, width, isMaximizable)
+            newInstance = Instance.Instance(url, guid, title, height, width)
         return newInstance
 
     # Get list of participants
@@ -174,7 +173,7 @@ class WookieConnectorService:
         queryString += '&userid='+self.getCurrentUser().getLoginName()
         queryString += '&shareddatakey='+self.getConnection().getSharedDataKey()
         queryString += '&widgetid='+widgetInstance.getGuid()
-        
+
         socket = httplib.HTTPConnection(self.getConnection().getUrl())
         socket.request('GET', self.getConnection().getPath()+'/participants'+queryString)
         try:
@@ -197,7 +196,7 @@ class WookieConnectorService:
                         participantsList.append(newUser)
             except Exception:
                 print "Could not parse participants XML"
-            
+
             return participantsList
         if response.status != 200:
             print "HTTP Status: "+response.status+"\nResponseText: "+response.read()
@@ -208,7 +207,7 @@ class WookieConnectorService:
     # Add participant to current widget instance
     # @param widgetInstance, userInstance
     # @return true if added, false otherwise
-    
+
     def addParticipant(self, widgetInstance, userInstance):
         params = urllib.urlencode({'api_key': self.getConnection().getApiKey(),
                                    'userid': self.getCurrentUser().getLoginName(),
@@ -217,7 +216,7 @@ class WookieConnectorService:
                                    'participant_id': userInstance.getLoginName(),
                                    'participant_display_name': userInstance.getScreenName(),
                                    'participant_thumbnail_url': userInstance.getThumbnail()})
-        
+
         headers = {"Content-type": "application/x-www-form-urlencoded",
                        "Accept": "text/xml"}
         socket = httplib.HTTPConnection(self.getConnection().getUrl())
@@ -248,7 +247,7 @@ class WookieConnectorService:
         queryString += '&shareddatakey='+self.getConnection().getSharedDataKey()
         queryString += '&widgetid='+widgetInstance.getGuid()
         queryString += '&participant_id='+userInstance.getLoginName()
-        
+
         socket = httplib.HTTPConnection(self.getConnection().getUrl())
         socket.request('DELETE', self.getConnection().getPath()+'/participants'+queryString)
         try:
@@ -282,7 +281,7 @@ class WookieConnectorService:
                                    'propertyname': propertyInstance.getName(),
                                    'propertyvalue': propertyInstance.getValue(),
                                    'is_public': propertyInstance.getIsPublic()})
-        
+
         headers = {"Content-type": "application/x-www-form-urlencoded",
                        "Accept": "text/plain"}
         socket = httplib.HTTPConnection(self.getConnection().getUrl())
@@ -315,7 +314,7 @@ class WookieConnectorService:
         queryString += '&shareddatakey='+self.getConnection().getSharedDataKey()
         queryString += '&widgetid='+widgetInstance.getGuid()
         queryString += '&propertyname='+propertyInstance.getName()
-        
+
         socket = httplib.HTTPConnection(self.getConnection().getUrl())
         socket.request('DELETE', self.getConnection().getPath()+'/properties'+queryString)
         try:
@@ -345,7 +344,7 @@ class WookieConnectorService:
         queryString += '&shareddatakey='+self.getConnection().getSharedDataKey()
         queryString += '&widgetid='+widgetInstance.getGuid()
         queryString += '&propertyname='+propertyInstance.getName()
-        
+
         socket = httplib.HTTPConnection(self.getConnection().getUrl())
         socket.request('GET', self.getConnection().getPath()+'/properties'+queryString)
         try:
