@@ -65,7 +65,7 @@ public class UnicodeUtils {
 		for (int x=0;x<in.length();x++){
 			char ch = in.charAt(x);
 			if (Character.isSpaceChar(ch) || (Character.isWhitespace(ch) && includeWhitespace)){
-				ch = new Character(' ');
+				ch = ' ';
 			}
 			buf.append(ch);
 		}
