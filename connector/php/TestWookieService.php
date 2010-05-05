@@ -26,6 +26,8 @@ error_reporting(E_ALL &~ E_NOTICE);
 require_once("WookieConnectorService.php");
 
 $test = new WookieConnectorService("http://dev.ubuntu-box.htk:8081/wookie/", "TEST", "localhost_dev", "demo_1");
+//set locale
+$test->setLocale("en");
 //set logging path, if not set then logger doesnt do nohting
 //$test->setLogPath("/home/raido/dev/www/php_framework/logs/");
 //setup different userName
@@ -81,7 +83,6 @@ if($_GET['widget_id'] != '') {
 	$widget = $test->getOrCreateInstance($_GET['widget_id']);
   
 	if($widget) {
-	  echo $widget->isMaximizable();
 		echo '<iframe src="'.$widget->getUrl().'" width="'.$widget->getWidth().'" height="'.$widget->getHeight().'"></iframe><br />';
 	}
 	//add participant

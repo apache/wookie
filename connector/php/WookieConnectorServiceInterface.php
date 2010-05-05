@@ -106,5 +106,17 @@ interface WookieConnectorServiceInterface {
 	
 	public function deleteProperty($widgetInstance, $propertyInstance );
 	
+	/**
+	 * Set locale
+	 * @param String locale
+	 */
+	
+	public function setLocale($locale);
+	
+	/** Get current locale setting
+	 * @return String current locale
+	 */
+	
+	public function getLocale();
 }
 ?>

@@ -38,6 +38,7 @@ class WookieConnectorService implements WookieConnectorServiceInterface {
 	private $user;
 	private $httpStreamCtx;
 	private $logger;
+	private $locale;
 	
 	/** Create new connector
 	 * 
@@ -70,6 +71,18 @@ class WookieConnectorService implements WookieConnectorServiceInterface {
 	
 	private function getLogger() {
     	return $this->logger;
+	}
+	
+	/** Set locale */
+	
+	public function setLocale($locale) {
+		$this->locale = (string) $locale;
+	}
+	
+	/** Get locale */
+	
+	public function getLocale() {
+		return $this->locale;
 	}
 	
 	/** Set Wookie connection
@@ -184,6 +197,9 @@ class WookieConnectorService implements WookieConnectorServiceInterface {
 			$request.= '&userid='.$this->getUser()->getLoginName();
 			$request.= '&shareddatakey='.$this->getConnection()->getSharedDataKey();
 			$request.= '&widgetid='.$guid;
+		    if($locale = $this->getLocale()) {
+                $request .= '&locale='.$locale;
+            }
 
 			if(!$this->checkURL($requestUrl)) {
 				throw new WookieConnectorException("URL for supplied Wookie Server is malformed: ".$requestUrl);
@@ -414,6 +430,9 @@ class WookieConnectorService implements WookieConnectorServiceInterface {
 		$widgets = array();
 		try {
 			$request = $this->getConnection()->getURL().'widgets?all=true';
+			if($locale = $this->getLocale()) {
+				$request .= '&locale='.$locale;
+			}
 			if(!$this->checkURL($request)) {
 				throw new WookieConnectorException("URL for Wookie is malformed");
 			}
