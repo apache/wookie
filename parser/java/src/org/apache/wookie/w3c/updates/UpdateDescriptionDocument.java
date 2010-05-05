@@ -127,7 +127,7 @@ public class UpdateDescriptionDocument{
 	/**
 	 * Inner class used to represent Details as a localized entity
 	 */
-	class Details extends AbstractLocalizedEntity{
+	static class Details extends AbstractLocalizedEntity{
 		public String text;
 		
 		public Details(){
