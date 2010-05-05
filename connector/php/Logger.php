@@ -52,12 +52,14 @@ class Logger {
 	 */
 	public function write($str) {
 		$path = $this->getPath();
-		if(!empty($path)) {
+		if(is_dir($path) && !empty($path)) {
 			$str = "[ ".date("d/m/Y H:i:s")." ] ".$str."\n";
 			$fileWriter = @file_put_contents($path."wookie_php.0.log", $str, FILE_APPEND);
 			if(!$fileWriter) {
 				echo "<b>Wookie PHP: Writing to log failed, check permissions/path</b>";
 			}
+		} else {
+			echo "<b>Wookie PHP: Path is not a directory</b>";
 		}
 	}
 
