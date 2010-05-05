@@ -36,7 +36,7 @@ public class IRIValidator {
 		} catch (Exception e) {
 			// Scheme only is allowed for an IRI
 			try {
-				iri = new URI(str, null, null);
+				new URI(str, null, null);
 				return true;
 			} catch (URISyntaxException e1) {
 				return false;
