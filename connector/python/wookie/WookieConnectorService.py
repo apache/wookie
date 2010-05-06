@@ -27,6 +27,7 @@ class WookieConnectorService:
     __connection = ""
     __widgetInstances = Instances.Instances()
     __currentUser = ""
+    __locale = ""
 
     def __init__(self, wookieUrl, wookiePath = "", api_key = "", shareddatakey = ""):
         self.__connection = WookieServerConnection(wookieUrl, api_key, shareddatakey, wookiePath)
@@ -39,7 +40,19 @@ class WookieConnectorService:
             screenName = loginName
         self.__currentUser = User.User(loginName, screenName)
 
-    # get current use
+    # set locale
+    # @param locale string
+
+    def setLocale(self, locale):
+        self.__locale = locale
+
+    # get locale
+    # @return locale string
+
+    def getLocale(self):
+        return self.__locale
+
+    # get current user
     # @return User object
 
     def getCurrentUser(self):
@@ -56,7 +69,11 @@ class WookieConnectorService:
 
     def getAvailableWidgets(self):
         socket = httplib.HTTPConnection(self.getConnection().getUrl())
-        socket.request('GET', self.getConnection().getPath()+'/widgets?all=true')
+        path = self.getConnection().getPath()+'/widgets?all=true'
+        locale = self.getLocale()
+        if locale:
+            path += "&locale="+locale
+        socket.request('GET', path)
         response = socket.getresponse()
         xmldoc = ''
         try:
@@ -120,6 +137,9 @@ class WookieConnectorService:
                                        'userid': self.getCurrentUser().getLoginName(),
                                        'shareddatakey': self.getConnection().getSharedDataKey(),
                                        'widgetid': guid})
+            locale = self.getLocale()
+            if locale:
+                params += '&'+urllib.urlencode({'locale': locale})
             headers = {"Content-type": "application/x-www-form-urlencoded",
                        "Accept": "text/xml"}
             socket = httplib.HTTPConnection(self.getConnection().getUrl())

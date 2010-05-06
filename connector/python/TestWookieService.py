@@ -17,6 +17,10 @@ from wookie.widget import User
 
 # @param host, path, api_key, shareddatakey
 WookieConn = WookieConnectorService.WookieConnectorService('localhost:8081', '/wookie', 'TEST','localhost_python')
+
+# set locale
+#WookieConn.setLocale("en")
+
 # set Widget user
 WookieConn.setUser("demo_python", "demo_python_screenName")
 
