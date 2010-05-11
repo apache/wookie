@@ -70,6 +70,7 @@ public class AccessEntity implements IAccessEntity {
 			processSubdomains(element.getAttribute(IW3CXMLConfiguration.SUBDOMAINS_ATTRIBUTE));
 		} catch (Exception e) {
 			fSubDomains = false;
+			fOrigin = null;
 		}			
 	}
 
@@ -82,6 +83,9 @@ public class AccessEntity implements IAccessEntity {
 		URI uri = new URI(fOrigin);
 		if (uri.getHost() == null) throw new Exception("origin has no host");
 		if (uri.getUserInfo()!=null) throw new Exception("origin has userinfo");
+		if (uri.getPath()!=null && uri.getPath().length()>0) throw new Exception("origin has path information");
+		if (uri.getFragment()!=null) throw new Exception("origin has fragment information");
+		if (uri.getQuery()!=null) throw new Exception("origin has query information");
 		URI processedURI = new URI(uri.getScheme(),null,uri.getHost(),uri.getPort(),null,null,null);
 		fOrigin = processedURI.toString();
 	}
@@ -94,7 +98,11 @@ public class AccessEntity implements IAccessEntity {
 	private void processSubdomains(Attribute attr) throws Exception{
 		if (attr != null){
 			String subDomains = UnicodeUtils.normalizeSpaces(attr.getValue());
-			fSubDomains = Boolean.valueOf(subDomains);
+			if (subDomains.equals("true")||subDomains.equals("false")){
+				fSubDomains = Boolean.valueOf(subDomains);
+			} else {
+				throw new Exception("subdomains is not a valid boolean value");
+			}
 		}
 	}
 }
