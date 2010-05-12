@@ -348,7 +348,13 @@ public class WidgetManifestModel implements W3CWidget {
 			if(tag.equals(IW3CXMLConfiguration.ACCESS_ELEMENT)) {											
 				IAccessEntity access = new AccessEntity();
 				access.fromXML(child);
-				if (access.getOrigin()!=null) fAccessList.add(access);
+				if (access.getOrigin()!=null){
+					if (access.getOrigin().equals("*")) {
+						fAccessList.add(0, access);
+					} else {
+						fAccessList.add(access);
+					}
+				}
 			}
 			
 			// CONTENT IS OPTIONAL - can be 0 or 1
