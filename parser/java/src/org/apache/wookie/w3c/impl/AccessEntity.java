@@ -34,24 +34,13 @@ public class AccessEntity implements IAccessEntity {
 		fOrigin = null;
 		fSubDomains = false;
 	}
-
-	public AccessEntity(String uri, boolean subDomains) {
-		super();
-		fOrigin = uri;
-		fSubDomains = subDomains;
-	}
-
+	
 	public String getOrigin() {
 		return fOrigin;
 	}
-	public void setOrigin(String uri) {
-		fOrigin = uri;
-	}
+
 	public boolean hasSubDomains() {
 		return fSubDomains;
-	}
-	public void setSubDomains(boolean subDomains) {
-		fSubDomains = subDomains;
 	}
 
 	public void fromXML(Element element) {	
@@ -86,7 +75,13 @@ public class AccessEntity implements IAccessEntity {
 		if (uri.getPath()!=null && uri.getPath().length()>0) throw new Exception("origin has path information");
 		if (uri.getFragment()!=null) throw new Exception("origin has fragment information");
 		if (uri.getQuery()!=null) throw new Exception("origin has query information");
-		URI processedURI = new URI(uri.getScheme(),null,uri.getHost(),uri.getPort(),null,null,null);
+		
+		// Default schemes
+		int port = uri.getPort();
+		if (uri.getScheme().equals("http") && port == -1) port = 80;
+		if (uri.getScheme().equals("https") && port == -1) port = 443;
+		
+		URI processedURI = new URI(uri.getScheme(),null,uri.getHost(),port,null,null,null);
 		fOrigin = processedURI.toString();
 	}
 

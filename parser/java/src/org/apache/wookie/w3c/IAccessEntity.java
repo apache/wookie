@@ -20,10 +20,6 @@ public interface IAccessEntity extends IElement {
 
 	public String getOrigin();
 
-	public void setOrigin(String uri);
-
 	public boolean hasSubDomains();
-
-	public void setSubDomains(boolean subDomains);
 
 }
