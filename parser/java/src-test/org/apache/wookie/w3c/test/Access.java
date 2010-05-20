@@ -77,6 +77,13 @@ public class Access {
 		}
 	}
 
+
+	@Test
+	public void da(){
+		W3CWidget widget = processWidgetNoErrors(prefix+"ta-4/000/da.wgt");
+		assertEquals(0, widget.getAccessList().size());		
+	}
+	
 	@Test
 	public void ea(){
 		W3CWidget widget = processWidgetNoErrors(prefix+"ta-5/000/ea.wgt");
@@ -146,7 +153,7 @@ public class Access {
 	public void hb(){
 		W3CWidget widget = processWidgetNoErrors(prefix+"ta-8/001/hb.wgt");
 		assertEquals(1, widget.getAccessList().size());
-		assertEquals("pass://pass", widget.getAccessList().get(0).getOrigin());
+		assertEquals("http://w3.org:80", widget.getAccessList().get(0).getOrigin());
 		assertEquals(false, widget.getAccessList().get(0).hasSubDomains());
 	}
 	
@@ -154,7 +161,7 @@ public class Access {
 	public void hc(){
 		W3CWidget widget = processWidgetNoErrors(prefix+"ta-8/002/hc.wgt");
 		assertEquals(1, widget.getAccessList().size());
-		assertEquals("pass://pass", widget.getAccessList().get(0).getOrigin());
+		assertEquals("http://w3.org:80", widget.getAccessList().get(0).getOrigin());
 		assertEquals(false, widget.getAccessList().get(0).hasSubDomains());
 	}
 	
@@ -203,6 +210,12 @@ public class Access {
 	}
 	
 	@Test
+	public void hk(){
+		W3CWidget widget = processWidgetNoErrors(prefix+"ta-8/010/hk.wgt");
+		assertEquals(0, widget.getAccessList().size());
+	}
+	
+	@Test
 	public void ia(){
 		W3CWidget widget = processWidgetNoErrors(prefix+"ta-9/000/ia.wgt");
 		assertEquals(1, widget.getAccessList().size());
@@ -241,12 +254,26 @@ public class Access {
 	}
 	
 	@Test
+	public void ka(){
+		W3CWidget widget = processWidgetNoErrors(prefix+"ta-11/000/ka.wgt");
+		assertEquals(0, widget.getAccessList().size());
+	}
+	
+	@Test
+	public void la(){
+		W3CWidget widget = processWidgetNoErrors(prefix+"ta-12/000/la.wgt");
+		assertEquals(1, widget.getAccessList().size());
+		assertEquals("http://xn--xkry9kk1bz66a.cn:80", widget.getAccessList().get(0).getOrigin());
+		assertEquals(true, widget.getAccessList().get(0).hasSubDomains());
+	}
+	
+	@Test
 	public void ma(){
 		W3CWidget widget = processWidgetNoErrors(prefix+"ta-13/000/ma.wgt");
 		assertEquals(2, widget.getAccessList().size());
 		assertEquals("http://w3.org:80", widget.getAccessList().get(0).getOrigin());
 		assertEquals(true, widget.getAccessList().get(0).hasSubDomains());
-		assertEquals("pass://pass", widget.getAccessList().get(1).getOrigin());
+		assertEquals("http://pass:80", widget.getAccessList().get(1).getOrigin());
 		assertEquals(false, widget.getAccessList().get(1).hasSubDomains());
 	}
 
