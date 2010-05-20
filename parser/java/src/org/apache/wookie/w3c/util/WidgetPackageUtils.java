@@ -174,7 +174,7 @@ public class WidgetPackageUtils {
 	 */
 	public static String extractManifest(ZipFile zipFile) throws IOException{
 		ZipArchiveEntry entry = zipFile.getEntry(IW3CXMLConfiguration.MANIFEST_FILE);
-		return IOUtils.toString(zipFile.getInputStream(entry));
+		return IOUtils.toString(zipFile.getInputStream(entry), "UTF-8");
 	}
 
 	/**
