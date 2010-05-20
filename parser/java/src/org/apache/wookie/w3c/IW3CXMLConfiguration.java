@@ -43,6 +43,7 @@ public interface IW3CXMLConfiguration {
 	public static final String ACCESS_ELEMENT = "access"; // widget [0..*]
 	 	public static final String ORIGIN_ATTRIBUTE = "origin"; // access	
 	 	public static final String SUBDOMAINS_ATTRIBUTE = "subdomains"; // access
+	 	public static final String[] SUPPORTED_SCHEMES = {"http", "https"};
 	 
 	public static final String CONTENT_ELEMENT = "content"; // widget [0..*]
 	 	public static final String TYPE_ATTRIBUTE = "type"; // content

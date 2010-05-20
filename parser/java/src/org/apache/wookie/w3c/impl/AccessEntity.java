@@ -14,7 +14,10 @@
 
 package org.apache.wookie.w3c.impl;
 
+import java.net.IDN;
 import java.net.URI;
+import java.net.URL;
+import java.util.Arrays;
 
 import org.apache.wookie.w3c.IAccessEntity;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
@@ -68,20 +71,34 @@ public class AccessEntity implements IAccessEntity {
 	 * @throws Exception if the origin attribute is not valid
 	 */
 	private void processOrigin() throws Exception{
+		
+		/**
+		 * Note that the Java implementation of URI is currently broken as it
+		 * does not properly support IDNs and IRIs. Because of this we use
+		 * URL which is slightly less buggy. 
+		 */
+		
 		if (!IRIValidator.isValidIRI(fOrigin)) throw new Exception("origin is not a valid IRI");
-		URI uri = new URI(fOrigin);
-		if (uri.getHost() == null) throw new Exception("origin has no host");
+		URL uri = new URL(fOrigin);
+		if (uri.getHost() == null || uri.getHost().isEmpty()) throw new Exception("origin has no host");
 		if (uri.getUserInfo()!=null) throw new Exception("origin has userinfo");
 		if (uri.getPath()!=null && uri.getPath().length()>0) throw new Exception("origin has path information");
-		if (uri.getFragment()!=null) throw new Exception("origin has fragment information");
+		if (uri.getRef()!=null) throw new Exception("origin has fragment information");
 		if (uri.getQuery()!=null) throw new Exception("origin has query information");
 		
-		// Default schemes
-		int port = uri.getPort();
-		if (uri.getScheme().equals("http") && port == -1) port = 80;
-		if (uri.getScheme().equals("https") && port == -1) port = 443;
+		// Is the scheme supported?
+		if (!Arrays.asList(IW3CXMLConfiguration.SUPPORTED_SCHEMES).contains(uri.getProtocol()))
+			throw new Exception("scheme is not supported");
 		
-		URI processedURI = new URI(uri.getScheme(),null,uri.getHost(),port,null,null,null);
+		// Default ports
+		int port = uri.getPort();
+		if (uri.getProtocol().equals("http") && port == -1) port = 80;
+		if (uri.getProtocol().equals("https") && port == -1) port = 443;
+		
+		// Convert host to ASCII
+		String host = IDN.toASCII(uri.getHost());
+		
+		URI processedURI = new URI(uri.getProtocol(),null,host,port,null,null,null);
 		fOrigin = processedURI.toString();
 	}
 
