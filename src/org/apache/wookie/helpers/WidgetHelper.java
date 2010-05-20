@@ -83,12 +83,13 @@ public class WidgetHelper {
 	}
 	
 	private static String getWidgetElement(Widget widget){
+		if (widget == null) return null;
 		String width = "";
 		String height = "";
 		if (widget.getWidth()!=null)  width = widget.getWidth().toString();
 		if (widget.getHeight()!=null) height = widget.getHeight().toString();
 
-		if (widget == null) return null;
+
 
 		String out = "";
 
