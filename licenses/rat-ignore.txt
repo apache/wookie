@@ -1,0 +1,5 @@
+licenses
+readm*.txt
+.settings
+WebContent/META-INF/MANIFEST.MF
+WebContent/shared/js/jquery
