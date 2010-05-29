@@ -1,5 +1,11 @@
-licenses
+licenses/
 readm*.txt
 .settings
 WebContent/META-INF/MANIFEST.MF
 WebContent/shared/js/jquery/**
+project_admin/
+schemas/
+**/**license**
+build/
+**/**csproj**
+**/notsupported/
