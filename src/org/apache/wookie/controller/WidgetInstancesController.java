@@ -329,13 +329,14 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
     try {
   		String apiKey = URLDecoder.decode(request.getParameter("api_key"), "UTF-8"); //$NON-NLS-1$
   		String userId = URLDecoder.decode(request.getParameter("userid"), "UTF-8"); //$NON-NLS-1$
-  		String sharedDataKey = WidgetInstancesController.getSharedDataKey(request);	
-  		String serviceType = URLDecoder.decode(request.getParameter("servicetype"), "UTF-8"); //$NON-NLS-1$
-  		String widgetId = URLDecoder.decode(request.getParameter("widgetid"), "UTF-8"); //$NON-NLS-1$
+  		String sharedDataKey = WidgetInstancesController.getSharedDataKey(request);
+  		String widgetId = request.getParameter("widgetid");
       if (widgetId != null){
+        widgetId = URLDecoder.decode(widgetId, "UTF-8"); //$NON-NLS-1$
         _logger.info("Looking for widget instance with widgetid of " + widgetId);
         instance = WidgetInstance.getWidgetInstanceById(apiKey, userId, sharedDataKey, widgetId);
       } else {
+        String serviceType = URLDecoder.decode(request.getParameter("servicetype"), "UTF-8"); //$NON-NLS-1$
         _logger.info("Looking for widget instance of service type " + serviceType);
         instance = WidgetInstance.getWidgetInstance(apiKey, userId, sharedDataKey, serviceType);
       }
