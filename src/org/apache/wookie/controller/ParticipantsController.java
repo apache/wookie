@@ -115,6 +115,7 @@ public class ParticipantsController extends Controller {
 
 		if (addParticipantToWidgetInstance(instance, participant_id, participant_display_name, participant_thumbnail_url)){
 			Notifier.notifyWidgets(session, instance, Notifier.PARTICIPANTS_UPDATED);
+			_logger.debug("added user to widget instance: " + participant_id);
 			return true;
 		} else {
 			// No need to create a new participant, it already existed

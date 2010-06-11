@@ -333,11 +333,11 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
   		String widgetId = request.getParameter("widgetid");
       if (widgetId != null){
         widgetId = URLDecoder.decode(widgetId, "UTF-8"); //$NON-NLS-1$
-        _logger.info("Looking for widget instance with widgetid of " + widgetId);
+        _logger.debug("Looking for widget instance with widgetid of " + widgetId);
         instance = WidgetInstance.getWidgetInstanceById(apiKey, userId, sharedDataKey, widgetId);
       } else {
         String serviceType = URLDecoder.decode(request.getParameter("servicetype"), "UTF-8"); //$NON-NLS-1$
-        _logger.info("Looking for widget instance of service type " + serviceType);
+        _logger.debug("Looking for widget instance of service type " + serviceType);
         instance = WidgetInstance.getWidgetInstance(apiKey, userId, sharedDataKey, serviceType);
       }
       if (instance == null) {
