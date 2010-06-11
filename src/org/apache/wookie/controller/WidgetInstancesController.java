@@ -16,8 +16,10 @@ package org.apache.wookie.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -323,17 +325,27 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 			instance = WidgetInstance.findByIdKey(id_key);
 			return instance;
 		}
+
+    try {
+  		String apiKey = URLDecoder.decode(request.getParameter("api_key"), "UTF-8"); //$NON-NLS-1$
+  		String userId = URLDecoder.decode(request.getParameter("userid"), "UTF-8"); //$NON-NLS-1$
+  		String sharedDataKey = WidgetInstancesController.getSharedDataKey(request);	
+  		String serviceType = URLDecoder.decode(request.getParameter("servicetype"), "UTF-8"); //$NON-NLS-1$
+  		String widgetId = URLDecoder.decode(request.getParameter("widgetid"), "UTF-8"); //$NON-NLS-1$
+      if (widgetId != null){
+        _logger.info("Looking for widget instance with widgetid of " + widgetId);
+        instance = WidgetInstance.getWidgetInstanceById(apiKey, userId, sharedDataKey, widgetId);
+      } else {
+        _logger.info("Looking for widget instance of service type " + serviceType);
+        instance = WidgetInstance.getWidgetInstance(apiKey, userId, sharedDataKey, serviceType);
+      }
+      if (instance == null) {
+        _logger.error("No widget instance for found");
+      }
+      return instance;
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException("Server must support UTF-8 encoding", e);
+    } //$NON-NLS-1$
 		
-		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
-		String userId = request.getParameter("userid"); //$NON-NLS-1$
-		String sharedDataKey = WidgetInstancesController.getSharedDataKey(request);	
-		String serviceType = request.getParameter("servicetype"); //$NON-NLS-1$
-		String widgetId = request.getParameter("widgetid"); //$NON-NLS-1$
-		if (widgetId != null){
-			instance = WidgetInstance.getWidgetInstanceById(apiKey, userId, sharedDataKey, widgetId);
-		} else {
-			instance = WidgetInstance.getWidgetInstance(apiKey, userId, sharedDataKey, serviceType);
-		}
-		return instance;
 	}
 }

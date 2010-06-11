@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
@@ -34,6 +35,7 @@ import org.apache.wookie.exceptions.UnauthorizedAccessException;
 public abstract class Controller extends HttpServlet{
 
 	private static final long serialVersionUID = 2791062551643568756L;
+  static Logger _logger = Logger.getLogger(Controller.class.getName()); 
 
 	/**
 	 * Content type for XML output
@@ -96,6 +98,7 @@ public abstract class Controller extends HttpServlet{
 		} catch (UnauthorizedAccessException e){
 			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 		} catch (InvalidParametersException e){
+		  _logger.debug(e);
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 		}
 	}
@@ -114,11 +117,14 @@ public abstract class Controller extends HttpServlet{
 				response.setStatus(HttpServletResponse.SC_OK);				
 			}
 		} catch (ResourceDuplicationException e) {
+		  _logger.error(e.getMessage(), e);
 			response.sendError(HttpServletResponse.SC_CONFLICT);// already exists with same name - need error message for this
 		} catch (InvalidParametersException e){
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST); 
+		  _logger.error(e.getMessage(), e);
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST); 
 		} catch (UnauthorizedAccessException e){
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+		  _logger.error(e.getMessage(), e);
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 		}
 	}
 
