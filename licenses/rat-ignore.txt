@@ -7,13 +7,35 @@ project_admin/
 schemas/
 shindig/readme_shindig.txt
 build/
+**/build/**
 **/**csproj**
 **/notsupported/
 connector/CSharp/CSharp.sln
 **/*.properties
-features/camera/shared/thickbox.js
 scripts/
 util/UrlEncodedQueryString.java
 tutorials/geoLocation/legal/
 widgets/localetest/index.htm
 widgets/localetest/locales/
+**/dist/**
+.classpath
+.project
+
+# anything below is under a different license header
+# needs checking if relevant licenses are included
+# at top level
+
+features/camera/licenses.txt
+features/camera/shared/camcanvas.html
+features/camera/shared/jquery.js
+features/camera/shared/thickbox.css
+features/camera/shared/thickbox.js
+src/org/apache/wookie/util/UrlEncodedQueryString.java
+tutorials/geoLocation/scripts/geo.js
+tutorials/geoLocation/scripts/geo_position_js_simulator.js
+widgets/bubbles/config.xml
+widgets/bubbles/index.html
+widgets/bubbles/licence.txt
+widgets/bubbles/script.js
+widgets/bubbles/styles.css
+
