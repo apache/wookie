@@ -15,11 +15,15 @@ connector/CSharp/CSharp.sln
 scripts/
 util/UrlEncodedQueryString.java
 tutorials/geoLocation/legal/
-widgets/localetest/index.htm
-widgets/localetest/locales/
 **/dist/**
 .classpath
 .project
+
+# Group all the widgets stuff below.
+
+widgets/localetest/index.htm
+widgets/localetest/locales/
+widgets/camera/icon.svg
 
 # anything below is under a different license header
 # needs checking if relevant licenses are included
