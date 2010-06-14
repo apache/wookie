@@ -107,6 +107,8 @@ public class AccessRequest extends AbstractKeyBean<AccessRequest> {
 			if (!accessUri.getHost().equalsIgnoreCase(requestedUri.getHost())) return false;
 		}
 		// Ports must match
+		// Default: no port in request, and access policy set to 80
+		if (requestedUri.getPort() == -1 && accessUri.getPort() == 80) return true;
 		if (accessUri.getPort()==requestedUri.getPort()) return true;
 		return false;
 	}
