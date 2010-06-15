@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Interface for Wookie service and manager of widgets -->
+<wookie:WookieConnectorServiceContainer xmlns:mx="http://www.adobe.com/2006/mxml"
+										xmlns:wookie="org.apache.wookie.connector.example.*"
+										xmlns:flexiframe="com.google.code.flexiframe.*"
+										width="640"
+										horizontalAlign="center">
+	<mx:Script>
+		<![CDATA[
+			import flash.events.Event;
+			import flash.events.IOErrorEvent;
+			import flash.net.URLLoader;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import org.apache.wookie.connector.framework.WookieConnectorService;
+			import org.apache.wookie.connector.framework.User;
+			import org.apache.wookie.connector.framework.Widget;
+			import org.apache.wookie.connector.framework.WidgetInstance;
+			import org.apache.wookie.connector.framework.WidgetInstanceLoader;
+			import org.apache.wookie.connector.framework.WookieConnectorService;
+			import org.apache.wookie.connector.framework.WookieServerConnection;
+			
+			/**
+			 * Collection of widgets gathered after a click on createConnectorBtn.
+			 */
+			[Bindable]
+			public var widgets:ArrayCollection = new ArrayCollection();
+			
+			private var connector:WookieConnectorService = null;
+			
+			private function setConnector(new_connector:WookieConnectorService):void {
+				connector = new_connector;
+			}
+			
+			private function createConnector():WookieConnectorService {
+				if(null == connection) {
+					Alert.show("Please select a connection to create a connector.", "Instructions to create a connector", Alert.OK, null, null, null, Alert.OK);
+					return connector;
+				}
+				if(null == current_user) {
+					Alert.show("Please select an user to create a connector.", "Instructions to create a connector", Alert.OK, null, null, null, Alert.OK);
+					return connector;
+				}
+				var wookie_connector:WookieConnectorService = new WookieConnectorService()
+				wookie_connector.setConnection(connection);
+				wookie_connector.setUsers(users);
+				wookie_connector.setCurrentUser(current_user);
+				return wookie_connector;
+			}
+			
+			private function getAllWidgets():void {
+				if (null == connector) {
+					Alert.show("Create a connector to get its widgets.", "Instructions to get widgets", Alert.OK, null, null, null, Alert.OK);
+					return;
+				}
+				var async_widgets:URLLoader = connector.getAvailableWidgets();
+				async_widgets.addEventListener(Event.COMPLETE, getAllWidgetsComplete);
+			}
+			
+			private function getAllWidgetsComplete(event:Event):void {
+				var allWidgets:ArrayCollection = new ArrayCollection();
+				var async_widgets:URLLoader = URLLoader(event.target);
+				for each(var asw:Widget in async_widgets.data) {
+					var asw_obj:Object = { id:asw.getIdentifier(), title:asw.getTitle(), desc:asw.getDescription(), icon:asw.getIconUrl() };
+					allWidgets.addItem( asw_obj );
+				}
+				widgets = allWidgets;
+			}
+			
+			private function getWidgetInstance():void {
+				if (!(0 <= availableWidgets.selectedIndex && availableWidgets.selectedIndex < availableWidgets.dataProvider.source.length)) {
+					Alert.show("Please select a row corresponding to a widget to instanciate it.", "Instructions to instanciate a widget", Alert.OK, null, null, null, Alert.OK);
+					return;
+				}
+				if (null == connector) {
+					Alert.show("Create a connector to instanciate one of its widgets.", "Instructions to instanciate a widget", Alert.OK, null, null, null, Alert.OK);
+					return;
+				}
+				var widget_obj:Object = availableWidgets.dataProvider.getItemAt(availableWidgets.selectedIndex);
+				var async_widget_inst:WidgetInstanceLoader = connector.getOrCreateInstanceWithId(widget_obj.id);
+				async_widget_inst.addEventListener(Event.COMPLETE, getWidgetInstanceComplete);
+				async_widget_inst.addEventListener(IOErrorEvent.IO_ERROR, getWidgetInstanceError);
+			}
+			
+			private function getWidgetInstanceComplete(event:Event):void {
+				var async_widget_inst:WidgetInstance = WidgetInstance(event.target.data);
+				
+				trace(async_widget_inst.getId() + " " +
+				async_widget_inst.getTitle() + " " +
+				async_widget_inst.getUrl() + " " +
+				async_widget_inst.getWidth() + "x" +
+				async_widget_inst.getHeight() + "(WxH)");
+				
+				widgetInstanceIFr.label = async_widget_inst.getTitle();
+				widgetInstanceIFr.source = async_widget_inst.getUrl();
+				widgetInstanceIFr.width = Number(async_widget_inst.getWidth());
+				widgetInstanceIFr.height = Number(async_widget_inst.getHeight());
+			}
+			
+			private function getWidgetInstanceError(event:IOErrorEvent):void {
+				Alert.show(event.text, "Input/Output Error", Alert.OK, null, null, null, Alert.OK);
+			}
+		]]>
+	</mx:Script>
+
+	<mx:HBox>
+		<mx:Button id="createConnectorBtn" label="New connector" click="setConnector(createConnector())"/>
+		<mx:Button id="getAllWidgetsBtn" label="Get widgets" click="getAllWidgets()"/>
+		<mx:Button id="getInstanceBtn" label="Get an instance" click="getWidgetInstance()"/>
+	</mx:HBox>
+	<mx:DataGrid id="availableWidgets" dataProvider="{widgets}" width="620" rowHeight="30" verticalAlign="middle">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Id" dataField="id"/>
+			<mx:DataGridColumn headerText="Title" dataField="title"/>
+			<mx:DataGridColumn headerText="Description" dataField="desc"/>
+			<mx:DataGridColumn headerText="Icon" dataField="icon" itemRenderer="mx.controls.Image"/>
+		</mx:columns>
+	</mx:DataGrid>
+	<mx:Panel>
+		<flexiframe:IFrame id="widgetInstanceIFr" source="http://www.google.com"/>
+	</mx:Panel>
+</wookie:WookieConnectorServiceContainer>

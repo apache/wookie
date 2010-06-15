@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="300" height="200">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.managers.PopUpManager;
+			
+			public var sourceUserManager:UserManager = null;
+			
+			private function cancelAddUserForm():void {
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function submitAddUserForm():void {
+				if (isAddUserFormValid()) {
+					var new_user:Object = {
+						login:addUserFormLogin.text,
+						name:addUserFormName.text,
+						thumbnail:addUserFormThumbnail.text
+					};
+					if(null != sourceUserManager) {
+						sourceUserManager.users.addItem(new_user);
+					}
+					PopUpManager.removePopUp(this);
+				} else {
+					Alert.show("Please fill requiered fields Name and Login.\nPlease write valid URL including protocol in field Thumbnail.", "Instructions to create an user", Alert.OK, null, null, null, Alert.OK);
+				}
+			}
+			
+			private function isAddUserFormValid():Boolean {
+				return isNameValid() && isLoginValid() && isThumbnailValid();
+			}
+			
+			private function isNameValid():Boolean {
+				return 0 < addUserFormName.text.length;
+			}
+			
+			private function isLoginValid():Boolean {
+				return 0 < addUserFormLogin.text.length;
+			}
+			
+			private function isThumbnailValid():Boolean {
+				// if not valid
+				// event.preventDefault();
+				var thumbnail_url:String = addUserFormThumbnail.text;
+				if(0 < thumbnail_url.length) {
+					var url_regexp:RegExp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+					return url_regexp.test(thumbnail_url);
+				} else {
+					// no value is requiered
+					return true;
+				}
+			}
+		]]>
+	</mx:Script>
+
+	
+	<mx:Form id="addUserForm" defaultButton="{addUserFormCancel}">
+		<mx:FormItem label="Name" required="true">
+			<mx:TextInput id="addUserFormName"/>
+		</mx:FormItem>
+		<mx:FormItem label="Login" required="true">
+			<mx:TextInput id="addUserFormLogin"/>
+		</mx:FormItem>
+		<mx:FormItem label="Thumbnail">
+			<mx:TextInput id="addUserFormThumbnail"/>
+		</mx:FormItem>
+		<mx:HBox>
+			<mx:FormItem>
+				<mx:Button id="addUserFormCancel" label="Cancel" click="cancelAddUserForm()"/>
+			</mx:FormItem>
+			<mx:FormItem>
+				<mx:Button id="addUserFormSubmit" label="Submit" click="submitAddUserForm()"/>
+			</mx:FormItem>
+		</mx:HBox>
+	</mx:Form>	
+</mx:TitleWindow>

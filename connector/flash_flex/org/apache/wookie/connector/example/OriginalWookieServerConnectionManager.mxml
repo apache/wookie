@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Component managing data to connect to wookie server(s) -->
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="320" height="360">
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import org.apache.wookie.connector.framework.WookieServerConnection;
+			
+			/**
+			 * Collection of data to connect to wookie server as Object objects.
+			 */
+			[Bindable]
+			public var connections:ArrayCollection = new ArrayCollection([
+				{url:"http://localhost:8080/wookie/", api_key:"TEST", shared_key:"mysharedkey"}
+			]);
+			
+			/**
+			 * Utility fonction to manage WookieServerConnection objects as standard objects.
+			 */
+			public function fromConnectionToObject(c:WookieServerConnection):Object {
+				return {url: c.getURL(), api_key: c.getApiKey(), shared_key: c.getSharedDataKey()};
+			}
+			
+			/**
+			 * Utility fonction to retrieve a WookieServerConnection object from a standard object.
+			 */
+			public function fromObjectToConnection(o:Object):WookieServerConnection {
+				return new WookieServerConnection(o.url, o.api_key, o.shared_key);
+			}
+			
+			private function showAddConnectionForm():void {
+				addConnectionFormBox.visible = true;
+			}
+			
+			private function submitAddConnectionForm():void {
+				if (isAddConnectionFormValid()) {
+					var new_connection:Object = {
+						url:addConnectionFormURL.text,
+							api_key:addConnectionFormAPIKey.text,
+							shared_key:addConnectionFormSharedKey.text
+					}
+					connections.addItem(new_connection);
+					addConnectionFormURL.text = "";
+					addConnectionFormAPIKey.text = "";
+					addConnectionFormSharedKey.text = "";
+					addConnectionFormBox.visible = false;
+				} else {
+					Alert.show("Please fill all fields. They are all requiered.\nPlease write valid URL including protocol in field URL.", "Instructions to create a connection", Alert.OK, null, null, null, Alert.OK);
+				}
+			}
+			
+			private function isAddConnectionFormValid():Boolean {
+				return isURLValid() && isAPIKeyValid() && isSharedKeyValid();
+			}
+			
+			private function isURLValid():Boolean {
+				var url_regexp:RegExp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+				return url_regexp.test(addConnectionFormURL.text);
+			}
+			
+			private function isAPIKeyValid():Boolean {
+				return 0 < addConnectionFormAPIKey.text.length;
+			}
+			
+			private function isSharedKeyValid():Boolean {
+				return 0 < addConnectionFormSharedKey.text.length;
+			}
+			
+			private function deleteAvailableConnection():void {
+				if(0 <= availableConnections.selectedIndex && availableConnections.selectedIndex < availableConnections.dataProvider.source.length) {
+					availableConnections.dataProvider.removeItemAt(availableConnections.selectedIndex);
+				} else {
+					Alert.show("Please select a row to delete its corresponding connection.", "Instructions to delete a connection", Alert.OK, null, null, null, Alert.OK);
+				}
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:HBox id="connectionFunctionalities">
+		<mx:Button id="addConnection" label="New connection" click="showAddConnectionForm()"/>
+		<mx:Button id="deleteConnection" label="Delete connection" click="deleteAvailableConnection()"/>
+	</mx:HBox>
+	
+	<mx:VBox id="addConnectionFormBox" visible="false">
+		<mx:Form id="addConnectionForm" defaultButton="{addConnectionFormCancel}">
+			<mx:FormItem label="URL" required="true">
+				<mx:TextInput id="addConnectionFormURL"/>
+			</mx:FormItem>
+			<mx:FormItem label="API Key" required="true">
+				<mx:TextInput id="addConnectionFormAPIKey"/>
+			</mx:FormItem>
+			<mx:FormItem label="SharedKey" required="true">
+				<mx:TextInput id="addConnectionFormSharedKey"/>
+			</mx:FormItem>
+			<mx:HBox>
+				<mx:FormItem>
+					<mx:Button id="addConnectionFormCancel" label="Cancel" click="{addConnectionFormBox.visible = false;}"/>
+				</mx:FormItem>
+				<mx:FormItem>
+					<mx:Button id="addConnectionFormSubmit" label="Submit" click="submitAddConnectionForm()"/>
+				</mx:FormItem>
+			</mx:HBox>
+		</mx:Form>
+	</mx:VBox>
+	
+	<mx:HBox id="availableConnectionsBox">
+		<mx:DataGrid id="availableConnections" dataProvider="{connections}">
+			<mx:columns>
+				<mx:DataGridColumn headerText="URL" dataField="url"/>
+				<mx:DataGridColumn headerText="API Key" dataField="api_key"/>
+				<mx:DataGridColumn headerText="Shared Key" dataField="shared_key"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:HBox>
+</mx:VBox>

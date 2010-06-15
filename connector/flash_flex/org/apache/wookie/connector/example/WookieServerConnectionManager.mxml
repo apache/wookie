@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Component managing data to connect to wookie server(s) -->
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="320" height="220"
+		 horizontalAlign="center" verticalAlign="middle">
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.managers.PopUpManager;
+			
+			import org.apache.wookie.connector.framework.WookieServerConnection;
+			
+			/**
+			 * Collection of data to connect to wookie server as Object objects.
+			 */
+			[Bindable]
+			public var connections:ArrayCollection = new ArrayCollection([
+				{url:"http://localhost:8080/wookie/", api_key:"TEST", shared_key:"mysharedkey"}
+			]);
+			
+			/**
+			 * Utility fonction to manage WookieServerConnection objects as standard objects.
+			 */
+			public function fromConnectionToObject(c:WookieServerConnection):Object {
+				return {url: c.getURL(), api_key: c.getApiKey(), shared_key: c.getSharedDataKey()};
+			}
+			
+			/**
+			 * Utility fonction to retrieve a WookieServerConnection object from a standard object.
+			 */
+			public function fromObjectToConnection(o:Object):WookieServerConnection {
+				return new WookieServerConnection(o.url, o.api_key, o.shared_key);
+			}
+			
+			private function showAddConnectionForm():void {
+				var addConnectionForm:AddConnectionFormTitleWindow = AddConnectionFormTitleWindow(
+					PopUpManager.createPopUp(this, AddConnectionFormTitleWindow, false));
+				addConnectionForm.sourceConnectionManager = this;
+				addConnectionForm.showCloseButton = true;
+				PopUpManager.centerPopUp(addConnectionForm);
+			}
+			
+			private function deleteAvailableConnection():void {
+				if(0 <= availableConnections.selectedIndex && availableConnections.selectedIndex < availableConnections.dataProvider.source.length) {
+					availableConnections.dataProvider.removeItemAt(availableConnections.selectedIndex);
+				} else {
+					Alert.show("Please select a row to delete its corresponding connection.", "Instructions to delete a connection", Alert.OK, null, null, null, Alert.OK);
+				}
+			}
+		]]>
+	</mx:Script>
+
+	<mx:HBox id="connectionFunctionalities">
+		<mx:Button id="addConnection" label="New connection" click="showAddConnectionForm()"/>
+		<mx:Button id="deleteConnection" label="Delete connection" click="deleteAvailableConnection()"/>
+	</mx:HBox>
+	
+	<mx:HBox id="availableConnectionsBox">
+		<mx:DataGrid id="availableConnections" dataProvider="{connections}">
+			<mx:columns>
+				<mx:DataGridColumn headerText="URL" dataField="url"/>
+				<mx:DataGridColumn headerText="API Key" dataField="api_key"/>
+				<mx:DataGridColumn headerText="Shared Key" dataField="shared_key"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:HBox>
+</mx:VBox>

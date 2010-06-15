@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Component managing users of wookie server widgets -->
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="320" height="220"
+		 horizontalAlign="center" verticalAlign="middle">
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.IFlexDisplayObject;
+			import mx.managers.PopUpManager;
+			import org.apache.wookie.connector.framework.User;
+			
+			/**
+			 * Collection of user as Object objects.
+			 */
+			[Bindable]
+			public var users:ArrayCollection = new ArrayCollection([
+				{login:"bob", name:"Bobby", thumbnail:""}
+			]);
+			
+			/**
+			 * Utility fonction to manage User objects as standard objects.
+			 */
+			public function fromUserToObject (u:User):Object {
+				return {login: u.getLoginName(), name: u.getScreenName(), thumbnail:u.getThumbnailUrl()};
+			}
+			
+			/**
+			 * Utility fonction to retrieve an User objects as standard object.
+			 */
+			public function fromObjectToUser (o:Object):User {
+				return new User(o.login, o.name, o.thumbnail); 
+			}
+
+			private function showAddUserForm():void {
+				var addUserForm:AddUserFormTitleWindow = AddUserFormTitleWindow(
+					PopUpManager.createPopUp(this, AddUserFormTitleWindow, false));
+				addUserForm.sourceUserManager = this;
+				addUserForm.showCloseButton=true;
+				PopUpManager.centerPopUp(addUserForm);
+			}
+			
+			private function deleteAvailableUser():void {
+				if(0 <= availableUsers.selectedIndex && availableUsers.selectedIndex < availableUsers.dataProvider.source.length) {
+					availableUsers.dataProvider.removeItemAt(availableUsers.selectedIndex);
+				} else {
+					Alert.show("Please select a row to delete its corresponding user.", "Instructions to delete an user", Alert.OK, null, null, null, Alert.OK);
+				}
+			}
+		]]>
+	</mx:Script>
+	<mx:HBox>
+		<mx:Button id="addUser" label="New user" click="showAddUserForm()"/>
+		<mx:Button id="deleteUser" label="Delete user" click="deleteAvailableUser()"/>
+	</mx:HBox>
+
+	<mx:VBox id="addUserFormBox" visible="false">
+	</mx:VBox>
+
+	<mx:HBox id="availableUsersBox">
+		<mx:DataGrid id="availableUsers" dataProvider="{users}" rowHeight="30" verticalAlign="middle" height="155">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Name" dataField="name"/>
+				<mx:DataGridColumn headerText="Login" dataField="login"/>
+				<mx:DataGridColumn headerText="Thumbnail" dataField="thumbnail" itemRenderer="mx.controls.Image"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:HBox>
+</mx:VBox>

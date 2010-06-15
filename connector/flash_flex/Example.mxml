@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application layout="absolute" minWidth="955" minHeight="600"
+				xmlns:mx="http://www.adobe.com/2006/mxml"
+				xmlns:wookie="org.apache.wookie.connector.example.*">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.controls.DataGrid;
+			
+			/**
+			 * Variables to avoid processings, if there has not been changes.
+			 */
+			private var _previous_user_index:int = -1;
+			private var _previous_user_count:uint = 0;
+			private var _previous_connection_index:int = -1;
+			
+			/**
+			 * Update collection of user and the current user for this wookie service.
+			 */
+			private function userManagerClick():void {
+				var avl_usrs:DataGrid = userManager.availableUsers;
+				var usr_idx:int = avl_usrs.selectedIndex;
+				var usr_count:uint = avl_usrs.dataProvider.source.length
+				if(_previous_user_index != usr_idx) {
+					if(0 <= usr_idx && usr_idx < usr_count) {
+						var usr_obj:Object = avl_usrs.dataProvider.getItemAt(usr_idx);
+						connectorService.current_user = userManager.fromObjectToUser(usr_obj);
+						_previous_user_index = usr_idx;
+					} else {
+						connectorService.current_user = null;
+					}
+				}
+				if(_previous_user_count != usr_count) {
+					var users_array:Array = [];
+					for each(var user_object:Object in avl_usrs.dataProvider.source) {
+						users_array.push(userManager.fromObjectToUser(user_object));
+					}
+					connectorService.users = users_array;
+				}
+			}
+			
+			/**
+			 * Update the current connection data for this wookie service
+			 */
+			private function connectionManagerClick():void {
+				var avl_cons:DataGrid = connectionManager.availableConnections; 
+				var con_idx:int = avl_cons.selectedIndex;
+				if(_previous_connection_index != con_idx) {
+					if(0 <= con_idx && con_idx < avl_cons.dataProvider.source.length) {
+						var con_obj:Object = avl_cons.dataProvider.getItemAt(con_idx);
+						connectorService.connection = connectionManager.fromObjectToConnection(con_obj);
+						_previous_connection_index = con_idx;
+					}
+				}
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:VBox x="0" y="0">
+		<mx:HBox>
+			<wookie:UserManager id="userManager" click="userManagerClick()"/>
+			<wookie:WookieServerConnectionManager id="connectionManager" click="connectionManagerClick()"/>
+		</mx:HBox>
+		<wookie:WookieConnectorServiceView id="connectorService"/>
+	</mx:VBox>
+</mx:Application>
