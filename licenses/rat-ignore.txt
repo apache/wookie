@@ -9,7 +9,6 @@ shindig/readme_shindig.txt
 build/
 **/build/**
 **/**csproj**
-**/notsupported/
 connector/CSharp/CSharp.sln
 **/*.properties
 scripts/
@@ -42,4 +41,6 @@ widgets/bubbles/index.html
 widgets/bubbles/licence.txt
 widgets/bubbles/script.js
 widgets/bubbles/styles.css
+widgets/sudoku/json.js
+widgets/todo/json2.js
 
