@@ -42,5 +42,9 @@ widgets/bubbles/licence.txt
 widgets/bubbles/script.js
 widgets/bubbles/styles.css
 widgets/sudoku/json.js
+widgets/sudoku/jquery.js
 widgets/todo/json2.js
+widgets/natter/jquery.js
+widgets/natter/smileys/Emoticons.plist
+widgets/wookiewiki/creole.js
 
