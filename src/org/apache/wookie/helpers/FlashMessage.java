@@ -25,7 +25,7 @@ import javax.servlet.http.HttpSession;
 public class FlashMessage {
 
 	private static FlashMessage _instance;
-	private static ArrayList<Message> _messages;
+	private ArrayList<Message> _messages;
 	
 	public static FlashMessage getInstance(){
 		if (_instance == null) _instance = new FlashMessage();
