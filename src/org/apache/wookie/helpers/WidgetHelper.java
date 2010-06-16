@@ -115,7 +115,8 @@ public class WidgetHelper {
 	
 	private static String getLicenses(IWidget widget, String[] locales){
 		String out = "";
-		ILicense[] licenses = (ILicense[])LocalizationUtils.processElementsByLocales(widget.getLicenses(), locales);
+		ILicense[] licenses = widget.getLicenses().toArray(new ILicense[widget.getLicenses().size()]);
+		licenses = (ILicense[])LocalizationUtils.processElementsByLocales(licenses, locales);
 		for (ILicense license: licenses){
 			out +="\t\t<license ";
 			if (license.getLang()!=null) out+=" xml:lang=\""+license.getLang()+"\"";
@@ -135,7 +136,8 @@ public class WidgetHelper {
 	}
 
 	private static String getName(IWidget widget, String[] locales){
-		IName name = (IName)LocalizationUtils.getLocalizedElement(widget.getNames(),locales);
+    	IName[] names = widget.getNames().toArray(new IName[widget.getNames().size()]);
+		IName name = (IName)LocalizationUtils.getLocalizedElement(names,locales);
 		String shortName = null;
 		String longName = null;
 		if (name != null) {
@@ -152,7 +154,8 @@ public class WidgetHelper {
 	}
 
 	private static String getDescription(IWidget widget, String[] locales){
-		IDescription desc = (IDescription)LocalizationUtils.getLocalizedElement(widget.getDescriptions(), locales);	
+    	IDescription[] descriptions = widget.getDescriptions().toArray(new IDescription[widget.getDescriptions().size()]);
+		IDescription desc = (IDescription)LocalizationUtils.getLocalizedElement(descriptions, locales);	
 		String out = "\t\t<description";
 		if (desc!= null && desc.getDir()!=null) out+=" dir=\""+desc.getDir()+"\"";
 		out += ">";
@@ -174,7 +177,7 @@ public class WidgetHelper {
 		String out = "";
 		IWidgetIcon[] icons;
 		if (locales != null && locales.length != 0){
-			icons = (IWidgetIcon[])LocalizationUtils.processElementsByLocales(widget.getWidgetIcons(), locales);
+			icons = (IWidgetIcon[])LocalizationUtils.processElementsByLocales(widget.getWidgetIcons().toArray(new IWidgetIcon[widget.getWidgetIcons().size()]), locales);
 		} else {
 			icons = widget.getWidgetIcons().toArray(new IWidgetIcon[widget.getWidgetIcons().size()]);
 		}

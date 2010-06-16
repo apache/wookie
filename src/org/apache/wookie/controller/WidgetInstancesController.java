@@ -305,7 +305,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	protected static String getUrl(HttpServletRequest request, IWidgetInstance instance) throws IOException{
 		String url = "";
 
-		Collection<IStartFile> startFiles = instance.getWidget().getStartFiles();
+		IStartFile[] startFiles = instance.getWidget().getStartFiles().toArray(new IStartFile[instance.getWidget().getStartFiles().size()]);
         IStartFile sf = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, new String[]{instance.getLang()});
 		// Try default locale if no appropriate localization found
 		if (sf == null) sf = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, null);

@@ -332,7 +332,8 @@ public interface IWidget extends IBean
          */
         public static String getWidgetTitle(IWidget widget, String locale)
         {
-            IName name = (IName)LocalizationUtils.getLocalizedElement(widget.getNames(), new String[]{locale});
+        	IName[] names = widget.getNames().toArray(new IName[widget.getNames().size()]);
+            IName name = (IName)LocalizationUtils.getLocalizedElement(names, new String[]{locale});
             return ((name != null) ? name.getName() : IW3CXMLConfiguration.UNKNOWN);
         }
         
@@ -345,7 +346,8 @@ public interface IWidget extends IBean
          */
         public static String getWidgetDescription(IWidget widget, String locale)
         {
-            IDescription description = (IDescription)LocalizationUtils.getLocalizedElement(widget.getDescriptions(), new String[]{locale});
+        	IDescription[] descriptions = widget.getDescriptions().toArray(new IDescription[widget.getDescriptions().size()]);
+            IDescription description = (IDescription)LocalizationUtils.getLocalizedElement(descriptions, new String[]{locale});
             return ((description != null) ? description.getContent() : null);
         }
 
@@ -358,7 +360,8 @@ public interface IWidget extends IBean
          */
         public static String getWidgetShortName(IWidget widget, String locale)
         {
-            IName name = (IName)LocalizationUtils.getLocalizedElement(widget.getNames(), new String[]{locale});
+        	IName[] names = widget.getNames().toArray(new IName[widget.getNames().size()]);
+            IName name = (IName)LocalizationUtils.getLocalizedElement(names, new String[]{locale});
             return ((name != null) ? name.getShortName() : IW3CXMLConfiguration.UNKNOWN);
         }
         
@@ -411,7 +414,8 @@ public interface IWidget extends IBean
          */
         public static String getUrl(IWidget widget, String locale)
         {
-            IStartFile startFile = (IStartFile)LocalizationUtils.getLocalizedElement(widget.getStartFiles(), new String[]{locale});
+        	IStartFile[] startFiles = widget.getStartFiles().toArray(new IStartFile[widget.getStartFiles().size()]);
+            IStartFile startFile = (IStartFile)LocalizationUtils.getLocalizedElement(startFiles, new String[]{locale});
             return ((startFile != null) ? startFile.getUrl() : null);
         }
 
@@ -424,7 +428,8 @@ public interface IWidget extends IBean
          */
         public static String getWidgetIconLocation(IWidget widget, String locale)
         {
-            IWidgetIcon icon = (IWidgetIcon)LocalizationUtils.getLocalizedElement(widget.getWidgetIcons(), new String[]{locale});
+        	IWidgetIcon[] icons = widget.getWidgetIcons().toArray(new IWidgetIcon[widget.getWidgetIcons().size()]);
+            IWidgetIcon icon = (IWidgetIcon)LocalizationUtils.getLocalizedElement(icons, new String[]{locale});
             return ((icon != null) ? icon.getSrc() : null);
         }
     }

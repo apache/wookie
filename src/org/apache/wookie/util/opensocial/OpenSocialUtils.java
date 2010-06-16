@@ -127,8 +127,8 @@ public class OpenSocialUtils {
 	}
 	
 	private static String getUrl(IWidgetInstance instance){
-	    Collection<IStartFile> files = instance.getWidget().getStartFiles();
-		IStartFile start = (IStartFile) LocalizationUtils.getLocalizedElement(files, new String[]{"en"});
+    	IStartFile[] startFiles = instance.getWidget().getStartFiles().toArray(new IStartFile[instance.getWidget().getStartFiles().size()]);
+		IStartFile start = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, new String[]{"en"});
 		return start.getUrl();
 	}
 
