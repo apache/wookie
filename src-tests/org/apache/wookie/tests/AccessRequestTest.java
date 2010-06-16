@@ -18,43 +18,43 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 
-import org.apache.wookie.beans.AccessRequest;
+import org.apache.wookie.beans.IAccessRequest;
+import org.apache.wookie.beans.jpa.impl.AccessRequestImpl;
 import org.junit.Test;
-
 
 public class AccessRequestTest {
 
 	@Test
 	public void wildcardTest() throws Exception{
-		AccessRequest ar = new AccessRequest();
+		IAccessRequest ar = new AccessRequestImpl();
 		ar.setOrigin("*");
 		assertTrue(ar.isAllowed(new URI("http://incubator.apache.org")));
 	}
 	
 	@Test
 	public void basicTest() throws Exception{
-		AccessRequest ar = new AccessRequest();
+		IAccessRequest ar = new AccessRequestImpl();
 		ar.setOrigin("http://incubator.apache.org");
 		assertTrue(ar.isAllowed(new URI("http://incubator.apache.org")));
 	}
 	
 	@Test
 	public void pathsTest() throws Exception{
-		AccessRequest ar = new AccessRequest();
+		IAccessRequest ar = new AccessRequestImpl();
 		ar.setOrigin("http://incubator.apache.org");
 		assertTrue(ar.isAllowed(new URI("http://incubator.apache.org/test")));
 	}
 	
 	@Test
 	public void schemesTest() throws Exception{
-		AccessRequest ar = new AccessRequest();
+		IAccessRequest ar = new AccessRequestImpl();
 		ar.setOrigin("http://incubator.apache.org");
 		assertFalse(ar.isAllowed(new URI("https://incubator.apache.org/test")));
 	}
 	
 	@Test
 	public void subDomainsTest() throws Exception{
-		AccessRequest ar = new AccessRequest();
+		IAccessRequest ar = new AccessRequestImpl();
 		ar.setOrigin("http://apache.org");
 		ar.setSubdomains(true);
 		assertTrue(ar.isAllowed(new URI("http://incubator.apache.org")));
@@ -64,7 +64,7 @@ public class AccessRequestTest {
 	
 	@Test
 	public void noSubDomainsTest() throws Exception{
-		AccessRequest ar = new AccessRequest();
+		IAccessRequest ar = new AccessRequestImpl();
 		ar.setOrigin("http://apache.org");
 		ar.setSubdomains(false);
 		assertTrue(ar.isAllowed(new URI("http://apache.org")));

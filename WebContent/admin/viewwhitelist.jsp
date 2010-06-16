@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 --%>
-<%@ page import='org.apache.wookie.beans.Whitelist' %>
-<%Whitelist[] services = (Whitelist[])session.getAttribute("whitelist"); %>
+<%@ page import='org.apache.wookie.beans.IWhitelist' %>
+<%IWhitelist[] services = (IWhitelist[])session.getAttribute("whitelist"); %>
 <html>
 <head>
 <title>Server white list</title>

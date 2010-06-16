@@ -17,7 +17,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 
-import org.apache.wookie.beans.ServerFeature;
+import org.apache.wookie.beans.IServerFeature;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.IFeature;
 import org.apache.wookie.w3c.IFeatureEntity;
 import org.apache.wookie.w3c.W3CWidget;
@@ -69,7 +71,8 @@ public class StartPageProcessor implements IStartPageProcessor {
 	 */
 	private void addFeatures(IHtmlProcessor engine,W3CWidget model) throws Exception{
 		for (IFeatureEntity feature: model.getFeatures()){
-			ServerFeature sf = ServerFeature.findByName(feature.getName());
+		    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+			IServerFeature sf = persistenceManager.findServerFeatureByName(feature.getName());
 			IFeature theFeature = getFeatureInstanceForName(sf.getClassName());
 			addScripts(engine, theFeature);
 			addStylesheets(engine, theFeature);
@@ -82,7 +85,8 @@ public class StartPageProcessor implements IStartPageProcessor {
 	 * @return an IFeature instance
 	 * @throws Exception if the feature cannot be instantiated
 	 */
-	private IFeature getFeatureInstanceForName(String featureName) throws Exception{
+	@SuppressWarnings("unchecked")
+    private IFeature getFeatureInstanceForName(String featureName) throws Exception{
 		Class<? extends IFeature> klass = (Class<? extends IFeature>) Class.forName(featureName);
 		IFeature theFeature = (IFeature) klass.newInstance();
 		return theFeature;

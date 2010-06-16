@@ -27,8 +27,10 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
-import org.apache.wookie.beans.Widget;
-import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.beans.IWidget;
+import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.connector.framework.AbstractWookieConnectorService;
 import org.apache.wookie.connector.framework.WookieConnectorException;
 import org.apache.wookie.connector.framework.WookieConnectorService;
@@ -106,7 +108,8 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 				case DEMO_WIDGET:{
           String idKey = request.getParameter("idkey");
           try {
-            String guid = WidgetInstance.findByIdKey(idKey).getWidget().getGuid();
+            IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+            String guid = persistenceManager.findWidgetInstanceByIdKey(idKey).getWidget().getGuid();
             AbstractWookieConnectorService conn = getConnectorService(request);
             conn.setCurrentUser("testuser");
             org.apache.wookie.connector.framework.WidgetInstance instanceOne = conn.getOrCreateInstance(guid);
@@ -177,7 +180,8 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 	}
 
 	private void instantiateOperation(HttpSession session, IWidgetAdminManager manager){
-		Widget[] widgets = Widget.findAll();
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWidget[] widgets = persistenceManager.findAll(IWidget.class);
 		session.setAttribute("widgets", widgets); //$NON-NLS-1$
 	}
 	/**
@@ -191,16 +195,18 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 	 * @param manager
 	 */
 	private void listOperation(HttpServletRequest request, HttpSession session, IWidgetAdminManager manager){
-		Hashtable<String, Widget> widgetsHash = new Hashtable<String, Widget>();
+		Hashtable<String, IWidget> widgetsHash = new Hashtable<String, IWidget>();
 
-		for(Widget widget:Widget.findAll()){
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidget[] widgets = persistenceManager.findAll(IWidget.class);
+		for(IWidget widget : widgets){
 			
 			// Create an instance of the widget so that we can display it as the demo widget
 			// An instance of a widget refers to a widget that has data stored on
 			// to it and is going to be deployed on different platforms. In this 
 			// case its windows.  
 			
-			WidgetInstance instance = null;
+			IWidgetInstance instance = null;
 			String apiKey = "TEST"; //$NON-NLS-1$
 			String userId = "testuser"; //$NON-NLS-1$
 			String sharedDataKey = "myshareddata"; //$NON-NLS-1$

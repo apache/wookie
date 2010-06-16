@@ -25,15 +25,18 @@
 	<property name="project.test.src.dir" location="src-tests" />
 
 	<property name="project.build.classes.dir" location="${project.build.dir}/classes" />
+	<property name="project.build.classes.test.dir" location="${project.build.dir}/classes-test" />
 
 	<property name="compile.debug" value="on" />
 	<property name="jvmargs" value="" />
+	<property name="compilerargs" value="" />
+	<property name="jdbc.driver.path" value="" />
 	
 	<property name="dist.dir" location="dist"/>
 	
     <property name="java.source.version" value="1.5"/>
 	<property name="java.target.version" value="1.5"/>
-	
+
 	<target name="init">
     	<available file="${project.core.src.dir}" property="project.core.src.dir.exists"/>
     	<available file="${project.test.src.dir}" property="project.test.src.dir.exists"/>
@@ -43,30 +46,38 @@
 	    <path id="run.path.id">
 	        <path refid="project.core.class.path" />
 	        <path location="${project.build.classes.dir}" />
+	        <path location="${jdbc.driver.path}" />
 	    </path>
+
+        <propertyset id="run.syspropertyset.id">
+            <propertyref prefix="${ant.project.name}."/>
+        </propertyset>
 	</target>
     
     <target name="compile-test" 
     	depends="compile-core" description="--> compile the project tests"
     	if="project.test.src.dir.exists">
     	<echo>Compiling test files in ${project.test.src.dir}</echo>
-        <mkdir dir="${project.build.classes.dir}" />
+        <mkdir dir="${project.build.classes.test.dir}" />
 		<javac source="${java.source.version}" 
 			target="${java.target.version}" 
-		    destdir="${project.build.classes.dir}" 
-			debug="${compile.debug}" 
-			classpathref="project.test.class.path">
+		    destdir="${project.build.classes.test.dir}" 
+			debug="${compile.debug}">
 			<src path="${project.test.src.dir}" />
+	        <classpath>
+	            <path refid="project.test.class.path" />
+	            <path location="${project.build.classes.dir}" />
+	        </classpath>
 		</javac>
 		
 		<echo>Copying resources from test source directory</echo>
-		<copy todir="${project.build.classes.dir}">
+		<copy todir="${project.build.classes.test.dir}">
 			<fileset dir="${project.test.src.dir}">
 				<exclude name="**.java" />
 			</fileset>
 		</copy>
 		
-    	<antcall target="post-compile-test"/>
+    	<antcall target="post-compile-test" inheritRefs="true"/>
     </target>
     
 	<target name="post-compile-test" description="Run after compile-test. Intended to be overridden if your project needs any post compile processing"/>
@@ -79,7 +90,7 @@
     	depends="local-publish-subprojects, resolve, init" description="--> compile the project"
     	if="project.core.src.dir.exists">
     	<echo>Preparing to compile core of ${ant.project.name}-${version}.</echo>
-    	<antcall target="pre-compile-core"/>
+    	<antcall target="pre-compile-core" inheritRefs="true"/>
     	
     	<echo>Compiling files in ${project.core.src.dir}</echo>
     	<echo>Build directory is ${project.build.classes.dir}</echo>
@@ -93,6 +104,7 @@
 			debug="${compile.debug}" 
 			classpathref="project.core.class.path">
 			<src path="${project.core.src.dir}" />
+            <compilerarg line="${compilerargs}" />
 		</javac>
     	
 		<echo>Copying resources from source directory</echo>
@@ -102,7 +114,7 @@
 			</fileset>
 		</copy>
 		
-    	<antcall target="post-compile-core"/>
+    	<antcall target="post-compile-core" inheritRefs="true"/>
     </target>
     
 
@@ -116,6 +128,7 @@
             failonerror="true">
             <jvmarg line="${jvmargs}"/>
         	<arg line="${run.args}"/>
+            <syspropertyset refid="run.syspropertyset.id"/>
         </java>    	
     </target>
 	
@@ -126,7 +139,8 @@
 	        failonerror="true">
 	        <jvmarg line="${jvmargs}"/>
 	        <arg line="${run.args}"/>
-	       </java>    	    	
+            <syspropertyset refid="run.syspropertyset.id"/>
+	    </java>    	    	
 	</target>	
     
     <target name="jar" depends="clean-dist, compile-core" description="--> make a jar file for this project">
@@ -151,14 +165,14 @@
     	<tstamp>
 			<format property="now" pattern="yyyyMMddHHmmss"/>
 		</tstamp>
-    	<ivy:makepom ivyfile="${basedir}/ivy.xml" pomfile="${dist.dir}/wookie.pom"/>
+    	<ivy:makepom ivyfile="${basedir}/ivy.xml" pomfile="${dist.dir}/${ant.project.name}.pom"/>
     	<ivy:publish resolver="local"
     		pubrevision="${version}"
     		forcedeliver="true"
     		srcivypattern="${dist.dir}/ivy.xml"
 			pubdate="${now}"
     		overwrite="true">
-    		<artifact name="wookie" type="pom" ext="pom"/>
+    		<artifact name="${ant.project.name}" type="pom" ext="pom"/>
     		<artifacts pattern="${dist.dir}/${ant.project.name}-${version}.jar"/>
     	</ivy:publish>
         <echo message="project ${ant.project.name} published locally with version ${version}" />

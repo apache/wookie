@@ -31,10 +31,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.httpclient.auth.AuthenticationException;
 import org.apache.log4j.Logger;
-import org.apache.wookie.beans.AccessRequest;
-import org.apache.wookie.beans.Whitelist;
-import org.apache.wookie.beans.Widget;
-import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.beans.IAccessRequest;
+import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.beans.IWhitelist;
+import org.apache.wookie.beans.IWidget;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 
 /**
  * A web proxy servlet which will translate calls for content and return them as if they came from
@@ -73,7 +75,8 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			}
 
 			// Check that the request is coming from a valid widget
-			WidgetInstance instance = WidgetInstance.findByIdKey(request.getParameter("instanceid_key"));	
+			IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+			IWidgetInstance instance = persistenceManager.findWidgetInstanceByIdKey(request.getParameter("instanceid_key"));	
 			if(instance == null && !isDefaultGadget(request)){
 				response.sendError(HttpServletResponse.SC_FORBIDDEN,"<error>"+UNAUTHORISED_MESSAGE+"</error>");	
 				return;
@@ -166,9 +169,10 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 	 * @param aUrl
 	 * @return
 	 */
-	public boolean isAllowed(URI requestedUri, WidgetInstance instance){
+	public boolean isAllowed(URI requestedUri, IWidgetInstance instance){
 		// Check global whitelist
-		for (Whitelist whiteList : Whitelist.findAll()){
+	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		for (IWhitelist whiteList : persistenceManager.findAll(IWhitelist.class)){
 			// TODO - make this better then just comparing the beginning...
 			if(requestedUri.toString().toLowerCase().startsWith(whiteList.getfUrl().toLowerCase()))			
 				return true;
@@ -186,8 +190,9 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 	 * @param widget the Widget requesting access to the URI
 	 * @return true if a policy grants access to the requested URI
 	 */
-	private boolean isAllowedByPolicy(URI requestedUri, Widget widget){
-		for (AccessRequest policy: AccessRequest.findAllApplicable(widget))
+	private boolean isAllowedByPolicy(URI requestedUri, IWidget widget){
+	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+	    for (IAccessRequest policy: persistenceManager.findApplicableAccessRequests(widget))
 			if (policy.isAllowed(requestedUri)) return true;
 		fLogger.warn("No policy grants widget "+widget.getWidgetTitle("en")+" access to: "+requestedUri.toString());
 		return false;

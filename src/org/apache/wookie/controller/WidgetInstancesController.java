@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,11 +26,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.jackrabbit.core.persistence.PersistenceManager;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
-import org.apache.wookie.beans.SharedData;
-import org.apache.wookie.beans.StartFile;
-import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.beans.ISharedData;
+import org.apache.wookie.beans.IStartFile;
+import org.apache.wookie.beans.IWidget;
+import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.exceptions.InvalidWidgetCallException;
 import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.helpers.WidgetInstanceFactory;
@@ -154,7 +159,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 
 	public static void doStopWidget(HttpServletRequest request, HttpServletResponse response) throws IOException{				
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);	
+		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);	
 		if(instance!=null){
 			lockWidgetInstance(instance);
 			Notifier.notifyWidgets(request.getSession(), instance, Notifier.STATE_UPDATED);
@@ -166,7 +171,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 
 	public static void doResumeWidget(HttpServletRequest request, HttpServletResponse response) throws IOException{					
 		Messages localizedMessages = LocaleHandler.localizeMessages(request); 
-		WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
+		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
 		if(instance!=null){
 			unlockWidgetInstance(instance);
 			Notifier.notifyWidgets(request.getSession(), instance, Notifier.STATE_UPDATED);
@@ -196,7 +201,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		
 		checkProxy(request);
 		
-		WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
+		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
 		String locale = request.getParameter("locale");//$NON-NLS-1$
 		
 		// Widget exists
@@ -212,8 +217,9 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 					(locale != null && instance.getLang()==null) || 					
 					(locale != null && !instance.getLang().equals(locale))
 			){
+			        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 					instance.setLang(locale);
-					instance.save();
+					persistenceManager.save(instance);
 			}
 			response.setStatus(HttpServletResponse.SC_OK);			
 		}
@@ -231,7 +237,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	}  
 	
 	public static void cloneSharedData(HttpServletRequest request, HttpServletResponse response){
-		WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);	
+		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);	
 		if (instance == null){
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;			
@@ -243,7 +249,17 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 			return;
 		}
 		String cloneKey = String.valueOf((request.getParameter("apikey")+":"+cloneSharedDataKey).hashCode());//$NON-NLS-1$ 
-		boolean ok = SharedData.clone(sharedDataKey, instance.getWidget().getGuid(), cloneKey);
+        IWidget widget = instance.getWidget();
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		for (ISharedData sharedData : widget.getSharedData(sharedDataKey))
+		{
+		    ISharedData clone = persistenceManager.newInstance(ISharedData.class);
+            clone.setDkey(sharedData.getDkey());
+            clone.setDvalue(sharedData.getDvalue());
+            clone.setSharedDataKey(cloneKey);
+            widget.getSharedData().add(clone);
+		}
+		boolean ok = persistenceManager.save(widget);
 		if (ok){
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
@@ -251,18 +267,20 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		}
 	}
 	
-	public synchronized static void lockWidgetInstance(WidgetInstance instance){
+	public synchronized static void lockWidgetInstance(IWidgetInstance instance){
 		//doLock(instance, true);
 		PropertiesController.updateSharedDataEntry(instance, "isLocked", "true", false);//$NON-NLS-1$ //$NON-NLS-2$
 		instance.setLocked(true);
-		instance.save();
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        persistenceManager.save(instance);
 	}
 
-	public synchronized static void unlockWidgetInstance(WidgetInstance instance){
+	public synchronized static void unlockWidgetInstance(IWidgetInstance instance){
 		//doLock(instance, false);
 		PropertiesController.updateSharedDataEntry(instance, "isLocked", "false", false);//$NON-NLS-1$ //$NON-NLS-2$
 		instance.setLocked(false);
-		instance.save();
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        persistenceManager.save(instance);
 	}
 	
 	// Utility methods
@@ -284,12 +302,13 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	 * @return the absolute URL
 	 * @throws IOException
 	 */
-	protected static String getUrl(HttpServletRequest request, WidgetInstance instance) throws IOException{
+	protected static String getUrl(HttpServletRequest request, IWidgetInstance instance) throws IOException{
 		String url = "";
-		
-		StartFile sf = (StartFile) LocalizationUtils.getLocalizedElement(StartFile.findByValue("widget", instance.getWidget()), new String[]{instance.getLang()});
+
+		Collection<IStartFile> startFiles = instance.getWidget().getStartFiles();
+        IStartFile sf = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, new String[]{instance.getLang()});
 		// Try default locale if no appropriate localization found
-		if (sf == null) sf = (StartFile) LocalizationUtils.getLocalizedElement(StartFile.findByValue("widget", instance.getWidget()), null);
+		if (sf == null) sf = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, null);
 		// No start file found, so throw an exception
 		if (sf == null) throw new IOException("No start file located for widget "+instance.getWidget().getGuid());
 		
@@ -315,12 +334,13 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	 * @param request
 	 * @return
 	 */
-	public static WidgetInstance findWidgetInstance(HttpServletRequest request){
-		WidgetInstance instance;
+	public static IWidgetInstance findWidgetInstance(HttpServletRequest request){
+		IWidgetInstance instance;
 		
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		String id_key = request.getParameter("id_key"); //$NON-NLS-1$
 		if (id_key != null & id_key != ""){
-			instance = WidgetInstance.findByIdKey(id_key);
+			instance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 			return instance;
 		}
 		
@@ -330,9 +350,9 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		String serviceType = request.getParameter("servicetype"); //$NON-NLS-1$
 		String widgetId = request.getParameter("widgetid"); //$NON-NLS-1$
 		if (widgetId != null){
-			instance = WidgetInstance.getWidgetInstanceById(apiKey, userId, sharedDataKey, widgetId);
+			instance = persistenceManager.findWidgetInstanceByGuid(apiKey, userId, sharedDataKey, widgetId);
 		} else {
-			instance = WidgetInstance.getWidgetInstance(apiKey, userId, sharedDataKey, serviceType);
+			instance = persistenceManager.findWidgetInstance(apiKey, userId, sharedDataKey, serviceType);
 		}
 		return instance;
 	}

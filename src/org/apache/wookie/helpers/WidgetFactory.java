@@ -13,22 +13,22 @@
  */
 package org.apache.wookie.helpers;
 
-import java.util.Set;
-
 import org.apache.log4j.Logger;
-import org.apache.wookie.beans.AccessRequest;
-import org.apache.wookie.beans.Description;
-import org.apache.wookie.beans.Feature;
-import org.apache.wookie.beans.License;
-import org.apache.wookie.beans.Name;
-import org.apache.wookie.beans.Param;
-import org.apache.wookie.beans.PreferenceDefault;
-import org.apache.wookie.beans.StartFile;
-import org.apache.wookie.beans.Widget;
-import org.apache.wookie.beans.WidgetDefault;
-import org.apache.wookie.beans.WidgetIcon;
-import org.apache.wookie.beans.WidgetInstance;
-import org.apache.wookie.beans.WidgetType;
+import org.apache.wookie.beans.IAccessRequest;
+import org.apache.wookie.beans.IDescription;
+import org.apache.wookie.beans.IFeature;
+import org.apache.wookie.beans.ILicense;
+import org.apache.wookie.beans.IName;
+import org.apache.wookie.beans.IParam;
+import org.apache.wookie.beans.IPreferenceDefault;
+import org.apache.wookie.beans.IStartFile;
+import org.apache.wookie.beans.IWidget;
+import org.apache.wookie.beans.IWidgetDefault;
+import org.apache.wookie.beans.IWidgetIcon;
+import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.beans.IWidgetType;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.w3c.IAccessEntity;
 import org.apache.wookie.w3c.IContentEntity;
 import org.apache.wookie.w3c.IDescriptionEntity;
@@ -52,7 +52,7 @@ public class WidgetFactory {
 	 * @param grantAccessRequests whether to automatically grant access requests for the widget
 	 * @return the widget
 	 */
-	public static Widget addNewWidget(W3CWidget model, boolean grantAccessRequests) {
+	public static IWidget addNewWidget(W3CWidget model, boolean grantAccessRequests) {
 		return addNewWidget(model,null, grantAccessRequests);
 	}
 
@@ -61,7 +61,7 @@ public class WidgetFactory {
 	 * @param model the model of the widget to add
 	 * @return the widget
 	 */
-	public static Widget addNewWidget(W3CWidget model) {
+	public static IWidget addNewWidget(W3CWidget model) {
 		return addNewWidget(model,null,false);
 	}
 
@@ -71,7 +71,7 @@ public class WidgetFactory {
 	 * @param widgetTypes the types to allocate the widget to
 	 * @return the widget
 	 */
-	public static Widget addNewWidget(W3CWidget model,String[] widgetTypes) {
+	public static IWidget addNewWidget(W3CWidget model,String[] widgetTypes) {
 		return addNewWidget(model,widgetTypes,false);
 	}	
 
@@ -83,23 +83,25 @@ public class WidgetFactory {
 	 * @param grantAccessRequests whether to grant access requests created for the widget
 	 * @return the widget
 	 */
-	public static Widget addNewWidget(W3CWidget model, String[] widgetTypes, boolean grantAccessRequests) {	
-		Widget widget = createWidget(model);
-		createTypes(widgetTypes, widget);
-		createStartFiles(model,widget);
-		createNames(model,widget);
-		createDescriptions(model,widget);
-		createIcons(model, widget);
-		createLicenses(model,widget);		
-		createPreferences(model,widget);
-		createFeatures(model,widget);
-		createAccessRequests(model, widget, grantAccessRequests);
+	public static IWidget addNewWidget(W3CWidget model, String[] widgetTypes, boolean grantAccessRequests) {
+	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWidget widget = createWidget(persistenceManager, model);
+		createTypes(persistenceManager, widgetTypes, widget);
+		createStartFiles(persistenceManager, model,widget);
+		createNames(persistenceManager, model,widget);
+		createDescriptions(persistenceManager, model,widget);
+		createIcons(persistenceManager, model, widget);
+		createLicenses(persistenceManager, model,widget);		
+		createPreferences(persistenceManager, model,widget);
+		createFeatures(persistenceManager, model,widget);
+        persistenceManager.save(widget);
+		createAccessRequests(persistenceManager, model, widget, grantAccessRequests);
 		return widget;	       
 	}
 
-	private static Widget createWidget(W3CWidget model){
-		Widget widget;
-		widget = new Widget();												
+	private static IWidget createWidget(IPersistenceManager persistenceManager, W3CWidget model){
+		IWidget widget;
+		widget = persistenceManager.newInstance(IWidget.class);												
 		widget.setWidgetAuthor(model.getAuthor());
 		widget.setWidgetAuthorEmail(model.getAuthorEmail());
 		widget.setWidgetAuthorHref(model.getAuthorHref());
@@ -107,112 +109,110 @@ public class WidgetFactory {
 		widget.setHeight(model.getHeight());
 		widget.setWidth(model.getWidth());
 		widget.setVersion(model.getVersion());
-		widget.save();	
 		return widget;
 	}
 
-	@SuppressWarnings("unchecked")
-	private static void createTypes(String[] widgetTypes, Widget widget){
-		WidgetType widgetType;
+	private static void createTypes(IPersistenceManager persistenceManager, String[] widgetTypes, IWidget widget){
+		IWidgetType widgetType;
 		if (widgetTypes!=null){
 			for(int i=0;i<widgetTypes.length;i++){
-				widgetType = new WidgetType();
+				widgetType = persistenceManager.newInstance(IWidgetType.class);
 				widgetType.setWidgetContext(widgetTypes[i]);
-				widgetType.setWidget(widget);
 				widget.getWidgetTypes().add(widgetType);
-				widgetType.save();
 			}
 		}
 	}
 
-	private static void createStartFiles(W3CWidget model, Widget widget){
+	private static void createStartFiles(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
 		for (IContentEntity page:model.getContentList()){
-			StartFile start = new StartFile();
+			IStartFile start = persistenceManager.newInstance(IStartFile.class);
 			start.setCharset(page.getCharSet());
 			start.setLang(page.getLang());
 			start.setUrl(page.getSrc());
-			start.setWidget(widget);
-			start.save();
+            widget.getStartFiles().add(start);
 		}
 	}
 
-	private static void createNames(W3CWidget model, Widget widget){
+	private static void createNames(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
 		for (INameEntity name:model.getNames()){
-			Name widgetName = new Name();
+			IName widgetName = persistenceManager.newInstance(IName.class);
 			widgetName.setLang(name.getLang());
 			widgetName.setDir(name.getDir());
 			widgetName.setName(name.getName());
 			widgetName.setShortName(name.getShort());
-			widgetName.setWidget(widget);
-			widgetName.save();
+            widget.getNames().add(widgetName);
 		}
 	}
 
-	private static void createDescriptions(W3CWidget model, Widget widget){
+	private static void createDescriptions(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
 		for (IDescriptionEntity desc:model.getDescriptions()){
-			Description widgetDesc = new Description();
+			IDescription widgetDesc = persistenceManager.newInstance(IDescription.class);
 			widgetDesc.setContent(desc.getDescription());
 			widgetDesc.setLang(desc.getLang());
 			widgetDesc.setDir(desc.getDir());
-			widgetDesc.setWidget(widget);
-			widgetDesc.save();
+            widget.getDescriptions().add(widgetDesc);
 		}
 	}
 
-	private static void createIcons(W3CWidget model, Widget widget){
+	private static void createIcons(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
 		for(IIconEntity icon: model.getIconsList()){
-			WidgetIcon widgetIcon = new WidgetIcon(icon.getSrc(),icon.getHeight(),icon.getWidth(),icon.getLang(), widget);
-			widgetIcon.save();
+            IWidgetIcon widgetIcon = persistenceManager.newInstance(IWidgetIcon.class);
+            widgetIcon.setSrc(icon.getSrc());
+            widgetIcon.setHeight(icon.getHeight());
+            widgetIcon.setWidth(icon.getWidth());
+            widgetIcon.setLang(icon.getLang());
+            widget.getWidgetIcons().add(widgetIcon);
 		}
 	}
 
-	private static void createLicenses(W3CWidget model, Widget widget){
+	private static void createLicenses(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
 		for(ILicenseEntity licenseModel: model.getLicensesList()){
-			License license = new License(licenseModel.getLicenseText(),licenseModel.getHref(), licenseModel.getLang(), licenseModel.getDir(), widget);
-			license.save();
+            ILicense license = persistenceManager.newInstance(ILicense.class);
+            license.setText(licenseModel.getLicenseText());
+            license.setHref(licenseModel.getHref());
+            license.setLang(licenseModel.getLang());
+            license.setDir(licenseModel.getDir());
+            widget.getLicenses().add(license);
 		}
 	}
 
-	private static void createPreferences(W3CWidget model, Widget widget){
+	private static void createPreferences(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
 		for(IPreferenceEntity prefEntity : model.getPrefences()){
-			PreferenceDefault prefenceDefault = new PreferenceDefault();
-			prefenceDefault.setPreference(prefEntity.getName());
-			prefenceDefault.setValue(prefEntity.getValue());
-			prefenceDefault.setReadOnly(prefEntity.isReadOnly());
-			prefenceDefault.setWidget(widget);
-			prefenceDefault.save();
+            IPreferenceDefault preferenceDefault = persistenceManager.newInstance(IPreferenceDefault.class);
+			preferenceDefault.setPreference(prefEntity.getName());
+			preferenceDefault.setValue(prefEntity.getValue());
+			preferenceDefault.setReadOnly(prefEntity.isReadOnly());
+            widget.getPreferenceDefaults().add(preferenceDefault);
 		}
 	}
 
-	private static void createFeatures(W3CWidget model, Widget widget){
+	private static void createFeatures(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
 		for(IFeatureEntity featureEntity: model.getFeatures()){
-			Feature feature = new Feature();
+            IFeature feature = persistenceManager.newInstance(IFeature.class);
 			feature.setFeatureName(featureEntity.getName());
 			feature.setRequired(featureEntity.isRequired());
-			feature.setWidget(widget);
-			feature.save();			
+            widget.getFeatures().add(feature);
 			// now attach all parameters to this feature.
 			for(IParamEntity paramEntity : featureEntity.getParams()){
-				Param param = new Param();
+	            IParam param = persistenceManager.newInstance(IParam.class);
 				param.setParameterName(paramEntity.getName());
 				param.setParameterValue(paramEntity.getValue());
-				param.setParentFeature(feature);
-				param.save();
+	            feature.getParameters().add(param);
 			}
 		}
 	}
 
-	private static void createAccessRequests(W3CWidget model, Widget widget, boolean grantAccessRequests){
+	private static void createAccessRequests(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget, boolean grantAccessRequests){
 		for(IAccessEntity accessEntity:model.getAccessList()){
-			AccessRequest acc = new AccessRequest();
+            IAccessRequest acc = persistenceManager.newInstance(IAccessRequest.class);
 			acc.setOrigin(accessEntity.getOrigin());
 			acc.setSubdomains(accessEntity.hasSubDomains());
-			acc.setWidget(widget);
 			acc.setGranted(grantAccessRequests);
+			acc.setWidget(widget);
 			if (grantAccessRequests){
 				_logger.info("access policy granted for "+widget.getWidgetTitle("en")+" to access "+acc.getOrigin());
 			}
-			acc.save();
+			persistenceManager.save(acc);
 		}
 	}
 
@@ -221,8 +221,9 @@ public class WidgetFactory {
 	 * @param id the id of the widget
 	 * @return true if the widget is destroyed successfully
 	 */
-	public static boolean destroy(int id){
-		Widget widget = Widget.findById(Integer.valueOf(id));
+	public static boolean destroy(Object id){
+	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWidget widget = persistenceManager.findById(IWidget.class, id);
 		return destroy(widget);
 	}
 
@@ -231,41 +232,27 @@ public class WidgetFactory {
 	 * @param widget the widget to destroy
 	 * @return true if the widget is destroyed successfully
 	 */
-	public static boolean destroy(Widget widget){
+	public static boolean destroy(IWidget widget){
 
 		if(widget==null) return false;
 		
 		// remove any defaults for this widget
-		WidgetDefault[] widgetDefault = WidgetDefault.findByValue("widgetId", widget.getId());
-		if (widgetDefault.length == 1) widgetDefault[0].delete();
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWidgetDefault[] widgetDefault = persistenceManager.findByValue(IWidgetDefault.class, "widget", widget);
+		if (widgetDefault.length == 1) persistenceManager.delete(widgetDefault[0]);
 		
 		// remove any widget instances for this widget
-		WidgetInstance[] instances = WidgetInstance.findByValue("widget", widget);	
-		for(WidgetInstance instance : instances){
+		IWidgetInstance[] instances = persistenceManager.findByValue(IWidgetInstance.class, "widget", widget);	
+		for(IWidgetInstance instance : instances){
 			WidgetInstanceFactory.destroy(instance);
 		}
-		
-		// remove any widget types for this widget
-		Set<?> types = widget.getWidgetTypes();
-		WidgetType[] widgetTypes = types.toArray(new WidgetType[types.size()]);		        
-		for(int j=0;j<widgetTypes.length;++j){	
-			widgetTypes[j].delete();
-		}
 
-		// remove PreferenceDefaults
-		PreferenceDefault.delete(PreferenceDefault.findByValue("widget", widget));
-
-		// remove Features
-		for(Feature feature :Feature.findByValue("widget", widget)){
-			Param.delete(Param.findByValue("parentFeature", feature));
-			feature.delete();
-		}
-		
 		// remove any AccessRequests
-		AccessRequest.delete(AccessRequest.findByValue("widget", widget));
-
+        IAccessRequest[] accessRequests = persistenceManager.findByValue(IAccessRequest.class, "widget", widget);
+        persistenceManager.delete(accessRequests);
+		
 		// remove the widget itself
-		widget.delete();
+		persistenceManager.delete(widget);
 		return true;
 	} 
 

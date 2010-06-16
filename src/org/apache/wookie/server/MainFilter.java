@@ -23,8 +23,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.apache.wookie.util.hibernate.DBManagerFactory;
-import org.apache.wookie.util.hibernate.IDBManager;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 
 /**
  * Filter to set DB transactions
@@ -36,13 +36,21 @@ public class MainFilter implements Filter {
 
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) 
 	throws IOException, ServletException {
-		/** Get a DBManager for this thread. */
-		final IDBManager dbManager = DBManagerFactory.getDBManager();							
-			dbManager.beginTransaction();
-			chain.doFilter(request, response);		
-			dbManager.commitTransaction();
-			// Close the session [This method checks if the session is open]
-			dbManager.closeSession();
+		// get persistence manager for this thread
+	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+	    try {
+	        // start and commit transaction around servlet invocation
+			persistenceManager.begin();
+			chain.doFilter(request, response);
+			persistenceManager.commit();
+	    } catch (Throwable t) {
+	        // rollback transaction on exception
+            persistenceManager.rollback();
+            throw new RuntimeException();
+	    } finally {
+            // close thread persistence manager
+	        PersistenceManagerFactory.closePersistenceManager();
+	    }
 	}
 
 	public void init(FilterConfig arg0) throws ServletException {		

@@ -14,7 +14,7 @@
  */
 --%>
 <%@ page
-	import='org.apache.wookie.Messages,org.apache.wookie.beans.Widget,org.apache.wookie.beans.WidgetType,java.util.ArrayList,java.util.Set,java.util.Enumeration,java.util.Hashtable;'%>
+	import='org.apache.wookie.Messages'%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%

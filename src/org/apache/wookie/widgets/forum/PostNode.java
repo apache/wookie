@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.wookie.beans.IPost;
+
 /**
  * A bean to model a post (with optional children)
  * @author Paul Sharples
@@ -26,47 +28,58 @@ import java.util.List;
  */
 public class PostNode {
 	
-	private int id;	
+	private Object id;	
 	private String userId;
-	private int parentId;
 	private String content;
 	private String title;
 	private Date publishDate;	
 	private Date updateDate;
 	private String sharedDataKey;
 
-	private List<PostNode> posts;
-	
-	
-	public PostNode(int id, String userId, int parentId, String content,
-			String title, Date publishDate, Date updateDate) {
+	private List<PostNode> posts = new ArrayList<PostNode>();
+		
+    /**
+     * Construct transient post node to post message.
+     * 
+     * @param message message to post
+     */
+    public PostNode(String message) {
+        super();
+        this.content = message;
+        this.title = message;
+        this.publishDate = new Date();
+        this.updateDate = this.publishDate;
+    }
+
+	/**
+	 * Construct transient from persistent post node.
+	 * 
+	 * @param post persistent post node
+	 */
+	public PostNode(IPost post) {
 		super();
-		this.id = id;
-		this.userId = userId;
-		this.parentId = parentId;
-		this.content = content;
-		this.title = title;
-		this.publishDate = publishDate;
-		this.updateDate = updateDate;
+		this.id = post.getId();
+		this.userId = post.getUserId();
+		this.content = post.getContent();
+		this.title = post.getTitle();
+		this.publishDate = post.getPublishDate();
+		this.updateDate = post.getUpdateDate();
+		for (IPost childPost : post.getPosts())
+		{
+		    posts.add(new PostNode(childPost));
+		}
 	}
 
 	public List<PostNode> getPosts() {
-		if(posts == null) {
-			posts = new ArrayList<PostNode>();
-		}
 		return posts;
 	}
 
-	public int getId() {
+	public Object getId() {
 		return id;
 	}
 
 	public String getUserId() {
 		return userId;
-	}
-
-	public int getParentId() {
-		return parentId;
 	}
 
 	public String getContent() {
@@ -92,9 +105,4 @@ public class PostNode {
 	public String getSharedDataKey() {
 		return sharedDataKey;
 	}
-
-	public void setSharedDataKey(String sharedDataKey) {
-		this.sharedDataKey = sharedDataKey;
-	}
-
 }

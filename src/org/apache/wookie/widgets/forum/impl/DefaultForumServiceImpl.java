@@ -15,17 +15,17 @@
 package org.apache.wookie.widgets.forum.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
-import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.server.LocaleHandler;
 import org.apache.wookie.widgets.forum.IForumManager;
 import org.apache.wookie.widgets.forum.IForumService;
@@ -76,7 +76,8 @@ public class DefaultForumServiceImpl implements IForumService {
 		
 		try {
 			// check if instance is valid
-			WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+		    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+			IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 			if(widgetInstance!=null){
 				IForumManager fManager = new ForumManager();
 				String sharedDataKey = widgetInstance.getSharedDataKey();	
@@ -111,11 +112,12 @@ public class DefaultForumServiceImpl implements IForumService {
 		}					
 		try {
 			// check if instance is valid
-			WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+            IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+			IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 			if(widgetInstance!=null){
 				IForumManager fManager = new ForumManager();
 				String sharedDataKey = widgetInstance.getSharedDataKey();	
-				return fManager.getPost(sharedDataKey, Integer.parseInt(postId));	
+				return fManager.getPost(sharedDataKey, postId);	
 			}
 			else{
 				return getErrorPost(localizedMessages.getString("DefaultForumServiceImpl.1"));		
@@ -146,7 +148,8 @@ public class DefaultForumServiceImpl implements IForumService {
 		}		
 		try {
 			// check if instance is valid
-			WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+            IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+			IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 			if(widgetInstance!=null){
 				IForumManager fManager = new ForumManager();
 				String sharedDataKey = widgetInstance.getSharedDataKey();
@@ -185,8 +188,7 @@ public class DefaultForumServiceImpl implements IForumService {
 	 * @return
 	 */
 	private PostNode getErrorPost(String reason){
-		Date date = new Date();
-		return new PostNode(-1, reason, -1, reason, reason, date, date);
+		return new PostNode(reason);
 	}
 
 

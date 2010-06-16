@@ -19,12 +19,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
-import org.apache.wookie.beans.Participant;
-import org.apache.wookie.beans.Preference;
-import org.apache.wookie.beans.PreferenceDefault;
-import org.apache.wookie.beans.SharedData;
-import org.apache.wookie.beans.Widget;
-import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.beans.IPreference;
+import org.apache.wookie.beans.IPreferenceDefault;
+import org.apache.wookie.beans.IWidget;
+import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.util.HashGenerator;
 import org.apache.wookie.util.opensocial.OpenSocialUtils;
 import org.apache.wookie.w3c.util.LocalizationUtils;
@@ -67,9 +67,10 @@ public class WidgetInstanceFactory{
 	 * Return the "default widget" instance
 	 * @return
 	 */
-	public static WidgetInstance defaultInstance(String locale){
-		WidgetInstance instance = new WidgetInstance();
-		instance.setWidget(Widget.findDefaultByType("unsupported")); //$NON-NLS-1$
+	public static IWidgetInstance defaultInstance(String locale){
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWidgetInstance instance = persistenceManager.newInstance(IWidgetInstance.class);
+		instance.setWidget(persistenceManager.findWidgetDefaultByType("unsupported")); //$NON-NLS-1$
 		instance.setIdKey("0000");
 		instance.setLang(locale);
 		instance.setOpensocialToken("");
@@ -87,17 +88,18 @@ public class WidgetInstanceFactory{
 	 * @param localizedMessages
 	 * @return
 	 */
-	public WidgetInstance newInstance(String apiKey, String userId, String sharedDataKey, String serviceType, String widgetId, String lang){
+	public IWidgetInstance newInstance(String apiKey, String userId, String sharedDataKey, String serviceType, String widgetId, String lang){
 		try {
-			Widget widget;
-			WidgetInstance widgetInstance;
+			IWidget widget;
+			IWidgetInstance widgetInstance;
 			// Widget ID or Widget Type?
+	        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 			if (widgetId != null){
-				widget = Widget.findByGuid(widgetId);
+				widget = persistenceManager.findWidgetByGuid(widgetId);
 			} 
 			else {
 				// does this type of widget exist?
-				widget = Widget.findDefaultByType(serviceType);				
+				widget = persistenceManager.findWidgetDefaultByType(serviceType);				
 			}
 			// Unsupported
 			if (widget == null) return null;
@@ -118,7 +120,7 @@ public class WidgetInstanceFactory{
 
 			Configuration properties = (Configuration) session.getServletContext().getAttribute("opensocial"); //$NON-NLS-1$
 			
-			widgetInstance = addNewWidgetInstance(apiKey, userId, sharedDataKey, widget, nonce, hashKey, properties, lang);
+			widgetInstance = addNewWidgetInstance(persistenceManager, apiKey, userId, sharedDataKey, widget, nonce, hashKey, properties, lang);
 			return widgetInstance;
 		} catch (Exception ex) {
 			return null;
@@ -127,6 +129,7 @@ public class WidgetInstanceFactory{
 
 	/**
 	 * Create a new widget instance object, populate its default values, and save it.
+	 * @param persistenceManager
 	 * @param api_key
 	 * @param userId
 	 * @param sharedDataKey
@@ -136,8 +139,8 @@ public class WidgetInstanceFactory{
 	 * @param properties
 	 * @return
 	 */
-	private WidgetInstance addNewWidgetInstance(String api_key, String userId, String sharedDataKey, Widget widget, String nonce, String idKey, Configuration properties, String lang) {		
-		WidgetInstance widgetInstance = new WidgetInstance();
+	private IWidgetInstance addNewWidgetInstance(IPersistenceManager persistenceManager, String api_key, String userId, String sharedDataKey, IWidget widget, String nonce, String idKey, Configuration properties, String lang) {		
+		IWidgetInstance widgetInstance = persistenceManager.newInstance(IWidgetInstance.class);
 		widgetInstance.setUserId(userId);
 		widgetInstance.setSharedDataKey(sharedDataKey);
 		widgetInstance.setIdKey(idKey);
@@ -166,46 +169,43 @@ public class WidgetInstanceFactory{
 			}
 		}
 
-		// Save
-		widgetInstance.save();
-
 		// add in the sharedDataKey as a preference so that a widget can know
 		// what sharedData event to listen to later
-		setPreference(widgetInstance, "sharedDataKey", sharedDataKey, true);//$NON-NLS-1$
+		setPreference(persistenceManager, widgetInstance, "sharedDataKey", sharedDataKey, true);//$NON-NLS-1$
 
 		// add in widget defaults
-		PreferenceDefault[] prefs = PreferenceDefault.findByValue("widget", widget);	
-		if (prefs == null) return null;
-		for (PreferenceDefault pref: prefs){
-			setPreference(widgetInstance, pref.getPreference(), pref.getValue(),pref.isReadOnly());
+		for (IPreferenceDefault pref: widget.getPreferenceDefaults()){
+			setPreference(persistenceManager, widgetInstance, pref.getPreference(), pref.getValue(),pref.isReadOnly());
 		}	
+
+		// Save
+		persistenceManager.save(widgetInstance);
+
 		return widgetInstance;
 	}
 
 	/**
 	 * Initialize a preference for the instance
+     * @param persistenceManager
 	 * @param instance
 	 * @param key
 	 * @param value
 	 */
-	private void setPreference(WidgetInstance widgetInstance, String key, String value, boolean readOnly){
-		Preference pref = new Preference();
-		pref.setWidgetInstance(widgetInstance);
+	private void setPreference(IPersistenceManager persistenceManager, IWidgetInstance widgetInstance, String key, String value, boolean readOnly){
+		IPreference pref = persistenceManager.newInstance(IPreference.class);
 		pref.setDkey(key);				
 		pref.setDvalue(value);
 		pref.setReadOnly(readOnly);
-		pref.save();	
+		widgetInstance.getPreferences().add(pref);
 	}
 	
 	/**
 	 * Destroy a widget instance and all references to it
 	 * @param instance
 	 */
-	public static void destroy(WidgetInstance instance){
-		SharedData.delete(SharedData.findByValue("widgetInstance", instance));
-		Preference.delete(Preference.findByValue("widgetInstance", instance));
-		Participant.delete(Participant.findByValue("widgetInstance", instance));
-		instance.delete();
+	public static void destroy(IWidgetInstance instance){
+	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		persistenceManager.delete(instance);
 	}
 
 }

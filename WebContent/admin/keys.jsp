@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 --%>
-<%@ page import='org.apache.wookie.beans.ApiKey' %>
-<% ApiKey[] keys = (ApiKey[])session.getAttribute("keys"); %>
+<%@ page import='org.apache.wookie.beans.IApiKey' %>
+<% IApiKey[] keys = (IApiKey[])session.getAttribute("keys"); %>
 <html>
 <head>
 <title>Widget Service Types</title>

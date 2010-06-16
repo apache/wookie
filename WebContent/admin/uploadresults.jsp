@@ -13,14 +13,14 @@
  * limitations under the License.
  */
 --%>
-<%@ page import='org.apache.wookie.beans.WidgetService' %>
+<%@ page import='org.apache.wookie.beans.IWidgetService' %>
 <% 
 Integer dbkey = (Integer)session.getAttribute("dbkey");
 String errors = (String)session.getAttribute("error_value");
 String messages = (String)session.getAttribute("message_value");
 Boolean hasValidated = (Boolean)session.getAttribute("hasValidated");
 Boolean closeWindow = (Boolean)session.getAttribute("closeWindow");
-WidgetService[] services = (WidgetService[])session.getAttribute("services");
+IWidgetService[] services = (IWidgetService[])session.getAttribute("services");
 %>
 <!DOCTYPE html>
 <html>

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 --%>
-<%@ page import='org.apache.wookie.beans.Widget,org.apache.wookie.beans.WidgetType,java.util.Set,java.util.Hashtable;' %>
+<%@ page import='org.apache.wookie.beans.IWidget,org.apache.wookie.beans.IWidgetType;' %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
@@ -92,12 +92,12 @@ $(document).ready(function(){
 	</p>
 	<%}%>
 	<%
-	Widget[] widgets = (Widget[])session.getAttribute("widgets");	
+	IWidget[] widgets = (IWidget[])session.getAttribute("widgets");	
 	if(widgets!=null){
 	%>			
 	<%
 		for (int i = 1; i < widgets.length; i++) {
-			Widget widget = (Widget) widgets[i];
+			IWidget widget = (IWidget) widgets[i];
 	%>		 
 			<table width="500" class="ui-widget ui-widget-content" align="center">      
 		        <tr class="ui-widget-header"><td colspan="2"><img height="16" width="16" border="0" src="<%=widget.getWidgetIconLocation()%>"/>&nbsp;<%=widget.getWidgetTitle()%></td></tr>

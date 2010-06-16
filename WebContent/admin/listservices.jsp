@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 --%>
-<%@ page import='org.apache.wookie.beans.WidgetService' %>
-<%WidgetService[] services = (WidgetService[])session.getAttribute("services"); %>
+<%@ page import='org.apache.wookie.beans.IWidgetService' %>
+<%IWidgetService[] services = (IWidgetService[])session.getAttribute("services"); %>
 <html>
 <head>
 <title>Widget Service Types</title>

@@ -1,0 +1,349 @@
+<?xml version="1.0"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE database SYSTEM "http://db.apache.org/torque/dtd/database_3_2.dtd">
+<database name="wookie">
+
+  <table name="OPENJPA_SEQUENCE_TABLE">
+    <column name="ID" primaryKey="true" required="true" type="TINYINT"/>
+    <column name="SEQUENCE_VALUE" required="false" type="BIGINT"/>
+  </table>
+
+  <table name="Widget">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="height" type="INTEGER"/>
+    <column name="width" type="INTEGER"/>
+    <column name="guid" required="true" size="255" type="VARCHAR"/>
+    <column name="widget_author" size="255" type="VARCHAR"/>
+    <column name="widget_author_email" size="320" type="VARCHAR"/>
+    <column name="widget_author_href" type="LONGVARCHAR"/>
+    <column name="widget_version" size="255" type="VARCHAR"/>
+    <unique name="UNWidget1">
+      <unique-column name="guid"/>
+    </unique>
+  </table>
+
+  <table name="WidgetIcon">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="src" type="LONGVARCHAR"/>
+    <column name="height" type="INTEGER"/>
+    <column name="width" type="INTEGER"/>
+    <column name="lang" size="255" type="VARCHAR"/>
+    <column name="widget_id" type="INTEGER"/>
+    <foreign-key foreignTable="Widget" name="FKWidgetIcon1">
+      <reference foreign="id" local="widget_id"/>
+    </foreign-key>
+    <index name="IXWidgetIcon1">
+      <index-column name="widget_id"/>
+    </index>
+   </table>
+
+  <table name="License">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="href" type="LONGVARCHAR"/>
+    <column name="text" type="LONGVARCHAR"/>
+    <column name="dir" size="255" type="VARCHAR"/>
+    <column name="lang" size="255" type="VARCHAR"/>
+    <column name="widget_id" type="INTEGER"/>
+    <foreign-key foreignTable="Widget" name="FKLicense1">
+      <reference foreign="id" local="widget_id"/>
+    </foreign-key>
+    <index name="IXLicense1">
+      <index-column name="widget_id"/>
+    </index>
+  </table>
+
+  <table name="Name">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="name" type="LONGVARCHAR"/>
+    <column name="shortName" size="255" type="VARCHAR"/>
+    <column name="dir" size="255" type="VARCHAR"/>
+    <column name="lang" size="255" type="VARCHAR"/>
+    <column name="widget_id" type="INTEGER"/>
+    <foreign-key foreignTable="Widget" name="FKName1">
+      <reference foreign="id" local="widget_id"/>
+    </foreign-key>
+    <index name="IXName1">
+      <index-column name="widget_id"/>
+    </index>
+  </table>
+
+  <table name="AccessRequest">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="origin" size="2048" type="VARCHAR"/>
+    <column name="subdomains" size="1" type="CHAR"/>
+    <column name="granted" size="1" type="CHAR"/>
+    <column name="widget_id" required="true" type="INTEGER"/>
+    <foreign-key foreignTable="Widget" name="FKAccessRequest1">
+      <reference foreign="id" local="widget_id"/>
+    </foreign-key>
+    <index name="IXAccessRequest1">
+      <index-column name="widget_id"/>
+    </index>
+  </table>
+
+  <table name="Description">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="content" type="LONGVARCHAR"/>
+    <column name="dir" size="255" type="VARCHAR"/>
+    <column name="lang" size="255" type="VARCHAR"/>
+    <column name="widget_id" type="INTEGER"/>
+    <foreign-key foreignTable="Widget" name="FKDescription1">
+      <reference foreign="id" local="widget_id"/>
+    </foreign-key>
+    <index name="IXDescription1">
+      <index-column name="widget_id"/>
+    </index>
+  </table>
+
+  <table name="StartFile">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="url" type="LONGVARCHAR"/>
+    <column name="charset" size="255" type="VARCHAR"/>
+    <column name="lang" size="255" type="VARCHAR"/>
+    <column name="widget_id" type="INTEGER"/>
+    <foreign-key foreignTable="Widget" name="FKStartFile1">
+      <reference foreign="id" local="widget_id"/>
+    </foreign-key>
+    <index name="IXStartFile1">
+      <index-column name="widget_id"/>
+    </index>
+  </table>
+
+  <table name="WidgetInstance">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="apikey" required="true" size="255" type="VARCHAR"/>
+    <column name="userId" required="true" size="255" type="VARCHAR"/>
+    <column name="sharedDataKey" size="255" type="VARCHAR"/>
+    <column name="nonce" size="255" type="VARCHAR"/>
+    <column name="idKey" required="true" size="255" type="VARCHAR"/>
+    <column name="opensocialToken" required="true" type="LONGVARCHAR"/>
+    <column name="widget_id" required="true" type="INTEGER"/>
+    <column name="updated" size="1" type="CHAR"/>
+    <column name="shown" size="1" type="CHAR"/>
+    <column name="hidden" size="1" type="CHAR"/>
+    <column name="locked" size="1" type="CHAR"/>
+    <column name="lang" size="255" type="VARCHAR"/>
+    <foreign-key foreignTable="Widget" name="FKWidgetInstance1">
+      <reference foreign="id" local="widget_id"/>
+    </foreign-key>
+    <index name="IXWidgetInstance1">
+      <index-column name="widget_id"/>
+    </index>
+    <unique name="UNWidgetInstance1">
+      <unique-column name="idKey"/>
+    </unique>
+  </table>
+
+  <table name="PreferenceDefault">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="widget_id" type="INTEGER"/>
+    <column name="preference" required="true" size="255" type="VARCHAR"/>
+    <column name="value" required="true" size="1024" type="VARCHAR"/>
+    <column name="readOnly" size="1" type="CHAR"/>
+    <foreign-key foreignTable="Widget" name="FKPreferenceDefault1">
+      <reference foreign="id" local="widget_id"/>
+    </foreign-key>
+    <index name="IXPreferenceDefault1">
+      <index-column name="widget_id"/>
+    </index>
+  </table>
+
+  <table name="Participant">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="participant_id" required="true" size="255" type="VARCHAR"/>
+    <column name="participant_display_name" required="true" size="255" type="VARCHAR"/>
+    <column name="participant_thumbnail_url" size="1024" type="VARCHAR"/>
+    <column name="sharedDataKey" required="true" size="255" type="VARCHAR"/>
+    <column name="widget_id" required="true" type="INTEGER"/>
+    <foreign-key foreignTable="Widget" name="FKParticipant1">
+      <reference foreign="id" local="widget_id"/>
+    </foreign-key>
+    <index name="IXParticipant1">
+      <index-column name="widget_id"/>
+    </index>
+  </table>
+
+  <table name="Preference">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="widget_instance_id" type="INTEGER"/>
+    <column name="dkey" size="255" type="VARCHAR"/>
+    <column name="dvalue" type="LONGVARCHAR"/>
+    <column name="readOnly" size="1" type="CHAR"/>
+    <foreign-key foreignTable="WidgetInstance" name="FKPreference1">
+      <reference foreign="id" local="widget_instance_id"/>
+    </foreign-key>
+    <index name="IXPreference1">
+      <index-column name="widget_instance_id"/>
+    </index>
+    <unique name="UNPreference1">
+      <unique-column name="widget_instance_id"/>
+      <unique-column name="dkey"/>
+    </unique>
+  </table>
+
+  <table name="SharedData">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="sharedDataKey" size="255" type="VARCHAR"/>
+    <column name="dkey" size="255" type="VARCHAR"/>
+    <column name="dvalue" type="LONGVARCHAR"/>
+    <column name="widget_id" type="INTEGER"/>
+    <foreign-key foreignTable="Widget" name="FKSharedData1">
+      <reference foreign="id" local="widget_id"/>
+    </foreign-key>
+    <index name="IXSharedData1">
+      <index-column name="widget_id"/>
+    </index>
+  </table>
+
+  <table name="WidgetDefault">
+    <column name="widgetContext" primaryKey="true" required="true" size="255" type="VARCHAR"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="widgetId" required="true" type="INTEGER"/>
+    <foreign-key foreignTable="Widget" name="FKWidgetDefault1">
+      <reference foreign="id" local="widgetId"/>
+    </foreign-key>
+    <index name="IXWidgetDefault1">
+      <index-column name="widgetId"/>
+    </index>
+  </table>
+
+  <table name="WidgetService">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="service_name" required="true" size="255" type="VARCHAR"/>
+    <index name="IXWidgetService1">
+      <index-column name="service_name"/>
+    </index>
+  </table>
+
+  <table name="WidgetType">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="widget_context" size="255" type="VARCHAR"/>
+    <column name="widget_id" type="INTEGER"/>
+    <foreign-key foreignTable="Widget" name="FKWidgetType1">
+      <reference foreign="id" local="widget_id"/>
+    </foreign-key>
+    <index name="IXWidgetType1">
+      <index-column name="widget_id"/>
+    </index>
+  </table>
+
+  <table name="Whitelist">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="fUrl" required="true" size="200" type="VARCHAR"/>
+    <index name="IXWhitelist1">
+      <index-column name="fUrl"/>
+    </index>
+  </table>
+
+  <table name="ApiKey">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="value" required="true" size="255" type="VARCHAR"/>
+    <column name="email" required="true" size="255" type="VARCHAR"/>
+    <index name="IXApiKey1">
+      <index-column name="value"/>
+    </index>
+  </table>
+
+  <table name="Post">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="user_id" required="true" size="255" type="VARCHAR"/>
+    <column name="parent_id" type="INTEGER"/>
+    <column name="title" required="true" size="255" type="VARCHAR"/>
+    <column name="content" type="LONGVARCHAR"/>
+    <column name="publish_date" required="true" type="TIMESTAMP"/>
+    <column name="update_date" type="TIMESTAMP"/>
+    <column name="sharedDataKey" required="true" size="255" type="VARCHAR"/>
+    <foreign-key foreignTable="Post" name="FKPost1">
+      <reference foreign="id" local="parent_id"/>
+    </foreign-key>
+    <index name="IXPost1">
+      <index-column name="parent_id"/>
+    </index>
+  </table>
+
+  <table name="Feature">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="featureName" required="true" size="255" type="VARCHAR"/>
+    <column name="required" size="1" type="CHAR"/>
+    <column name="widget_id" type="INTEGER"/>
+    <foreign-key foreignTable="Widget" name="FKFeature1">
+      <reference foreign="id" local="widget_id"/>
+    </foreign-key>
+    <index name="IXFeature1">
+      <index-column name="widget_id"/>
+    </index>
+  </table>
+
+  <table name="Param">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="feature_id" type="INTEGER"/>
+    <column name="parameterName" required="true" size="255" type="VARCHAR"/>
+    <column name="parameterValue" required="true" size="255" type="VARCHAR"/>
+    <foreign-key foreignTable="Feature" name="FKParam1">
+      <reference foreign="id" local="feature_id"/>
+    </foreign-key>
+    <index name="IXParam1">
+      <index-column name="feature_id"/>
+    </index>
+  </table>
+
+  <table name="ServerFeature">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="featureName" required="true" size="255" type="VARCHAR"/>
+    <column name="className" required="true" size="255" type="VARCHAR"/>
+    <index name="IXServerFeature1">
+      <index-column name="featureName"/>
+    </index>
+  </table>
+
+  <table name="Token">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="requestUrl" required="true" size="255" type="VARCHAR"/>
+    <column name="accessUrl" required="true" size="255" type="VARCHAR"/>
+    <column name="authzUrl" required="true" size="255" type="VARCHAR"/>
+    <column name="requestToken" required="true" size="255" type="VARCHAR"/>
+    <column name="accessToken" required="true" size="255" type="VARCHAR"/>
+    <column name="tokenSecret" required="true" size="255" type="VARCHAR"/>
+    <column name="widget_instance_id" type="INTEGER"/>
+    <foreign-key foreignTable="WidgetInstance" name="FKToken1">
+      <reference foreign="id" local="widget_instance_id"/>
+    </foreign-key>
+    <index name="IXToken1">
+      <index-column name="widget_instance_id"/>
+    </index>
+  </table>
+
+</database>

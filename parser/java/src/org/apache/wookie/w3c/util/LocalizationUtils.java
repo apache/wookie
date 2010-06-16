@@ -15,6 +15,7 @@ package org.apache.wookie.w3c.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -36,8 +37,8 @@ public class LocalizationUtils {
 	/**
 	 * Returns the first (best) match for an element given the set of locales, or null
 	 * if there are no suitable elements.
-	 * @param locales
 	 * @param elements
+	 * @param locales
 	 * @return an ILocalizedElement, or null if there are no valid entries
 	 */
 	public static ILocalizedElement getLocalizedElement(ILocalizedElement[] elements,String[] locales){
@@ -48,10 +49,25 @@ public class LocalizationUtils {
 	}
 	
 	/**
+	 * Returns the first (best) match for an element given the set of locales, or null
+	 * if there are no suitable elements.
+	 * @param elements collection
+	 * @param locales
+	 * @return an ILocalizedElement, or null if there are no valid entries
+	 */
+	public static ILocalizedElement getLocalizedElement(Collection<? extends ILocalizedElement> elements, String[] locales){
+		if (elements == null) return null;
+		ILocalizedElement[] elementsArray = processElementsByLocales(elements,locales);
+		if (elementsArray.length == 0) return null;
+		return elementsArray[0];
+	}
+	
+	/**
 	 * Filters and sorts a list of localized elements using the given locale list; only localized elements
 	 * are returned unless no appropriate localized elements are found, in which case nonlocalized elements
 	 * are returned
 	 * 
+	 * @param elements
 	 * @param locales
 	 * @return the sorted and filtered set of elements
 	 */
@@ -60,6 +76,23 @@ public class LocalizationUtils {
 		List<ULocale> localesList = getProcessedLocaleList(locales);
 		Arrays.sort(elements, new LocaleComparator(localesList));
 		return filter(elements,localesList);
+	}
+	
+	/**
+	 * Filters and sorts a list of localized elements using the given locale list; only localized elements
+	 * are returned unless no appropriate localized elements are found, in which case nonlocalized elements
+	 * are returned
+	 * 
+	 * @param elements collection
+	 * @param locales
+	 * @return the sorted and filtered set of elements
+	 */
+	public static ILocalizedElement[] processElementsByLocales(Collection<? extends ILocalizedElement> elements,String[] locales){
+		if (elements == null) return null;
+		List<ULocale> localesList = getProcessedLocaleList(locales);
+        ILocalizedElement[] elementsArray = elements.toArray(new ILocalizedElement[elements.size()]);
+		Arrays.sort(elementsArray, new LocaleComparator(localesList));
+		return filter(elementsArray,localesList);
 	}
 	
 	/**

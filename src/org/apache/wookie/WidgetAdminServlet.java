@@ -28,12 +28,13 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
-import org.apache.wookie.beans.ApiKey;
-import org.apache.wookie.beans.ServerFeature;
-import org.apache.wookie.beans.Whitelist;
-import org.apache.wookie.beans.Widget;
-import org.apache.wookie.beans.WidgetDefault;
-import org.apache.wookie.beans.WidgetService;
+import org.apache.wookie.beans.IApiKey;
+import org.apache.wookie.beans.IWhitelist;
+import org.apache.wookie.beans.IWidget;
+import org.apache.wookie.beans.IWidgetDefault;
+import org.apache.wookie.beans.IWidgetService;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.controller.WidgetServicesController;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
@@ -127,9 +128,10 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 	private void addWhiteListEntry(HttpSession session, HttpServletRequest request) {
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		String uri = request.getParameter("newuri"); //$NON-NLS-1$
-		Whitelist list = new Whitelist();
+		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWhitelist list = persistenceManager.newInstance(IWhitelist.class);
 		list.setfUrl(uri);
-		if(list.save()){
+		if(persistenceManager.save(list)){
 			session.setAttribute("message_value", localizedMessages.getString("WidgetAdminServlet.2")); //$NON-NLS-1$ //$NON-NLS-2$ 
 		}
 		else{
@@ -315,11 +317,12 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 	private void listOperation(HttpSession session, boolean getDefaults){
 		retrieveWidgets(session);	
 		if(getDefaults){
-			Hashtable<String, Integer> defaultHash = new Hashtable<String, Integer>();
-			WidgetDefault[] wds = WidgetDefault.findAll();
+			Hashtable<String, Object> defaultHash = new Hashtable<String, Object>();
+	        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+			IWidgetDefault[] wds = persistenceManager.findAll(IWidgetDefault.class);
 			if (wds != null){
-				for(WidgetDefault defaultWidget : wds){
-					defaultHash.put(defaultWidget.getWidgetContext(), defaultWidget.getWidgetId());				
+				for(IWidgetDefault defaultWidget : wds){
+					defaultHash.put(defaultWidget.getWidgetContext(), defaultWidget.getWidget().getId());				
 				}	
 			}
 			session.setAttribute("widget_defaults", defaultHash); //$NON-NLS-1$
@@ -327,7 +330,8 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 	}
 
 	private void listWhiteListOperation(HttpSession session) {
-		session.setAttribute("whitelist", Whitelist.findAll()); //$NON-NLS-1$
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		session.setAttribute("whitelist", persistenceManager.findAll(IWhitelist.class)); //$NON-NLS-1$
 	}  	
 
 	private void removeServiceOperation(HttpSession session, HttpServletRequest request) {
@@ -347,7 +351,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		String widgetId = request.getParameter("widgetId"); //$NON-NLS-1$
 		String widgetType = request.getParameter("widgetType");	 //$NON-NLS-1$
-		if(manager.removeSingleWidgetType(Integer.parseInt(widgetId), widgetType)){
+		if(manager.removeSingleWidgetType(widgetId, widgetType)){
 			session.setAttribute("message_value", localizedMessages.getString("WidgetAdminServlet.8")); 				 //$NON-NLS-1$ //$NON-NLS-2$ 
 		}
 		else{
@@ -359,8 +363,9 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 	private void removeWhiteListEntry(HttpSession session, HttpServletRequest request) {
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		String entryId = request.getParameter("entryId"); //$NON-NLS-1$
-		Whitelist entry = Whitelist.findById(Integer.valueOf(entryId));
-		if(entry.delete()){
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWhitelist entry = persistenceManager.findById(IWhitelist.class, entryId);
+		if(persistenceManager.delete(entry)){
 			session.setAttribute("message_value", localizedMessages.getString("WidgetAdminServlet.10")); 				 //$NON-NLS-1$ //$NON-NLS-2$ 
 		}
 		else{
@@ -372,9 +377,10 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		final String WIDGETFOLDER = request.getSession().getServletContext().getRealPath(properties.getString("widget.widgetfolder"));//$NON-NLS-1$
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		String widgetId = request.getParameter("widgetId"); //$NON-NLS-1$
-		Widget widget = Widget.findById(Integer.parseInt(widgetId));
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWidget widget = persistenceManager.findById(IWidget.class, widgetId);
 		String guid = widget.getGuid();
-		if(WidgetFactory.destroy(Integer.parseInt(widgetId))){
+		if(WidgetFactory.destroy(widgetId)){
 			if(WidgetFileUtils.removeWidgetResources(WIDGETFOLDER, guid)){			
 				session.setAttribute("message_value", localizedMessages.getString("WidgetAdminServlet.12"));			 //$NON-NLS-1$ //$NON-NLS-2$ 
 			}
@@ -388,11 +394,13 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 	}		
 
 	private void retrieveServices(HttpSession session){						
-		session.setAttribute("services", WidgetService.findAll());						 //$NON-NLS-1$
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		session.setAttribute("services", persistenceManager.findAll(IWidgetService.class));						 //$NON-NLS-1$
 	}
 
 	private void retrieveWidgets(HttpSession session){
-		session.setAttribute("widgets", Widget.findAll()); //$NON-NLS-1$
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		session.setAttribute("widgets", persistenceManager.findAll(IWidget.class)); //$NON-NLS-1$
 	}
 
 
@@ -408,7 +416,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 	private void setDefaultWidgetOperation(HttpSession session, HttpServletRequest request, IWidgetAdminManager manager){
 		String widgetId = request.getParameter("widgetId"); //$NON-NLS-1$
 		String widgetType = request.getParameter("widgetType");		 //$NON-NLS-1$
-		manager.setDefaultWidget(Integer.parseInt(widgetId), widgetType);
+		manager.setDefaultWidget(widgetId, widgetType);
 		listOperation(session, true);
 	}
 
@@ -420,7 +428,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		if(maximize!=null){
 			canMax = Boolean.valueOf(maximize);
 		}
-		int dbKey = Integer.parseInt(request.getParameter("dbkey")); //$NON-NLS-1$
+		String dbKey = request.getParameter("dbkey"); //$NON-NLS-1$
 		String[] widgetTypes = request.getParameterValues("widgetTypes"); //$NON-NLS-1$
 		manager.setWidgetTypesForWidget(dbKey, widgetTypes, canMax);
 		session.setAttribute("message_value", localizedMessages.getString("WidgetAdminServlet.15")); 		 //$NON-NLS-1$ //$NON-NLS-2$ 
@@ -430,7 +438,8 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		try {
 			W3CWidget widgetModel = GadgetUtils.createWidget(request);
-			if(!Widget.exists(widgetModel.getIdentifier())){
+	        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+			if(persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()) == null){
 				WidgetFactory.addNewWidget(widgetModel);
 				session.setAttribute("message_value", widgetModel.getLocalName("en")+": "+localizedMessages.getString("WidgetAdminServlet.16")); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
@@ -443,7 +452,8 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 	}
 
 	private void listAPIKeysOperation(HttpSession session, HttpServletRequest request){
-		session.setAttribute("keys", ApiKey.findAll());
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		session.setAttribute("keys", persistenceManager.findAll(IApiKey.class));
 	}
 
 	private void revokeAPIKeyOperation(HttpSession session, HttpServletRequest request){
@@ -474,18 +484,19 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 
 		try {	
 			if(zipFile.exists()){
+                IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 				final String[] locales = properties.getStringArray("widget.locales");
 				W3CWidgetFactory fac = new W3CWidgetFactory();
 				fac.setLocales(locales);
 				fac.setLocalPath(session.getServletContext().getContextPath()+properties.getString("widget.widgetfolder"));
 				fac.setOutputDirectory(WIDGETFOLDER);
-				fac.setFeatures(ServerFeature.getFeatureNames());
+				fac.setFeatures(persistenceManager.findServerFeatureNames());
 				fac.setStartPageProcessor(new StartPageProcessor());
 				W3CWidget widgetModel = fac.parse(zipFile);
-				if(!Widget.exists(widgetModel.getIdentifier())){	
+	            if(persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()) == null){
 					// ADD
-					Widget widget = WidgetFactory.addNewWidget(widgetModel);
-					int dbkey = widget.getId();
+					IWidget widget = WidgetFactory.addNewWidget(widgetModel);
+					Object dbkey = widget.getId();
 					// widget added
 					session.setAttribute("message_value", "'"+ widgetModel.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					retrieveServices(session);

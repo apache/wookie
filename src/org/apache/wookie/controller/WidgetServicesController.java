@@ -15,15 +15,17 @@
 package org.apache.wookie.controller;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.wookie.beans.Widget;
-import org.apache.wookie.beans.WidgetDefault;
-import org.apache.wookie.beans.WidgetService;
-import org.apache.wookie.beans.WidgetType;
+import org.apache.wookie.beans.IWidget;
+import org.apache.wookie.beans.IWidgetDefault;
+import org.apache.wookie.beans.IWidgetService;
+import org.apache.wookie.beans.IWidgetType;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
@@ -55,7 +57,7 @@ public class WidgetServicesController extends Controller{
 	 * @see org.apache.wookie.controller.Controller#show(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected void show(String resourceId, HttpServletRequest request, HttpServletResponse response) throws ResourceNotFoundException, IOException{
-		WidgetService ws = getWidgetService(resourceId);
+		IWidgetService ws = getWidgetService(resourceId);
 		returnXml(WidgetServiceHelper.createXMLWidgetServiceDocument(ws, getLocalPath(request),getLocales(request)), response);
 	}
 
@@ -63,7 +65,8 @@ public class WidgetServicesController extends Controller{
 	 * @see org.apache.wookie.controller.Controller#index(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected void index(HttpServletRequest request, HttpServletResponse response) throws IOException{
-		WidgetService[] ws = WidgetService.findAll();
+	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWidgetService[] ws = persistenceManager.findAll(IWidgetService.class);
 		boolean defaults = (request.getParameter("defaults") != null);
 		returnXml(WidgetServiceHelper.createXMLWidgetServicesDocument(ws, getLocalPath(request),defaults, getLocales(request)), response);
 	}
@@ -84,14 +87,15 @@ public class WidgetServicesController extends Controller{
 	 */
 	public static boolean create(String resourceId) throws ResourceDuplicationException,InvalidParametersException{
 		if (resourceId == null || resourceId.trim().equals("")) throw new InvalidParametersException();
-		WidgetService ws;
+		IWidgetService ws;
 		try {
 			ws = getWidgetService(resourceId);
 			throw new ResourceDuplicationException();
 		} catch (ResourceNotFoundException e) {
-			ws = new WidgetService();
+		    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+			ws = persistenceManager.newInstance(IWidgetService.class);
 			ws.setServiceName(resourceId);
-			return ws.save();
+			return persistenceManager.save(ws);
 		}
 	}
 
@@ -111,28 +115,30 @@ public class WidgetServicesController extends Controller{
 	 * @throws ResourceNotFoundException
 	 */
 	public static boolean remove(String resourceId) throws ResourceNotFoundException {
-		WidgetService service = getWidgetService(resourceId);
+		IWidgetService service = getWidgetService(resourceId);
 		if (service == null) throw new ResourceNotFoundException();
 		String serviceName = service.getServiceName();
 		
 		// if exists, remove from widget default table
-		WidgetDefault[] widgetDefaults = WidgetDefault.findByValue("widgetContext", serviceName);
-		WidgetDefault.delete(widgetDefaults);
+		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWidgetDefault[] widgetDefaults = persistenceManager.findByValue(IWidgetDefault.class, "widgetContext", serviceName);
+		persistenceManager.delete(widgetDefaults);
 		
 		// delete from the widget service table
-		service.delete();	
+		persistenceManager.delete(service);	
 		// remove any widgetTypes for each widget that match
-		Widget[] widgets = Widget.findByType(serviceName);
+		IWidget[] widgets = persistenceManager.findWidgetsByType(serviceName);
 		if (widgets == null||widgets.length==0) return true;
-		for(Widget widget : widgets){
+		for(IWidget widget : widgets){
 			// remove any widget types for this widget
-			Set<?> types = widget.getWidgetTypes();
-		    WidgetType[] widgetTypes = types.toArray(new WidgetType[types.size()]);		        
-		    for(int j=0;j<widgetTypes.length;++j){	
-		    	if(serviceName.equalsIgnoreCase(widgetTypes[j].getWidgetContext())){
-		    		widgetTypes[j].delete();
-		    	}
-			}
+		    Iterator<IWidgetType> typesIter = widget.getWidgetTypes().iterator();
+		    while(typesIter.hasNext()) {
+		        IWidgetType widgetType = typesIter.next();
+                if(serviceName.equalsIgnoreCase(widgetType.getWidgetContext())){
+                    typesIter.remove();
+                }
+		    }
+		    persistenceManager.save(widget);
 		}					
 		return true;
 	}
@@ -145,10 +151,11 @@ public class WidgetServicesController extends Controller{
 			throws ResourceNotFoundException,InvalidParametersException {
 		String name = request.getParameter("name");
 		if (name == null || name.trim().equals("")) throw new InvalidParametersException();
-		WidgetService ws = getWidgetService(resourceId);
+		IWidgetService ws = getWidgetService(resourceId);
 		if (ws == null) throw new ResourceNotFoundException();
 		ws.setServiceName(name);
-		ws.save();
+		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		persistenceManager.save(ws);
 	}
 	
 	// Utilities
@@ -159,13 +166,12 @@ public class WidgetServicesController extends Controller{
 	 * @param resourceId
 	 * @return
 	 */
-	private static WidgetService getWidgetService(String resourceId) throws ResourceNotFoundException{
+	private static IWidgetService getWidgetService(String resourceId) throws ResourceNotFoundException{
 		if (resourceId == null) throw new ResourceNotFoundException();
-		WidgetService ws = null;
-		if (isAnInteger(resourceId)){
-			ws = WidgetService.findById(Integer.valueOf(resourceId));
-		} else {
-			WidgetService[] wsa = WidgetService.findByValue("serviceName", resourceId);
+		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWidgetService ws = persistenceManager.findById(IWidgetService.class, resourceId);
+		if (ws == null) {
+			IWidgetService[] wsa = persistenceManager.findByValue(IWidgetService.class, "serviceName", resourceId);
 			if (wsa != null && wsa.length == 1) ws = wsa[0];
 		}
 		if (ws == null) throw new ResourceNotFoundException();

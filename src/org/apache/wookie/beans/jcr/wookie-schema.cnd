@@ -1,0 +1,171 @@
+/*
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+<jcr='http://www.jcp.org/jcr/1.0'>
+<nt='http://www.jcp.org/jcr/nt/1.0'>
+<mix='http://www.jcp.org/jcr/mix/1.0'>
+<wookie='http://www.apache.org/wookie/jcr/nt/0.1'>
+
+[wookie:widgetIcon] > nt:base
+- wookie:elementId (long)
+- wookie:src (string)
+- wookie:height (long)
+- wookie:width (long)
+- wookie:lang (string)
+
+[wookie:license] > nt:base
+- wookie:elementId (long)
+- wookie:href (string)
+- wookie:text (string)
+- wookie:dir (string)
+- wookie:lang (string)
+
+[wookie:name] > nt:base
+- wookie:elementId (long)
+- wookie:name (string)
+- wookie:shortName (string)
+- wookie:dir (string)
+- wookie:lang (string)
+
+[wookie:description] > nt:base
+- wookie:elementId (long)
+- wookie:content (string)
+- wookie:dir (string)
+- wookie:lang (string)
+
+[wookie:startFile] > nt:base
+- wookie:elementId (long)
+- wookie:url (string)
+- wookie:charset (string)
+- wookie:lang (string)
+
+[wookie:preferenceDefault] > nt:base
+- wookie:elementId (long)
+- wookie:preference (string) mandatory
+- wookie:value (string) mandatory
+- wookie:readOnly (boolean)
+
+[wookie:sharedData] > nt:base
+- wookie:elementId (long)
+- wookie:sharedDataKey (string)
+- wookie:dkey (string)
+- wookie:dvalue (string)
+
+[wookie:widgetType] > nt:base
+- wookie:elementId (long)
+- wookie:widgetContext (string)
+
+[wookie:param] > nt:base
+- wookie:elementId (long)
+- wookie:parameterName (string) mandatory
+- wookie:parameterValue (string) mandatory
+
+[wookie:feature] > nt:base
+- wookie:elementId (long)
+- wookie:featureName (string) mandatory
+- wookie:required (boolean)
++ wookie:parameters (nt:unstructured) = nt:unstructured
+
+[wookie:widget] > nt:base, mix:referenceable
+- wookie:height (long)
+- wookie:width (long)
+- wookie:guid (string) mandatory
+- wookie:widgetAuthor (string)
+- wookie:widgetAuthorEmail (string)
+- wookie:widgetAuthorHref (string)
+- wookie:widgetVersion (string)
++ wookie:widgetTypes (nt:unstructured) = nt:unstructured
++ wookie:accessRequests (nt:unstructured) = nt:unstructured
++ wookie:features (nt:unstructured) = nt:unstructured
++ wookie:widgetIcons (nt:unstructured) = nt:unstructured
++ wookie:licenses (nt:unstructured) = nt:unstructured
++ wookie:names (nt:unstructured) = nt:unstructured
++ wookie:descriptions (nt:unstructured) = nt:unstructured
++ wookie:startFiles (nt:unstructured) = nt:unstructured
++ wookie:preferenceDefaults (nt:unstructured) = nt:unstructured
++ wookie:sharedData (nt:unstructured) = nt:unstructured
+
+[wookie:accessRequest] > nt:base
+- wookie:elementId (long)
+- wookie:origin (string)
+- wookie:subdomains (boolean)
+- wookie:granted (boolean)
+- wookie:widget (reference) mandatory
+
+[wookie:widgetDefault] > nt:base
+- wookie:widgetContext (string) mandatory
+- wookie:widget (reference) mandatory
+
+[wookie:participant] > nt:base
+- wookie:participantId (string) mandatory
+- wookie:participantDisplayName (string) mandatory
+- wookie:participantThumbnailUrl (string)
+- wookie:sharedDataKey (string) mandatory
+- wookie:widget (reference) mandatory
+
+[wookie:preference] > nt:base
+- wookie:elementId (long)
+- wookie:dkey (string)
+- wookie:dvalue (string)
+- wookie:readOnly (boolean)
+
+[wookie:token] > nt:base
+- wookie:elementId (long)
+- wookie:requestUrl (string) mandatory
+- wookie:accessUrl (string) mandatory
+- wookie:authzUrl (string) mandatory
+- wookie:requestToken (string) mandatory
+- wookie:accessToken (string) mandatory
+- wookie:tokenSecret (string) mandatory
+
+[wookie:widgetInstance] > nt:base, mix:referenceable
+- wookie:apiKey (string) mandatory
+- wookie:userId (string) mandatory
+- wookie:sharedDataKey (string)
+- wookie:nonce (string)
+- wookie:idKey (string) mandatory
+- wookie:opensocialToken (string) mandatory
+- wookie:widget (reference) mandatory
+- wookie:updated (boolean)
+- wookie:shown (boolean)
+- wookie:hidden (boolean)
+- wookie:locked (boolean)
+- wookie:lang (string)
++ wookie:preferences (nt:unstructured) = nt:unstructured
++ wookie:tokens (nt:unstructured) = nt:unstructured
+
+[wookie:whitelist] > nt:base
+- wookie:fUrl (string) mandatory
+
+[wookie:apiKey] > nt:base
+- wookie:value (string) mandatory
+- wookie:email (string) mandatory
+
+[wookie:post] > nt:base, mix:referenceable
+- wookie:elementId (long)
+- wookie:userId (string) mandatory
+- wookie:title (string) mandatory
+- wookie:content (string)
+- wookie:publishDate (date) mandatory
+- wookie:updateDate (date)
+- wookie:sharedDataKey (string) mandatory
+- wookie:parent (string)
+- wookie:posts (reference) multiple
+
+[wookie:serverFeature] > nt:base
+- wookie:featureName (string) mandatory
+- wookie:className (string) mandatory
+
+[wookie:widgetService] > nt:base
+- wookie:serviceName (string) mandatory

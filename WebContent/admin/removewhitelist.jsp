@@ -1,5 +1,5 @@
-<%@ page import='org.apache.wookie.beans.Whitelist' %>
-<%Whitelist[] list = (Whitelist[])session.getAttribute("whitelist"); %>
+<%@ page import='org.apache.wookie.beans.IWhitelist' %>
+<%IWhitelist[] list = (IWhitelist[])session.getAttribute("whitelist"); %>
 <!DOCTYPE html>
 <%--
 /*

@@ -15,14 +15,16 @@
 package org.apache.wookie.manager.impl;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
-import org.apache.wookie.beans.Widget;
-import org.apache.wookie.beans.WidgetDefault;
-import org.apache.wookie.beans.WidgetType;
+import org.apache.wookie.beans.IWidget;
+import org.apache.wookie.beans.IWidgetDefault;
+import org.apache.wookie.beans.IWidgetType;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.manager.IWidgetAdminManager;
 
 /**
@@ -43,93 +45,106 @@ public class WidgetAdminManager implements IWidgetAdminManager {
 		this.localizedMessages = localizedMessages;	
 	}
 	
-	private void deleteWidgetDefaultByIdAndServiceType(int widgetKey, String serviceType){
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("widgetId", widgetKey);
-		map.put("widgetContext", serviceType);
-		WidgetDefault[] widgetDefaults;
-		widgetDefaults = WidgetDefault.findByValues(map);
-		WidgetDefault.delete(widgetDefaults);
-	}
-	
-	private boolean doesServiceExistForWidget(int dbkey, String serviceType){
-		Widget widget = Widget.findById(Integer.valueOf(dbkey));
+	private void deleteWidgetDefaultByIdAndServiceType(Object widgetKey, String serviceType){
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidget widget = persistenceManager.findById(IWidget.class, widgetKey);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("widget", widget);
 		map.put("widgetContext", serviceType);
-		WidgetType[] types = WidgetType.findByValues(map);
-		if (types == null || types.length !=1) return false;
-		return true;					
+        IWidgetDefault[] widgetDefaults = persistenceManager.findByValues(IWidgetDefault.class, map);
+		persistenceManager.delete(widgetDefaults);
+	}
+	
+	private boolean doesServiceExistForWidget(Object dbkey, String serviceType){
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidget widget = persistenceManager.findById(IWidget.class, dbkey);
+        Iterator<IWidgetType> typesIter = widget.getWidgetTypes().iterator();
+        while (typesIter.hasNext())
+        {
+            IWidgetType type = typesIter.next();
+            if (type.getWidgetContext().equalsIgnoreCase(serviceType))
+            {
+                return true;
+            }
+        }
+		return false;					
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#removeSingleWidgetType(int, java.lang.String)
+	 * @see org.apache.wookie.manager.IWidgetAdminManager#removeSingleWidgetType(java.lang.String, java.lang.String)
 	 */
-	public boolean removeSingleWidgetType(int widgetId, String widgetType) {
+	public boolean removeSingleWidgetType(String widgetId, String widgetType) {
 		boolean response = false;	
-		Widget widget = Widget.findById(Integer.valueOf(widgetId));
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidget widget = persistenceManager.findById(IWidget.class, widgetId);
 		// remove any widget types for this widget
-		Set<?> types = widget.getWidgetTypes();
-        WidgetType[] widgetTypes = types.toArray(new WidgetType[types.size()]);		        
-        for(int j=0;j<widgetTypes.length;++j){						
-    		if(widgetType.equalsIgnoreCase(widgetTypes[j].getWidgetContext())){
-    			// BUG FIX
-    			// Using only the deleteObject method meant that
-    			// the set still contained this widgetType.
-    			// So we also remove it from the list
-    			types.remove(widgetTypes[j]);
-    			widgetTypes[j].delete();
-    			response = true;
-    		}
-		}
+        Iterator<IWidgetType> typesIter = widget.getWidgetTypes().iterator();
+        while (typesIter.hasNext())
+        {
+            IWidgetType type = typesIter.next();
+            if (type.getWidgetContext().equalsIgnoreCase(widgetType))
+            {
+                typesIter.remove();
+                response = true;
+            }
+        }
+        if (response)
+        {
+            persistenceManager.save(widget);
+        }
         // if it exists as a service default, then remove it
         deleteWidgetDefaultByIdAndServiceType(widgetId, widgetType);
         return response;
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#setDefaultWidget(int, java.lang.String)
+	 * @see org.apache.wookie.manager.IWidgetAdminManager#setDefaultWidget(java.lang.String, java.lang.String)
 	 */
-	public void setDefaultWidget(int key, String widgetType){
+	public void setDefaultWidget(String key, String widgetType){
         boolean found=false;
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidget widget = persistenceManager.findById(IWidget.class, key);
 		// does it already exist in the widgetdefault table?
-		WidgetDefault[] currentDefaults = WidgetDefault.findAll();
+        IWidgetDefault [] currentDefaults = persistenceManager.findAll(IWidgetDefault.class);
 		for(int i=0;i<currentDefaults.length;i++){
 			if(currentDefaults[i].getWidgetContext().equalsIgnoreCase(widgetType)){   
 				// found it so update to new widget id
-				currentDefaults[i].setWidgetId(key);
-				currentDefaults[i].save();
+				currentDefaults[i].setWidget(widget);
+				persistenceManager.save(currentDefaults[i]);
 				found=true;
 			}
 		}
 		// didnt find it already set, so add new one
 		if(!found){
-			WidgetDefault wd = new WidgetDefault();
+			IWidgetDefault wd = persistenceManager.newInstance(IWidgetDefault.class);
 			wd.setWidgetContext(widgetType);
-			wd.setWidgetId(key);	
-			wd.save();
+			wd.setWidget(widget);	
+			persistenceManager.save(wd);
 		}
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.apache.wookie.manager.IWidgetAdminManager#setWidgetTypesForWidget(int, java.lang.String[], boolean)
+	 * @see org.apache.wookie.manager.IWidgetAdminManager#setWidgetTypesForWidget(java.lang.String, java.lang.String[], boolean)
 	 */
-	@SuppressWarnings("unchecked")
-	public void setWidgetTypesForWidget(int dbKey, String[] widgetTypes, boolean maximize){
-		Widget widget = Widget.findById(dbKey);
+	public void setWidgetTypesForWidget(String dbKey, String[] widgetTypes, boolean maximize){
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidget widget = persistenceManager.findById(IWidget.class, dbKey);
 
-		WidgetType widgetType;
+        boolean widgetTypesSet = false;
 		if (widgetTypes!=null){
 			for(int i=0;i<widgetTypes.length;i++){	
 				if(!doesServiceExistForWidget(widget.getId(), widgetTypes[i])){
-					widgetType = new WidgetType();
+				    IWidgetType widgetType = persistenceManager.newInstance(IWidgetType.class);
 					widgetType.setWidgetContext(widgetTypes[i]);
-					widgetType.setWidget(widget);
 					widget.getWidgetTypes().add(widgetType);
-					widgetType.save();						
+					widgetTypesSet = true;
 				}
 			}
-		}			
+		}
+		if (widgetTypesSet)
+		{
+		    persistenceManager.save(widget);
+		}
 	}
 
 }
