@@ -144,7 +144,7 @@ public interface IAccessRequest extends IBean
                 }
             }
             // ports must match
-            if (accessUri.getPort()==requestedUri.getPort())
+            if (accessUri.getPort()==requestedUri.getPort() || requestedUri.getPort() == -1 && accessUri.getPort() == 80)
             {
                 return true;
             }
