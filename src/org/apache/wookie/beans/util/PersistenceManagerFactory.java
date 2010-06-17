@@ -76,17 +76,20 @@ public class PersistenceManagerFactory
             
             initialized = true;
 
-            // initialize persistence store using persistence manager
-            if (initializeStore)
+            // initialize/verify/validate persistence store using persistence manager
+            try
             {
-                try
-                {
-                    // allocate and begin persistence manager transaction
-                    IPersistenceManager persistenceManager = getPersistenceManager();
-                    persistenceManager.begin();
+                // allocate and begin persistence manager transaction
+                IPersistenceManager persistenceManager = getPersistenceManager();
+                persistenceManager.begin();
 
-                    // Widget
-                    IWidget widget = persistenceManager.newInstance(IWidget.class);
+                // Widget
+                boolean initializing = true;
+                IWidget widget = persistenceManager.findWidgetByGuid("http://notsupported");
+                if (widget == null)
+                {
+                    // required: always create if not found
+                    widget = persistenceManager.newInstance(IWidget.class);
                     widget.setHeight(350);
                     widget.setWidth(500);
                     widget.setGuid("http://notsupported");
@@ -126,17 +129,30 @@ public class PersistenceManagerFactory
                     widgetIcon.setLang("en");
                     widget.getWidgetIcons().add(widgetIcon);
                     persistenceManager.save(widget);
+                }
+                else
+                {
+                    initializing = false;
+                }
 
-                    // WidgetDefault
+                // WidgetDefault
+                if (persistenceManager.findWidgetDefaultByType("unsupported") == null)
+                {
+                    // required: always create if not found
                     IWidgetDefault widgetDefault = persistenceManager.newInstance(IWidgetDefault.class);
                     widgetDefault.setWidget(widget);
                     widgetDefault.setWidgetContext("unsupported");
                     persistenceManager.save(widgetDefault);
+                }
+                else
+                {
+                    initializing = false;
+                }
 
-                    // WidgetService
-                    IWidgetService unsupportedWidgetService = persistenceManager.newInstance(IWidgetService.class);
-                    unsupportedWidgetService.setServiceName("unsupported");
-                    persistenceManager.save(unsupportedWidgetService);
+                // WidgetService
+                if (initializing && (persistenceManager.findAll(IWidgetService.class).length == 0))
+                {
+                    // optional: create only if initializing
                     IWidgetService chatWidgetService = persistenceManager.newInstance(IWidgetService.class);
                     chatWidgetService.setServiceName("chat");
                     persistenceManager.save(chatWidgetService);
@@ -149,32 +165,88 @@ public class PersistenceManagerFactory
                     IWidgetService weatherWidgetService = persistenceManager.newInstance(IWidgetService.class);
                     weatherWidgetService.setServiceName("weather");
                     persistenceManager.save(weatherWidgetService);
+                }
+                else
+                {
+                    initializing = false;
+                }
+                if (persistenceManager.findByValue(IWidgetService.class, "serviceName", "unsupported").length == 0)
+                {
+                    // required: always create if not found
+                    IWidgetService unsupportedWidgetService = persistenceManager.newInstance(IWidgetService.class);
+                    unsupportedWidgetService.setServiceName("unsupported");
+                    persistenceManager.save(unsupportedWidgetService);
+                }
+                else
+                {
+                    initializing = false;
+                }
 
-                    // Whitelist
-                    IWhitelist localhostIPAddrWhitelist = persistenceManager.newInstance(IWhitelist.class);
-                    localhostIPAddrWhitelist.setfUrl("http://127.0.0.1");
-                    persistenceManager.save(localhostIPAddrWhitelist);
-                    IWhitelist localhostWhitelist = persistenceManager.newInstance(IWhitelist.class);
-                    localhostWhitelist.setfUrl("http://localhost");
-                    persistenceManager.save(localhostWhitelist);
+                // Whitelist
+                if (initializing && (persistenceManager.findAll(IWhitelist.class).length == 0))
+                {
+                    // optional: create only if initializing
                     IWhitelist wookieServerWhitelist = persistenceManager.newInstance(IWhitelist.class);
                     wookieServerWhitelist.setfUrl("http://incubator.apache.org/wookie");
                     persistenceManager.save(wookieServerWhitelist);
+                }
+                else
+                {
+                    initializing = false;
+                }
+                if (persistenceManager.findByValue(IWhitelist.class, "fUrl", "http://127.0.0.1").length == 0)
+                {
+                    // required: always create if not found
+                    IWhitelist localhostIPAddrWhitelist = persistenceManager.newInstance(IWhitelist.class);
+                    localhostIPAddrWhitelist.setfUrl("http://127.0.0.1");
+                    persistenceManager.save(localhostIPAddrWhitelist);
+                }
+                else
+                {
+                    initializing = false;
+                }
+                if (persistenceManager.findByValue(IWhitelist.class, "fUrl", "http://localhost").length == 0)
+                {
+                    // required: always create if not found
+                    IWhitelist localhostWhitelist = persistenceManager.newInstance(IWhitelist.class);
+                    localhostWhitelist.setfUrl("http://localhost");
+                    persistenceManager.save(localhostWhitelist);
+                }
+                else
+                {
+                    initializing = false;
+                }
 
-                    // ApiKey
+                // ApiKey
+                if (initializing && (persistenceManager.findAll(IApiKey.class).length == 0))
+                {
+                    // optional: create only if initializing
                     IApiKey apiKey = persistenceManager.newInstance(IApiKey.class);
                     apiKey.setValue("TEST");
                     apiKey.setEmail("test@127.0.0.1");
                     persistenceManager.save(apiKey);
-
-                    // commit persistence manager transaction
-                    persistenceManager.commit();
                 }
-                finally
+                else
                 {
-                    // close persistence manager transaction
-                    closePersistenceManager();
+                    initializing = false;
                 }
+                
+                // commit persistence manager transaction
+                persistenceManager.commit();
+
+                if (initializing)
+                {
+                    logger.info("Initialized persistent store with seed data");
+                }
+                else
+                {
+                    logger.info("Validated persistent store seed data");                    
+                }
+            }
+            finally
+            {
+                // close persistence manager transaction
+                closePersistenceManager();
             }
             
             logger.info("Initialized with "+className);

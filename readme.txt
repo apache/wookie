@@ -111,7 +111,21 @@ To shutdown the Wookie Tomcat server and clear the initialization flag:
 > CATALINA_HOME/bin/shutdown.sh
 > export CATALINA_OPTS=
 
-There are also SQL scripts for all of the valid database configurations built as part of Wookie that can be used to initialize the database schema manually if desired.
+There are also SQL scripts for all of the valid database configurations built as part of Wookie that can be used to initialize the database schema manually if desired. These are located here:
+
+build/classes/org/apache/wookie/beans/jpa/db2-wookie-schema.sql
+build/classes/org/apache/wookie/beans/jpa/derby-wookie-schema.sql
+build/classes/org/apache/wookie/beans/jpa/hsqldb-wookie-schema.sql
+build/classes/org/apache/wookie/beans/jpa/mssql-wookie-schema.sql
+build/classes/org/apache/wookie/beans/jpa/mysql5-wookie-schema.sql
+build/classes/org/apache/wookie/beans/jpa/mysql-wookie-schema.sql
+build/classes/org/apache/wookie/beans/jpa/oracle10-wookie-schema.sql
+build/classes/org/apache/wookie/beans/jpa/oracle9-wookie-schema.sql
+build/classes/org/apache/wookie/beans/jpa/oracle-wookie-schema.sql
+build/classes/org/apache/wookie/beans/jpa/postgresql-wookie-schema.sql
+build/classes/org/apache/wookie/beans/jpa/sybase-wookie-schema.sql
+
+The Wookie server will populate the newly initialized database with seed data to complete the process when started.
 
 Running Wookie using embedded Jackrabbit JCR
 ============================================
