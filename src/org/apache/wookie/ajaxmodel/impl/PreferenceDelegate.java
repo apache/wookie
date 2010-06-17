@@ -20,37 +20,41 @@ import org.apache.wookie.beans.IPreference;
  */
 public class PreferenceDelegate implements IPreference {
 	
-	private IPreference pref;
+	private String dkey;
+	private String dvalue;
+	private boolean readOnly;
 	
 	public PreferenceDelegate(){
 	}
 	
 	public PreferenceDelegate(IPreference pref){
-		this.pref = pref;
+		this.dkey = pref.getDkey();
+		this.dvalue = pref.getDvalue();
+		this.readOnly = pref.isReadOnly();
 	}
 
 	public String getDkey() {
-		return pref.getDkey();
+		return dkey;
 	}
 
 	public String getDvalue() {
-		return pref.getDvalue();
+		return dvalue;
 	}
 
 	public boolean isReadOnly() {
-		return pref.isReadOnly();
+		return readOnly;
 	}
 
 	public void setDkey(String dkey) {
-		pref.setDkey(dkey);
+		this.dkey = dkey;
 	}
 
 	public void setDvalue(String dvalue) {
-		pref.setDvalue(dvalue);
+		this.dvalue = dvalue;
 	}
 
 	public void setReadOnly(boolean readOnly) {
-		pref.setReadOnly(readOnly);
+		this.readOnly = readOnly;
 	}
 
 }
