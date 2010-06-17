@@ -133,7 +133,7 @@ function doDialog(){
 		<tr class="ui-widget-header"><td>&nbsp;Existing service types</td></tr>	
 		
 
-			<%for (int i=1; i<services.length; i++){%>
+			<%for (int i=0; i<services.length; i++) if (!services[i].getServiceName().equals("unsupported")) {%>
 		  		<tr><td width="100%">
 		  		<div id="nifty">
 					<b class="rtop">

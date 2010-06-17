@@ -103,7 +103,7 @@ var answer = confirm("Are you sure you want to delete this entry?\n\n" + entryNa
 	<table width="500" class="ui-widget ui-widget-content" align="center">
 		<tr class="ui-widget-header"><td colspan="2">Existing entries</td></tr>   
 		
-		<%for (int i=2; i<list.length; i++){%>
+		<%for (int i=0; i<list.length; i++) if (!list[i].getfUrl().equals("http://localhost") && !list[i].getfUrl().equals("http://127.0.0.1")) {%>
 	  		<tr><td>
 	  		<div id="nifty">
 					<b class="rtop">

@@ -128,7 +128,7 @@ function doDialog(){
 	<br>
 	<table width="500" class="ui-widget ui-widget-content" align="center">  
 		<tr class="ui-widget-header"><td>&nbsp;Existing entries</td></tr>							
-			<%for (int i=2; i<services.length; i++){%>
+			<%for (int i=0; i<services.length; i++) if (!services[i].getfUrl().equals("http://localhost") && !services[i].getfUrl().equals("http://127.0.0.1")) {%>
 		  		<tr><td width="100%">
 		  		<div id="nifty">
 					<b class="rtop">
