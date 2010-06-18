@@ -69,8 +69,8 @@ public class WidgetsController extends Controller{
 	 * @see org.apache.wookie.controller.Controller#show(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected void show(String resourceId, HttpServletRequest request,
-			HttpServletResponse response) throws ResourceNotFoundException, IOException {
-		if ((resourceId != null) && (resourceId.length() > 0)){
+			HttpServletResponse response) throws ResourceNotFoundException, IOException {		
+		if (!isAnInteger(resourceId)){
 			index(resourceId, request, response);
 			return;
 		}
