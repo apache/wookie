@@ -16,9 +16,10 @@ package org.apache.wookie.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
+import java.net.URLDecoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.jackrabbit.core.persistence.PersistenceManager;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
 import org.apache.wookie.beans.ISharedData;
@@ -336,24 +336,35 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	 */
 	public static IWidgetInstance findWidgetInstance(HttpServletRequest request){
 		IWidgetInstance instance;
-		
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+
+		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		String id_key = request.getParameter("id_key"); //$NON-NLS-1$
 		if (id_key != null & id_key != ""){
 			instance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 			return instance;
 		}
-		
-		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
-		String userId = request.getParameter("userid"); //$NON-NLS-1$
-		String sharedDataKey = WidgetInstancesController.getSharedDataKey(request);	
-		String serviceType = request.getParameter("servicetype"); //$NON-NLS-1$
-		String widgetId = request.getParameter("widgetid"); //$NON-NLS-1$
-		if (widgetId != null){
-			instance = persistenceManager.findWidgetInstanceByGuid(apiKey, userId, sharedDataKey, widgetId);
-		} else {
-			instance = persistenceManager.findWidgetInstance(apiKey, userId, sharedDataKey, serviceType);
-		}
-		return instance;
+
+		try {
+			String apiKey = URLDecoder.decode(request.getParameter("api_key"), "UTF-8"); //$NON-NLS-1$
+			String userId = URLDecoder.decode(request.getParameter("userid"), "UTF-8"); //$NON-NLS-1$
+			String sharedDataKey = WidgetInstancesController.getSharedDataKey(request);
+			String widgetId = request.getParameter("widgetid");
+			if (widgetId != null){
+				widgetId = URLDecoder.decode(widgetId, "UTF-8"); //$NON-NLS-1$
+				_logger.debug("Looking for widget instance with widgetid of " + widgetId);
+				instance = persistenceManager.findWidgetInstanceByGuid(apiKey, userId, sharedDataKey, widgetId);
+			} else {
+				String serviceType = URLDecoder.decode(request.getParameter("servicetype"), "UTF-8"); //$NON-NLS-1$
+				_logger.debug("Looking for widget instance of service type " + serviceType);
+				instance = persistenceManager.findWidgetInstance(apiKey, userId, sharedDataKey, serviceType);
+			}
+			if (instance == null) {
+				_logger.error("No widget instance for found");
+			}
+			return instance;
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException("Server must support UTF-8 encoding", e);
+		} //$NON-NLS-1$
+
 	}
 }

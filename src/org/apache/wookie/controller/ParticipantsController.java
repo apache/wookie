@@ -87,6 +87,16 @@ public class ParticipantsController extends Controller {
 			UnauthorizedAccessException {
 		return create(request);
 	}
+		
+	/**
+	 * Add a participant to a widget.
+	 * 
+	 * @param request
+	 * @return
+	 * @throws ResourceDuplicationException
+	 * @throws InvalidParametersException
+	 * @throws UnauthorizedAccessException
+	 */
 	public static boolean create(HttpServletRequest request)
 			throws ResourceDuplicationException, InvalidParametersException,
 			UnauthorizedAccessException {
@@ -101,10 +111,14 @@ public class ParticipantsController extends Controller {
 		String participantThumbnailUrl = request.getParameter("participant_thumbnail_url"); //$NON-NLS-1$
 		
 		// Check required params
-		if (participantId == null || participantId.trim().equals("")) throw new InvalidParametersException();
+		if (participantId == null || participantId.trim().equals("")) {
+			_logger.error("participant_id parameter cannot be null");
+			throw new InvalidParametersException();
+		}
 
 		if (addParticipantToWidgetInstance(instance, participantId, participantDisplayName, participantThumbnailUrl)){
 			Notifier.notifyWidgets(session, instance, Notifier.PARTICIPANTS_UPDATED);
+			_logger.debug("added user to widget instance: " + participantId);
 			return true;
 		} else {
 			// No need to create a new participant, it already existed
