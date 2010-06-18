@@ -1,6 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?><widget xmlns="http://www.w3.org/ns/widgets"         id="http://www.getwookie.org/widgets/wiki"         version="1.0"         height="520"         width="320">	<name>WookieWiki</name>	<description>A Wiki In A Widget</description>	<icon src="icon.png"/>	<content src="index.html"/>
-    <author>Scott Wilson</author>
-    <feature name="http://wave.google.com" required="true"/>	<license>
+<?xml version="1.0" encoding="utf-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" 
+	id="http://www.getwookie.org/widgets/wiki" 
+	version="1.0" height="520" width="320">
+	<name>WookieWiki</name>
+	<description>A Wiki In A Widget</description>
+	<icon src="icon.png"/>
+	<content src="index.html"/>
+        <author>Scott Wilson</author>
+	<feature name="http://wave.google.com" required="true"/>
+	<license>
 WookieWiki created by Scott Wilson
 
 Note this widget makes heavy use of Creole, (c) 2009 by Ivan Fomichev (see license in creole.js)
@@ -30,4 +38,6 @@ TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
 BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
-DAMAGE.    </license></widget>
+DAMAGE.
+</license>
+</widget>
