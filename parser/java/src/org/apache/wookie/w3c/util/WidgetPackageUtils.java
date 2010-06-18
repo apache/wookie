@@ -121,25 +121,44 @@ public class WidgetPackageUtils {
 		return (String[]) content.toArray(new String[content.size()]);	
 	}
 	
-	public static File createUnpackedWidgetFolder(File widgetFolder, String folder) throws IOException{
-		folder = convertIdToFolderName(folder);
+	/**
+	 * Returns a File representing the unpacked folder for a widget with the given identifier.
+	 * @param widgetFolder the folder that contains unpacked widgets
+	 * @param id the widget identifier URI
+	 * @return a File where the widget may be unpacked
+	 * @throws IOException
+	 */
+	public static File createUnpackedWidgetFolder(File widgetFolder, String id) throws IOException{
+		String folder = convertIdToFolderName(id);
 		String serverPath = widgetFolder.getPath() + File.separator + folder;
 		File file = new File(convertPathToPlatform(serverPath));
 		return file;
 	}
 
-	public static String getURLForWidget(String widgetFolder, String folder, String file){
-		folder = convertIdToFolderName(folder);
+	/**
+	 * Returns the local URL for a widget 
+	 * @param widgetFolder the folder that contains unpacked widgets
+	 * @param id the widget identifier URI
+	 * @param file a file in the widget package; use "" to obtain the root of the widget folder
+	 * @return
+	 */
+	public static String getURLForWidget(String widgetFolder, String id, String file){
+		String folder = convertIdToFolderName(id);
 		String path = convertPathToRelativeUri(widgetFolder + File.separator + folder + File.separator + file); //$NON-NLS-1$ //$NON-NLS-2$
 		return path;
 	}
 	
-	public static String convertIdToFolderName(String folder){
-		if(folder.startsWith("http://")){ //$NON-NLS-1$
-			folder = folder.substring(7, folder.length());
+	/**
+	 * Converts a widget identifier (usually a URI) into a form suitable for use as a file system folder name
+	 * @param id the widget identifier URI
+	 * @return the folder name to use for the widget
+	 */
+	public static String convertIdToFolderName(String id){
+		if(id.startsWith("http://")){ //$NON-NLS-1$
+			 id = id.substring(7, id.length());
 		}
-		folder = folder.replaceAll(" ", ""); //$NON-NLS-1$ //$NON-NLS-2$
-		return folder;
+		id = id.replaceAll(" ", ""); //$NON-NLS-1$ //$NON-NLS-2$
+		return id;
 	}
 
 	public static String convertPathToRelativeUri(String path){
