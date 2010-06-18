@@ -224,6 +224,7 @@ public class PropertiesController extends Controller {
 				sharedData.setSharedDataKey(sharedDataKey);
 				sharedData.setDkey(name);
 				sharedData.setDvalue(value);
+				widget.getSharedData().add(sharedData);
 			}
 		}
         persistenceManager.save(widget);
