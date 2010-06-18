@@ -430,7 +430,7 @@ public interface IWidget extends IBean
         {
         	IWidgetIcon[] icons = widget.getWidgetIcons().toArray(new IWidgetIcon[widget.getWidgetIcons().size()]);
             IWidgetIcon icon = (IWidgetIcon)LocalizationUtils.getLocalizedElement(icons, new String[]{locale});
-            return ((icon != null) ? icon.getSrc() : null);
+            return ((icon != null) ? icon.getSrc() : IW3CXMLConfiguration.DEFAULT_ICON_PATH);
         }
     }
 }
