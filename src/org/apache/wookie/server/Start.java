@@ -41,7 +41,7 @@ public class Start {
 	  boolean initDB = true;
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];
-			System.out.println("Runtime argmuent: " + arg);
+			System.out.println("Runtime argument: " + arg);
 			if (arg.startsWith("port=")) {
 			  port = new Integer(arg.substring(5));
 			} else if (arg.startsWith("initDB=")) {
