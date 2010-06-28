@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetDefault;
+import org.apache.wookie.beans.IWidgetService;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
@@ -69,13 +70,25 @@ public class WidgetsController extends Controller{
 	 * @see org.apache.wookie.controller.Controller#show(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected void show(String resourceId, HttpServletRequest request,
-			HttpServletResponse response) throws ResourceNotFoundException, IOException {		
-		if (!isAnInteger(resourceId)){
+			HttpServletResponse response) throws ResourceNotFoundException, IOException {
+	    // support "all" queries
+		if ((resourceId == null) || resourceId.equals("")){
 			index(resourceId, request, response);
 			return;
 		}
+		// attempt to get specific widget by id
 		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidget widget = persistenceManager.findById(IWidget.class, resourceId);
+		// support queries by type
+		if (widget == null) {
+			IWidgetService[] services = persistenceManager.findByValue(IWidgetService.class, "serviceName", resourceId);
+		    if (services != null && services.length == 1) {
+			    IWidget[] widgets = persistenceManager.findWidgetsByType(resourceId);
+		        returnXml(WidgetHelper.createXMLWidgetsDocument(widgets, getLocalPath(request), getLocales(request)),response);
+		        return;
+		    }
+		}
+		// return widget result
 		if (widget == null) throw new ResourceNotFoundException();
 		returnXml(WidgetHelper.createXMLWidgetsDocument(widget, getLocalPath(request), getLocales(request)),response);
 	}	
