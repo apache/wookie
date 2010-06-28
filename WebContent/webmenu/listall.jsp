@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 --%>
+<%@ page import='org.apache.wookie.helpers.FlashMessage' %>
 <%@ page import='org.apache.wookie.Messages,org.apache.wookie.beans.IWidget,java.util.ArrayList,java.util.Enumeration,java.util.Hashtable;' %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <% Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName()); %>
@@ -47,7 +48,7 @@
 	<table align="center">	
 	<tr align="center">
 	<%	
-	Hashtable widgetsHash = (Hashtable)session.getAttribute("widgetsHash");
+	Hashtable widgetsHash = (Hashtable)request.getAttribute("widgetsHash");
 	ArrayList<String> guids = new ArrayList<String>();
 	int count = -1;
 	for(Enumeration e = widgetsHash.keys(); e.hasMoreElements();){				
@@ -89,6 +90,4 @@
 </div>
 </body>
 </html>
-<% session.setAttribute("error_value", null); %>
-<% session.setAttribute("message_value", null);%>
-
+<% FlashMessage.clearErrorsAndMessages(session);%>

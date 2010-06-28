@@ -15,6 +15,7 @@ package org.apache.wookie.helpers;
 
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -110,4 +111,53 @@ public class FlashMessage {
 		}
 	}
 	
+    /**
+     * Utility to merge flash and request errors for display.
+     * 
+     * @param session current request session
+     * @param request current request
+     * @return merged error messages
+     */
+    public static String getErrors(HttpSession session, HttpServletRequest request) {
+        String flashErrors = (String) session.getAttribute("error_value");
+        String errors = (String) request.getAttribute("error_value");
+        if (flashErrors != null) {
+            if (errors != null) {
+                return flashErrors+"<br/>"+errors;
+            }
+            return flashErrors;
+        }
+        return errors;
+    }
+
+    /**
+     * Utility to merge flash and request messages for display.
+     * 
+     * @param session current request session
+     * @param request current request
+     * @return merged messages
+     */
+	public static String getMessages(HttpSession session, HttpServletRequest request) {
+        String flashMessages = (String) session.getAttribute("message_value");
+        String messages = (String) request.getAttribute("message_value");
+        if (flashMessages != null) {
+            if (messages != null) {
+                return flashMessages+"<br/>"+messages;
+            }
+            return flashMessages;
+        }
+        return messages;
+	}
+
+    /**
+     * Utility to clear flash messages when displayed.
+     * 
+     * @param session current request session
+     * @param request current request
+     * @return merged messages
+     */
+	public static void clearErrorsAndMessages(HttpSession session) {
+        session.setAttribute("error_value", null);
+        session.setAttribute("message_value", null);
+    }
 }

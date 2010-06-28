@@ -78,11 +78,7 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 		}
 		Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
 
-		session.setAttribute("error_value", null); //$NON-NLS-1$
-		session.setAttribute("message_value", null); //$NON-NLS-1$
-		session.setAttribute("widget_defaults", null); //$NON-NLS-1$
-		session.setAttribute("widgets", null); //$NON-NLS-1$
-		session.setAttribute("version", properties.getString("widget.version")); //$NON-NLS-1$ //$NON-NLS-2$
+		request.setAttribute("version", properties.getString("widget.version")); //$NON-NLS-1$ //$NON-NLS-2$
 		String task = request.getParameter("operation"); //$NON-NLS-1$
 		Operation op=null;
 		// sanity check...
@@ -91,7 +87,7 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 			try {op = Operation.valueOf(task);}
 			catch (IllegalArgumentException e) {
 				op=null;
-				session.setAttribute("error_value", localizedMessages.getString("WidgetWebMenuServlet.0")); //$NON-NLS-1$ //$NON-NLS-2$				
+				request.setAttribute("error_value", localizedMessages.getString("WidgetWebMenuServlet.0")); //$NON-NLS-1$ //$NON-NLS-2$				
 			}
 		}
 		if(op!=null){
@@ -129,17 +125,17 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 					break;
 				}
 				case INSTANTIATE: {
-					instantiateOperation(session, manager);
+					instantiateOperation(request, manager);
 					doForward(request, response, fInstantiateWidgetsPage);
 					break;
 				}
 				case REQUESTAPIKEY:{
-					requestApiKeyOperation(request,properties,manager,session);
+					requestApiKeyOperation(request,properties,manager);
 					doForward(request, response, fMainPage);
 					break;
 				}
 				default: {
-					session.setAttribute("error_value", localizedMessages.getString("WidgetWebMenuServlet.2"));//$NON-NLS-1$ //$NON-NLS-2$
+					request.setAttribute("error_value", localizedMessages.getString("WidgetWebMenuServlet.2"));//$NON-NLS-1$ //$NON-NLS-2$
 					doForward(request, response, fMainPage);
 				}
 			}
@@ -179,16 +175,16 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 		doGet(request, response);
 	}
 
-	private void instantiateOperation(HttpSession session, IWidgetAdminManager manager){
+	private void instantiateOperation(HttpServletRequest request, IWidgetAdminManager manager){
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidget[] widgets = persistenceManager.findAll(IWidget.class);
-		session.setAttribute("widgets", widgets); //$NON-NLS-1$
+		request.setAttribute("widgets", widgets); //$NON-NLS-1$
 	}
 	/**
 	 * Creates a table, looks for widget definitions with a string (the name of 
 	 * the widget) and an instance of the widget which references the actual widget 
 	 * object and its putting widgets in widgets_hash" 
-	 * Results are returned in the session.
+	 * Results are returned in the request.
 	 * 
 	 * @param request
 	 * @param session
@@ -222,30 +218,29 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 		//for(WidgetDefault defaultWidget : manager.getAllDefaultWidgets()){
 		//	widgetsHash.put(defaultWidget.getWidgetContext(), manager.getWidget(defaultWidget.getWidgetId()));
 		//}
-		session.setAttribute("widgetsHash", widgetsHash); //$NON-NLS-1$
+		request.setAttribute("widgetsHash", widgetsHash); //$NON-NLS-1$
 	}
 
-	private void requestApiKeyOperation(HttpServletRequest request, Configuration properties, IWidgetAdminManager manager, HttpSession session){
+	private void requestApiKeyOperation(HttpServletRequest request, Configuration properties, IWidgetAdminManager manager){
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		session.setAttribute("message_value", null); //$NON-NLS-1$
 		try {
 			String email = request.getParameter("email"); //$NON-NLS-1$
 			if (email == null) {
-				session.setAttribute("message_value", localizedMessages.getString("WidgetWebMenuServlet.1")); //$NON-NLS-1$ //$NON-NLS-2$
+				request.setAttribute("message_value", localizedMessages.getString("WidgetWebMenuServlet.1")); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			else {
 				if (email.trim().equals("")){ //$NON-NLS-1$
-					session.setAttribute("message_value", localizedMessages.getString("WidgetWebMenuServlet.1"));					 //$NON-NLS-1$ //$NON-NLS-2$
+					request.setAttribute("message_value", localizedMessages.getString("WidgetWebMenuServlet.1"));					 //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				else {
 					// Otherwise, good to go
 					WidgetKeyManager.createKey(request, email, localizedMessages);
-					session.setAttribute("message_value", localizedMessages.getString("WidgetWebMenuServlet.3")); //$NON-NLS-1$ //$NON-NLS-2$
+					request.setAttribute("message_value", localizedMessages.getString("WidgetWebMenuServlet.3")); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
 		}
 		catch (Exception ex) {
-			session.setAttribute("error_value", localizedMessages.getString("WidgetWebMenuServlet.4")); //$NON-NLS-1$ //$NON-NLS-2$
+			request.setAttribute("error_value", localizedMessages.getString("WidgetWebMenuServlet.4")); //$NON-NLS-1$ //$NON-NLS-2$
 			_logger.error(localizedMessages.getString("WidgetWebMenuServlet.4"), ex); //$NON-NLS-1$
 		}
 

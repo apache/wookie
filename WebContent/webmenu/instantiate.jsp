@@ -15,7 +15,7 @@
 --%>
 <%@ page import='org.apache.wookie.Messages,org.apache.wookie.beans.IWidget' %>
 <% Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName()); %>
-<% IWidget[] widgets = (IWidget[])session.getAttribute("widgets"); %>
+<% IWidget[] widgets = (IWidget[])request.getAttribute("widgets"); %>
 <!DOCTYPE html>
 <html>
 <head>

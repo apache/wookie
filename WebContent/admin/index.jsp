@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 --%>
-<% String version = (String)session.getAttribute("version");
+<% String version = (String)request.getAttribute("version");
 if (version == null){
 	version="";
 }
 %>
 <%@ page import='org.apache.wookie.helpers.FlashMessage' %>
 <% FlashMessage.getInstance().appendFlashMessages(session);%>
-<% String errors = (String)session.getAttribute("error_value");%>
-<% String messages = (String)session.getAttribute("message_value");%>
+<% String errors = FlashMessage.getErrors(session, request);%>
+<% String messages = FlashMessage.getMessages(session, request);%>
 <html>
 <head>
 <title>Widget Server Administration <%=version%></title>
@@ -310,6 +310,4 @@ if (version == null){
 
 </body>
 </html>
-<% session.setAttribute("error_value", null); %>
-<% session.setAttribute("message_value", null);%>
-
+<% FlashMessage.clearErrorsAndMessages(session);%>

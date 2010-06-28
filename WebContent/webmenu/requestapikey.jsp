@@ -13,10 +13,11 @@
  * limitations under the License.
  */
 --%>
+<%@ page import='org.apache.wookie.helpers.FlashMessage' %>
 <%@ page import='org.apache.wookie.Messages' %>
 <% Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName()); %>
 <!DOCTYPE html>
-<% String version = (String)session.getAttribute("version");
+<% String version = (String)request.getAttribute("version");
 // "version" is lazy loaded and will be empty until a request is made to the server
 if (version==null){
 	version="";
@@ -101,8 +102,8 @@ if (version==null){
      
     <div id="content">    
 	
-	<% String errors = (String)session.getAttribute("error_value");%>
-	<% String messages = (String)session.getAttribute("message_value");%>
+	<% String errors = FlashMessage.getErrors(session, request);%>
+	<% String messages = FlashMessage.getMessages(session, request);%>
 	<%if(errors!=null){%>
       <p><img src="../shared/images/cancel.gif" width="16" height="16"><font color=red> <%=errors%> </font> </p>
 	<%}%>

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 --%>
+<%@ page import='org.apache.wookie.helpers.FlashMessage' %>
 <%@ page import='org.apache.wookie.beans.IWidget,org.apache.wookie.beans.IWidgetType;' %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -79,8 +80,8 @@ $(document).ready(function(){
      
     <div id="content">     
 	
-	<% String errors = (String)session.getAttribute("error_value");%>
-	<% String messages = (String)session.getAttribute("message_value");%>
+	<% String errors = FlashMessage.getErrors(session, request);%>
+	<% String messages = FlashMessage.getMessages(session, request);%>
 	<%if(errors!=null){%>
       <p><img src="../shared/images/cancel.gif" width="16" height="16"><font color=red> <%=errors%> </font> </p>
 	<%}%>
@@ -92,7 +93,7 @@ $(document).ready(function(){
 	</p>
 	<%}%>
 	<%
-	IWidget[] widgets = (IWidget[])session.getAttribute("widgets");	
+	IWidget[] widgets = (IWidget[])request.getAttribute("widgets");	
 	if(widgets!=null){
 	%>			
 	<%
@@ -124,5 +125,4 @@ $(document).ready(function(){
 <div id="confirm" style="display:none;" title="Delete widget"></div>
 </body>
 </html>
-<% session.setAttribute("error_value", null); %>
-<% session.setAttribute("message_value", null);%>
+<% FlashMessage.clearErrorsAndMessages(session);%>
