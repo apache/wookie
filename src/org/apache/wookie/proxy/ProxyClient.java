@@ -94,8 +94,13 @@ public class ProxyClient {
 		fLogger.debug("POST to " + uri); //$NON-NLS-1$
 		PostMethod method = new PostMethod(uri);
 		method.setDoAuthentication(true);
-		method.setRequestEntity(new StringRequestEntity(xmlData, "text/xml", "UTF8"));//$NON-NLS-1$  //$NON-NLS-2$
-		method.addParameters(this.parameters);
+		
+		if(this.parameters.length > 0) {
+			method.addParameters(this.parameters);
+		} else {
+			method.setRequestEntity(new StringRequestEntity(xmlData, "text/xml", "UTF8"));//$NON-NLS-1$  //$NON-NLS-2$
+		}
+		
 		return executeMethod(method, properties);
 	}
 
