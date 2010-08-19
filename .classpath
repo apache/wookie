@@ -2,11 +2,18 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="src-tests"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*&amp;ivySettingsPath=project%3A%2F%2F%2Fant%2Fivysettings.xml&amp;loadSettingsOnDemand=false&amp;propertyFiles="/>
-	<classpathentry kind="lib" path="ant/lib/htmlcleaner-2.1.0.jar"/>
-	<classpathentry kind="lib" path="ant/lib/shindig-common-1.1-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="ant/lib/dwr-2.0.5.jar"/>
-	<classpathentry kind="lib" path="ant/lib/commons-compress-1.0.jar"/>
+	<classpathentry kind="src" path="features/camera/src"/>
+	<classpathentry kind="src" output="parser/java/bin" path="parser/java/src"/>
+	<classpathentry kind="src" output="parser/java/bin" path="parser/java/src-test"/>
+	<classpathentry kind="src" path="connector/java/src"/>
+	<classpathentry exported="true" kind="lib" path="ant/lib/htmlcleaner-2.1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="ant/lib/dwr-2.0.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="ant/lib/commons-compress-1.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/JVM 1.6"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
+	<classpathentry kind="lib" path="ant/lib/guice-2.0.jar"/>
+	<classpathentry kind="lib" path="ant/lib/icu4j-4_2_1.jar"/>
+	<classpathentry kind="lib" path="ant/lib/oauth-20090531.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
