@@ -359,7 +359,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 				instance = persistenceManager.findWidgetInstance(apiKey, userId, sharedDataKey, serviceType);
 			}
 			if (instance == null) {
-				_logger.error("No widget instance for found");
+				_logger.debug("No widget instance found for APIkey= "+apiKey+" userId="+userId+" widgetId="+widgetId);
 			}
 			return instance;
 		} catch (UnsupportedEncodingException e) {
