@@ -96,6 +96,7 @@ import org.apache.wookie.beans.jcr.impl.WidgetInstanceImpl;
 import org.apache.wookie.beans.jcr.impl.WidgetServiceImpl;
 import org.apache.wookie.beans.jcr.impl.WidgetTypeImpl;
 import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceCommitException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -440,7 +441,7 @@ public class JCRPersistenceManager implements IPersistenceManager
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.util.IPersistenceManager#commit()
      */
-    public void commit()
+    public void commit() throws PersistenceCommitException
     {
         // validate object content manager transaction
         if (ocm == null)
@@ -457,7 +458,7 @@ public class JCRPersistenceManager implements IPersistenceManager
         }
         catch (Exception e)
         {
-            throw new RuntimeException("Unexpected exception: "+e, e);
+            throw new PersistenceCommitException("Object content manager write exception: "+e, e);
         }
     }
 

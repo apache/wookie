@@ -30,8 +30,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.persistence.RollbackException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -91,6 +93,7 @@ import org.apache.wookie.beans.jpa.impl.WidgetInstanceImpl;
 import org.apache.wookie.beans.jpa.impl.WidgetServiceImpl;
 import org.apache.wookie.beans.jpa.impl.WidgetTypeImpl;
 import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceCommitException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -346,7 +349,7 @@ public class JPAPersistenceManager implements IPersistenceManager
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.util.IPersistenceManager#commit()
      */
-    public void commit()
+    public void commit() throws PersistenceCommitException
     {
         // validate entity manager transaction
         if (entityManager == null)
@@ -358,7 +361,18 @@ public class JPAPersistenceManager implements IPersistenceManager
         EntityTransaction transaction = entityManager.getTransaction();
         if (transaction.isActive())
         {
-            transaction.commit();
+            try
+            {
+                transaction.commit();
+            }
+            catch (RollbackException re)
+            {
+                throw new PersistenceCommitException("Transaction commit exception: "+re, re);
+            }
+            catch (OptimisticLockException ole)
+            {
+                throw new PersistenceCommitException("Transaction locking/version commit exception: "+ole, ole);
+            }
         }
     }
 

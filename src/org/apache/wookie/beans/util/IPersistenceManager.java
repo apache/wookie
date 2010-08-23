@@ -38,8 +38,10 @@ public interface IPersistenceManager
     
     /**
      * Commit persistence manager transaction.
+     * 
+     * @throws PersistenceCommitException
      */
-    void commit();
+    void commit() throws PersistenceCommitException;
     
     /**
      * Rollback persistence manager transaction

@@ -17,6 +17,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.IServerFeature;
 import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceCommitException;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.w3c.util.IRIValidator;
 
@@ -65,7 +66,14 @@ public class FeatureLoader {
 			}
 		}
 		
-        persistenceManager.commit();
+        try
+        {
+            persistenceManager.commit();
+        }
+        catch (PersistenceCommitException pce)
+        {
+            throw new RuntimeException("Feature loading exception: "+pce, pce);
+        }
         PersistenceManagerFactory.closePersistenceManager();
 	}
 

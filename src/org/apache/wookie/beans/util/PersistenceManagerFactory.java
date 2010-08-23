@@ -232,7 +232,14 @@ public class PersistenceManagerFactory
                 }
                 
                 // commit persistence manager transaction
-                persistenceManager.commit();
+                try
+                {
+                    persistenceManager.commit();
+                }
+                catch (PersistenceCommitException pce)
+                {
+                    throw new RuntimeException("Initialization exception: "+pce, pce);
+                }
 
                 if (initializing)
                 {
