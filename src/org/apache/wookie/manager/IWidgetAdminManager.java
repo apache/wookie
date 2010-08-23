@@ -28,14 +28,14 @@ public interface IWidgetAdminManager {
 	 * @param widgetId
 	 * @param widgetType
 	 */
-	boolean removeSingleWidgetType(int widgetId, String widgetType);
+	boolean removeSingleWidgetType(String widgetId, String widgetType);
 
 	/**
 	 * Sets a given widget to be the default for a given context - i.e. chat or discussion etc...
 	 * @param key - the key of the widget to set as defult
 	 * @param widgetType - the type of widget
 	 */
-	void setDefaultWidget(int key, String widgetType);
+	void setDefaultWidget(String key, String widgetType);
 
 	/**
 	 * FRom a given widget db key, allow to add multiple types
@@ -43,7 +43,7 @@ public interface IWidgetAdminManager {
 	 * @param widgetTypes
 	 * @param maximize
 	 */
-	void setWidgetTypesForWidget(int dbKey,
+	void setWidgetTypesForWidget(String dbKey,
 			String[] widgetTypes, boolean maximize);
 
 

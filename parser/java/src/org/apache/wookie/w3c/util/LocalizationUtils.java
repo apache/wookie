@@ -15,6 +15,7 @@ package org.apache.wookie.w3c.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -36,8 +37,8 @@ public class LocalizationUtils {
 	/**
 	 * Returns the first (best) match for an element given the set of locales, or null
 	 * if there are no suitable elements.
-	 * @param locales
 	 * @param elements
+	 * @param locales
 	 * @return an ILocalizedElement, or null if there are no valid entries
 	 */
 	public static ILocalizedElement getLocalizedElement(ILocalizedElement[] elements,String[] locales){
@@ -52,6 +53,7 @@ public class LocalizationUtils {
 	 * are returned unless no appropriate localized elements are found, in which case nonlocalized elements
 	 * are returned
 	 * 
+	 * @param elements
 	 * @param locales
 	 * @return the sorted and filtered set of elements
 	 */

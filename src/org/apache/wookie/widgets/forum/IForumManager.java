@@ -36,7 +36,7 @@ public interface IForumManager {
 	 * @param postId
 	 * @return - the correct postnode
 	 */
-	PostNode getPost(String sharedKey, int postId);
+	PostNode getPost(String sharedKey, String postId);
 
 	/**
 	 * Add a new post to the given parent post

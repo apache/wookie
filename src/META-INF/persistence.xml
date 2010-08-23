@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+
+    <persistence-unit name="wookie" transaction-type="RESOURCE_LOCAL">
+
+        <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+
+        <non-jta-data-source>java:comp/env/jdbc/widgetdb</non-jta-data-source>
+
+        <class>org.apache.wookie.beans.jpa.impl.AccessRequestImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.ApiKeyImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.DescriptionImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.FeatureImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.LicenseImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.LocalizedBeanImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.NameImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.ParamImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.ParticipantImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.PostImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.PreferenceDefaultImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.PreferenceImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.ServerFeatureImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.SharedDataImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.StartFileImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.TokenImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.WhitelistImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.WidgetDefaultImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.WidgetIconImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.WidgetImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.WidgetInstanceImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.WidgetServiceImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.WidgetTypeImpl</class>
+
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+    </persistence-unit>
+
+</persistence>

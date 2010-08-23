@@ -13,8 +13,10 @@
  */
 package org.apache.wookie.helpers;
 
-import org.apache.wookie.beans.Widget;
-import org.apache.wookie.beans.WidgetService;
+import org.apache.wookie.beans.IWidget;
+import org.apache.wookie.beans.IWidgetService;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 
 public class WidgetServiceHelper {
 	
@@ -26,7 +28,7 @@ public class WidgetServiceHelper {
 	 * @param localIconPath
 	 * @return
 	 */
-	public static String createXMLWidgetServiceDocument(WidgetService service, String localIconPath, String[] locales){
+	public static String createXMLWidgetServiceDocument(IWidgetService service, String localIconPath, String[] locales){
 		return XMLDECLARATION + WidgetServiceHelper.toXml(service, localIconPath, locales);
 	}
 	
@@ -36,10 +38,10 @@ public class WidgetServiceHelper {
 	 * @param localIconPath
 	 * @return
 	 */
-	public static String createXMLWidgetServicesDocument(WidgetService[] services, String localIconPath, boolean defaults, String[] locales){
+	public static String createXMLWidgetServicesDocument(IWidgetService[] services, String localIconPath, boolean defaults, String[] locales){
 		String out = XMLDECLARATION;
 		out+="<services>\n";
-		for (WidgetService service: services){
+		for (IWidgetService service: services){
 			out += WidgetServiceHelper.toXml(service,localIconPath,defaults, locales);
 		}
 		out+="</services>\n";
@@ -52,7 +54,7 @@ public class WidgetServiceHelper {
 	 * @param localIconPath
 	 * @return
 	 */
-	private static String toXml(WidgetService service, String localIconPath, String[] locales){
+	private static String toXml(IWidgetService service, String localIconPath, String[] locales){
 		return toXml(service, localIconPath,false, locales);
 	}
 	
@@ -62,15 +64,16 @@ public class WidgetServiceHelper {
 	 * @param localIconPath
 	 * @return
 	 */
-	private static String toXml(WidgetService service, String localIconPath, boolean defaults, String[] locales){
+	private static String toXml(IWidgetService service, String localIconPath, boolean defaults, String[] locales){
 		String out = "\n<service name=\""+service.getServiceName()+"\">\n";
-		Widget[] widgets;
+		IWidget[] widgets;
+		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		if (defaults){
-			 widgets = new Widget[]{Widget.findDefaultByType(service.getServiceName())};
+			 widgets = new IWidget[]{persistenceManager.findWidgetDefaultByType(service.getServiceName())};
 		} else {
-			widgets = Widget.findByType(service.getServiceName());
+			widgets = persistenceManager.findWidgetsByType(service.getServiceName());
 		}
-		for (Widget widget:widgets) out += WidgetHelper.toXml(widget, localIconPath, locales);
+		for (IWidget widget:widgets) out += WidgetHelper.toXml(widget, localIconPath, locales);
 		out +="</service>\n";
 		return out;
 	}

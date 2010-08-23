@@ -15,14 +15,16 @@
 package org.apache.wookie.util.opensocial;
 
 import java.net.URLEncoder;
+import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shindig.auth.BlobCrypterSecurityToken;
 import org.apache.shindig.common.crypto.BasicBlobCrypter;
 import org.apache.wookie.Messages;
-import org.apache.wookie.beans.StartFile;
-import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.beans.IStartFile;
+import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.w3c.ILocalizedElement;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 
 /**
@@ -57,7 +59,7 @@ public class OpenSocialUtils {
 	 * @return the plain text token for the widget instance
 	 * @throws Exception
 	 */
-	public static String createPlainToken(WidgetInstance instance, Messages localizedMessages) throws Exception{
+	public static String createPlainToken(IWidgetInstance instance, Messages localizedMessages) throws Exception{
 		
 		if (instance == null) throw new Exception(localizedMessages.getString("OpenSocialUtils.0")); //$NON-NLS-1$
 		// check we have the required information:
@@ -87,7 +89,7 @@ public class OpenSocialUtils {
 	 * @return the encrypted token for the widget instance
 	 * @throws Exception
 	 */
-	public static String createEncryptedToken(WidgetInstance instance, String key, Messages localizedMessages) throws Exception{
+	public static String createEncryptedToken(IWidgetInstance instance, String key, Messages localizedMessages) throws Exception{
 		
 		if (instance == null) throw new Exception(localizedMessages.getString("OpenSocialUtils.0")); //$NON-NLS-1$
 		// check we have the required information:
@@ -113,20 +115,20 @@ public class OpenSocialUtils {
 		return encryptedToken;
 	}
 	
-	private static String getOwnerId(WidgetInstance instance){
+	private static String getOwnerId(IWidgetInstance instance){
 		//TODO FIXME
 		return getUserId(instance);
 	}
 	
-	private static String getUserId(WidgetInstance instance){
+	private static String getUserId(IWidgetInstance instance){
 		String userid = "@anon"; //$NON-NLS-1$
 		if (instance.getUserId()!=null) if(!instance.getUserId().equals("")) userid = instance.getUserId(); //$NON-NLS-1$
 		return userid;
 	}
 	
-	private static String getUrl(WidgetInstance instance){
-		StartFile[] files = StartFile.findByValue("widget", instance.getWidget());
-		StartFile start = (StartFile) LocalizationUtils.getLocalizedElement(files, new String[]{"en"});
+	private static String getUrl(IWidgetInstance instance){
+    	IStartFile[] startFiles = instance.getWidget().getStartFiles().toArray(new IStartFile[instance.getWidget().getStartFiles().size()]);
+		IStartFile start = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, new String[]{"en"});
 		return start.getUrl();
 	}
 

@@ -19,8 +19,10 @@ import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.wookie.beans.AccessRequest;
-import org.apache.wookie.beans.Widget;
+import org.apache.wookie.beans.IAccessRequest;
+import org.apache.wookie.beans.IWidget;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
@@ -40,16 +42,17 @@ public class WidgetAccessRequestPolicyController extends Controller {
 			HttpServletResponse response) throws UnauthorizedAccessException,
 			IOException {
 
-		AccessRequest[] accessRequests = null;
+		IAccessRequest[] accessRequests = null;
 		
 		String widgetId = request.getParameter("widgetId");
-		if (widgetId == null){
-			accessRequests = AccessRequest.findAll();
-		}
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        if (widgetId == null){
+            accessRequests = persistenceManager.findAll(IAccessRequest.class);
+        }
 		if (widgetId != null && widgetId.trim().length()>0){
 			// Filter by widgetId
-			Widget widget = Widget.findById(widgetId);
-			if (widget != null) accessRequests = AccessRequest.findByValue("widget",widget);
+			IWidget widget = persistenceManager.findById(IWidget.class, widgetId);
+            if (widget != null) accessRequests = persistenceManager.findByValue(IAccessRequest.class, "widget", widget);
 		}
 		
 		switch (format(request)) {
@@ -62,12 +65,13 @@ public class WidgetAccessRequestPolicyController extends Controller {
 	protected void show(String resourceId, HttpServletRequest request,
 			HttpServletResponse response) throws ResourceNotFoundException,
 			UnauthorizedAccessException, IOException {
-		AccessRequest ar = AccessRequest.findById(Integer.valueOf(resourceId));
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IAccessRequest ar = persistenceManager.findById(IAccessRequest.class, resourceId);
 		if (ar == null) throw new ResourceNotFoundException();
 		
 		switch (format(request)) {
-			case XML: returnXml(AccessRequestHelper.createXMLAccessRequestDocument(new AccessRequest[]{ar}),response);break;
-			case HTML: returnHtml(AccessRequestHelper.createAccessRequestHTMLTable(new AccessRequest[]{ar}),response);break;
+			case XML: returnXml(AccessRequestHelper.createXMLAccessRequestDocument(new IAccessRequest[]{ar}),response);break;
+			case HTML: returnHtml(AccessRequestHelper.createAccessRequestHTMLTable(new IAccessRequest[]{ar}),response);break;
 		}
 	}
 
@@ -75,13 +79,14 @@ public class WidgetAccessRequestPolicyController extends Controller {
 	protected void update(String resourceId, HttpServletRequest request)
 			throws ResourceNotFoundException, InvalidParametersException,
 			UnauthorizedAccessException {
-		AccessRequest ar = AccessRequest.findById(Integer.valueOf(resourceId));
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IAccessRequest ar = persistenceManager.findById(IAccessRequest.class, resourceId);
 		if (ar == null) throw new ResourceNotFoundException();
 		String granted = request.getParameter("granted");
 		if (granted == null) throw new InvalidParametersException();
 		if (!granted.equals("true") && !granted.equals("false")) throw new InvalidParametersException();
-		if (granted.equals("true")) grantAccess(ar);
-		if (granted.equals("false")) revokeAccess(ar);
+		if (granted.equals("true")) grantAccess(persistenceManager, ar);
+		if (granted.equals("false")) revokeAccess(persistenceManager, ar);
 	}
 	
 	@Override
@@ -101,34 +106,36 @@ public class WidgetAccessRequestPolicyController extends Controller {
 		String subdomains = request.getParameter("subdomains");
 		
 		String widgetId = request.getParameter("widgetId");
-		Widget widget = Widget.findById(Integer.valueOf(widgetId));
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWidget widget = persistenceManager.findById(IWidget.class, widgetId);
 		if (widget == null) throw new InvalidParametersException();
 		
-		AccessRequest ar = new AccessRequest();
+		IAccessRequest ar = persistenceManager.newInstance(IAccessRequest.class);
 		ar.setOrigin(origin);
 		if (subdomains.equals("true")) ar.setSubdomains(true);
 		ar.setGranted(false);
 		ar.setWidget(widget);
-		return ar.save();
+		return persistenceManager.save(ar);
 	}
 
 	@Override
 	protected boolean remove(String resourceId, HttpServletRequest request)
 			throws ResourceNotFoundException, UnauthorizedAccessException,
 			InvalidParametersException {
-		AccessRequest ar = AccessRequest.findById(Integer.valueOf(resourceId));
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IAccessRequest ar = persistenceManager.findById(IAccessRequest.class, resourceId);
 		if (ar == null) throw new ResourceNotFoundException();
-		return ar.delete();
+		return persistenceManager.delete(ar);
 	}
 
-	private void grantAccess(AccessRequest ar){
+	private void grantAccess(IPersistenceManager persistenceManager, IAccessRequest ar){
 		ar.setGranted(true);
-		ar.save();
+        persistenceManager.save(ar);
 	}
 	
-	private void revokeAccess(AccessRequest ar){
+	private void revokeAccess(IPersistenceManager persistenceManager, IAccessRequest ar){
 		ar.setGranted(false);
-		ar.save();
+		persistenceManager.save(ar);
 	}
 	
 	/**

@@ -13,7 +13,8 @@
  * limitations under the License.
  */
 --%>
-<%@ page import='org.apache.wookie.Messages,org.apache.wookie.beans.Widget,org.apache.wookie.beans.WidgetType,java.util.ArrayList,java.util.Set,java.util.Enumeration,java.util.Hashtable;' %>
+<%@ page import='org.apache.wookie.helpers.FlashMessage' %>
+<%@ page import='org.apache.wookie.Messages,org.apache.wookie.beans.IWidget,java.util.ArrayList,java.util.Enumeration,java.util.Hashtable;' %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <% Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName()); %>
 <!DOCTYPE html>
@@ -47,12 +48,12 @@
 	<table align="center">	
 	<tr align="center">
 	<%	
-	Hashtable widgetsHash = (Hashtable)session.getAttribute("widgetsHash");
+	Hashtable widgetsHash = (Hashtable)request.getAttribute("widgetsHash");
 	ArrayList<String> guids = new ArrayList<String>();
 	int count = -1;
 	for(Enumeration e = widgetsHash.keys(); e.hasMoreElements();){				
 		String id = (String) e.nextElement();
-		Widget widget = (Widget) widgetsHash.get(id);
+		IWidget widget = (IWidget) widgetsHash.get(id);
 		if (!widget.getGuid().equalsIgnoreCase("http://www.tencompetence.org/widgets/default/notsupported")){
 			String guid = widget.getGuid();
 			if(!guids.contains(guid)){
@@ -89,6 +90,4 @@
 </div>
 </body>
 </html>
-<% session.setAttribute("error_value", null); %>
-<% session.setAttribute("message_value", null);%>
-
+<% FlashMessage.clearErrorsAndMessages(session);%>

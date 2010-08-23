@@ -27,7 +27,7 @@
       <include method="getViewer"/>      
     </create>
     
-    <convert converter="object" match="org.apache.wookie.beans.Preference" javascript="Preference">
+    <convert converter="object" match="org.apache.wookie.ajaxmodel.impl.PreferenceDelegate" javascript="Preference">
         <param name="force" value="true"/>
         <param name="include" value="dkey, dvalue, readOnly"/>
     </convert>

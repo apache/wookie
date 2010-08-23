@@ -23,9 +23,9 @@
 	<display-name>Wookie Widget Server</display-name>
 	
 	<resource-ref>
-        <description>The database connection.</description>
-        <res-ref-name>jdbc/widgetdb</res-ref-name>
-        <res-type>com.mchange.v2.c3p0.ComboPooledDataSource</res-type>
+        <description>@RESOURCE_REF_DESCRIPTION@</description>
+        <res-ref-name>@RESOURCE_REF_NAME@</res-ref-name>
+        <res-type>@RESOURCE_REF_TYPE@</res-type>
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>

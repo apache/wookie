@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 --%>
-<%@ page import='org.apache.wookie.beans.Widget,org.apache.wookie.beans.WidgetType,java.util.Set,java.util.Hashtable;' %>
+<%@ page import='org.apache.wookie.helpers.FlashMessage' %>
+<%@ page import='org.apache.wookie.beans.IWidget,org.apache.wookie.beans.IWidgetType,java.util.Collection,java.util.Hashtable;' %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
-<% String errors = (String)session.getAttribute("error_value");%>
-<% String messages = (String)session.getAttribute("message_value");%>
+<% String errors = FlashMessage.getErrors(session, request);%>
+<% String messages = FlashMessage.getMessages(session, request);%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -133,11 +134,11 @@ var answer = confirm("Are you sure you wish to remove the service type...\n\n<" 
 		<div id="accordion">
 		
 			<%
-			Widget[] widgets = (Widget[])session.getAttribute("widgets");
-			Hashtable widgetHashDefaults = (Hashtable)session.getAttribute("widget_defaults");
+			IWidget[] widgets = (IWidget[])request.getAttribute("widgets");
+			Hashtable widgetHashDefaults = (Hashtable)request.getAttribute("widget_defaults");
 			if(widgets!=null){	
 				for (int i = 1; i < widgets.length; i++) {
-					Widget widget = (Widget) widgets[i];
+					IWidget widget = (IWidget) widgets[i];
 					
 			%>		 
 			<h3><a href="#"><img height="20" width="20" border="0" src="<%=widget.getWidgetIconLocation()%>"/>&nbsp;<%=widget.getWidgetTitle()%></a></h3>
@@ -254,8 +255,8 @@ var answer = confirm("Are you sure you wish to remove the service type...\n\n<" 
 					</b>	        
 						<div><div style="float:left;" class="adminLayerTitle">Types</div><div class="adminLayerDetail">
 				        <%
-				  	     Set<WidgetType> types = widget.getWidgetTypes();
-				         WidgetType[] widgetTypes = types.toArray(new WidgetType[types.size()]);		        
+				  	     Collection<IWidgetType> types = widget.getWidgetTypes();
+				         IWidgetType[] widgetTypes = types.toArray(new IWidgetType[types.size()]);		        
 				         for(int j=0;j<widgetTypes.length;++j){
 				        	 	if(j!=0){
 				        	 		%>&nbsp;<%
@@ -300,7 +301,4 @@ var answer = confirm("Are you sure you wish to remove the service type...\n\n<" 
 <div id="confirm" style="display:none;" title="Warning"></div>
 </body>
 </html>
-<% session.setAttribute("error_value", null); %>
-<% session.setAttribute("message_value", null);%>
-<% session.setAttribute("widget_defaults", null);%>
-<% session.setAttribute("widgets", null);%>
+<% FlashMessage.clearErrorsAndMessages(session);%>

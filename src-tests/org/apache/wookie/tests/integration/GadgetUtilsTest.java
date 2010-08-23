@@ -16,7 +16,7 @@ package org.apache.wookie.tests.integration;
 
 import static org.junit.Assert.*;
 
-import org.apache.wookie.beans.Widget;
+import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.tests.helpers.MockHttpServletRequest;
 import org.apache.wookie.util.gadgets.GadgetUtils;
 import org.apache.wookie.w3c.W3CWidget;
@@ -197,7 +197,7 @@ public class GadgetUtilsTest {
 	@Test
 	public void getWidgetWithValidMetadata() {
 		@SuppressWarnings("unused")
-		Widget widget = null;
+		IWidget widget = null;
 		try {
 			assertNotNull(GadgetUtils.getWidget(TEST_METADATA_VALID, SHINDIG));
 		} catch (Exception e) {
@@ -218,7 +218,7 @@ public class GadgetUtilsTest {
 	@Test
 	public void getWidgetWithMetadataNoResults() {
 		@SuppressWarnings("unused")
-		Widget widget = null;
+		IWidget widget = null;
 		try {
 			assertNull(GadgetUtils.getWidget(TEST_METADATA_NO_GADGETS, SHINDIG));
 		} catch (Exception e) {

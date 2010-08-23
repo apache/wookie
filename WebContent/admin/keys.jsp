@@ -13,8 +13,9 @@
  * limitations under the License.
  */
 --%>
-<%@ page import='org.apache.wookie.beans.ApiKey' %>
-<% ApiKey[] keys = (ApiKey[])session.getAttribute("keys"); %>
+<%@ page import='org.apache.wookie.helpers.FlashMessage' %>
+<%@ page import='org.apache.wookie.beans.IApiKey' %>
+<% IApiKey[] keys = (IApiKey[])request.getAttribute("keys"); %>
 <html>
 <head>
 <title>Widget Service Types</title>
@@ -33,8 +34,8 @@
   <tr>  	
     <td valign="top" bgcolor="#FFFFFF" class="tbody">
 	<h3>API Keys</h3>
-	<% String errors = (String)session.getAttribute("error_value");%>
-	<% String messages = (String)session.getAttribute("message_value");%>
+	<% String errors = FlashMessage.getErrors(session, request);%>
+	<% String messages = FlashMessage.getMessages(session, request);%>
 	<%if(errors!=null){%>
       <p><img src="../shared/images/cancel.gif" width="16" height="16"><font color=red> <%=errors%> </font> </p>
 	<%}%>
@@ -69,5 +70,4 @@
 
 </body>
 </html>
-<% session.setAttribute("error_value", null); %>
-<% session.setAttribute("message_value", null);%>
+<% FlashMessage.clearErrorsAndMessages(session);%>

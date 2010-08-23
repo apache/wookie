@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 --%>
-<%@ page import='org.apache.wookie.Messages,org.apache.wookie.beans.Widget' %>
+<%@ page import='org.apache.wookie.Messages,org.apache.wookie.beans.IWidget' %>
 <% Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName()); %>
-<% Widget[] widgets = (Widget[])session.getAttribute("widgets"); %>
+<% IWidget[] widgets = (IWidget[])request.getAttribute("widgets"); %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -122,7 +122,7 @@
 				    		
 								  <select class="ui-widget input ui-state-default ui-corner-all" name="widgetid"  id="widgetid">
 								  <% 
-								  for (Widget widget : widgets){ 
+								  for (IWidget widget : widgets){ 
 									  if(!widget.getGuid().equalsIgnoreCase("http://notsupported")){
 								  %>
 								  <option value="<%=widget.getGuid()%>"><%=widget.getWidgetTitle()%></option>

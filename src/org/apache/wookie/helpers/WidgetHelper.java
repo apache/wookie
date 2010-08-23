@@ -16,13 +16,13 @@ package org.apache.wookie.helpers;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.wookie.beans.Description;
-import org.apache.wookie.beans.License;
-import org.apache.wookie.beans.Name;
-import org.apache.wookie.beans.PreferenceDefault;
-import org.apache.wookie.beans.Widget;
-import org.apache.wookie.beans.WidgetIcon;
-import org.apache.wookie.beans.WidgetType;
+import org.apache.wookie.beans.IDescription;
+import org.apache.wookie.beans.ILicense;
+import org.apache.wookie.beans.IName;
+import org.apache.wookie.beans.IPreferenceDefault;
+import org.apache.wookie.beans.IWidget;
+import org.apache.wookie.beans.IWidgetIcon;
+import org.apache.wookie.beans.IWidgetType;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 
 /**
@@ -40,8 +40,8 @@ public class WidgetHelper {
 	 * @param localIconPath
 	 * @return
 	 */
-	public static String createXMLWidgetsDocument(Widget widget, String localIconPath, String[] locales){
-		Widget[] widgets = {widget};
+	public static String createXMLWidgetsDocument(IWidget widget, String localIconPath, String[] locales){
+		IWidget[] widgets = {widget};
 		return createXMLWidgetsDocument(widgets, localIconPath, locales);
 	}
 
@@ -52,10 +52,10 @@ public class WidgetHelper {
 	 * @param localIconPath
 	 * @return
 	 */
-	public static String createXMLWidgetsDocument(Widget[] widgets, String localIconPath, String[] locales){
+	public static String createXMLWidgetsDocument(IWidget[] widgets, String localIconPath, String[] locales){
 		String document = XMLDECLARATION;
 		document += "\n<widgets>\n";
-		for (Widget widget:widgets){
+		for (IWidget widget:widgets){
 			document += toXml(widget, localIconPath, locales);
 		}
 		document += "</widgets>\n";
@@ -69,7 +69,7 @@ public class WidgetHelper {
 	 * @param localIconPath the local path to prefix any local icons, typically the server URL
 	 * @return the XML representation of the widget
 	 */
-	public static String toXml(Widget widget, String localIconPath, String[] locales){
+	public static String toXml(IWidget widget, String localIconPath, String[] locales){
 		String out = getWidgetElement(widget);
 		out += getName(widget, locales);
 		out += getDescription(widget, locales);
@@ -82,7 +82,7 @@ public class WidgetHelper {
 		return out;
 	}
 	
-	private static String getWidgetElement(Widget widget){
+	private static String getWidgetElement(IWidget widget){
 		if (widget == null) return null;
 		String width = "";
 		String height = "";
@@ -103,7 +103,7 @@ public class WidgetHelper {
 		return out;
 	}
 	
-	private static String getAuthor(Widget widget){
+	private static String getAuthor(IWidget widget){
 		String out = "\t\t<author";
 		if (widget.getWidgetAuthorEmail() != null) out+= " email=\""+widget.getWidgetAuthorEmail()+"\"";
 		if (widget.getWidgetAuthorHref() != null) out+= " href=\""+widget.getWidgetAuthorHref()+"\"";
@@ -113,11 +113,11 @@ public class WidgetHelper {
 		return out;
 	}
 	
-	private static String getLicenses(Widget widget, String[] locales){
+	private static String getLicenses(IWidget widget, String[] locales){
 		String out = "";
-		License[] licenses = License.findByValue("widget", widget);		
-		licenses = (License[]) LocalizationUtils.processElementsByLocales(licenses, locales);
-		for (License license: licenses){
+		ILicense[] licenses = widget.getLicenses().toArray(new ILicense[widget.getLicenses().size()]);
+		licenses = (ILicense[])LocalizationUtils.processElementsByLocales(licenses, locales);
+		for (ILicense license: licenses){
 			out +="\t\t<license ";
 			if (license.getLang()!=null) out+=" xml:lang=\""+license.getLang()+"\"";
 			if (license.getHref()!=null) out+=" href=\""+license.getHref()+"\"";
@@ -127,17 +127,17 @@ public class WidgetHelper {
 		return out;
 	}
 	
-	private static String getPreferences(Widget widget){
+	private static String getPreferences(IWidget widget){
 		String out = "";
-		PreferenceDefault[] prefs = PreferenceDefault.findByValue("widget",widget);
-		for (PreferenceDefault pref : prefs) {
+		for (IPreferenceDefault pref : widget.getPreferenceDefaults()) {
 			out += "\t\t<preference name=\"" + pref.getPreference() + "\"  value=\""+pref.getValue()+"\"  readonly=\"" + (pref.isReadOnly()? "true" : "false") + "\"/>";
 		}
 		return out;
 	}
 
-	private static String getName(Widget widget, String[] locales){
-		Name name = (Name) LocalizationUtils.getLocalizedElement(Name.findByValue("widget", widget),locales);
+	private static String getName(IWidget widget, String[] locales){
+    	IName[] names = widget.getNames().toArray(new IName[widget.getNames().size()]);
+		IName name = (IName)LocalizationUtils.getLocalizedElement(names,locales);
 		String shortName = null;
 		String longName = null;
 		if (name != null) {
@@ -153,8 +153,9 @@ public class WidgetHelper {
 		return out;
 	}
 
-	private static String getDescription(Widget widget, String[] locales){
-		Description desc = (Description) LocalizationUtils.getLocalizedElement(Description.findByValue("widget", widget), locales);	
+	private static String getDescription(IWidget widget, String[] locales){
+    	IDescription[] descriptions = widget.getDescriptions().toArray(new IDescription[widget.getDescriptions().size()]);
+		IDescription desc = (IDescription)LocalizationUtils.getLocalizedElement(descriptions, locales);	
 		String out = "\t\t<description";
 		if (desc!= null && desc.getDir()!=null) out+=" dir=\""+desc.getDir()+"\"";
 		out += ">";
@@ -163,26 +164,25 @@ public class WidgetHelper {
 		return out;
 	}
 	
-	private static String getTags(Widget widget){
+	private static String getTags(IWidget widget){
 		String out = "";
-		WidgetType[] types = WidgetType.findByValue("widget", widget);
-		for (WidgetType type:types){
+		for (IWidgetType type:widget.getWidgetTypes()){
 			out +="\t\t<category>"+type.getWidgetContext()+"</category>\n";
 		}
 		return out;
 	}
 
-	private static String getIcons(Widget widget, String[] locales, String localIconPath){
+	private static String getIcons(IWidget widget, String[] locales, String localIconPath){
 		URL urlWidgetIcon = null;
 		String out = "";
-		WidgetIcon[] icons;
+		IWidgetIcon[] icons;
 		if (locales != null && locales.length != 0){
-			icons = (WidgetIcon[]) LocalizationUtils.processElementsByLocales(WidgetIcon.findForWidget(widget), locales);
+			icons = (IWidgetIcon[])LocalizationUtils.processElementsByLocales(widget.getWidgetIcons().toArray(new IWidgetIcon[widget.getWidgetIcons().size()]), locales);
 		} else {
-			icons = WidgetIcon.findForWidget(widget);
+			icons = widget.getWidgetIcons().toArray(new IWidgetIcon[widget.getWidgetIcons().size()]);
 		}
 		if (icons!=null){
-			for (WidgetIcon icon: icons){
+			for (IWidgetIcon icon: icons){
 				try {
 					// If local...
 					if (!icon.getSrc().startsWith("http")) {

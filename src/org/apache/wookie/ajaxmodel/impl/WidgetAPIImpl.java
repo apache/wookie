@@ -24,10 +24,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
 import org.apache.wookie.ajaxmodel.IWidgetAPI;
-import org.apache.wookie.beans.Preference;
-import org.apache.wookie.beans.SharedData;
-import org.apache.wookie.beans.Widget;
-import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.beans.IPreference;
+import org.apache.wookie.beans.ISharedData;
+import org.apache.wookie.beans.IWidget;
+import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.controller.PropertiesController;
 import org.apache.wookie.controller.WidgetInstancesController;
 import org.apache.wookie.helpers.Notifier;
@@ -65,14 +67,15 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#preferences2(java.lang.String)
 	 */
-	public List<Preference> preferences(String id_key) {
-		ArrayList<Preference> prefs = new ArrayList<Preference>();
+	public List<IPreference> preferences(String id_key) {
+		ArrayList<IPreference> prefs = new ArrayList<IPreference>();
 		if(id_key == null) return prefs;
 		// check if instance is valid
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if(widgetInstance==null) return prefs;
-		for(Preference preference : Preference.findPreferencesForInstance(widgetInstance)){
-			prefs.add(preference);
+		for(IPreference preference : widgetInstance.getPreferences()){
+			prefs.add(new PreferenceDelegate(preference));
 		}
 		return prefs;
 	}
@@ -85,10 +88,11 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		if(id_key == null) return map;
 	
 		// check if instance is valid
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if(widgetInstance==null) return map;
 		// Add in metadata
-		Widget widget = widgetInstance.getWidget();
+		IWidget widget = widgetInstance.getWidget();
 		map.put("id", String.valueOf(widget.getGuid()));	//$NON-NLS-1$
 		map.put("author", String.valueOf(widget.getWidgetAuthor()));	//$NON-NLS-1$
 		map.put("authorEmail", String.valueOf(widget.getWidgetAuthorEmail()));//$NON-NLS-1$
@@ -112,10 +116,11 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0");
 		if(key == null)return localizedMessages.getString("WidgetAPIImpl.1");
 		// check if instance is valid
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if (widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
 		//
-		Preference preference = Preference.findPreferenceForInstance(widgetInstance, key);
+		IPreference preference = widgetInstance.getPreference(key);
 		if (preference == null) return localizedMessages.getString("WidgetAPIImpl.1");
 		return preference.getDvalue();
 	}
@@ -129,11 +134,12 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		if(id_key==null) return localizedMessages.getString("WidgetAPIImpl.0");
 		if(key==null) return localizedMessages.getString("WidgetAPIImpl.1");
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if (widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
-		SharedData data = SharedData.findSharedDataForInstance(widgetInstance, key);
+		ISharedData data = widgetInstance.getSharedData(key);
 		if (data == null) return localizedMessages.getString("WidgetAPIImpl.1");
-		return SharedData.findSharedDataForInstance(widgetInstance, key).getDvalue();
+		return data.getDvalue();
 	}
 
 	/*
@@ -143,7 +149,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String setPreferenceForKey(String id_key, String key, String value) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if (widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
 		//
 		PropertiesController.updatePreference(widgetInstance, key, value);
@@ -157,7 +164,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String setSharedDataForKey(String id_key, String key, String value) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
 		if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2");
 		//
@@ -173,7 +181,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String appendSharedDataForKey(String id_key, String key, String value) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
 		if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2");
 		//
@@ -189,7 +198,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String lock(String id_key) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
 		//
 		String sharedDataKey = widgetInstance.getSharedDataKey();
@@ -205,7 +215,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String unlock(String id_key) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if(widgetInstance==null) return localizedMessages.getString("WidgetAPIImpl.0");
 		//
 		String sharedDataKey = widgetInstance.getSharedDataKey();
@@ -221,7 +232,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String hide(String id_key){
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if (widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
 		//
 		Notifier.callSiblings(widgetInstance,"window.onHide()");//$NON-NLS-1$
@@ -235,7 +247,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	public String show(String id_key){
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if(widgetInstance==null) return localizedMessages.getString("WidgetAPIImpl.0");
 		Notifier.callSiblings(widgetInstance,"window.onShow()"); //$NON-NLS-1$
 	    return "okay"; //$NON-NLS-1$

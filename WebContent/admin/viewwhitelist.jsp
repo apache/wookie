@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 --%>
-<%@ page import='org.apache.wookie.beans.Whitelist' %>
-<%Whitelist[] services = (Whitelist[])session.getAttribute("whitelist"); %>
+<%@ page import='org.apache.wookie.helpers.FlashMessage' %>
+<%@ page import='org.apache.wookie.beans.IWhitelist' %>
+<%IWhitelist[] services = (IWhitelist[])request.getAttribute("whitelist"); %>
 <html>
 <head>
 <title>Server white list</title>
@@ -41,8 +42,8 @@
      
     <div id="content">  
     
-	<% String errors = (String)session.getAttribute("error_value");%>
-	<% String messages = (String)session.getAttribute("message_value");%>
+	<% String errors = FlashMessage.getErrors(session, request);%>
+	<% String messages = FlashMessage.getMessages(session, request);%>
 	<%if(errors!=null){%>
       <p><img src="../shared/images/cancel.gif" width="16" height="16"><font color=red> <%=errors%> </font> </p>
 	<%}%>
@@ -58,7 +59,7 @@
 		
 		<table width="500" class="ui-widget ui-widget-content" align="center">  
 		<tr class="ui-widget-header"><td>&nbsp;Existing entries</td></tr>
-		<%for (int i=2; i<services.length; i++){%>
+		<%for (int i=0; i<services.length; i++) if (!services[i].getfUrl().equals("http://localhost") && !services[i].getfUrl().equals("http://127.0.0.1")) {%>
 	  		<tr><td width="100%">
 	  		<div id="nifty">
 					<b class="rtop">
@@ -87,5 +88,4 @@
 
 </body>
 </html>
-<% session.setAttribute("error_value", null); %>
-<% session.setAttribute("message_value", null); %>
+<% FlashMessage.clearErrorsAndMessages(session);%>

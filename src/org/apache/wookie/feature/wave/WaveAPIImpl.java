@@ -20,9 +20,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.wookie.Messages;
-import org.apache.wookie.beans.Participant;
-import org.apache.wookie.beans.SharedData;
-import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.beans.IParticipant;
+import org.apache.wookie.beans.ISharedData;
+import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.controller.PropertiesController;
 import org.apache.wookie.feature.IFeature;
 import org.apache.wookie.helpers.Notifier;
@@ -70,13 +72,14 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 			return state;
 		}
 		// check if instance is valid
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if (widgetInstance == null){
 			state.put("message", localizedMessages.getString("WidgetAPIImpl.0"));	 //$NON-NLS-1$
 			return state;			
 		}
 		//
-		for(SharedData data : SharedData.findSharedDataForInstance(widgetInstance)){
+		for(ISharedData data : widgetInstance.getSharedData()){
 			state.put(data.getDkey(), data.getDvalue());
 		}
 		return state;
@@ -89,9 +92,10 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if(widgetInstance==null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
-		Participant[] participants = Participant.getParticipants(widgetInstance);
+		IParticipant[] participants = persistenceManager.findParticipants(widgetInstance);
 		return ParticipantHelper.createJSONParticipantsDocument(participants);
 	}
 	
@@ -102,9 +106,10 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
-		Participant participant = Participant.getViewer(widgetInstance);
+        IParticipant participant = persistenceManager.findParticipantViewer(widgetInstance);
 		if (participant != null) return ParticipantHelper.createJSONParticipantDocument(participant); //$NON-NLS-1$
 		return null; // no viewer i.e. widget is anonymous
 	}
@@ -115,7 +120,8 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 	public String submitDelta(String id_key, Map<String,String>map){
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey(id_key);
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
 		if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2"); //$NON-NLS-1$
 		//

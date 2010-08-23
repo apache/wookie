@@ -16,19 +16,16 @@ package org.apache.wookie.widgets.forum.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.apache.wookie.beans.Post;
-import org.apache.wookie.util.hibernate.DBManagerFactory;
-import org.apache.wookie.util.hibernate.IDBManager;
+import org.apache.wookie.beans.IPost;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.widgets.forum.IForumManager;
 import org.apache.wookie.widgets.forum.PostNode;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 /**
  * The forum manager class.  Methods needed by the forum widget
@@ -46,68 +43,32 @@ public class ForumManager implements IForumManager {
 	 * @see org.apache.wookie.widgets.forum.IForumManager#getNodeTree(java.lang.String)
 	 */
 	public List<PostNode> getNodeTree(String sharedKey) {				
-		IDBManager dbManager = null;
-		try {
-			List<PostNode> list = new ArrayList<PostNode>();
-			LinkedHashMap<Integer, PostNode> postLookupTable = new LinkedHashMap<Integer, PostNode>();
-			dbManager = DBManagerFactory.getDBManager();
-			final Criteria crit = dbManager.createCriteria(Post.class);
-			crit.add(Restrictions.eq("sharedDataKey", sharedKey));
-			crit.addOrder( Order.desc("publishDate"));
-			final List<Post> sqlReturnList =  dbManager.getObjects(Post.class, crit);
-			Post[] posts = sqlReturnList.toArray(new Post[sqlReturnList.size()]);
-			for(Post post : posts){									
-				postLookupTable.put(post.getId(),new PostNode(post.getId(),
-						post.getUserId(),post.getParentId(),post.getContent(),post.getTitle(),
-						post.getPublishDate(),post.getUpdateDate()));
-			}
-			// Iterate thru the posts constructing a tree hierarchy
-			for(Entry<Integer, PostNode> entry : postLookupTable.entrySet()) {
-				PostNode post = entry.getValue();
-				// Has a Post as a Parent
-				if(post.getParentId()!=-1) {
-					PostNode parentPost = postLookupTable.get(post.getParentId());
-					parentPost.getPosts().add(post);	               
-				}
-				// No Parent Post so it's a top-level post with the topic as parent
-				else {
-					list.add(post);	               
-				}
-			}
-			return list;	        
-		} 
-		catch (Exception ex) {
-			dbManager.rollbackTransaction();
-			_logger.error(ex.getMessage());
-			return null;
-		}
+	    // query for root posts in most to least recent published order
+	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+	    Map<String,Object> values = new HashMap<String,Object>();
+        values.put("sharedDataKey", sharedKey);
+        values.put("parent", null);
+	    IPost [] posts = persistenceManager.findByValues(IPost.class, values, "publishDate", false);
+	    // return PostNode hierarchies to mirror IPost hierarchies
+        List<PostNode> list = new ArrayList<PostNode>();
+	    for(IPost post : posts){
+	        list.add(new PostNode(post));
+	    }
+	    return list;	        
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.apache.wookie.widgets.forum.IForumManager#getPost(java.lang.String, int)
+	 * @see org.apache.wookie.widgets.forum.IForumManager#getPost(java.lang.String, java.lang.String)
 	 */
-	public PostNode getPost(String sharedKey, int postId){
-		IDBManager dbManager = null;
-		try {
-			dbManager = DBManagerFactory.getDBManager();
-			final Criteria crit = dbManager.createCriteria(Post.class);
-			crit.add(Restrictions.eq("sharedDataKey", sharedKey));
-			crit.add(Restrictions.eq("id", postId));
-			final List<Post> sqlReturnList =  dbManager.getObjects(Post.class, crit);
-			if (sqlReturnList.size() != 1) {
-				return null;
-			} 
-			else {
-				Post post = (Post) sqlReturnList.get(0);
-				return new PostNode(post.getId(),
-						post.getUserId(),post.getParentId(),post.getContent(),post.getTitle(),
-						post.getPublishDate(),post.getUpdateDate());
-			}			
-		} 
-		catch (Exception e) {
-			dbManager.rollbackTransaction();
-			_logger.error(e.getMessage());
-		}
+	public PostNode getPost(String sharedKey, String postId){
+        // query for post by id
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IPost post = persistenceManager.findById(IPost.class, postId);
+        if ((post != null) && post.getSharedDataKey().equals(sharedKey))
+        {
+            // return PostNode hierarchy to mirror IPost hierarchy
+            return new PostNode(post);
+        }
 		return null;
 	}
 
@@ -115,26 +76,27 @@ public class ForumManager implements IForumManager {
 	 * @see org.apache.wookie.widgets.forum.IForumManager#newPost(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public boolean newPost(String sharedDataKey, String parent, String username, String title, String content){
-		final IDBManager dbManager = DBManagerFactory.getDBManager();
-		Post post = new Post();
-		try {
-			post.setParentId(Integer.parseInt(parent));
-			post.setTitle(title);
-			post.setContent(content);
-			post.setUserId(username);
-			post.setPublishDate(new Date());
-			post.setSharedDataKey(sharedDataKey);
-			dbManager.saveObject(post);
-			return true;
-		} 
-		catch (NumberFormatException e) {
-			dbManager.rollbackTransaction();
-			_logger.error(e.getMessage());
-		} 
-		catch (Exception e) {
-			dbManager.rollbackTransaction();
-			_logger.error(e.getMessage());
-		}	
-		return false;
+        // create and save new post
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IPost post = persistenceManager.newInstance(IPost.class);
+        post.setTitle(title);
+        post.setContent(content);
+        post.setUserId(username);
+        post.setPublishDate(new Date());
+        post.setSharedDataKey(sharedDataKey);
+        boolean saved = persistenceManager.save(post);
+        // add as child to parent post and save
+	    if (parent != null)
+	    {
+	        // query for parent post by id
+	        IPost parentPost = persistenceManager.findById(IPost.class, parent);
+	        if (parentPost != null)
+	        {
+	            // add as child post to parent post
+	            parentPost.getPosts().add(post);
+                saved = persistenceManager.save(parentPost);
+	        }
+	    }
+		return saved;
 	}
 }

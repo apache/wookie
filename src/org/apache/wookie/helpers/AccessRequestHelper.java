@@ -13,7 +13,7 @@
  */
 package org.apache.wookie.helpers;
 
-import org.apache.wookie.beans.AccessRequest;
+import org.apache.wookie.beans.IAccessRequest;
 
 /**
  * Helper for rendering Widget Access Request Policies (WARP)
@@ -27,10 +27,10 @@ public class AccessRequestHelper {
 	 * @param accessRequests
 	 * @return
 	 */
-	public static String createXMLAccessRequestDocument(AccessRequest[] accessRequests){
+	public static String createXMLAccessRequestDocument(IAccessRequest[] accessRequests){
 		String document = XMLDECLARATION;
 		document += "\n<policies>\n";
-		for (AccessRequest ar:accessRequests){
+		for (IAccessRequest ar:accessRequests){
 			document += toXml(ar);
 		}
 		document += "</policies>\n";
@@ -42,17 +42,17 @@ public class AccessRequestHelper {
 	 * @param accessRequests
 	 * @return
 	 */
-	public static String createAccessRequestHTMLTable(AccessRequest[] accessRequests){		
+	public static String createAccessRequestHTMLTable(IAccessRequest[] accessRequests){		
 		String document = "<table width=\"500\" class=\"ui-widget ui-widget-content\" align=\"center\">\n";
 		document+= "<tr class=\"ui-widget-header\"><td colspan=\"5\">Policies</td></tr>  ";
-		for (AccessRequest ar:accessRequests){
+		for (IAccessRequest ar:accessRequests){
 			document += toHtml(ar);
 		}
 		document += "</table>\n";
 		return document;
 	}
 	
-	private static String toXml(AccessRequest ar){
+	private static String toXml(IAccessRequest ar){
 		String xml = "\t<policy ";
 		xml += "id=\""+ar.getId()+"\" ";
 		xml += "widget=\""+ar.getWidget().getId()+"\" ";
@@ -67,7 +67,7 @@ public class AccessRequestHelper {
 		return xml;
 	}
 	
-	public static String toHtml(AccessRequest ar){
+	public static String toHtml(IAccessRequest ar){
 		String html = "";
 		if (ar.isGranted()){
 			html += "<tr style=\"background-color:#9FC\">";

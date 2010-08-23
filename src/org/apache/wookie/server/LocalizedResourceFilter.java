@@ -29,7 +29,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
 
@@ -71,7 +73,8 @@ public class LocalizedResourceFilter implements Filter {
 				// Find the instance key in the current session
 				String key = (String)filterConfig.getServletContext().getAttribute("id_key");
 				if (key != null){
-					WidgetInstance instance = WidgetInstance.findByIdKey(key);
+				    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+					IWidgetInstance instance = persistenceManager.findWidgetInstanceByIdKey(key);
 					if (instance != null){
 						// Only if we have a valid instance and a resource which has no localization
 						// parameter do we start the locale algorithm
@@ -121,7 +124,7 @@ public class LocalizedResourceFilter implements Filter {
 	 * @param instance
 	 * @return the localized path for the resource; if none is found, the original path is returned
 	 */
-	private String getLocalizedResource(String originalPath, WidgetInstance instance){
+	private String getLocalizedResource(String originalPath, IWidgetInstance instance){
 		// Remove the context URI from the path, or this will mess up
 		// the algorithm for locating the file using its real path
 		String context = filterConfig.getServletContext().getContextPath();
@@ -177,7 +180,7 @@ public class LocalizedResourceFilter implements Filter {
 	 * @param instance
 	 * @return
 	 */
-	private String getWidgetInstanceBasePath(WidgetInstance instance){
+	private String getWidgetInstanceBasePath(IWidgetInstance instance){
 		String guid = instance.getWidget().getGuid();
 		Configuration config = (Configuration) filterConfig.getServletContext().getAttribute("properties");
 		final String localWidgetFolderPath = filterConfig.getServletContext().getContextPath()+config.getString("widget.widgetfolder");

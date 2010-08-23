@@ -13,8 +13,8 @@
  */
 package org.apache.wookie.helpers;
 
-import org.apache.wookie.beans.Widget;
-import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.beans.IWidget;
+import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 
 /**
@@ -33,9 +33,9 @@ public class WidgetInstanceHelper {
 	 * @param urlWidgetProxyServer the local URL of the proxy service
 	 * @return
 	 */
-	public static String createXMLWidgetInstanceDocument(WidgetInstance instance, String url){
+	public static String createXMLWidgetInstanceDocument(IWidgetInstance instance, String url){
 		String xml = XMLDECLARATION;
-		Widget widget = instance.getWidget();
+		IWidget widget = instance.getWidget();
 		
 		// Return a default width and height where the original value is either not provided
 		// or of an invalid range (<0)

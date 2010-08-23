@@ -96,8 +96,27 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	    	fail("get failed");
 	    }
 	}
-	
+
 	// We expect a valid response, just no actual widgets
+	@Test
+	public void getWidgetType_empty(){
+	    try {
+	        HttpClient client = new HttpClient();
+	        GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/games");
+	        client.executeMethod(get);
+	        int code = get.getStatusCode();
+	        assertEquals(200,code);
+	        String response = get.getResponseBodyAsString();
+	        assertFalse(response.contains("<widget "));
+	        get.releaseConnection();
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    	fail("get failed");
+	    }
+	}
+	
+	// resource doesn't match either a widget.id or a widgetservice.servicename
 	@Test
 	public void getWidgetType_noneexistant(){
 	    try {
@@ -105,9 +124,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	        GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/nosuchtype");
 	        client.executeMethod(get);
 	        int code = get.getStatusCode();
-	        assertEquals(200,code);
-	        String response = get.getResponseBodyAsString();
-	        assertFalse(response.contains("<widget "));
+	        assertEquals(404,code);
 	        get.releaseConnection();
 	    }
 	    catch (Exception e) {

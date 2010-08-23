@@ -17,7 +17,7 @@ package org.apache.wookie.ajaxmodel;
 import java.util.Map;
 import java.util.List;
 
-import org.apache.wookie.beans.Preference;
+import org.apache.wookie.beans.IPreference;
 
 
 /**
@@ -73,7 +73,7 @@ public interface IWidgetAPI {
 	 * @param id_key
 	 * @return
 	 */
-	public List<Preference> preferences(String id_key);
+	public List<IPreference> preferences(String id_key);
 	
 	/**
 	 * Returns the widget metadata

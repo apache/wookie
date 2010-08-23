@@ -15,7 +15,9 @@ package org.apache.wookie.util;
 
 import java.util.HashMap;
 
-import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.directwebremoting.impl.DefaultPageNormalizer;
 
 /**
@@ -40,7 +42,7 @@ org.directwebremoting.extend.PageNormalizer {
 	 * @param instance the instance
 	 * @return the normalized URI of the widget instance
 	 */
-	public String getNormalizedPage(WidgetInstance instance){
+	public String getNormalizedPage(IWidgetInstance instance){
 		return super.normalizePage(instance.getWidget().getUrl())+"?"+instance.getApiKey()+"="+instance.getSharedDataKey();
 	}
 
@@ -63,7 +65,8 @@ org.directwebremoting.extend.PageNormalizer {
 		// API key and Shared Data Key: in combination with
 		// the Widget URL it uniquely identifies sibling instances
 		
-		WidgetInstance widgetInstance = WidgetInstance.findByIdKey((String)parmsMap.get("idkey"));
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey((String)parmsMap.get("idkey"));
 		// Invalid instance
 		if(widgetInstance==null) return super.normalizePage(page);
 

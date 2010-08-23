@@ -21,6 +21,7 @@
       <conf name="deploy" description="Provide the necessary files and libraries to deploy in a production environment"/>
 	  <conf name="dev" extends="deploy" description="Provide the necessary files and libraries to run in standalone (development) mode"/>
 	  <conf name="test" extends="dev" visibility="private" description="for our testing frameowrk"/>
+	  <conf name="ddlutils" visibility="private" description="Provide the necessary libraries to invoke DDLUtils schema generation"/>
 	</configurations>
     
     <dependencies>
@@ -68,34 +69,51 @@
         </dependency>
         <dependency org="org.json" name="json" rev="20080701" conf="deploy->default">
         </dependency>
-        <dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="deploy->default">
+        <dependency org="org.apache.openjpa" name="openjpa-all" rev="2.0.0" conf="deploy->default">
         </dependency>
-        
+        <dependency org="commons-pool" name="commons-pool" rev="1.3" conf="deploy->default">
+		</dependency>        
+        <dependency org="javax.jcr" name="jcr" rev="1.0" conf="deploy->default">
+        </dependency>
+        <dependency org="org.apache.jackrabbit" name="jackrabbit-core" rev="1.5.3" conf="deploy->default">
+        </dependency>
+        <dependency org="org.apache.jackrabbit" name="jackrabbit-jcr-commons" rev="1.5.3" conf="deploy->default">
+        </dependency>
+        <dependency org="org.apache.jackrabbit" name="jackrabbit-ocm" rev="1.5.3" conf="deploy->default">
+        </dependency>
+
         <!-- Libraries used in a development/test environment but not in deployment -->
+        <dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="dev->default">
+        </dependency>
         <dependency org="org.mortbay.jetty" name="jetty" rev="6.1.3" conf="dev->default">
         </dependency>
         <dependency org="org.mortbay.jetty" name="jetty-util" rev="6.1.3" conf="dev->default">
+        </dependency>
+        <dependency org="org.mortbay.jetty" name="jetty-plus" rev="6.1.3" conf="dev->default">
+        </dependency>
+        <dependency org="org.mortbay.jetty" name="jetty-naming" rev="6.1.3" conf="dev->default">
         </dependency>
         <dependency org="org.mortbay.jetty" name="jsp-2.1" rev="6.1.3" conf="dev->default">
         </dependency>
         <dependency org="org.mortbay.jetty" name="jsp-api-2.1" rev="6.1.3" conf="dev->default">
         </dependency>
-       <!--<dependency org="org.mortbay.jetty" name="servlet-api-2.5" rev="6.1.3" conf="dev->default">
-        </dependency>-->
+        <dependency org="c3p0" name="c3p0" rev="0.9.1.2" conf="dev->default">
+		</dependency>
         <dependency org="org.apache.derby" name="derby" rev="10.4.2.0" conf="dev->default">
 		</dependency>
 		
 		<!-- Libraries used in testing -->
         <dependency org="junit" name="junit" rev="4.7" conf="test->default">
         </dependency>
+        <dependency org="directory-naming" name="naming-java" rev="0.8" conf="test->default">
+		</dependency>
+        <dependency org="commons-dbcp" name="commons-dbcp" rev="1.2.2" conf="test->default">
+		</dependency>
         
-        
-        <!-- Libraries with incompatible open source licences -->
-        <dependency org="org.hibernate" name="hibernate-c3p0" rev="3.3.1.GA" conf="deploy->default">
+		<!-- DDLUtils Library -->
+        <dependency org="org.apache.ddlutils" name="ddlutils" rev="1.0" conf="ddlutils->default">
         </dependency>
-        <dependency org="org.hibernate" name="hibernate-core" rev="3.3.1.GA" conf="deploy->default,optional">
-        </dependency>
-        <dependency org="mysql" name="mysql-connector-java" rev="5.1.6" conf="deploy->default">
+        <dependency org="log4j" name="log4j" rev="1.2.14" conf="ddlutils->default">
         </dependency>
         
         <exclude module="juel-api"/>

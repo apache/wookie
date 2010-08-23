@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 --%>
+<%@ page import='org.apache.wookie.helpers.FlashMessage' %>
 <html>
 <head>
 <title>Results</title>
@@ -33,9 +34,9 @@
     <td valign="top" bgcolor="#FFFFFF" class="tbody">
 	<h3>Results</h3>
 
+<% String errors = FlashMessage.getErrors(session, request);%>
+<% String messages = FlashMessage.getMessages(session, request);%>
 <% 
-String errors = (String)session.getAttribute("error_value");
-String messages = (String)session.getAttribute("message_value");
 if(errors!=null){%>
 	<font color=red>
 	<%=errors%>
@@ -56,5 +57,4 @@ if(messages!=null){%>
 
 </body>
 </html>
-<% session.setAttribute("error_value", null); %>
-<% session.setAttribute("message_value", null);%>
+<% FlashMessage.clearErrorsAndMessages(session);%>

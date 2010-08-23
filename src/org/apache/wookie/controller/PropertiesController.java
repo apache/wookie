@@ -22,9 +22,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.apache.wookie.beans.Preference;
-import org.apache.wookie.beans.SharedData;
-import org.apache.wookie.beans.WidgetInstance;
+import org.apache.wookie.beans.IPreference;
+import org.apache.wookie.beans.ISharedData;
+import org.apache.wookie.beans.IWidget;
+import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
@@ -79,16 +82,16 @@ public class PropertiesController extends Controller {
 			HttpServletResponse response) throws ResourceNotFoundException,
 			UnauthorizedAccessException, IOException {
 		if (!WidgetKeyManager.isValidRequest(request)) throw new UnauthorizedAccessException();
-		WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
+		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
 		if (instance == null) throw new ResourceNotFoundException();
 		String name = request.getParameter("propertyname"); //$NON-NLS-1$
 		if (name == null || name.trim().equals("")) throw new ResourceNotFoundException();
 		String value = null;
 		// Note that preferences and shared data keys may be the same!
 		// We let the shared data values override.
-		Preference pref = Preference.findPreferenceForInstance(instance, name);
+		IPreference pref = instance.getPreference(name);
 		if (pref != null) value = pref.getDvalue();
-		SharedData data = SharedData.findSharedDataForInstance(instance, name);
+		ISharedData data = instance.getSharedData(name);
 		if (data != null) value = data.getDvalue();
 		if (value == null) throw new ResourceNotFoundException();
 		PrintWriter out = response.getWriter();
@@ -101,7 +104,7 @@ public class PropertiesController extends Controller {
 		if (!WidgetKeyManager.isValidRequest(request)) throw new UnauthorizedAccessException();
 		if (request.getParameter("value") != null) throw new InvalidParametersException();//$NON-NLS-1$
 		String name = request.getParameter("propertyname"); //$NON-NLS-1$
-		WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
+		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
 		if (instance == null) throw new InvalidParametersException();
 		if (name == null || name.trim().equals("")) throw new InvalidParametersException();
 		
@@ -142,7 +145,7 @@ public class PropertiesController extends Controller {
 		if (!WidgetKeyManager.isValidRequest(request)) throw new UnauthorizedAccessException();
 		String name = request.getParameter("propertyname"); //$NON-NLS-1$
 		String value = request.getParameter("propertyvalue"); //$NON-NLS-1$
-		WidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
+		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
 		if (instance == null) throw new InvalidParametersException();
 		if (name == null || name.trim().equals("")) throw new InvalidParametersException();
 		
@@ -160,30 +163,29 @@ public class PropertiesController extends Controller {
 	 * @param name
 	 * @param value
 	 */
-	public static boolean updatePreference(WidgetInstance widgetInstance, String name, String value){
+	public static boolean updatePreference(IWidgetInstance widgetInstance, String name, String value){
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
         boolean found=false;
-        for (Preference preference : Preference.findPreferencesForInstance(widgetInstance)){
-        	if(preference.getDkey().equals(name)){
-        		// if the value is null we need to remove the tuple
-        		if(value==null || value.equalsIgnoreCase("null")){  
-        			preference.delete();     			
-        		}
-        		else{    
-        			preference.setDvalue(value);
-        			preference.save();
-        		}
-        		found=true;
-        	}
+        IPreference preference = widgetInstance.getPreference(name);
+        if (preference != null)
+        {
+            if(value==null || value.equalsIgnoreCase("null")){  
+                widgetInstance.getPreferences().remove(preference);
+            }
+            else{    
+                preference.setDvalue(value);
+            }
+            found=true;
         }
         if(!found){  
         	if (value != null){
-        		Preference pref = new Preference();
-        		pref.setWidgetInstance(widgetInstance);
-        		pref.setDkey(name);
-        		pref.setDvalue(value);	
-        		pref.save();
+                preference = persistenceManager.newInstance(IPreference.class);
+        		preference.setDkey(name);
+        		preference.setDvalue(value);
+        		widgetInstance.getPreferences().add(preference);
         	}
         }  
+        persistenceManager.save(widgetInstance);
         return found;
 	}
 	
@@ -195,38 +197,38 @@ public class PropertiesController extends Controller {
 	 * @param append
 	 * @return
 	 */
-	public synchronized static boolean updateSharedDataEntry(WidgetInstance widgetInstance, String name, String value, boolean append){
-		boolean found=false;
-		for (SharedData sharedData : SharedData.findSharedDataForInstance(widgetInstance)){
-			if(sharedData.getDkey().equals(name)){
-				// if the value is null we need to remove the tuple
-				if(value==null || value.equalsIgnoreCase("null")){   
-					sharedData.delete();
-				}
-				else{    
-					if(append){
-						sharedData.setDvalue(sharedData.getDvalue() + value);
-					}
-					else{
-						sharedData.setDvalue(value);
-					}
-					sharedData.save();
-				}
-				found=true;
-			}       	
-		}
+	public synchronized static boolean updateSharedDataEntry(IWidgetInstance widgetInstance, String name, String value, boolean append){
+		IWidget widget = widgetInstance.getWidget();
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        boolean found=false;
+        ISharedData sharedData = widget.getSharedData(widgetInstance.getSharedDataKey(), name);
+        if (sharedData != null)
+        {
+            if(value==null || value.equalsIgnoreCase("null")){   
+                widget.getSharedData().remove(sharedData);
+            }
+            else{    
+                if(append){
+                    sharedData.setDvalue(sharedData.getDvalue() + value);
+                }
+                else{
+                    sharedData.setDvalue(value);
+                }
+            }
+            found=true;
+        }
 		if(!found){     
 			if(value!=null){
 				String sharedDataKey = widgetInstance.getSharedDataKey();		
-				SharedData sharedData= new SharedData();
-				sharedData.setWidgetGuid(widgetInstance.getWidget().getGuid());
+				sharedData = persistenceManager.newInstance(ISharedData.class);
 				sharedData.setSharedDataKey(sharedDataKey);
 				sharedData.setDkey(name);
 				sharedData.setDvalue(value);
-				sharedData.save();
+				widget.getSharedData().add(sharedData);
 			}
 		}
-		return found;
+        persistenceManager.save(widget);
+        return found;
 	}
 
 	/// Utilities

@@ -13,7 +13,7 @@
  */
 package org.apache.wookie.helpers;
 
-import org.apache.wookie.beans.Participant;
+import org.apache.wookie.beans.IParticipant;
 
 /**
  * A helper for Participants
@@ -29,8 +29,8 @@ public class ParticipantHelper {
 	 * @param participant
 	 * @return
 	 */
-	public static String createXMLParticipantsDocument(Participant participant){
-		Participant[] participants = {participant};
+	public static String createXMLParticipantsDocument(IParticipant participant){
+		IParticipant[] participants = {participant};
 		return createXMLParticipantsDocument(participants);
 	}
 	
@@ -41,24 +41,24 @@ public class ParticipantHelper {
 	 * @param localIconPath
 	 * @return
 	 */
-	public static String createXMLParticipantsDocument(Participant[] participants){
+	public static String createXMLParticipantsDocument(IParticipant[] participants){
 		String document = XMLDECLARATION;
 		document += "\n<participants>\n"; //$NON-NLS-1$
-		for (Participant participant:participants){
+		for (IParticipant participant:participants){
 			document += toXml(participant);
 		}
 		document += "</participants>\n"; //$NON-NLS-1$
 		return document;
 	}
 	
-	public static String createJSONParticipantDocument(Participant participant){
+	public static String createJSONParticipantDocument(IParticipant participant){
 		 return "{\"Participant\":"+ParticipantHelper.toJson(participant)+"}"; //$NON-NLS-1$
 	}
 	
-	public static String createJSONParticipantsDocument(Participant[] participants){
+	public static String createJSONParticipantsDocument(IParticipant[] participants){
 		String json = "{\"Participants\":[";//$NON-NLS-1$
 		String delimit = "";
-		for (Participant participant: participants){
+		for (IParticipant participant: participants){
 			json+=delimit+toJson(participant);
 			delimit = ","; //$NON-NLS-1$
 		}
@@ -72,10 +72,10 @@ public class ParticipantHelper {
 	 * @param participant the participant to represent
 	 * @return the XML representation of the participant
 	 */
-	public static String toXml(Participant participant){
-			return "<participant id=\""+participant.getParticipant_id()+
-								"\" display_name=\""+participant.getParticipant_display_name()+
-								"\" thumbnail_url=\""+participant.getParticipant_thumbnail_url()+
+	public static String toXml(IParticipant participant){
+			return "<participant id=\""+participant.getParticipantId()+
+								"\" display_name=\""+participant.getParticipantDisplayName()+
+								"\" thumbnail_url=\""+participant.getParticipantThumbnailUrl()+
 					"\" />"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	}
 
@@ -84,11 +84,11 @@ public class ParticipantHelper {
 	 * @param participant
 	 * @return
 	 */
-	public static String toJson(Participant participant){
+	public static String toJson(IParticipant participant){
 		String json = "{"+
-		"\"participant_id\":\""+participant.getParticipant_id()+
-		"\", \"participant_display_name\":\""+participant.getParticipant_display_name()+
-		"\", \"participant_thumbnail_url\":\""+participant.getParticipant_thumbnail_url()+"\"}";
+		"\"participant_id\":\""+participant.getParticipantId()+
+		"\", \"participant_display_name\":\""+participant.getParticipantDisplayName()+
+		"\", \"participant_thumbnail_url\":\""+participant.getParticipantThumbnailUrl()+"\"}";
 		return json; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	}
 

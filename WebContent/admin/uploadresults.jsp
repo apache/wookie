@@ -13,14 +13,15 @@
  * limitations under the License.
  */
 --%>
-<%@ page import='org.apache.wookie.beans.WidgetService' %>
+<%@ page import='org.apache.wookie.helpers.FlashMessage' %>
+<%@ page import='org.apache.wookie.beans.IWidgetService' %>
+<% String errors = FlashMessage.getErrors(session, request);%>
+<% String messages = FlashMessage.getMessages(session, request);%>
 <% 
-Integer dbkey = (Integer)session.getAttribute("dbkey");
-String errors = (String)session.getAttribute("error_value");
-String messages = (String)session.getAttribute("message_value");
-Boolean hasValidated = (Boolean)session.getAttribute("hasValidated");
-Boolean closeWindow = (Boolean)session.getAttribute("closeWindow");
-WidgetService[] services = (WidgetService[])session.getAttribute("services");
+Integer dbkey = (Integer)request.getAttribute("dbkey");
+Boolean hasValidated = (Boolean)request.getAttribute("hasValidated");
+Boolean closeWindow = (Boolean)request.getAttribute("closeWindow");
+IWidgetService[] services = (IWidgetService[])request.getAttribute("services");
 %>
 <!DOCTYPE html>
 <html>
@@ -108,5 +109,4 @@ When a client of the widget system asks for a widget, it will ask using one of t
 
 </body>
 </html>
-<% session.setAttribute("error_value", null); %>
-<% session.setAttribute("message_value", null);%>
+<% FlashMessage.clearErrorsAndMessages(session);%>

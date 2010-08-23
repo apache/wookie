@@ -23,7 +23,9 @@ import org.apache.commons.mail.SimpleEmail;
 import org.apache.log4j.Logger;
 
 import org.apache.wookie.Messages;
-import org.apache.wookie.beans.ApiKey;
+import org.apache.wookie.beans.IApiKey;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.exceptions.SystemUnavailableException;
 import org.apache.wookie.util.HashGenerator;
 import org.apache.wookie.w3c.util.RandomGUID;
@@ -43,18 +45,19 @@ public class WidgetKeyManager{
 		if (value == null) return false;
 		if (value.trim().equals("")) return false;
 		value = value.trim();
-		ApiKey[] key = ApiKey.findByValue("value", value);
+		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IApiKey[] key = persistenceManager.findByValue(IApiKey.class, "value", value);
 		if (key == null || key.length !=1) return false;
-		return revokeKey(key[0]);
+		return revokeKey(persistenceManager, key[0]);
 	}
 	
 	/**
 	 * Revoke a key
 	 * @param key the key to revoke
 	 */
-	private static boolean revokeKey(ApiKey key){
+	private static boolean revokeKey(IPersistenceManager persistenceManager, IApiKey key){
 		if (key == null) return false;
-		key.delete();
+		persistenceManager.delete(key);
 		return true;
 	}
 	
@@ -67,8 +70,9 @@ public class WidgetKeyManager{
 	 * @throws SystemUnavailableException if there is a problem generating the key
 	 */
 	public static void createKey(HttpServletRequest request, String email, Messages localizedMessages) throws SystemUnavailableException, EmailException {
-		
-		ApiKey key = new ApiKey();
+	    
+	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IApiKey key = persistenceManager.newInstance(IApiKey.class);
 		key.setEmail(email);
 
 		// generate a nonce
@@ -85,7 +89,7 @@ public class WidgetKeyManager{
 		hashKey = hashKey.replaceAll("\\+", ".pl."); //$NON-NLS-1$ //$NON-NLS-2$
 
 		key.setValue(hashKey);
-		key.save();
+		persistenceManager.save(key);
 		
 		String message = localizedMessages.getString("WidgetKeyManager.0")+hashKey+" \n";  //$NON-NLS-1$//$NON-NLS-2$
 		message+="\n" + localizedMessages.getString("WidgetKeyManager.1"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -112,7 +116,8 @@ public class WidgetKeyManager{
 
 		// Empty key/empty origin
 		if (key.trim().equals("")) return false; //$NON-NLS-1$
-		ApiKey[] apiKey = ApiKey.findByValue("value", key);
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IApiKey[] apiKey = persistenceManager.findByValue(IApiKey.class, "value", key);
 		if (apiKey == null || apiKey.length !=1) {
 		  _logger.info("Invalid API key supplied: " + key);
 		  return false;

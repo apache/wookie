@@ -14,35 +14,33 @@
 
 package org.apache.wookie.server;
 
-
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Locale;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
-import org.apache.wookie.beans.ServerFeature;
-import org.apache.wookie.beans.Widget;
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.FeatureLoader;
 import org.apache.wookie.helpers.FlashMessage;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.util.WgtWatcher;
 import org.apache.wookie.util.WidgetFileUtils;
-import org.apache.wookie.util.hibernate.DBManagerFactory;
-import org.apache.wookie.util.hibernate.HibernateUtil;
-import org.apache.wookie.util.hibernate.IDBManager;
 import org.apache.wookie.util.html.StartPageProcessor;
 import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * ContextListener - does some init work and makes certain things are available 
@@ -62,11 +60,10 @@ public class ContextListener implements ServletContextListener {
 	 */
 	static Logger _logger = Logger.getLogger(ContextListener.class.getName());
 	
-	public void contextInitialized(ServletContextEvent event) {
-		// start hibernate now, not on first request
-		HibernateUtil.getSessionFactory();
+    public void contextInitialized(ServletContextEvent event) {
 		try {
 			ServletContext context = event.getServletContext();
+			
 			/* 
 			 *  load the widgetserver.properties file and put it into this context
 			 *  as an attribute 'properties' available to all resources
@@ -83,6 +80,30 @@ public class ContextListener implements ServletContextListener {
 				_logger.info("Using default widget server properties, configure your local server using: " + localPropsFile.toString());
 			}
 		 	context.setAttribute("properties", (Configuration) configuration);
+		 	
+		 	/*
+		 	 * Merge in system properties overrides
+		 	 */
+		 	Iterator<Object> systemKeysIter = System.getProperties().keySet().iterator();
+		 	while (systemKeysIter.hasNext()) {
+		 	    String key = systemKeysIter.next().toString();
+		 	    if (configuration.containsKey(key) || key.startsWith("widget.")) {
+		 	        String setting = configuration.getString(key);
+		 	        String override = System.getProperty(key);
+		 	        if ((override != null) && (override.length() > 0) && !override.equals(setting)) {
+		 	            configuration.setProperty(key, override);
+		 	            if (setting != null) {
+		 	                _logger.info("Overridden server configuration property: " + key + "=" +override);
+		 	            }
+		 	        }
+		 	    }
+		 	}
+		 	
+		 	/*
+		 	 * Initialize persistence manager factory now, not on first request
+		 	 */
+		 	PersistenceManagerFactory.initialize(configuration);
+		 	
 		 	/*
 		 	 * Initialise the locale handler
 		 	 */
@@ -161,24 +182,24 @@ public class ContextListener implements ServletContextListener {
 		final String contextPath = context.getContextPath();
 		Thread thr = new Thread(){
 	 		public void run() {
-	 			/** Get a DBManager for this thread. */
-	 			final IDBManager dbManager = DBManagerFactory.getDBManager();
 	 			int interval = 5000;
 	 			WgtWatcher watcher = new WgtWatcher();
 	 			watcher.setWatchDir(deploy);
 	 			watcher.setListener(new WgtWatcher.FileChangeListener(){
 	 				public void fileModified(File f) {
+	 			        // get persistence manager for this thread
+                        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 	 					try{
-	 						dbManager.beginTransaction();
+	 						persistenceManager.begin();
 	 						File upload = WidgetFileUtils.dealWithDroppedFile(UPLOADFOLDER, f);
 	 						W3CWidgetFactory fac = new W3CWidgetFactory();
 	 						fac.setLocales(locales);
 	 						fac.setLocalPath(contextPath+localWidgetFolderPath);
 	 						fac.setOutputDirectory(WIDGETFOLDER);
-	 						fac.setFeatures(ServerFeature.getFeatureNames());
+	 						fac.setFeatures(persistenceManager.findServerFeatureNames());
 	 						fac.setStartPageProcessor(new StartPageProcessor());
 	 						W3CWidget model = fac.parse(upload);
-	 						if(!Widget.exists(model.getIdentifier())) {
+	 						if(persistenceManager.findWidgetByGuid(model.getIdentifier()) == null) {
 	 							WidgetFactory.addNewWidget(model, true);	
 	 							String message = model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19");
 	 							_logger.info(message);
@@ -188,23 +209,30 @@ public class ContextListener implements ServletContextListener {
 	 							_logger.info(message);
 	 							FlashMessage.getInstance().message(message);
 	 						}
-	 						dbManager.commitTransaction();
+	 						persistenceManager.commit();
 	 					} catch (IOException e) {
+                            persistenceManager.rollback();
 	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.1");
 	 						FlashMessage.getInstance().error(error);
 	 						_logger.error(error);
 	 					} catch (BadWidgetZipFileException e) {
+                            persistenceManager.rollback();
 	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.2");
 	 						FlashMessage.getInstance().error(error);
 	 						_logger.error(error);
 	 					} catch (BadManifestException e) {
+                            persistenceManager.rollback();
 	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.3");
 	 						FlashMessage.getInstance().error(error);
 	 						_logger.error(error);
 	 					} catch (Exception e) {
+                            persistenceManager.rollback();
 	 						String error = f.getName()+":"+e.getLocalizedMessage();
 	 						FlashMessage.getInstance().error(error);
 	 						_logger.error(error);
+						} finally {
+				            // close thread persistence manager
+				            PersistenceManagerFactory.closePersistenceManager();						    
 						}
 	 				}
 	 				public void fileRemoved(File f) {
@@ -217,7 +245,6 @@ public class ContextListener implements ServletContextListener {
 	 		         Thread.sleep(interval);
 	 		       }
 	 		     } catch (InterruptedException iex) {
-	 		    	 dbManager.closeSession();
 	 		     }
 	 		}	
 	 	};
@@ -227,6 +254,9 @@ public class ContextListener implements ServletContextListener {
 	}
 
 	public void contextDestroyed(ServletContextEvent event){
-		HibernateUtil.getSessionFactory().close(); // Free all resources
+        /*
+         * Terminate persistence manager factory
+         */
+	    PersistenceManagerFactory.terminate();	    
 	}
 }
