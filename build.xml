@@ -279,7 +279,7 @@
 	
   <target name="post-compile-test">
     <!-- run unit tests, (skip functional and integration tests) -->
-    <junit printsummary="true" haltonfailure="true">
+    <junit fork="yes" forkmode="once" printsummary="true" haltonfailure="true">
       <formatter type="brief" usefile="false"/>
       <classpath>
 	    <path location="${project.build.classes.test.dir}" />
