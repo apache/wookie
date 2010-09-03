@@ -55,63 +55,7 @@ import org.junit.Test;
  * @author scott
  *
  */
-public class PackagingAndConfiguration{
-	
-	 static File download;
-	 static File output;
-	
-	@BeforeClass
-	public static void setup() throws IOException{
-		download = File.createTempFile("wookie-download", "wgt");
-		output = File.createTempFile("wookie-output", "tmp");
-	}
-	
-	@AfterClass
-	public static void tearDown(){
-		download.delete();
-		output.delete();
-	}
-	
-	private W3CWidget downloadWidget(String url) throws InvalidContentTypeException, BadWidgetZipFileException, BadManifestException, Exception{
-		return downloadWidget(url, true);
-	}
-	
-	private W3CWidget downloadWidget(String url, boolean ignoreContentType) throws InvalidContentTypeException, BadWidgetZipFileException, BadManifestException, Exception{
-		W3CWidgetFactory fac = new W3CWidgetFactory();
-		fac.setLocalPath("http:localhost/widgets");
-		fac.setFeatures(new String[]{"feature:a9bb79c1"});
-		fac.setEncodings(new String[]{"UTF-8", "ISO-8859-1","Windows-1252"});
-		if (download.exists()) download.delete();
-		if (output.exists()) output.delete();
-		output.mkdir();
-		fac.setOutputDirectory(output.getAbsolutePath());
-		return fac.parse(new URL(url),ignoreContentType);
-	}
-	
-	public String processWidgetWithErrors(String url){
-		try {
-			downloadWidget(url);
-		} catch (BadWidgetZipFileException e) {
-			if (e.getMessage()!=null) return e.getMessage();
-			return "Bad Widget Zip File";
-		} catch (BadManifestException e) {
-			if (e.getMessage()!=null) return e.getMessage();
-			return "Bad Manifest";
-		} catch (Exception e) {
-			return e.getMessage();
-		}
-		return null;
-	}
-	
-	public W3CWidget processWidgetNoErrors(String url){
-		try {
-			return downloadWidget(url);
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-			return null;
-		}
-	}
+public class PackagingAndConfiguration extends ConformanceTest{
 	
 	// 1 files
 	@Test
@@ -577,7 +521,7 @@ public class PackagingAndConfiguration{
 	public void cx(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-YUMJAPVEgI/004/cx.wgt");
 		assertEquals("",  getLicenseText(widget));	
-		assertEquals("license/pass.html", getLicenseHref(widget));
+		assertEquals("test-license/pass.html", getLicenseHref(widget));
 	}
 
 	// 21 Icon
