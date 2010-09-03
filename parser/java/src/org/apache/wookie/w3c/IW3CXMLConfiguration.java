@@ -24,7 +24,7 @@ public interface IW3CXMLConfiguration {
 		public static final String VERSION_ATTRIBUTE = "version"; // widget
 		public static final String MODE_ATTRIBUTE = "viewmodes"; //widget
 		// Values of widget view modes
-		public static final String[] VIEWMODES = {"application", "floating", "fullscreen", "mini", "all"};
+		public static final String[] VIEWMODES = {"windowed", "floating", "fullscreen", "maximized", "minimized", "all"};
 		public static final String DEFAULT_VIEWMODE = "floating";
 		
 	public static final String NAME_ELEMENT = "name"; // widget[0..*]

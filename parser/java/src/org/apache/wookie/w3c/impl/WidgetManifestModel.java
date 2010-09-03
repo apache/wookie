@@ -17,6 +17,7 @@ package org.apache.wookie.w3c.impl;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.compress.archivers.zip.ZipFile;
@@ -282,6 +283,12 @@ public class WidgetManifestModel implements W3CWidget {
 			fViewModes = IW3CXMLConfiguration.DEFAULT_VIEWMODE;
 		} else {
 			fViewModes = UnicodeUtils.normalizeSpaces(fViewModes);
+			String modes = "";
+			// remove any unsupported modes
+			for (String mode:fViewModes.split(" ")){
+				if (Arrays.asList(IW3CXMLConfiguration.VIEWMODES).contains(mode)) modes = modes + mode +" ";
+			}
+			fViewModes = modes.trim();
 		}
 		// xml:lang optional
 		fLang = element.getAttributeValue(IW3CXMLConfiguration.LANG_ATTRIBUTE, Namespace.XML_NAMESPACE);
