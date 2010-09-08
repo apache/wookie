@@ -197,7 +197,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	@Test
 	public void bw(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-klLDaEgJeU/003/bw.wgt");
-		assertEquals("PASS", widget.getAuthor());
+		assertEquals("PASS", widget.getAuthor().getAuthorName());
 	}
 	// 9 widget
 	@Test
@@ -647,18 +647,18 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	@Test
 	public void b7(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-sdwhMozwIc/000/b7.wgt");
-		assertEquals("PASS", widget.getAuthor());
+		assertEquals("PASS", widget.getAuthor().getAuthorName());
 	}
 	@Test
 	public void b8(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-sdwhMozwIc/001/b8.wgt");
-		assertEquals("", widget.getAuthor());
+		assertEquals("", widget.getAuthor().getAuthorName());
 
 	}
 	@Test
 	public void b9(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-sdwhMozwIc/002/b9.wgt");
-		assertEquals("PASS", widget.getAuthor());
+		assertEquals("PASS", widget.getAuthor().getAuthorName());
 
 	}
 
@@ -666,49 +666,50 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	@Test
 	public void af(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/000/af.wgt");
-		assertEquals("PASS", widget.getAuthor());
+		assertEquals("PASS", widget.getAuthor().getAuthorName());
 	}
 	@Test
 	public void ag(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/001/ag.wgt");
-		assertEquals("P A S S", widget.getAuthor());
+		assertEquals("P A S S", widget.getAuthor().getAuthorName());
 	}
 	@Test
 	public void ah(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/002/ah.wgt");
-		assertEquals("PASS", widget.getAuthor());
+		assertEquals("PASS", widget.getAuthor().getAuthorName());
 	}
 	@Test
 	public void ai(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/003/ai.wgt");
-		assertEquals("PASS", widget.getAuthorEmail());
+		assertEquals("PASS", widget.getAuthor().getEmail());
 	}
 	@Test
 	public void aj(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/004/aj.wgt");
-		assertEquals("PASS", widget.getAuthor());
-		assertEquals("PASS", widget.getAuthorEmail());
-		assertEquals("PASS:PASS", widget.getAuthorHref());
+		assertEquals("PASS", widget.getAuthor().getAuthorName());
+		assertEquals("PASS", widget.getAuthor().getEmail());
+		assertEquals("PASS:PASS", widget.getAuthor().getHref());
 	}
 	@Test
 	public void ak(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/005/ak.wgt");
-		assertEquals("PASS", widget.getAuthor());
-		assertEquals("PASS", widget.getAuthorEmail());
-		assertEquals("PASS:PASS", widget.getAuthorHref());	}
+		assertEquals("PASS", widget.getAuthor().getAuthorName());
+		assertEquals("PASS", widget.getAuthor().getEmail());
+		assertEquals("PASS:PASS", widget.getAuthor().getHref());
+		}
 	@Test
 	public void al(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/006/al.wgt");
-		assertEquals("", widget.getAuthor());
+		assertEquals("", widget.getAuthor().getAuthorName());
 	}
 	@Test
 	public void am(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/007/am.wgt");
-		assertEquals("PASS:PASS", widget.getAuthorHref());	}
+		assertEquals("PASS:PASS", widget.getAuthor().getHref());	}
 	@Test
 	public void an(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/008/an.wgt");
-		assertEquals(null, widget.getAuthorHref());	}
+		assertEquals(null, widget.getAuthor().getHref());	}
 
 
 	// 28 Preference

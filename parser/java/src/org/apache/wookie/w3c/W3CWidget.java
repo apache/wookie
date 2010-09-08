@@ -63,15 +63,7 @@ public interface W3CWidget extends IElement{
 	/**
 	 * Get the Author information for the widget
 	 */
-	public String getAuthor();
-	/**
-	 * Get the email address of the Widget's author
-	 */
-	public String getAuthorEmail();
-	/**
-	 * Get the url for the Widget's author
-	 */
-	public String getAuthorHref();
+	public IAuthorEntity getAuthor();
 	/**
 	 * Get the list of Preferences defined for the widget
 	 */

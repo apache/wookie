@@ -17,7 +17,7 @@ package org.apache.wookie.w3c;
 /**
  * an Author of a Widget
  */
-public interface IAuthorEntity extends IElement {
+public interface IAuthorEntity extends ILocalizedEntity {
 
 	public String getAuthorName();
 

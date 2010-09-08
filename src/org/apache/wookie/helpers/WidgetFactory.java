@@ -101,10 +101,12 @@ public class WidgetFactory {
 
 	private static IWidget createWidget(IPersistenceManager persistenceManager, W3CWidget model){
 		IWidget widget;
-		widget = persistenceManager.newInstance(IWidget.class);												
-		widget.setWidgetAuthor(model.getAuthor());
-		widget.setWidgetAuthorEmail(model.getAuthorEmail());
-		widget.setWidgetAuthorHref(model.getAuthorHref());
+		widget = persistenceManager.newInstance(IWidget.class);		
+		if (model.getAuthor() != null){
+			widget.setWidgetAuthor(model.getAuthor().getAuthorName());
+			widget.setWidgetAuthorEmail(model.getAuthor().getEmail());
+			widget.setWidgetAuthorHref(model.getAuthor().getHref());
+		}
 		widget.setGuid(model.getIdentifier());
 		widget.setHeight(model.getHeight());
 		widget.setWidth(model.getWidth());

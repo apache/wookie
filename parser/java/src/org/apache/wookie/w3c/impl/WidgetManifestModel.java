@@ -162,19 +162,8 @@ public class WidgetManifestModel implements W3CWidget {
 		return fAccessList;
 	}
 	
-	public String getAuthor(){
-		if (fAuthor == null) return null;
-		return fAuthor.getAuthorName();
-	}
-	
-	public String getAuthorEmail() {
-		if (fAuthor == null) return null;
-		return fAuthor.getEmail();
-	}
-
-	public String getAuthorHref() {
-		if (fAuthor == null) return null;
-		return fAuthor.getHref();
+	public IAuthorEntity getAuthor(){
+		return fAuthor;
 	}
 
 	public List<IContentEntity> getContentList() {

@@ -149,14 +149,12 @@ public class EntityTest {
 	@Test
 	public void widget() throws JDOMException, IOException, BadManifestException{
 		WidgetManifestModel widget = new WidgetManifestModel("<widget xmlns=\""+IW3CXMLConfiguration.MANIFEST_NAMESPACE+"\"><name>test</name></widget>",null,null,null,null);
-		assertNull(widget.getAuthorEmail());
-		assertNull(widget.getAuthorHref());
+		assertNull(widget.getAuthor());
 		assertEquals("test",widget.getLocalName("en"));
 		assertEquals("floating",widget.getViewModes());
 		
 		widget = new WidgetManifestModel("<widget xmlns=\""+IW3CXMLConfiguration.MANIFEST_NAMESPACE+"\" viewmodes=\"fullscreen\"></widget>",null,null,null,null);
-		assertNull(widget.getAuthorEmail());
-		assertNull(widget.getAuthorHref());
+		assertNull(widget.getAuthor());
 		assertEquals(IW3CXMLConfiguration.UNKNOWN,widget.getLocalName("en"));
 		assertEquals("fullscreen",widget.getViewModes());
 	}
