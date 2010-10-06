@@ -23,6 +23,7 @@ tutorials/geoLocation/legal/
 widgets/localetest/index.htm
 widgets/localetest/locales/
 widgets/camera/icon.svg
+widgets/geo/icon.svg
 
 # anything below is under a different license header
 # needs checking if relevant licenses are included
