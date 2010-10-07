@@ -148,6 +148,10 @@ Other configurations of Wookie can also be run; the main requirements are a serv
 
 Both the RDBMS and JCR versions of Wookie depend only on container defined JNDI resources. Alternate persistence configurations are made by selecting the persistence manager component and supplying the required resource.
 
+Running Wookie with virtual host configuration
+==============================================
+See http://incubator.apache.org/wookie/downloading-and-installing-wookie.html
+
 Building and deploying widgets
 ==============================
 See http://incubator.apache.org/wookie/building-widgets.html
