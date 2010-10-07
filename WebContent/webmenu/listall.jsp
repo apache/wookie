@@ -14,7 +14,7 @@
  */
 --%>
 <%@ page import='org.apache.wookie.helpers.FlashMessage' %>
-<%@ page import='org.apache.wookie.Messages,org.apache.wookie.beans.IWidget,java.util.ArrayList,java.util.Enumeration,java.util.Hashtable;' %>
+<%@ page import='org.apache.wookie.Messages,org.apache.wookie.beans.IWidget,org.apache.wookie.beans.IWidgetInstance,java.util.ArrayList;' %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <% Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName()); %>
 <!DOCTYPE html>
@@ -48,12 +48,14 @@
 	<table align="center">	
 	<tr align="center">
 	<%	
-	Hashtable widgetsHash = (Hashtable)request.getAttribute("widgetsHash");
+	IWidgetInstance[] widgetInstances = (IWidgetInstance[])request.getAttribute("widgetInstances");
 	ArrayList<String> guids = new ArrayList<String>();
 	int count = -1;
-	for(Enumeration e = widgetsHash.keys(); e.hasMoreElements();){				
-		String id = (String) e.nextElement();
-		IWidget widget = (IWidget) widgetsHash.get(id);
+		
+	for(IWidgetInstance instance: widgetInstances){				
+		String id = instance.getIdKey();
+		IWidget widget = instance.getWidget();
+		
 		if (!widget.getGuid().equalsIgnoreCase("http://www.tencompetence.org/widgets/default/notsupported")){
 			String guid = widget.getGuid();
 			if(!guids.contains(guid)){

@@ -15,7 +15,9 @@
 package org.apache.wookie;
 
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
@@ -183,25 +185,20 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 	/**
 	 * Creates a table, looks for widget definitions with a string (the name of 
 	 * the widget) and an instance of the widget which references the actual widget 
-	 * object and its putting widgets in widgets_hash" 
-	 * Results are returned in the request.
+	 * object and puts the resulting set of instances in the widgetInstances attribute
+	 * of the request. This can then be accessed by listall.jsp 
 	 * 
 	 * @param request
 	 * @param session
 	 * @param manager
 	 */
 	private void listOperation(HttpServletRequest request, HttpSession session, IWidgetAdminManager manager){
-		Hashtable<String, IWidget> widgetsHash = new Hashtable<String, IWidget>();
+		ArrayList<IWidgetInstance> widgetInstances = new ArrayList<IWidgetInstance>();
 
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
         IWidget[] widgets = persistenceManager.findAll(IWidget.class);
 		for(IWidget widget : widgets){
-			
 			// Create an instance of the widget so that we can display it as the demo widget
-			// An instance of a widget refers to a widget that has data stored on
-			// to it and is going to be deployed on different platforms. In this 
-			// case its windows.  
-			
 			IWidgetInstance instance = null;
 			String apiKey = "TEST"; //$NON-NLS-1$
 			String userId = "testuser"; //$NON-NLS-1$
@@ -209,16 +206,22 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 			String widgetId = widget.getGuid();
 			instance = WidgetInstanceFactory.getWidgetFactory(session, LocaleHandler.localizeMessages(request)).newInstance(apiKey, userId, sharedDataKey, null, widgetId, null);
 			if (instance != null) {
-				widgetsHash.put(instance.getIdKey(), widget);
-				// widgets could be organised alphabetically here.
-			
+				widgetInstances.add(instance);
 			}
 		}
-
-		//for(WidgetDefault defaultWidget : manager.getAllDefaultWidgets()){
-		//	widgetsHash.put(defaultWidget.getWidgetContext(), manager.getWidget(defaultWidget.getWidgetId()));
-		//}
-		request.setAttribute("widgetsHash", widgetsHash); //$NON-NLS-1$
+		
+		// Sort the widget instances by name
+		Collections.sort(widgetInstances, new Comparator<Object>(){
+			public int compare(Object o1, Object o2) {
+				String w1 = ((IWidgetInstance)o1).getWidget().getWidgetTitle(null);
+				String w2 = ((IWidgetInstance)o2).getWidget().getWidgetTitle(null);
+				return w1.compareTo(w2);
+			}
+			
+		});
+		
+		// Store the array of instances in the request attribute
+		request.setAttribute("widgetInstances", widgetInstances.toArray( new IWidgetInstance[widgetInstances.size()])); //$NON-NLS-1$
 	}
 
 	private void requestApiKeyOperation(HttpServletRequest request, Configuration properties, IWidgetAdminManager manager){
