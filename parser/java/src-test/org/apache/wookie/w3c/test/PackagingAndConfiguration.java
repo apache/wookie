@@ -521,7 +521,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	public void cx(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-YUMJAPVEgI/004/cx.wgt");
 		assertEquals("",  getLicenseText(widget));	
-		assertEquals("test-license/pass.html", getLicenseHref(widget));
+		assertEquals("test/pass.html", getLicenseHref(widget));
 	}
 
 	// 21 Icon
@@ -935,7 +935,6 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	public void dr(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-rZdcMBExBX/001/dr.wgt");
 		assertNotNull(getTestFeature(widget));
-		assertEquals(false, getTestFeature(widget).isRequired());
 	}
 	
 	@Test

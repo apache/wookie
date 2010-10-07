@@ -522,7 +522,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	public void cx(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-YUMJAPVEgI/004/cx.wgt");
 		assertEquals("",  widget.getChild("license").getText());	
-		assertEquals("license/pass.html", widget.getChild("license").getAttributeValue("href"));
+		assertEquals("test/pass.html", widget.getChild("license").getAttributeValue("href"));
 	}
 
 	// 21 Icon
