@@ -29,6 +29,8 @@ widgets/geo/icon.svg
 # needs checking if relevant licenses are included
 # at top level
 
+connector/flash_flex/com/google/code/flexiframe/IFrame.as
+connector/flash_flex/com/google/code/flexiframe/IFrameExternalCalls.as
 features/camera/licenses.txt
 features/camera/shared/camcanvas.html
 features/camera/shared/jquery.js

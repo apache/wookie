@@ -81,3 +81,7 @@ widgets/sudoku/json.js
 widgets/todo/json2.js
 	Containing Project URL: http://json.org
 	License: Domain (See http://www.JSON.org/js.html)
+	
+flex-iframe
+	Containing Project URL: http://code.google.com/p/flex-iframe/
+	License: MIT (see http://flex-iframe.googlecode.com/svn/trunk/README; this README is also included in the Flash_Flex Connector)
