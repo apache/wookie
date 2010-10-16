@@ -1,6 +1,6 @@
-This is a PHP implementation of the Wookie Connector Framework. It is intended to map the java
-implementation which should be considered the reference implementation of the connector 
-framework.
+This is a PHP implementation of the Wookie Connector Framework.
+
+For more information see: http://incubator.apache.org/wookie/embedding-wookie-widgets-in-other-applications.html
 
 INSTALLATION
 ============
