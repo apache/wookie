@@ -16,6 +16,7 @@
   limitations under the License.
 -->
 <project default="build-widget" basedir="." name="Wookie_widgets_build_file">
+	<property name="project.build.dir" location="../build"/>
 	<property name="wookie.widgets.dir" location="."/>
 	<property name="widget.template.dir" value="${wookie.widgets.dir}/widget-template"/>
     <property name="widget.build.dir" value="${project.build.dir}/widgets"/>
@@ -47,15 +48,14 @@
     	<antcall target="_create-widget-from-template"/>
     </target>   
 	
-	<target name="build-test-widget" description="Build and deploy a test widget that uses sensible settings. This is used when developing the widget template scripts.">
-	  	<property name="deployToDev" value="true"/>
+	<target name="build-test-widget" description="Build a test widget that uses sensible settings. This is used when developing the widget template scripts.">
+		<property name="deployToDev" value="true"/>
 		<property name="widget.shortname" value="TemplateTest"/>
 		<property name="widget.description" value="A widget built from the standard widget template and using sensible default options for all configuration settings. This is used during development of the widget template"/>
 		<property name="widget.height" value="320"/>
 		<property name="widget.width" value="200"/>
 		<antcall target="_create-widget-from-template"/>
 		<antcall target="build-widget"/>
-		<antcall target="deploy-widget"/>
 	</target>
     	
     <target name="_create-widget-from-template" description="Copies the widget template and configures it accordingly.">
