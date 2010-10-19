@@ -44,7 +44,21 @@
     	<input message="Provide a brief description of the purpose of the ${widget.shortname} widget" addproperty="widget.description"/>
     	<input message="What is the default height of the ${widget.shortname} widget?" addproperty="widget.height" defaultvalue="320"/>
     	<input message="What is the default width of the widget you wish to create?" addproperty="widget.width" defaultvalue="200"/>
-    	    	
+    	<antcall target="_create-widget-from-template"/>
+    </target>   
+	
+	<target name="build-test-widget" description="Build and deploy a test widget that uses sensible settings. This is used when developing the widget template scripts.">
+	  	<property name="deployToDev" value="true"/>
+		<property name="widget.shortname" value="TemplateTest"/>
+		<property name="widget.description" value="A widget built from the standard widget template and using sensible default options for all configuration settings. This is used during development of the widget template"/>
+		<property name="widget.height" value="320"/>
+		<property name="widget.width" value="200"/>
+		<antcall target="_create-widget-from-template"/>
+		<antcall target="build-widget"/>
+		<antcall target="deploy-widget"/>
+	</target>
+    	
+    <target name="_create-widget-from-template" description="Copies the widget template and configures it accordingly.">
     	<mkdir dir="${wookie.widgets.dir}/${widget.shortname}"/>
     	<copy todir="${wookie.widgets.dir}/${widget.shortname}" filtering="true">
     		<fileset dir="${widget.template.dir}">
