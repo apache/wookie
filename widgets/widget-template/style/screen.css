@@ -36,11 +36,21 @@ html, body {
 
 #wookie-toolbar {
 	background-color:#C0C0C0;
+    text-align:center;
+    font-size:75%;
+    height:16px;
+}
+
+#wookie-widget-icon {
+	float:left;
 }
 
 #wookie-content {
-	background-colour:#FFFFFF;
     padding-bottom:1em;   /* Height of the footer */
+}
+
+#wookie-settings {
+	display:none;
 }
 
 #wookie-footer {
@@ -48,5 +58,7 @@ html, body {
 	position:absolute;
     bottom:0;
     width:100%;
-    height:1em;   /* Height of the footer */
+    font-size:75%;
+    text-align:center;
+    height:1.5em;   /* Height of the footer */
 }
