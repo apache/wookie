@@ -17,6 +17,7 @@ tutorials/geoLocation/legal/
 **/dist/**
 .classpath
 .project
+docs/legacy/readme_coppercore.txt
 
 # Group all the widgets stuff below.
 
