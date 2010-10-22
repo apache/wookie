@@ -22,7 +22,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import javax.jcr.Repository;
+import javax.sql.DataSource;
 
+import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp.DataSourceConnectionFactory;
+import org.apache.commons.dbcp.PoolableConnectionFactory;
+import org.apache.commons.dbcp.PoolingDataSource;
+import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.jackrabbit.core.TransientRepository;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.jcr.JCRPersistenceManager;
@@ -33,8 +39,6 @@ import org.mortbay.jetty.plus.naming.Resource;
 import org.mortbay.jetty.security.HashUserRealm;
 import org.mortbay.jetty.security.UserRealm;
 import org.mortbay.jetty.webapp.WebAppContext;
-
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class Start {
 	static final private Logger logger = Logger.getLogger(Start.class);
@@ -165,19 +169,27 @@ public class Start {
                 }
             }
 
-            // setup C3P0 JPA database connection pool JNDI resource
-            ComboPooledDataSource dataSource = new ComboPooledDataSource();
-            dataSource.setJdbcUrl(dbUri);
-            dataSource.setDriverClass(dbDriver);
-            dataSource.setUser(dbUser);
+            // Setup a database connection resource using DBCP
+            BasicDataSource dataSource = new BasicDataSource();
+            dataSource.setDriverClassName(dbDriver);
+            dataSource.setUrl(dbUri);
+            dataSource.setUsername(dbUser);
             dataSource.setPassword(dbPassword);
-            dataSource.setAcquireIncrement(1);
-            dataSource.setIdleConnectionTestPeriod(200);
-            dataSource.setMaxPoolSize(80);
-            dataSource.setMaxStatements(0);
-            dataSource.setMinPoolSize(5);
-            dataSource.setMaxIdleTime(80);
-            new Resource(JPAPersistenceManager.WIDGET_DATABASE_JNDI_DATASOURCE_NAME, dataSource);
+            dataSource.setMaxActive(80);
+            dataSource.setMaxIdle(80);
+            dataSource.setInitialSize(5);
+            dataSource.setMaxOpenPreparedStatements(0);
+            
+            // Set up connection pool
+            GenericObjectPool pool = new GenericObjectPool();
+            // setup factory and pooling DataSource
+            DataSourceConnectionFactory factory = new DataSourceConnectionFactory(dataSource);
+            @SuppressWarnings("unused")
+			PoolableConnectionFactory poolableConnectionFactory = new PoolableConnectionFactory(factory,pool,null,null,false,true);
+            DataSource poolingDataSource = new PoolingDataSource(pool);
+            
+            
+            new Resource(JPAPersistenceManager.WIDGET_DATABASE_JNDI_DATASOURCE_NAME, poolingDataSource);
         } else if (persistenceManagerType.equals(PERSISTENCE_MANAGER_TYPE_JCR)) {
             logger.info("Configuring JCR persistence manager");
 
