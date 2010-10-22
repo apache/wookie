@@ -62,3 +62,14 @@ html, body {
     text-align:center;
     height:1.5em;   /* Height of the footer */
 }
+
+input.wookie-form-button {
+   font-size:9px;
+   font-family:Verdana,sans-serif;
+   font-weight:bold;
+   color:#fcfcfc;
+   background-color:#000000;
+   border-style:solid;
+   border-color:#cccccc;
+   border-width:1px;
+}

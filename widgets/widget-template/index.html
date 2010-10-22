@@ -26,10 +26,14 @@
 	<body>
 	  <div id="wookie-widget">
 		<div id="wookie-toolbar"><img id="wookie-widget-icon" src="images/icon_16x16.png" onclick="wookieShowSettings()" alt="@widget.shortname@ Icon"/>@widget.shortname@</div>
-		<div id="wookie-content">@widget.description@</div>
+		<div id="wookie-content">
+		  <h2>@widget.shortname@</h2>
+		  <p>@widget.description@</p>
+		</div>
 		<div id="wookie-settings">
 	      <p>This is the settings pane, it is hidden by default. 
 	         If your widget does not have any settings then remove this pane.</p>
+	       <p><input type="submit" class="wookie-form-button" value="Save" onclick="wookieShowMain()"/></p>
 	    </div>
 		<div id="wookie-footer">Powered by Apache Wookie (Incubating)</div>
 	  </div>
