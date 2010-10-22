@@ -1,12 +1,4 @@
-antlr-2.7.6.jar
-	Containing Project URL: http://ant.apache.org/
-	License: Apache License (See apache-2.0.txt)
-
-asm.jar
-	Containing Project URL: http://asm.objectweb.org
-	License: France Telecom Software License (See http://asm.objectweb.org/license.html)
-
-cglib-2.1.3.jar
+cglib-2.2.jar
 	Containing Project URL: http://cglib.sourceforge.net/
 	License: Apache License (See apache-2.0.txt)
 
@@ -18,8 +10,20 @@ commons-collections-3.2.jar
 	Containing Project URL: http://commons.apache.org/collections/
 	License: Apache License (See apache-2.0.txt)
 
+commons-compress-1.0.jar
+	Containing Project URL: http://commons.apache.org/compress/
+	License: Apache License (See apache-2.0.txt)
+	
 commons-configuration-1.4.jar
 	Containing Project URL: http://commons.apache.org/configuration/
+	License: Apache License (See apache-2.0.txt)
+
+commons-dbcp-1.2.1.jar
+	Containing Project URL: http://commons.apache.org/dbcp/
+	License: Apache License (See apache-2.0.txt)
+	
+commons-email-1.1.jar
+	Containing Project URL: http://commons.apache.org/email/
 	License: Apache License (See apache-2.0.txt)
 
 commons-fileupload-1.0.jar
@@ -30,59 +34,104 @@ commons-httpclient-3.0.1.jar
 	Containing Project URL: http://hc.apache.org/httpcomponents-client/index.html
 	License: Apache License (See apache-2.0.txt)
 
-commons-lang-2.3.jar
+commons-io-1.4.jar
+	Containing Project URL: http://commons.apache.org/io/
+	License: Apache License (See apache-2.0.txt)
+
+commons-lang-2.4.jar
 	Containing Project URL: http://commons.apache.org/lang/
 	License: Apache License (See apache-2.0.txt)
 
 commons-logging.jar
 	Containing Project URL: http://commons.apache.org/logging
 	License: Apache License (See apache-2.0.txt)
+	
+commons-pool-1.2.jar
+	Containing Project URL: http://commons.apache.org/pool
+	License: Apache License (See apache-2.0.txt)
+	
+ddl-utils-1.0.jar
+	Containing Project URL: http://db.apache.org/ddlutils/
+	License: Apache License (See apache-2.0.txt)
+
+derby-10.2.1.6.jar
+	Containing Project URL: http://db.apache.org/derby/
+	License: Apache License (See apache-2.0.txt)
 
 dom4j-1.6.1.jar
 	Containing Project URL: http://www.dom4j.org/
 	License: BSD (http://www.dom4j.org/license.html)
 
-dwr_v2.jar
+dwr_2.0.5.jar
 	Containing Project URL: http://directwebremoting.org/
+	License: Apache License (apache-2.0.txt)
+	
+google-collections-1.0-rc2.jar
+	Containing Project URL: http://code.google.com/p/guava-libraries/
 	License: Apache License (apache-2.0.txt)
 
 htmlcleaner2_1.jar
 	Containing Project URL: http://htmlcleaner.sourceforge.net/
 	License: BSD (http://htmlcleaner.sourceforge.net/license.php)
+	
+icu4j.jar
+	Containing Project URL: http://site.icu-project.org/
+	License: X (see http://source.icu-project.org/repos/icu/icu4j/tags/release-4-2-1/license.html)
+	
+jackrabbit-core-1.5.3.jar; jackrabbit-jcr-commons-1.5.3.jar; jackrabbit-ocm-1.5.3.jar
+	Containing Project URL: http://jackrabbit.apache.org/
+	License: License: Apache License (See apache-2.0.txt)
 
-jdom.jar
+jcr-1.0.jar
+	Containing Project URL: http://jackrabbit.apache.org/
+	License: License: Apache License (See apache-2.0.txt)
+
+jdom-1.1.jar
 	Containing Project URL: http://www.jdom.org/
 	License: Apache-style (See jdom.txt)
-
+	
+jetty-6.1.3.jar; jetty-util-6.1.3.jar; jetty-plus-6.1.3.jar; jetty-naming-6.1.3.jar; jsp-2.1.jar; jsp-api-2.1.jar
+	Containing Project URL: http://jetty.codehaus.org/jetty/
+	License: License: Apache License (See apache-2.0.txt)
+	
+json-20080701.jar
+	Containing Project URL: http://www.JSON.org/
+	License: MIT-style (See http://www.JSON.org/license.html)
+	
+junit-4.7.jar
+	Containing Project URL: http://www.junit.org/
+	License: BSD
+	
 log4j-1.2.14.jar
 	Containing Project URL: http://logging.apache.org/log4j/1.2/index.html
 	License: Apache License (See apache-2.0.txt)
 	
-creole.js
-	By Ivan Fomichev; see http://www.ivan.fomichev.name/2008/04/javascript-creole-10-wiki-markup-parser.html
-	License: MIT (see creole.js in the WookieWiki widget)
-
+naming-java-0.8.jar, naming-core-0.8.jar
+	Containing Project URL: http://incubator.apache.org/projects/directory.html
+	License: License: Apache License (See apache-2.0.txt)
+	
+openjpa-all-2.0.0.jar
+	Containing Project URL: http://openjpa.apache.org/
+	License: Apache License (See apache-2.0.txt)
+	
 jquery.js
 	Containing Project URL: http://jquery.com/
 	License: MIT (see http://dev.jquery.com/browser/trunk/jquery/MIT-LICENSE.txt)
+
+slf4j-log4j12-1.5.2.jar
+	Containing Project URL: http://www.slf4j.org/
+	License: MIT (see http://www.slf4j.org/license.html)
+	
+shindig-common-1.1-BETA5-incubating.jar
+	Containing Project URL: http://shindig.apache.org/
+	License: Apache License (apache-2.0.txt)
 	
 UrlEncodedQueryString.java
 	By Richard Kennard; see https://urlencodedquerystring.dev.java.net/
 	License: BSD (see bsd.txt)
 	
-icu4j.jar
-	Containing Project URL: http://site.icu-project.org/
-	License: X (see http://source.icu-project.org/repos/icu/icu4j/tags/release-4-2-1/license.html)
-
-widgets/sudoku/json.js
-	Containing Project URL: http://json.org
-	License: JSON (see http://www.crockford.com/JSON/license.html)
-
-widgets/todo/json2.js
-widgets/geo/json2.js
-	Containing Project URL: http://json.org
-	License: Public Domain (See http://www.JSON.org/js.html)
-	
+Features
+========
 flex-iframe
 	Containing Project URL: http://code.google.com/p/flex-iframe/
 	License: MIT (see http://flex-iframe.googlecode.com/svn/trunk/README; this README is also included in the Flash_Flex Connector)
@@ -94,7 +143,22 @@ thickbox.js, thickbox.css
 camcanvas.html, camcavas.swf
 	Containing Project URL: http://www.taboca.com/p/camcanvas/
 	License: MIT (see http://github.com/taboca/CamCanvas-API-/blob/master/MIT-LICENSE.txt)
-	
+
+Widgets
+=======
+creole.js
+	By Ivan Fomichev; see http://www.ivan.fomichev.name/2008/04/javascript-creole-10-wiki-markup-parser.html
+	License: MIT (see creole.js in the WookieWiki widget)
+
+widgets/sudoku/json.js
+	Containing Project URL: http://json.org
+	License: JSON (see http://www.crockford.com/JSON/license.html)
+
+widgets/todo/json2.js
+widgets/geo/json2.js
+	Containing Project URL: http://json.org
+	License: Public Domain (See http://www.JSON.org/js.html)
+		
 geo.js, geo_position_js_simulator.js
 	Containing Project URL: http://code.google.com/p/geo-location-javascript/
 	License: MIT (see tutorials/geoLocation/legal/)
@@ -102,5 +166,4 @@ geo.js, geo_position_js_simulator.js
 "Bubbles" widget
 	Containing Project URL: http://widgets.opera.com/widget/10982/
 	License: MIT (see widgets/bubbles/license.txt)
-	
 	
