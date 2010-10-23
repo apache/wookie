@@ -20,7 +20,8 @@
         <meta http-equiv="pragma" content="no-cache"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="stylesheet" type="text/css" href="style/screen.css" />
-        <script type="text/javascript" src="scripts/ui.js" charset="utf-8"></script>  
+        <script type="text/javascript" src="scripts/ui.js" charset="utf-8"></script>
+        <script type="text/javascript" src="scripts/properties.js" charset="utf-8"></script>  
 		<title>@widget.shortname@</title>
 	</head>
 	<body>
@@ -31,9 +32,8 @@
 		  <p>@widget.description@</p>
 		</div>
 		<div id="wookie-settings">
-	      <p>This is the settings pane, it is hidden by default. 
-	         If your widget does not have any settings then remove this pane.</p>
-	       <p><input type="submit" class="wookie-form-button" value="Save" onclick="wookieShowMain()"/></p>
+	      <p>Frontpage content</p> <textarea rows="6" cols="20" id="wookie-template-property-content"></textarea>
+	      <p><input type="submit" class="wookie-form-button" value="Save" onclick="saveProperties()"/>
 	    </div>
 		<div id="wookie-footer">Powered by Apache Wookie (Incubating)</div>
 	  </div>

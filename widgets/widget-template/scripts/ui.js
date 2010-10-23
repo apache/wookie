@@ -15,21 +15,41 @@
  * limitations under the License.
  */
 
+var username="FIXME: set username";
+
 /**
  * Helper methods for manipulating the widget UI.
  */
 
 
 function wookieShowSettings(event) {
-	var content = document.getElementById("wookie-content");
-	var settings = document.getElementById("wookie-settings");
-	content.style.display="none";
-	settings.style.display="block";
+	var elemContent = document.getElementById("wookie-content");
+	var elemSettings = document.getElementById("wookie-settings");
+	
+	var elemContentProperty = document.getElementById("wookie-template-property-content");
+	elemContentProperty.innerHTML = elemContent.innerHTML;
+	
+	elemContent.style.display="none";
+	elemSettings.style.display="block";
 }
 
 function wookieShowMain(event) {
-	var content = document.getElementById("wookie-content");
-	var settings = document.getElementById("wookie-settings");
-	content.style.display="block";
-	settings.style.display="none";	
+	var content = Widget.preferences.getItem("content");
+	var elemContent = document.getElementById("wookie-content");
+	elemContent.innerHTML = content;
+	
+	var elemSettings = document.getElementById("wookie-settings");
+	elemContent.style.display="block";
+	elemSettings.style.display="none";	
+}
+
+// Functions below this line are for demonstration purposes only and should be removed or
+// replaced in production widgets
+
+/*
+ * Set the content of the homepage.
+ */
+function setContent() {
+    var text = dwr.util.getValue("wookie-template-content");
+    text = dwr.util.escapeHtml(text + "<br/><sub>Set by " + username + "</sub>");
 }
