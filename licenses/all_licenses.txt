@@ -1,7 +1,3 @@
-cglib-2.2.jar
-	Containing Project URL: http://cglib.sourceforge.net/
-	License: Apache License (See apache-2.0.txt)
-
 commons-codec-1.3.jar
 	Containing Project URL: http://commons.apache.org/codec/
 	License: Apache License (See apache-2.0.txt)
