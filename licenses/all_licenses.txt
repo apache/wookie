@@ -61,10 +61,6 @@ dom4j-1.6.1.jar
 dwr_2.0.5.jar
 	Containing Project URL: http://directwebremoting.org/
 	License: Apache License (apache-2.0.txt)
-	
-google-collections-1.0-rc2.jar
-	Containing Project URL: http://code.google.com/p/guava-libraries/
-	License: Apache License (apache-2.0.txt)
 
 htmlcleaner2_1.jar
 	Containing Project URL: http://htmlcleaner.sourceforge.net/

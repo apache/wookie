@@ -57,8 +57,6 @@
         </dependency>
         <dependency org="org.directwebremoting" name="dwr" rev="2.0.5" conf="deploy->default">
 		</dependency>
-        <dependency org="com.google.collections" name="google-collections" rev="0.9" conf="deploy->default">
-        </dependency>
         <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.5.2" conf="deploy->default">
         </dependency> 
         <dependency org="org.apache.shindig" name="shindig-common" rev="1.1-BETA5-incubating" conf="deploy->default">
