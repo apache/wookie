@@ -1,0 +1,89 @@
+Apache Wookie
+Copyright 2010 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+-----------------------------------------------------------
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+This product includes software (Jetty) developed by
+Mort Bay Consulting Pty. Ltd.  (http://jetty.codehaus.org/jetty/).
+
+This product includes software (DWR) developed by
+Getahead Ltd.  (http://directwebremoting.org/).
+
+This product includes software (icu4j) developed by
+the ICU project.  (http://site.icu-project.org/).
+
+This product includes software (HTML Cleaner) developed by
+Vladimir Nikic.  (http://htmlcleaner.sourceforge.net/).
+
+This product includes software (UrlEncodedQueryString.java) developed by
+Richard Kennard. (https://urlencodedquerystring.dev.java.net/).
+
+=== TODO ===
+
+dom4j-1.6.1.jar
+	Containing Project URL: http://www.dom4j.org/
+	License: BSD (http://www.dom4j.org/license.html)
+	
+jdom-1.1.jar
+	Containing Project URL: http://www.jdom.org/
+	License: Apache-style (See jdom.txt)
+	
+json-20080701.jar
+	Containing Project URL: http://www.JSON.org/
+	License: MIT-style (See http://www.JSON.org/license.html)
+	
+junit-4.7.jar
+	Containing Project URL: http://www.junit.org/
+	License: BSD
+		
+jquery.js
+	Containing Project URL: http://jquery.com/
+	License: MIT (see http://dev.jquery.com/browser/trunk/jquery/MIT-LICENSE.txt)
+
+slf4j-log4j12-1.5.2.jar
+	Containing Project URL: http://www.slf4j.org/
+	License: MIT (see http://www.slf4j.org/license.html)
+	
+Features
+========
+flex-iframe
+	Containing Project URL: http://code.google.com/p/flex-iframe/
+	License: MIT (see http://flex-iframe.googlecode.com/svn/trunk/README; this README is also included in the Flash_Flex Connector)
+
+thickbox.js, thickbox.css 
+	Containing project URL: http://www.codylindley.com
+	License: MIT (see: http://www.opensource.org/licenses/mit-license.php)
+	
+camcanvas.html, camcavas.swf
+	Containing Project URL: http://www.taboca.com/p/camcanvas/
+	License: MIT (see http://github.com/taboca/CamCanvas-API-/blob/master/MIT-LICENSE.txt)
+
+Widgets
+=======
+creole.js
+	By Ivan Fomichev; see http://www.ivan.fomichev.name/2008/04/javascript-creole-10-wiki-markup-parser.html
+	License: MIT (see creole.js in the WookieWiki widget)
+
+widgets/sudoku/json.js
+	Containing Project URL: http://json.org
+	License: JSON (see http://www.crockford.com/JSON/license.html)
+
+widgets/todo/json2.js
+widgets/geo/json2.js
+	Containing Project URL: http://json.org
+	License: Public Domain (See http://www.JSON.org/js.html)
+		
+geo.js, geo_position_js_simulator.js
+	Containing Project URL: http://code.google.com/p/geo-location-javascript/
+	License: MIT (see tutorials/geoLocation/legal/)
+	
+"Bubbles" widget
+	Containing Project URL: http://widgets.opera.com/widget/10982/
+	License: MIT (see widgets/bubbles/license.txt)
+	
