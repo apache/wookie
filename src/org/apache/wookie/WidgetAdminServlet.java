@@ -45,6 +45,7 @@ import org.apache.wookie.manager.IWidgetAdminManager;
 import org.apache.wookie.manager.impl.WidgetAdminManager;
 import org.apache.wookie.server.LocaleHandler;
 import org.apache.wookie.util.WidgetFileUtils;
+import org.apache.wookie.util.WidgetJavascriptSyntaxAnalyzer;
 import org.apache.wookie.util.gadgets.GadgetUtils;
 import org.apache.wookie.util.html.StartPageProcessor;
 import org.apache.wookie.w3c.W3CWidget;
@@ -487,12 +488,13 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 				fac.setFeatures(persistenceManager.findServerFeatureNames());
 				fac.setStartPageProcessor(new StartPageProcessor());
 				W3CWidget widgetModel = fac.parse(zipFile);
+				WidgetJavascriptSyntaxAnalyzer jsa = new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());				
 	            if(persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()) == null){
 					// ADD
 					IWidget widget = WidgetFactory.addNewWidget(widgetModel);
 					Object dbkey = widget.getId();
 					// widget added
-					request.setAttribute("message_value", "'"+ widgetModel.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					request.setAttribute("message_value", "'"+ widgetModel.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$					
 					retrieveServices(request);
 					request.setAttribute("hasValidated", Boolean.valueOf(true));																	 //$NON-NLS-1$
 					request.setAttribute("dbkey", dbkey); //$NON-NLS-1$
@@ -501,8 +503,8 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 					// UPDATE
 					// TODO - call the manager to update required resources
 					// widget updated
-					request.setAttribute("message_value", "'"+ widgetModel.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.20")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-				}					
+					request.setAttribute("message_value", "'"+ widgetModel.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.20")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$					
+				}
 			}
 			else{
 				// no file found to be uploaded - shouldn't happen
