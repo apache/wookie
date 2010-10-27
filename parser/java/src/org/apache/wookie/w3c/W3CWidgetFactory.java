@@ -24,6 +24,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.w3c.exceptions.InvalidContentTypeException;
@@ -65,6 +66,10 @@ import org.apache.wookie.w3c.util.WidgetPackageUtils;
  */
 public class W3CWidgetFactory {
 	
+	// Get the logger
+	static Logger _logger = Logger.getLogger(W3CWidgetFactory.class.getName());		
+	// this value is set by the parser
+	private File unzippedWidgetDirectory;
 	private File outputDirectory;
 	private IStartPageProcessor startPageProcessor;
 	private String[] locales;
@@ -235,14 +240,14 @@ public class W3CWidgetFactory {
 				// get the widget identifier
 				String manifestIdentifier = widgetModel.getIdentifier();						
 				// create the folder structure to unzip the zip into
-				File newWidgetFolder = WidgetPackageUtils.createUnpackedWidgetFolder(outputDirectory, manifestIdentifier);
+				unzippedWidgetDirectory = WidgetPackageUtils.createUnpackedWidgetFolder(outputDirectory, manifestIdentifier);
 				// now unzip it into that folder
-				WidgetPackageUtils.unpackZip(zip, newWidgetFolder);	
+				WidgetPackageUtils.unpackZip(zip, unzippedWidgetDirectory);	
 				
 				// Iterate over all start files and update paths
 				for (IContentEntity content: widgetModel.getContentList()){
 					// now update the js links in the start page
-					File startFile = new File(newWidgetFolder.getCanonicalPath() + File.separator + content.getSrc());
+					File startFile = new File(unzippedWidgetDirectory.getCanonicalPath() + File.separator + content.getSrc());
 					String relativestartUrl = (WidgetPackageUtils.getURLForWidget(localPath, manifestIdentifier, content.getSrc())); 					
 					content.setSrc(relativestartUrl);
 					if(startFile.exists() && startPageProcessor != null){		
@@ -273,4 +278,9 @@ public class W3CWidgetFactory {
 			throw new BadWidgetZipFileException(); //$NON-NLS-1$ 
 		}
 	}
+	
+	public File getUnzippedWidgetDirectory() {
+		return unzippedWidgetDirectory;
+	}
+
 }
