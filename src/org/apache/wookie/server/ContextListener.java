@@ -35,6 +35,7 @@ import org.apache.wookie.helpers.FlashMessage;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.util.WgtWatcher;
 import org.apache.wookie.util.WidgetFileUtils;
+import org.apache.wookie.util.WidgetJavascriptSyntaxAnalyzer;
 import org.apache.wookie.util.html.StartPageProcessor;
 import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
@@ -199,6 +200,7 @@ public class ContextListener implements ServletContextListener {
 	 						fac.setFeatures(persistenceManager.findServerFeatureNames());
 	 						fac.setStartPageProcessor(new StartPageProcessor());
 	 						W3CWidget model = fac.parse(upload);
+	 						WidgetJavascriptSyntaxAnalyzer jsa = new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());
 	 						if(persistenceManager.findWidgetByGuid(model.getIdentifier()) == null) {
 	 							WidgetFactory.addNewWidget(model, true);	
 	 							String message = model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19");
