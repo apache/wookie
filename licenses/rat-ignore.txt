@@ -45,6 +45,7 @@ widgets/bubbles/index.html
 widgets/bubbles/licence.txt
 widgets/bubbles/script.js
 widgets/bubbles/styles.css
+widgets/simplechat/smileys/Emoticons.plist
 widgets/sudoku/json.js
 widgets/sudoku/jquery.js
 widgets/todo/json2.js
