@@ -28,8 +28,7 @@
         <class>org.apache.wookie.beans.jpa.impl.LocalizedBeanImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.NameImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.ParamImpl</class>
-        <class>org.apache.wookie.beans.jpa.impl.ParticipantImpl</class>
-        <class>org.apache.wookie.beans.jpa.impl.PostImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.ParticipantImpl</class>        
         <class>org.apache.wookie.beans.jpa.impl.PreferenceDefaultImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.PreferenceImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.ServerFeatureImpl</class>
