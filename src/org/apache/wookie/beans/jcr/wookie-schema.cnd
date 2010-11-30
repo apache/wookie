@@ -152,17 +152,6 @@
 - wookie:value (string) mandatory
 - wookie:email (string) mandatory
 
-[wookie:post] > nt:base, mix:referenceable
-- wookie:elementId (long)
-- wookie:userId (string) mandatory
-- wookie:title (string) mandatory
-- wookie:content (string)
-- wookie:publishDate (date) mandatory
-- wookie:updateDate (date)
-- wookie:sharedDataKey (string) mandatory
-- wookie:parent (string)
-- wookie:posts (reference) multiple
-
 [wookie:serverFeature] > nt:base
 - wookie:featureName (string) mandatory
 - wookie:className (string) mandatory
