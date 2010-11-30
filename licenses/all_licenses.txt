@@ -159,3 +159,13 @@ geo.js, geo_position_js_simulator.js
 	Containing Project URL: http://widgets.opera.com/widget/10982/
 	License: MIT (see widgets/bubbles/license.txt)
 	
+"Butterfly" widget
+	scripts/flashcanvas.js, scripts/flashcanvas.swf
+	Containing Project URL: http://code.google.com/p/flashcanvas/
+	License: MIT (see widgets/butterfly/legal/flashcanvas_license.txt)	
+
+"Sharedraw" widget
+	scripts/flashcanvas.js, scripts/flashcanvas.swf
+	Containing Project URL: http://code.google.com/p/flashcanvas/
+	License: MIT (see widgets/sharedraw/legal/flashcanvas_license.txt)	
+	
