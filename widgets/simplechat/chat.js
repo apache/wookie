@@ -60,8 +60,8 @@ function post(user,text,url){
     text = replaceTextSmileys(text);
     var log = wave.getState().get("chatLog");
     if (!log||log==null||log=="null") log = '';
-    wave.getState().submitValue("chatLog", log + chatSeparator + user + dataSeparator + text + dataSeparator + url + chatSeparator);
- 	//Widget.appendSharedDataForKey("chatLog",  chatSeparator + user + dataSeparator + text + dataSeparator + url + chatSeparator);
+    //wave.getState().submitValue("chatLog", log + chatSeparator + user + dataSeparator + text + dataSeparator + url + chatSeparator);
+ 	Widget.appendSharedDataForKey("chatLog",  chatSeparator + user + dataSeparator + text + dataSeparator + url + chatSeparator);
 }
 
 ///// Chat List
