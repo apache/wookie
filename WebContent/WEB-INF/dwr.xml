@@ -49,12 +49,5 @@
       <include method="hasFeature"/>
     </create>
     
-    <create creator="new" javascript="forum" scope="application">
-      <param name="class" value="org.apache.wookie.widgets.forum.impl.DefaultForumServiceImpl"/>
-      <include method="getNodeTree"/>   
-      <include method="newPost"/>       
-      <include method="getPost"/>
-    </create>    
-    <convert converter="bean" match="org.apache.wookie.widgets.forum.PostNode"/>
   </allow>
 </dwr>
