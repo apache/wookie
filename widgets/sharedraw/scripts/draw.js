@@ -42,9 +42,17 @@ function init_canvas () {
     tool = new tool_pencil();
 
     // Attach the mousedown, mousemove and mouseup event listeners.
-    canvas.addEventListener('mousedown', ev_canvas, false);
-    canvas.addEventListener('mousemove', ev_canvas, false);
-    canvas.addEventListener('mouseup',   ev_canvas, false);
+	if (canvas.attachEvent) {
+    	canvas.attachEvent("onmousedown", ev_canvas, false);
+    	canvas.attachEvent('onmousemove', ev_canvas, false);
+    	canvas.attachEvent('onmouseup',   ev_canvas, false);	
+	}
+	else if (canvas.addEventListener) { 
+		// Attach the mousedown, mousemove and mouseup event listeners.
+		canvas.addEventListener('mousedown', ev_canvas, false);
+		canvas.addEventListener('mousemove', ev_canvas, false);
+		canvas.addEventListener('mouseup',   ev_canvas, false);
+	}    
   }
 
   function tool_pencil () {

@@ -23,6 +23,9 @@
       #container { position: relative; }
       #imageView { border: 1px solid #000; cursor: crosshair }
     --></style>
+	<!--[if lt IE 9]><script type="text/javascript" src="scripts/flashcanvas.js"></script><![endif]-->
+    <script type="text/javascript" src="scripts/sharedraw.js"></script>
+    <script type="text/javascript" src="scripts/draw.js"></script>    
   </head>
   <body onload="Controller.init()">
     <div id="container">
@@ -36,8 +39,5 @@
           href="http://www.konqueror.org">Konqueror</a>.</p>
       </canvas>
     </div>
-
-    <script type="text/javascript" src="scripts/sharedraw.js"></script>
-    <script type="text/javascript" src="scripts/draw.js"></script>
   </body>
 </html>
