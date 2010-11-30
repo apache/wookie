@@ -14,7 +14,6 @@
 
 package org.apache.wookie.tests.beans;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +24,6 @@ import javax.naming.NamingException;
 import org.apache.wookie.beans.IAccessRequest;
 import org.apache.wookie.beans.IApiKey;
 import org.apache.wookie.beans.IParticipant;
-import org.apache.wookie.beans.IPost;
 import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.IServerFeature;
 import org.apache.wookie.beans.IWidget;
@@ -78,9 +76,6 @@ public abstract class AbstractPersistenceTest
         IWidget [] allWidgets = persistenceManager.findAll(IWidget.class);
         assertNotNull(allWidgets);
         assertEquals(1, allWidgets.length);
-        IPost [] allPosts = persistenceManager.findAll(IPost.class);
-        assertNotNull(allPosts);
-        assertEquals(0, allPosts.length);
         IWidgetDefault [] allWidgetDefaults = persistenceManager.findAll(IWidgetDefault.class);
         assertNotNull(allWidgetDefaults);
         assertEquals(1, allWidgetDefaults.length);
@@ -104,9 +99,6 @@ public abstract class AbstractPersistenceTest
         assertNotNull(widgetsByValue);
         assertEquals(1, widgetsByValue.length);
         assertEquals(allWidgets[0], widgetsByValue[0]);
-        IPost [] postsByValue = persistenceManager.findByValue(IPost.class, "userId", "xxx");
-        assertNotNull(postsByValue);
-        assertEquals(0, postsByValue.length);
         IWidgetDefault [] widgetDefaultsByValue = persistenceManager.findByValue(IWidgetDefault.class, "widget", widgetById);
         assertNotNull(widgetDefaultsByValue);
         assertEquals(1, widgetDefaultsByValue.length);
@@ -177,31 +169,6 @@ public abstract class AbstractPersistenceTest
         participant.setParticipantThumbnailUrl("");
         persistenceManager.save(participant);
 
-        // create post hierarchy
-        IPost post2 = persistenceManager.newInstance(IPost.class);
-        post2.setContent("post-2-content");
-        post2.setTitle("post-2-title");
-        post2.setSharedDataKey("test-shared-data-key");
-        post2.setPublishDate(new Date());
-        post2.setUserId("test");
-        persistenceManager.save(post2);
-        IPost post1 = persistenceManager.newInstance(IPost.class);
-        post1.setContent("post-1-content");
-        post1.setTitle("post-1-title");
-        post1.setSharedDataKey("test-shared-data-key");
-        post1.setPublishDate(new Date());
-        post1.setUserId("test");
-        post1.getPosts().add(post2);
-        persistenceManager.save(post1);
-        IPost post0 = persistenceManager.newInstance(IPost.class);
-        post0.setContent("post-0-content");
-        post0.setTitle("post-0-title");
-        post0.setSharedDataKey("test-shared-data-key");
-        post0.setPublishDate(new Date());
-        post0.setUserId("test");
-        post0.getPosts().add(post1);
-        persistenceManager.save(post0);
-
         // create server feature
         IServerFeature serverFeature = persistenceManager.newInstance(IServerFeature.class);
         serverFeature.setFeatureName("test-feature-name");
@@ -257,10 +224,6 @@ public abstract class AbstractPersistenceTest
         assertNotNull(serverFeature);
         assertEquals("test-feature-name", serverFeature.getFeatureName());
         
-        // find generic objects
-        IPost [] posts = persistenceManager.findByValue(IPost.class, "title", "post-0-title");
-        assertNotNull(posts);
-        assertEquals(1, posts.length);
         IAccessRequest [] accessRequests = persistenceManager.findAll(IAccessRequest.class);
         assertNotNull(accessRequests);
         assertEquals(1, accessRequests.length);
@@ -269,7 +232,6 @@ public abstract class AbstractPersistenceTest
         persistenceManager.delete(widgetInstance0);
         persistenceManager.delete(participant);
         persistenceManager.delete(serverFeature);
-        persistenceManager.delete(posts);
         persistenceManager.delete(accessRequests);
         
         // commit and close persistence manager transaction
@@ -290,9 +252,6 @@ public abstract class AbstractPersistenceTest
         IServerFeature [] serverFeatures = persistenceManager.findAll(IServerFeature.class);
         assertNotNull(serverFeatures);
         assertEquals(0, serverFeatures.length);
-        posts = persistenceManager.findAll(IPost.class);
-        assertNotNull(posts);
-        assertEquals(0, posts.length);
         
         // rollback and close persistence manager transaction
         persistenceManager.rollback();
