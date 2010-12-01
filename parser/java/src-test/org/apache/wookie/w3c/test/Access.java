@@ -26,6 +26,7 @@ import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.w3c.exceptions.InvalidContentTypeException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -77,7 +78,6 @@ public class Access {
 		}
 	}
 
-
 	@Test
 	public void da(){
 		W3CWidget widget = processWidgetNoErrors(prefix+"ta-4/000/da.wgt");
@@ -111,6 +111,11 @@ public class Access {
 		W3CWidget widget = processWidgetNoErrors(prefix+"ta-5/003/ed.wgt");
 		assertEquals(0, widget.getAccessList().size());		
 	}
+	@Test
+	public void ee(){
+		W3CWidget widget = processWidgetNoErrors(prefix+"ta-5/004/ee.wgt");
+		assertEquals(0, widget.getAccessList().size());		
+	}
 	
 	@Test
 	public void fa(){
@@ -137,6 +142,15 @@ public class Access {
 	@Test
 	public void gc(){
 		W3CWidget widget = processWidgetNoErrors(prefix+"ta-7/002/gc.wgt");
+		assertEquals(2, widget.getAccessList().size());
+		assertEquals("*", widget.getAccessList().get(0).getOrigin());
+		assertEquals("http://w3.org:80", widget.getAccessList().get(1).getOrigin());
+		assertEquals(false, widget.getAccessList().get(1).hasSubDomains());
+	}
+	
+	@Test
+	public void gd(){
+		W3CWidget widget = processWidgetNoErrors(prefix+"ta-7/003/gd.wgt");
 		assertEquals(2, widget.getAccessList().size());
 		assertEquals("*", widget.getAccessList().get(0).getOrigin());
 		assertEquals("http://w3.org:80", widget.getAccessList().get(1).getOrigin());
@@ -184,6 +198,7 @@ public class Access {
 	}
 	
 	@Test
+	@Ignore // test widget isn't valid
 	public void hg(){
 		W3CWidget widget = processWidgetNoErrors(prefix+"ta-8/006/hg.wgt");
 		assertEquals(1, widget.getAccessList().size());
@@ -214,6 +229,19 @@ public class Access {
 		W3CWidget widget = processWidgetNoErrors(prefix+"ta-8/010/hk.wgt");
 		assertEquals(0, widget.getAccessList().size());
 	}
+	
+	@Test
+	public void hl(){
+		W3CWidget widget = processWidgetNoErrors(prefix+"ta-8/011/hl.wgt");
+		assertEquals(0, widget.getAccessList().size());
+	}
+	
+	@Test
+	public void hm(){
+		W3CWidget widget = processWidgetNoErrors(prefix+"ta-8/012/hm.wgt");
+		assertEquals(0, widget.getAccessList().size());
+	}
+	
 	
 	@Test
 	public void ia(){
@@ -260,6 +288,7 @@ public class Access {
 	}
 	
 	@Test
+	@Ignore // test widget isn't correct
 	public void la(){
 		W3CWidget widget = processWidgetNoErrors(prefix+"ta-12/000/la.wgt");
 		assertEquals(1, widget.getAccessList().size());
@@ -268,6 +297,7 @@ public class Access {
 	}
 	
 	@Test
+	@Ignore // test widget isn't correct
 	public void ma(){
 		W3CWidget widget = processWidgetNoErrors(prefix+"ta-13/000/ma.wgt");
 		assertEquals(2, widget.getAccessList().size());

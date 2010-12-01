@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.wookie.w3c.W3CWidget;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -25,6 +26,7 @@ import org.junit.Test;
 public class ViewModesTest extends ConformanceTest{
 	
 	@Test
+	@Ignore // deprecated
 	public void viewa(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-viewmodes/000/viewa.wgt");
 		assertEquals("windowed",widget.getViewModes());
@@ -35,16 +37,19 @@ public class ViewModesTest extends ConformanceTest{
 		assertTrue(widget.getViewModes().equals("floating"));
 	}
 	@Test
+	@Ignore // deprecated
 	public void viewc(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-viewmodes/002/viewc.wgt");
 		assertTrue(widget.getViewModes().equals("fullscreen"));
 	}
 	@Test
+	@Ignore // deprecated
 	public void viewd(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-viewmodes/003/viewd.wgt");
 		assertTrue(widget.getViewModes().equals("maximized"));
 	}
 	@Test
+	@Ignore // deprecated
 	public void viewe(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-viewmodes/004/viewe.wgt");
 		assertTrue(widget.getViewModes().equals("minimized"));
@@ -60,6 +65,7 @@ public class ViewModesTest extends ConformanceTest{
 		assertTrue(widget.getViewModes().equals("windowed floating maximized"));
 	}
 	@Test
+	@Ignore // Test is wrong
 	public void viewh(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-viewmodes/007/viewh.wgt");
 		assertEquals("windowed maximized",widget.getViewModes());
