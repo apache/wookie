@@ -99,7 +99,12 @@ public class WidgetManifestModel implements W3CWidget {
 		fFeaturesList = new ArrayList<IFeatureEntity>();
 		fPreferencesList = new ArrayList<IPreferenceEntity>();
 		SAXBuilder builder = new SAXBuilder();
-		Element root = builder.build(new StringReader(xmlText)).getRootElement();				
+		Element root;
+		try {
+			root = builder.build(new StringReader(xmlText)).getRootElement();
+		} catch (Exception e) {
+			throw new BadManifestException("Config.xml is not well-formed XML");
+		}				
 		fromXML(root,locales);	
 		
 		// Add default icons
