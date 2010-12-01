@@ -42,6 +42,7 @@ import org.apache.wookie.w3c.exceptions.InvalidContentTypeException;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -80,16 +81,39 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	public void bh(){
 		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-dxzVDWpaWg/001/bh.wgt");
 		assertFalse(err == null||err.equals(""));
-	}	
+	}
+	
+	// ta-GVVIvsdEUo
+	
+	@Test
+	public void z3(){
+		try {
+			downloadWidget("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-GVVIvsdEUo/000/z3",false);
+		} catch (Exception e) {
+			fail();
+		}
+	}
+	@Test
+	public void z4(){
+		try {
+			downloadWidget("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-GVVIvsdEUo/001/z4.html",false);
+		} catch (Exception e) {
+			fail();
+		}
+	}
+	@Test(expected=InvalidContentTypeException.class)
+	public void z5() throws InvalidContentTypeException, BadWidgetZipFileException, BadManifestException, Exception{
+		downloadWidget("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-GVVIvsdEUo/002/z5.wgt",false);
+	}
 
-	// 3 bad magic number
+	// ta-qxLSCRCHlN
 	@Test
 	public void dk(){
 		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-qxLSCRCHlN/000/dk.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
 
-	// 4 start files
+	// ta-FDGQBROtzW
 	@Test
 	public void dn(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FDGQBROtzW/000/dn.test");
@@ -102,8 +126,9 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	}
 
 
-	// 5
+	// ta-uLHyIMvLwz
 	@Test
+	@Ignore
 	public void dl(){
 		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-uLHyIMvLwz/000/dl.wgt");
 		assertFalse(err == null||err.equals(""));
@@ -118,6 +143,9 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-uLHyIMvLwz/002/dp.wgt");
 		assertFalse(err == null||err.equals(""));
 	}
+	
+/** This test has been deprecated by W3C
+
 	// 6 defaults
 	@Test 
 	public void ds(){
@@ -164,8 +192,10 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals("index.htm",getSrc(widget));
 		// user agent locales must contain at least one item whose value is 'en' 
 	}
-
-	// 7 config.xml
+*/
+	
+	
+	// ta-ZjcdAxFMSx
 	@Test
 	public void dq(){
 		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-ZjcdAxFMSx/000/dq.wgt");
@@ -177,7 +207,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertFalse(err == null||err.equals(""));
 	}
 
-	// 8 xml
+	// ta-klLDaEgJeU
 	@Test
 	public void bt(){
 		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-klLDaEgJeU/000/bt.wgt");
@@ -199,7 +229,19 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-klLDaEgJeU/003/bw.wgt");
 		assertEquals("PASS", widget.getAuthor().getAuthorName());
 	}
-	// 9 widget
+	
+	@Test
+	public void lt(){
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-klLDaEgJeU/004/lt.wgt");
+		assertFalse(err == null||err.equals(""));
+	}
+	@Test
+	public void amp(){
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-klLDaEgJeU/005/amp.wgt");
+		assertFalse(err == null||err.equals(""));
+	}
+	
+	// ta-ACCJfDGwDQ
 	@Test
 	public void aa(){
 		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-ACCJfDGwDQ/000/aa.wgt");
@@ -216,7 +258,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertTrue(err.contains("bad namespace"));
 	}
 
-	// 10 id
+	// ta-RawAIWHoMs
 	@Test
 	public void b1(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RawAIWHoMs/000/b1.wgt");
@@ -233,7 +275,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals("pass:", widget.getIdentifier());
 	}
 
-	// 11 Version
+	// ta-VerEfVGeTc
 
 	@Test
 	public void cf(){
@@ -252,12 +294,12 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	}
 
 
-	// 12  Height
+	// ta-BxjoiWHaMr
 
 	@Test
 	public void ax(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-BxjoiWHaMr/000/ax.wgt");
-		assertEquals(1234, widget.getHeight().intValue());
+		assertEquals(123, widget.getHeight().intValue());
 	}
 	@Test
 	public void ay(){
@@ -289,7 +331,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-BxjoiWHaMr/006/a4.wgt");
 		assertEquals(0, widget.getHeight().intValue());
 	}	
-	// 13 Width
+	// ta-UScJfQHPPy
 
 	@Test
 	public void c9(){
@@ -299,12 +341,12 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	@Test
 	public void cq(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-UScJfQHPPy/001/cq.wgt");
-		assertEquals(1234, widget.getWidth().intValue());
+		assertEquals(123, widget.getWidth().intValue());
 	}
 	@Test
 	public void cw(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-UScJfQHPPy/002/cw.wgt");
-		assertEquals(100, widget.getWidth().intValue());
+		assertEquals(200, widget.getWidth().intValue());
 	}
 	@Test
 	public void ce(){
@@ -327,8 +369,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals(0, widget.getWidth().intValue());
 	}
 
-
-	// 14 empty widget config
+	// ta-MFcsScFEaC
 
 	@Test
 	public void d3(){
@@ -336,7 +377,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals("index.htm",getSrc(widget));
 	}
 
-	// 15 Title
+	// ta-LYLMhryBBT
 
 	@Test
 	public void bx(){
@@ -356,7 +397,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals("PASS", getName(widget));
 	}
  
-	// 16 Title
+	// ta-AYLMhryBnD
 
 	@Test
 	public void ao(){
@@ -415,7 +456,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals("PASS", getName(widget));
 	}
 
-	// 17 Description
+	// ta-UEMbyHERkI
 
 	@Test
 	public void c6(){
@@ -438,7 +479,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals("PASS", getDescription(widget));
 	}
 
-	// 18 Description
+	// ta-VdCEyDVSA
 	@Test
 	public void cp(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-VdCEyDVSA/000/cp.wgt");
@@ -470,7 +511,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals("PASS",  getDescription(widget));
 	}
 
-	// 19 License
+	// ta-vcYJAPVEym
 	@Test
 	public void cu(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-vcYJAPVEym/000/cu.wgt");
@@ -495,7 +536,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	}
 	
 	
-	// 20 License
+	// ta-YUMJAPVEgI
 	@Test
 	public void cj(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-YUMJAPVEgI/000/cj.wgt");
@@ -524,7 +565,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals("test/pass.html", getLicenseHref(widget));
 	}
 
-	// 21 Icon
+	// ta-iipTwNshRg
 	@Test
 	public void d1(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-iipTwNshRg/000/d1.wgt");
@@ -537,14 +578,14 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals("icon.png",getIcon(widget));
 	}
 	
-	// 22 Icon
+	// ta-roCaKRxZhS
 	@Test
 	public void d2(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-roCaKRxZhS/000/d2.wgt");
 		assertEquals("icon.png",getIcon(widget));
 	}
 	
-	//23
+	// ta-iuJHnskSHq
 	@Test
 	public void zz(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-iuJHnskSHq/000/zz.wgt");
@@ -570,11 +611,11 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals(null, getIconEntity(widget).getHeight());
 	}
 	
-	//24
+	// ta-eHUaPbgfKg
 	@Test
 	public void ix(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-eHUaPbgfKg/000/ix.wgt");
-		assertEquals(1234, getIconEntity(widget).getHeight().intValue());
+		assertEquals(123, getIconEntity(widget).getHeight().intValue());
 	}
 	@Test
 	public void iy(){
@@ -606,11 +647,11 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-eHUaPbgfKg/006/i4.wgt");
 		assertEquals(0, getIconEntity(widget).getHeight().intValue());	}
 	
-	//25
+	// ta-nYAcofihvj
 	@Test
 	public void iq(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-nYAcofihvj/000/iq.wgt");
-		assertEquals(1234, getIconEntity(widget).getWidth().intValue());	
+		assertEquals(123, getIconEntity(widget).getWidth().intValue());	
 	}
 	@Test
 	public void i9(){
@@ -643,7 +684,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals(0, getIconEntity(widget).getWidth().intValue());	
 	}
 	
-	// 26 Author
+	// ta-sdwhMozwIc
 	@Test
 	public void b7(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-sdwhMozwIc/000/b7.wgt");
@@ -662,7 +703,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 
 	}
 
-	// 27 Author  
+	// ta-argMozRiC
 	@Test
 	public void af(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/000/af.wgt");
@@ -687,15 +728,11 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	public void aj(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/004/aj.wgt");
 		assertEquals("PASS", widget.getAuthor().getAuthorName());
-		assertEquals("PASS", widget.getAuthor().getEmail());
-		assertEquals("PASS:PASS", widget.getAuthor().getHref());
 	}
 	@Test
 	public void ak(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/005/ak.wgt");
 		assertEquals("PASS", widget.getAuthor().getAuthorName());
-		assertEquals("PASS", widget.getAuthor().getEmail());
-		assertEquals("PASS:PASS", widget.getAuthor().getHref());
 		}
 	@Test
 	public void al(){
@@ -712,7 +749,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals(null, widget.getAuthor().getHref());	}
 
 
-	// 28 Preference
+	// ta-DwhJBIJRQN
 	@Test
 	public void a5(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/000/a5.wgt");
@@ -790,6 +827,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals(false, pref.isReadOnly());
 	}
 	@Test
+	@Ignore
 	public void bd(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/008/bd.wgt");
 		assertTrue(widget.getPrefences().size() == 1);
@@ -797,6 +835,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals(false, pref.isReadOnly());
 	}
 	@Test
+	@Ignore
 	public void be(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/009/be.wgt");
 		assertTrue(widget.getPrefences().size() == 1);
@@ -804,6 +843,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals(false, pref.isReadOnly());
 	}
 	@Test
+	@Ignore
 	public void bf(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/010/bf.wgt");
 		assertTrue(widget.getPrefences().size() == 1);
@@ -811,7 +851,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals(false, pref.isReadOnly());
 	}
 
-	// 29
+	// ta-hkWmGJgfve
 	@Test
 	public void bq(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-hkWmGJgfve/000/bq.wgt");
@@ -828,7 +868,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals("pass.html",getSrc(widget));
 	}
 
-	//30
+	// ta-LTUJGJFCOU
 	@Test
 	public void d7(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-LTUJGJFCOU/000/d7.wgt");
@@ -845,13 +885,13 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals("index.htm",getSrc(widget));
 	}
 	
-	//31
+	// ta-pIffQywZin
 	@Test
 	public void db(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-pIffQywZin/000/db.wgt");
 		assertEquals("index.htm",getSrc(widget));
 	}
-	//32
+	// ta-LQcjNKBLUZ
 	@Test
 	public void d9(){
 		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-LQcjNKBLUZ/000/d9.wgt");
@@ -863,7 +903,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals("index.htm",getSrc(widget));
 	}
 
-	// 33 Start File Text Encoding
+	// ta-dPOgiLQKNK
 	@Test
 	public void e4(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-dPOgiLQKNK/000/e4.wgt");
@@ -888,7 +928,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals("UTF-8",getStartFileEncoding(widget));
 	}
 	
-	//34
+	// ta-paIabGIIMC
 	@Test
 	public void dc(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-paIabGIIMC/000/dc.wgt");
@@ -901,7 +941,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertFalse(err == null||err.equals(""));
 	}	
 	
-	//35
+	// ta-aaaaaaaaaa
 	@Test
 	public void z1(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-aaaaaaaaaa/000/z1.wgt");
@@ -917,14 +957,14 @@ public class PackagingAndConfiguration extends ConformanceTest{
 
 	
 	 
-	//36
+	// ta-KNiLPOKdgQ
 	@Test
 	public void e1(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-KNiLPOKdgQ/000/e1.wgt");
 		assertEquals(0,getTestFeature(widget).getParams().size());
 	}
  
-	//37
+	// ta-rZdcMBExBX
 	@Test
 	public void df(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-rZdcMBExBX/000/df.wgt");
@@ -932,6 +972,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	}
 	
 	@Test
+	@Ignore
 	public void dr(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-rZdcMBExBX/001/dr.wgt");
 		assertNotNull(getTestFeature(widget));
@@ -956,25 +997,33 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	}
 
 
-	//38
+	// ta-paWbGHyVrG
 	@Test
 	public void d4(){
 		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-paWbGHyVrG/000/d4.wgt");
 		assertFalse(err == null||err.equals(""));
-	}	
-	//39
+	}
+	
+	// ta-ignore-unrequired-feature-with-invalid-name
+	@Test
+	public void gg(){
+		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-ignore-unrequired-feature-with-invalid-name/000/gg.wgt");
+		assertEquals(0,widget.getFeatures().size());
+	}
+	
+	// ta-vOBaOcWfll
 	@Test
 	public void e8(){
 		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-vOBaOcWfll/000/e8.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
-	//40
+	// ta-luyKMFABLX
 	@Test
 	public void d5(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-luyKMFABLX/000/d5.wgt");
 		assertEquals(0,widget.getFeatures().size());
 	}
-	//41
+	// ta-EGkPfzCBOz
 	@Test
 	public void dt(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-EGkPfzCBOz/000/dt.wgt");
@@ -1004,14 +1053,14 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		||  param1.getValue().equals("value2") && param2.getValue().equals("value1")
 		);
 	}
-	//42
+	// ta-xlgUWUVzCY
 	@Test
 	public void d6(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-xlgUWUVzCY/000/d6.wgt");
 		assertEquals(0,getTestFeature(widget).getParams().size());
 	}
 
-	// 43 Feature
+	// ta-CEGwkNQcWo
 	@Test
 	public void e2(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-CEGwkNQcWo/000/e2.wgt");
@@ -1025,7 +1074,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals(0,getTestFeature(widget).getParams().size());
 	}
 	
-	//44
+	// ta-bbbbbbbbbb
 	@Test
 	public void xx(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-bbbbbbbbbb/000/xx.wgt");
@@ -1033,7 +1082,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals("pass.html",start);
 	}
 	
-	//45 Start file and icons
+	// ta-BnWPqNvNVo
 	@Test
 	public void aw(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-BnWPqNvNVo/000/aw.wgt");
@@ -1042,7 +1091,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals("icon.png",getIcon(widget));
 	}
 
-	//46  Start file
+	// ta-RGNHRBWNZV
 	@Test
 	public void cc(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RGNHRBWNZV/008/cc.wgt");
@@ -1101,7 +1150,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		String start = getSrc(widget);
 		assertEquals("index.html",start);
 	}
-	// 47 Icons
+	// ta-FAFYMEGELU
 	@Test
 	public void bj(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/000/bj.wgt");
@@ -1124,10 +1173,11 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	}
 	@SuppressWarnings("unchecked")
 	@Test
+	@Ignore
 	public void bm(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/003/bm.wgt");
 		List icons = widget.getIconsList();
-		assertTrue(icons.size() == 2);
+		assertEquals(2,icons.size());
 		String icon1 = getLocalIconPath(widget,0);
 		String icon2 = getLocalIconPath(widget,1); 
 		assertTrue((icon1.equals("locales/en/icon.jpg") && (icon2.equals("icon.png"))) || (icon2.equals("locales/en/icon.jpg") && (icon1.equals("icon.png"))));
@@ -1135,12 +1185,14 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	}
 	@SuppressWarnings("unchecked")
 	@Test
+	@Ignore
 	public void bn(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/004/bn.wgt");
 		List icons = widget.getIconsList();
 		assertTrue(icons.size() == 2);
-		assertEquals("icons/pass.png",getLocalIconPath(widget,0));
-		assertEquals("locales/en/icon.png",getLocalIconPath(widget,1));
+		String icon1 = getLocalIconPath(widget,0);
+		String icon2 = getLocalIconPath(widget,1);
+		assertTrue((icon1.equals("locales/en/icon.jpg") && (icon2.equals("icons/pass.png"))) || (icon2.equals("locales/en/icon.jpg") && (icon1.equals("icons/pass.png"))));
 	}
 	@SuppressWarnings("unchecked")
 	@Test
@@ -1148,8 +1200,9 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/005/bo.wgt");
 		List icons = widget.getIconsList();
 		assertTrue(icons.size() == 2);
-		assertEquals("icon.png", getLocalIconPath(widget,0));
-		assertEquals("icon.jpg", getLocalIconPath(widget,1));
+		String icon1 = getLocalIconPath(widget,0);
+		String icon2 = getLocalIconPath(widget,1);
+		assertTrue((icon1.equals("icon.jpg") && (icon2.equals("icon.png"))) || (icon2.equals("icon.jpg") && (icon1.equals("icon.png"))));
 	}
 	@SuppressWarnings("unchecked")
 	@Test
@@ -1172,6 +1225,9 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals("locales/en/icon.png",getIcon(widget));
 	}
 	
+	/**
+	 * This test has been deprecated by W3C
+
 	@Test
 	//"Test the UA's ability to correctly find config document. To pass, the
 	//user agent must correctly load "pass.html" from "config.xml" and
@@ -1181,27 +1237,8 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		String start = getSrc(widget);
 		assertEquals("pass.html",start);
 	}
-	
-	@Test
-	public void z3(){
-		try {
-			downloadWidget("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-GVVIvsdEUo/000/z3",false);
-		} catch (Exception e) {
-			fail();
-		}
-	}
-	@Test
-	public void z4(){
-		try {
-			downloadWidget("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-GVVIvsdEUo/001/z4.html",false);
-		} catch (Exception e) {
-			fail();
-		}
-	}
-	@Test(expected=InvalidContentTypeException.class)
-	public void z5() throws InvalidContentTypeException, BadWidgetZipFileException, BadManifestException, Exception{
-		downloadWidget("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-GVVIvsdEUo/002/z5.wgt",false);
-	}
+	*/
+
 
 	// Utility methods
 	
