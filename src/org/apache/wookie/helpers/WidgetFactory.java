@@ -20,6 +20,7 @@ import org.apache.wookie.beans.IFeature;
 import org.apache.wookie.beans.ILicense;
 import org.apache.wookie.beans.IName;
 import org.apache.wookie.beans.IParam;
+import org.apache.wookie.beans.IParticipant;
 import org.apache.wookie.beans.IPreferenceDefault;
 import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidget;
@@ -247,6 +248,20 @@ public class WidgetFactory {
 		IWidgetInstance[] instances = persistenceManager.findByValue(IWidgetInstance.class, "widget", widget);	
 		for(IWidgetInstance instance : instances){
 			WidgetInstanceFactory.destroy(instance);
+			// Delete all participants associated with any instances
+			//
+			// Note that we don't call this within WidgetInstanceFactory.destroy() as 
+			// if called in a different context (to remove just one instance) it would 
+			// have the side effect of deleting participants from other instances,
+			// not just the one being deleted.
+			//
+			// Note also that we have to use the instance as the hook for removing participants as there is no
+			// specific query for getting participants for a widget.
+			//
+			IParticipant[] participants = persistenceManager.findParticipants(instance);
+			for (IParticipant participant:participants){
+				persistenceManager.delete(participant);
+			}
 		}
 
 		// remove any AccessRequests
