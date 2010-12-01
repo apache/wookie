@@ -107,8 +107,10 @@ public class FeatureEntity implements IFeatureEntity {
 			}
 			// Not supported?
 			boolean supported = false;
-			for (String supportedFeature: features){
-				if(fName.equalsIgnoreCase(supportedFeature)) supported = true; 
+			if (fName != null){
+				for (String supportedFeature: features){
+					if(fName.equalsIgnoreCase(supportedFeature)) supported = true; 
+				}
 			}
 			if (!supported){
 				if (fRequired){
