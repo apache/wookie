@@ -35,6 +35,7 @@ import org.apache.wookie.tests.helpers.WidgetUploader;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -99,6 +100,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 
 	// 5
 	@Test
+	@Ignore
 	public void dl(){
 		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-uLHyIMvLwz/000/dl.wgt");
 		assertFalse(err == null||err.equals(""));
@@ -113,6 +115,10 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-uLHyIMvLwz/002/dp.wgt");
 		assertFalse(err == null||err.equals(""));
 	}
+	
+	/**
+	 * This test has been deprecated by W3C
+
 	// 6 defaults
 	@Test 
 	public void ds(){
@@ -162,6 +168,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		// user agent locales must contain at least one item whose value is 'en' 
 		// ???
 	}
+		 */
 
 	// 7 config.xml
 	@Test
@@ -198,6 +205,18 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-klLDaEgJeU/003/bw.wgt");
 		assertEquals("PASS", widget.getChild("author").getText());
 	}
+	@Test
+	public void lt(){
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-klLDaEgJeU/004/lt.wgt");
+		assertTrue(err.contains("Config.xml is not well-formed XML"));
+	}
+	@Test
+	public void amp(){
+		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-klLDaEgJeU/005/amp.wgt");
+		assertTrue(err.contains("Config.xml is not well-formed XML"));
+	}
+	
+	
 	// 9 widget
 	@Test
 	public void aa(){
@@ -258,7 +277,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	@Test
 	public void ax(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-BxjoiWHaMr/000/ax.wgt");
-		assertEquals("1234", getWidgetHeight(widget));
+		assertEquals("123", getWidgetHeight(widget));
 	}
 	@Test
 	public void ay(){
@@ -300,12 +319,12 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	@Test
 	public void cq(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-UScJfQHPPy/001/cq.wgt");
-		assertEquals("1234", getWidgetWidth(widget));
+		assertEquals("123", getWidgetWidth(widget));
 	}
 	@Test
 	public void cw(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-UScJfQHPPy/002/cw.wgt");
-		assertEquals("100", getWidgetWidth(widget));
+		assertEquals("200", getWidgetWidth(widget));
 	}
 	@Test
 	public void ce(){
@@ -575,7 +594,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	@Test
 	public void ix(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-eHUaPbgfKg/000/ix.wgt");
-		assertEquals("1234", widget.getChild("icon").getAttributeValue("height"));
+		assertEquals("123", widget.getChild("icon").getAttributeValue("height"));
 	}
 	@Test
 	public void iy(){
@@ -611,7 +630,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	@Test
 	public void iq(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-nYAcofihvj/000/iq.wgt");
-		assertEquals("1234", widget.getChild("icon").getAttributeValue("width"));	
+		assertEquals("123", widget.getChild("icon").getAttributeValue("width"));	
 	}
 	@Test
 	public void i9(){
@@ -688,15 +707,12 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	public void aj(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/004/aj.wgt");
 		assertEquals("PASS", widget.getChild("author").getText());
-		assertEquals("PASS", widget.getChild("author").getAttributeValue("email"));
-		assertEquals("PASS:PASS", widget.getChild("author").getAttributeValue("href"));
 	}
 	@Test
 	public void ak(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/005/ak.wgt");
 		assertEquals("PASS", widget.getChild("author").getText());
-		assertEquals("PASS", widget.getChild("author").getAttributeValue("email"));
-		assertEquals("PASS:PASS", widget.getChild("author").getAttributeValue("href"));	}
+	}
 	@Test
 	public void al(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-argMozRiC/006/al.wgt");
@@ -787,18 +803,21 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("false", pref1.getAttributeValue("readonly"));
 	}
 	@Test
+	@Ignore
 	public void bd(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/008/bd.wgt");
 		assertTrue(widget.getChildren("preference").size() == 1);
 		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));
 	}
 	@Test
+	@Ignore
 	public void be(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/009/be.wgt");
 		assertTrue(widget.getChildren("preference").size() == 1);
 		assertEquals("false", widget.getChild("preference").getAttributeValue("readonly"));
 	}
 	@Test
+	@Ignore
 	public void bf(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-DwhJBIJRQN/010/bf.wgt");
 		assertTrue(widget.getChildren("preference").size() == 1);
@@ -920,7 +939,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		System.out.println("Manual test: charset for start file of "+widget.getAttributeValue("identifier")+" must be Windows-1252");
 		
 	}
-
+	
 	//36
 	@Test
 	public void e1(){
@@ -935,6 +954,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 
 	}
 	@Test
+	@Ignore
 	public void dr(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-rZdcMBExBX/001/dr.wgt");
 		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature list must contain one feature named 'feature:a9bb79c1' whose required value is false.");
@@ -952,6 +972,14 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-paWbGHyVrG/000/d4.wgt");
 		assertFalse(err == null||err.equals(""));
 	}	
+	
+	// ta-ignore-unrequired-feature-with-invalid-name
+	@Test
+	public void gg(){
+		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-ignore-unrequired-feature-with-invalid-name/000/gg.wgt");		
+		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the user agent must not contain any values in the feature list (i.e., the unknown feature is skipped).");
+	}
+	
 	//39
 	@Test
 	public void e8(){
@@ -1098,6 +1126,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}
 	@SuppressWarnings("unchecked")
 	@Test
+	@Ignore
 	public void bm(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/003/bm.wgt");
 		List icons = widget.getChildren("icon");
@@ -1109,12 +1138,15 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}
 	@SuppressWarnings("unchecked")
 	@Test
+	@Ignore
 	public void bn(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/004/bn.wgt");
 		List icons = widget.getChildren("icon");
 		assertTrue(icons.size() == 2);
-		assertEquals("icons/pass.png",getLocalIconPath(widget,((Element)icons.get(0))));
-		assertEquals("locales/en/icon.png",getLocalIconPath(widget,((Element)icons.get(1))));
+		String icon1 = getLocalIconPath(widget,((Element)icons.get(0)));
+		String icon2 = getLocalIconPath(widget,((Element)icons.get(1)));
+		assertTrue((icon1.equals("locales/en/icon.jpg") && (icon2.equals("icons/pass.png"))) || (icon2.equals("locales/en/icon.jpg") && (icon1.equals("icons/pass.png"))));
+
 	}
 	@SuppressWarnings("unchecked")
 	@Test
@@ -1122,8 +1154,10 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/005/bo.wgt");
 		List icons = widget.getChildren("icon");
 		assertTrue(icons.size() == 2);
-		assertEquals("icon.png", getLocalIconPath(widget,((Element)icons.get(0))));
-		assertEquals("icon.jpg", getLocalIconPath(widget,((Element)icons.get(1))));
+		String icon1 = getLocalIconPath(widget,((Element)icons.get(0)));
+		String icon2 = getLocalIconPath(widget,((Element)icons.get(1)));
+		assertTrue((icon1.equals("icon.png") && (icon2.equals("icon.jpg"))) || (icon2.equals("icon.jpg") && (icon1.equals("icon.png"))));
+
 	}
 	@SuppressWarnings("unchecked")
 	@Test
@@ -1132,8 +1166,9 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/006/bp.wgt");
 		List icons = widget.getChildren("icon");
 		assertTrue(icons.size() == 2);
-		assertEquals("icon.png",getLocalIconPath(widget,((Element)icons.get(0))));
-		assertEquals("locales/en/icon.jpg",getLocalIconPath(widget,((Element)icons.get(1))));
+		String icon1 = getLocalIconPath(widget,((Element)icons.get(0)));
+		String icon2 = getLocalIconPath(widget,((Element)icons.get(1))); 
+		assertTrue((icon1.equals("locales/en/icon.jpg") && (icon2.equals("icon.png"))) || (icon2.equals("locales/en/icon.jpg") && (icon1.equals("icon.png"))));
 	}
 	@Test
 	public void ad(){
@@ -1146,6 +1181,9 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertEquals("locales/en/icon.png",getIcon(widget));
 	}
 	
+	/**
+	 * This test case has been deprecated by W3C
+
 	@Test
 	//"Test the UA's ability to correctly find config document. To pass, the
 	//user agent must correctly load "pass.html" from "config.xml" and
@@ -1155,6 +1193,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		String start = locateStartFile(widget);
 		assertEquals("pass.html",start);
 	}
+	*/
 
 	// Utility methods
 	private Element processWidgetNoErrors(String widgetfname){
