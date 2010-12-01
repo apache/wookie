@@ -1,4 +1,4 @@
-Icon images for the Chat, Forum and Vote widgets are licensed under the GNU Documentation Licence:
+Icon images for the Chat and Vote widgets are licensed under the GNU Documentation Licence:
 
 http://commons.wikimedia.org/wiki/Commons:GNU_Free_Documentation_License
 
