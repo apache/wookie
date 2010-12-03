@@ -128,7 +128,6 @@ public class PackagingAndConfiguration extends ConformanceTest{
 
 	// ta-uLHyIMvLwz
 	@Test
-	@Ignore
 	public void dl(){
 		String err = processWidgetWithErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-uLHyIMvLwz/000/dl.wgt");
 		assertFalse(err == null||err.equals(""));
@@ -1173,7 +1172,6 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	}
 	@SuppressWarnings("unchecked")
 	@Test
-	@Ignore
 	public void bm(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/003/bm.wgt");
 		List icons = widget.getIconsList();

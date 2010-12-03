@@ -65,10 +65,9 @@ public class ViewModesTest extends ConformanceTest{
 		assertTrue(widget.getViewModes().equals("windowed floating maximized"));
 	}
 	@Test
-	@Ignore // Test is wrong
 	public void viewh(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-viewmodes/007/viewh.wgt");
-		assertEquals("windowed maximized",widget.getViewModes());
+		assertEquals("windowed floating",widget.getViewModes());
 	}
 	@Test
 	public void viewi(){
