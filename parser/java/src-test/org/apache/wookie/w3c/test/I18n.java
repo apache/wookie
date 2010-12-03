@@ -90,7 +90,6 @@ public class I18n extends ConformanceTest{
 	// Note that this set of tests only proves that the parser correctly stores the information, not that it is correctly displayed. This
 	// needs to be passed by the User Agent (e.g. the Wookie Server) by checking how its rendered.
 	@Test
-	@Ignore // test is incorrect
 	public void lroName(){
 		runNameTests("lro");
 	}

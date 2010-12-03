@@ -1183,14 +1183,13 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	}
 	@SuppressWarnings("unchecked")
 	@Test
-	@Ignore
 	public void bn(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/004/bn.wgt");
 		List icons = widget.getIconsList();
 		assertTrue(icons.size() == 2);
 		String icon1 = getLocalIconPath(widget,0);
 		String icon2 = getLocalIconPath(widget,1);
-		assertTrue((icon1.equals("locales/en/icon.jpg") && (icon2.equals("icons/pass.png"))) || (icon2.equals("locales/en/icon.jpg") && (icon1.equals("icons/pass.png"))));
+		assertTrue((icon1.equals("locales/en/icon.png") && (icon2.equals("icons/pass.png"))) || (icon2.equals("locales/en/icon.png") && (icon1.equals("icons/pass.png"))));
 	}
 	@SuppressWarnings("unchecked")
 	@Test
