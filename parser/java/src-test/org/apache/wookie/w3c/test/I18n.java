@@ -204,10 +204,14 @@ public class I18n extends ConformanceTest{
 	// ta-roCaKRxZhS
 	@Test
 	public void icon(){
-		String pass_value = "test.png"; //TODO change when fixed in tests
+		String pass_value = "test.png"; 
 		W3CWidget widget = getWidget("023","lro");
 		assertEquals(pass_value,getLocalIconPath(widget, 0));
 		widget = getWidget("023","rlo");
+		assertEquals(pass_value,getLocalIconPath(widget, 0));
+		widget = getWidget("023","rtl");
+		assertEquals(pass_value,getLocalIconPath(widget, 0));
+		widget = getWidget("023","ltr");
 		assertEquals(pass_value,getLocalIconPath(widget, 0));
 	}
 	
