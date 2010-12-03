@@ -233,6 +233,24 @@ public class I18n extends ConformanceTest{
 		runAuthorTests("rtl");
 	}
 	
+	@Test
+	public void authorEmail(){
+		//TODO these must also be tested manually
+		W3CWidget widget;
+		
+		widget = getWidget("037","lro");
+		assertEquals("םפללחק",widget.getAuthor().getEmail());
+		
+		widget = getWidget("037","ltr");
+		assertEquals("The arrow should point right -->",widget.getAuthor().getEmail());		
+		
+		widget = getWidget("037","rtl");
+		assertEquals("The arrow should point right -->",widget.getAuthor().getEmail());
+		
+		widget = getWidget("037","rlo");
+		assertEquals("PASSED",widget.getAuthor().getEmail());
+	}
+	
 	public void runAuthorTests(String dir){
 		// test dir attributes correctly set
 		String[] tests = {"004","017","012"};
