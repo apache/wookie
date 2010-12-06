@@ -122,4 +122,12 @@ public class SharedDataImpl implements ISharedData, IInverseRelationship<WidgetI
     {
         this.sharedDataKey = sharedDataKey;
     }
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.wookie.beans.IBean#getId()
+     */
+	public Object getId() {
+		return id;
+	}
 }

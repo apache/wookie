@@ -142,7 +142,9 @@ public class JPAPersistenceManager implements IPersistenceManager
         BEAN_INTERFACE_TO_CLASS_MAP.put(IAccessRequest.class, AccessRequestImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IApiKey.class, ApiKeyImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IParticipant.class, ParticipantImpl.class);
+        BEAN_INTERFACE_TO_CLASS_MAP.put(IPreference.class, PreferenceImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IServerFeature.class, ServerFeatureImpl.class);
+        BEAN_INTERFACE_TO_CLASS_MAP.put(ISharedData.class, SharedDataImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWhitelist.class, WhitelistImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidget.class, WidgetImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetDefault.class, WidgetDefaultImpl.class);

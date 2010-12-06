@@ -104,4 +104,9 @@ public class PreferenceImpl implements IPreference, IIdElement
     {
         this.readOnly = (readOnly ? Boolean.TRUE : Boolean.FALSE);
     }
+
+	public Object getId() {
+		// TODO is this correct - all the other elements use int field
+		return elementId;
+	}
 }

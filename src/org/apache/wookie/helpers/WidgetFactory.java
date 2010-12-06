@@ -21,7 +21,9 @@ import org.apache.wookie.beans.ILicense;
 import org.apache.wookie.beans.IName;
 import org.apache.wookie.beans.IParam;
 import org.apache.wookie.beans.IParticipant;
+import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.IPreferenceDefault;
+import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetDefault;
@@ -247,7 +249,7 @@ public class WidgetFactory {
 		// remove any widget instances for this widget
 		IWidgetInstance[] instances = persistenceManager.findByValue(IWidgetInstance.class, "widget", widget);	
 		for(IWidgetInstance instance : instances){
-			WidgetInstanceFactory.destroy(instance);
+			
 			// Delete all participants associated with any instances
 			//
 			// Note that we don't call this within WidgetInstanceFactory.destroy() as 
@@ -257,17 +259,28 @@ public class WidgetFactory {
 			//
 			// Note also that we have to use the instance as the hook for removing participants as there is no
 			// specific query for getting participants for a widget.
-			//
+			//						
 			IParticipant[] participants = persistenceManager.findParticipants(instance);
 			for (IParticipant participant:participants){
 				persistenceManager.delete(participant);
 			}
+			
+			// remove any preferences
+			IPreference[] preferences = persistenceManager.findByValue(IPreference.class, "widgetInstance", instance);
+			persistenceManager.delete(preferences);
+			
+			// remove the instance
+			WidgetInstanceFactory.destroy(instance);
 		}
 
 		// remove any AccessRequests
         IAccessRequest[] accessRequests = persistenceManager.findByValue(IAccessRequest.class, "widget", widget);
         persistenceManager.delete(accessRequests);
-		
+
+        //remove SharedDataEntries
+        ISharedData[] sharedData = persistenceManager.findByValue(ISharedData.class, "widget", widget);
+        persistenceManager.delete(sharedData);
+        
 		// remove the widget itself
 		persistenceManager.delete(widget);
 		return true;

@@ -127,4 +127,12 @@ public class PreferenceImpl implements IPreference, IInverseRelationship<WidgetI
     {
         this.readOnly = (readOnly ? Boolean.TRUE : Boolean.FALSE);
     }
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.wookie.beans.IBean#getId()
+     */
+	public Object getId() {
+	      return id;
+	}
 }

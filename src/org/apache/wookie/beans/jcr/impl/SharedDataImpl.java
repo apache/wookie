@@ -104,4 +104,9 @@ public class SharedDataImpl implements ISharedData, IIdElement
     {
         this.sharedDataKey = sharedDataKey;
     }
+
+	public Object getId() {
+		// TODO is this correct - all the other elements use int field
+		return elementId;
+	}
 }

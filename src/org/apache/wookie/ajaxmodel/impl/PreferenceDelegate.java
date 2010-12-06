@@ -57,4 +57,9 @@ public class PreferenceDelegate implements IPreference {
 		this.readOnly = readOnly;
 	}
 
+	public Object getId() {
+		// TODO 
+		return null;
+	}
+
 }

@@ -21,7 +21,7 @@ package org.apache.wookie.beans;
  * @author <a href="mailto:rwatler@apache.org">Randy Watler</a>
  * @version $Id$
  */
-public interface IPreference
+public interface IPreference extends IBean
 {
     /**
      * Get widget instance preference value key.

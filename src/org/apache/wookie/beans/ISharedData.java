@@ -21,7 +21,7 @@ package org.apache.wookie.beans;
  * @author <a href="mailto:rwatler@apache.org">Randy Watler</a>
  * @version $Id$
  */
-public interface ISharedData
+public interface ISharedData extends IBean
 {
     /**
      * Get widget shared data value key.
