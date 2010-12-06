@@ -101,6 +101,7 @@ public class FormattingUtils {
 	 */
 	protected static String getFormatted(String dir, String value){
 		String mode = "embed";
+		if (dir == null) dir = "ltr";
 		// Reformat embedded SPAN tags
 		value = reformatSpan(value);
 		// Apply DIR to the string
