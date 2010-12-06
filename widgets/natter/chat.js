@@ -72,7 +72,7 @@ function init() {
             username = wave.getViewer().getDisplayName();
             thumbnail  = wave.getViewer().getThumbnailUrl();
         }
-        if (thumbnail == "" || thumbnail == null) thumbnail = "Images/default_thumbnail.png";
+        if (thumbnail == "" || thumbnail == null|| thumbnail == "http://fixme.org/thumbnail") thumbnail = "Images/default_thumbnail.png";
         if (username == null || username == ""){
             username = "natterer" + rnd_no(9999);        
         }
