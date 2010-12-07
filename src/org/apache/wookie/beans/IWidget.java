@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.wookie.util.WidgetFormattingUtils;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 
@@ -326,6 +327,10 @@ public interface IWidget extends IBean
         /**
          * Get widget title for locale.
          * 
+         * Note that the title is automatically formatted
+         * to use CSS BIDI properties. To get the "raw" name
+         * you should call getNames().
+         * 
          * @param widget widget
          * @param locale locale
          * @return widget title
@@ -334,11 +339,15 @@ public interface IWidget extends IBean
         {
         	IName[] names = widget.getNames().toArray(new IName[widget.getNames().size()]);
             IName name = (IName)LocalizationUtils.getLocalizedElement(names, new String[]{locale});
-            return ((name != null) ? name.getName() : IW3CXMLConfiguration.UNKNOWN);
+            return ((name != null) ? WidgetFormattingUtils.getFormattedWidgetName(name) : IW3CXMLConfiguration.UNKNOWN);
         }
         
         /**
          * Get widget description for locale.
+         *       
+         * Note that the description is automatically formatted
+         * to use CSS BIDI properties. To get the "raw" description
+         * you should call getDescriptions().
          * 
          * @param widget widget
          * @param locale locale
@@ -348,11 +357,15 @@ public interface IWidget extends IBean
         {
         	IDescription[] descriptions = widget.getDescriptions().toArray(new IDescription[widget.getDescriptions().size()]);
             IDescription description = (IDescription)LocalizationUtils.getLocalizedElement(descriptions, new String[]{locale});
-            return ((description != null) ? description.getContent() : null);
+            return ((description != null) ? WidgetFormattingUtils.getFormattedWidgetDescription(description) : null);
         }
 
         /**
          * Get widget short name for locale.
+         *
+         * Note that the short name is automatically formatted
+         * to use CSS BIDI properties. To get the "raw" name
+         * you should call getNames().
          * 
          * @param widget widget
          * @param locale locale
@@ -362,7 +375,7 @@ public interface IWidget extends IBean
         {
         	IName[] names = widget.getNames().toArray(new IName[widget.getNames().size()]);
             IName name = (IName)LocalizationUtils.getLocalizedElement(names, new String[]{locale});
-            return ((name != null) ? name.getShortName() : IW3CXMLConfiguration.UNKNOWN);
+            return ((name != null) ? WidgetFormattingUtils.getFormattedWidgetShortName(name) : IW3CXMLConfiguration.UNKNOWN);
         }
         
         /**
