@@ -52,6 +52,16 @@ public class i18nManual extends ConformanceTest{
 		W3CWidget widget = getWidget("042","ltr");
 		addResult("i18nltr42",FormattingUtils.getFormattedWidgetVersion(widget), "The arrow should point right -->");
 	}
+	@Test
+	public void i18nrlo42(){
+		W3CWidget widget = getWidget("042","rlo");
+		addResult("i18nrlo42",FormattingUtils.getFormattedWidgetVersion(widget), "PASSED");
+	}
+	@Test
+	public void i18nrtl42(){
+		W3CWidget widget = getWidget("042","rtl");
+		addResult("i18nrtl42",FormattingUtils.getFormattedWidgetVersion(widget), "The arrow should point right -->");
+	}
 	
 	// ta-AYLMhryBnD
 	@Test
