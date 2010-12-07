@@ -182,8 +182,7 @@ var Widget = {
             	}
             	catch(err){
             		// Catch IE 8 error. See WOOKIE-44
-            		eval("Widget.preferences.setItem('" + key + "','" + obj["dvalue"] + "')");
-            		eval("Widget.preferences.getItem('" + key + "') == '" + obj["dvalue"] + "'");
+            		eval("this.preferences.prefs."+key+"=obj");
             	}
             }
 		}
