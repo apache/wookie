@@ -159,7 +159,7 @@ public class WidgetPackageUtils {
 			 id = id.substring(7, id.length());
 		}
 		//id = id.replaceAll(" ", ""); //$NON-NLS-1$ //$NON-NLS-2$
-		id = id.replaceAll("[ \\/:\"*?<>|`\n\r\t\0]+", "");
+		id = id.replaceAll("[ \\:\"*?<>|`\n\r\t\0]+", "");
 		return id;
 	}
 
