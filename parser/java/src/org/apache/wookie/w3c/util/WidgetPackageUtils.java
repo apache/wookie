@@ -36,6 +36,7 @@ import org.apache.wookie.w3c.IW3CXMLConfiguration;
  */
 public class WidgetPackageUtils {
 	static Logger _logger = Logger.getLogger(WidgetPackageUtils.class.getName());
+
 	
 	/**
 	 * Implements the rule for finding a file within a widget; it returns the first localized version 
@@ -157,7 +158,8 @@ public class WidgetPackageUtils {
 		if(id.startsWith("http://")){ //$NON-NLS-1$
 			 id = id.substring(7, id.length());
 		}
-		id = id.replaceAll(" ", ""); //$NON-NLS-1$ //$NON-NLS-2$
+		//id = id.replaceAll(" ", ""); //$NON-NLS-1$ //$NON-NLS-2$
+		id = id.replaceAll("[ \\/:\"*?<>|`\n\r\t\0]+", "");
 		return id;
 	}
 
