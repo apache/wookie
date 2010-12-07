@@ -352,7 +352,28 @@ public class I18n extends ConformanceTest{
 	}
 	
 	// ta-CEGwkNQcWo 
-	// TODO These need manual testing using the server
+	@Test
+	public void paramTests(){
+		W3CWidget widget;
+		String dir;
+		
+		widget = getWidget("031","lro");
+		assertEquals("םפללחק", widget.getFeatures().get(0).getParams().get(0).getName());
+		widget = getWidget("032","lro");
+		assertEquals("םפללחק", widget.getFeatures().get(0).getParams().get(0).getValue());
+		widget = getWidget("031","ltr");
+		assertEquals("The arrow should point right -->", widget.getFeatures().get(0).getParams().get(0).getName());
+		widget = getWidget("032","ltr");
+		assertEquals("The arrow should point right -->", widget.getFeatures().get(0).getParams().get(0).getValue());	
+		widget = getWidget("031","rtl");
+		assertEquals("The arrow should point right -->", widget.getFeatures().get(0).getParams().get(0).getName());
+		widget = getWidget("032","rtl");
+		assertEquals("The arrow should point right -->", widget.getFeatures().get(0).getParams().get(0).getValue());	
+		widget = getWidget("031","rlo");
+		assertEquals("PASSED", widget.getFeatures().get(0).getParams().get(0).getName());
+		widget = getWidget("032","rlo");
+		assertEquals("PASSED", widget.getFeatures().get(0).getParams().get(0).getValue());	
+	}
 	
 	// Utilities
 	
