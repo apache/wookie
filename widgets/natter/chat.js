@@ -40,6 +40,8 @@ var isAdmin = false;
 var sharedDataKey = null;
 var showMembers = false;
 var localizedStrings = null;
+var FIXME_THUMBNAIL_URI = "http://fixme.org/thumbnail";
+var DEFAULT_THUMBNAIL_URI = "Images/default_thumbnail.png";
 
 function rnd_no(max){
     return Math.floor(Math.random()*max);
@@ -72,7 +74,7 @@ function init() {
             username = wave.getViewer().getDisplayName();
             thumbnail  = wave.getViewer().getThumbnailUrl();
         }
-        if (thumbnail == "" || thumbnail == null|| thumbnail == "http://fixme.org/thumbnail") thumbnail = "Images/default_thumbnail.png";
+        if (thumbnail == "" || thumbnail == null|| thumbnail == FIXME_THUMBNAIL_URI) thumbnail = "Images/default_thumbnail.png";
         if (username == null || username == ""){
             username = "natterer" + rnd_no(9999);        
         }
@@ -169,23 +171,28 @@ function post(user,text,url){
 ///// Presence List
 
 function refreshMemberList(){
+	var localthumbnail = DEFAULT_THUMBNAIL_URI;
 	participants = wave.getParticipants();
     viewer = wave.getViewer();
 	var memberList = "";
     var viewerId = "";
     if (viewer!=null) viewerId=viewer.getId();
-	for (participant in participants) {			
+	for (participant in participants) {	
+		var thisUserIcon = participants[participant].getThumbnailUrl();
+		if(thisUserIcon == FIXME_THUMBNAIL_URI){
+			thisUserIcon = localthumbnail;
+		}		
 		if(participants[participant].getId() == viewerId){	
 			// this users entry		
-		   	memberList = "<div><img height=\"32\" width=\"32\" style=\"vertical-align: text-top; float:left;padding:2px;\" src=\""+participants[participant].getThumbnailUrl()+"\"/><i>" + dwr.util.escapeHtml(participants[participant].getDisplayName()) + "</i><br clear=\"both\"/></div>" + memberList;
+		   	memberList = "<div><img height=\"32\" width=\"32\" style=\"vertical-align: text-top; float:left;padding:2px;\" src=\""+thisUserIcon+"\"/><i>" + dwr.util.escapeHtml(participants[participant].getDisplayName()) + "</i><br clear=\"both\"/></div>" + memberList;
 		}
 		else{
-		  	memberList = "<div><img height=\"32\" width=\"32\" style=\"vertical-align: text-top; float:left;padding:2px;\" src=\""+participants[participant].getThumbnailUrl()+"\"/>" + dwr.util.escapeHtml(participants[participant].getDisplayName()) + "<br clear=\"both\"/></div>" + memberList;
+		  	memberList = "<div><img height=\"32\" width=\"32\" style=\"vertical-align: text-top; float:left;padding:2px;\" src=\""+thisUserIcon+"\"/>" + dwr.util.escapeHtml(participants[participant].getDisplayName()) + "<br clear=\"both\"/></div>" + memberList;
 		}
     }
     // add current non-member viewer
     if (viewer == null){
-		  	memberList = "<div><img height=\"32\" width=\"32\" style=\"vertical-align: text-top; float:left;padding:2px;\" src=\"Images/default_thumbnail.png\"/>" + username + "<br clear=\"both\"/></div>" + memberList;        
+		  	memberList = "<div><img height=\"32\" width=\"32\" style=\"vertical-align: text-top; float:left;padding:2px;\" src=\""+DEFAULT_THUMBNAIL_URI+"\"/>" + username + "<br clear=\"both\"/></div>" + memberList;        
     }
     // now set the presence list
     dwr.util.setValue("members", memberList, { escapeHtml:false });
