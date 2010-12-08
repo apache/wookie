@@ -370,16 +370,15 @@ public class I18n extends ConformanceTest{
 			assertEquals(pass_value, feature.getName());
 		}	
 	}
+	
+	// Note that to pass this we only have to not throw an exception for an invalid widget.
 	@Test
-	@Ignore // test in error
 	public void feature30(){
-		boolean pass_value=false;
 		String id="030";
 		String[] tests = {"lro","rlo","rtl","ltr"};
 		for (String dir: tests){
 			W3CWidget widget = getWidget(id,dir);
-			IFeatureEntity feature = widget.getFeatures().get(0);
-			assertEquals(pass_value, feature.isRequired());
+			assertEquals(0, widget.getFeatures().size());
 		}	
 	}
 	
