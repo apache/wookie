@@ -270,7 +270,39 @@ public class I18n extends ConformanceTest{
 		assertEquals("http://widget.example.org/", widget.getAuthor().getHref());
 	}
 	
-	// ta-DwhJBIJRQN Preferences TODO
+	// ta-DwhJBIJRQN
+	@Test
+	public void preferences(){
+		W3CWidget widget;
+
+		widget = getWidget("033","lro");
+		assertEquals("םפללחק", widget.getPrefences().get(0).getName());
+		widget = getWidget("034","lro");
+		assertEquals("םפללחק", widget.getPrefences().get(0).getValue());
+		widget = getWidget("035","lro");
+		assertEquals(true, widget.getPrefences().get(0).isReadOnly());
+		
+		widget = getWidget("033","ltr");
+		assertEquals("The arrow should point right -->", widget.getPrefences().get(0).getName());
+		widget = getWidget("034","ltr");
+		assertEquals("The arrow should point right -->", widget.getPrefences().get(0).getValue());
+		widget = getWidget("035","ltr");
+		assertEquals(true, widget.getPrefences().get(0).isReadOnly());
+		
+		widget = getWidget("033","rlo");
+		assertEquals("PASSED", widget.getPrefences().get(0).getName());
+		widget = getWidget("034","rlo");
+		assertEquals("PASSED", widget.getPrefences().get(0).getValue());
+		widget = getWidget("035","rlo");
+		assertEquals(true, widget.getPrefences().get(0).isReadOnly());
+		
+		widget = getWidget("033","rtl");
+		assertEquals("The arrow should point right -->", widget.getPrefences().get(0).getName());
+		widget = getWidget("034","rtl");
+		assertEquals("The arrow should point right -->", widget.getPrefences().get(0).getValue());
+		widget = getWidget("035","rtl");
+		assertEquals(true, widget.getPrefences().get(0).isReadOnly());
+	}
 	
 	// ta-LQcjNKBLUZ
 	@Test
