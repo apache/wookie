@@ -266,7 +266,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	@Test
 	public void rd(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RawAIWHoMs/001/rd.wgt");
-		assertTrue(widget.getIdentifier().startsWith("generated-uid"));
+		assertTrue(widget.getIdentifier().contains("generated"));
 	}
 	@Test
 	public void b2(){
