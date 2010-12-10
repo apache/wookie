@@ -32,6 +32,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wookie.tests.functional.AbstractControllerTest;
 import org.apache.wookie.tests.helpers.WidgetUploader;
+import org.apache.wookie.w3c.util.WidgetPackageUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -1313,19 +1314,14 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	}
 
 	private String getIcon(Element widget){
-		String icon = null;
-		// split off the end icon path
-		// http://localhost:8080/wookie/wservices/ + uid + / 
-		String baseUrl = "http://localhost:8080/wookie/wservices/"+widget.getAttributeValue("identifier")+"/";
 		Element iconElem = widget.getChild("icon");
-		if(iconElem == null) return null;
-		String iconUrl = iconElem.getText();
-		icon = StringUtils.difference(baseUrl,iconUrl);
-		return icon;
+		return getLocalIconPath(widget,iconElem);
 	}
 	
 	private String getLocalIconPath(Element widget, Element iconElem){
-		String baseUrl = "http://localhost:8080/wookie/wservices/"+widget.getAttributeValue("identifier")+"/";	
+		String id = widget.getAttributeValue("identifier");
+		id = WidgetPackageUtils.convertIdToFolderName(id);
+		String baseUrl = "http://localhost:8080/wookie/wservices/"+id+"/";	
 		if(iconElem == null) return null;
 		String iconUrl = iconElem.getText();
 		String icon = StringUtils.difference(baseUrl,iconUrl);
