@@ -246,7 +246,7 @@ public class WidgetManifestModel implements W3CWidget {
 		if(fIdentifier == null){
 			//give up & generate one
 			RandomGUID r = new RandomGUID();
-			fIdentifier = "generated-uid-" + r.toString();
+			fIdentifier = "http://incubator.apache.org/wookie/generated/" + r.toString();
 		}
 		// VERSION IS OPTIONAL		
 		fVersion = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.VERSION_ATTRIBUTE));
