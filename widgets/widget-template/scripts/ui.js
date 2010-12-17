@@ -27,7 +27,7 @@ function wookieShowSettings(event) {
 	var elemSettings = document.getElementById("wookie-settings");
 	
 	var elemContentProperty = document.getElementById("wookie-template-property-content");
-	elemContentProperty.innerHTML = elemContent.innerHTML;
+	elemContentProperty.value = elemContent.innerHTML;
 	
 	elemContent.style.display="none";
 	elemSettings.style.display="block";
