@@ -99,6 +99,12 @@ $(document).ready(function(){
 	<%
 		for (int i = 1; i < widgets.length; i++) {
 			IWidget widget = (IWidget) widgets[i];
+			// TODO - sort out instances where the title can contain html data
+			// i.e. <span style="unicode-bidi:embed; direction:ltr">You decide</span>
+			// Setting the title as empty so that UI still works, but real value will need to be parsed in a future fix
+			// so the jquery code below will work correctly
+			String localWidgetTitle = "";
+			//String localWidgetTitle = widget.getWidgetTitle();
 	%>		 
 			<table width="500" class="ui-widget ui-widget-content" align="center">      
 		        <tr class="ui-widget-header"><td colspan="2"><img height="16" width="16" border="0" src="<%=widget.getWidgetIconLocation()%>"/>&nbsp;<%=widget.getWidgetTitle()%></td></tr>
@@ -108,7 +114,7 @@ $(document).ready(function(){
 		        <tr><td>Author</td><td><%=widget.getWidgetAuthor()%></td></tr>		        
 		        <tr><td colspan="2" align="center">
 					<a class="opendialog" href="./WidgetAdminServlet?operation=REMOVEWIDGET&widgetId=<%=widget.getId()%>" 
-					onclick="updateDialogText('<%=widget.getWidgetTitle()%>');">
+					onclick="updateDialogText('<%=localWidgetTitle%>');">
 					<img src="../shared/images/delete_1.gif" width="16" height="16" border="0">&nbsp;Delete this widget
 					</a>
 		        </td></tr>
