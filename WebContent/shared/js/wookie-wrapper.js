@@ -47,8 +47,9 @@ WidgetPreferences = new function WidgetPreferences(){
         pref.dvalue = value;
         pref.key = key;
         pref.readOnly = false;
-        
+   
 	    var existing = this.prefs[key];
+        
         if (existing){
             if (existing["readOnly"] == true){
             	window.DOMException.code = DOMException.NO_MODIFICATION_ALLOWED_ERR;
@@ -59,18 +60,23 @@ WidgetPreferences = new function WidgetPreferences(){
         	try{
         		eval("Widget.preferences.__defineGetter__('"+key+"', function(){return Widget.preferences.getItem('"+key+"')})");
         		eval("Widget.preferences.__defineSetter__('"+key+"', function(v){return Widget.preferences.setItem('"+key+"',v)})");
-        		eval("Widget.preferences.prefs."+key+"=pref");
+        		eval("Widget.preferences.prefs[\""+key+"\"]=pref;");
         	} 
         	catch(err){
         		// cant use __defineGetter__ so try to setup for IE9
         		try{
         			eval("Object.defineProperty(Widget.preferences,'" + key + "', {get: function get() { return Widget.preferences.getItem('"+key+"');},set: function set(value) {Widget.preferences.setItem('"+key+"',value)}});");
-        			eval("Widget.preferences.prefs."+key+"=pref");
+        			eval("Widget.preferences.prefs[\""+key+"\"]=pref;");
         		}
         		catch(err){
         			// Catch IE 8 error. See WOOKIE-44
-        			eval("Widget.preferences." + key + "='" + value + "'");
-        			eval("Widget.preferences.prefs." + key + "=pref");
+        			
+	        		eval("Widget.preferences");
+	        		//If eval went fine, populate with data, See WOOKIE-151
+	        		if(typeof Widget.preferences != "undefined") {
+	        			Widget.preferences[key] = value;
+	        			Widget.preferences.prefs[key] = pref;
+	        		}
         		}
             }
         }
@@ -172,17 +178,17 @@ var Widget = {
             try{
             	eval("Widget.preferences.__defineGetter__('"+key+"', function(){return Widget.preferences.getItem('"+key+"')})");
             	eval("Widget.preferences.__defineSetter__('"+key+"', function(v){return Widget.preferences.setItem('"+key+"',v)})");
-            	eval("this.preferences.prefs."+key+"=obj");
+            	eval("this.preferences.prefs[\""+key+"\"]=obj;");
             }
             catch(err){
             	// cant use __defineGetter__ so try to setup for IE9
             	try{
             		eval("Object.defineProperty(Widget.preferences,'" + key + "', {get: function get() { return Widget.preferences.getItem('"+key+"');},set: function set(value) {Widget.preferences.setItem('"+key+"',value)}});");
-            		eval("this.preferences.prefs."+key+"=obj");
+            		eval("this.preferences.prefs[\""+key+"\"]=obj;");
             	}
             	catch(err){
             		// Catch IE 8 error. See WOOKIE-44
-            		eval("this.preferences.prefs."+key+"=obj");
+            		eval("this.preferences.prefs[\""+key+"\"]=obj;");
             	}
             }
 		}
