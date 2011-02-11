@@ -56,7 +56,7 @@ import org.apache.wookie.beans.jpa.InverseRelationshipCollection;
 @NamedQueries({@NamedQuery(name="WIDGET", query="SELECT w FROM Widget w WHERE w.guid = :guid"),
                @NamedQuery(name="DEFAULT_WIDGET", query="SELECT w FROM WidgetDefault wd JOIN wd.widget w WHERE wd.widgetContext = :widgetContext"),
                @NamedQuery(name="WIDGETS", query="SELECT w FROM Widget w JOIN w.widgetTypes wt WHERE wt.widgetContext = :widgetContext")})
-public class WidgetImpl implements IWidget
+public class WidgetImpl extends LocalizedBeanImpl implements IWidget
 {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

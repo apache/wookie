@@ -22,7 +22,7 @@ import java.util.List;
  * This represents the information model for a W3C widget that has been
  * unpacked using the W3CWidgetFactory.
  */
-public interface W3CWidget extends IElement{
+public interface W3CWidget extends ILocalizedEntity{
 
 	/**
 	 * Get the list of access request entities for the widget

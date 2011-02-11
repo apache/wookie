@@ -51,7 +51,7 @@ public class FormattingUtils {
 	 * @return a CSS-formatted i18n string
 	 */
 	public static String getFormattedWidgetVersion(W3CWidget widget){
-		return getFormatted(widget.getVersion());
+		return getFormatted(widget.getDir(), widget.getVersion());
 	}
 	/**
 	 * Returns the CSS formatted i18n string for the widget description
@@ -100,6 +100,10 @@ public class FormattingUtils {
 	 * @return a CSS i18n string
 	 */
 	protected static String getFormatted(String dir, String value){
+		
+		// If the string has no embedded spans with dir attributes, and no set dir, just return the string
+		//if (dir == null && !value.contains("dir=")) return value;
+		
 		String mode = "embed";
 		if (dir == null) dir = "ltr";
 		// Reformat embedded SPAN tags

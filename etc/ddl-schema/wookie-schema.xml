@@ -30,6 +30,8 @@
     <column name="widget_author_email" size="320" type="VARCHAR"/>
     <column name="widget_author_href" type="LONGVARCHAR"/>
     <column name="widget_version" size="255" type="VARCHAR"/>
+    <column name="dir" size="255" type="VARCHAR"/>
+    <column name="lang" size="255" type="VARCHAR"/>
     <unique name="UNWidget1">
       <unique-column name="guid"/>
     </unique>

@@ -208,6 +208,21 @@ public class GadgetAdapter implements W3CWidget {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public String getDir() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean isValid() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public String getLang() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 

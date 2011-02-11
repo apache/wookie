@@ -29,7 +29,7 @@ import org.apache.wookie.w3c.util.LocalizationUtils;
  * @author <a href="mailto:rwatler@apache.org">Randy Watler</a>
  * @version $Id$
  */
-public interface IWidget extends IBean
+public interface IWidget extends ILocalizedBean, IBean
 {
     /**
      * Get widget height.

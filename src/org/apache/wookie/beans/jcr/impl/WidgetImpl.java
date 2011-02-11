@@ -42,7 +42,7 @@ import org.apache.wookie.beans.jcr.JCRPersistenceManager;
  * @version $Id$
  */
 @Node(jcrType="wookie:widget", jcrMixinTypes="mix:referenceable", discriminator=false)
-public class WidgetImpl implements IWidget, IPathBean, IUuidBean
+public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean, IUuidBean
 {
     @Field(path=true)
     private String path;

@@ -45,14 +45,13 @@ import org.apache.wookie.w3c.util.UnicodeUtils;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 /**
  * Processes a config.xml document to create a model
  * for a widget, including all sub-objects
  * @author Paul Sharples
  */
-public class WidgetManifestModel implements W3CWidget {
+public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CWidget {
 	
 	static Logger fLogger = Logger.getLogger(WidgetManifestModel.class.getName());
 	
@@ -61,7 +60,6 @@ public class WidgetManifestModel implements W3CWidget {
 	private Integer fHeight;
 	private Integer fWidth;
 	private String fViewModes;
-	private String fLang;
 	private String[] features;
 	private List<INameEntity> fNamesList;
 	private List<IDescriptionEntity> fDescriptionsList;
@@ -207,9 +205,13 @@ public class WidgetManifestModel implements W3CWidget {
 		return fUpdate;
 	}
 	
-	public void fromXML(Element element) throws BadManifestException{
+	public void fromXML(Element element){
 		fLogger.warn("WidgetManifestModel.fromXML() called with no locales");
-		fromXML(element, new String[]{"en"});
+		try {
+			fromXML(element, new String[]{"en"});
+		} catch (BadManifestException e) {
+			fLogger.error("WidgetManifestModel.fromXML() called with no locales and Bad Manifest",e);
+		}
 	}
 
 	public String getLocalName(String locale){
@@ -284,11 +286,9 @@ public class WidgetManifestModel implements W3CWidget {
 			}
 			fViewModes = modes.trim();
 		}
-		// xml:lang optional
-		fLang = element.getAttributeValue(IW3CXMLConfiguration.LANG_ATTRIBUTE, Namespace.XML_NAMESPACE);
-		if(fLang == null){
-			fLang = IW3CXMLConfiguration.DEFAULT_LANG;
-		}
+		// DIR and XML:LANG ARE OPTIONAL
+		super.fromXML(element);
+		
 
 		
 		// parse the children

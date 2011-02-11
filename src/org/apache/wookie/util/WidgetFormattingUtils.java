@@ -51,7 +51,7 @@ public class WidgetFormattingUtils extends FormattingUtils{
 	 * @return a CSS-formatted i18n string
 	 */
 	public static String getFormattedWidgetVersion(IWidget widget){
-		return getFormatted(widget.getVersion());
+		return getFormatted(widget.getDir(), widget.getVersion());
 	}
 	/**
 	 * Returns the CSS formatted i18n string for the widget description
