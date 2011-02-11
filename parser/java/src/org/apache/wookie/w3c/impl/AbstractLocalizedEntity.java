@@ -140,5 +140,15 @@ public abstract class AbstractLocalizedEntity implements ILocalizedEntity {
 		}
 	}
 
+	/**
+	 * Set the dir and lang attributes of an element representing the entity - used when marshalling an entity to XML
+	 * @param element the element to add attributes to
+	 * @return the element with dir and lang attributes added if appropriate
+	 */
+	protected Element setLocalisationAttributes(Element element){
+		if (getDir() != null) element.setAttribute(IW3CXMLConfiguration.DIR_ATRRIBUTE,getDir());
+		if (getLang() != null) element.setAttribute(IW3CXMLConfiguration.LANG_ATTRIBUTE,getLang(), Namespace.XML_NAMESPACE);
+		return element;
+	}
 
 }

@@ -107,5 +107,13 @@ public class IconEntity extends AbstractLocalizedEntity implements IIconEntity{
 		}
 	}
 
+	public Element toXml() {
+		Element element = new Element(IW3CXMLConfiguration.ICON_ELEMENT, IW3CXMLConfiguration.MANIFEST_NAMESPACE);
+		element.setAttribute(IW3CXMLConfiguration.SOURCE_ATTRIBUTE, getSrc());
+		if (getHeight() != null && getHeight() > 0) element.setAttribute(IW3CXMLConfiguration.HEIGHT_ATTRIBUTE,String.valueOf(getHeight()));
+		if (getWidth() != null && getWidth() > 0) element.setAttribute(IW3CXMLConfiguration.WIDTH_ATTRIBUTE,String.valueOf(getWidth()));
+		return element;
+	}
+
 
 }

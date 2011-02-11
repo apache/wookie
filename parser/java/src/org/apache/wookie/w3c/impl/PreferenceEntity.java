@@ -49,4 +49,13 @@ public class PreferenceEntity extends ParamEntity implements IPreferenceEntity {
 			fReadOnly = false;
 		}	
 	}
+
+	@Override
+	public Element toXml() {
+		Element element = new Element(IW3CXMLConfiguration.PREFERENCE_ELEMENT, IW3CXMLConfiguration.MANIFEST_NAMESPACE);
+		element.setAttribute(IW3CXMLConfiguration.READONLY_ATTRIBUTE, String.valueOf(isReadOnly()));
+		element.setAttribute(IW3CXMLConfiguration.NAME_ATTRIBUTE, getName());
+		element.setAttribute(IW3CXMLConfiguration.VALUE_ATTRIBUTE, getValue());
+		return element;
+	}
 }

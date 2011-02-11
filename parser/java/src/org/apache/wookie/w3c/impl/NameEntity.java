@@ -23,7 +23,7 @@ import org.jdom.Element;
  * the <name> element
  */
 public class NameEntity extends AbstractLocalizedEntity implements INameEntity {
-	
+
 	private String fName;
 	private String fShort;
 
@@ -63,6 +63,14 @@ public class NameEntity extends AbstractLocalizedEntity implements INameEntity {
 		fName = getLocalizedTextContent(element);
 		// Get the short attribute (if exists)
 		fShort = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.SHORT_ATTRIBUTE));
+	}
+	
+	public Element toXml() {
+		Element nameElem = new Element(IW3CXMLConfiguration.NAME_ELEMENT, IW3CXMLConfiguration.MANIFEST_NAMESPACE);
+		nameElem.setText(getName());
+		if (getShort() != null && getShort().length() > 0) nameElem.setAttribute(IW3CXMLConfiguration.SHORT_ATTRIBUTE, getShort());
+		nameElem = setLocalisationAttributes(nameElem);
+		return nameElem;
 	}
 
 }

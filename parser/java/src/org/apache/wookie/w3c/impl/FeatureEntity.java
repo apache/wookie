@@ -136,4 +136,14 @@ public class FeatureEntity implements IFeatureEntity {
 		
 	}
 
+	public Element toXml() {
+		Element element = new Element(IW3CXMLConfiguration.FEATURE_ELEMENT, IW3CXMLConfiguration.MANIFEST_NAMESPACE);
+		element.setAttribute(IW3CXMLConfiguration.NAME_ATTRIBUTE, getName());
+		element.setAttribute(IW3CXMLConfiguration.REQUIRED_ATTRIBUTE, String.valueOf(isRequired()));
+		for (IParamEntity param: getParams()){
+			element.addContent(param.toXml());
+		}
+		return element;
+	}
+
 }

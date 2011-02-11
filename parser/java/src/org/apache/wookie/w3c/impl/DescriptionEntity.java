@@ -48,5 +48,12 @@ public class DescriptionEntity extends AbstractLocalizedEntity  implements IDesc
 		fDescription = getLocalizedTextContent(element);
 	}
 
+	public Element toXml() {
+		Element element = new Element(IW3CXMLConfiguration.DESCRIPTION_ELEMENT, IW3CXMLConfiguration.MANIFEST_NAMESPACE);
+		element.setText(getDescription());
+		element = setLocalisationAttributes(element);
+		return element;
+	}
+
 
 }

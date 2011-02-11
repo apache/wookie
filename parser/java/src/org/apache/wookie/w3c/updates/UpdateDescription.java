@@ -12,6 +12,7 @@
  * limitations under the License.
  */
 package org.apache.wookie.w3c.updates;
+import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.util.IRIValidator;
 import org.jdom.Element;
@@ -26,6 +27,10 @@ public class UpdateDescription{
 	public UpdateDescription(){	
 	}
 
+	public UpdateDescription(String href){
+		_href = href;
+	}
+	
 	public String getHref() {
 		return _href;
 	}
@@ -35,6 +40,12 @@ public class UpdateDescription{
 		if (href != null && href != "" && IRIValidator.isValidIRI(href)){
 			_href = href;
 		}
+	}
+	
+	public Element toXML(){
+		Element element = new Element(IW3CXMLConfiguration.UPDATE_ELEMENT, IW3CXMLConfiguration.MANIFEST_NAMESPACE);
+		element.setAttribute(IW3CXMLConfiguration.HREF_ATTRIBUTE, getHref());
+		return element;
 	}
 
 }

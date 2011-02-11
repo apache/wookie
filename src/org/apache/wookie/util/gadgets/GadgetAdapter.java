@@ -203,6 +203,11 @@ public class GadgetAdapter implements W3CWidget {
 	public String getUpdate() {
 		return null;
 	}
+
+	public Element toXml() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 

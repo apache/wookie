@@ -138,5 +138,12 @@ public class UpdateDescriptionDocument{
 			super.fromXML(element);
 			this.text = getLocalizedTextContent(element);
 		}
+
+		public Element toXml() {
+			Element element = new Element("details",IW3CXMLConfiguration.MANIFEST_NAMESPACE);
+			element.setText(text);
+			element = setLocalisationAttributes(element);
+			return element;
+		}
 	}
 }

@@ -117,4 +117,11 @@ public class AccessEntity implements IAccessEntity {
 			}
 		}
 	}
+
+	public Element toXml() {
+		Element element = new Element(IW3CXMLConfiguration.ACCESS_ELEMENT,IW3CXMLConfiguration.MANIFEST_NAMESPACE);
+		element.setAttribute(IW3CXMLConfiguration.SUBDOMAINS_ATTRIBUTE, String.valueOf(hasSubDomains()));
+		element.setAttribute(IW3CXMLConfiguration.ORIGIN_ATTRIBUTE, getOrigin());
+		return element;
+	}
 }

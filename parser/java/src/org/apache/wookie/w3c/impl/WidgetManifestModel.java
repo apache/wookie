@@ -408,4 +408,67 @@ public class WidgetManifestModel implements W3CWidget {
 			if (StringUtils.equals(entity.getLang(), ent.getLang())) first = false;
 		return first;
 	}
+
+	public Element toXml() {
+		Element widgetElem = new Element(IW3CXMLConfiguration.WIDGET_ELEMENT,IW3CXMLConfiguration.MANIFEST_NAMESPACE);
+		widgetElem.setAttribute(IW3CXMLConfiguration.ID_ATTRIBUTE, getIdentifier());
+		if (getVersion() != null && getVersion().length() > 0) widgetElem.setAttribute(IW3CXMLConfiguration.VERSION_ATTRIBUTE, getVersion());
+		if (getHeight() != null && getHeight() > 0) widgetElem.setAttribute(IW3CXMLConfiguration.HEIGHT_ATTRIBUTE,String.valueOf(getHeight()));
+		if (getWidth() != null && getWidth() > 0) widgetElem.setAttribute(IW3CXMLConfiguration.WIDTH_ATTRIBUTE,String.valueOf(getWidth()));
+		if (getViewModes() != null) widgetElem.setAttribute(IW3CXMLConfiguration.MODE_ATTRIBUTE, getViewModes());
+		
+		
+		// Name
+		for (INameEntity name: getNames()){
+			Element nameElem = name.toXml();
+			widgetElem.addContent(nameElem);
+		}
+		// Description
+		for (IDescriptionEntity description: getDescriptions()){
+			widgetElem.addContent(description.toXml());
+		}
+		// Author
+		if (getAuthor() != null) widgetElem.addContent(getAuthor().toXml());
+		
+		// Update
+		if (getUpdate()!= null){
+			widgetElem.addContent(new UpdateDescription(getUpdate()).toXML());
+		}
+		
+		
+		// Licenses
+		for (ILicenseEntity license: getLicensesList()){
+			widgetElem.addContent(license.toXml());
+		}
+		
+		// Icons
+		for (IIconEntity icon:getIconsList()){
+			Element iconElem = icon.toXml();
+			widgetElem.addContent(iconElem);				
+		}
+		
+		// Access 
+		for (IAccessEntity access: getAccessList()){
+			Element accessElem = access.toXml();
+			widgetElem.addContent(accessElem);
+		}
+		
+		// Content
+		for (IContentEntity content: getContentList()){
+			Element contentElem = content.toXml();
+			widgetElem.addContent(contentElem);			
+		}
+		
+		// Features
+		for (IFeatureEntity feature: getFeatures()){
+			widgetElem.addContent(feature.toXml());
+		}
+			
+		// Preferences
+		for (IPreferenceEntity preference: getPrefences()){
+			widgetElem.addContent(preference.toXml());
+		}
+		
+		return widgetElem;
+	}
 }

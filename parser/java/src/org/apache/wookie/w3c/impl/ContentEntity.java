@@ -126,4 +126,14 @@ public class ContentEntity extends AbstractLocalizedEntity implements IContentEn
 		return supported;
 	}
 
+	public Element toXml() {
+		Element contentElem = new Element(IW3CXMLConfiguration.CONTENT_ELEMENT,IW3CXMLConfiguration.MANIFEST_NAMESPACE);
+		contentElem.setAttribute(IW3CXMLConfiguration.SOURCE_ATTRIBUTE,getSrc());
+		if (getType() != null) contentElem.setAttribute(IW3CXMLConfiguration.TYPE_ATTRIBUTE,getType());
+		if (getCharSet() != null) contentElem.setAttribute(IW3CXMLConfiguration.CHARSET_ATTRIBUTE,getCharSet());
+		
+		contentElem = setLocalisationAttributes(contentElem);
+		return contentElem;
+	}
+
 }

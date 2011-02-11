@@ -60,6 +60,13 @@ public class ParamEntity implements IParamEntity {
 		if (fName.equals("")) fName = null;
 		fValue = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.VALUE_ATTRIBUTE));
 		if (fValue.equals("")) fValue = null;
-	}	
+	}
+
+	public Element toXml() {
+		Element element = new Element(IW3CXMLConfiguration.PARAM_ELEMENT, IW3CXMLConfiguration.MANIFEST_NAMESPACE);
+		element.setAttribute(IW3CXMLConfiguration.NAME_ATTRIBUTE, getName());
+		element.setAttribute(IW3CXMLConfiguration.VALUE_ATTRIBUTE, getValue());
+		return element;
+	}
 
 }

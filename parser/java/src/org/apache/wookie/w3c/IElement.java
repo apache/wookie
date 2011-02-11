@@ -28,4 +28,9 @@ public interface IElement {
      */
     void fromXML(Element element) throws BadManifestException;
 
+    /**
+     * Marshall the entity into an XML Element
+     * @return the W3C Widgets Element representing the content of the entity
+     */
+    Element toXml();
 }

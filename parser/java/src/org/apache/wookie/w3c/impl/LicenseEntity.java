@@ -62,4 +62,12 @@ public class LicenseEntity extends AbstractLocalizedEntity implements ILicenseEn
 		if (fHref.equals("")) fHref = null;
 	}
 
+	public Element toXml() {
+		Element element = new Element(IW3CXMLConfiguration.LICENSE_ELEMENT, IW3CXMLConfiguration.MANIFEST_NAMESPACE);
+		element.setText(getLicenseText());
+		if (getHref()!=null && getHref().length()>0) element.setAttribute(IW3CXMLConfiguration.HREF_ATTRIBUTE, getHref());
+		element = setLocalisationAttributes(element);
+		return element;
+	}
+
 }
