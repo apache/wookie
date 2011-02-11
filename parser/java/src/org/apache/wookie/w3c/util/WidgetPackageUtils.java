@@ -16,6 +16,7 @@ package org.apache.wookie.w3c.util;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -255,4 +257,46 @@ public class WidgetPackageUtils {
 			throw ex;
 		}
 	}
+	
+	/**
+	 * Packages the source file/folder up as a new Zip file
+	 * @param source the source file or folder to be zipped
+	 * @param target the zip file to create
+	 * @throws IOException
+	 */
+	public static void repackZip(File source, File target) throws IOException{
+		ZipArchiveOutputStream out = new ZipArchiveOutputStream(target);
+		out.setEncoding("UTF-8");
+        for(File afile: source.listFiles()){
+            pack(afile,out, "");
+        }
+		out.flush();
+		out.close();
+	}
+	
+	/**
+	 * Recursively locates and adds files and folders to a zip archive
+	 * @param file
+	 * @param out
+	 * @param path
+	 * @throws IOException
+	 */
+	private static void pack(File file, ZipArchiveOutputStream out, String path) throws IOException {
+        if(file.isDirectory()){
+            path = path + file.getName() +"/";
+            for(File afile: file.listFiles()){
+                pack(afile,out, path);
+            }
+        } else {
+        	ZipArchiveEntry entry = (ZipArchiveEntry) out.createArchiveEntry(file, path + file.getName());
+    		out.putArchiveEntry(entry);
+            byte[] buf = new byte[1024];
+            int len;
+            FileInputStream in = new FileInputStream(file);
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+              }
+    		out.closeArchiveEntry();
+        }
+    }
 }
