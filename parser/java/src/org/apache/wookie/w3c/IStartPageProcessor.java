@@ -28,7 +28,7 @@ public interface IStartPageProcessor {
 	 * @throws IOException if there is a problem reading or writing to the start file, or if the start file cannot be parsed
 	 * with the HTML processor used
 	 */
-	public abstract void processStartFile(File startFile, W3CWidget model)
+	public abstract void processStartFile(File startFile, W3CWidget model, IContentEntity content)
 			throws Exception;
 
 }

@@ -93,7 +93,7 @@ public class W3CWidgetFactory {
 		this.outputDirectory = null;
 		this.encodings = new String[]{"UTF-8"};
 		this.startPageProcessor = new IStartPageProcessor(){
-			public void processStartFile(File startFile, W3CWidget model)
+			public void processStartFile(File startFile, W3CWidget model,IContentEntity content)
 					throws Exception {
 			}
 			
@@ -251,7 +251,7 @@ public class W3CWidgetFactory {
 					String relativestartUrl = (WidgetPackageUtils.getURLForWidget(localPath, manifestIdentifier, content.getSrc())); 					
 					content.setSrc(relativestartUrl);
 					if(startFile.exists() && startPageProcessor != null){		
-						startPageProcessor.processStartFile(startFile, widgetModel);
+						startPageProcessor.processStartFile(startFile, widgetModel, content);
 					}	
 				}
 				if (widgetModel.getContentList().isEmpty()){

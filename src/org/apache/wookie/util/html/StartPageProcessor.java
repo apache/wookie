@@ -21,6 +21,7 @@ import org.apache.wookie.beans.IServerFeature;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.IFeature;
+import org.apache.wookie.w3c.IContentEntity;
 import org.apache.wookie.w3c.IFeatureEntity;
 import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.IStartPageProcessor;
@@ -38,7 +39,7 @@ public class StartPageProcessor implements IStartPageProcessor {
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.util.html.IStartPageProcessor#processStartFile(java.io.File, org.apache.wookie.w3c.IManifestModel)
 	 */
-	public void processStartFile(File startFile, W3CWidget model) throws Exception{
+	public void processStartFile(File startFile, W3CWidget model, IContentEntity content) throws Exception{
 		if (startFile == null) throw new Exception("Start file cannot be processed: file is null");
 		if (!startFile.exists()) throw new Exception("Start file cannot be processed:  file does not exist");
 		if (!(startFile.canWrite()&&startFile.canRead())) throw new Exception("Start file cannot be processed: read or write permissions missing");
@@ -47,8 +48,13 @@ public class StartPageProcessor implements IStartPageProcessor {
 		engine.setReader(new FileReader(startFile));
 		addDefaultScripts(engine);
 		addFeatures(engine, model);
+		setContentType(engine, content);
 		FileWriter writer = new FileWriter(startFile);
 		engine.process(writer);
+	}
+	
+	private void setContentType(IHtmlProcessor engine, IContentEntity content){
+		engine.setTypeAndCharset(content.getType(), content.getCharSet());
 	}
 	
 	/**

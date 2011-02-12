@@ -34,6 +34,7 @@ public interface IHtmlProcessor {
 	final String HEAD_TAG = "head";
 	final String SCRIPT_TAG = "script";	
 	final String LINK_TAG = "link";	
+	final String META_TAG = "meta";	
 	final String TYPE_ATTRIBUTE = "type";
 	final String TYPE_ATTRIBUTE_VALUE = "text/javascript";	
 	final String CSS_TYPE_ATTRIBUTE_VALUE = "text/css";	
@@ -62,10 +63,11 @@ public interface IHtmlProcessor {
 	public void injectStylesheet(String href);
 	
 	/**
-	 * Sets the charset of the HTML document
+	 * Sets the type and charset of the HTML document
+	 * @param type
 	 * @param charset
 	 */
-	public void setCharset(String charset);
+	public void setTypeAndCharset(String type, String charset);
 	
 	/**
 	 * Processes the HTML and writes the output to the specified writer

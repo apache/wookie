@@ -47,7 +47,7 @@ public class HtmlCleaner implements IHtmlProcessor{
 		cleaner = new  org.htmlcleaner.HtmlCleaner();
 		// set cleaner properties	
 		properties  = cleaner.getProperties();
-		properties.setOmitDoctypeDeclaration(false);
+		properties.setOmitDoctypeDeclaration(true);
 		properties.setOmitXmlDeclaration(true);
 		properties.setUseCdataForScriptAndStyle(true);
 		properties.setUseEmptyElementTags(false);	
@@ -90,8 +90,13 @@ public class HtmlCleaner implements IHtmlProcessor{
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.util.html.IHtmlProcessor#setCharset(java.lang.String)
 	 */
-	public void setCharset(String charset) {
-		// TODO Auto-generated method stub	
+	public void setTypeAndCharset(String type, String charset) {
+		// This overrides any existing encoding information in the HTML file.
+		TagNode meta = new TagNode(META_TAG);
+		meta.addAttribute("http-equiv", "Content-Type");
+		if (charset.equals("UTF-8")) charset="utf-8";
+		meta.addAttribute("content", type+";charset="+charset);
+		headNode.getChildren().add(0, meta);
 	}
 	
 	/* (non-Javadoc)
