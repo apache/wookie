@@ -167,7 +167,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	        client.executeMethod(post);
 	        int code = post.getStatusCode();
 	        assertEquals(404,code); // but must return the "default widget"
-	        assertTrue(post.getResponseBodyAsString().contains("<title>Unsupported widget widget</title>"));
+	        assertTrue(post.getResponseBodyAsString().contains("Unsupported widget widget"));
 	        post.releaseConnection();
 	    }
 	    catch (Exception e) {
