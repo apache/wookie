@@ -289,7 +289,7 @@
       <batchtest>
         <fileset dir="${project.build.classes.test.dir}"
                  includes="**/*Test.class"
-                 excludes="**/Abstract*Test.class,**/functional/*Test.class,**/integration/*Test.class" />
+                 excludes="**/Abstract*Test.class,**/functional/*Test.class,**/integration/*Test.class,**/flatpack/*Test.class" />
       </batchtest>
     </junit>
   </target>
