@@ -120,6 +120,27 @@
 		<servlet-name>ParticipantServlet</servlet-name>
 		<url-pattern>/participants</url-pattern>
 	</servlet-mapping>
+	
+	
+	<servlet>
+		<description></description>
+		<display-name>Flatpack</display-name>
+		<servlet-name>Flatpack</servlet-name>
+		<servlet-class>
+			org.apache.wookie.flatpack.FlatpackController
+		</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>Flatpack</servlet-name>
+		<url-pattern>/export</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+ 		<servlet-name>default</servlet-name>
+ 		<url-pattern>/export/*.wgt</url-pattern>
+ 		<param-name>dirAllowed</param-name>
+		<param-value>false</param-value>
+	</servlet-mapping>
 
 	<servlet>
 		<description></description>
