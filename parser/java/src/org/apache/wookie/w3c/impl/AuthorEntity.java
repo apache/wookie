@@ -77,7 +77,7 @@ public class AuthorEntity extends AbstractLocalizedEntity implements IAuthorEnti
 	}
 
 	public Element toXml() {
-		Element element = new Element(IW3CXMLConfiguration.NAME_ELEMENT, IW3CXMLConfiguration.MANIFEST_NAMESPACE);
+		Element element = new Element(IW3CXMLConfiguration.AUTHOR_ELEMENT, IW3CXMLConfiguration.MANIFEST_NAMESPACE);
 		element.setText(getAuthorName());
 		if (getHref()!=null && getHref().length()>0) element.setAttribute(IW3CXMLConfiguration.HREF_ATTRIBUTE, getHref());
 		if (getEmail()!=null && getEmail().length()>0) element.setAttribute(IW3CXMLConfiguration.EMAIL_ATTRIBUTE, getEmail());
