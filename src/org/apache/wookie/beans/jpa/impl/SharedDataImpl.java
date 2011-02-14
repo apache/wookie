@@ -42,7 +42,6 @@ public class SharedDataImpl implements ISharedData, IInverseRelationship<WidgetI
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name="id", nullable=false)
-    @SuppressWarnings("unused")
     private int id;
 
     @Version

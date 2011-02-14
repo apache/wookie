@@ -45,7 +45,6 @@ public class PreferenceImpl implements IPreference, IInverseRelationship<WidgetI
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name="id", nullable=false)
-    @SuppressWarnings("unused")
     private int id;
 
     @Version

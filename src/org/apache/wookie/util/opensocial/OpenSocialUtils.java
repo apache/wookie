@@ -15,7 +15,6 @@
 package org.apache.wookie.util.opensocial;
 
 import java.net.URLEncoder;
-import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -24,7 +23,6 @@ import org.apache.shindig.common.crypto.BasicBlobCrypter;
 import org.apache.wookie.Messages;
 import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidgetInstance;
-import org.apache.wookie.w3c.ILocalizedElement;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 
 /**

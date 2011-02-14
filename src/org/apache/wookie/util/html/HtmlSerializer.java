@@ -106,7 +106,6 @@ public class HtmlSerializer extends XmlSerializer {
 	 * This is exactly the same as SimpleXmlSerializer.serialize, however we have to include it here as it would
 	 * inherit from XmlSerializer and miss out our custom dontEscapeAttribute method
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void serialize(TagNode tagNode, Writer writer) throws IOException {
         serializeOpenTag(tagNode, writer, false);

@@ -21,7 +21,6 @@ import java.net.URL;
 import org.apache.wookie.w3c.IContentEntity;
 import org.apache.wookie.w3c.IFeatureEntity;
 import org.apache.wookie.w3c.W3CWidget;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

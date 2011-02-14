@@ -210,7 +210,6 @@ public class WidgetPackageUtils {
 	 * @param targetFolder the folder into which to unpack the Zip file
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	public static void unpackZip(ZipFile zipfile, File targetFolder) throws IOException {
 		targetFolder.mkdirs();
 		BufferedOutputStream out = null;

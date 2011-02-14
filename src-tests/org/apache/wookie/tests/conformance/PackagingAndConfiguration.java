@@ -1114,7 +1114,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/001/bk.wgt");
 		assertEquals("locales/en/icon.png",getIcon(widget));	
 	}
-	@SuppressWarnings("unchecked")
+
 	@Test
 	public void bl(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/002/bl.wgt");
@@ -1124,7 +1124,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		String icon2 = getLocalIconPath(widget,((Element)icons.get(1))); 
 		assertTrue((icon1.equals("locales/en/icon.jpg") && (icon2.equals("icon.png"))) || (icon2.equals("locales/en/icon.jpg") && (icon1.equals("icon.png"))));
 	}
-	@SuppressWarnings("unchecked")
+
 	@Test
 	public void bm(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/003/bm.wgt");
@@ -1135,7 +1135,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertTrue((icon1.equals("locales/en/icon.jpg") && (icon2.equals("icon.png"))) || (icon2.equals("locales/en/icon.jpg") && (icon1.equals("icon.png"))));
 
 	}
-	@SuppressWarnings("unchecked")
+
 	@Test
 	@Ignore
 	public void bn(){
@@ -1147,7 +1147,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertTrue((icon1.equals("locales/en/icon.jpg") && (icon2.equals("icons/pass.png"))) || (icon2.equals("locales/en/icon.jpg") && (icon1.equals("icons/pass.png"))));
 
 	}
-	@SuppressWarnings("unchecked")
+
 	@Test
 	public void bo(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/005/bo.wgt");
@@ -1158,7 +1158,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		assertTrue((icon1.equals("icon.png") && (icon2.equals("icon.jpg"))) || (icon2.equals("icon.jpg") && (icon1.equals("icon.png"))));
 
 	}
-	@SuppressWarnings("unchecked")
+
 	@Test
 	public void bp(){
 		// Note the original test case is in error here

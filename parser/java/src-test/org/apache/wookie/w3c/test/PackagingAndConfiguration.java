@@ -20,8 +20,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -35,13 +33,10 @@ import org.apache.wookie.w3c.INameEntity;
 import org.apache.wookie.w3c.IParamEntity;
 import org.apache.wookie.w3c.IPreferenceEntity;
 import org.apache.wookie.w3c.W3CWidget;
-import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.w3c.exceptions.InvalidContentTypeException;
 import org.apache.wookie.w3c.util.LocalizationUtils;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -1160,7 +1155,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/001/bk.wgt");
 		assertEquals("locales/en/icon.png",getIcon(widget));	
 	}
-	@SuppressWarnings("unchecked")
+
 	@Test
 	public void bl(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/002/bl.wgt");
@@ -1170,7 +1165,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		String icon2 = getLocalIconPath(widget,1); 
 		assertTrue((icon1.equals("locales/en/icon.jpg") && (icon2.equals("icon.png"))) || (icon2.equals("locales/en/icon.jpg") && (icon1.equals("icon.png"))));
 	}
-	@SuppressWarnings("unchecked")
+
 	@Test
 	public void bm(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/003/bm.wgt");
@@ -1181,7 +1176,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertTrue((icon1.equals("locales/en/icon.jpg") && (icon2.equals("icon.png"))) || (icon2.equals("locales/en/icon.jpg") && (icon1.equals("icon.png"))));
 
 	}
-	@SuppressWarnings("unchecked")
+
 	@Test
 	public void bn(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/004/bn.wgt");
@@ -1191,7 +1186,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		String icon2 = getLocalIconPath(widget,1);
 		assertTrue((icon1.equals("locales/en/icon.png") && (icon2.equals("icons/pass.png"))) || (icon2.equals("locales/en/icon.png") && (icon1.equals("icons/pass.png"))));
 	}
-	@SuppressWarnings("unchecked")
+
 	@Test
 	public void bo(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/005/bo.wgt");
@@ -1201,7 +1196,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		String icon2 = getLocalIconPath(widget,1);
 		assertTrue((icon1.equals("icon.jpg") && (icon2.equals("icon.png"))) || (icon2.equals("icon.jpg") && (icon1.equals("icon.png"))));
 	}
-	@SuppressWarnings("unchecked")
+	
 	@Test
 	public void bp(){
 		// Note the original test case is in error here

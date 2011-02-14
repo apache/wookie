@@ -35,7 +35,6 @@ public class FeatureLoader {
 	 * Loads features based on the properties configuration supplied
 	 * @param config
 	 */
-	@SuppressWarnings("unchecked")
 	public static void loadFeatures(PropertiesConfiguration config){
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
         persistenceManager.begin();
@@ -83,7 +82,6 @@ public class FeatureLoader {
      * @param name the name of the feature, which must be a valid IRI
      * @param klass the Class name of the feature, which must implement the IFeature interface
      */
-    @SuppressWarnings("unchecked")
     public static void validateFeature(String name, String klass) throws Exception{
         // Are required parameters missing?
         if (name == null || klass == null){

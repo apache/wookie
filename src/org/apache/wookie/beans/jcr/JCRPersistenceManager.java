@@ -156,7 +156,7 @@ public class JCRPersistenceManager implements IPersistenceManager
         
         IMPLEMENTATION_FIELD_MAP.put("widget", "widgetImpl");
     }
-    @SuppressWarnings("unchecked")
+
     private static final List<Class> CLASS_LIST = new ArrayList<Class>(INTERFACE_TO_CLASS_MAP.values());
 
     private static String repositoryUser;
