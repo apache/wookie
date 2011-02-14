@@ -23,6 +23,7 @@ import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.impl.FeatureEntity;
 import org.apache.wookie.w3c.impl.PreferenceEntity;
+import org.apache.wookie.w3c.util.RandomGUID;
 import org.apache.wookie.w3c.util.WidgetOutputter;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
 
@@ -79,9 +80,8 @@ public class FlatpackFactory {
 		if (instance == null) throw new Exception("No instance specified");
 		if (flatpackFolder == null) flatpackFolder = DEFAULT_FLATPACK_FOLDER;
 		if (inputWidget == null){
-			// TODO try to locate the widget upload package from the WidgetInstance
-			// for now we just set this manually for testing using setInputWidget()
-			throw new Exception("Input widget not specified or not found");
+			// try to locate the widget upload package from the WidgetInstance
+			inputWidget = new File(instance.getWidget().getPackagePath());
 		}
 		if (parser == null) parser = DEFAULT_PARSER;
 		
@@ -112,8 +112,11 @@ public class FlatpackFactory {
 		File configXml = new File(parser.getUnzippedWidgetDirectory(), "config.xml");
 		outputter.outputXML(widget, configXml);
 		
+		// Select a filename
+		String name = new RandomGUID().toString()+".wgt";
+		
 		// Pack up the widget
-		File outputWidget = new File(flatpackFolder,"test.wgt");
+		File outputWidget = new File(flatpackFolder,name);
 		WidgetPackageUtils.repackZip(parser.getUnzippedWidgetDirectory(), outputWidget);
 		
 		// Delete the working area
