@@ -31,6 +31,15 @@ import org.apache.wookie.w3c.util.LocalizationUtils;
  */
 public interface IWidget extends ILocalizedBean, IBean
 {
+	/**
+	 * Get the path to the .wgt file used to install the widget
+	 * @return
+	 */
+	String getPackagePath();
+
+	void setPackagePath(String path);
+	
+	
     /**
      * Get widget height.
      * 

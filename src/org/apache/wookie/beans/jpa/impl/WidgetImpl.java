@@ -67,6 +67,10 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     @Column(name="jpa_version")
     @SuppressWarnings("unused")
     private int jpaVersion;
+    
+    @Basic
+    @Column(name="package_path")
+    private String packagePath;
 
     @Basic
     @Column(name="height")
@@ -558,4 +562,21 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     {
         return Utilities.getWidgetIconLocation(this, "en");
     }
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IWidget#getPackagePath()
+	 */
+	public String getPackagePath() {
+		return packagePath;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IWidget#setPackagePath(java.lang.String)
+	 */
+	public void setPackagePath(String path) {
+		packagePath = path;
+		
+	}
+	
+	
 }

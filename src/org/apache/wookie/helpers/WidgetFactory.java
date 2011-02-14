@@ -13,6 +13,8 @@
  */
 package org.apache.wookie.helpers;
 
+import java.io.File;
+
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.IAccessRequest;
 import org.apache.wookie.beans.IDescription;
@@ -49,6 +51,20 @@ import org.apache.wookie.w3c.IPreferenceEntity;
 public class WidgetFactory {
 	static Logger _logger = Logger.getLogger(WidgetFactory.class.getName());
 
+	
+	/**
+	 * Adds a new widget
+	 * @param model the model of the widget to add
+	 * @param file the .wgt file the Widget was loaded from
+	 * @param grantAccessRequests whether to automatically grant access requests for the widget
+	 * @return the widget
+	 */
+	public static IWidget addNewWidget(W3CWidget model,String[] widgetTypes, File file, boolean grantAccessRequests) {
+		IWidget widget = addNewWidget(model,widgetTypes, grantAccessRequests);
+		widget.setPackagePath(file.getPath());
+		return widget;
+	}
+	
 	/**
 	 * Adds a new widget
 	 * @param model the model of the widget to add

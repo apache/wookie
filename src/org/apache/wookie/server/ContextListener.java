@@ -202,7 +202,7 @@ public class ContextListener implements ServletContextListener {
 	 						W3CWidget model = fac.parse(upload);
 	 						WidgetJavascriptSyntaxAnalyzer jsa = new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());
 	 						if(persistenceManager.findWidgetByGuid(model.getIdentifier()) == null) {
-	 							WidgetFactory.addNewWidget(model, true);	
+	 							WidgetFactory.addNewWidget(model, null, upload, true);	
 	 							String message = model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19");
 	 							_logger.info(message);
 	 							FlashMessage.getInstance().message(message);

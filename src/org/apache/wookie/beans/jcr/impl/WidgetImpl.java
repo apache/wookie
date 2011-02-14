@@ -50,6 +50,9 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     @Field(uuid=true)
     private String uuid;
     
+    @Field(jcrName="wookie:packagePath")
+    private String packagePath;
+    
     @Field(jcrName="wookie:height")
     private Integer height;
     
@@ -97,8 +100,22 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     
     @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:sharedData", elementClassName=SharedDataImpl.class)
     private Collection<SharedDataImpl> sharedDataImpls;
-
+    
     /* (non-Javadoc)
+     * @see org.apache.wookie.beans.IWidget#getPackagePath()
+     */
+    public String getPackagePath() {
+		return packagePath;
+	}
+    
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IWidget#setPackagePath(java.lang.String)
+	 */
+	public void setPackagePath(String path) {
+		packagePath = path;
+	}
+
+	/* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getDescriptions()
      */
     public Collection<IDescription> getDescriptions()

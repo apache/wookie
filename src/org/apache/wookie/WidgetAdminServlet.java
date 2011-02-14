@@ -491,7 +491,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 				WidgetJavascriptSyntaxAnalyzer jsa = new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());				
 	            if(persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()) == null){
 					// ADD
-					IWidget widget = WidgetFactory.addNewWidget(widgetModel);
+					IWidget widget = WidgetFactory.addNewWidget(widgetModel, null, zipFile, false);
 					Object dbkey = widget.getId();
 					// widget added
 					request.setAttribute("message_value", "'"+ widgetModel.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$					
