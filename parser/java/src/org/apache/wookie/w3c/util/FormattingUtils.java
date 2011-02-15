@@ -22,12 +22,26 @@ import org.apache.wookie.w3c.W3CWidget;
 /**
  * i18n formatting utilities
  * 
- * The methods in this class can be used to generate i18n strings using
+ * <p>The methods in this class can be used to obtain strings
+ * that have been processed for i18n content to be presented 
+ * in different ways, for example using CSS styling or unicode
+ * control characters</p>
+ * 
+ * <p>The <em>getFormattedXYZ</em> methods generate i18n strings using
  * CSS bidi properties for use in display. This involves inserting HTML 
- * <span> tags containing CSS styling properties for text direction
+ * &lt;span&gt; tags containing CSS styling properties for text direction</p>
+ * 
+ * <p>The <em>getEncodedXYZ</em> methods generate unicode Strings
+ * using unicode control characters, and remove any embedded &lt;span&gt; tags</p>
  * 
  */
 public class FormattingUtils {
+	
+	public final static String LTR = "\u202a";
+	public final static String RTL = "\u202b";
+	public final static String LRO = "\u202d";
+	public final static String RLO = "\u202e";
+	public final static String END = "\u202c";
 	
 	/**
 	 * Returns the CSS formatted i18n string for the widget name
@@ -112,6 +126,37 @@ public class FormattingUtils {
 		if (dir.equals("lro")) {dir = "ltr"; mode="bidi-override";};
 		if (dir.equals("rlo")) {dir = "rtl"; mode="bidi-override";};
 		return "<span style=\"unicode-bidi:"+mode+"; direction:"+dir+"\">"+value+"</span>";
+	}
+	
+	public static String getEncoded(String dir, String value){		
+		// Encode any embedded SPAN tags into unicode control characters
+		String checkSpans = encodeSpan(value);
+		// If no changes, and no dir property, return original string unmodified
+		if (checkSpans.equals(value) && dir == null) return value;
+		value = checkSpans;
+		// Prepend direction control character
+		if (dir == null) dir = "ltr";
+		if (dir.equals("ltr")) dir = LTR;
+		if (dir.equals("lro")) dir = LRO;
+		if (dir.equals("rlo")) dir = RLO;
+		if (dir.equals("rtl")) dir = RTL;
+		// Append marker
+		return dir+value+END;
+	}
+	
+	/**
+	 * Replace any embedded <span> tags with
+	 * control characters
+	 * @param value
+	 * @return
+	 */
+	private static String encodeSpan(String value){
+		value = value.replace("<span dir=\"ltr\">", LTR);
+		value = value.replace("<span dir=\"rtl\">", RTL);
+		value = value.replace("<span dir=\"lro\">", LRO);
+		value = value.replace("<span dir=\"rlo\">", RLO);
+		value = value.replace("</span>", END);
+		return value;
 	}
 	
 	/**
