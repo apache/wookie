@@ -15,13 +15,14 @@
  */
 --%>
 <%@ page import='org.apache.wookie.helpers.FlashMessage' %>
+<%@ page import='org.apache.wookie.helpers.WidgetHelper' %>
 <%@ page import='org.apache.wookie.beans.IWidget,org.apache.wookie.beans.IWidgetType,java.util.Collection,java.util.Hashtable;' %>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <% String errors = FlashMessage.getErrors(session, request);%>
 <% String messages = FlashMessage.getMessages(session, request);%>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Current Widgets</title>   
   <link type="text/css" href="/wookie/shared/js/jquery/themes/redmond/jquery-ui-1.7.1.custom.css" rel="stylesheet" />  
   <link type="text/css" href="../layout.css" rel="stylesheet" />
@@ -139,7 +140,7 @@ var answer = confirm("Are you sure you wish to remove the service type...\n\n<" 
 			if(widgets!=null){	
 				for (int i = 1; i < widgets.length; i++) {
 					IWidget widget = (IWidget) widgets[i];
-					
+					String localWidgetTitle = WidgetHelper.getEncodedWidgetTitle(widget, null);
 			%>		 
 			<h3><a href="#"><img height="20" width="20" border="0" src="<%=widget.getWidgetIconLocation()%>"/>&nbsp;<%=widget.getWidgetTitle()%></a></h3>
 			<div>
@@ -265,18 +266,18 @@ var answer = confirm("Are you sure you wish to remove the service type...\n\n<" 
 				               	if(widgetHashDefaults.containsKey(widgetTypes[j].getWidgetContext())){
 				               		// if it does contain this service then is it this widget that is default?
 				        	        	if(widgetHashDefaults.get(widgetTypes[j].getWidgetContext()).equals(widget.getId())){ //###
-				        					%>(<font color="red"><%=widgetTypes[j].getWidgetContext()%></font><a class="opendialog" href="./WidgetAdminServlet?operation=REMOVESINGLEWIDGETTYPE&widgetId=<%=widget.getId()%>&widgetType=<%=widgetTypes[j].getWidgetContext()%>" onclick="updateDialogText('<%=widget.getWidgetTitle()%>','<%=widgetTypes[j].getWidgetContext()%>',false);"><img src="../shared/images/delete_1.gif" width="16" height="16" border="0"></a>)<%
+				        					%>(<font color="red"><%=widgetTypes[j].getWidgetContext()%></font><a class="opendialog" href="./WidgetAdminServlet?operation=REMOVESINGLEWIDGETTYPE&widgetId=<%=widget.getId()%>&widgetType=<%=widgetTypes[j].getWidgetContext()%>" onclick="updateDialogText('<%=localWidgetTitle%>','<%=widgetTypes[j].getWidgetContext()%>',false);"><img src="../shared/images/delete_1.gif" width="16" height="16" border="0"></a>)<%
 				        				}
 				        				else{
-						        			%>(<a class="opendialog" href="./WidgetAdminServlet?operation=SETDEFAULTWIDGET&widgetId=<%=widget.getId()%>&widgetType=<%=widgetTypes[j].getWidgetContext()%>" onclick="updateDialogText('<%=widget.getWidgetTitle()%>','<%=widgetTypes[j].getWidgetContext()%>',true);"><%=widgetTypes[j].getWidgetContext()%></a>
+						        			%>(<a class="opendialog" href="./WidgetAdminServlet?operation=SETDEFAULTWIDGET&widgetId=<%=widget.getId()%>&widgetType=<%=widgetTypes[j].getWidgetContext()%>" onclick="updateDialogText('<%=localWidgetTitle%>','<%=widgetTypes[j].getWidgetContext()%>',true);"><%=widgetTypes[j].getWidgetContext()%></a>
 						        			
 						        				
-											<a class="opendialog" href="./WidgetAdminServlet?operation=REMOVESINGLEWIDGETTYPE&widgetId=<%=widget.getId()%>&widgetType=<%=widgetTypes[j].getWidgetContext()%>" onclick="updateDialogText('<%=widget.getWidgetTitle()%>','<%=widgetTypes[j].getWidgetContext()%>',false);"><img src="../shared/images/delete_1.gif" width="16" height="16" border="0"></a>)<%
+											<a class="opendialog" href="./WidgetAdminServlet?operation=REMOVESINGLEWIDGETTYPE&widgetId=<%=widget.getId()%>&widgetType=<%=widgetTypes[j].getWidgetContext()%>" onclick="updateDialogText('<%=localWidgetTitle%>','<%=widgetTypes[j].getWidgetContext()%>',false);"><img src="../shared/images/delete_1.gif" width="16" height="16" border="0"></a>)<%
 																	        			
 					        			}
 				        		}
 				        		else{
-					        		%>(<a class="opendialog" href="./WidgetAdminServlet?operation=SETDEFAULTWIDGET&widgetId=<%=widget.getId()%>&widgetType=<%=widgetTypes[j].getWidgetContext()%>" onclick="updateDialogText('<%=widget.getWidgetTitle()%>','<%=widgetTypes[j].getWidgetContext()%>',true);"><%=widgetTypes[j].getWidgetContext()%></a><a class="opendialog" href="./WidgetAdminServlet?operation=REMOVESINGLEWIDGETTYPE&widgetId=<%=widget.getId()%>&widgetType=<%=widgetTypes[j].getWidgetContext()%>" onclick="updateDialogText('<%=widget.getWidgetTitle()%>','<%=widgetTypes[j].getWidgetContext()%>',false);"><img src="../shared/images/delete_1.gif" width="16" height="16" border="0"></a>)<%
+					        		%>(<a class="opendialog" href="./WidgetAdminServlet?operation=SETDEFAULTWIDGET&widgetId=<%=widget.getId()%>&widgetType=<%=widgetTypes[j].getWidgetContext()%>" onclick="updateDialogText('<%=localWidgetTitle%>','<%=widgetTypes[j].getWidgetContext()%>',true);"><%=widgetTypes[j].getWidgetContext()%></a><a class="opendialog" href="./WidgetAdminServlet?operation=REMOVESINGLEWIDGETTYPE&widgetId=<%=widget.getId()%>&widgetType=<%=widgetTypes[j].getWidgetContext()%>" onclick="updateDialogText('<%=localWidgetTitle%>','<%=widgetTypes[j].getWidgetContext()%>',false);"><img src="../shared/images/delete_1.gif" width="16" height="16" border="0"></a>)<%
 				        		}	
 				        }
 				        %>

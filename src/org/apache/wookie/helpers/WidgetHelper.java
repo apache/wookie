@@ -23,6 +23,8 @@ import org.apache.wookie.beans.IPreferenceDefault;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetIcon;
 import org.apache.wookie.beans.IWidgetType;
+import org.apache.wookie.util.WidgetFormattingUtils;
+import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 
 /**
@@ -201,6 +203,19 @@ public class WidgetHelper {
 			}
 		}
 		return out;
+	}
+	
+	/**
+	 * Get the widget title in unicode for the specified locale. Note that this
+	 * uses unicode control characters rather than <span dir..> tags
+	 * @param widget the widget to get the title for
+	 * @param locale the required locale, or null to use the default system locale
+	 * @return a unicode string
+	 */
+	public static String getEncodedWidgetTitle(IWidget widget, String locale){
+    	IName[] names = widget.getNames().toArray(new IName[widget.getNames().size()]);
+        IName name = (IName)LocalizationUtils.getLocalizedElement(names, new String[]{locale});
+        return ((name != null) ? WidgetFormattingUtils.getEncoded(name.getDir(), name.getName()) : IW3CXMLConfiguration.UNKNOWN);   		
 	}
 
 }

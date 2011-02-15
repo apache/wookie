@@ -14,12 +14,13 @@
  */
 --%>
 <%@ page import='org.apache.wookie.helpers.FlashMessage' %>
+<%@ page import='org.apache.wookie.helpers.WidgetHelper' %>
 <%@ page import='org.apache.wookie.beans.IWidget,org.apache.wookie.beans.IWidgetType;' %>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link type="text/css" href="/wookie/shared/js/jquery/themes/redmond/jquery-ui-1.7.1.custom.css" rel="stylesheet" />  
   <link type="text/css" href="../layout.css" rel="stylesheet" />
   <script type="text/javascript" src="/wookie/shared/js/jquery/jquery-1.3.2.min.js"></script>
@@ -99,6 +100,7 @@ $(document).ready(function(){
 	<%
 		for (int i = 1; i < widgets.length; i++) {
 			IWidget widget = (IWidget) widgets[i];
+			String localWidgetTitle = WidgetHelper.getEncodedWidgetTitle(widget, null);
 	%>		 
 			<table width="500" class="ui-widget ui-widget-content" align="center">      
 		        <tr class="ui-widget-header"><td colspan="2"><img height="16" width="16" border="0" src="<%=widget.getWidgetIconLocation()%>"/>&nbsp;<%=widget.getWidgetTitle()%></td></tr>
@@ -108,7 +110,7 @@ $(document).ready(function(){
 		        <tr><td>Author</td><td><%=widget.getWidgetAuthor()%></td></tr>		        
 		        <tr><td colspan="2" align="center">
 					<a class="opendialog" href="./WidgetAdminServlet?operation=REMOVEWIDGET&widgetId=<%=widget.getId()%>" 
-					onclick="updateDialogText('<%=widget.getWidgetTitle()%>');">
+					onclick="updateDialogText('<%=localWidgetTitle%>');">
 					<img src="../shared/images/delete_1.gif" width="16" height="16" border="0">&nbsp;Delete this widget
 					</a>
 		        </td></tr>
