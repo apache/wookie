@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-var username="FIXME: set username";
-
 /**
  * Helper methods for manipulating the widget UI.
  */
@@ -41,15 +39,4 @@ function wookieShowMain(event) {
 	var elemSettings = document.getElementById("wookie-settings");
 	elemContent.style.display="block";
 	elemSettings.style.display="none";	
-}
-
-// Functions below this line are for demonstration purposes only and should be removed or
-// replaced in production widgets
-
-/*
- * Set the content of the homepage.
- */
-function setContent() {
-    var text = dwr.util.getValue("wookie-template-content");
-    text = dwr.util.escapeHtml(text + "<br/><sub>Set by " + username + "</sub>");
 }
