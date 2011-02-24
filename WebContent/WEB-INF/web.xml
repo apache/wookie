@@ -137,7 +137,7 @@
 	</servlet-mapping>
 	<servlet-mapping>
  		<servlet-name>default</servlet-name>
- 		<url-pattern>/export/*.wgt</url-pattern>
+ 		<url-pattern>/export/*</url-pattern>
  		<param-name>dirAllowed</param-name>
 		<param-value>false</param-value>
 	</servlet-mapping>
