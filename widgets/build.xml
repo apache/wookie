@@ -41,6 +41,7 @@
 	
 
     <target name="seed-widget" description="Seed a new widget">
+    	<input message="What type of widget template do you want to use?" validargs="basic, wave" addproperty="widget.type"/>
     	<input message="What is the short name of the widget you wish to create?" addproperty="widget.shortname"/>
     	<input message="Provide a brief description of the purpose of the ${widget.shortname} widget" addproperty="widget.description"/>
     	<input message="What is the default height of the ${widget.shortname} widget?" addproperty="widget.height" defaultvalue="320"/>
@@ -50,6 +51,7 @@
 	
 	<target name="build-test-widget" description="Build a test widget that uses sensible settings. This is used when developing the widget template scripts.">
 		<property name="deployToDev" value="true"/>
+		<property name="widget.type" value="basic"/>
 		<property name="widget.shortname" value="TemplateTest"/>
 		<property name="widget.description" value="A widget built from the standard widget template and using sensible default options for all configuration settings. This is used during development of the widget template"/>
 		<property name="widget.height" value="320"/>
@@ -61,7 +63,7 @@
     <target name="_create-widget-from-template" description="Copies the widget template and configures it accordingly.">
     	<mkdir dir="${wookie.widgets.dir}/${widget.shortname}"/>
     	<copy todir="${wookie.widgets.dir}/${widget.shortname}" filtering="true">
-    		<fileset dir="${widget.template.dir}">
+    		<fileset dir="${widget.template.dir}/${widget.type}">
     			<exclude name="**/*.png"/>
     			<exclude name="**/*.zip"/>
     		</fileset>
@@ -73,7 +75,7 @@
     		</filterset>
     	</copy>
     	<copy todir="${wookie.widgets.dir}/${widget.shortname}">
-    		<fileset dir="${widget.template.dir}">
+    		<fileset dir="${widget.template.dir}/${widget.type}">
     			<include name="**/*.png"/>
     			<include name="**/*.zip"/>
     		</fileset>
