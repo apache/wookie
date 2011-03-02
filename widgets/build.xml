@@ -45,7 +45,7 @@
     	<input message="What is the short name of the widget you wish to create?" addproperty="widget.shortname"/>
     	<input message="Provide a brief description of the purpose of the ${widget.shortname} widget" addproperty="widget.description"/>
     	<input message="What is the default height of the ${widget.shortname} widget?" addproperty="widget.height" defaultvalue="320"/>
-    	<input message="What is the default width of the widget you wish to create?" addproperty="widget.width" defaultvalue="200"/>
+    	<input message="What is the default width of the widget you wish to create?" addproperty="widget.width" defaultvalue="480"/>
     	<antcall target="_create-widget-from-template"/>
     </target>   
 	
