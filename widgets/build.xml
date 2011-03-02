@@ -55,7 +55,7 @@
 		<property name="widget.shortname" value="TemplateTest"/>
 		<property name="widget.description" value="A widget built from the standard widget template and using sensible default options for all configuration settings. This is used during development of the widget template"/>
 		<property name="widget.height" value="320"/>
-		<property name="widget.width" value="200"/>
+		<property name="widget.width" value="480"/>
 		<antcall target="_create-widget-from-template"/>
 		<antcall target="build-widget"/>
 	</target>
