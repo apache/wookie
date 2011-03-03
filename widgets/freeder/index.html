@@ -1,0 +1,75 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE html> 
+<html>
+	<head>
+        <meta http-equiv="pragma" content="no-cache"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a3/jquery.mobile-1.0a3.min.css" />
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/mobile/1.0a3/jquery.mobile-1.0a3.min.js"></script>
+		<script type="text/javascript" src="scripts/jquery.jfeed.pack.js" charset="utf-8"></script>
+		<script type="text/javascript" src="scripts/properties.js" charset="utf-8"></script>  
+        <script type="text/javascript" src="scripts/controller.js" charset="utf-8"></script> 
+		<title>Freeder</title>
+	</head>
+	<body onLoad="Controller.init()">
+		<div data-role="page" id="storiesIndex">
+		
+		    <div data-role="header" data-position="fixed">
+				<h4 id="storiesIndex-title">Freeder</h4>
+				<a onClick="Controller.update()" data-role="button" data-icon="refresh" data-iconpos="notext">Refresh</a>
+				<a href="#settings" data-role="button" data-icon="gear" data-iconpos="notext">Settings</a>
+			</div> <!-- /header -->
+		
+			<div data-role="content">	
+				<ul data-role="listview" id="stories-listview">
+				</ul>
+			</div><!-- /content -->
+		
+			<!--
+			<div data-role="footer" data-position="fixed">
+				<h4>Footer</h4>
+			</div> /footer -->
+		</div><!-- /page -->
+		
+		<div data-role="page" id="settings">
+		
+			<div data-role="header" data-position="fixed">
+				<h4>Settings</h4>
+			</div> <!-- /header -->
+		
+			<div data-role="content" id="settings-content">	
+  		        <form action="" method="post">
+  		        	<div data-role="fieldcontain">
+						<label for="feedURL">Feed URL:</label>
+						<input type="url" name="name" id="name"  />
+						<p>Note, your URL must be whitelisted on the Wookie server.</p>
+					</div>
+					<div data-role="fieldcontain">
+						<button type="submit" onClick="Properties.submitForm(this.form)" value="save-settings" name="save-settings">Save</button>
+					</div>
+  		        </form>
+			</div><!-- /content -->
+		
+			<!--
+			<div data-role="footer" data-position="fixed">
+				<h4>Footer</h4>
+			</div> /footer -->
+		</div><!-- /page -->
+	</body>
+</html>
