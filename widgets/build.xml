@@ -44,8 +44,8 @@
     	<input message="What type of widget template do you want to use?" validargs="basic,wave,jqueryMobile" defaultvalue="basic" addproperty="widget.type"/>
     	<input message="What is the short name of the widget you wish to create?" addproperty="widget.shortname"/>
     	<input message="Provide a brief description of the purpose of the ${widget.shortname} widget" addproperty="widget.description"/>
-    	<input message="What is the default height of the ${widget.shortname} widget?" addproperty="widget.height" defaultvalue="320"/>
-    	<input message="What is the default width of the widget you wish to create?" addproperty="widget.width" defaultvalue="480"/>
+    	<input message="What is the default height of the ${widget.shortname} widget?" addproperty="widget.height" defaultvalue="480"/>
+    	<input message="What is the default width of the widget you wish to create?" addproperty="widget.width" defaultvalue="320"/>
     	<antcall target="_create-widget-from-template"/>
     </target>   
 	
@@ -54,8 +54,8 @@
 		<property name="widget.type" value="basic"/>
 		<property name="widget.shortname" value="TemplateTest"/>
 		<property name="widget.description" value="A widget built from the standard widget template and using sensible default options for all configuration settings. This is used during development of the widget template"/>
-		<property name="widget.height" value="320"/>
-		<property name="widget.width" value="480"/>
+		<property name="widget.height" value="480"/>
+		<property name="widget.width" value="320"/>
 		<antcall target="_create-widget-from-template"/>
 		<antcall target="build-widget"/>
 	</target>
