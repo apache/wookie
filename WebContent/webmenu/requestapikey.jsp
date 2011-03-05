@@ -48,24 +48,28 @@ if (version==null){
 		document.requestkeyform.submit();	
 	}
 	
-	$(document).ready(function() {		 
-		$("#email").keyup(function(){
-			var email = $("#email").val();		 
-			if(email != 0){
-				if(isValidEmailAddress(email)){		 
-					$("#validEmail").css({ "background-image": "url('../shared/images/validyes.png')" });
-					isValidEmailAddressFlag = true;		 
-				} 
-				else {		 
-					$("#validEmail").css({ "background-image": "url('../shared/images/validno.png')" });
-					isValidEmailAddressFlag = false;		 
-				}			 
+	function validate(){
+		var email = $("#email").val();		 
+		if(email != 0){
+			if(isValidEmailAddress(email)){		 
+				$("#validEmail").css({ "background-image": "url('../shared/images/validyes.png')" });
+				isValidEmailAddressFlag = true;		 
 			} 
 			else {		 
-				$("#validEmail").css({ "background-image": "none" });		 
-			}
-		});
+				$("#validEmail").css({ "background-image": "url('../shared/images/validno.png')" });
+				isValidEmailAddressFlag = false;		 
+			}			 
+		} 
+		else {		 
+			$("#validEmail").css({ "background-image": "none" });		 
+		}
+	}
+	
+	$(document).ready(function() {		 
+		$("#email").change(validate);
+		$("#email").keyup(validate);
 	});
+	
 
 	function doDialog(){
 		$("#confirm").dialog({
@@ -123,7 +127,7 @@ if (version==null){
 <tr class="ui-widget-header"><td colspan="2">&nbsp;<%=localizedMessages.getString("webmenu.requestapikey.4")%></td></tr>
 <tr>  
   <td><%=localizedMessages.getString("webmenu.requestapikey.7")%></td> 
-  <td><input style="float:left;" name="email" size="50" type="text" id="email" value=""><div id="validEmail"></div></td>
+  <td><input style="float:left;" name="email" size="50" type="email" id="email" value=""><div id="validEmail"></div></td>
 </tr>
 <tr>  
   <td colspan="2" align="center">
