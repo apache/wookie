@@ -13,15 +13,17 @@
  */
 package org.apache.wookie.w3c.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.wookie.w3c.util.ContentTypeUtils;
 import org.junit.Test;
 
-public class ContentTypeUtilsTest {
+public class ContentTypeUtilsTest extends ContentTypeUtils {
 	
 	@Test
 	public void classTest(){
@@ -96,5 +98,23 @@ public class ContentTypeUtilsTest {
 		assertFalse(ContentTypeUtils.isSupportedImageType("test.p3ng"));
 		assertFalse(ContentTypeUtils.isSupportedImageType("test.png0"));
 		assertFalse(ContentTypeUtils.isSupportedImageType("test.pñg"));
+	}
+	
+	@Test
+	public void sniff() throws IOException{
+		
+		assertEquals("image/bmp", ContentTypeUtils.sniffContentType(new File("parser/java/src-test/icons/icon_bmp")));
+		assertEquals("image/gif", ContentTypeUtils.sniffContentType(new File("parser/java/src-test/icons/icon_gif")));
+		assertEquals("image/jpeg", ContentTypeUtils.sniffContentType(new File("parser/java/src-test/icons/icon_jpg")));
+		assertEquals("image/png", ContentTypeUtils.sniffContentType(new File("parser/java/src-test/icons/icon_png")));
+		assertEquals("image/vnd.microsoft.icon", ContentTypeUtils.sniffContentType(new File("parser/java/src-test/icons/icon_ico")));
+		assertEquals(null, ContentTypeUtils.sniffContentType(new File("parser/java/src-test/icons/icon_exr")));
+
+		assertFalse(ContentTypeUtils.isSupportedImageType(new File("parser/java/src-test/icons/icon_bmp")));
+		assertTrue(ContentTypeUtils.isSupportedImageType(new File("parser/java/src-test/icons/icon_ico")));
+		assertFalse(ContentTypeUtils.isSupportedImageType(new File("parser/java/src-test/icons/icon_exr")));
+		assertTrue(ContentTypeUtils.isSupportedImageType(new File("parser/java/src-test/icons/icon_gif")));
+		assertTrue(ContentTypeUtils.isSupportedImageType(new File("parser/java/src-test/icons/icon_jpg")));
+		assertTrue(ContentTypeUtils.isSupportedImageType(new File("parser/java/src-test/icons/icon_png")));
 	}
 }

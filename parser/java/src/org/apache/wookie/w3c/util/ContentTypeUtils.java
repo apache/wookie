@@ -14,6 +14,8 @@
 package org.apache.wookie.w3c.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -54,11 +56,53 @@ public class ContentTypeUtils {
 	private static String getContentType(File file){
 		String type = getContentType(file.getName());
 		if (type == null){ 
-			//TODO implement the SNIFF spec for binary content-type checking
+			try {
+				type = sniffContentType(file);
+			} catch (IOException e) {
+				type = null;
+			}
 		}
 		return type;
 	}
 
+	/**
+	 * Sniffs the content type for images and other common types
+	 * @param the file to sniff
+	 * @return the content type of the file if it matches a known signature, otherwise Null
+	 * @throws IOException 
+	 */
+	protected static String sniffContentType(File file) throws IOException{
+		FileInputStream stream = new FileInputStream(file);
+		byte[] bytes = new byte[8];
+		stream.read(bytes);
+		String[] hex = new String[8];
+		String hexString = "";	
+		for (int i=0;i<8;i++){
+			hex[i]= getHexValue(bytes[i]);
+			hexString += hex[i]+" ";
+		}	
+		String prefix = new String(bytes);
+		if (prefix.startsWith("GIF87") || prefix.startsWith("GIF89")) return "image/gif";
+		if (hex[0].equals("ff") && hex[1].equals("d8")) return "image/jpeg";
+		if (hex[0].equals("42") && hex[1].equals("4d")) return "image/bmp";
+		if (hex[0].equals("00") && hex[1].equals("00") && hex[2].equals("01") && hex[3].equals("00")) return "image/vnd.microsoft.icon";
+		if (hexString.trim().equals("89 50 4e 47 0d 0a 1a 0a")) return "image/png";	
+		return null;
+	}
+	
+	/**
+	 * Get a normalized two-character hex value for a byte 
+	 * @param b
+	 * @return a two-character hex string
+	 */
+	private static String getHexValue(byte b){
+		String hex;
+		hex =Integer.toHexString(0x00 | b);
+		if (hex.length()==1) hex = "0" + hex;
+		if (hex.length()>2) hex =hex.substring(hex.length()-2);
+		return hex;
+	}
+	
 	/**
 	 * Extracts the file extension from the given filename and looks up the
 	 * content type
@@ -105,7 +149,6 @@ public class ContentTypeUtils {
 		if(ext.equals("svg")) return "image/svg+xml";
 		if(ext.equals("jpg")) return "image/jpeg";
 		return null;
-
 	}
 
 	/**
