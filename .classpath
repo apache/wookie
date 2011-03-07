@@ -13,7 +13,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/JVM 1.6"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="lib" path="ant/lib/guice-2.0.jar"/>
-	<classpathentry kind="lib" path="ant/lib/icu4j-4_2_1.jar"/>
+	<classpathentry kind="lib" path="ant/lib/icu4j-4_6_0.jar"/>
 	<classpathentry kind="lib" path="ant/lib/oauth-20090531.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

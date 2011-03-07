@@ -29,7 +29,7 @@
         </dependency>
         <dependency org="org.apache.incubator" name="wookieW3CParser" rev="latest.integration" conf="deploy->default">
         </dependency>
-        <dependency org="com.ibm.icu" name="icu4j" rev="4_2_1" conf="deploy->default">
+        <dependency org="com.ibm.icu" name="icu4j" rev="4_6_0" conf="deploy->default">
         </dependency>
         <dependency org="org.apache.commons" name="commons-email" rev="1.1" conf="deploy->default">
         </dependency> 
