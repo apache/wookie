@@ -133,7 +133,7 @@
 	</servlet>	
 	<servlet-mapping>
 		<servlet-name>Flatpack</servlet-name>
-		<url-pattern>/export</url-pattern>
+		<url-pattern>/flatpack</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
  		<servlet-name>default</servlet-name>

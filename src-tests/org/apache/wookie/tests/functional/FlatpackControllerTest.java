@@ -29,7 +29,7 @@ import org.junit.Test;
 
 public class FlatpackControllerTest extends AbstractControllerTest {
 	
-	private static final String TEST_FLATPACK_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"export";
+	private static final String TEST_FLATPACK_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"flatpack";
 	
 	@BeforeClass
 	public static void setup() throws HttpException, IOException{
