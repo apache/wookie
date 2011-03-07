@@ -233,7 +233,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		String url = getUrl(request, instance);
 		response.setContentType(CONTENT_TYPE);
 		PrintWriter out = response.getWriter();
-		out.println(WidgetInstanceHelper.createXMLWidgetInstanceDocument(instance, url));
+		out.println(WidgetInstanceHelper.createXMLWidgetInstanceDocument(instance, url, locale));
 	}  
 	
 	public static void cloneSharedData(HttpServletRequest request, HttpServletResponse response){
