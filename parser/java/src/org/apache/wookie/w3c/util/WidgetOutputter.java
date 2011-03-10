@@ -112,10 +112,6 @@ public class WidgetOutputter {
 		return localWidget;
 	}
 
-	public String getWidgetFolder() {
-		return widgetFolder;
-	}
-
 	public void setWidgetFolder(String widgetFolder) {
 		this.widgetFolder = widgetFolder;
 	}

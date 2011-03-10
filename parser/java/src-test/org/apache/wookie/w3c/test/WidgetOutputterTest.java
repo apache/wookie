@@ -144,11 +144,6 @@ public class WidgetOutputterTest extends ConformanceTest{
 		W3CWidget widget = fac.parse(file);
 		return widget;		
 	}
-	private W3CWidget load(String url) throws Exception{
-		W3CWidgetFactory fac = getFactory();
-		W3CWidget widget = fac.parse(new URL(url));
-		return widget;
-	}
 	
 	private W3CWidgetFactory getFactory() throws Exception{
 		String outputPath = "/widgets";
