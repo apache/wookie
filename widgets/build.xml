@@ -68,21 +68,6 @@
 
 	<target name="seed-widget" description="Seed a new widget" 
 		    depends="_get-widget-type, _get-widget-name, _get-widget-description, _get-widget-height, _get-widget-width">
-    	<antcall target="_create-widget-from-template"/>
-    </target>   
-	
-	<target name="build-test-widget" description="Build a test widget that uses sensible settings. This is used when developing the widget template scripts.">
-		<property name="deployToDev" value="true"/>
-		<property name="widget.type" value="basic"/>
-		<property name="widget.shortname" value="TemplateTest"/>
-		<property name="widget.description" value="A widget built from the standard widget template and using sensible default options for all configuration settings. This is used during development of the widget template"/>
-		<property name="widget.height" value="480"/>
-		<property name="widget.width" value="320"/>
-		<antcall target="_create-widget-from-template"/>
-		<antcall target="build-widget"/>
-	</target>
-    	
-    <target name="_create-widget-from-template" description="Copies the widget template and configures it accordingly.">
     	<mkdir dir="${wookie.widgets.dir}/${widget.shortname}"/>
     	<copy todir="${wookie.widgets.dir}/${widget.shortname}" filtering="true">
     		<fileset dir="${widget.template.dir}/${widget.type}">
@@ -102,7 +87,18 @@
     			<include name="**/*.zip"/>
     		</fileset>
     	</copy>
-    </target>
+    </target>   
+	
+	<target name="build-test-widget" description="Build a test widget that uses sensible settings. This is used when developing the widget template scripts.">
+		<property name="deployToDev" value="true"/>
+		<property name="widget.type" value="basic"/>
+		<property name="widget.shortname" value="TemplateTest"/>
+		<property name="widget.description" value="A widget built from the standard widget template and using sensible default options for all configuration settings. This is used during development of the widget template"/>
+		<property name="widget.height" value="480"/>
+		<property name="widget.width" value="320"/>
+		<antcall target="_create-widget-from-template"/>
+		<antcall target="build-widget"/>
+	</target>
    
     <target name="build-widget" depends="_init">
 	    <zip destfile="${widget.build.dir}/${widget.shortname}.wgt"
