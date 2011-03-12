@@ -24,7 +24,7 @@
   <description>An RSS reader widget optimised for small screens or desktop widgets.</description>
   <content src="index.html"/>
   <icon src="images/icon.png"/>  
-  <access origin="http://osswatch.jiscinvolve.org/feed"/>  
+  <access origin="*"/>  
   <author>Apache Wookie (Incubating) Team</author>
   <licence>Licensed to the Apache Software Foundation (ASF) under one or more
   contributor license agreements.  See the NOTICE file distributed with
