@@ -135,6 +135,10 @@ thickbox.js, thickbox.css
 camcanvas.html, camcavas.swf
 	Containing Project URL: http://www.taboca.com/p/camcanvas/
 	License: MIT (see http://github.com/taboca/CamCanvas-API-/blob/master/MIT-LICENSE.txt)
+	
+JQuery Mobile
+	Containing Project URL: http://jquerymobile.com/
+	License: MIT (see https://github.com/jquery/jquery/raw/master/MIT-LICENSE.txt)
 
 Widgets
 =======
