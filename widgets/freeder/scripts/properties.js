@@ -21,7 +21,7 @@
 var Properties = {
 	
 	submitForm: function() {
-		var url = dwr.util.getValue("feedURL");
+		var url =  $("#feedURL").val();
 		Widget.preferences.setItem("feedURL", url);
 		Controller.update();
 		$.mobile.changePage("#storiesIndex");
