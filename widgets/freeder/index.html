@@ -25,47 +25,40 @@
 		<title>Freeder</title>
 	</head>
 	<body onLoad="Controller.init()">
-		<div data-role="page" id="storiesIndex">
-		
-		    <div data-role="header" data-position="fixed">
-				<h4 id="storiesIndex-title">Freeder</h4>
+		<div data-role="page" id="home">
+		    <div data-role="header">
+				<h4 id="story-index-title">Freeder</h4>
 				<a onClick="Controller.update()" data-role="button" data-icon="refresh" data-iconpos="notext">Refresh</a>
-				<a href="#settings" data-role="button" data-icon="gear" data-iconpos="notext">Settings</a>
+				<a href="#settings" data-role="button" data-rel="dialog" data-transition="pop" data-icon="gear" data-iconpos="notext">Settings</a>
 			</div> <!-- /header -->
 		
-			<div data-role="content">	
+			<div data-role="content" class="ui-content">	
 				<ul data-role="listview" id="stories-listview">
 				</ul>
 			</div><!-- /content -->
-		
-			<!--
-			<div data-role="footer" data-position="fixed">
-				<h4>Footer</h4>
-			</div> /footer -->
 		</div><!-- /page -->
-		
-		<div data-role="page" id="settings">
-		
-			<div data-role="header" data-position="fixed">
-				<h4>Settings</h4>
+
+		<div data-role="page" id="story-detail">
+		    <div data-role="header">
+				<h4 id="story-detail-title">Story Title</h4>
 			</div> <!-- /header -->
 		
+			<div id="story-detail-content" data-role="content">	
+			</div><!-- /content -->
+		</div><!-- /page -->
+		
+		<!-- Settings Dialog -->
+		<div data-role="dialog" id="settings">
 			<div data-role="content" id="settings-content">	
-  		        <form action="" method="post">
   		        	<div data-role="fieldcontain">
-						<label for="feedURL">Feed URL:</label>
-						<input type="url" name="feedURL" id="feedURL"  />
+						<label for="input-url">Feed URL:</label>
+						<input type="url" name="input-url" id="input-url"  />
 					</div>
 					<div data-role="fieldcontain">
-						<button type="submit" onClick="Properties.submitForm(this.form)" value="save-settings" name="save-settings">Save</button>
+						<div id="button" data-role="button" onClick="Properties.submitForm()">Save</div>
+						<a href="#home" data-transition="pop" data-direction="reverse" data-role="button">Cancel</div>
 					</div>
-  		        </form>
 			</div><!-- /content -->
-		
-			<!--
-			<div data-role="footer" data-position="fixed">
-				<h4>Footer</h4>
-			</div> /footer -->
 		</div><!-- /page -->
 	</body>
 </html>

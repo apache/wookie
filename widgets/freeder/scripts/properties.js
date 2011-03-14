@@ -21,20 +21,15 @@
 var Properties = {
 	
 	submitForm: function() {
-		var url =  $("#feedURL").val();
-		Widget.preferences.setItem("feedURL", url);
+		Widget.preferences.setItem("feedURL", $("#input-url").val());
 		Controller.update();
-		$.mobile.changePage("#storiesIndex");
+        $.mobile.changePage("#home", "pop", true);
 	},
 
 	/**
 	 * Get the base URL for the Simal REST interface.
 	 */
 	getFeedURL: function() {
-		var url = Widget.preferences.getItem("feedURL");
-		if (url == undefined) {
-			url = "http://osswatch.jiscinvolve.org/feed";
-		}
-		return url;
+        return Widget.preferences.getItem("feedURL") || "http://osswatch.jiscinvolve.org/feed";
 	}		
 }

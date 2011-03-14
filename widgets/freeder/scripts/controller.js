@@ -21,52 +21,56 @@
  */ 
 var Controller = {
 	init:function() {
+        // Populate the feed settings form
+        $("#input-url").val(Properties.getFeedURL());
+        
+        // Load the feed
 		Controller.update();
 	},
 
 	/**
-	 * Update the hello world message, and the updated time
+	 * Load the feed
 	 */
-	items: [],
 	update:function() {
 		$.mobile.pageLoading();
-		jQuery.getFeed({
-	        url: Widget.proxify(Properties.getFeedURL()),
-	        success: function(feed) {
-				Controller.items = feed.items;
-			 	var index = $('#stories-listview');
-	            index.empty();
-			 	$.each(Controller.items, function(key, item) {
-	            	index.append($("<li/>")
-	                             .append($("<a/>")
-	            						 .attr("onClick", "Controller.gotoStory(" + key + ")")
-	            						 .text(item.title)));
-		        })
-		        index.listview("refresh");
-	        }
-	    });
-		$.mobile.pageLoading(true);
+        var feedUrl = Widget.proxify(Properties.getFeedURL());
+        $.getFeed({
+            url: feedUrl, 
+            success: Controller.updateFeed
+        });
 	},
+    
+    /*
+     * Refresh the feed list
+     */
+    updateFeed: function(feed){
+        $.mobile.pageLoading(true);
+        var index = $('#stories-listview');
+        index.empty();
+        var items = feed.items
+        Controller.items = items;
+        $.each(items, function(key, item) {
+            index.append($("<li/>")
+                         .append($("<a/>")
+                                .text(item.title || "Untitled" )
+                                .attr("onClick", "Controller.gotoStory(" + key + ")")
+                                )
+                         )
+        });
+        index.listview("refresh");
+    },
 	
 	/**
-	 * Create the page for a given story and navigate to it.
+	 * Update the story details page for a given story and navigate to it.
 	 */
 	gotoStory:function(key) {
 		item = Controller.items[key];
-		var header = $('<div data-role="header" data-position="fixed"></div>')
-          .append("<h4>" + item.title + "</h4>")
-		//var footer = $('<div data-role="footer" data-position="fixed"><h4>Footer<h4></div>');
-		var content = $("<div data-role='content'/>")
-		 .append($('<h2>' + item.title + '</h2>'))
-		 .append($('<div>' + item.description + '</div>')
-	     .append($('<div><a href="' + item.link + '">Read original</a>')))
-		 
-		$.mobile.pageContainer.append($("<div data-role='page'/>")
-			  				  .attr("id", key)
-			  				  .attr("data-url", key)
-			  				  .append(header)
-			  				  .append(content));
-		$('#' + key).page();
-		$.mobile.changePage("#" + key);
+        $("#story-detail-title").text(item.title);
+        $("#story-detail-content").empty();
+        $("#story-detail-content")
+            .append($('<h2>' + item.title + '</h2>'))
+            .append($('<div>' + item.description + '</div>')
+            .append($('<div><a href="' + item.link + '">Read original</a>')))
+		$.mobile.changePage("#story-detail");
 	}		
 }
