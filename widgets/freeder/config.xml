@@ -22,6 +22,7 @@
         >
   <name>freeder</name>
   <description>An RSS reader widget optimised for small screens or desktop widgets.</description>
+  <feature name="http://jquerymobile.com" required="true"/>
   <content src="index.html"/>
   <icon src="images/icon.png"/>  
   <access origin="*"/>  

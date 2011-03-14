@@ -25,6 +25,8 @@
   <content src="index.html"/>
   <icon src="images/icon.png"/>
   <author>Apache Wookie (Incubating) Team</author>
+  <feature name="http://jquerymobile.com" required="true"/>
+  
   <licence>Licensed to the Apache Software Foundation (ASF) under one or more
   contributor license agreements.  See the NOTICE file distributed with
   this work for additional information regarding copyright ownership.
