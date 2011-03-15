@@ -24,7 +24,7 @@ var Properties = {
 		var msg = "Hello " + dwr.util.getValue("name");
 		Widget.preferences.setItem("message", msg);
 		Controller.update();
-		$.mobile.changePage("#helloWorld");
+        $.mobile.changePage("#home", "pop", true);
 	},
 
 	/**
@@ -33,7 +33,7 @@ var Properties = {
 	getMessage: function() {
 		var msg = Widget.preferences.getItem("message");
 		if (msg == undefined) {
-			msg = 'Hello, tell us your name by editing the <a href="#settings" data-role="button" data-inline="true" data-icon="gear">Settings</a>';
+			msg = 'Hello, tell us your name by clicking the Settings icon in the top-right</a>';
 		}
 		return msg;
 	}		

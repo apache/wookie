@@ -24,12 +24,12 @@
 		<title>@widget.shortname@</title>
 	</head>
 	<body onLoad="Controller.init()">
-		<div data-role="page" data-theme="b" id="jqm-home">
+		<div data-role="page" data-theme="b" id="home">
 		
-		    <div data-role="header" data-position="fixed">
+		    <div data-role="header">
 				<h4>Hello World</h4>
 				<a onClick="Controller.update()" data-role="button" data-icon="refresh" data-iconpos="notext">Refresh</a>
-				<a href="#settings" data-role="button" data-icon="gear" data-iconpos="notext">Settings</a>
+				<a href="#settings" data-role="button" data-rel="dialog" data-transition="pop" data-icon="gear" data-iconpos="notext">Settings</a>
 			</div> <!-- /header -->
 		
 			<div data-role="content" class="ui-content">	
@@ -43,31 +43,12 @@
 				  <p>I'm not open by default, so you must have clicked on me to see this.</p>
 				</div>
 				
-				<p><a href="#helloWorld">Say Hello</a></p>
-			</div><!-- /content -->
-		
-			<!--
-			<div data-role="footer" data-position="fixed">
-				<h4>Footer</h4>
-			</div> /footer -->
-		</div><!-- /page -->
-		
-		<div data-role="page" id="helloWorld">
-		
-		    <div data-role="header" data-position="fixed">
-				<h4>Hello World</h4>
-				<a onClick="Controller.update()" data-role="button" data-icon="refresh" data-iconpos="notext">Refresh</a>
-				<a href="#settings" data-role="button" data-icon="gear" data-iconpos="notext">Settings</a>
-			</div> <!-- /header -->
-		
-			<div data-role="content" class="ui-content">	
 				<p id="helloMessage">
 				  Hello. (this message will be replaced dynamically by the code).
 				</p>
 				
 				<p>Last Updated: <span id="lastUpdatedTime">00:00:00</span></p>
 				
-				<p><a href="#home">Back Home</a></p>
 			</div><!-- /content -->
 		
 			<!--
@@ -76,9 +57,10 @@
 			</div> /footer -->
 		</div><!-- /page -->
 		
-		<div data-role="page" id="settings">
 		
-			<div data-role="header" data-position="fixed">
+		<div data-role="dialog" id="settings">
+		
+			<div data-role="header">
 				<h4>Settings</h4>
 			</div> <!-- /header -->
 		
@@ -89,7 +71,8 @@
     					<input type="url" name="name" id="name"  />
 					</div>
 					<div data-role="fieldcontain">
-						<button type="submit" onClick="Properties.submitForm(this.form)" value="save-settings" name="save-settings">Save</button>
+						<div data-role="button" onClick="Properties.submitForm()">Save</div>
+						<a href="#home" data-transition="pop" data-direction="reverse" data-role="button">Cancel</div>
 					</div>
   		        </form>
 			</div><!-- /content -->
