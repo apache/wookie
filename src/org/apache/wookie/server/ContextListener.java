@@ -214,24 +214,24 @@ public class ContextListener implements ServletContextListener {
 	 						persistenceManager.commit();
 	 					} catch (IOException e) {
                             persistenceManager.rollback();
-	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.1");
+	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.1") + " - " + e.getLocalizedMessage();
 	 						FlashMessage.getInstance().error(error);
-	 						_logger.error(error);
+	 						_logger.error(error, e);
 	 					} catch (BadWidgetZipFileException e) {
                             persistenceManager.rollback();
-	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.2");
+	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.2") + " - " + e.getLocalizedMessage();
 	 						FlashMessage.getInstance().error(error);
-	 						_logger.error(error);
+	 						_logger.error(error, e);
 	 					} catch (BadManifestException e) {
                             persistenceManager.rollback();
-	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.3");
+	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.3") + " - " + e.getLocalizedMessage();
 	 						FlashMessage.getInstance().error(error);
-	 						_logger.error(error);
+	 						_logger.error(error, e);
 	 					} catch (Exception e) {
                             persistenceManager.rollback();
 	 						String error = f.getName()+":"+e.getLocalizedMessage();
 	 						FlashMessage.getInstance().error(error);
-	 						_logger.error(error);
+	 						_logger.error(error, e);
 						} finally {
 				            // close thread persistence manager
 				            PersistenceManagerFactory.closePersistenceManager();						    
