@@ -24,7 +24,7 @@
 	</configurations>
     
     <dependencies>
-        <dependency org="com.ibm.icu" name="icu4j" rev="4_2_1" conf="deploy->default">
+        <dependency org="com.ibm.icu" name="icu4j" rev="4_6_0" conf="deploy->default">
         </dependency>
         <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="deploy->default">
         </dependency>
