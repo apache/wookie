@@ -23,10 +23,6 @@ html, body {
   margin:0; 
   border:0; 
   font-family: "trebuchet ms", tahoma, verdana, arial, sans-serif;
-  /* hide overflow:hidden from IE5/Mac */ 
-  /* \*/ 
-  overflow: hidden; 
-  /* */ 
 }
 
 #wookie-widget {
