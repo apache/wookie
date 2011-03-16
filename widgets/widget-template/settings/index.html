@@ -1,0 +1,84 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta http-equiv="pragma" content="no-cache"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" type="text/css" href="style/screen.css" />
+        <script type="text/javascript" src="scripts/controller.js" charset="utf-8"></script>  
+        <script type="text/javascript" src="scripts/settings.js" charset="utf-8"></script>  
+		<title>@widget.shortname@</title>
+	</head>
+	<body>
+	  <div id="widget">
+		<div id="toolbar">
+		  <img id="widget-icon"
+		       src="images/icon_16x16.png" 
+		       onclick="Controller.showSettings()" 
+		       alt="@widget.shortname@ Icon"/>
+		       @widget.shortname@
+		</div>
+		
+		<div id="content">
+		  <h2>@widget.shortname@</h2>
+		  <p>@widget.description@</p>
+		 
+		  <div class="docs">
+			  <p>This widget was built using the "settings" template from Apache Wookie (Incubating).</p>
+			 
+			  <p>It demonstrates settings handling in a widget using
+			     <a href="http://diveintohtml5.org/forms.html">HTML5 forms</a>.
+			     The settings form is auto generated in the 
+			     settingsService.getsettingDefinitions(group) method.
+			     To create your own settings simply edit this method.
+			     If your widget needs a large number of different settings you can
+			     group settings together. Simply pass in the required group parameter to
+			     retrieve the desired group of settings.</p>
+			     
+			   <p>Groups can be used to describe related sets of settings. When the
+		          settings page is requested the user will be presented with a
+		          list of links to individual settings pages for each group. If
+		          no groups are defined then all settings will be displayed on a 
+		          single settings page. Groups are defined in the 
+		          <code>SettingsService.getGroups()</code> method.</p>
+			   
+			   <p>To view the settings page click the widget icon 
+			     in the top left of the header, or call the 
+			     <a href="javascript:Controller.showSettings()">Controller.showSettings()</a>
+			     method. If you are using groups and you want to create a link directly to 
+			     a specific group of settings pass the group name as a parameter to the 
+			     <a href="javascript:Controller.showSettings('contact')">Controller.showSettings("contact")</a>
+			     method.</p>
+		     </div>
+		</div>
+		
+		<div id="settings">
+	      <p>This paragraph will be replaced by the settings form which is created
+	         dynamically by SettingsService.createForm(group)</p>
+	    </div>
+	    
+		<div id="footer">Powered by Apache Wookie (Incubating)</div>
+	  </div>
+	  
+	  
+	</body>
+<!-- fix forIE cashing - must go here even though its in the wrong place
+<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+</HEAD>
+-->
+</html>
