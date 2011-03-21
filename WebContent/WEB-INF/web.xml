@@ -183,6 +183,20 @@
 		<servlet-name>WidgetAccessRequestPolicyController</servlet-name>
 		<url-pattern>/warp/*</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<description></description>
+		<display-name>Whitelist</display-name>
+		<servlet-name>WhitelistController</servlet-name>
+		<servlet-class>
+			org.apache.wookie.controller.WhiteListController
+		</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>WhitelistController</servlet-name>
+		<url-pattern>/whitelist/*</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<description></description>
@@ -316,6 +330,19 @@
 			<web-resource-collection>
 				<web-resource-name>WidgetAccessRequestPolicyController</web-resource-name>
 				<url-pattern>/warp/*</url-pattern>
+				<http-method>GET</http-method>
+				<http-method>DELETE</http-method>
+				<http-method>PUT</http-method>
+				<http-method>POST</http-method>
+			</web-resource-collection>		
+			<auth-constraint>
+				<role-name>widgetadmin</role-name>
+			</auth-constraint>
+		</security-constraint>
+		<security-constraint>		
+			<web-resource-collection>
+				<web-resource-name>WhitelistController</web-resource-name>
+				<url-pattern>/whitelist/*</url-pattern>
 				<http-method>GET</http-method>
 				<http-method>DELETE</http-method>
 				<http-method>PUT</http-method>
