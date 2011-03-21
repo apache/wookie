@@ -30,11 +30,27 @@ public class AccessRequestHelper {
 	public static String createXMLAccessRequestDocument(IAccessRequest[] accessRequests){
 		String document = XMLDECLARATION;
 		document += "\n<policies>\n";
-		for (IAccessRequest ar:accessRequests){
-			document += toXml(ar);
+		if (accessRequests != null){
+			for (IAccessRequest ar:accessRequests){
+				document += toXml(ar);
+			}
 		}
 		document += "</policies>\n";
 		return document;
+	}
+	
+	public static String createJSON(IAccessRequest[] accessRequests){
+		String json = "{ \"policies\":[";
+		if (accessRequests != null){
+			for (IAccessRequest ar:accessRequests){
+				json += toJSON(ar);
+			}
+		}
+		// remove last comma
+		json = json.substring(0, json.length()-1);
+		json += "]}";
+		
+		return json;
 	}
 	
 	/**
@@ -56,6 +72,7 @@ public class AccessRequestHelper {
 		String xml = "\t<policy ";
 		xml += "id=\""+ar.getId()+"\" ";
 		xml += "widget=\""+ar.getWidget().getId()+"\" ";
+		xml += "widget_title=\""+WidgetHelper.getEncodedWidgetTitle(ar.getWidget(), null)+"\" ";
 		xml += "origin=\""+ar.getOrigin()+"\" ";
 		xml += "subdomains=\""+ar.isSubdomains()+"\" ";
 		if (ar.isGranted()) {
@@ -65,6 +82,22 @@ public class AccessRequestHelper {
 		}
 		xml += "/>\n";
 		return xml;
+	}
+	
+	private static String toJSON(IAccessRequest ar){
+		String json = "{";
+			json += " \"id\":\"" + ar.getId() + "\""; 
+			json += ",\"widget\":\"" + ar.getWidget().getId() + "\""; 
+			json += ",\"widget_title\":\"" + WidgetHelper.getEncodedWidgetTitle(ar.getWidget(), null) + "\""; 
+			json += ",\"origin\":\"" + ar.getOrigin() + "\""; 	
+			json += ",\"subdomains\":\"" + ar.isSubdomains() + "\""; 	
+			if (ar.isGranted()) {
+				json+= ",\"granted\": \"true\"";
+			} else {
+				json+= ",\"granted\": \"false\"";			
+			}
+		json += "},";
+		return json;
 	}
 	
 	public static String toHtml(IAccessRequest ar){

@@ -58,6 +58,7 @@ public class WidgetAccessRequestPolicyController extends Controller {
 		switch (format(request)) {
 			case XML: returnXml(AccessRequestHelper.createXMLAccessRequestDocument(accessRequests),response);break;
 			case HTML: returnHtml(AccessRequestHelper.createAccessRequestHTMLTable(accessRequests),response);break;
+			case JSON: returnJson(AccessRequestHelper.createJSON(accessRequests),response);break;
 		}
 	}
 
@@ -72,6 +73,7 @@ public class WidgetAccessRequestPolicyController extends Controller {
 		switch (format(request)) {
 			case XML: returnXml(AccessRequestHelper.createXMLAccessRequestDocument(new IAccessRequest[]{ar}),response);break;
 			case HTML: returnHtml(AccessRequestHelper.createAccessRequestHTMLTable(new IAccessRequest[]{ar}),response);break;
+			case JSON: returnJson(AccessRequestHelper.createJSON(new IAccessRequest[]{ar}),response);break;
 		}
 	}
 
