@@ -28,6 +28,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
+import org.apache.wookie.ajaxmodel.IWidgetRuntimeHelper;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.FeatureLoader;
@@ -60,6 +61,8 @@ public class ContextListener implements ServletContextListener {
 	 * 			'/webappname/WEB-INF/classes'  ...at runtime.
 	 */
 	static Logger _logger = Logger.getLogger(ContextListener.class.getName());
+	public static Boolean usePreferenceInstanceQueues;
+	public static Boolean useSharedDataInstanceQueues;	
 	
     public void contextInitialized(ServletContextEvent event) {
 		try {
@@ -81,7 +84,9 @@ public class ContextListener implements ServletContextListener {
 				_logger.info("Using default widget server properties, configure your local server using: " + localPropsFile.toString());
 			}
 		 	context.setAttribute("properties", (Configuration) configuration);
-		 	
+		 	// load these up now so we don't have to do it on every request(i.e. filter) in the future
+		 	usePreferenceInstanceQueues = configuration.getBoolean(IWidgetRuntimeHelper.USE_PREFERENCE_INSTANCE_QUEUES);	
+			useSharedDataInstanceQueues = configuration.getBoolean(IWidgetRuntimeHelper.USE_SHAREDDATA_INSTANCE_QUEUES);		 	
 		 	/*
 		 	 * Merge in system properties overrides
 		 	 */

@@ -33,6 +33,8 @@ import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.controller.PropertiesController;
 import org.apache.wookie.controller.WidgetInstancesController;
 import org.apache.wookie.helpers.Notifier;
+import org.apache.wookie.queues.QueueManager;
+import org.apache.wookie.server.ContextListener;
 import org.apache.wookie.server.LocaleHandler;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.WebContext;
@@ -146,14 +148,19 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	 * (non-Javadoc)
 	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#setPreferenceForKey(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@SuppressWarnings("static-access")
 	public String setPreferenceForKey(String id_key, String key, String value) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);		
+		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();		
+		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if (widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
-		//
-		PropertiesController.updatePreference(widgetInstance, key, value);
+		if(ContextListener.usePreferenceInstanceQueues){
+			QueueManager.getInstance().queueSetPreferenceRequest(id_key, key, value);	
+		}
+		else{
+			PropertiesController.updatePreference(widgetInstance, key, value);
+		}
 		return "okay"; //$NON-NLS-1$
 	}
 
@@ -161,15 +168,21 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	 * (non-Javadoc)
 	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#setSharedDataForKey(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@SuppressWarnings("static-access")
 	public String setSharedDataForKey(String id_key, String key, String value) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
+		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWidgetInstance widgetInstance;//
+		widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
 		if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2");
-		//
-		PropertiesController.updateSharedDataEntry(widgetInstance, key, value, false);
+		if(ContextListener.useSharedDataInstanceQueues){//	
+			QueueManager.getInstance().queueSetSharedDataRequest(id_key, widgetInstance.getSharedDataKey(), key, value, false);
+		}
+		else{
+			PropertiesController.updateSharedDataEntry(widgetInstance, key, value, false);
+		}
 		Notifier.notifySiblings(widgetInstance);
 		return "okay"; //$NON-NLS-1$
 	}
@@ -178,15 +191,20 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	 * (non-Javadoc)
 	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#appendSharedDataForKey(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@SuppressWarnings("static-access")
 	public String appendSharedDataForKey(String id_key, String key, String value) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);								
+		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();		
+		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
 		if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2");
-		//
-		PropertiesController.updateSharedDataEntry(widgetInstance, key, value, true);
+		if(ContextListener.useSharedDataInstanceQueues){//
+			QueueManager.getInstance().queueSetSharedDataRequest(id_key, widgetInstance.getSharedDataKey(), key, value, true);
+		}
+		else{
+			PropertiesController.updateSharedDataEntry(widgetInstance, key, value, true);
+		}
 		Notifier.notifySiblings(widgetInstance);
 		return "okay"; //$NON-NLS-1$
 	}
