@@ -17,7 +17,7 @@
 -->
 <project default="build-widget" basedir="." name="Wookie_widgets_build_file">
 	<property name="project.build.dir" location="../build"/>
-	<property name="widget.deploy.dir" location="../build/webapp/wookie/deploy"/>
+	<property name="widget.deploy.dir" location="${project.build.dir}/webapp/wookie/deploy"/>
 	<property name="wookie.widgets.dir" location="."/>
 	<property name="widget.template.dir" value="${wookie.widgets.dir}/widget-template"/>
     <property name="widget.build.dir" value="${project.build.dir}/widgets"/>
@@ -110,6 +110,6 @@
 	<target name="deploy-widget" depends="build-widget">
 		<copy tofile="${widget.deploy.dir}/${widget.shortname}.wgt" 
 			  file="${widget.build.dir}/${widget.shortname}.wgt"/>
-   		<echo>Deployed ${widget.shortname} to ${project.build.classes.dir}/${widget.deploy.dir}/${widget.shortname}.wgt</echo>
+   		<echo>Deployed ${widget.shortname} to ${widget.deploy.dir}/${widget.deploy.dir}/${widget.shortname}.wgt</echo>
 	</target>
 </project>
