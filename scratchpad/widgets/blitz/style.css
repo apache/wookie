@@ -1,0 +1,29 @@
+html {
+	height:100%; 
+	max-height:100%; 
+	padding:0; 
+	margin:0; 
+	border:0; 
+	font-size:80%; 
+	font-family: "trebuchet ms", tahoma, verdana, arial, sans-serif;
+	/* hide overflow:hidden from IE5/Mac */ 
+	/* \*/ 
+	overflow: hidden; 
+	/* */ 
+}
+
+body{
+	margin-top:0px;	
+	margin-left:0px;
+	color: #000000;
+} 
+
+div#fcontent {
+	border : solid 1px #ffffff; 
+	background : #000000; 
+	color : #ffffff; 
+	padding : 4px; 
+	width : 100%; 
+	height : 120px; 
+	overflow : auto; 
+}

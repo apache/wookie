@@ -1,0 +1,10 @@
+<widget xmlns="http://www.w3.org/ns/widgets"
+ 		id="http://wookie.apache.org/widgets/blitz"
+ 		version="0.1"
+        width="420"
+        height="320">
+ <name>Blitz</name>
+ <description>Preference and shared data test widget</description>
+ <content src="index.html"/>
+ <feature name="http://wave.google.com" required="true"/>
+</widget>

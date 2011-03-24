@@ -1,0 +1,32 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title>Preferences and shared data test widget</title>
+<link rel="stylesheet" href="style.css" type="text/css"/>   
+<script src="include.js"></script>
+</head>
+<body onload="init();">
+<div id="fcontent"></div>
+<div id="fform">
+<form name="frm1">
+ Name of property/shareddata field <input type="text" name="prefname" value="wookie-test-key" /><br />
+ Value of property/shareddata field <input type="text" name="prefvalue" value="default-value" /><br />
+ Test Preference <input type="radio" name="ptype" checked="checked" value="preference" /> 
+ Test Shared data <input type="radio" name="ptype" value="shareddata" /><br />
+ <input type="checkbox" name="useappend" checked value="useappend" />append shareddata
+ <input type="checkbox" name="logsharedupdate" value="logsharedupdate" />log sharedupdate messages<br />
+ <input type="button" value="Get" onclick="getWookieValue(document.forms['frm1']['prefname'].value)" /> 
+ <input type="button" value="Set" onclick="setWookieValue(document.forms['frm1']['prefname'].value, document.forms['frm1']['prefvalue'].value)" />
+ <input type="button" value="Reset" onclick="resetWookieValue(document.forms['frm1']['prefname'].value)" />
+ <input type="button" value="Clear log" onclick="resetLog()" /><br />
+<div><b>Batch testing</b></div> 
+ Number of times to test <select id="ntimes" name="ntimes"><script>
+  for(i=0;i<=1000;i++){
+   document.write("<option value="+i+">"+i+"</option>");
+  }
+ </script></select><br />
+ <input type="button" value="Start batch test" onclick="startTest(document.forms['frm1']['prefname'].value, document.forms['frm1'].ntimes.options[ntimes.selectedIndex].value)" /><br />  
+</form>
+</div>
+<div id="fresponse"></div>
+</body></html>
