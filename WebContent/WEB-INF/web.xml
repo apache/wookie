@@ -352,6 +352,16 @@
 				<role-name>widgetadmin</role-name>
 			</auth-constraint>
 		</security-constraint>
+		<security-constraint>		
+			<web-resource-collection>
+				<web-resource-name>WidgetServlet</web-resource-name>
+				<url-pattern>/widgets/*</url-pattern>
+				<http-method>POST</http-method>
+			</web-resource-collection>		
+			<auth-constraint>
+				<role-name>widgetadmin</role-name>
+			</auth-constraint>
+		</security-constraint>
 		
 		<login-config>
 			<auth-method>BASIC</auth-method>

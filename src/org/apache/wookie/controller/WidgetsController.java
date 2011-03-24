@@ -14,19 +14,30 @@
 
 package org.apache.wookie.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetDefault;
 import org.apache.wookie.beans.IWidgetService;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
+import org.apache.wookie.exceptions.InvalidParametersException;
+import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
+import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.WidgetHelper;
 
 /**
@@ -48,12 +59,6 @@ public class WidgetsController extends Controller{
 	
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 	}
@@ -140,5 +145,38 @@ public class WidgetsController extends Controller{
 			widgets = (IWidget[])widgetsarr.toArray(new IWidget[widgetsarr.size()]);
 		}
 		returnXml(WidgetHelper.createXMLWidgetsDocument(widgets, getLocalPath(request), getLocales(request)),response);
+	}
+
+	/**
+	 * Install a new Widget by saving it in the deploy folder
+	 * Note: a Widget must have a .wgt extension!
+	 */
+	@Override
+	protected boolean create(String resourceId, HttpServletRequest request)
+			throws ResourceDuplicationException, InvalidParametersException,
+			UnauthorizedAccessException {
+				
+		Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
+		final String DEPLOY_FOLDER = getServletContext().getRealPath(properties.getString("widget.deployfolder"));//$NON-NLS-1$
+		FileItemFactory factory = new DiskFileItemFactory();
+		// Create a new file upload handler
+		ServletFileUpload upload = new ServletFileUpload(factory);
+		
+		try {
+			@SuppressWarnings("unchecked")
+			List <FileItem> items = upload.parseRequest(request);
+			
+			for (FileItem item: items){
+				File saveFile = new File(DEPLOY_FOLDER + "/" + item.getName());
+				item.write(saveFile);
+			}
+			
+		} catch (FileUploadException e) {
+			throw new InvalidParametersException();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 }
