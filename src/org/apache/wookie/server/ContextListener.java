@@ -25,6 +25,7 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
@@ -69,25 +70,22 @@ public class ContextListener implements ServletContextListener {
 			ServletContext context = event.getServletContext();
 			
 			/* 
-			 *  load the widgetserver.properties file and put it into this context
-			 *  as an attribute 'properties' available to all resources
+			 *  load the widgetserver.properties and local.widget.properties file
+			 *  and put it into this context as an attribute 'properties' available to all resources
 			 */
-			PropertiesConfiguration configuration;
-			File localPropsFile = new File(System.getProperty("user.dir") + File.separator + "local.widgetserver.properties");
-			if (localPropsFile.exists()) {
-				configuration = new PropertiesConfiguration(localPropsFile);
-				_logger.info("Using local widget server properties file: " + localPropsFile.toString());
-			} else {
-				configuration = new PropertiesConfiguration("widgetserver.properties");
-				configuration.setFile(localPropsFile);
-				configuration.save();
-				_logger.info("Using default widget server properties, configure your local server using: " + localPropsFile.toString());
-			}
-		 	context.setAttribute("properties", (Configuration) configuration);
+      File localPropsFile = new File(System.getProperty("user.dir") + File.separator + "local.widgetserver.properties");
+      PropertiesConfiguration localConfiguration = new PropertiesConfiguration(localPropsFile);
+      CompositeConfiguration configuration = new CompositeConfiguration();
+      configuration.addConfiguration(localConfiguration);
+      configuration.addConfiguration(new PropertiesConfiguration("widgetserver.properties"));
+      
+      context.setAttribute("properties", (Configuration) configuration);
+		 	
 		 	// load these up now so we don't have to do it on every request(i.e. filter) in the future
 		 	usePreferenceInstanceQueues = configuration.getBoolean(IWidgetRuntimeHelper.USE_PREFERENCE_INSTANCE_QUEUES);	
 			useSharedDataInstanceQueues = configuration.getBoolean(IWidgetRuntimeHelper.USE_SHAREDDATA_INSTANCE_QUEUES);		 	
-		 	/*
+		 	
+			/*
 		 	 * Merge in system properties overrides
 		 	 */
 		 	Iterator<Object> systemKeysIter = System.getProperties().keySet().iterator();
