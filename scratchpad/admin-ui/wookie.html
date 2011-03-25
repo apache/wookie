@@ -1,0 +1,178 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Wookie Admin Demo</title>
+    <meta name = "viewport" content = "width=device-width, height=device-height" /> 
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.0a3/jquery.mobile-1.0a3.min.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="default.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="desktop.css" media="screen and (min-device-width:1024px)"/>
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script src="http://code.jquery.com/jquery-1.5.min.js"></script>
+    <!--<script src="http://localhost:8080/wookie/shared/feature/jqmobile/jquery.mobile-1.0a3.min.js"></script>  -->  
+    
+    <script>
+    	
+    	function init(){
+    		var widgets = ["http://wookie.apache.org/widgets/widgets","http://wookie.apache.org/widgets/addwidget", "http://wookie.apache.org/widgets/warp", "http://wookie.apache.org/widgets/whitelist", "http://wookie.apache.org/widgets/freeder", "http://www.getwookie.org/widgets/weather"];
+    		var properties = [{widget:"http://wookie.apache.org/widgets/freeder", key:"feedURL", value:"http://apache.markmail.org/atom/wookie-dev"}];
+    		WidgetLoader.init(widgets,properties);
+    	}
+
+         var WidgetLoader = {
+
+         	init: function(widgets, properties){
+         	    WidgetLoader.totalWidgets = widgets.length;
+         	    WidgetLoader.properties = properties;
+         		for (var i in widgets){
+         			WidgetLoader.getWidget(widgets[i]);
+         		}
+         	},
+         
+         	widgets: [],
+         	id: 0,
+         	properties: [],
+         	propertiesSet: 0,
+         	
+         	getWidget: function(widgetId){
+         	   	var userId = "admin";
+    			var sharedDataKey = "admin";
+    			var apiKey = "TEST";
+            	$.ajax({
+              		type: 'POST',
+              		url: "http://localhost:8080/wookie/widgetinstances",
+              		data: {"userid":userId, "shareddatakey":sharedDataKey, "api_key":apiKey, "widgetid":widgetId},
+              		success: WidgetLoader.parseWidgetData,
+              		dataType: "xml"
+            	});
+         	},
+         	
+         	parseWidgetData: function(xml){
+         		$(xml).find("widgetdata").each(function(){
+         			var widget = {};
+         			
+                	widget.url = $(this).find('url').text();
+                	widget.height = $(this).find('height').text();
+                	widget.width = $(this).find('width').text(); 
+                    widget.title = $(this).find('title').text(); 
+                	widget.id = WidgetLoader.id;
+                	WidgetLoader.id++;
+                	WidgetLoader.addWidget(widget);      
+             	});  
+         	},
+         	
+         	showWidget: function(xml){
+	         	$(xml).find("widgetdata").each(function(){
+    	            var url = $(this).find('url').text();
+        	        var height = $(this).find('height').text();
+            	    var width = $(this).find('width').text();
+                
+           		     $("#workspace").append($("<iframe/>")
+            	        .attr("src",url)
+                	    .attr("height",height)
+                    	.attr("width",width)
+                   	 	.attr("class","widget")
+                    )
+         		});
+         	},
+         
+         	addWidget: function(widget){
+         		WidgetLoader.widgets.push(widget);
+         		//Picker.add(widget);
+         		if (WidgetLoader.widgets.length == WidgetLoader.totalWidgets) WidgetLoader.setProperties();         	
+         	},
+         	
+         	setProperties: function(){
+         		if (WidgetLoader.properties.length == 0) WidgetLoader.showWidgets();
+         		for (i in WidgetLoader.properties){
+         			var property = WidgetLoader.properties[i];
+         			WidgetLoader.setProperty(property);
+         		}       	
+         	},
+         	
+         	setProperty: function(property){
+         	    var userId = "admin";
+    			var sharedDataKey = "admin";
+    			var apiKey = "TEST";
+            	$.ajax({
+              		type: 'POST',
+              		url: "http://localhost:8080/wookie/properties",
+              		data: {"userid":userId, "shareddatakey":sharedDataKey, "api_key":apiKey, "widgetid":property.widget, "propertyname":property.key, "propertyvalue": property.value},
+              		success: WidgetLoader.propertySet(),
+              		dataType: "xml"
+            	});
+         	},
+         	
+         	propertySet: function(){
+         		WidgetLoader.propertiesSet++;
+         		if (WidgetLoader.propertiesSet == WidgetLoader.properties.length) WidgetLoader.showWidgets();
+         	},
+         	
+         	showWidgets: function(){
+         	     for (var i in WidgetLoader.widgets){
+         			var widget = WidgetLoader.widgets[i];
+         	       	$("article").append($("<iframe/>")
+                        .attr("id",widget.id)
+                    	.attr("src",widget.url)
+                    	.attr("height",widget.height)
+                    	.attr("width",widget.width)
+                    	.attr("class","widget")
+                    	.attr("role","application")
+                    	.attr("title",widget.title)
+                    )
+         		}  
+                // Make sure the first widget is visible
+                $("#0").show();
+                /*$("#current-widget-title").text(WidgetLoader.widgets[0].title);*/
+            }
+         }
+         
+         var Picker = {
+            curr: 0,
+         
+            next: function(){
+                Picker.curr++;
+                if(Picker.curr >= WidgetLoader.widgets.length) Picker.curr = 0;
+                Picker.select(Picker.curr);
+            },
+            
+            prev: function(){
+                Picker.curr--;
+                if(Picker.curr < 0) Picker.curr = WidgetLoader.widgets.length-1;
+                Picker.select(Picker.curr);
+            },
+            
+            select: function(id){
+                /*$("#current-widget-title").text(WidgetLoader.widgets[id].title);*/
+                $('.widget').hide();
+                $("#"+id).show();
+            },
+         };
+    
+    </script>
+</head>
+
+<body onLoad="init()">
+
+<header role="banner">
+    <h1>Administration</h1>
+</header>
+
+<nav role="navigation" class="ui-bar-e ui-header">
+    <h4 class="ui-title" >
+        <a onClick="Picker.prev()" href="#" title="left" class="ui-btn ui-btn-left ui-btn-icon-notext ui-btn-corner-all ui-shadow ui-btn-hover-e ui-btn-down-e"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Left</span><span class="ui-icon ui-icon-arrow-l ui-icon-shadow"></span></span></a>
+    <span id="current-widget-title">Workspace 1</span>
+        <a onClick="Picker.next()" href="#" title="right" class="ui-btn ui-btn-right ui-btn-icon-notext ui-btn-corner-all ui-shadow ui-btn-hover-e ui-btn-down-a"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Right</span><span class="ui-icon ui-icon-arrow-r ui-icon-shadow"></span></span></a>
+    </h4>
+</nav>
+
+<article role="main"></article>
+
+
+
+<!--<p><a href="http://www.flickr.com/photos/vectorportal/4930127890/" title="Abstract Orange Background by Vectorportal, on Flickr">Abstract Orange Background by Vectorportal, on Flickr</a></p>-->
+
+</body>
+</html>

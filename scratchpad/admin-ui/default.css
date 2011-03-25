@@ -1,0 +1,50 @@
+body{
+    margin: 0px;
+    background-color: #000;
+    background-size: 100%, 100%;
+}
+header{
+    display:none;
+}
+article{
+    margin-left: auto;
+	margin-right: auto;
+    top: 0px;
+	width: 320px;
+    height: 480px;
+    text-align: center;
+}
+nav{
+    display: inline;
+    margin-top:0px;
+    margin-left: 0px;
+	margin-right: 0px;
+    height:32px;
+    color:white;
+    max-width: 320px;
+}
+.widget {
+    display: inline;
+    margin-top: 32px;
+    display: none;
+    border: none;
+    max-width: 320px;
+}
+
+/** 
+ * This sets the width of widgets and nav to 100%
+ * on mobile devices supporting media queries. Older
+ * devices use the default max of 320px.
+ *
+ * We have to do this because we can't override this to
+ * downgrade to "auto" on desktop
+ */
+@media all and (max-device-width: 1000px) {
+.widget{ width: 100%; max-width: 100%}
+nav { max-width: 100%}
+}
+
+.icon {
+    width: 64px;s
+    height: 64px;
+}

@@ -1,0 +1,5 @@
+This is an experimental Admin user interface based on widgets rather than using JSPs. It also uses a "progressive enhancement" approach that works on mobile.
+
+To try it out, drop it into the "admin" folder.
+
+For more info on how this works see http://scottbw.wordpress.com/2011/03/16/adventures-in-progressive-enhancement/
