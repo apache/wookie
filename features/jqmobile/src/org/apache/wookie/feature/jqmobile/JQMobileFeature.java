@@ -22,11 +22,11 @@ public class JQMobileFeature implements IFeature {
 	}
 
 	public String[] scripts() {
-		return new String[]{"http://code.jquery.com/jquery-1.5.min.js","/wookie/shared/feature/jqmobile/jquery.mobile-1.0a3.min.js"};
+		return new String[]{"/wookie/shared/feature/jqmobile/jquery-1.5.min.js","/wookie/shared/feature/jqmobile/jquery.mobile-1.0a3-patched.min.js"};
 	}
 
 	public String[] stylesheets() {
-		return new String[]{"http://code.jquery.com/mobile/1.0a3/jquery.mobile-1.0a3.min.css"};
+		return new String[]{"/wookie/shared/feature/jqmobile/jquery.mobile-1.0a3.min.css"};
 	}
 
 }
