@@ -1,0 +1,5 @@
+This is an experimental implementation of some parts of the OpenSocial JavaScript API (OSAPI) in Wookie as a Feature extension.
+
+It works by mapping OSAPI calls onto existing Wookie functionality as used in the Wave feature.
+
+Its very out of date (OSAPI 1.0) and needs a lot more work to be usable.

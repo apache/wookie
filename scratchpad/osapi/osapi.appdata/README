@@ -1,0 +1,4 @@
+This is an implementation of the OpenSocial 1.0 API for AppData
+
+It is a facade onto the existing sharedData functionality offered in Wookie, and also
+exposed through the Wave feature.
