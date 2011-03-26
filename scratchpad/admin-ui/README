@@ -1,5 +1,17 @@
-This is an experimental Admin user interface based on widgets rather than using JSPs. It also uses a "progressive enhancement" approach that works on mobile.
+This is an experimental Admin user interface based on widgets rather than using JSPs. 
+It also uses a "progressive enhancement" approach that works on mobile.
 
-To try it out, drop it into the "admin" folder.
+To try it out just start wookie then run "ant" in this directory.
 
-For more info on how this works see http://scottbw.wordpress.com/2011/03/16/adventures-in-progressive-enhancement/
+Visit now visit the UI at http://localhost:8080/wookie/admin/admin-ui/wookie.html. You will
+be asked for the admin username and password, by default this is "java" and "java".
+
+If you want to use a different URL for wookie then one or more of the following to your 
+local.build.properties file:
+
+wookie.domain=foo.org
+wookie.port=8080
+wookie.path=path_to_wookie/
+
+For more info on the progressive enhancement features 
+see http://scottbw.wordpress.com/2011/03/16/adventures-in-progressive-enhancement/

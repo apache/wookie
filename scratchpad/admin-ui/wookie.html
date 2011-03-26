@@ -11,7 +11,7 @@
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <script src="http://code.jquery.com/jquery-1.5.min.js"></script>
-    <!--<script src="http://localhost:8080/wookie/shared/feature/jqmobile/jquery.mobile-1.0a3.min.js"></script>  -->  
+    <!--<script src="http://localhost:8888/wookie/shared/feature/jqmobile/jquery.mobile-1.0a3.min.js"></script>  -->  
     
     <script>
     	
@@ -22,9 +22,10 @@
     	}
 
          var WidgetLoader = {
-
+            baseURL: "http://@wookie.domain@:@wookie.port@/@wookie.path@",
+            
          	init: function(widgets, properties){
-         	    WidgetLoader.totalWidgets = widgets.length;
+        	    WidgetLoader.totalWidgets = widgets.length;
          	    WidgetLoader.properties = properties;
          		for (var i in widgets){
          			WidgetLoader.getWidget(widgets[i]);
@@ -42,7 +43,7 @@
     			var apiKey = "TEST";
             	$.ajax({
               		type: 'POST',
-              		url: "http://localhost:8080/wookie/widgetinstances",
+              		url: WidgetLoader.baseURL + "widgetinstances",
               		data: {"userid":userId, "shareddatakey":sharedDataKey, "api_key":apiKey, "widgetid":widgetId},
               		success: WidgetLoader.parseWidgetData,
               		dataType: "xml"
@@ -98,7 +99,7 @@
     			var apiKey = "TEST";
             	$.ajax({
               		type: 'POST',
-              		url: "http://localhost:8080/wookie/properties",
+              		url: WidgetLoader.baseURL + "properties",
               		data: {"userid":userId, "shareddatakey":sharedDataKey, "api_key":apiKey, "widgetid":property.widget, "propertyname":property.key, "propertyvalue": property.value},
               		success: WidgetLoader.propertySet(),
               		dataType: "xml"
