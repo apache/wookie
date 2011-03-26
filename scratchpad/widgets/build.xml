@@ -15,7 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project default="build-widget" basedir="." name="Wookie_widgets_build_file">
+<project default="build-widget" basedir="." name="Wookie_scratchpad_widgets_build_file">
     <property name="wookie.root.dir" location="../.."/>
     <property name="project.build.dir" location="${wookie.root.dir}/build"/>
     <property name="wookie.widgets.dir" location="."/>
