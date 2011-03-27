@@ -22,6 +22,8 @@
   
   <property file="local.build.properties"/> 
   <property file="build.properties"/>
+  <property name="wookie.root.dir" location="."/>
+  <property name="wookie.widgets.dir" location="./widgets"/>
   <property name="db.name" value="widgetDB" />
 
   <property name="etc.dir" location="etc" />
