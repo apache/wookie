@@ -188,6 +188,10 @@
   		   addproperty="widget.shortname"/>
   	<ant antfile="${wookie.widgets.dir}/${widget.shortname}/build.xml" target="deploy-widget"/>
   </target>
+
+  <target name="seed-widget" description="Create a new widget from a supplied template">
+    <ant antfile="${wookie.widgets.dir}/build.xml" target="seed-widget"/>
+  </target>
 	
   <target name="build-widget">
   	<property name="deployToDev" value="true"/>
