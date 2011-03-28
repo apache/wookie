@@ -26,6 +26,7 @@ import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.WhitelistHelper;
+import org.apache.wookie.w3c.util.IRIValidator;
 
 /**
  * Controller for Whitelist entries
@@ -56,7 +57,11 @@ public class WhiteListController extends Controller {
 		
 		String url = request.getParameter("url");
 		if (url == null || url.trim().length() == 0) throw new InvalidParametersException();
+		if (!IRIValidator.isValidIRI(url)) throw new InvalidParametersException();
 		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		// Check for duplicates
+		IWhitelist[] matches = persistenceManager.findByValue(IWhitelist.class, "fUrl", url);
+		if (matches.length != 0) throw new ResourceDuplicationException();
 		IWhitelist entry = persistenceManager.newInstance(IWhitelist.class);
 		entry.setfUrl(url);
 		return persistenceManager.save(entry);
