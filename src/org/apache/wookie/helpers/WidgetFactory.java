@@ -301,5 +301,44 @@ public class WidgetFactory {
 		persistenceManager.delete(widget);
 		return true;
 	} 
+	
+	/**
+	 * Update a Widget with a new model
+	 * @param model the updated widget model
+	 * @param widget the existing widget
+	 * @param grantAccessRequests set to true to grant any access requests defined by the model
+	 */
+	public static void update( W3CWidget model, IWidget widget,  boolean grantAccessRequests ){
+	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		if (model.getAuthor() != null){
+			widget.setWidgetAuthor(model.getAuthor().getAuthorName());
+			widget.setWidgetAuthorEmail(model.getAuthor().getEmail());
+			widget.setWidgetAuthorHref(model.getAuthor().getHref());
+		}
+		widget.setGuid(model.getIdentifier());
+		widget.setHeight(model.getHeight());
+		widget.setWidth(model.getWidth());
+		widget.setVersion(model.getVersion());
+		
+		// Clear old values
+		widget.setStartFiles(null);
+		widget.setNames(null);
+		widget.setDescriptions(null);
+		widget.setLicenses(null);
+		widget.setFeatures(null);	
+		widget.setWidgetIcons(null);
+		widget.setPreferenceDefaults(null);
+		
+		// Set with updated values
+		createStartFiles(persistenceManager, model,widget);
+		createNames(persistenceManager, model,widget);
+		createDescriptions(persistenceManager, model,widget);
+		createIcons(persistenceManager, model, widget);
+		createLicenses(persistenceManager, model,widget);		
+		createPreferences(persistenceManager, model,widget);
+		createFeatures(persistenceManager, model,widget);
+        persistenceManager.save(widget);
+		createAccessRequests(persistenceManager, model, widget, grantAccessRequests);
+	}
 
 }

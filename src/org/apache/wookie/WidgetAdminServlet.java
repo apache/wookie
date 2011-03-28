@@ -501,8 +501,8 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 				}	
 				else{
 					// UPDATE
-					// TODO - call the manager to update required resources
-					// widget updated
+					// Update the widget metadata and configuration details
+					WidgetFactory.update(widgetModel, persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()), false);
 					request.setAttribute("message_value", "'"+ widgetModel.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.20")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$					
 				}
 			}
