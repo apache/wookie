@@ -34,7 +34,7 @@
 	        description="get the type of widget required from the user, unless it has been supplied in the command line"
 			unless="widget.type">
 		<input message="What type of widget template do you want to use?" 
-			   validargs="basic,settings,wave,jqueryMobile" 
+			   validargs="basic,settings,wave,jqueryMobile,s5" 
 			   defaultvalue="basic" 
 			   addproperty="widget.type"/>
 	</target>
