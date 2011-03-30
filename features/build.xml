@@ -16,26 +16,26 @@
   limitations under the License.
 -->
 <project default="build-feature" basedir="." name="Wookie_features_build_file">
-	<property name="wookie.features.dir" location="."/>
-	<property name="project.build.classes.dir" location="${project.build.dir}/classes" />
-	<property name="feature.shared.dir" value="${servletEngine.webapp.dir}/wookie/shared/feature/${feature.shortname}"/>   
+   <property name="wookie.features.dir" location="."/>
+   <property name="project.build.classes.dir" location="${project.build.dir}/classes" />
+   <property name="feature.shared.dir" value="${servletEngine.webapp.dir}/wookie/shared/feature/${feature.shortname}"/>   
 	
-	<target name="_clean">
-     </target>
+   <target name="_clean">
+   </target>
    
    <target name="_init" depends="_validate, _clean">
    </target>
 
-	<target name="_validate">
-		<fail unless="feature.shortname" message="Property feature.shortname has not been set"/>
-	</target>
+   <target name="_validate">
+     <fail unless="feature.shortname" message="Property feature.shortname has not been set"/>
+   </target>
    
-    <target name="build-feature" depends="_init">
+   <target name="build-feature" depends="_init">
 		<!-- compile classes -->
 		<javac 
 			source="${java.source.version}" 
 			target="${java.target.version}" 
-		    destdir="${project.build.classes.dir}" 
+ 		        destdir="${project.build.classes.dir}" 
 			debug="${compile.debug}" 
 			>
 			<src path="${wookie.features.dir}/${feature.shortname}/src" />
@@ -43,12 +43,12 @@
     	<!-- copy to classes dir -->
     </target>
 	
-	<target name="deploy-feature">
-		<echo>Deploying feature: ${feature.shortname}</echo>
-		<!-- copy shared resources -->
-	    <mkdir dir="${feature.shared.dir}"/>
-		<copy todir="${feature.shared.dir}">
-			<fileset dir="${wookie.features.dir}/${feature.shortname}/shared/"/>
-		</copy>
-	</target>
+    <target name="deploy-feature">
+      <echo>Deploying feature: ${feature.shortname}</echo>
+      <!-- copy shared resources -->
+      <mkdir dir="${feature.shared.dir}"/>
+      <copy todir="${feature.shared.dir}">
+        <fileset dir="${wookie.features.dir}/${feature.shortname}/shared/"/>
+      </copy>
+    </target>
 </project>
