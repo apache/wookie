@@ -38,7 +38,7 @@
  		    destdir="${project.build.classes.dir}" 
 			debug="${compile.debug}" 
 			>
-			<src path="${user.dir}/${wookie.features.dir}/${feature.shortname}/src" />
+			<src path="${wookie.root.dir}/${wookie.features.dir}/${feature.shortname}/src" />
 		</javac>
     	<!-- copy to classes dir -->
     </target>
