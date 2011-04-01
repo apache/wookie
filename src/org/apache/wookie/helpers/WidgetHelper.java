@@ -16,6 +16,7 @@ package org.apache.wookie.helpers;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.wookie.beans.IDescription;
 import org.apache.wookie.beans.ILicense;
 import org.apache.wookie.beans.IName;
@@ -124,7 +125,7 @@ public class WidgetHelper {
 			if (license.getLang()!=null) out+=" xml:lang=\""+license.getLang()+"\"";
 			if (license.getHref()!=null) out+=" href=\""+license.getHref()+"\"";
 			if (license.getDir()!=null) out+=" dir=\""+license.getDir()+"\"";
-			out+=">"+license.getText()+"</license>\n";
+			out+=">"+StringEscapeUtils.escapeXml(license.getText())+"</license>\n";
 		}
 		return out;
 	}
@@ -148,9 +149,9 @@ public class WidgetHelper {
 		}
 		String out = "\t\t<title "; 
 		if (name != null && name.getDir()!=null) out+=" dir=\""+name.getDir()+"\"";
-		if (shortName != null) out +=" short=\""+shortName + "\"";
+		if (shortName != null) out +=" short=\""+StringEscapeUtils.escapeXml(shortName) + "\"";
 		out +=">";
-		if(longName != null) out += longName; 
+		if(longName != null) out += StringEscapeUtils.escapeXml(longName); 
 		out += "</title>\n";
 		return out;
 	}
@@ -161,7 +162,7 @@ public class WidgetHelper {
 		String out = "\t\t<description";
 		if (desc!= null && desc.getDir()!=null) out+=" dir=\""+desc.getDir()+"\"";
 		out += ">";
-		if (desc != null) out += desc.getContent();
+		if (desc != null) out += StringEscapeUtils.escapeXml(desc.getContent());
 		out += "</description>\n";
 		return out;
 	}
