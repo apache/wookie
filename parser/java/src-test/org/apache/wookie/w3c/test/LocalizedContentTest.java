@@ -23,6 +23,14 @@ import org.junit.Test;
  * Tests localized content extraction features
  */
 public class LocalizedContentTest {
+	
+	@Test
+	public void nonLocalizedContent(){
+		Element test = new Element("test");
+		test.setText(" hello ");
+		assertEquals("hello", AbstractLocalizedEntity.getLocalizedTextContent(test));
+		assertEquals(5, AbstractLocalizedEntity.getLocalizedTextContent(test).length());
+	}
 
 	@Test
 	public void testLocalizedContent(){

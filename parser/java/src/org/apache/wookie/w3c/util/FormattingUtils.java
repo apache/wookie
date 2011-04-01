@@ -116,7 +116,7 @@ public class FormattingUtils {
 	protected static String getFormatted(String dir, String value){
 		
 		// If the string has no embedded spans with dir attributes, and no set dir, just return the string
-		//if (dir == null && !value.contains("dir=")) return value;
+		if ((dir == null || dir.equals("ltr") )&& !value.contains("dir=")) return value;
 		
 		String mode = "embed";
 		if (dir == null) dir = "ltr";

@@ -15,6 +15,7 @@ package org.apache.wookie.w3c.test;
 
 import static org.junit.Assert.assertEquals;
 
+import org.apache.wookie.w3c.impl.NameEntity;
 import org.apache.wookie.w3c.util.FormattingUtils;
 import org.junit.Test;
 
@@ -27,6 +28,14 @@ import org.junit.Test;
  *
  */
 public class FormattingUtilsTest {
+	
+	@Test
+	public void noDirectionFormatted(){
+		NameEntity name = new NameEntity();
+		name.setDir("ltr");
+		name.setName("Hello world");
+		assertEquals("Hello world", FormattingUtils.getFormattedWidgetName(name));
+	}
 	
 	@Test
 	public void noDirection(){
