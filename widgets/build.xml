@@ -112,7 +112,7 @@
 	<target name="deploy-widget" depends="build-widget">
 		<copy tofile="${wookie.root.dir}/${widget.deploy.dir}/${widget.shortname}.wgt" 
 			  file="${widget.build.dir}/${widget.shortname}.wgt"/>
-   		<echo>Deployed ${wookie.root.dir}/${widget.shortname} to ${widget.deploy.dir}/${widget.deploy.dir}/${widget.shortname}.wgt</echo>
+   		<echo>Deployed "${widget.shortname}" to ${wookie.root.dir}/${widget.deploy.dir}/${widget.shortname}.wgt</echo>
 	</target>
 	
 	<target name="deploy-all" description="deploy all widgets in the base directory">
