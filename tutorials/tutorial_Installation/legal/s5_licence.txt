@@ -1,0 +1,3 @@
+S5 and all associated files are in the public domain.
+
+See http://meyerweb.com/eric/tools/s5/
