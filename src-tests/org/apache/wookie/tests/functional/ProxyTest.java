@@ -28,6 +28,7 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -176,6 +177,7 @@ public class ProxyTest extends AbstractControllerTest {
 		assertEquals(200,code);
 	}
 	
+	@Ignore // Not a valid use case
 	@Test
 	public void getWithEncodedParameters(){
 		String url = PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+VALID_SITE_URL+"%3Fx=1%26y=2";
