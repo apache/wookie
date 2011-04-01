@@ -89,6 +89,8 @@ public class FlatpackFactory {
 		if (!inputWidget.exists()) throw new Exception("Input widget file does not exist:"+inputWidget.getPath());
 		if (!flatpackFolder.exists()){
 			if (!flatpackFolder.mkdir()) throw new Exception("Flatpack folder could not be created:"+flatpackFolder.getPath());
+			// Create an index.html file; this prevents browsing exported files.
+			new File(flatpackFolder.getPath()+"/index.html").createNewFile();
 		}
 		
 		// Create tmp working area

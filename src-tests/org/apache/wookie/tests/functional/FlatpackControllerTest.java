@@ -30,6 +30,7 @@ import org.junit.Test;
 public class FlatpackControllerTest extends AbstractControllerTest {
 	
 	private static final String TEST_FLATPACK_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"flatpack";
+	private static final String TEST_EXPORT_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"export";
 	
 	@BeforeClass
 	public static void setup() throws HttpException, IOException{
@@ -37,18 +38,22 @@ public class FlatpackControllerTest extends AbstractControllerTest {
         PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
         post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=FPtest&shareddatakey=test");
         client.executeMethod(post);
-        int code = post.getStatusCode();
         post.releaseConnection();
 	}
 	
+	// Test that you can't get a directory listing of exported widgets
 	@Test
 	public void sniff(){
 		try {
 	        HttpClient client = new HttpClient();
-	        GetMethod get = new GetMethod(TEST_FLATPACK_SERVICE_URL_VALID);
+	        GetMethod get = new GetMethod(TEST_EXPORT_SERVICE_URL_VALID);
 	        client.executeMethod(get);
 	        int code = get.getStatusCode();
-	        assertEquals(403, code);
+	        if (code != 404){
+	        	String html = get.getResponseBodyAsString();
+	        	System.out.println(html);
+	        	assertEquals(html.length(), 0);
+	        }
 	    }
 	    catch (Exception e) {
 	    	e.printStackTrace();
