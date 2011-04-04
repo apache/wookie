@@ -126,6 +126,7 @@ public class WidgetFactory {
 			widget.setWidgetAuthorEmail(model.getAuthor().getEmail());
 			widget.setWidgetAuthorHref(model.getAuthor().getHref());
 		}
+		widget.setDir(model.getDir());
 		widget.setGuid(model.getIdentifier());
 		widget.setHeight(model.getHeight());
 		widget.setWidth(model.getWidth());
@@ -315,6 +316,7 @@ public class WidgetFactory {
 			widget.setWidgetAuthorEmail(model.getAuthor().getEmail());
 			widget.setWidgetAuthorHref(model.getAuthor().getHref());
 		}
+		widget.setDir(model.getDir());
 		widget.setGuid(model.getIdentifier());
 		widget.setHeight(model.getHeight());
 		widget.setWidth(model.getWidth());
