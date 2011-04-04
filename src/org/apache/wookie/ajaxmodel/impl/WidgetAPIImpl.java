@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
 import org.apache.wookie.ajaxmodel.IWidgetAPI;
+import org.apache.wookie.beans.IDescription;
+import org.apache.wookie.beans.IName;
 import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.beans.IWidget;
@@ -36,6 +38,8 @@ import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.queues.QueueManager;
 import org.apache.wookie.server.ContextListener;
 import org.apache.wookie.server.LocaleHandler;
+import org.apache.wookie.util.WidgetFormattingUtils;
+import org.apache.wookie.w3c.util.LocalizationUtils;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
@@ -93,18 +97,41 @@ public class WidgetAPIImpl implements IWidgetAPI {
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
         IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if(widgetInstance==null) return map;
-		// Add in metadata
+		
+		// Get i18n-enabled metadata for the Widget's locale and encode it using unicode control characters.
+		
+		String locales[] = {widgetInstance.getLang()};
 		IWidget widget = widgetInstance.getWidget();
+			
+		String author = "";
+		if (widget.getWidgetAuthor() != null) author = WidgetFormattingUtils.getEncoded(widget.getDir(), widget.getWidgetAuthor());
+		
+		String name = "";
+		IName iname = (IName)LocalizationUtils.getLocalizedElement(widget.getNames().toArray(new IName[widget.getNames().size()]), locales);
+		if (iname != null && iname.getName() != null) name = WidgetFormattingUtils.getEncoded(iname.getDir(), iname.getName());
+		String shortName = "";
+		if (iname != null && iname.getShortName() != null) shortName = WidgetFormattingUtils.getEncoded(iname.getDir(), iname.getShortName());
+		
+		String description = "";
+		IDescription idescription = (IDescription)LocalizationUtils.getLocalizedElement(widget.getDescriptions().toArray(new IDescription[widget.getDescriptions().size()]), locales);
+		if (idescription != null && idescription.getContent() != null) description = WidgetFormattingUtils.getEncoded(idescription.getDir(), idescription.getContent());
+		
+		String version = "";
+		if (widget.getVersion() != null) version = WidgetFormattingUtils.getEncoded(widget.getDir(), widget.getVersion());
+		
+		// Add in metadata
+
 		map.put("id", String.valueOf(widget.getGuid()));	//$NON-NLS-1$
-		map.put("author", String.valueOf(widget.getWidgetAuthor()));	//$NON-NLS-1$
+		map.put("author", author);	//$NON-NLS-1$
 		map.put("authorEmail", String.valueOf(widget.getWidgetAuthorEmail()));//$NON-NLS-1$
 		map.put("authorHref", String.valueOf(widget.getWidgetAuthorHref()));//$NON-NLS-1$
-		map.put("name", String.valueOf(widget.getWidgetTitle()));//$NON-NLS-1$
-		map.put("description", String.valueOf(widget.getWidgetDescription()));//$NON-NLS-1$	
-		map.put("shortName", String.valueOf(widget.getWidgetShortName())); //$NON-NLS-1$
-		map.put("version", widget.getVersion());//$NON-NLS-1$
+		map.put("name", name);//$NON-NLS-1$
+		map.put("description", description);//$NON-NLS-1$	
+		map.put("shortName", shortName); //$NON-NLS-1$
+		map.put("version",version);//$NON-NLS-1$
 		map.put("width", String.valueOf(widget.getWidth()));//$NON-NLS-1$
 		map.put("height", String.valueOf(widget.getHeight()));//$NON-NLS-1$
+		
 		return map;
 	}
 
