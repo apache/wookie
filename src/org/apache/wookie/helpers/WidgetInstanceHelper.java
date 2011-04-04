@@ -13,6 +13,7 @@
  */
 package org.apache.wookie.helpers;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
@@ -47,7 +48,7 @@ public class WidgetInstanceHelper {
 		xml += "<widgetdata>"; //$NON-NLS-1$
 		xml += "\t<url>"+url+"</url>"; //$NON-NLS-1$ //$NON-NLS-2$
 		xml += "\t<identifier>"+instance.getIdKey()+"</identifier>\n"; //$NON-NLS-1$ //$NON-NLS-2$
-		xml += "\t<title>"+widget.getWidgetTitle(locale)+"</title>\n"; //$NON-NLS-1$ //$NON-NLS-2$
+		xml += "\t<title>"+StringEscapeUtils.escapeXml(widget.getWidgetTitle(locale))+"</title>\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		xml += "\t<height>"+height+"</height>\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		xml += "\t<width>"+width+"</width>\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		xml += "</widgetdata>"; //$NON-NLS-1$
