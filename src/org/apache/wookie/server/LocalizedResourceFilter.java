@@ -162,7 +162,7 @@ public class LocalizedResourceFilter implements Filter {
 		// If it does, return it and terminate this algorithm
 		List<ULocale> locales = LocalizationUtils.getProcessedLocaleList(new String[]{instance.getLang()});
 		for (ULocale locale:locales){
-			String path = basePath.replace(resource, "locales/"+locale.toLanguageTag()+"/"+resource);
+			String path = basePath.replace(resource, "locales/"+locale.toLanguageTag().toLowerCase()+"/"+resource);
 			String filePath = filterConfig.getServletContext().getRealPath(path);
 			if (new File(filePath).exists()) return context+path;
 		}
