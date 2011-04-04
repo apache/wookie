@@ -34,8 +34,8 @@ public class LocalizationUtilsTest {
 	public static final String[] LANG_LIST_5 = {"en","fr"};
 	public static final String[] LANG_LIST_6 = {"en","nl"};
 	public static final String[] LANG_LIST_7 = {null, "za", "fr", "nl"};
-	public static final String[] LANG_LIST_8 = {"en-us-POSIX"};
-	public static final String[] LANG_LIST_9 = {null, "en", "en-gb", "en-US-POSIX"};
+	public static final String[] LANG_LIST_8 = {"en-us"};
+	public static final String[] LANG_LIST_9 = {null, "en", "en-gb", "en-us"};
 	public static final String[] LANG_LIST_10 = {"de"};
 	public static final String[] LANG_LIST_11 = {"bu",null};
 	public static final String[] LANG_LIST_INV_1 = {"x-gb-a-a"};
@@ -263,7 +263,7 @@ public class LocalizationUtilsTest {
 	public void specifiedOrderM7(){	
 		ILocalizedElement[] elements = elements(LANG_LIST_9);
 		elements = LocalizationUtils.processElementsByLocales(elements, LANG_LIST_8);
-		assertEquals("en-US-POSIX", elements[0].getLang());
+		assertEquals("en-us", elements[0].getLang());
 		assertEquals("en", elements[1].getLang());
 		assertEquals(2, elements.length);
 	}
@@ -271,7 +271,7 @@ public class LocalizationUtilsTest {
 	public void classCast(){	
 		ILocalizedElement[] elements = elements(LANG_LIST_9);
 		elements = LocalizationUtils.processElementsByLocales(elements, LANG_LIST_8);
-		assertEquals("en-US-POSIX", elements[0].getLang());
+		assertEquals("en-us", elements[0].getLang());
 		assertEquals("en", elements[1].getLang());
 		assertTrue(elements[0] instanceof License);
 	}	
