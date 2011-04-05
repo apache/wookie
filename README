@@ -1,0 +1,68 @@
+Welcome to Apache Wookie
+=========================
+Apache Wookie is a Java server application that allows you to upload and deploy 
+widgets for your applications; widgets can not only include all the usual kinds 
+of mini-applications, badges, and gadgets, but also fully-collaborative applications 
+such as chats, quizzes, and games. 
+
+Wookie is based on the W3C Widgets specification, but widgets can also be included 
+that use extended APIs such as Google Wave Gadgets and OpenSocial. 
+
+Administrators can upload Widgets packaged according to the W3C Widgets specification,
+and makes these available to applications using a REST API. Applications typically have 
+a plugin that implements this REST API, and enables users to pick widgets from a gallery 
+of those available to add to their pages.
+ 
+There is a Connector Framework included in Wookie for many different programming 
+languages that simplifies the process of writing plugins.
+
+Incubation Disclaimer
+=====================
+Apache Wookie is an effort undergoing incubation at the Apache Software 
+Foundation (ASF), sponsored by the Apache Incubator PMC. 
+
+Incubation is required of all newly accepted projects until a further review 
+indicates that the infrastructure, communications, and decision making process 
+have stabilized in a manner consistent with other successful ASF projects. 
+
+While incubation status is not necessarily a reflection of the completeness or 
+stability of the code, it does indicate that the project has yet to be fully 
+endorsed by the ASF.
+
+Getting Started
+===============
+For a source distribution, please read BUILDING for 
+instructions on building Apache Wookie. 
+
+Apache Wookie is made available in a standalone binary distribution,
+which means that once you download it, you should be able to run wookie
+'out of the box' without having to download and configure any other components
+	* Please read STANDALONE_BUILD_NOTES for this
+	
+Additionally a WAR archive binary distribution is also made available for Wookie. 
+This is designed for users who wish to use/integrate Wookie into their existing server 
+environment - an existing Tomcat instance for example.
+	* Please read WAR_BUILD_NOTES for this
+	
+You may also want to refer to RELEASE_NOTES for list of supported and unsupported 
+features.
+
+Questions? Need Help?
+=====================
+If you have questions about Wookie, please check the FAQ 
+(see http://incubator.apache.org/wookie/faq.html) to see if someone has already 
+posted an answer to your question. Failing that, you can post a message to either the 
+wookie-dev or wookie-user mailing list; to subscribe to a mailing list, send an email 
+with the subject "subscribe" to "wookie-dev-subscribe@incubator.apache.org" or 
+"wookie-user-subscribe@incubator.apache.org"
+
+More information on Wookie
+===========================
+We welcome contributions, and encourage you to get involved in the Wookie
+community. If you'd like to learn more about how you can contribute, please
+see: http://incubator.apache.org/wookie
+
+Thank you for using Wookie
+
+The Apache Wookie Team
+http://incubator.apache.org/wookie

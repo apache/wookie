@@ -1,0 +1,23 @@
+This file contains the PGP and GPG keys of Apache Wookie
+developers. Please don't use them for email unless you have
+to. Their main purpose is code signing.
+
+Users: pgp < KEYS
+       gpg --import KEYS
+
+Wookie Developers:
+        pgp -kxa <your name> and append it to this file.
+        (pgpk -ll <your name> && pgpk -xa <your name>) >> this file.
+        (gpg --list-sigs <your name> \
+             && gpg --armor --export <your name>) >> this file.
+
+************************************ PLEASE NOTE **********************************************************
+
+        Edit this file in SVN at
+        https://svn.apache.org/repos/asf/incubator/wookie/trunk/KEYS
+
+        N.B. use a command such as the following to check it out without downloading every Wookie module:
+        svn co --depth=files https://svn.apache.org/repos/asf/incubator/wookie/trunk/
+
+************************************************************************************************************
+// TODO - finish this off!
