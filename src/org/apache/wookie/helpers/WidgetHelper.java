@@ -101,7 +101,7 @@ public class WidgetHelper {
 		+"\" identifier=\"" + widget.getGuid() 
 		+"\" width=\"" + width
 		+"\" height=\"" + height
-		+ "\" version=\"" + widget.getVersion() 
+		+ "\" version=\"" + StringEscapeUtils.escapeXml(widget.getVersion())
 		+ "\">\n";
 		return out;
 	}
@@ -111,7 +111,7 @@ public class WidgetHelper {
 		if (widget.getWidgetAuthorEmail() != null) out+= " email=\""+widget.getWidgetAuthorEmail()+"\"";
 		if (widget.getWidgetAuthorHref() != null) out+= " href=\""+widget.getWidgetAuthorHref()+"\"";
 		out += ">";
-		if (widget.getWidgetAuthor()!=null) out += widget.getWidgetAuthor();
+		if (widget.getWidgetAuthor()!=null) out += StringEscapeUtils.escapeXml(widget.getWidgetAuthor());
 		out += "</author>\n";
 		return out;
 	}
