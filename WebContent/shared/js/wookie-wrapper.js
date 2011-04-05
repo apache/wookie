@@ -163,6 +163,7 @@ var Widget = {
 	},
 
 	setMetadataProperty: function(key, value){
+        if (key == "width" || key == "height") value = Number(value);
 		try{
 			Widget.__defineSetter__(key, function(){window.DOMException.code = DOMException.NO_MODIFICATION_ALLOWED_ERR;throw (window.DOMException);});
 			Widget.__defineGetter__(key, function(){return value});

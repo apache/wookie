@@ -119,6 +119,12 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		String version = "";
 		if (widget.getVersion() != null) version = WidgetFormattingUtils.getEncoded(widget.getDir(), widget.getVersion());
 		
+		String width = "0";
+		if (widget.getWidth() != null) width = String.valueOf(widget.getWidth());
+		
+		String height = "0";
+		if (widget.getHeight() != null) height = String.valueOf(widget.getHeight());
+		
 		// Add in metadata
 
 		map.put("id", String.valueOf(widget.getGuid()));	//$NON-NLS-1$
@@ -129,8 +135,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		map.put("description", description);//$NON-NLS-1$	
 		map.put("shortName", shortName); //$NON-NLS-1$
 		map.put("version",version);//$NON-NLS-1$
-		map.put("width", String.valueOf(widget.getWidth()));//$NON-NLS-1$
-		map.put("height", String.valueOf(widget.getHeight()));//$NON-NLS-1$
+		map.put("width", width);//$NON-NLS-1$
+		map.put("height", height);//$NON-NLS-1$
 		
 		return map;
 	}
