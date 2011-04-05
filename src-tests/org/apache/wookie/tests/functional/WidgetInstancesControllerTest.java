@@ -43,7 +43,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	        int code = post.getStatusCode();
 	        assertEquals(201,code);
 	        assertTrue(post.getResponseBodyAsString().contains("locales/fr/index.htm"));
-	        assertTrue(post.getResponseBodyAsString().contains("tester les paramètres régionaux"));
+	        assertTrue(post.getResponseBodyAsString().contains("tester les param&#232;tres r&#233;gionaux"));
 	        post.releaseConnection();
 	    }
 	    catch (Exception e) {
@@ -64,7 +64,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	        assertEquals(201,code);
 	        assertTrue(post.getResponseBodyAsString().contains("locales/fr/index.htm"));
 	        assertFalse(post.getResponseBodyAsString().contains("locale test"));
-	        assertTrue(post.getResponseBodyAsString().contains("tester les paramètres régionaux"));
+	        assertTrue(post.getResponseBodyAsString().contains("tester les param&#232;tres r&#233;gionaux"));
 	        post.releaseConnection();
 	    }
 	    catch (Exception e) {
@@ -86,7 +86,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	        assertFalse(post.getResponseBodyAsString().contains("locales/en/index.htm"));
 	        assertTrue(post.getResponseBodyAsString().contains("index.htm"));
 	        assertTrue(post.getResponseBodyAsString().contains("locale test"));
-	        assertFalse(post.getResponseBodyAsString().contains("tester les paramètres régionaux"));
+	        assertFalse(post.getResponseBodyAsString().contains("tester les param&#232;tres r&#233;gionaux"));
 	        post.releaseConnection();
 	    }
 	    catch (Exception e) {
@@ -106,7 +106,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	        assertEquals(201,code);
 	        assertTrue(post.getResponseBodyAsString().contains("locales/en/index.htm"));
 	        assertTrue(post.getResponseBodyAsString().contains("locale test"));
-	        assertFalse(post.getResponseBodyAsString().contains("tester les paramètres régionaux"));
+	        assertFalse(post.getResponseBodyAsString().contains("tester les param&#232;tres r&#233;gionaux"));
 	        post.releaseConnection();
 	    }
 	    catch (Exception e) {
