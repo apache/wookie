@@ -67,7 +67,7 @@ public class ViewModesTest extends ConformanceTest{
 	@Test
 	public void viewh(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-viewmodes/007/viewh.wgt");
-		assertEquals("windowed floating",widget.getViewModes());
+		assertEquals("floating windowed",widget.getViewModes());
 	}
 	@Test
 	public void viewi(){
