@@ -85,6 +85,10 @@ public class WidgetInterface extends AbstractControllerTest{
 	public void taah(){
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-ah/ab/ab.wgt");		
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-ah/ax/ax.wgt");
+	}
+	
+	@Test
+	public void taGet18nString(){
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-lro/001/i18nlro01.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-lro/002/i18nlro02.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-lro/003/i18nlro03.wgt");
@@ -128,7 +132,51 @@ public class WidgetInterface extends AbstractControllerTest{
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rlo/041/i18nrlo41.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rlo/042/i18nrlo42.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rlo/044/i18nrlo44.wgt");
-		// Two more lots to go here
+		// ltr
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/001/i18nltr01.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/002/i18nltr02.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/003/i18nltr03.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/004/i18nltr04.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/006/i18nltr06.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/007/i18nltr07.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/008/i18nltr08.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/010/i18nltr10.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/011/i18nltr11.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/012/i18nltr12.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/014/i18nltr14.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/015/i18nltr15.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/016/i18nltr16.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/017/i18nltr17.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/020/i18nltr20.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/021/i18nltr21.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/022/i18nltr22.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/036/i18nltr36.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/037/i18nltr37.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/041/i18nltr41.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/042/i18nltr42.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-ltr/044/i18nltr44.wgt");
+		// rtl
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/001/i18nrtl01.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/002/i18nrtl02.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/003/i18nrtl03.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/004/i18nrtl04.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/006/i18nrtl06.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/007/i18nrtl07.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/008/i18nrtl08.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/010/i18nrtl10.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/011/i18nrtl11.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/012/i18nrtl12.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/014/i18nrtl14.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/015/i18nrtl15.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/016/i18nrtl16.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/017/i18nrtl17.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/020/i18nrtl20.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/021/i18nrtl21.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/036/i18nrtl36.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/037/i18nrtl37.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/041/i18nrtl41.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/042/i18nrtl42.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rtl/044/i18nrtl44.wgt");
 	}
 
 	@Test
