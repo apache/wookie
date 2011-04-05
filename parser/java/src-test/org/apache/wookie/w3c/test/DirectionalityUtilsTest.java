@@ -30,7 +30,7 @@ public class DirectionalityUtilsTest {
 		Element widget = new Element("widget");
 		@SuppressWarnings("unused")
 		Document document = new Document(widget);
-		assertEquals(AbstractLocalizedEntity.getTextDirection(widget), AbstractLocalizedEntity.LEFT_TO_RIGHT);
+		assertEquals(AbstractLocalizedEntity.getTextDirection(widget),null);
 	}
 	
 	@Test
@@ -57,6 +57,7 @@ public class DirectionalityUtilsTest {
 	@Test
 	public void getDirectionalityChildElementDefault(){
 		Element widget = new Element("widget");
+		widget.setAttribute("dir", "ltr");
 		Element name = new Element("name");
 		@SuppressWarnings("unused")
 		Document document = new Document(widget);
@@ -87,6 +88,7 @@ public class DirectionalityUtilsTest {
 	@Test
 	public void getDirectionalityChildElementOverridesWrongCase(){
 		Element widget = new Element("widget");
+		widget.setAttribute("dir", "ltr");		
 		Element name = new Element("name");
 		name.setAttribute("dir", "rTl");
 		widget.addContent(name);

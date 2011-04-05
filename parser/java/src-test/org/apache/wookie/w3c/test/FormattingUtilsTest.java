@@ -32,8 +32,7 @@ public class FormattingUtilsTest {
 	@Test
 	public void name(){
 		String name = "םפל<span dir=\"lro\">חל</span>ק";
-		String expected = "\u202A\u05DD\u05E4\u05DC\u202D\u05D7\u05DC\u202C\u05E7\u202C";
-		String expected2 = "\u05DD\u05E4\u05DC\u202D\u05D7\u05DC\u202C\u05E7";
+		String expected = "\u05DD\u05E4\u05DC\u202D\u05D7\u05DC\u202C\u05E7";
 		String dir = null;
 		assertEquals(expected.length(), FormattingUtils.getEncoded(dir,name).length());
 		assertEquals(expected, FormattingUtils.getEncoded(dir,name));
@@ -69,7 +68,7 @@ public class FormattingUtilsTest {
 
 	@Test
 	public void ltr(){
-		assertEquals("Hello World", FormattingUtils.getEncoded("ltr", "Hello World"));
+		assertEquals("\u202aHello World\u202c", FormattingUtils.getEncoded("ltr", "Hello World"));
 	}
 	
 	@Test
@@ -89,7 +88,7 @@ public class FormattingUtilsTest {
 	
 	@Test
 	public void embeddedOnly(){
-		assertEquals("\u202aGoodbye \u202bleurc\u202c World\u202c", FormattingUtils.getEncoded(null, "Goodbye <span dir=\"rtl\">leurc</span> World"));
+		assertEquals("Goodbye \u202bleurc\u202c World", FormattingUtils.getEncoded(null, "Goodbye <span dir=\"rtl\">leurc</span> World"));
 	}
 	
 	@Test

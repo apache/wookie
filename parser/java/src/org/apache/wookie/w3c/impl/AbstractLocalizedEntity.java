@@ -124,7 +124,7 @@ public abstract class AbstractLocalizedEntity implements ILocalizedEntity {
 		try {
 			Attribute dir = element.getAttribute(IW3CXMLConfiguration.DIR_ATRRIBUTE);
 			if (dir == null){
-				if (element.isRootElement()) return LEFT_TO_RIGHT;
+				if (element.isRootElement()) return null;
 				return getTextDirection(element.getParentElement());
 			} else {
 				String dirValue = UnicodeUtils.normalizeSpaces(dir.getValue());

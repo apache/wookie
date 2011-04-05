@@ -132,10 +132,10 @@ public class FormattingUtils {
 		// Encode any embedded SPAN tags into unicode control characters
 		String checkSpans = encodeSpan(value);
 		// If no changes, and no dir property, return original string unmodified
-		if (checkSpans.equals(value) && (dir == null  || dir.equals("ltr"))) return value;
+		if (checkSpans.equals(value) && (dir == null)) return value;
 		value = checkSpans;
 		// Prepend direction control character
-		if (dir == null) dir = "ltr";
+		if (dir == null) return value;
 		if (dir.equals("ltr")) dir = LTR;
 		if (dir.equals("lro")) dir = LRO;
 		if (dir.equals("rlo")) dir = RLO;
