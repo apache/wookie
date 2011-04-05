@@ -30,6 +30,31 @@ import org.junit.Test;
 public class FormattingUtilsTest {
 	
 	@Test
+	public void name(){
+		String name = "םפל<span dir=\"lro\">חל</span>ק";
+		String expected = "\u202A\u05DD\u05E4\u05DC\u202D\u05D7\u05DC\u202C\u05E7\u202C";
+		String expected2 = "\u05DD\u05E4\u05DC\u202D\u05D7\u05DC\u202C\u05E7";
+		String dir = null;
+		assertEquals(expected.length(), FormattingUtils.getEncoded(dir,name).length());
+		assertEquals(expected, FormattingUtils.getEncoded(dir,name));
+	}
+	
+	@Test
+	public void version(){
+		String version = "DESSAP";
+		String dir = "rlo";
+		assertEquals("\u202EDESSAP\u202C", FormattingUtils.getEncoded(dir,version));		
+	}
+	
+	@Test
+	public void noDirectionEncoded(){
+		NameEntity name = new NameEntity();
+		name.setName("Hello world");
+		assertEquals("Hello world", FormattingUtils.getEncoded(name.getDir(),name.getName()));
+		assertEquals(11, FormattingUtils.getFormattedWidgetName(name).length());
+	}	
+	
+	@Test
 	public void noDirectionFormatted(){
 		NameEntity name = new NameEntity();
 		name.setDir("ltr");
@@ -44,7 +69,7 @@ public class FormattingUtilsTest {
 
 	@Test
 	public void ltr(){
-		assertEquals("\u202aHello World\u202c", FormattingUtils.getEncoded("ltr", "Hello World"));
+		assertEquals("Hello World", FormattingUtils.getEncoded("ltr", "Hello World"));
 	}
 	
 	@Test
