@@ -155,18 +155,29 @@ var Widget = {
 		WidgetImpl.metadata(this.instanceid_key, this.setMetadata);
 		dwr.engine.endBatch({async:false});
 	},
-	
+
 	setMetadata: function(map){
-		Widget.id = map["id"];
-		Widget.author = map["author"];
-		Widget.authorEmail = map["authorEmail"];
-		Widget.authorHref = map["authorHref"];
-		Widget.name = map["name"];
-		Widget.shortName = map["shortName"];
-		Widget.description = map["description"];
-		Widget.version = map["version"];
-		Widget.height = parseInt(map["height"]);
-		Widget.width = parseInt(map["width"]);
+		for (var key in map){
+			Widget.setMetadataProperty(key, map[key]);
+		}
+	},
+
+	setMetadataProperty: function(key, value){
+		try{
+			Widget.__defineSetter__(key, function(){window.DOMException.code = DOMException.NO_MODIFICATION_ALLOWED_ERR;throw (window.DOMException);});
+			Widget.__defineGetter__(key, function(){return value});
+		} catch(err){
+			try{
+				// cant use __defineGetter__ so try to setup for IE9
+				Object.defineProperty(Widget, key, {
+					set: function set(){window.DOMException.code = DOMException.NO_MODIFICATION_ALLOWED_ERR;throw (window.DOMException)},
+					get: function get(){return value}
+				}
+				);
+			} catch(err2){// catch IE8
+				eval("Widget."+key+"='"+value+"';");
+			}
+		}
 	},
 	
 	setPrefs: function(map){
