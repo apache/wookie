@@ -9,9 +9,12 @@ startup.sh
 startup.bat
 shutdown.sh
 shutdown.bat
+DISCLAIMER
+KEYS
 NOTICE
 LICENSE
-README (this file!)
+RELEASE_NOTES
+STANDALONE_BUILD_NOTES (this file!)
 
 This installation of wookie is not meant for full deployment purposes, 
 rather it is intended as an easy and simple way to quickly see what wookie

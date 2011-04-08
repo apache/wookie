@@ -6,9 +6,12 @@ wookie.xml
 wookie.war
 scripts
 widgets
+DISCLAIMER
+KEYS
 NOTICE
 LICENSE
-README (this file!)
+RELEASE_NOTES
+WAR_BUILD_NOTES (this file!)
 
 This build is meant to get a user started with the process of deploying
 Wookie under an existing application container and as such Wookie is made available in
