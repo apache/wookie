@@ -63,10 +63,14 @@
 			.project,
 			build.properties,
 			build.xml,
+			BUILDING,
+			DISCLAIMER,
 			ivy.xml,
+			KEYS,
 			LICENSE,
 			NOTICE,
-			readme.txt"   
+			README,
+			RELEASE_NOTES"   
 		  />
 		
 		<!-- tar -->
@@ -81,6 +85,31 @@
 		<echo>Building war release</echo>
 		<delete dir="${wookie.release.dir}/${wookie.war.folder.name}" />
 		<mkdir dir="${wookie.release.dir}/${wookie.war.folder.name}/build/scripts/" />
+		
+		<!-- back the widgetserver.properties file up -->
+		<copy file="${build.dir}/webapp/wookie/WEB-INF/classes/widgetserver.properties"
+				          tofile="${build.dir}/widgetserver.properties"
+				          overwrite="true"/>
+			
+		<!-- update widgetserver.properties file so that it points to mysql as db type-->			
+		<copy file="${project.core.src.dir}/widgetserver.properties"
+		          todir="${build.dir}/webapp/wookie/WEB-INF/classes/"
+		          overwrite="true">
+			<filterset>
+			    <filter token="PERSISTENCE_MANAGER_CLASSNAME" value="org.apache.wookie.beans.jpa.JPAPersistenceManager"/>
+		    	<filter token="DATABASE_TYPE" value="mysql"/>
+		        <filter token="REPOSITORY_USER" value=""/>
+		        <filter token="REPOSITORY_PASSWORD" value=""/>
+		        <filter token="REPOSITORY_ROOTPATH" value=""/>
+		        <filter token="REPOSITORY_WORKSPACE" value=""/>
+		    </filterset>
+		</copy>
+
+		<copy file="DISCLAIMER" tofile="${build.dir}/webapp/wookie/DISCLAIMER" overwrite="yes" />
+		<copy file="KEYS" tofile="${build.dir}/webapp/wookie/KEYS" overwrite="yes" />
+		<copy file="LICENSE" tofile="${build.dir}/webapp/wookie/LICENSE" overwrite="yes" />
+		<copy file="README" tofile="${build.dir}/webapp/wookie/README" overwrite="yes" />
+		<copy file="RELEASE_NOTES" tofile="${build.dir}/webapp/wookie/RELEASE_NOTES" overwrite="yes" />			
 
 		<!-- build war file -->
 		<war
@@ -93,6 +122,17 @@
 				<exclude name="WEB-INF/lib/" />
 			</fileset>
 		</war>
+			
+		<!-- put original widgetserver.properties file back -->
+		<copy file="${build.dir}/widgetserver.properties" 
+			tofile="${build.dir}/webapp/wookie/WEB-INF/classes/widgetserver.properties" 
+			overwrite="true" />	
+		<delete file="${build.dir}/widgetserver.properties" />
+		<delete file="${build.dir}/webapp/wookie/DISCLAIMER" />
+		<delete file="${build.dir}/webapp/wookie/KEYS" />
+		<delete file="${build.dir}/webapp/wookie/LICENSE" />
+		<delete file="${build.dir}/webapp/wookie/README" />
+		<delete file="${build.dir}/webapp/wookie/RELEASE_NOTES" />			
 
 		<!-- copy sql scripts across -->
 		<copy todir="${wookie.release.dir}/${wookie.war.folder.name}/build/scripts/">
@@ -101,17 +141,18 @@
 			</fileset>
 		</copy>
 
-		<!-- copy readme, licenses, etc -->
-		<copy file="etc/release/war/README"
-			tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/README"
-			overwrite="yes" />
-		<copy file="NOTICE"
-			tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/NOTICE"
-			overwrite="yes" />
-		<copy file="LICENSE"
-			tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/LICENSE"
+		<!-- copy over project readme files-->
+		<copy file="DISCLAIMER" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/DISCLAIMER" overwrite="yes" />
+		<copy file="KEYS" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/KEYS" overwrite="yes" />
+		<copy file="LICENSE" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/LICENSE" overwrite="yes" />
+		<copy file="README" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/README" overwrite="yes" />
+		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/RELEASE_NOTES" overwrite="yes" />
+		<!-- copy WAR readme-->
+		<copy file="etc/release/war/WAR_BUILD_NOTES"
+			tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/WAR_BUILD_NOTES"
 			overwrite="yes" />
 
+		<!-- update context for mysql -->
 		<copy file="${etc.dir}/tomcat/conf/jpa-context.xml" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/${ant.project.name}.xml" overwrite="true">
 			<filterset>
 				<filter token="DATABASE_USER" value="java" />
@@ -155,14 +196,12 @@
 			<fileset dir="etc/release/standalone/" />
 		</copy>
 
-		<copy file="./etc/jetty-realm.properties"
-			tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/etc/jetty-realm.properties" />
-		<copy file="NOTICE"
-			tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/NOTICE"
-			overwrite="yes" />
-		<copy file="LICENSE"
-			tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/LICENSE"
-			overwrite="yes" />
+		<copy file="./etc/jetty-realm.properties" tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/etc/jetty-realm.properties" />
+		<copy file="DISCLAIMER" tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/DISCLAIMER" overwrite="yes" />
+		<copy file="KEYS" tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/KEYS" overwrite="yes" />
+		<copy file="LICENSE" tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/LICENSE" overwrite="yes" />
+		<copy file="README" tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/README" overwrite="yes" />
+		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/RELEASE_NOTES" overwrite="yes" />
 
 		<ivy:retrieve conf="runtime"
 			pattern="${wookie.release.dir}/${wookie.standalone.folder.name}/lib/[artifact]-[revision].[ext]" />
