@@ -385,7 +385,6 @@ public class I18n extends ConformanceTest{
 	@Test
 	public void paramTests(){
 		W3CWidget widget;
-		String dir;
 		
 		widget = getWidget("031","lro");
 		assertEquals("םפללחק", widget.getFeatures().get(0).getParams().get(0).getName());
