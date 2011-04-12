@@ -30,11 +30,12 @@ iconTable['lightrain'] = 'images/rainy.png';
 iconTable['heavyrain'] = 'images/rainy.png';
 iconTable['lightshowers'] = 'images/rainy.png';
 iconTable['heavyshowers'] = 'images/rainy.png';
-iconTable['thunderyshowers'] = 'images/rainy.png';
+iconTable['thunderyshower'] = 'images/rainy.png';
 iconTable['snowy'] = 'images/snowy.png';
 iconTable['lightsnow'] = 'images/snowy.png';
 iconTable['heavysnow'] = 'images/snowy.png';
 iconTable['cloudy'] = 'images/cloudy.png';
+iconTable['whitecloud'] = 'images/cloudy.png';
 
 var cities = new Array;
 cities['belfast'] = '1';
