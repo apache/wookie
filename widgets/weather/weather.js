@@ -16,7 +16,8 @@
  */
 // A widget for showing the weather in a given location.
 
-var serviceLocation = "http://feeds.bbc.co.uk/weather/feeds/rss/5day/world/"
+//var serviceLocation = "http://feeds.bbc.co.uk/weather/feeds/rss/5day/world/"
+var serviceLocation = "http://newsrss.bbc.co.uk/weather/forecast/";
 var city="manchester";
 
 var iconTable = new Array;
@@ -78,7 +79,7 @@ function getDropDownList(){
 }
 
 function init(){	
-	var pref = Widget.preferences.getItem("city");
+	var pref = widget.preferences.getItem("city");
     setLocation(pref);
 }
 
@@ -87,7 +88,7 @@ function setLocation(obj){
     if (obj && obj != "null") thecity = obj.toLowerCase();
     if (thecity == null) thecity = "manchester";
     if (cities[thecity] != null) city = thecity;
-    Widget.preferences.setItem("city",city);
+    widget.preferences.setItem("city",city);
     startFetchingWeather();
 }
 
@@ -116,8 +117,10 @@ function startFetchingWeather()
 }
 
 function fetchWeatherData(){
-	var loc = serviceLocation + cities[city]+".xml";    
-    loc = Widget.proxify(loc);
+	var loc = serviceLocation + cities[city]+"/Next3DaysRSS.xml";    
+    if (window.widget && typeof window.widget.proxify == 'function'){
+        loc = widget.proxify(loc);
+    }
     var xml_request = new XMLHttpRequest();
 	xml_request.open("GET", loc, true);	
 	xml_request.onreadystatechange = function()
@@ -163,6 +166,6 @@ function updateDisplay()
 
 function setCity(theCity){
 	city = theCity.toLowerCase();    
-    Widget.preferences.setItem("city", city);
+    widget.preferences.setItem("city", city);
     fetchWeatherData();
 }
