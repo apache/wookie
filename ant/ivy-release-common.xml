@@ -22,7 +22,7 @@
 	<tstamp />
 	<property name="wookie.source.folder.name" value="wookie-source" />
 	<property name="wookie.war.folder.name" value="wookie-war" />
-	<property name="wookie.standalone.folder.name" value="wookie-standalone" />
+	<property name="wookie.standalone.folder.name" value="Apache-Wookie" />
 	<property name="wookie.source.zip.name"
 		value="org.apache.incubator.wookie-source-${version}-${DSTAMP}" />	
 	<property name="wookie.standalone.zip.name"
@@ -44,12 +44,31 @@
 		       basedir="."
 			includes=".settings/, 
 			ant/, 
-			connector/, 
+			connector/CSharp/, 
+			connector/flash_flex/,
+			connector/java/src/,
+			connector/java/src-test/,
+			connector/java/build.properties,
+			connector/java/build.xml,
+			connector/java/ivy.xml,
+			connector/java/README.txt,
+			connector/java/version.properties,
+			connector/php/,
+			connector/python/,
+			connector/ruby/,
+			connector/README.txt,
 			docs/,
 			etc/, 
 			features/, 
 			licenses/, 
-			parser/,
+			parser/java/src/,
+			parser/java/src-test/,
+			parser/java/ant/,
+			parser/java/build.properties,
+			parser/java/build.xml,
+			parser/java/ivy.xml,
+			parser/java/README.txt,
+			parser/java/test.wgt,
 			project_admin/, 
 			schemas/,
 			scripts/, 
@@ -81,7 +100,7 @@
 		
 	</target>
 
-	<target name="build-release-war" depends="compile-core, deploy-webapp, post-deploy-webapp">
+	<target name="build-release-war" depends="clean-build, compile-core, deploy-webapp, post-deploy-webapp">
 		<echo>Building war release</echo>
 		<delete dir="${wookie.release.dir}/${wookie.war.folder.name}" />
 		<mkdir dir="${wookie.release.dir}/${wookie.war.folder.name}/build/scripts/" />
@@ -105,17 +124,17 @@
 		    </filterset>
 		</copy>
 
-		<copy file="DISCLAIMER" tofile="${build.dir}/webapp/wookie/DISCLAIMER" overwrite="yes" />
-		<copy file="KEYS" tofile="${build.dir}/webapp/wookie/KEYS" overwrite="yes" />
-		<copy file="LICENSE" tofile="${build.dir}/webapp/wookie/LICENSE" overwrite="yes" />
-		<copy file="README" tofile="${build.dir}/webapp/wookie/README" overwrite="yes" />
-		<copy file="RELEASE_NOTES" tofile="${build.dir}/webapp/wookie/RELEASE_NOTES" overwrite="yes" />			
+		<copy file="DISCLAIMER" tofile="${build.dir}/webapp/wookie/DISCLAIMER" overwrite="yes" />		
+		<copy file="LICENSE" tofile="${build.dir}/webapp/wookie/LICENSE" overwrite="yes" />		
+		<copy file="NOTICE" tofile="${build.dir}/webapp/wookie/NOTICE" overwrite="yes" />
 
 		<!-- build war file -->
 		<war
 			destfile="${wookie.release.dir}/${wookie.war.folder.name}/build/wookie.war"
-			webxml="${build.dir}/webapp/wookie/WEB-INF/web.xml">
-			<lib dir="${build.dir}/webapp/wookie/WEB-INF/lib" />
+			webxml="${build.dir}/webapp/wookie/WEB-INF/web.xml">	
+			<lib dir="${build.dir}/webapp/wookie/WEB-INF/lib">
+				<exclude name="derby-10.2.1.6.jar"/>
+			</lib>		
 			<classes dir="${build.dir}/webapp/wookie/WEB-INF/classes" />
 			<fileset dir="${build.dir}/webapp/wookie/">
 				<exclude name="WEB-INF/classes/" />
@@ -128,11 +147,9 @@
 			tofile="${build.dir}/webapp/wookie/WEB-INF/classes/widgetserver.properties" 
 			overwrite="true" />	
 		<delete file="${build.dir}/widgetserver.properties" />
-		<delete file="${build.dir}/webapp/wookie/DISCLAIMER" />
-		<delete file="${build.dir}/webapp/wookie/KEYS" />
+		<delete file="${build.dir}/webapp/wookie/DISCLAIMER" />		
 		<delete file="${build.dir}/webapp/wookie/LICENSE" />
-		<delete file="${build.dir}/webapp/wookie/README" />
-		<delete file="${build.dir}/webapp/wookie/RELEASE_NOTES" />			
+		<delete file="${build.dir}/webapp/wookie/NOTICE" />
 
 		<!-- copy sql scripts across -->
 		<copy todir="${wookie.release.dir}/${wookie.war.folder.name}/build/scripts/">
@@ -147,6 +164,7 @@
 		<copy file="LICENSE" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/LICENSE" overwrite="yes" />
 		<copy file="README" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/README" overwrite="yes" />
 		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/RELEASE_NOTES" overwrite="yes" />
+		<copy file="NOTICE" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/NOTICE" overwrite="yes" />
 		<!-- copy WAR readme-->
 		<copy file="etc/release/war/WAR_BUILD_NOTES"
 			tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/WAR_BUILD_NOTES"
@@ -176,7 +194,7 @@
 
 	</target>
 
-	<target name="build-release-standalone" depends="compile-core, deploy-webapp, post-deploy-webapp">
+	<target name="build-release-standalone" depends="clean-build, compile-core, deploy-webapp, post-deploy-webapp">
 
 		<echo>Building standalone release</echo>
 		<delete dir="${wookie.release.dir}/${wookie.standalone.folder.name}" />
@@ -202,6 +220,7 @@
 		<copy file="LICENSE" tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/LICENSE" overwrite="yes" />
 		<copy file="README" tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/README" overwrite="yes" />
 		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/RELEASE_NOTES" overwrite="yes" />
+		<copy file="NOTICE" tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/NOTICE" overwrite="yes" />
 
 		<ivy:retrieve conf="runtime"
 			pattern="${wookie.release.dir}/${wookie.standalone.folder.name}/lib/[artifact]-[revision].[ext]" />
