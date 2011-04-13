@@ -145,6 +145,9 @@
     
     <target name="jar" depends="clean-dist, compile-core" description="--> make a jar file for this project">
     	<mkdir dir="${dist.dir}"/>
+    	<copy file="../../LICENSE" tofile="${project.build.classes.dir}/LICENSE" overwrite="yes" />
+    	<copy file="../../NOTICE" tofile="${project.build.classes.dir}/NOTICE" overwrite="yes" />
+    	<copy file="../../DISCLAIMER" tofile="${project.build.classes.dir}/DISCLAIMER" overwrite="yes" />
         <jar destfile="${dist.dir}/${ant.project.name}-${version}.jar">
             <fileset dir="${project.build.classes.dir}"/>
         </jar>
