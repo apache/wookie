@@ -42,7 +42,7 @@ public class ProxyTest extends AbstractControllerTest {
 	private static final String VALID_SITE_XML_URL = TEST_SERVER_LOCATION+"widgets?all=true";
 	private static final String INVALID_SITE_URL = "DFASFAFEQ3FQ32145235123452";
 	private static final String BLOCKED_SITE_URL = "http://very.bad.place";
-	private static final String POLICY_ALLOWED_SITE_URL = "http://feeds.bbc.co.uk/weather/feeds/rss.shtml?world=11";
+	private static final String POLICY_ALLOWED_SITE_URL = "http://newsrss.bbc.co.uk/weather/forecast/9/Next3DaysRSS.xml";
 	private static final String POLICY_DISALLOWED_SITE_URL = "http://news.bbc.co.uk";
 	private static final String PROTECTED_SITE_URL = TEST_SERVER_LOCATION+"admin/";
 
