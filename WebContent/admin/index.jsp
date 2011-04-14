@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 --%>
+<%@ page import='org.apache.commons.configuration.Configuration' %>
 <% String version = (String)request.getAttribute("version");
 if (version == null){
 	version="";
 }
+Boolean opensocialEnabled = ((Configuration)request.getSession(true).getServletContext().getAttribute("opensocial")).getBoolean("opensocial.enable");
+if (opensocialEnabled == null) opensocialEnabled = false;
 %>
 <%@ page import='org.apache.wookie.helpers.FlashMessage' %>
 <% FlashMessage.getInstance().appendFlashMessages(session);%>
@@ -112,6 +115,7 @@ if (version == null){
 				</b>
 				</div>
 				
+				<%if(opensocialEnabled){%>
 				<div id="spacer"></div>
 	    	   
 				<div id="nifty">
@@ -129,6 +133,7 @@ if (version == null){
 				<b class="r1"></b>
 				</b>
 				</div>
+				<%}%>
 			
 				<div id="spacer"></div>
 			    
