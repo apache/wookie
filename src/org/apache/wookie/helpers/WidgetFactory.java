@@ -267,36 +267,33 @@ public class WidgetFactory {
 		IWidgetInstance[] instances = persistenceManager.findByValue(IWidgetInstance.class, "widget", widget);	
 		for(IWidgetInstance instance : instances){
 			
-			// Delete all participants associated with any instances
+			// Delete all participants and shared data associated with any instances
 			//
 			// Note that we don't call this within WidgetInstanceFactory.destroy() as 
 			// if called in a different context (to remove just one instance) it would 
-			// have the side effect of deleting participants from other instances,
+			// have the side effect of deleting participants and shared data from other instances,
 			// not just the one being deleted.
 			//
 			// Note also that we have to use the instance as the hook for removing participants as there is no
 			// specific query for getting participants for a widget.
 			//						
 			IParticipant[] participants = persistenceManager.findParticipants(instance);
-			for (IParticipant participant:participants){
-				persistenceManager.delete(participant);
-			}
-			
+			persistenceManager.delete(participants);
+	        ISharedData[] sharedData =  SharedDataHelper.findSharedData(instance);
+	        persistenceManager.delete(sharedData);
+	        
 			// remove any preferences
 			IPreference[] preferences = persistenceManager.findByValue(IPreference.class, "widgetInstance", instance);
 			persistenceManager.delete(preferences);
 			
 			// remove the instance
 			WidgetInstanceFactory.destroy(instance);
+			
 		}
 
 		// remove any AccessRequests
         IAccessRequest[] accessRequests = persistenceManager.findByValue(IAccessRequest.class, "widget", widget);
         persistenceManager.delete(accessRequests);
-
-        //remove SharedDataEntries
-        ISharedData[] sharedData = persistenceManager.findByValue(ISharedData.class, "widget", widget);
-        persistenceManager.delete(sharedData);
         
 		// remove the widget itself
 		persistenceManager.delete(widget);
