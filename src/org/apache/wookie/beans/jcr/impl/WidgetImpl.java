@@ -25,7 +25,6 @@ import org.apache.wookie.beans.IFeature;
 import org.apache.wookie.beans.ILicense;
 import org.apache.wookie.beans.IName;
 import org.apache.wookie.beans.IPreferenceDefault;
-import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetIcon;

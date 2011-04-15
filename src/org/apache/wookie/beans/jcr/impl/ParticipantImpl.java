@@ -14,13 +14,10 @@
 
 package org.apache.wookie.beans.jcr.impl;
 
-import org.apache.jackrabbit.ocm.manager.beanconverter.impl.ReferenceBeanConverterImpl;
-import org.apache.jackrabbit.ocm.mapper.impl.annotation.Bean;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
 
 import org.apache.wookie.beans.IParticipant;
-import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.jcr.IPathBean;
 import org.apache.wookie.beans.jcr.JCRPersistenceManager;
 
@@ -47,9 +44,6 @@ public class ParticipantImpl implements IParticipant, IPathBean
 
     @Field(jcrName="wookie:sharedDataKey")
     private String sharedDataKey;
-    
-    @Bean(jcrName="wookie:widget", converter=ReferenceBeanConverterImpl.class)
-    private WidgetImpl widgetImpl;
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IBean#getId()
@@ -74,7 +68,7 @@ public class ParticipantImpl implements IParticipant, IPathBean
     {
         if (path == null)
         {
-            path = nodeRootPath+"/"+JCRPersistenceManager.escapeJCRName(sharedDataKey)+"/"+JCRPersistenceManager.escapeJCRName(widgetImpl.getGuid())+"/"+JCRPersistenceManager.escapeJCRName(participantId);
+            path = nodeRootPath+"/"+JCRPersistenceManager.escapeJCRName(sharedDataKey)+"/"+JCRPersistenceManager.escapeJCRName(participantId);
         }
         return path;
     }
@@ -163,39 +157,4 @@ public class ParticipantImpl implements IParticipant, IPathBean
         this.sharedDataKey = sharedDataKey;
     }    
 
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IParticipant#getWidget()
-     */
-    public IWidget getWidget()
-    {
-        return widgetImpl;
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IParticipant#setWidget(org.apache.wookie.beans.IWidget)
-     */
-    public void setWidget(IWidget widget)
-    {
-        this.widgetImpl = (WidgetImpl)widget;
-    }
-    
-    /**
-     * Get widget implementation.
-     * 
-     * @return widget implementation
-     */
-    public WidgetImpl getWidgetImpl()
-    {
-        return widgetImpl;
-    }
-
-    /**
-     * Set widget implementation.
-     * 
-     * @return widgetImpl widget implementation
-     */
-    public void setWidgetImpl(WidgetImpl widgetImpl)
-    {
-        this.widgetImpl = widgetImpl;
-    }
 }
