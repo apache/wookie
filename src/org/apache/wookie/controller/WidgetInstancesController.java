@@ -37,6 +37,7 @@ import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.exceptions.InvalidWidgetCallException;
 import org.apache.wookie.helpers.Notifier;
+import org.apache.wookie.helpers.SharedDataHelper;
 import org.apache.wookie.helpers.WidgetInstanceFactory;
 import org.apache.wookie.helpers.WidgetInstanceHelper;
 import org.apache.wookie.helpers.WidgetKeyManager;
@@ -183,7 +184,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	
 	public static void doGetWidget(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String userId = request.getParameter("userid"); //$NON-NLS-1$
-		String sharedDataKey = getSharedDataKey(request);	
+		String sharedDataKey =  request.getParameter("shareddatakey");	 //$NON-NLS-1$	
 		String serviceType = request.getParameter("servicetype"); //$NON-NLS-1$
 		String widgetId = request.getParameter("widgetid"); //$NON-NLS-1$
 		HttpSession session = request.getSession(true);						
@@ -242,22 +243,22 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;			
 		}
-		String sharedDataKey = getSharedDataKey(request);	
+		String sharedDataKey = request.getParameter("shareddatakey");	 //$NON-NLS-1$;	
 		String cloneSharedDataKey = request.getParameter("cloneshareddatakey");
 		if (sharedDataKey == null || sharedDataKey.trim().equals("") || cloneSharedDataKey == null || cloneSharedDataKey.trim().equals("")){//$NON-NLS-1$ //$NON-NLS-2$
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
-		String cloneKey = String.valueOf((request.getParameter("apikey")+":"+cloneSharedDataKey).hashCode());//$NON-NLS-1$ 
+		String cloneKey = SharedDataHelper.getInternalSharedDataKey(instance, cloneSharedDataKey);
         IWidget widget = instance.getWidget();
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		for (ISharedData sharedData : widget.getSharedData(sharedDataKey))
+		for (ISharedData sharedData : SharedDataHelper.findSharedData(instance))
 		{
 		    ISharedData clone = persistenceManager.newInstance(ISharedData.class);
             clone.setDkey(sharedData.getDkey());
             clone.setDvalue(sharedData.getDvalue());
             clone.setSharedDataKey(cloneKey);
-            widget.getSharedData().add(clone);
+            persistenceManager.save(clone);
 		}
 		boolean ok = persistenceManager.save(widget);
 		if (ok){
@@ -284,16 +285,6 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	}
 	
 	// Utility methods
-
-	/**
-	 * Returns the internal form of shared data key, which is hashed along with the API key. This
-	 * prevents shared data keys from clashing between different applications
-	 * @param request the HTTP request to retrieve the shared data key from 
-	 * @return the shared data key
-	 */
-	public static String getSharedDataKey(HttpServletRequest request){
-		return String.valueOf((request.getParameter("apikey")+":"+request.getParameter("shareddatakey")).hashCode());	 //$NON-NLS-1$ //$NON-NLS-2$
-	}
 	
 	/**
 	 * Returns the absolute URL of the widget instance including id key, proxy url and opensocial token 
@@ -347,7 +338,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		try {
 			String apiKey = URLDecoder.decode(request.getParameter("api_key"), "UTF-8"); //$NON-NLS-1$
 			String userId = URLDecoder.decode(request.getParameter("userid"), "UTF-8"); //$NON-NLS-1$
-			String sharedDataKey = WidgetInstancesController.getSharedDataKey(request);
+			String sharedDataKey = request.getParameter("shareddatakey");	 //$NON-NLS-1$;
 			String widgetId = request.getParameter("widgetid");
 			if (widgetId != null){
 				widgetId = URLDecoder.decode(widgetId, "UTF-8"); //$NON-NLS-1$

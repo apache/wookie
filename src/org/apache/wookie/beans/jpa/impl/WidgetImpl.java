@@ -312,33 +312,6 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     }
 
     /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#getSharedData()
-     */
-    public Collection<ISharedData> getSharedData()
-    {
-        if (sharedData == null)
-        {
-            sharedData = new ArrayList<SharedDataImpl>();
-        }
-        return new InverseRelationshipCollection<WidgetImpl,SharedDataImpl,ISharedData>(this, sharedData);
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#setSharedData(java.util.Collection)
-     */
-    public void setSharedData(Collection<ISharedData> sharedData)
-    {
-        getSharedData().clear();
-        if (sharedData != null)
-        {
-            for (ISharedData data : sharedData)
-            {
-                getSharedData().add((SharedDataImpl)data);
-            }
-        }
-    }
-
-    /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getStartFiles()
      */
     public Collection<IStartFile> getStartFiles()
@@ -497,22 +470,6 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     public void setWidth(Integer width)
     {
         this.width = width;
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#getSharedData(java.lang.String)
-     */
-    public ISharedData [] getSharedData(String sharedDataKey)
-    {
-        return Utilities.getSharedData(this, sharedDataKey);
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#getSharedData(java.lang.String, java.lang.String)
-     */
-    public ISharedData getSharedData(String sharedDataKey, String name)
-    {
-        return Utilities.getSharedData(this, sharedDataKey, name);
     }
 
     /* (non-Javadoc)

@@ -98,9 +98,6 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:preferenceDefaults", elementClassName=PreferenceDefaultImpl.class)
     private Collection<PreferenceDefaultImpl> preferenceDefaultImpls;
     
-    @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:sharedData", elementClassName=SharedDataImpl.class)
-    private Collection<SharedDataImpl> sharedDataImpls;
-    
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getPackagePath()
      */
@@ -431,53 +428,6 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     }
 
     /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#getSharedData()
-     */
-    public Collection<ISharedData> getSharedData()
-    {
-        if (sharedDataImpls == null)
-        {
-            sharedDataImpls = new ArrayList<SharedDataImpl>();
-        }
-        return new IdCollection<SharedDataImpl,ISharedData>(sharedDataImpls);
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#setSharedData(java.util.Collection)
-     */
-    public void setSharedData(Collection<ISharedData> sharedData)
-    {
-        getSharedData().clear();
-        if (sharedData != null)
-        {
-            for (ISharedData data : sharedData)
-            {
-                getSharedData().add((SharedDataImpl)data);
-            }
-        }
-    }
-
-    /**
-     * Get shared data implementations collection.
-     * 
-     * @return shared data implementations collection
-     */
-    public Collection<SharedDataImpl> getSharedDataImpls()
-    {
-        return sharedDataImpls;
-    }
-
-    /**
-     * Set shared data implementations collection.
-     * 
-     * @param sharedDataImpls shared data implementations collection
-     */
-    public void setSharedDataImpls(Collection<SharedDataImpl> sharedDataImpls)
-    {
-        this.sharedDataImpls = sharedDataImpls;
-    }
-
-    /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getStartFiles()
      */
     public Collection<IStartFile> getStartFiles()
@@ -712,22 +662,6 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     public void setWidth(Integer width)
     {
         this.width = width;
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#getSharedData(java.lang.String)
-     */
-    public ISharedData [] getSharedData(String sharedDataKey)
-    {
-        return Utilities.getSharedData(this, sharedDataKey);
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#getSharedData(java.lang.String, java.lang.String)
-     */
-    public ISharedData getSharedData(String sharedDataKey, String name)
-    {
-        return Utilities.getSharedData(this, sharedDataKey, name);
     }
 
     /* (non-Javadoc)

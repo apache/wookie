@@ -97,7 +97,6 @@
 + wookie:descriptions (nt:unstructured) = nt:unstructured
 + wookie:startFiles (nt:unstructured) = nt:unstructured
 + wookie:preferenceDefaults (nt:unstructured) = nt:unstructured
-+ wookie:sharedData (nt:unstructured) = nt:unstructured
 
 [wookie:accessRequest] > nt:base
 - wookie:elementId (long)

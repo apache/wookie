@@ -17,19 +17,15 @@ package org.apache.wookie.beans.jpa.impl;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.apache.wookie.beans.IParticipant;
-import org.apache.wookie.beans.IWidget;
 
 /**
  * ParticipantImpl - JPA IParticipant implementation.
@@ -39,8 +35,8 @@ import org.apache.wookie.beans.IWidget;
  */
 @Entity(name="Participant")
 @Table(name="Participant")
-@NamedQueries({@NamedQuery(name="PARTICIPANTS", query="SELECT p FROM Participant p WHERE p.sharedDataKey = :sharedDataKey AND p.widget = :widget"),
-               @NamedQuery(name="PARTICIPANT_VIEWER", query="SELECT p FROM Participant p WHERE p.sharedDataKey = :sharedDataKey AND p.widget = :widget AND p.participantId = :userId")})
+@NamedQueries({@NamedQuery(name="PARTICIPANTS", query="SELECT p FROM Participant p WHERE p.sharedDataKey = :sharedDataKey"),
+               @NamedQuery(name="PARTICIPANT_VIEWER", query="SELECT p FROM Participant p WHERE p.sharedDataKey = :sharedDataKey AND p.participantId = :userId")})
 public class ParticipantImpl implements IParticipant
 {
     @Id
@@ -68,10 +64,6 @@ public class ParticipantImpl implements IParticipant
     @Basic(optional=false)
     @Column(name="sharedDataKey", nullable=false)
     private String sharedDataKey;
-
-    @ManyToOne(fetch=FetchType.LAZY, optional=false)
-    @JoinColumn(name="widget_id", referencedColumnName="id", nullable=false)
-    private WidgetImpl widget;
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IBean#getId()
@@ -143,21 +135,5 @@ public class ParticipantImpl implements IParticipant
     public void setSharedDataKey(String sharedDataKey)
     {
         this.sharedDataKey = sharedDataKey;
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IParticipant#getWidget()
-     */
-    public IWidget getWidget()
-    {
-        return widget;
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IParticipant#setWidget(org.apache.wookie.beans.IWidget)
-     */
-    public void setWidget(IWidget widget)
-    {
-        this.widget = (WidgetImpl)widget;
     }
 }

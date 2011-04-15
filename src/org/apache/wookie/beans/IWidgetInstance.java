@@ -16,6 +16,7 @@ package org.apache.wookie.beans;
 
 import java.util.Collection;
 
+import org.apache.wookie.helpers.SharedDataHelper;
 import org.apache.wookie.w3c.ILocalizedElement;
 
 /**
@@ -252,7 +253,7 @@ public interface IWidgetInstance extends IBean, ILocalizedElement
          */
         public static ISharedData [] getSharedData(IWidgetInstance widgetInstance)
         {
-            return widgetInstance.getWidget().getSharedData(widgetInstance.getSharedDataKey());            
+            return SharedDataHelper.findSharedData(widgetInstance);
         }
 
         /**
@@ -264,7 +265,7 @@ public interface IWidgetInstance extends IBean, ILocalizedElement
          */
         public static ISharedData getSharedData(IWidgetInstance widgetInstance, String name)
         {
-            return widgetInstance.getWidget().getSharedData(widgetInstance.getSharedDataKey(), name);
+        	return SharedDataHelper.findSharedData(widgetInstance, name);
         }
 
         /**

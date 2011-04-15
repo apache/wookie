@@ -164,7 +164,6 @@ public class ParticipantsController extends Controller {
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("sharedDataKey", instance.getSharedDataKey());//$NON-NLS-1$
-		map.put("widget", instance.getWidget());//$NON-NLS-1$
 		map.put("participantId", participantId);//$NON-NLS-1$
 		if (persistenceManager.findByValues(IParticipant.class, map).length != 0) return false;		
 
@@ -174,7 +173,6 @@ public class ParticipantsController extends Controller {
 		participant.setParticipantDisplayName(participantDisplayName);
 		participant.setParticipantThumbnailUrl(participantThumbnailUrl);
 		participant.setSharedDataKey(instance.getSharedDataKey());
-		participant.setWidget(instance.getWidget());
 		persistenceManager.save(participant);
 		return true;
 	}
@@ -192,7 +190,6 @@ public class ParticipantsController extends Controller {
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("sharedDataKey", instance.getSharedDataKey());//$NON-NLS-1$
-		map.put("widget", instance.getWidget());//$NON-NLS-1$
 		map.put("participantId", participantId);//$NON-NLS-1$
 		participants = persistenceManager.findByValues(IParticipant.class, map);
 		if (participants.length != 1) return false;	

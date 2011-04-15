@@ -162,7 +162,7 @@ public abstract class AbstractPersistenceTest
 
         // create participant
         IParticipant participant = persistenceManager.newInstance(IParticipant.class);
-        participant.setWidget(widget);
+        //participant.setWidget(widget);
         participant.setSharedDataKey("test-shared-data-key");
         participant.setParticipantId("test");
         participant.setParticipantDisplayName("");

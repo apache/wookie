@@ -179,13 +179,6 @@
     <column name="participant_display_name" required="true" size="255" type="VARCHAR"/>
     <column name="participant_thumbnail_url" size="1024" type="VARCHAR"/>
     <column name="sharedDataKey" required="true" size="255" type="VARCHAR"/>
-    <column name="widget_id" required="true" type="INTEGER"/>
-    <foreign-key foreignTable="Widget" name="FKParticipant1">
-      <reference foreign="id" local="widget_id"/>
-    </foreign-key>
-    <index name="IXParticipant1">
-      <index-column name="widget_id"/>
-    </index>
   </table>
 
   <table name="Preference">

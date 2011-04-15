@@ -33,6 +33,7 @@ import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.Notifier;
+import org.apache.wookie.helpers.SharedDataHelper;
 import org.apache.wookie.helpers.WidgetKeyManager;
 
 /**
@@ -201,11 +202,11 @@ public class PropertiesController extends Controller {
 		IWidget widget = widgetInstance.getWidget();
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
         boolean found=false;
-        ISharedData sharedData = widget.getSharedData(widgetInstance.getSharedDataKey(), name);
+        ISharedData sharedData = SharedDataHelper.findSharedData(widgetInstance, name);
         if (sharedData != null)
         {
-            if(value==null || value.equalsIgnoreCase("null")){   
-                widget.getSharedData().remove(sharedData);
+            if(value==null || value.equalsIgnoreCase("null")){ 
+            	persistenceManager.delete(sharedData);
             }
             else{    
                 if(append){
@@ -219,12 +220,12 @@ public class PropertiesController extends Controller {
         }
 		if(!found){     
 			if(value!=null){
-				String sharedDataKey = widgetInstance.getSharedDataKey();		
+				String sharedDataKey = SharedDataHelper.getInternalSharedDataKey(widgetInstance);		
 				sharedData = persistenceManager.newInstance(ISharedData.class);
 				sharedData.setSharedDataKey(sharedDataKey);
 				sharedData.setDkey(name);
 				sharedData.setDvalue(value);
-				widget.getSharedData().add(sharedData);
+				persistenceManager.save(sharedData);
 			}
 		}
         persistenceManager.save(widget);

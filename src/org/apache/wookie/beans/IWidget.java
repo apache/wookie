@@ -249,20 +249,6 @@ public interface IWidget extends ILocalizedBean, IBean
      * @param preferenceDefaults preference defaults collection
      */
     void setPreferenceDefaults(Collection<IPreferenceDefault> preferenceDefaults);
-
-    /**
-     * Get collection of shared data for this widget.
-     * 
-     * @return shared data collection
-     */
-    Collection<ISharedData> getSharedData();
-    
-    /**
-     * Set collection of shared data for this widget.
-     * 
-     * @param sharedData shared data collection
-     */
-    void setSharedData(Collection<ISharedData> sharedData);
     
     /**
      * Get default widget title, (deprecated in favor of locale specifying APIs).
@@ -294,23 +280,6 @@ public interface IWidget extends ILocalizedBean, IBean
      */
     @Deprecated
     String getWidgetShortName();
-    
-    /**
-     * Get shared data with specified key for widget.
-     * 
-     * @param sharedDataKey shared data key
-     * @return shared data
-     */
-    ISharedData [] getSharedData(String sharedDataKey);
-    
-    /**
-     * Get shared data with specified key and name for widget.
-     * 
-     * @param sharedDataKey shared data key
-     * @param name shared data name
-     * @return shared data
-     */
-    ISharedData getSharedData(String sharedDataKey, String name);
     
     /**
      * Get default start file url, (deprecated in favor of locale specifying APIs).
@@ -385,46 +354,6 @@ public interface IWidget extends ILocalizedBean, IBean
         	IName[] names = widget.getNames().toArray(new IName[widget.getNames().size()]);
             IName name = (IName)LocalizationUtils.getLocalizedElement(names, new String[]{locale});
             return ((name != null) ? WidgetFormattingUtils.getFormattedWidgetShortName(name) : IW3CXMLConfiguration.UNKNOWN);
-        }
-        
-        /**
-         * Get shared data with specified key for widget.
-         * 
-         * @param widget widget
-         * @param sharedDataKey shared data key
-         * @return shared data array
-         */
-        public static ISharedData [] getSharedData(IWidget widget, String sharedDataKey)
-        {
-            List<ISharedData> sharedDataList = new ArrayList<ISharedData>();
-            for (ISharedData sharedData : widget.getSharedData())
-            {
-                if (sharedData.getSharedDataKey().equals(sharedDataKey))
-                {
-                    sharedDataList.add(sharedData);
-                }
-            }
-            return sharedDataList.toArray(new ISharedData[sharedDataList.size()]);
-        }
-
-        /**
-         * Get shared data with specified key and name for widget.
-         * 
-         * @param widget widget
-         * @param sharedDataKey shared data key
-         * @param name shared data name
-         * @return shared data or null
-         */
-        public static ISharedData getSharedData(IWidget widget, String sharedDataKey, String name)
-        {
-            for (ISharedData sharedData : widget.getSharedData())
-            {
-                if (sharedData.getSharedDataKey().equals(sharedDataKey) && sharedData.getDkey().equals(name))
-                {
-                    return sharedData;
-                }
-            }
-            return null;
         }
 
         /**

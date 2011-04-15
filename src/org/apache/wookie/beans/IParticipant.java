@@ -38,20 +38,6 @@ public interface IParticipant extends IBean
     void setSharedDataKey(String sharedDataKey);
 
     /**
-     * Get owning widget instance.
-     * 
-     * @return widget instance
-     */
-    IWidget getWidget();
-
-    /**
-     * Set owning widget instance.
-     * 
-     * @param widget widget instance
-     */
-    void setWidget(IWidget widget);
-
-    /**
      * Get participant id.
      * 
      * @return participant id
