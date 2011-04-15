@@ -29,6 +29,7 @@ import org.apache.wookie.controller.PropertiesController;
 import org.apache.wookie.feature.IFeature;
 import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.helpers.ParticipantHelper;
+import org.apache.wookie.helpers.SharedDataHelper;
 import org.apache.wookie.server.LocaleHandler;
 import org.directwebremoting.WebContextFactory;
 
@@ -79,7 +80,7 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 			return state;			
 		}
 		//
-		for(ISharedData data : widgetInstance.getSharedData()){
+		for(ISharedData data : SharedDataHelper.findSharedData(widgetInstance)){
 			state.put(data.getDkey(), data.getDvalue());
 		}
 		return state;

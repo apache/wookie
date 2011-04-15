@@ -92,7 +92,7 @@ public class PropertiesController extends Controller {
 		// We let the shared data values override.
 		IPreference pref = instance.getPreference(name);
 		if (pref != null) value = pref.getDvalue();
-		ISharedData data = instance.getSharedData(name);
+		ISharedData data = SharedDataHelper.findSharedData(instance, name);
 		if (data != null) value = data.getDvalue();
 		if (value == null) throw new ResourceNotFoundException();
 		PrintWriter out = response.getWriter();

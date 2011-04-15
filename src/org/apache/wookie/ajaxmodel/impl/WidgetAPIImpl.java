@@ -35,6 +35,7 @@ import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.controller.PropertiesController;
 import org.apache.wookie.controller.WidgetInstancesController;
 import org.apache.wookie.helpers.Notifier;
+import org.apache.wookie.helpers.SharedDataHelper;
 import org.apache.wookie.queues.QueueManager;
 import org.apache.wookie.server.ContextListener;
 import org.apache.wookie.server.LocaleHandler;
@@ -172,7 +173,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
         IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if (widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
-		ISharedData data = widgetInstance.getSharedData(key);
+		ISharedData data = SharedDataHelper.findSharedData(widgetInstance, key);
 		if (data == null) return localizedMessages.getString("WidgetAPIImpl.1");
 		return data.getDvalue();
 	}

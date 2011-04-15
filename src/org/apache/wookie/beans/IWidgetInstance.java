@@ -16,7 +16,6 @@ package org.apache.wookie.beans;
 
 import java.util.Collection;
 
-import org.apache.wookie.helpers.SharedDataHelper;
 import org.apache.wookie.w3c.ILocalizedElement;
 
 /**
@@ -218,21 +217,6 @@ public interface IWidgetInstance extends IBean, ILocalizedElement
     void setTokens(Collection<IToken> tokens);
 
     /**
-     * Get shared data for widget instance.
-     * 
-     * @return shared data
-     */
-    ISharedData [] getSharedData();
-    
-    /**
-     * Get shared data with name for widget instance.
-     * 
-     * @param name shared data name
-     * @return shared data
-     */
-    ISharedData getSharedData(String name);
-
-    /**
      * Get preference with specified key for widget instance.
      * 
      * @param key shared data key
@@ -245,28 +229,6 @@ public interface IWidgetInstance extends IBean, ILocalizedElement
      */
     public static class Utilities
     {
-        /**
-         * Get shared data for widget instance.
-         * 
-         * @param widgetInstance widget instance
-         * @return shared data array
-         */
-        public static ISharedData [] getSharedData(IWidgetInstance widgetInstance)
-        {
-            return SharedDataHelper.findSharedData(widgetInstance);
-        }
-
-        /**
-         * Get shared data with name for widget instance.
-         * 
-         * @param widgetInstance widget instance
-         * @param name shared data name
-         * @return shared data or null
-         */
-        public static ISharedData getSharedData(IWidgetInstance widgetInstance, String name)
-        {
-        	return SharedDataHelper.findSharedData(widgetInstance, name);
-        }
 
         /**
          * Get preference with specified key for widget instance.

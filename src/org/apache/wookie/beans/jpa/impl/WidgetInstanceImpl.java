@@ -38,7 +38,6 @@ import org.apache.openjpa.persistence.ExternalValues;
 import org.apache.openjpa.persistence.Type;
 
 import org.apache.wookie.beans.IPreference;
-import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.beans.IToken;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
@@ -393,19 +392,4 @@ public class WidgetInstanceImpl implements IWidgetInstance
         return Utilities.getPreference(this, key);
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidgetInstance#getSharedData()
-     */
-    public ISharedData [] getSharedData()
-    {
-        return Utilities.getSharedData(this);
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidgetInstance#getSharedData(java.lang.String)
-     */
-    public ISharedData getSharedData(String name)
-    {
-        return Utilities.getSharedData(this, name);
-    }
 }
