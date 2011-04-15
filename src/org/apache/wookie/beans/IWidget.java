@@ -14,9 +14,7 @@
 
 package org.apache.wookie.beans;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.wookie.util.WidgetFormattingUtils;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;

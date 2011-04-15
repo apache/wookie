@@ -685,7 +685,6 @@ public class JPAPersistenceManager implements IPersistenceManager
             try
             {
                 String sharedDataKey = widgetInstance.getSharedDataKey();
-                IWidget widget = widgetInstance.getWidget();
                 Query query = entityManager.createNamedQuery("PARTICIPANTS");
                 query.setParameter("sharedDataKey", sharedDataKey);
                 List<IParticipant> participantsList = query.getResultList();
@@ -719,7 +718,6 @@ public class JPAPersistenceManager implements IPersistenceManager
             try
             {
                 String sharedDataKey = widgetInstance.getSharedDataKey();
-                IWidget widget = widgetInstance.getWidget();
                 String userId = widgetInstance.getUserId();
                 Query query = entityManager.createNamedQuery("PARTICIPANT_VIEWER");
                 query.setParameter("sharedDataKey", sharedDataKey);

@@ -114,7 +114,6 @@
 - wookie:participantDisplayName (string) mandatory
 - wookie:participantThumbnailUrl (string)
 - wookie:sharedDataKey (string) mandatory
-- wookie:widget (reference) mandatory
 
 [wookie:preference] > nt:base
 - wookie:elementId (long)

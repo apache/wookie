@@ -838,7 +838,6 @@ public class JCRPersistenceManager implements IPersistenceManager
             {
                 Map<String, Object> values = new HashMap<String, Object>();
                 values.put("sharedDataKey", widgetInstance.getSharedDataKey());
-                values.put("widget", widgetInstance.getWidget());
                 return findByValues(IParticipant.class, values);
             }
             catch (Exception e)
@@ -867,7 +866,6 @@ public class JCRPersistenceManager implements IPersistenceManager
             {
                 Map<String, Object> values = new HashMap<String, Object>();
                 values.put("sharedDataKey", widgetInstance.getSharedDataKey());
-                values.put("widget", widgetInstance.getWidget());
                 values.put("participantId", widgetInstance.getUserId());
                 IParticipant [] participantViewer = findByValues(IParticipant.class, values);
                 if (participantViewer.length == 1)
