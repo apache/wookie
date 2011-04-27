@@ -322,7 +322,7 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 			}	
 			
 			// UDPATE DESCRIPTION IS OPTONAL - can only be one, ignore subsequent repetitions
-			if(tag.equals(IW3CXMLConfiguration.UPDATE_ELEMENT) && fUpdate == null) {
+			if(tag.equals(IW3CXMLConfiguration.UPDATE_ELEMENT) && fUpdate == null && child.getNamespace().getURI().equals(IW3CXMLConfiguration.MANIFEST_NAMESPACE)) {
 				UpdateDescription update = new UpdateDescription();
 				update.fromXML(child);
 				// It must have a valid HREF attribute, or it is ignored

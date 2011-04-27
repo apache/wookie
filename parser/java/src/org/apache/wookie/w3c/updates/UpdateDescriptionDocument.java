@@ -18,6 +18,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.impl.AbstractLocalizedEntity;
 import org.apache.wookie.w3c.util.LocalizationUtils;
@@ -84,10 +86,25 @@ public class UpdateDescriptionDocument{
 	public UpdateDescriptionDocument(String href) throws InvalidUDDException{
 		try {
 			URL url = new URL(href);
+			
+			HttpClient client = new HttpClient();
+			GetMethod method = new GetMethod(url.toString());
+			method.setFollowRedirects(true);
+			client.executeMethod(method);
+			String type = method.getResponseHeader("Content-Type").getValue();
+			int code = method.getStatusCode();
+			
+			if (code != 200) throw new InvalidUDDException("Bad HTTP response from update site: "+code);
+			if (!type.equals("application/xml")) throw new InvalidUDDException("Bad content type in response from update site: "+type);
+			
 			Document doc;
-			doc = new SAXBuilder().build(url);
+			doc = new SAXBuilder().build(method.getResponseBodyAsStream());
+			
 			fromXML(doc);
+			
 		} catch (Exception e) {
+			// If it is a specific UDDException, throw it, otherwise raise a generic UDD exception
+			if (e instanceof InvalidUDDException) throw (InvalidUDDException)e;
 			throw new InvalidUDDException("the document is not a valid UDD");
 		}
 	}
