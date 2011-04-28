@@ -135,7 +135,6 @@ public class UpdateDescriptionDocument{
 		} catch (MalformedURLException e) {
 			// If the URL is relative, try to make it absolute by using the URL where the UDD is obtained from as the base
 			try {
-				System.out.println(root.getAttributeValue("src"));
 				updateSource = new URL(baseUrl, root.getAttributeValue("src"));
 			} catch (MalformedURLException e1) {
 				throw new InvalidUDDException("src attribute is not a valid URL");
