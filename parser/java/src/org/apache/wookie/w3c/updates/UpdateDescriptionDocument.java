@@ -36,6 +36,7 @@ public class UpdateDescriptionDocument{
 	private URL updateSource;
 	private String versionTag;
 	private ArrayList<Details> details;
+	private URL baseUrl;
 	
 	/**
 	 * Get the details of the update, typically a short description of any new features.
@@ -85,10 +86,10 @@ public class UpdateDescriptionDocument{
 	 */
 	public UpdateDescriptionDocument(String href) throws InvalidUDDException{
 		try {
-			URL url = new URL(href);
+			baseUrl = new URL(href);
 			
 			HttpClient client = new HttpClient();
-			GetMethod method = new GetMethod(url.toString());
+			GetMethod method = new GetMethod(baseUrl.toString());
 			method.setFollowRedirects(true);
 			client.executeMethod(method);
 			String type = method.getResponseHeader("Content-Type").getValue();
@@ -127,10 +128,18 @@ public class UpdateDescriptionDocument{
 		if (root.getAttribute("version") == null) throw new InvalidUDDException("no version attribute");
 		if (root.getAttribute("src") == null) throw new InvalidUDDException("no src attribute");
 		versionTag = root.getAttributeValue("version");
+		
+		// Determine the update source URL.
 		try {
 			updateSource = new URL(root.getAttributeValue("src"));
 		} catch (MalformedURLException e) {
-			throw new InvalidUDDException("src attribute is not a valid URL");
+			// If the URL is relative, try to make it absolute by using the URL where the UDD is obtained from as the base
+			try {
+				System.out.println(root.getAttributeValue("src"));
+				updateSource = new URL(baseUrl, root.getAttributeValue("src"));
+			} catch (MalformedURLException e1) {
+				throw new InvalidUDDException("src attribute is not a valid URL");
+			}
 		}
 		List<?> detailsElements = root.getChildren("details", Namespace.getNamespace(IW3CXMLConfiguration.MANIFEST_NAMESPACE));
 		this.details = new ArrayList<Details>();
