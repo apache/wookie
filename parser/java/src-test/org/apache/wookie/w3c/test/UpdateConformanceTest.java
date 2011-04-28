@@ -337,7 +337,6 @@ public class UpdateConformanceTest extends ConformanceTest{
 	public void pr208(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/008/ta-pr-008.wgt");
 		assertNotNull(UpdateUtils.checkForUpdate(widget));
-		System.out.println(UpdateUtils.checkForUpdate(widget).getUpdateSource());
 		assertNotNull(UpdateUtils.getUpdate(fac, widget));
 	}		
 	//TODO Requires runtime testing
@@ -378,7 +377,6 @@ public class UpdateConformanceTest extends ConformanceTest{
 	@Test
 	public void pr214() {
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/014/ta-pr-014.wgt");
-		System.out.println(UpdateUtils.checkForUpdate(widget).getUpdateSource());
 		assertNull(UpdateUtils.getUpdate(fac, widget));
 	}
 	
