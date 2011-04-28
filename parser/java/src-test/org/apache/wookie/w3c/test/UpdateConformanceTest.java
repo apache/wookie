@@ -15,16 +15,43 @@ package org.apache.wookie.w3c.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.apache.wookie.w3c.W3CWidget;
+import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.updates.InvalidUDDException;
 import org.apache.wookie.w3c.updates.UpdateDescriptionDocument;
+import org.apache.wookie.w3c.updates.UpdateUtils;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class UpdateConformanceTest extends ConformanceTest{
+	
+	private static W3CWidgetFactory fac;
+	
+	@BeforeClass
+	public static void setup() throws IOException{
+		download = File.createTempFile("wookie-download", "wgt");
+		output = File.createTempFile("wookie-output", "tmp");
+		fac = new W3CWidgetFactory();
+		fac.setLocalPath("http:localhost/widgets");
+		fac.setFeatures(new String[]{"feature:a9bb79c1"});
+		try {
+			fac.setEncodings(new String[]{"UTF-8", "ISO-8859-1","Windows-1252"});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (download.exists()) download.delete();
+		if (output.exists()) output.delete();
+		output.mkdir();
+		fac.setOutputDirectory(output.getAbsolutePath());
+	}
 	
 	
 	/**
@@ -57,15 +84,16 @@ public class UpdateConformanceTest extends ConformanceTest{
 		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdate());
 	}	
 	
-	// Requires runtime testing
 	@Ignore
 	public void pr005(){
+		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/005/ta-pr-005.wgt");
+		assertEquals(null, UpdateUtils.checkForUpdate(widget));
 	}	
 	
 	@Test
 	public void pr006(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/006/ta-pr-006.wgt");
-		assertEquals(null, widget.getUpdate());
+		assertEquals(null, UpdateUtils.checkForUpdate(widget));
 	}	
 	
 	@Test
@@ -79,18 +107,21 @@ public class UpdateConformanceTest extends ConformanceTest{
 	public void pr008(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/008/ta-pr-008.wgt");
 		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdate());
+		assertNotNull(UpdateUtils.checkForUpdate(widget));
 	}	
 	
 	@Test
 	public void pr009(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/009/ta-pr-009.wgt");
 		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdate());
+		assertNotNull(UpdateUtils.checkForUpdate(widget));
 	}	
 	
 	@Test
 	public void pr010(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/010/ta-pr-010.wgt");
 		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdate());
+		assertNotNull(UpdateUtils.checkForUpdate(widget));
 	}	
 	
 	@Test
@@ -109,12 +140,14 @@ public class UpdateConformanceTest extends ConformanceTest{
 	public void pr013(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/013/ta-pr-013.wgt");
 		assertEquals(null, widget.getUpdate());
+		assertNull(UpdateUtils.checkForUpdate(widget));
 	}	
 	
 	@Test
 	public void pr014(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/014/ta-pr-014.wgt");
 		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdate());
+		assertNotNull(UpdateUtils.checkForUpdate(widget));
 	}	
 	
 	/**
@@ -130,7 +163,7 @@ public class UpdateConformanceTest extends ConformanceTest{
 	@Test
 	public void ac2(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition2/001/ta-ac-001.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?check-if-modified-since", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-if-modified-since", widget.getUpdate());
 	}
 	// Requires runtime testing
 	@Test
@@ -156,54 +189,46 @@ public class UpdateConformanceTest extends ConformanceTest{
 		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-expires-in=300", widget.getUpdate());
 	}
 	
-	// Requires runtime testing
 	@Test
 	public void ac6() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition6/001/ta-ac-001.wgt");
 		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdate());
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNotNull(UpdateUtils.checkForUpdate(widget));
 	}
 
-	@Test(expected=InvalidUDDException.class)
+	@Test
 	public void ac7() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition7/001/ta-ac-001.wgt");
 		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-wrong-ct", widget.getUpdate());
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNull(UpdateUtils.checkForUpdate(widget));
 	}
 	
-	@Test(expected=InvalidUDDException.class)
+	@Test
 	public void ac81() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition8/001/ta-ac-001.wgt");
 		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-204", widget.getUpdate());
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNull(UpdateUtils.checkForUpdate(widget));
 	}
 	
-	@Test(expected=InvalidUDDException.class)
+	@Test
 	public void ac82() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition8/002/ta-ac-002.wgt");
 		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-304", widget.getUpdate());
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNull(UpdateUtils.checkForUpdate(widget));
 	}
 	
-	// Requires runtime testing - this just checks we parse the UDD OK
 	@Test
 	public void ac83() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition8/003/ta-ac-003.wgt");
 		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-udi-204", widget.getUpdate());
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNull(UpdateUtils.getUpdate(fac, widget));
 	}
 	
-	@Test(expected=InvalidUDDException.class)
+	@Test
 	public void ac9() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition9/001/ta-ac-001.wgt");
 		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-206", widget.getUpdate());
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNull(UpdateUtils.checkForUpdate(widget));
 	}
 	
 	@Test
@@ -220,35 +245,30 @@ public class UpdateConformanceTest extends ConformanceTest{
 		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
 	}
 	
-	// Requires runtime testing
 	@Test
-	public void ac103() throws InvalidUDDException{
+	public void ac103(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition10/003/ta-ac-003.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNotNull(UpdateUtils.getUpdate(fac, widget));
 	}
 	
-	// Requires runtime testing
 	@Test
-	public void ac104() throws InvalidUDDException{
+	public void ac104(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition10/004/ta-ac-004.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNotNull(UpdateUtils.getUpdate(fac, widget));
 	}
 	
-	//Requires manual runtime testing 
+	//TODO Requires manual runtime testing 
 	@Ignore
 	public void ac11(){
 	}
 	
-	@Test(expected=InvalidUDDException.class)
+	@Test
 	public void ac12() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition12/001/ta-ac-001.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNull(UpdateUtils.getUpdate(fac, widget));
 	}
 
-	//Requires manual testing - break the network connection during testing
+	//TODO Requires manual testing - break the network connection during testing
 	@Ignore
 	@Test(expected=InvalidUDDException.class)
 	public void ac13() throws InvalidUDDException{
@@ -280,140 +300,118 @@ public class UpdateConformanceTest extends ConformanceTest{
 		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
 	}	
 	
-	//Requires runtime testing - this changes the ID!
-	//Test error?
+	//TODO Requires runtime testing as the update changes the widget ID
 	@Test
-	public void pr203() throws InvalidUDDException{
+	public void pr203(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/003/ta-pr-003.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNotNull(UpdateUtils.getUpdate(fac, widget));
 	}	
 	
-	@Test(expected=InvalidUDDException.class)
+	@Test
 	public void pr204() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/004/ta-pr-004.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNull(UpdateUtils.getUpdate(fac, widget));
 	}	
 	
-	//Requires runtime testing
 	@Test
 	public void pr205() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/005/ta-pr-005.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNull(UpdateUtils.getUpdate(fac, widget));
 	}	
 	
-	//Requires runtime testing
 	@Test
-	public void pr206() throws InvalidUDDException{
+	public void pr206(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/006/ta-pr-006.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNull(UpdateUtils.getUpdate(fac, widget));
 	}	
 	
-	//Requires runtime testing
 	//Test error?
 	@Test
-	public void pr207() throws InvalidUDDException{
+	public void pr207(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/007/ta-pr-007.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNull(UpdateUtils.getUpdate(fac, widget));
 	}		
 	
-	//Requires runtime testing
+	//TODO Requires runtime testing
 	@Test
-	public void pr208() throws InvalidUDDException{
+	public void pr208(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/008/ta-pr-008.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNotNull(UpdateUtils.checkForUpdate(widget));
+		System.out.println(UpdateUtils.checkForUpdate(widget).getUpdateSource());
+		assertNotNull(UpdateUtils.getUpdate(fac, widget));
 	}		
-	
-	//Requires runtime testing
+	//TODO Requires runtime testing
 	@Test
-	public void pr209() throws InvalidUDDException{
+	public void pr209(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/009/ta-pr-009.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNotNull(UpdateUtils.getUpdate(fac, widget));
 	}
 	
-	//Requires runtime testing
+	//TODO Requires runtime testing
 	@Test
 	public void pr210() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/010/ta-pr-010.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNotNull(UpdateUtils.getUpdate(fac, widget));
 	}	
 	
-	//Requires runtime testing
+	//TODO Requires runtime testing
 	@Test
-	public void pr211() throws InvalidUDDException{
+	public void pr211(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/011/ta-pr-011.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNotNull(UpdateUtils.getUpdate(fac, widget));
 	}		
 	
-	//Requires runtime testing
+	//TODO Requires runtime testing
 	@Test
-	public void pr212() throws InvalidUDDException{
+	public void pr212(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/012/ta-pr-012.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNotNull(UpdateUtils.getUpdate(fac, widget));
 	}	
 	
-	//Requires runtime testing
+	//TODO Requires runtime testing
 	@Test
-	public void pr213() throws InvalidUDDException{
+	public void pr213(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/013/ta-pr-013.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNotNull(UpdateUtils.getUpdate(fac, widget));
 	}	
 	
-	@Test(expected=InvalidUDDException.class)
-	public void pr214() throws InvalidUDDException{
+	@Test
+	public void pr214() {
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/014/ta-pr-014.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		System.out.println(UpdateUtils.checkForUpdate(widget).getUpdateSource());
+		assertNull(UpdateUtils.getUpdate(fac, widget));
 	}
 	
-	//Requires runtime testing
+	//TODO Requires runtime testing
 	@Test
-	public void pr215() throws InvalidUDDException{
+	public void pr215(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/015/ta-pr-015.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNotNull(UpdateUtils.getUpdate(fac, widget));
 	}
 	
-	//Requires runtime testing
-	//Note that we throw an exception when a UDD has a relative src attr, which I think is the correct behaviour - this
-	//test seems to assume you just silently fail to update the widget?
-	@Test(expected=InvalidUDDException.class)
-	public void pr216() throws InvalidUDDException{
+	//TODO Requires runtime testing
+	@Test
+	public void pr216(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/016/ta-pr-016.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNotNull(UpdateUtils.getUpdate(fac, widget));
 	}
 	
-	//Requires runtime testing
 	@Test
-	public void pr217() throws InvalidUDDException{
+	public void pr217() {
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/017/ta-pr-017.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertEquals("PASS", UpdateUtils.checkForUpdate(widget).getDetails("en"));
 	}
 	
 	@Test
-	public void pr218() throws InvalidUDDException{
+	public void pr218(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/018/ta-pr-018.wgt");
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
-		assertTrue(udd.getDetails("en").contains("PASS"));
+		assertTrue(UpdateUtils.checkForUpdate(widget).getDetails("en").contains("PASS"));
 	}
 	
 	@Test
-	public void pr219() throws InvalidUDDException{
+	public void pr219(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/019/ta-pr-019.wgt");
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
-		assertEquals("PASS", udd.getDetails("en"));
+		assertEquals("PASS", UpdateUtils.checkForUpdate(widget).getDetails("en"));
 	}
 	
 	@Test
@@ -423,33 +421,33 @@ public class UpdateConformanceTest extends ConformanceTest{
 		assertEquals("P A S S", udd.getDetails("en"));
 	}
 	
-	//Requires runtime testing
 	@Test
-	public void pr221() throws InvalidUDDException{
+	public void pr221(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/021/ta-pr-021.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNull(UpdateUtils.getUpdate(fac, widget));
 	}
 	
-	@Test(expected=InvalidUDDException.class)
-	public void pr301() throws InvalidUDDException{
+	@Test
+	public void pr301(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing3/001/ta-pr-001.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNull(UpdateUtils.getUpdate(fac, widget));
 	}
 	
-	@Test(expected=InvalidUDDException.class)
+	@Test
 	public void pr302() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing3/002/ta-pr-002.wgt");
-		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		assertNull(UpdateUtils.getUpdate(fac, widget));
 	}
 	
-	//Requires runtime testing
-	@Ignore
-	public void ve1(){}
+	@Test
+	public void ve1(){
+		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-verifying4/001/ta-ve-001.wgt");
+		assertNull(UpdateUtils.getUpdate(fac, widget));
+	}
 	
-	//Requires runtime testing
-	@Ignore
-	public void ve2(){}	
+	@Test
+	public void ve2(){
+		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-verifying4/002/ta-ve-002.wgt");
+		assertNull(UpdateUtils.getUpdate(fac, widget));
+	}	
 }
