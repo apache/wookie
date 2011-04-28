@@ -82,6 +82,7 @@
 - wookie:height (long)
 - wookie:width (long)
 - wookie:guid (string) mandatory
+- wookie:updateLocation (string)
 - wookie:widgetAuthor (string)
 - wookie:widgetAuthorEmail (string)
 - wookie:widgetAuthorHref (string)

@@ -27,6 +27,7 @@
     <column name="height" type="INTEGER"/>
     <column name="width" type="INTEGER"/>
     <column name="guid" required="true" size="255" type="VARCHAR"/>
+    <column name="update_location" type="LONGVARCHAR"/>
     <column name="widget_author" size="255" type="VARCHAR"/>
     <column name="widget_author_email" size="320" type="VARCHAR"/>
     <column name="widget_author_href" type="LONGVARCHAR"/>

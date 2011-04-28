@@ -37,6 +37,17 @@ public interface IWidget extends ILocalizedBean, IBean
 
 	void setPackagePath(String path);
 	
+	/**
+	 * Get widget update location
+	 * @return widget update location as a string
+	 */
+	String getUpdateLocation();
+	
+	/**
+	 * Set the widget update location
+	 * @param location the location to set
+	 */
+	void setUpdateLocation(String location);
 	
     /**
      * Get widget height.

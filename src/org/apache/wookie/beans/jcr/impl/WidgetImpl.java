@@ -51,6 +51,9 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     
     @Field(jcrName="wookie:packagePath")
     private String packagePath;
+
+    @Field(jcrName="wookie:updateLocation")
+    private String updateLocation;
     
     @Field(jcrName="wookie:height")
     private Integer height;
@@ -148,7 +151,21 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
         return descriptionImpls;
     }
 
-    /**
+    /* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IWidget#getUpdateLocation()
+	 */
+	public String getUpdateLocation() {
+		return this.updateLocation;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IWidget#setUpdateLocation(java.lang.String)
+	 */
+	public void setUpdateLocation(String location) {
+		this.updateLocation = location;
+	}
+
+	/**
      * Set description implementations collection.
      * 
      * @param descriptionImpls description implementations collection

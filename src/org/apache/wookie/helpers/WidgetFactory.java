@@ -131,6 +131,7 @@ public class WidgetFactory {
 		widget.setHeight(model.getHeight());
 		widget.setWidth(model.getWidth());
 		widget.setVersion(model.getVersion());
+		widget.setUpdateLocation(model.getUpdate());
 		return widget;
 	}
 
@@ -318,6 +319,7 @@ public class WidgetFactory {
 		widget.setHeight(model.getHeight());
 		widget.setWidth(model.getWidth());
 		widget.setVersion(model.getVersion());
+		widget.setUpdateLocation(model.getUpdate());
 		
 		// Clear old values
 		widget.setStartFiles(null);

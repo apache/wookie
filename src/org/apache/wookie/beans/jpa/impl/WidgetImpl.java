@@ -83,6 +83,10 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     @ElementDependent
     private Collection<WidgetTypeImpl> widgetTypes;
 
+    @Basic
+    @Column(name="update_location")
+    private String updateLocation;
+    
     @Basic(optional=false)
     @Column(name="guid", nullable=false)
     private String guid;
@@ -159,6 +163,20 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     }
 
     /* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IWidget#getUpdateLocation()
+	 */
+	public String getUpdateLocation() {
+		return this.updateLocation;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IWidget#setUpdateLocation(java.lang.String)
+	 */
+	public void setUpdateLocation(String location) {
+		this.updateLocation = location;
+	}
+
+	/* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getFeatures()
      */
     public Collection<IFeature> getFeatures()
