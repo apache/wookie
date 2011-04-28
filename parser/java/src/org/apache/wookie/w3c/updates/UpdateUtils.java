@@ -71,21 +71,6 @@ public class UpdateUtils {
 	}
 	
 	/**
-	 * Gets an updated widget of a widget
-	 * @param factory
-	 * @param widget the widget to update
-	 * @param onlyUseHttps only get updates using HTTPS, ignore plain HTTP updates
-	 * @return the latest version of the widget, or null if there is no updated version available, or the updated widget isn't valid
-	 */
-	public static W3CWidget getUpdate(W3CWidgetFactory factory, W3CWidget widget, boolean onlyUseHttps){
-		try {
-			return getUpdate(factory, widget.getIdentifier(), widget.getUpdate(), widget.getVersion(), onlyUseHttps);
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	
-	/**
 	 * Gets the latest version of a widget
 	 * @param factory
 	 * @param href the location of the widget Update Description Document
