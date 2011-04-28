@@ -64,7 +64,7 @@ public class UpdateUtils {
 	 */
 	public static W3CWidget getUpdate(W3CWidgetFactory factory, W3CWidget widget){
 		try {
-			return getUpdate(factory, widget.getUpdate(), widget.getVersion(), false);
+			return getUpdate(factory,  widget.getIdentifier(), widget.getUpdate(), widget.getVersion(), false);
 		} catch (Exception e) {
 			return null;
 		}
@@ -79,7 +79,7 @@ public class UpdateUtils {
 	 */
 	public static W3CWidget getUpdate(W3CWidgetFactory factory, W3CWidget widget, boolean onlyUseHttps){
 		try {
-			return getUpdate(factory, widget.getUpdate(), widget.getVersion(), onlyUseHttps);
+			return getUpdate(factory, widget.getIdentifier(), widget.getUpdate(), widget.getVersion(), onlyUseHttps);
 		} catch (Exception e) {
 			return null;
 		}
@@ -98,11 +98,11 @@ public class UpdateUtils {
 	 * @throws BadWidgetZipFileException 
 	 * @throws InvalidContentTypeException 
 	 */
-	public static W3CWidget getUpdate(W3CWidgetFactory factory, String href, String version, boolean onlyUseHttps) throws InvalidContentTypeException, BadWidgetZipFileException, BadManifestException, IOException, Exception{
+	public static W3CWidget getUpdate(W3CWidgetFactory factory, String identifier, String href, String version, boolean onlyUseHttps) throws InvalidContentTypeException, BadWidgetZipFileException, BadManifestException, IOException, Exception{
 		UpdateDescriptionDocument udd = checkForUpdate(href, version);
 		if (udd == null) return null;
 		if (onlyUseHttps && !udd.getUpdateSource().getProtocol().equalsIgnoreCase("https")) return  null;
-		W3CWidget updatedWidget = factory.parse(udd.getUpdateSource());
+		W3CWidget updatedWidget = factory.parse(udd.getUpdateSource(), false, identifier);
 		return updatedWidget;
 	}
 

@@ -55,6 +55,7 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 	
 	static Logger fLogger = Logger.getLogger(WidgetManifestModel.class.getName());
 	
+	private String defaultIdentifier;
 	private String fIdentifier;
 	private String fVersion;
 	private Integer fHeight;
@@ -83,7 +84,7 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 	 * @throws IOException
 	 * @throws BadManifestException
 	 */
-	public WidgetManifestModel (String xmlText, String[] locales, String[] features, String[] encodings, ZipFile zip) throws JDOMException, IOException, BadManifestException {		
+	public WidgetManifestModel (String xmlText, String[] locales, String[] features, String[] encodings, ZipFile zip, String defaultIdentifier) throws JDOMException, IOException, BadManifestException {		
 		super();		
 		this.zip = zip;
 		this.features = features;
@@ -96,6 +97,7 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 		fAccessList = new ArrayList<IAccessEntity>();
 		fFeaturesList = new ArrayList<IFeatureEntity>();
 		fPreferencesList = new ArrayList<IPreferenceEntity>();
+		this.defaultIdentifier = defaultIdentifier;
 		SAXBuilder builder = new SAXBuilder();
 		Element root;
 		try {
@@ -246,9 +248,14 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 			fIdentifier = null;
 		}
 		if(fIdentifier == null){
-			//give up & generate one
-			RandomGUID r = new RandomGUID();
-			fIdentifier = "http://incubator.apache.org/wookie/generated/" + r.toString();
+			//is there a default?
+			if (defaultIdentifier != null){
+				fIdentifier = defaultIdentifier;
+			} else {
+				//give up & generate one
+				RandomGUID r = new RandomGUID();
+				fIdentifier = "http://incubator.apache.org/wookie/generated/" + r.toString();
+			}
 		}
 		// VERSION IS OPTIONAL		
 		fVersion = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.VERSION_ATTRIBUTE));

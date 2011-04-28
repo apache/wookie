@@ -152,7 +152,22 @@ public class W3CWidgetFactory {
 	 */
 	public W3CWidget parse(final File zipFile) throws Exception, BadWidgetZipFileException, BadManifestException{
 		if (outputDirectory == null) throw new Exception("No output directory has been set; use setOutputDirectory(File) to set the location to output widget files");
-		return processWidgetPackage(zipFile);
+		return processWidgetPackage(zipFile, null);
+	}
+	
+	/**
+	 * Parse a given ZipFile and return a W3CWidget object representing the processed information in the package.
+	 * The widget will be saved in the outputFolder.
+	 * 
+	 * @param zipFile
+	 * @param defaultIdentifier a default identifier to use if the widget package does not have an identifier
+	 * @return the widget model
+	 * @throws BadWidgetZipFileException if there is a problem with the zip package
+	 * @throws BadManifestException if there is a problem with the config.xml manifest file in the package
+	 */
+	public W3CWidget parse(final File zipFile, String defaultIdentifier) throws Exception, BadWidgetZipFileException, BadManifestException{
+		if (outputDirectory == null) throw new Exception("No output directory has been set; use setOutputDirectory(File) to set the location to output widget files");
+		return processWidgetPackage(zipFile, defaultIdentifier);
 	}
 	
 	/**
@@ -187,6 +202,23 @@ public class W3CWidgetFactory {
 	}
 	
 	/**
+	 * Parse a widget at a given URL and return a W3CWidget object representing the processed information in the package.
+	 * The widget will be saved in the outputFolder.
+	 * @param url
+	 * @param ignoreContentType set to true to instruct the parser to ignore invalid content type exceptions
+	 * @param defaultIdentifier an identifier to use if the downloaded widget has no identifier - for example when updating a widget
+	 * @return
+	 * @throws BadWidgetZipFileException if there is a problem with the zip package
+	 * @throws BadManifestException if there is a problem with the config.xml manifest file in the package
+	 * @throws InvalidContentTypeException if the widget has an invalid content type
+	 * @throws IOException if the widget cannot be downloaded
+	 */
+	public W3CWidget parse(final URL url, boolean ignoreContentType, String defaultIdentifier) throws BadWidgetZipFileException, BadManifestException, InvalidContentTypeException, IOException, Exception{
+		File file = download(url,ignoreContentType);
+		return parse(file, defaultIdentifier);
+	}
+	
+	/**
 	 * The standard MIME type for a W3C Widget
 	 */
 	private static final String WIDGET_CONTENT_TYPE = "application/widget";
@@ -217,7 +249,7 @@ public class W3CWidgetFactory {
 		if (encodings.length == 0) throw new Exception("At least one encoding must be specified");
 		this.encodings = encodings;
 	}
-
+	
 	/**
 	 * Process a widget package for the given zip file
 	 * @param zipFile
@@ -225,7 +257,7 @@ public class W3CWidgetFactory {
 	 * @throws BadWidgetZipFileException
 	 * @throws BadManifestException
 	 */
-	private W3CWidget processWidgetPackage(File zipFile) throws BadWidgetZipFileException, BadManifestException{
+	private W3CWidget processWidgetPackage(File zipFile, String defaultIdentifier) throws BadWidgetZipFileException, BadManifestException{
 		ZipFile zip;
 		try {
 			zip = new ZipFile(zipFile);
@@ -235,7 +267,7 @@ public class W3CWidgetFactory {
 		if (WidgetPackageUtils.hasManifest(zip)){
 			try {
 				// build the model
-				WidgetManifestModel widgetModel = new WidgetManifestModel(WidgetPackageUtils.extractManifest(zip), locales, features, encodings, zip);															
+				WidgetManifestModel widgetModel = new WidgetManifestModel(WidgetPackageUtils.extractManifest(zip), locales, features, encodings, zip, defaultIdentifier);															
 
 				// get the widget identifier
 				String manifestIdentifier = widgetModel.getIdentifier();						
