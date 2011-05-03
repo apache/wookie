@@ -149,6 +149,16 @@ public class UpdateDescriptionDocument{
 		}
 	}
 	
+	public Element toXml(){
+		Element element = new Element("update-info",IW3CXMLConfiguration.MANIFEST_NAMESPACE);
+		element.setAttribute("version", getVersionTag());
+		element.setAttribute("src", getUpdateSource().toString());
+		for (Details details: this.details){
+			element.addContent(details.toXml());
+		}
+		return element;	
+	}
+	
 	/**
 	 * Inner class used to represent Details as a localized entity
 	 */
