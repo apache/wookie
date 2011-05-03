@@ -19,23 +19,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.Reader;
-import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.wookie.tests.functional.AbstractControllerTest;
 import org.apache.wookie.tests.helpers.WidgetUploader;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
-import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -50,7 +43,7 @@ import org.junit.Test;
  * @author scott
  *
  */
-public class PackagingAndConfiguration extends AbstractControllerTest {
+public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest {
 	// 1 files
 	@Test
 	public void b5(){
@@ -1195,7 +1188,7 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 	*/
 
 	// Utility methods
-	private Element processWidgetNoErrors(String widgetfname){
+	protected Element processWidgetNoErrors(String widgetfname){
 		try {
 			//File file = new File("src-tests/testdata/conformance/"+widgetfname);
 			String error = WidgetUploader.uploadWidget(widgetfname);
@@ -1211,37 +1204,6 @@ public class PackagingAndConfiguration extends AbstractControllerTest {
 		}		
 		fail("widget not found after upload");
 		return null;
-	}
-
-	private String instantiateWidget(Element widget){
-		String response = null;
-		String widgetUri = widget.getAttributeValue("identifier");
-		// instantiate widget and parse results
-		try {
-			HttpClient client = new HttpClient();
-			PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-			post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+widgetUri+"&userid=test&shareddatakey=test");
-			client.executeMethod(post);
-			response = IOUtils.toString(post.getResponseBodyAsStream());
-			post.releaseConnection();
-		}
-		catch (Exception e) {
-			//e.printStackTrace();
-			fail("failed to instantiate widget");
-		}
-		return response;		
-	}
-
-	private String getStartFile(String response){
-		SAXBuilder builder = new SAXBuilder();
-		Reader in = new StringReader(response);
-		Document doc;
-		try {
-			doc = builder.build(in);
-		} catch (Exception e) {
-			return null;
-		} 
-		return doc.getRootElement().getChild("url").getText();
 	}
 
 	private String getStartFileEncoding(Element widget){

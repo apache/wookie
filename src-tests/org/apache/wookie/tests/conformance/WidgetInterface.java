@@ -13,22 +13,6 @@
  */
 package org.apache.wookie.tests.conformance;
 
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.io.IOUtils;
-import org.apache.wookie.tests.functional.AbstractControllerTest;
-import org.apache.wookie.tests.helpers.WidgetUploader;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -38,20 +22,7 @@ import org.junit.Test;
  * Currently this just outputs HTML that you need to paste into a text file and view
  * in your browser to "eyeball" the results. But at least its a start
  */
-public class WidgetInterface extends AbstractControllerTest{
-	
-	private static String html = "";
-	
-	@BeforeClass
-	public static void setup(){
-		html = "<html><body>";
-	}
-	
-	@AfterClass
-	public static void finish(){
-		html += "</body></html>";
-		System.out.println(html);
-	}
+public class WidgetInterface extends AbstractFunctionalConformanceTest{
 	
 	@Test
 	public void taza(){
@@ -206,56 +177,5 @@ public class WidgetInterface extends AbstractControllerTest{
 	public void au(){
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-aa/au/au.wgt");
 	}	
-
-	
-	//// Utility methods
-	private void doTest(String widget){
-		String url;
-		try {
-			url = getWidgetUrl(widget);
-			html += "<iframe src=\""+url+"\"></iframe>";
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private String getWidgetUrl(String widgetfname) throws IOException{
-		WidgetUploader.uploadWidget(widgetfname);
-		Element widget = WidgetUploader.getLastWidget();
-		String response = instantiateWidget(widget);
-		return getStartFile(response);
-	}
-	
-	/// Reused from PackagingAndConfiguration - consider refactoring these
-	private String instantiateWidget(Element widget){
-		String response = null;
-		String widgetUri = widget.getAttributeValue("identifier");
-		// instantiate widget and parse results
-		try {
-			HttpClient client = new HttpClient();
-			PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-			post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+widgetUri+"&userid=test&shareddatakey=test");
-			client.executeMethod(post);
-			response = IOUtils.toString(post.getResponseBodyAsStream());
-			post.releaseConnection();
-		}
-		catch (Exception e) {
-			//e.printStackTrace();
-			fail("failed to instantiate widget");
-		}
-		return response;		
-	}
-
-	private String getStartFile(String response){
-		SAXBuilder builder = new SAXBuilder();
-		Reader in = new StringReader(response);
-		Document doc;
-		try {
-			doc = builder.build(in);
-		} catch (Exception e) {
-			return null;
-		} 
-		return doc.getRootElement().getChild("url").getText();
-	}
 
 }
