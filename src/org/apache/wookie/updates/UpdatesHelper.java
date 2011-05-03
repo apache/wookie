@@ -25,11 +25,19 @@ import org.jdom.output.XMLOutputter;
  */
 public class UpdatesHelper {
 
+	/**
+	 * Creates an XML serialization of a List of updates, including information about
+	 * the widget as well as the update description document associated with it
+	 * @param updates a List of UpdateInformation objects to render
+	 * @return a String containing the XML serialization of the updates
+	 */
 	public static String createXML(
 			List<UpdateInformation> updates) {
 		Document document = new Document();
+		// The returned XML uses the Widgets namespace
 		Element root = new Element("updates",IW3CXMLConfiguration.MANIFEST_NAMESPACE);
 		for (UpdateInformation info: updates){
+			// We use the toXml method on the UpdateInformation class to serialize each
 			root.addContent(info.toXml());
 		}
 		document.setRootElement(root);

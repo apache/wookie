@@ -46,10 +46,10 @@ import org.apache.wookie.w3c.updates.UpdateUtils;
 /**
  * Controller for managing widget updates
  * 
- * GET - gets the list of updates available
- * GET/{internal_widget_id} - redirects you to the UDD for the widget
- * POST - attempts to apply ALL available updates
- * PUT/{internal_widget_id} - applies update to specified widget only
+ * GET: gets the list of updates available
+ * GET/{internal_widget_id} : redirects you to the UDD for the widget
+ * POST: attempts to apply ALL available updates
+ * PUT/{internal_widget_id} : applies available update to specified widget only
  */
 public class UpdatesController extends Controller {
 
@@ -57,6 +57,11 @@ public class UpdatesController extends Controller {
 	
 	static Logger _logger = Logger.getLogger(UpdatesController.class.getName());
 
+	/**
+	 * A GET request with no path arguments will return the list of all updates available for
+	 * all widgets. 
+	 * TODO Note that this call can take a while to complete so it may be better in future to make the call asynchronous, or to schedule update checks and then cache the results
+	 */
 	@Override
 	protected void index(HttpServletRequest request,
 			HttpServletResponse response) throws UnauthorizedAccessException,
@@ -66,6 +71,11 @@ public class UpdatesController extends Controller {
 		returnXml(UpdatesHelper.createXML(updates),response);
 	}
 
+	/**
+	 * A GET request with a resource part requests a redirect to the Update Description Document for
+	 * the widget specified in the resource path, if one is available - otherwise the call will return 
+	 * a 404 status code.
+	 */
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.controller.Controller#show(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
@@ -73,7 +83,8 @@ public class UpdatesController extends Controller {
 	protected void show(String resourceId, HttpServletRequest request,
 			HttpServletResponse response) throws ResourceNotFoundException,
 			UnauthorizedAccessException, IOException {
-		// attempt to get specific widget by id
+		// attempt to get specific widget by id; note that this is the internal
+		// widget integer ID and not the widget URI
 		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidget widget = persistenceManager.findById(IWidget.class, resourceId);
 		if (widget == null) throw new ResourceNotFoundException();
@@ -82,16 +93,23 @@ public class UpdatesController extends Controller {
 		response.sendRedirect(widget.getUpdateLocation());
 	}
 
+	/**
+	 * A POST  requests all updates available to be installed.
+	 * TODO Note that this call can take a while to complete so it may be better in future to make the call asynchronous and spawn a background task to complete the update process
+	 */
 	@Override
 	protected boolean create(String resourceId, HttpServletRequest request)
 			throws ResourceDuplicationException, InvalidParametersException,
 			UnauthorizedAccessException {
-		
+			// Check to see if we're requiring updates over HTTPS - if not output a warning
 			boolean onlyUseHttps = Boolean.parseBoolean(request.getParameter("use-https"));
 			if (!onlyUseHttps) _logger.warn("checking for updates using non-secure method");
+			// Get all installed widgets
 			IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 			IWidget[] widgets = persistenceManager.findAll(IWidget.class);
+			// Create a W3CWidget factory for the current context
 			W3CWidgetFactory factory  = getFactory(request.getSession().getServletContext());
+			// Iterate over the widgets and attempt to install updates
 			for (IWidget widget: widgets){
 				try {
 					installUpdate(factory, widget, onlyUseHttps);
@@ -102,6 +120,9 @@ public class UpdatesController extends Controller {
 			return true;
 	}
 
+	/**
+	 * A PUT requests a single widget to be updated if there is an update available.
+	 */
 	@Override
 	protected void update(String resourceId, HttpServletRequest request)
 			throws ResourceNotFoundException, InvalidParametersException,
@@ -187,14 +208,16 @@ public class UpdatesController extends Controller {
 	/**
 	 * Get available updates for all installed widgets. Note that this method takes a long
 	 * time to return as it has to poll all the available update sites, so where possible
-	 * cache the returned updates
+	 * we ought to cache the returned updates
 	 * @return a list containing all the updates available.
 	 */
 	public List<UpdateInformation> getAllUpdates(){
 		ArrayList<UpdateInformation> updates = new ArrayList<UpdateInformation>();
+		// Get all installed widgets
 		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidget[] widgets = persistenceManager.findAll(IWidget.class);
 		for (IWidget widget: widgets){
+			// Check for a valid update document; if there is one, create a new UpdateInformation object and add to list
 			UpdateDescriptionDocument udd = UpdateUtils.checkForUpdate(widget.getUpdateLocation(), widget.getVersion());
 			if (udd != null){
 				UpdateInformation info = new UpdateInformation();
