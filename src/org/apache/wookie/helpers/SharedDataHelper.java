@@ -31,8 +31,7 @@ import org.apache.wookie.beans.util.PersistenceManagerFactory;
 public class SharedDataHelper {
 	
 	public static String getInternalSharedDataKey(IWidgetInstance instance){
-		String key = instance.getSharedDataKey() + ":" + instance.getApiKey() + ":" + instance.getWidget().getGuid();
-		return String.valueOf(key.hashCode());
+	  return instance.getSharedDataKey();
 	}
 	
 	public static String getInternalSharedDataKey(IWidgetInstance instance, String sharedDataKey){
