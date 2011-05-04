@@ -40,6 +40,11 @@ public class SharedDataHelper {
 		return String.valueOf(key.hashCode());
 	}
 	
+	 public static String getInternalSharedDataKey(String apiKey, String widgetUri, String sharedDataKey){
+	    String key = sharedDataKey + ":" + apiKey + ":" + widgetUri;
+	    return String.valueOf(key.hashCode());
+	  }
+	
 	public static ISharedData[] findSharedData(IWidgetInstance instance){
 		String sharedDataKey = SharedDataHelper.getInternalSharedDataKey(instance);
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();

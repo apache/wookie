@@ -184,9 +184,11 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	
 	public static void doGetWidget(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String userId = request.getParameter("userid"); //$NON-NLS-1$
-		String sharedDataKey =  request.getParameter("shareddatakey");	 //$NON-NLS-1$	
+		String sharedDataKey =  request.getParameter("shareddatakey");	 //$NON-NLS-1$
+        String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
 		String serviceType = request.getParameter("servicetype"); //$NON-NLS-1$
 		String widgetId = request.getParameter("widgetid"); //$NON-NLS-1$
+        sharedDataKey = SharedDataHelper.getInternalSharedDataKey(apiKey, widgetId, sharedDataKey);
 		HttpSession session = request.getSession(true);						
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 
@@ -207,7 +209,6 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		
 		// Widget exists
 		if(instance==null){
-			String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
 			instance = WidgetInstanceFactory.getWidgetFactory(session, localizedMessages).newInstance(apiKey, userId, sharedDataKey, serviceType, widgetId, locale);
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
@@ -340,6 +341,7 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 			String userId = URLDecoder.decode(request.getParameter("userid"), "UTF-8"); //$NON-NLS-1$
 			String sharedDataKey = request.getParameter("shareddatakey");	 //$NON-NLS-1$;
 			String widgetId = request.getParameter("widgetid");
+	        sharedDataKey = SharedDataHelper.getInternalSharedDataKey(apiKey, widgetId, sharedDataKey);
 			if (widgetId != null){
 				widgetId = URLDecoder.decode(widgetId, "UTF-8"); //$NON-NLS-1$
 				_logger.debug("Looking for widget instance with widgetid of " + widgetId);
