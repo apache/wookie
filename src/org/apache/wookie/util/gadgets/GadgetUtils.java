@@ -55,7 +55,7 @@ public class GadgetUtils {
 	/**
 	 * The default Container ID
 	 */
-	private static final String CONTAINER_ID = "wookie";
+	private static final String CONTAINER_ID = "default";
 
 	/**
 	 * Create a new W3CWidget from the request supplied

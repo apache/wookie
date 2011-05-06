@@ -35,9 +35,8 @@ public class OpenSocialUtils {
 	
 	static Logger _logger = Logger.getLogger(OpenSocialUtils.class.getName());
 	
-	private static final String DOMAIN_ID = "wookie"; //$NON-NLS-1$
-	// TODO once we have an API Key implementation, we can convey the actual container id rather than Wookie
-	private static final String CONTAINER_ID = "wookie"; //$NON-NLS-1$
+	private static final String DOMAIN_ID = "default"; //$NON-NLS-1$
+	private static final String CONTAINER_ID = "default"; //$NON-NLS-1$
 	
 	
 	/**
@@ -45,7 +44,7 @@ public class OpenSocialUtils {
 	 * 
 	 * VIEWER = who the current user is (ie. Instance.getUserId)
 	 * OWNER = who the page belongs to (assumed to be Instance.getUserId until we change plugin API)
-	 * APP_ID = what gadget this is (i.e. Widget.guid)
+	 * APP_ID/APP URL = what gadget this is (i.e. Widget URI)
 	 * MOD_ID = which instance of it  (i.e. Instance.id/idkey)
 	 * 
 	 * Alas, MOD_ID doesn't really map onto instance.IdKey (incompatible types), so we just have to use instance.id
