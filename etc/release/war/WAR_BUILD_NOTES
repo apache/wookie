@@ -11,6 +11,7 @@ KEYS
 NOTICE
 LICENSE
 RELEASE_NOTES
+RUNTIME_LICENSE
 WAR_BUILD_NOTES (this file!)
 
 This build is meant to get a user started with the process of deploying
