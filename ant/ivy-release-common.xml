@@ -127,6 +127,7 @@
 		<copy file="DISCLAIMER" tofile="${build.dir}/webapp/wookie/DISCLAIMER" overwrite="yes" />		
 		<copy file="LICENSE" tofile="${build.dir}/webapp/wookie/LICENSE" overwrite="yes" />		
 		<copy file="NOTICE" tofile="${build.dir}/webapp/wookie/NOTICE" overwrite="yes" />
+		<copy file="etc/release/RUNTIME_LICENSE" tofile="${build.dir}/webapp/wookie/RUNTIME_LICENSE" overwrite="yes" />
 
 		<!-- build war file -->
 		<war
@@ -150,6 +151,7 @@
 		<delete file="${build.dir}/webapp/wookie/DISCLAIMER" />		
 		<delete file="${build.dir}/webapp/wookie/LICENSE" />
 		<delete file="${build.dir}/webapp/wookie/NOTICE" />
+		<delete file="${build.dir}/webapp/wookie/RUNTIME_LICENSE" />
 
 		<!-- copy sql scripts across -->
 		<copy todir="${wookie.release.dir}/${wookie.war.folder.name}/build/scripts/">
@@ -161,7 +163,8 @@
 		<!-- copy over project readme files-->
 		<copy file="DISCLAIMER" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/DISCLAIMER" overwrite="yes" />
 		<copy file="KEYS" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/KEYS" overwrite="yes" />
-		<copy file="LICENSE" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/LICENSE" overwrite="yes" />
+		<copy file="LICENSE" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/LICENSE" overwrite="yes" />		
+		<copy file="etc/release/RUNTIME_LICENSE" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/RUNTIME_LICENSE" overwrite="yes" />			
 		<copy file="README" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/README" overwrite="yes" />
 		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/RELEASE_NOTES" overwrite="yes" />
 		<copy file="NOTICE" tofile="${wookie.release.dir}/${wookie.war.folder.name}/build/NOTICE" overwrite="yes" />
@@ -221,6 +224,7 @@
 		<copy file="README" tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/README" overwrite="yes" />
 		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/RELEASE_NOTES" overwrite="yes" />
 		<copy file="NOTICE" tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/NOTICE" overwrite="yes" />
+		<copy file="etc/release/RUNTIME_LICENSE" tofile="${wookie.release.dir}/${wookie.standalone.folder.name}/RUNTIME_LICENSE" overwrite="yes" />		
 
 		<ivy:retrieve conf="runtime"
 			pattern="${wookie.release.dir}/${wookie.standalone.folder.name}/lib/[artifact]-[revision].[ext]" />
