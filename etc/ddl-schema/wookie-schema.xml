@@ -297,16 +297,6 @@
     </index>
   </table>
 
-  <table name="ServerFeature">
-    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
-    <column name="jpa_version" type="INTEGER"/>
-    <column name="featureName" required="true" size="255" type="VARCHAR"/>
-    <column name="className" required="true" size="255" type="VARCHAR"/>
-    <index name="IXServerFeature1">
-      <index-column name="featureName"/>
-    </index>
-  </table>
-
   <table name="Token">
     <column name="id" primaryKey="true" required="true" type="INTEGER"/>
     <column name="jpa_version" type="INTEGER"/>

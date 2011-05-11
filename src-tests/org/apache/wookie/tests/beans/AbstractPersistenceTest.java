@@ -25,7 +25,6 @@ import org.apache.wookie.beans.IAccessRequest;
 import org.apache.wookie.beans.IApiKey;
 import org.apache.wookie.beans.IParticipant;
 import org.apache.wookie.beans.IPreference;
-import org.apache.wookie.beans.IServerFeature;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetDefault;
 import org.apache.wookie.beans.IWidgetInstance;
@@ -169,12 +168,6 @@ public abstract class AbstractPersistenceTest
         participant.setParticipantThumbnailUrl("");
         persistenceManager.save(participant);
 
-        // create server feature
-        IServerFeature serverFeature = persistenceManager.newInstance(IServerFeature.class);
-        serverFeature.setFeatureName("test-feature-name");
-        serverFeature.setClassName("test.feature.class.name");
-        persistenceManager.save(serverFeature);
-
         // create access request
         IAccessRequest accessRequest = persistenceManager.newInstance(IAccessRequest.class);
         accessRequest.setOrigin("localhost");
@@ -215,14 +208,6 @@ public abstract class AbstractPersistenceTest
         assertNotNull(participant);
         assertEquals(participants[0], participant);
         
-        // test custom server feature query methods
-        String [] serverFeatureNames = persistenceManager.findServerFeatureNames();
-        assertNotNull(serverFeatureNames);
-        assertEquals(1, serverFeatureNames.length);
-        String serverFeatureName = serverFeatureNames[0];
-        serverFeature = persistenceManager.findServerFeatureByName(serverFeatureName);
-        assertNotNull(serverFeature);
-        assertEquals("test-feature-name", serverFeature.getFeatureName());
         
         IAccessRequest [] accessRequests = persistenceManager.findAll(IAccessRequest.class);
         assertNotNull(accessRequests);
@@ -231,7 +216,6 @@ public abstract class AbstractPersistenceTest
         // delete test objects
         persistenceManager.delete(widgetInstance0);
         persistenceManager.delete(participant);
-        persistenceManager.delete(serverFeature);
         persistenceManager.delete(accessRequests);
         
         // commit and close persistence manager transaction
@@ -249,9 +233,6 @@ public abstract class AbstractPersistenceTest
         participants = persistenceManager.findAll(IParticipant.class);
         assertNotNull(participants);
         assertEquals(0, participants.length);
-        IServerFeature [] serverFeatures = persistenceManager.findAll(IServerFeature.class);
-        assertNotNull(serverFeatures);
-        assertEquals(0, serverFeatures.length);
         
         // rollback and close persistence manager transaction
         persistenceManager.rollback();

@@ -31,7 +31,6 @@
         <class>org.apache.wookie.beans.jpa.impl.ParticipantImpl</class>        
         <class>org.apache.wookie.beans.jpa.impl.PreferenceDefaultImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.PreferenceImpl</class>
-        <class>org.apache.wookie.beans.jpa.impl.ServerFeatureImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.SharedDataImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.StartFileImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.TokenImpl</class>

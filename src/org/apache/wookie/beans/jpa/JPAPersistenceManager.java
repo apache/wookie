@@ -58,7 +58,6 @@ import org.apache.wookie.beans.IParam;
 import org.apache.wookie.beans.IParticipant;
 import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.IPreferenceDefault;
-import org.apache.wookie.beans.IServerFeature;
 import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IToken;
@@ -79,7 +78,6 @@ import org.apache.wookie.beans.jpa.impl.ParamImpl;
 import org.apache.wookie.beans.jpa.impl.ParticipantImpl;
 import org.apache.wookie.beans.jpa.impl.PreferenceDefaultImpl;
 import org.apache.wookie.beans.jpa.impl.PreferenceImpl;
-import org.apache.wookie.beans.jpa.impl.ServerFeatureImpl;
 import org.apache.wookie.beans.jpa.impl.SharedDataImpl;
 import org.apache.wookie.beans.jpa.impl.StartFileImpl;
 import org.apache.wookie.beans.jpa.impl.TokenImpl;
@@ -127,7 +125,6 @@ public class JPAPersistenceManager implements IPersistenceManager
         INTERFACE_TO_CLASS_MAP.put(IParticipant.class, ParticipantImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IPreference.class, PreferenceImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IPreferenceDefault.class, PreferenceDefaultImpl.class);
-        INTERFACE_TO_CLASS_MAP.put(IServerFeature.class, ServerFeatureImpl.class);
         INTERFACE_TO_CLASS_MAP.put(ISharedData.class, SharedDataImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IStartFile.class, StartFileImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IToken.class, TokenImpl.class);
@@ -143,7 +140,6 @@ public class JPAPersistenceManager implements IPersistenceManager
         BEAN_INTERFACE_TO_CLASS_MAP.put(IApiKey.class, ApiKeyImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IParticipant.class, ParticipantImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IPreference.class, PreferenceImpl.class);
-        BEAN_INTERFACE_TO_CLASS_MAP.put(IServerFeature.class, ServerFeatureImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(ISharedData.class, SharedDataImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWhitelist.class, WhitelistImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidget.class, WidgetImpl.class);
@@ -154,7 +150,6 @@ public class JPAPersistenceManager implements IPersistenceManager
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IAccessRequest.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IApiKey.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IParticipant.class, Integer.class);
-        BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IServerFeature.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IWhitelist.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IWidget.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IWidgetDefault.class, String.class);
@@ -733,66 +728,6 @@ public class JPAPersistenceManager implements IPersistenceManager
             }
         }
         return null;
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IPersistenceManager#findServerFeatureByName(java.lang.String)
-     */
-    public IServerFeature findServerFeatureByName(String name)
-    {
-        // validate entity manager transaction
-        if (entityManager == null)
-        {
-            throw new IllegalStateException("Transaction not initiated or already closed");
-        }        
-
-        // get server feature by name using custom query
-        if (name != null)
-        {
-            try
-            {
-                Query query = entityManager.createNamedQuery("SERVER_FEATURE");
-                query.setParameter("featureName", name);
-                return (IServerFeature)query.getSingleResult();
-            }
-            catch (NoResultException nre)
-            {
-            }
-            catch (Exception e)
-            {
-                logger.error("Unexpected exception: "+e, e);
-            }
-        }
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IPersistenceManager#findServerFeatureNames()
-     */
-    @SuppressWarnings("unchecked")
-    public String[] findServerFeatureNames()
-    {
-        // validate entity manager transaction
-        if (entityManager == null)
-        {
-            throw new IllegalStateException("Transaction not initiated or already closed");
-        }        
-
-        // get server feature names using custom query
-        try
-        {
-            Query query = entityManager.createNamedQuery("SERVER_FEATURE_NAMES");
-            List<String> namesList = query.getResultList();
-            if ((namesList != null) && !namesList.isEmpty())
-            {
-                return namesList.toArray(new String[namesList.size()]);
-            }
-        }
-        catch (Exception e)
-        {
-            logger.error("Unexpected exception: "+e, e);
-        }
-        return new String[0];
     }
 
     /* (non-Javadoc)

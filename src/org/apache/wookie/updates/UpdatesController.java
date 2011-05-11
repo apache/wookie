@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
-import org.apache.wookie.beans.IServerFeature;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
@@ -32,6 +31,7 @@ import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
+import org.apache.wookie.feature.Features;
 import org.apache.wookie.helpers.FlashMessage;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.util.html.StartPageProcessor;
@@ -194,13 +194,7 @@ public class UpdatesController extends Controller {
 			_logger.error(e);
 		}
 		// Configure the widget factory with the installed feature set
-		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IServerFeature[] features = persistenceManager.findAll(IServerFeature.class);
-		String[] featureNames = new String[features.length];
-		for (int i=0;i<features.length;i++){
-			featureNames[i] = features[i].getFeatureName();
-		}
-		factory.setFeatures(featureNames);
+		factory.setFeatures(Features.getFeatureNames());
 		factory.setStartPageProcessor(new StartPageProcessor());
 		return factory;
 	}

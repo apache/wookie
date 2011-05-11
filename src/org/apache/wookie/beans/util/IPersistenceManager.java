@@ -19,7 +19,6 @@ import java.util.Map;
 import org.apache.wookie.beans.IAccessRequest;
 import org.apache.wookie.beans.IBean;
 import org.apache.wookie.beans.IParticipant;
-import org.apache.wookie.beans.IServerFeature;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 
@@ -213,14 +212,6 @@ public interface IPersistenceManager
      * @return retrieved IParticipant bean instance or null if not found
      */
     IParticipant findParticipantViewer(IWidgetInstance widgetInstance);
-
-    /**
-     * Custom name IServerFeature query.
-     * 
-     * @param name name query value
-     * @return retrieved IServerFeature bean instance or null if not found
-     */
-    IServerFeature findServerFeatureByName(String name);
     
     /**
      * Custom name IAccessRequest query.
@@ -229,11 +220,5 @@ public interface IPersistenceManager
      * @return retrieved matching IAccessRequest beans array or empty array if none found
      */
     IAccessRequest [] findApplicableAccessRequests(IWidget widget);
-    
-    /**
-     * Custom IServerFeature names query.
-     * 
-     * @return retrieved IServerFeature beans names array or empty array if none found
-     */
-    String [] findServerFeatureNames();
+ 
 }

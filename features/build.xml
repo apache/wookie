@@ -19,6 +19,7 @@
    <property name="wookie.features.dir" location="."/>
    <property name="project.build.classes.dir" location="${project.build.dir}/classes" />
    <property name="feature.shared.dir" value="${servletEngine.webapp.dir}/wookie/shared/feature/${feature.shortname}"/>   
+   <property name="feature.build.dir" value="${servletEngine.webapp.dir}/wookie/features/${feature.shortname}"/>
 	
    <target name="_clean">
    </target>
@@ -31,24 +32,15 @@
    </target>
    
    <target name="build-feature" depends="_init">
-		<!-- compile classes -->
-		<javac 
-			source="${java.source.version}" 
-			target="${java.target.version}" 
- 		    destdir="${project.build.classes.dir}" 
-			debug="${compile.debug}" 
-			>
-			<src path="${wookie.root.dir}/${wookie.features.dir}/${feature.shortname}/src" />
-		</javac>
-    	<!-- copy to classes dir -->
     </target>
 	
     <target name="deploy-feature">
       <echo>Deploying feature: ${feature.shortname}</echo>
       <!-- copy shared resources -->
-      <mkdir dir="${user.dir}/${feature.shared.dir}"/>
-      <copy todir="${user.dir}/${feature.shared.dir}">
-        <fileset dir="${user.dir}/${wookie.features.dir}/${feature.shortname}/shared/"/>
+      <mkdir dir="${user.dir}/${feature.build.dir}"/>
+      <copy todir="${user.dir}/${feature.build.dir}">
+          <fileset dir="${user.dir}/${wookie.features.dir}/${feature.shortname}"/>
       </copy>
+      	
     </target>
 </project>

@@ -39,6 +39,7 @@ import org.apache.wookie.controller.WidgetServicesController;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
+import org.apache.wookie.feature.Features;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetKeyManager;
 import org.apache.wookie.manager.IWidgetAdminManager;
@@ -485,7 +486,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 				fac.setLocales(locales);
 				fac.setLocalPath(getServletContext().getContextPath()+properties.getString("widget.widgetfolder"));
 				fac.setOutputDirectory(WIDGETFOLDER);
-				fac.setFeatures(persistenceManager.findServerFeatureNames());
+				fac.setFeatures(Features.getFeatureNames());
 				fac.setStartPageProcessor(new StartPageProcessor());
 				W3CWidget widgetModel = fac.parse(zipFile);
 				WidgetJavascriptSyntaxAnalyzer jsa = new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());				

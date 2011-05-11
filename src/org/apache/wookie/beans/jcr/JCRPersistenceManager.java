@@ -61,7 +61,6 @@ import org.apache.wookie.beans.IParam;
 import org.apache.wookie.beans.IParticipant;
 import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.IPreferenceDefault;
-import org.apache.wookie.beans.IServerFeature;
 import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IToken;
@@ -82,7 +81,6 @@ import org.apache.wookie.beans.jcr.impl.ParamImpl;
 import org.apache.wookie.beans.jcr.impl.ParticipantImpl;
 import org.apache.wookie.beans.jcr.impl.PreferenceDefaultImpl;
 import org.apache.wookie.beans.jcr.impl.PreferenceImpl;
-import org.apache.wookie.beans.jcr.impl.ServerFeatureImpl;
 import org.apache.wookie.beans.jcr.impl.SharedDataImpl;
 import org.apache.wookie.beans.jcr.impl.StartFileImpl;
 import org.apache.wookie.beans.jcr.impl.TokenImpl;
@@ -132,7 +130,6 @@ public class JCRPersistenceManager implements IPersistenceManager
         INTERFACE_TO_CLASS_MAP.put(IParticipant.class, ParticipantImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IPreference.class, PreferenceImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IPreferenceDefault.class, PreferenceDefaultImpl.class);
-        INTERFACE_TO_CLASS_MAP.put(IServerFeature.class, ServerFeatureImpl.class);
         INTERFACE_TO_CLASS_MAP.put(ISharedData.class, SharedDataImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IStartFile.class, StartFileImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IToken.class, TokenImpl.class);
@@ -147,7 +144,6 @@ public class JCRPersistenceManager implements IPersistenceManager
         BEAN_INTERFACE_TO_CLASS_MAP.put(IAccessRequest.class, AccessRequestImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IApiKey.class, ApiKeyImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IParticipant.class, ParticipantImpl.class);
-        BEAN_INTERFACE_TO_CLASS_MAP.put(IServerFeature.class, ServerFeatureImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWhitelist.class, WhitelistImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidget.class, WidgetImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetDefault.class, WidgetDefaultImpl.class);
@@ -879,68 +875,6 @@ public class JCRPersistenceManager implements IPersistenceManager
             }
         }
         return null;
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IPersistenceManager#findServerFeatureByName(java.lang.String)
-     */
-    public IServerFeature findServerFeatureByName(String name)
-    {
-        // validate object content manager transaction
-        if (ocm == null)
-        {
-            throw new IllegalStateException("Transaction not initiated or already closed");
-        }
-
-        // get server feature by name
-        if (name != null)
-        {
-            try
-            {
-                IServerFeature [] serverFeature = findByValue(IServerFeature.class, "featureName", name);
-                if (serverFeature.length == 1)
-                {
-                    return serverFeature[0];
-                }
-            }
-            catch (Exception e)
-            {
-                logger.error("Unexpected exception: "+e, e);
-            }
-        }
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IPersistenceManager#findServerFeatureNames()
-     */
-    public String[] findServerFeatureNames()
-    {
-        // validate object content manager transaction
-        if (ocm == null)
-        {
-            throw new IllegalStateException("Transaction not initiated or already closed");
-        }
-
-        // get server feature names
-        try
-        {
-            IServerFeature [] serverFeatures = findAll(IServerFeature.class);
-            if (serverFeatures.length > 0)
-            {
-                String [] names = new String[serverFeatures.length];
-                for (int i = 0; (i < serverFeatures.length); i++)
-                {
-                    names[i] = serverFeatures[i].getFeatureName();
-                }
-                return names;
-            }
-        }
-        catch (Exception e)
-        {
-            logger.error("Unexpected exception: "+e, e);
-        }
-        return new String[0];
     }
 
     /* (non-Javadoc)

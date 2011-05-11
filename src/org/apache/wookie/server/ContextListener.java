@@ -32,7 +32,7 @@ import org.apache.wookie.Messages;
 import org.apache.wookie.ajaxmodel.IWidgetRuntimeHelper;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
-import org.apache.wookie.feature.FeatureLoader;
+import org.apache.wookie.feature.Features;
 import org.apache.wookie.helpers.FlashMessage;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.util.WgtWatcher;
@@ -135,18 +135,7 @@ public class ContextListener implements ServletContextListener {
 			/*
 			 * Load installed features
 			 */
-			PropertiesConfiguration featuresConfiguration;
-			File localFeaturesPropsFile = new File(System.getProperty("user.dir") + File.separator + "local.features.properties");
-			if (localFeaturesPropsFile.exists()) {
-				featuresConfiguration = new PropertiesConfiguration(localFeaturesPropsFile);
-				_logger.info("Loading local features file: " + localOpenSocialPropsFile.toString());
-			} else {
-				featuresConfiguration = new PropertiesConfiguration("features.properties");
-				featuresConfiguration.setFile(localFeaturesPropsFile);
-				featuresConfiguration.save();
-				_logger.info("Loading default features, configure your local server using: " + localFeaturesPropsFile.toString());
-			}
-			FeatureLoader.loadFeatures(featuresConfiguration);
+			Features.loadFeatures(context);
 			
 			/*
 			 * Run diagnostics
@@ -200,7 +189,7 @@ public class ContextListener implements ServletContextListener {
 	 						fac.setLocales(locales);
 	 						fac.setLocalPath(contextPath+localWidgetFolderPath);
 	 						fac.setOutputDirectory(WIDGETFOLDER);
-	 						fac.setFeatures(persistenceManager.findServerFeatureNames());
+	 						fac.setFeatures(Features.getFeatureNames());
 	 						fac.setStartPageProcessor(new StartPageProcessor());
 	 						W3CWidget model = fac.parse(upload);
 	 						WidgetJavascriptSyntaxAnalyzer jsa = new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());

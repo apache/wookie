@@ -17,9 +17,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 
-import org.apache.wookie.beans.IServerFeature;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
+import org.apache.wookie.feature.Features;
 import org.apache.wookie.feature.IFeature;
 import org.apache.wookie.w3c.IContentEntity;
 import org.apache.wookie.w3c.IFeatureEntity;
@@ -77,11 +77,13 @@ public class StartPageProcessor implements IStartPageProcessor {
 	 */
 	private void addFeatures(IHtmlProcessor engine,W3CWidget model) throws Exception{
 		for (IFeatureEntity feature: model.getFeatures()){
-		    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-			IServerFeature sf = persistenceManager.findServerFeatureByName(feature.getName());
-			IFeature theFeature = getFeatureInstanceForName(sf.getClassName());
-			addScripts(engine, theFeature);
-			addStylesheets(engine, theFeature);
+			for (IFeature theFeature: Features.getFeatures()){
+			  if (theFeature.getName().equals(feature.getName())){
+		      addScripts(engine, theFeature);
+		      addStylesheets(engine, theFeature);			    
+			  }
+			}
+			
 		}
 	}
 	

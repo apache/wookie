@@ -154,9 +154,5 @@
 - wookie:value (string) mandatory
 - wookie:email (string) mandatory
 
-[wookie:serverFeature] > nt:base
-- wookie:featureName (string) mandatory
-- wookie:className (string) mandatory
-
 [wookie:widgetService] > nt:base
 - wookie:serviceName (string) mandatory
