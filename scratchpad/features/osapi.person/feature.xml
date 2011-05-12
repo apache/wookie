@@ -15,9 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project default="build-feature" basedir="." name="feature build file">
-	<property name="wookie.features.dir" location="../"/>
-	<property name="feature.shortname" value="osapi.person"/>
-	<property name="feature.uri" value="http://opensocial.org/osapi.person"/>
-	<import file="../build.xml"/>
-</project>
+<feature>
+	<name>http://opensocial.org/osapi.person</name>
+	<script src="osapi-person.js"/>
+</feature>
