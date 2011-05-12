@@ -53,7 +53,10 @@
       <equals arg1="${wookie.persistence.manager.type}" arg2="jcr"/>
     </condition>
 	<antcall target="post-deploy-webapp-jpa"/>    
-	<antcall target="post-deploy-webapp-jcr"/>    
+	<antcall target="post-deploy-webapp-jcr"/>  
+  	<!-- deploy features -->
+	<antcall target="post-deploy-webapp-features-extra"/>  
+	<antcall target="post-deploy-webapp-features-scratchpad"/>  
   	<!-- deploy widgets -->
   	<delete dir="${widget.build.dir}"/>
   	<subant antfile="build.xml" target="deploy-widget" inheritall="true">
@@ -63,15 +66,24 @@
   	  	<exclude name="${widget.deploy.exclude}"/>
   	  </fileset>
   	</subant>
-  	<!-- deploy features -->
-  	<echo>deploy feature</echo>
-  	<subant antfile="build.xml" target="deploy-feature" inheritall="true">
-  	  <fileset dir="${wookie.features.dir}">
-  	  	<include name="${widget.deploy.include}"/>
-  	  </fileset>
-  	</subant>
   </target>
 
+  <target name="post-deploy-webapp-features-extra" if="include.extra.features">
+		<echo>deploying extra features</echo>
+	    <mkdir dir="${servletEngine.webapp.dir}/${ant.project.name}/features"/>
+	    <copy todir="${servletEngine.webapp.dir}/${ant.project.name}/features">
+   		    <fileset dir="${user.dir}/features"/>
+	    </copy>
+  </target>
+
+  <target name="post-deploy-webapp-features-scratchpad" if="include.scratchpad.features">
+		<echo>deploying scratchpad features</echo>
+		 <mkdir dir="${servletEngine.webapp.dir}/${ant.project.name}/features"/>
+		 <copy todir="${servletEngine.webapp.dir}/${ant.project.name}/features">
+	   		 <fileset dir="${user.dir}/scratchpad/features"/>
+		 </copy>
+  </target>
+	
   <target name="post-deploy-webapp-jpa" if="deploy.webapp.jpa">
     <!-- configure JPA web.xml resource ref -->
 	<copy file="${project.webapp.dir}/WEB-INF/web.xml"
@@ -274,15 +286,8 @@
         <path refid="project.openjpa.class.path" />
       </classpath>
     </openJPAEnhancer>
-    
-  	<!-- compile features -->
-  	<subant antfile="build.xml" target="build-feature" inheritall="true">
-  	  <fileset dir="${wookie.features.dir}">
-  	  	<include name="${widget.deploy.include}"/>
-  	  </fileset>
-  	</subant>
   </target>
-	
+
   <target name="post-compile-test">
     <!-- run unit tests, (skip functional and integration tests) -->
     <junit fork="yes" forkmode="once" printsummary="true" haltonfailure="true">
