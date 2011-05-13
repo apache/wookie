@@ -209,6 +209,20 @@
 		<servlet-name>WhitelistController</servlet-name>
 		<url-pattern>/whitelist/*</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<description></description>
+		<display-name>ApiKeys</display-name>
+		<servlet-name>ApiKeyController</servlet-name>
+		<servlet-class>
+			org.apache.wookie.controller.ApiKeyController
+		</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>ApiKeyController</servlet-name>
+		<url-pattern>/keys/*</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<description></description>
@@ -364,7 +378,20 @@
 				<role-name>widgetadmin</role-name>
 			</auth-constraint>
 		</security-constraint>
-				<security-constraint>		
+		<security-constraint>		
+			<web-resource-collection>
+				<web-resource-name>ApiKeyController</web-resource-name>
+				<url-pattern>/keys/*</url-pattern>
+				<http-method>GET</http-method>
+				<http-method>DELETE</http-method>
+				<http-method>PUT</http-method>
+				<http-method>POST</http-method>
+			</web-resource-collection>		
+			<auth-constraint>
+				<role-name>widgetadmin</role-name>
+			</auth-constraint>
+		</security-constraint>
+		<security-constraint>		
 			<web-resource-collection>
 				<web-resource-name>UpdatesController</web-resource-name>
 				<url-pattern>/updates/*</url-pattern>
