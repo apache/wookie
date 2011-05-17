@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="src-tests"/>
-	<classpathentry kind="src" path="features/camera/src"/>
 	<classpathentry kind="src" output="parser/java/bin" path="parser/java/src"/>
 	<classpathentry kind="src" output="parser/java/bin" path="parser/java/src-test"/>
 	<classpathentry kind="src" path="connector/java/src"/>
