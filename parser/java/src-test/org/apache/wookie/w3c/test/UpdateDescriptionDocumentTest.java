@@ -115,13 +115,28 @@ public class UpdateDescriptionDocumentTest {
 		assertEquals("test", udd.getDetails("en"));
 	}
 	
-	@Test
-	public void validRemoteDocument() throws InvalidUDDException, IOException{
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument("http://svn.apache.org/repos/asf/incubator/wookie/trunk/parser/java/src-test/update.xml");
-		assertEquals("1.0", udd.getVersionTag());
-		assertEquals("http://incubator.apache.org/wookie/test.wgt", udd.getUpdateSource().toString());
-		assertEquals("test", udd.getDetails("en"));
-	}
+  @Test
+  public void exportDocument() throws InvalidUDDException{
+    // Create document
+    UpdateDescriptionDocument udd = new UpdateDescriptionDocument(null, null, null);
+    Document doc = new Document();
+    Element el = new Element("update-info", IW3CXMLConfiguration.MANIFEST_NAMESPACE);
+    el.setAttribute("version","1.0");
+    el.setAttribute("src","http://incubator.apache.org/wookie/test.wgt");
+    Element details = new Element("details", IW3CXMLConfiguration.MANIFEST_NAMESPACE);
+    details.setText("test");
+    el.addContent(details);
+    doc.setRootElement(el);
+    udd.fromXML(doc);
+    // Export to XML
+    doc = new Document();
+    doc.setRootElement(udd.toXml());
+    // Read in again - should be a valid UDD
+    udd.fromXML(doc);
+    assertEquals("1.0", udd.getVersionTag());
+    assertEquals("http://incubator.apache.org/wookie/test.wgt", udd.getUpdateSource().toString());
+    assertEquals("test", udd.getDetails("en"));
+  }
 	
 	@Test (expected = InvalidUDDException.class)
 	public void missingRemoteDocument() throws InvalidUDDException, IOException{

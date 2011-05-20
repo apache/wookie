@@ -64,7 +64,7 @@ public class WidgetOutputterTest extends ConformanceTest{
 		outputter.setWidgetFolder("/widgets");
 		String manifest = outputter.outputXMLString(widget);
 		assertTrue(manifest.contains("id=\"http://www.getwookie.org/widgets/weather\""));
-		assertTrue(manifest.contains("origin=\"http://feeds.bbc.co.uk"));
+		assertTrue(manifest.contains("origin=\"http://newsrss.bbc.co.uk"));
 	}
 	@Test
 	public void outputString4() throws Exception{

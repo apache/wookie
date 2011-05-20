@@ -32,8 +32,8 @@ public class UpdateDescriptionTest {
 	@Test
 	public void create(){
 		UpdateDescription desc = new UpdateDescription();
-		Element update = new Element("update-description", Namespace.getNamespace(IW3CXMLConfiguration.MANIFEST_NAMESPACE));
-		update.setAttribute("href", "http://localhost");
+		Element update = new Element(IW3CXMLConfiguration.UPDATE_ELEMENT, Namespace.getNamespace(IW3CXMLConfiguration.MANIFEST_NAMESPACE));
+		update.setAttribute(IW3CXMLConfiguration.HREF_ATTRIBUTE, "http://localhost");
 		try {
 			desc.fromXML(update);
 		} catch (BadManifestException e) {
@@ -45,8 +45,8 @@ public class UpdateDescriptionTest {
 	@Test
 	public void createInvalidURL(){
 		UpdateDescription desc = new UpdateDescription();
-		Element update = new Element("update-description", Namespace.getNamespace(IW3CXMLConfiguration.MANIFEST_NAMESPACE));
-		update.setAttribute("href", "notavalidurl!");
+		Element update = new Element(IW3CXMLConfiguration.UPDATE_ELEMENT, Namespace.getNamespace(IW3CXMLConfiguration.MANIFEST_NAMESPACE));
+		update.setAttribute(IW3CXMLConfiguration.HREF_ATTRIBUTE, "notavalidurl!");
 		try {
 			desc.fromXML(update);
 		} catch (BadManifestException e) {
@@ -55,4 +55,11 @@ public class UpdateDescriptionTest {
 		assertNull(desc.getHref());
 	}
 
+	@Test
+	public void export(){
+	   UpdateDescription desc = new UpdateDescription("http://localhost");
+	   Element el = desc.toXML();
+	   assertEquals("http://localhost", el.getAttributeValue(IW3CXMLConfiguration.HREF_ATTRIBUTE));
+	   
+	}
 }
