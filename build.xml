@@ -59,14 +59,29 @@
 	<antcall target="post-deploy-webapp-features-scratchpad"/>  
   	<!-- deploy widgets -->
   	<delete dir="${widget.build.dir}"/>
-  	<subant antfile="build.xml" target="deploy-widget" inheritall="true">
-  	  <property name="deployToDev" value="true"/>
-  	  <fileset dir="${wookie.widgets.dir}">
-  	  	<include name="${widget.deploy.include}"/>
-  	  	<exclude name="${widget.deploy.exclude}"/>
-  	  </fileset>
-  	</subant>
+	<antcall target="post-deploy-webapp-widgets-extra"/>  
+	<antcall target="post-deploy-webapp-widgets-scratchpad"/>
   </target>
+	
+  <target name="post-deploy-webapp-widgets-extra" if="include.extra.widgets">
+  	<subant antfile="build.xml" target="deploy-widget" inheritall="true">
+  		<property name="deployToDev" value="true"/>
+  	  	  <fileset dir="${wookie.widgets.dir}">
+  	  	  	<include name="${widget.deploy.include}"/>
+  	  	  	<exclude name="${widget.deploy.exclude}"/>
+  	  	  </fileset>
+  	  	</subant>
+  </target>
+	
+  <target name="post-deploy-webapp-widgets-scratchpad" if="include.scratchpad.widgets">
+    <subant antfile="build.xml" target="deploy-widget" inheritall="true">
+    	<property name="deployToDev" value="true"/>
+    	 <fileset dir="${user.dir}/scratchpad/widgets">
+    	  	 <include name="${widget.deploy.include}"/>
+    	  	 <exclude name="${widget.deploy.exclude}"/>
+    	 </fileset>
+    </subant>
+   </target>
 
   <target name="post-deploy-webapp-features-extra" if="include.extra.features">
 		<echo>deploying extra features</echo>

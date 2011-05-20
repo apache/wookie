@@ -18,8 +18,14 @@
 <project default="build-widget" basedir="." name="Wookie_scratchpad_widgets_build_file">
     <property name="wookie.root.dir" location="../.."/>
     <property name="project.build.dir" location="${wookie.root.dir}/build"/>
-    <property name="wookie.widgets.dir" location="."/>
     <property name="widget.template.dir" value="${wookie.root.dir}/widgets/widget-template"/>
     
     <import file="${wookie.root.dir}/widgets/build.xml"/>
+	
+	   <target name="build-widget" depends="_init">
+		    <zip destfile="${widget.build.dir}/${widget.shortname}.wgt"
+		         basedir="${wookie.root.dir}/scratchpad/widgets/${widget.shortname}"
+		    />
+	   		<echo>Widget package created at ${widget.build.dir}/${widget.shortname}.wgt</echo>
+	    </target>
 </project>
