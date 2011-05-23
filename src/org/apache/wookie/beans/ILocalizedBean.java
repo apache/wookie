@@ -25,14 +25,7 @@ import org.apache.wookie.w3c.ILocalizedElement;
  * @version $Id$
  */
 public interface ILocalizedBean extends ILocalizedElement
-{
-    /**
-     * Set localized language.
-     * 
-     * @param lang name language
-     */
-    void setLang(String lang);    
-
+{  
     /**
      * Get localized text direction.
      * 

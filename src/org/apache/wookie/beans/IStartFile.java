@@ -53,10 +53,4 @@ public interface IStartFile extends ILocalizedElement
      */
     void setCharset(String charset);
 
-    /**
-     * Set widget start file language.
-     * 
-     * @param lang file language
-     */
-    void setLang(String lang);
 }

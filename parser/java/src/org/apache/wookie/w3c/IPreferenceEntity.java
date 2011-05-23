@@ -19,5 +19,7 @@ package org.apache.wookie.w3c;
 public interface IPreferenceEntity extends IParamEntity, IElement {
 
 	public boolean isReadOnly();
+	
+	public void setReadOnly(boolean readOnly);
 
 }

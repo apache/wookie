@@ -66,11 +66,5 @@ public interface IWidgetIcon extends ILocalizedElement
      * @param width icon width
      */
     void setWidth(Integer width);
-
-    /**
-     * Set widget icon language.
-     * 
-     * @param lang icon language
-     */
-    void setLang(String lang);    
+   
 }

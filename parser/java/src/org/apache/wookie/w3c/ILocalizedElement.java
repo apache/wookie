@@ -24,5 +24,11 @@ public interface ILocalizedElement {
 	 * @return the language tag, or null if no language tag has been set for the element
 	 */
 	public String getLang();
+	
+	/**
+	 * Set the language tag for the element. 
+	 * @param lang a language tag to set; this should conform to BCP47.
+	 */
+	public void setLang(String lang);
 
 }
