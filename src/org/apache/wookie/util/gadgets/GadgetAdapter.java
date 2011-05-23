@@ -224,6 +224,9 @@ public class GadgetAdapter implements W3CWidget {
 		return null;
 	}
 	
+	public void setLang(String lang){
+	  
+	}
 	
 
 }
