@@ -14,6 +14,8 @@
 
 package org.apache.wookie.beans.jcr;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -32,11 +34,13 @@ import javax.jcr.SimpleCredentials;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.pool.BasePoolableObjectFactory;
 import org.apache.commons.pool.PoolableObjectFactory;
 import org.apache.commons.pool.impl.GenericObjectPool;
+import org.apache.jackrabbit.core.TransientRepository;
 import org.apache.jackrabbit.core.nodetype.NodeTypeManagerImpl;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.atomictypeconverter.impl.DefaultAtomicTypeConverterProvider;
@@ -94,6 +98,7 @@ import org.apache.wookie.beans.jcr.impl.WidgetTypeImpl;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceCommitException;
 
+import org.mortbay.jetty.plus.naming.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -159,8 +164,15 @@ public class JCRPersistenceManager implements IPersistenceManager
     private static String repositoryPassword;
     private static String repositoryWorkspace;
     private static String rootPath;
+    private static String repositoryRootPath;
+    
     private static Map<Class<? extends IBean>,String> beanClassNodeRootPaths = new HashMap<Class<? extends IBean>,String>();
     private static GenericObjectPool ocmPool;
+    
+    public static final String REPOSITORY_USER_PROPERTY_NAME = "wookie.repository.user";
+    public static final String REPOSITORY_PASSWORD_PROPERTY_NAME = "wookie.repository.password";
+    public static final String REPOSITORY_ROOT_PATH_PROPERTY_NAME = "wookie.repository.rootpath";
+    public static final String REPOSITORY_WORKSPACE_PROPERTY_NAME = "wookie.repository.workspace";
 
     /**
      * Initialize implementation with configuration.

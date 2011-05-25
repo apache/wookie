@@ -157,6 +157,8 @@
   </target>
 
   <target name="post-deploy-webapp-jcr" if="deploy.webapp.jcr">
+  	<ant dir="modules/jcr" target="deploy-module" inheritAll="false"/>
+  	
     <!-- configure JCR web.xml resource ref -->
 	<copy file="${project.webapp.dir}/WEB-INF/web.xml"
           todir="${servletEngine.webapp.dir}/${ant.project.name}/WEB-INF"

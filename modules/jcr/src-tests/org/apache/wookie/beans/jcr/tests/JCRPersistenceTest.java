@@ -12,7 +12,7 @@
  *  limitations under the License.
  */
 
-package org.apache.wookie.tests.beans;
+package org.apache.wookie.beans.jcr.tests;
 
 import java.io.File;
 
@@ -25,6 +25,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.jackrabbit.core.TransientRepository;
 import org.apache.wookie.beans.jcr.JCRPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
+import org.apache.wookie.tests.beans.AbstractPersistenceTest;
 
 import org.junit.After;
 import org.junit.Before;
@@ -39,7 +40,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JCRPersistenceTest extends AbstractPersistenceTest
 {
-    private static final Logger logger = LoggerFactory.getLogger(JPAPersistenceTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(JCRPersistenceTest.class);
     
     public static final String REPOSITORY_USER_PROPERTY_NAME = "wookie.test.repository.user";
     public static final String REPOSITORY_PASSWORD_PROPERTY_NAME = "wookie.test.repository.password";
