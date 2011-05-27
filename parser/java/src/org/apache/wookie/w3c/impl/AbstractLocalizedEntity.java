@@ -13,6 +13,7 @@
  */
 package org.apache.wookie.w3c.impl;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.wookie.w3c.ILocalizedEntity;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.util.LocalizationUtils;
@@ -99,8 +100,13 @@ public abstract class AbstractLocalizedEntity implements ILocalizedEntity {
 					content.append(getLocalizedTextContent((Element)node));
 				}
 			}
+			// Append text to the string
+			// First we have to unescape any XML special characters so we don't
+			// double-encode them (e.g. &acute; = &amp;acute;) when exporting to 
+			// HTML or XML later
 			if (node instanceof Text){
-				content.append(((Text)node).getText());
+			  String text = ((Text)node).getText();
+				content.append(StringEscapeUtils.unescapeXml(text));
 			}
 		}
 		return UnicodeUtils.normalizeWhitespace(content.toString());
