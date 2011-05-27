@@ -15,7 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project default="compile-core" basedir="." name="wookie-java-connector">
+<project default="compile-core" basedir="." name="wookie-connector">
 	<description>
       Ivy based build system for Apache Wookie Java Connector.
     </description>

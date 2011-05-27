@@ -15,7 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project default="compile-core" basedir="." name="wookie-w3c-widget-parser">
+<project default="compile-core" basedir="." name="wookie-parser">
 	<description>
       Ivy based build system for Apache Wookie W3C Widget Parser.
     </description>

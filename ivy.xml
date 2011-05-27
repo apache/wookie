@@ -15,7 +15,7 @@
   limitations under the License.
 -->
 <ivy-module version="2.0">
-    <info organisation="org.apache.incubator" module="wookie" revision="0.8.1-SNAPSHOT"/>
+    <info organisation="org.apache.incubator" module="wookie" revision="0.9.1-SNAPSHOT"/>
     
     <configurations>
       <conf name="deploy" description="Provide the necessary files and libraries to deploy in a production environment"/>
@@ -25,9 +25,9 @@
 	</configurations>
     
     <dependencies>
-        <dependency org="org.apache.incubator" name="wookieJavaConnector" rev="latest.integration" conf="deploy->default">
+        <dependency org="org.apache.incubator" name="wookie-connector" rev="latest.integration" conf="deploy->default">
         </dependency>
-        <dependency org="org.apache.incubator" name="wookieW3CParser" rev="latest.integration" conf="deploy->default">
+        <dependency org="org.apache.incubator" name="wookie-parser" rev="latest.integration" conf="deploy->default">
         </dependency>
         
         <!--  Uncomment to include JCR persistence manager -->

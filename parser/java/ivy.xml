@@ -15,7 +15,7 @@
   limitations under the License.
 -->
 <ivy-module version="2.0">
-    <info organisation="org.apache.incubator" module="wookieW3CParser" revision="0.1.0-SNAPSHOT"/>
+    <info organisation="org.apache.incubator" module="wookie-parser" revision="0.9.1-SNAPSHOT"/>
     
     <configurations>
       <conf name="deploy" description="Provide the necessary files and libraries to deploy in a production environment"/>
