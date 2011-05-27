@@ -314,12 +314,6 @@ public class UpdateConformanceTest extends ConformanceTest{
 	}	
 	
 	@Test
-	public void pr205() throws InvalidUDDException{
-		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/005/ta-pr-005.wgt");
-		assertNull(UpdateUtils.getUpdate(fac, widget));
-	}	
-	
-	@Test
 	public void pr206(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/006/ta-pr-006.wgt");
 		assertNull(UpdateUtils.getUpdate(fac, widget));
