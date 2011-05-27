@@ -166,20 +166,11 @@ public class FormattingUtils {
 	 * @return a String with corrected BIDI properties
 	 */
 	private static String reformatSpan(String value){
-
-		String mode="embed";
-		if (value.contains("lro")){
-			value = value.replace("lro", "ltr");	
-			mode = "bidi-override";
-		}
-		if (value.contains("rlo")){
-			value = value.replace("rlo", "rtl");	
-			mode = "bidi-override";
-		}
-		
-		value = value.replace("span dir=\"", "span style=\"unicode-bidi:"+mode+"; direction:");
-
-		return value;
+	  value = value.replace("span dir=\"rtl\"", "span style=\"unicode-bidi:embed; direction:rtl\"");
+	  value = value.replace("span dir=\"ltr\"", "span style=\"unicode-bidi:embed; direction:ltr\"");
+	  value = value.replace("span dir=\"lro\"", "span style=\"unicode-bidi:bidi-override; direction:ltr\"");
+	  value = value.replace("span dir=\"rlo\"", "span style=\"unicode-bidi:bidi-override; direction:rtl\"");
+	  return value;
 	}
 
 }
