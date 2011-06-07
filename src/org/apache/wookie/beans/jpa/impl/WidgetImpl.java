@@ -92,6 +92,10 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     private String guid;
 
     @Basic
+    @Column(name="default_locale")
+    private String defaultLocale;
+    
+    @Basic
     @Column(name="widget_author")
     private String widgetAuthor;
 
@@ -547,6 +551,20 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
 		packagePath = path;
 		
 	}
+
+  /* (non-Javadoc)
+   * @see org.apache.wookie.beans.IWidget#getDefaultLocale()
+   */
+  public String getDefaultLocale() {
+    return this.defaultLocale;
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.wookie.beans.IWidget#setDefaultLocale(java.lang.String)
+   */
+  public void setDefaultLocale(String locale) {
+    this.defaultLocale = locale;
+  }
 	
 	
 }

@@ -29,6 +29,19 @@ import org.apache.wookie.w3c.util.LocalizationUtils;
  */
 public interface IWidget extends ILocalizedBean, IBean
 {
+  
+  /**
+   * Get the default locale
+   * @return
+   */
+  String getDefaultLocale();
+  
+  /**
+   * Set the the default locale
+   * @param locale the locale to set as default
+   */
+  void setDefaultLocale(String locale);
+  
 	/**
 	 * Get the path to the .wgt file used to install the widget
 	 * @return
@@ -325,7 +338,7 @@ public interface IWidget extends ILocalizedBean, IBean
         public static String getWidgetTitle(IWidget widget, String locale)
         {
         	IName[] names = widget.getNames().toArray(new IName[widget.getNames().size()]);
-            IName name = (IName)LocalizationUtils.getLocalizedElement(names, new String[]{locale});
+            IName name = (IName)LocalizationUtils.getLocalizedElement(names, new String[]{locale}, widget.getDefaultLocale());
             return ((name != null) ? WidgetFormattingUtils.getFormattedWidgetName(name) : IW3CXMLConfiguration.UNKNOWN);
         }
         
@@ -343,7 +356,7 @@ public interface IWidget extends ILocalizedBean, IBean
         public static String getWidgetDescription(IWidget widget, String locale)
         {
         	IDescription[] descriptions = widget.getDescriptions().toArray(new IDescription[widget.getDescriptions().size()]);
-            IDescription description = (IDescription)LocalizationUtils.getLocalizedElement(descriptions, new String[]{locale});
+            IDescription description = (IDescription)LocalizationUtils.getLocalizedElement(descriptions, new String[]{locale}, widget.getDefaultLocale());
             return ((description != null) ? WidgetFormattingUtils.getFormattedWidgetDescription(description) : null);
         }
 
@@ -361,7 +374,7 @@ public interface IWidget extends ILocalizedBean, IBean
         public static String getWidgetShortName(IWidget widget, String locale)
         {
         	IName[] names = widget.getNames().toArray(new IName[widget.getNames().size()]);
-            IName name = (IName)LocalizationUtils.getLocalizedElement(names, new String[]{locale});
+            IName name = (IName)LocalizationUtils.getLocalizedElement(names, new String[]{locale}, widget.getDefaultLocale());
             return ((name != null) ? WidgetFormattingUtils.getFormattedWidgetShortName(name) : IW3CXMLConfiguration.UNKNOWN);
         }
 
@@ -375,7 +388,7 @@ public interface IWidget extends ILocalizedBean, IBean
         public static String getUrl(IWidget widget, String locale)
         {
         	IStartFile[] startFiles = widget.getStartFiles().toArray(new IStartFile[widget.getStartFiles().size()]);
-            IStartFile startFile = (IStartFile)LocalizationUtils.getLocalizedElement(startFiles, new String[]{locale});
+            IStartFile startFile = (IStartFile)LocalizationUtils.getLocalizedElement(startFiles, new String[]{locale}, widget.getDefaultLocale());
             return ((startFile != null) ? startFile.getUrl() : null);
         }
 
@@ -389,7 +402,7 @@ public interface IWidget extends ILocalizedBean, IBean
         public static String getWidgetIconLocation(IWidget widget, String locale)
         {
         	IWidgetIcon[] icons = widget.getWidgetIcons().toArray(new IWidgetIcon[widget.getWidgetIcons().size()]);
-            IWidgetIcon icon = (IWidgetIcon)LocalizationUtils.getLocalizedElement(icons, new String[]{locale});
+            IWidgetIcon icon = (IWidgetIcon)LocalizationUtils.getLocalizedElement(icons, new String[]{locale}, widget.getDefaultLocale());
             return ((icon != null) ? icon.getSrc() : IW3CXMLConfiguration.DEFAULT_ICON_PATH);
         }
     }

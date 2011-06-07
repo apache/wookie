@@ -24,6 +24,7 @@
     <column name="id" primaryKey="true" required="true" type="INTEGER"/>
     <column name="jpa_version" type="INTEGER"/>
     <column name="package_path" size="255" type="VARCHAR"/>
+    <column name="default_locale" size="255" type="VARCHAR"/>
     <column name="height" type="INTEGER"/>
     <column name="width" type="INTEGER"/>
     <column name="guid" required="true" size="255" type="VARCHAR"/>

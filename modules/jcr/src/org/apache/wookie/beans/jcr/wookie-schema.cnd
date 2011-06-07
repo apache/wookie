@@ -89,6 +89,7 @@
 - wookie:widgetVersion (string)
 - wookie:dir (string)
 - wookie:lang (string)
+- wookie:defaultLocale (string)
 + wookie:widgetTypes (nt:unstructured) = nt:unstructured
 + wookie:accessRequests (nt:unstructured) = nt:unstructured
 + wookie:features (nt:unstructured) = nt:unstructured

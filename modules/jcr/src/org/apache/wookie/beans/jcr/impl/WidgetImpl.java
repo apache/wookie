@@ -43,6 +43,10 @@ import org.apache.wookie.beans.jcr.JCRPersistenceManager;
 @Node(jcrType="wookie:widget", jcrMixinTypes="mix:referenceable", discriminator=false)
 public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean, IUuidBean
 {
+  
+    @Field(jcrName="wookie:defaultLocale")
+    private String defaultLocale;
+    
     @Field(path=true)
     private String path;
     
@@ -113,6 +117,9 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
 	public void setPackagePath(String path) {
 		packagePath = path;
 	}
+	
+	
+	
 
 	/* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getDescriptions()
@@ -726,5 +733,13 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     public String getWidgetIconLocation()
     {
         return Utilities.getWidgetIconLocation(this, "en");
+    }
+    
+    public String getDefaultLocale(){
+      return this.defaultLocale;
+    }
+    
+    public voud setDefaultLocale(String locale){
+      this.defaultLocale = locale;
     }
 }
