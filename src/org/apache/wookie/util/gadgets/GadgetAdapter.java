@@ -127,6 +127,10 @@ public class GadgetAdapter implements W3CWidget {
 		}
 		return defaultValue;
 	}
+	
+	public String getDefaultLocale(){
+	  return null;
+	}
 
 	public String getViewModes() {
 		return null;

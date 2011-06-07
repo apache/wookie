@@ -20,6 +20,7 @@ package org.apache.wookie.w3c;
 public interface IW3CXMLConfiguration {
 	
 	public static final String WIDGET_ELEMENT = "widget";
+	  public static final String DEFAULTLOCALE_ATTRIBUTE = "defaultlocale"; // widget
 		public static final String ID_ATTRIBUTE = "id";  // widget
 		public static final String VERSION_ATTRIBUTE = "version"; // widget
 		public static final String MODE_ATTRIBUTE = "viewmodes"; //widget

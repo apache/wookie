@@ -55,6 +55,7 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 	
 	static Logger fLogger = Logger.getLogger(WidgetManifestModel.class.getName());
 	
+	private String defaultLocale;
 	private String defaultIdentifier;
 	private String fIdentifier;
 	private String fVersion;
@@ -146,6 +147,10 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 			}
 		}
 	}
+	
+	public String getDefaultLocale(){
+	  return defaultLocale;
+	}
 
 	public String getViewModes() {
 		return fViewModes;
@@ -217,7 +222,7 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 	}
 
 	public String getLocalName(String locale){
-		INameEntity name = (INameEntity)LocalizationUtils.getLocalizedElement(fNamesList.toArray(new INameEntity[fNamesList.size()]), new String[]{locale});
+		INameEntity name = (INameEntity)LocalizationUtils.getLocalizedElement(fNamesList.toArray(new INameEntity[fNamesList.size()]), new String[]{locale}, defaultLocale);
 		if (name != null) return name.getName();
 		return IW3CXMLConfiguration.UNKNOWN;
 	}
@@ -257,6 +262,11 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 				fIdentifier = "http://incubator.apache.org/wookie/generated/" + r.toString();
 			}
 		}
+		
+		// DEFAULTLOCALE IS OPTIONAL
+		defaultLocale = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.DEFAULTLOCALE_ATTRIBUTE));
+		locales = addDefaultLocale(locales, defaultLocale);
+		
 		// VERSION IS OPTIONAL		
 		fVersion = UnicodeUtils.normalizeSpaces(element.getAttributeValue(IW3CXMLConfiguration.VERSION_ATTRIBUTE));
 		
@@ -414,6 +424,28 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 		for (ILocalizedEntity entity: (ILocalizedEntity[])list.toArray(new ILocalizedEntity[list.size()]))
 			if (StringUtils.equals(entity.getLang(), ent.getLang())) first = false;
 		return first;
+	}
+	
+	/**
+	 * Adds the defaultLocale to the locales array, provided it isn't null
+	 * and doesn't duplicate an existing locale
+	 * @param locales
+	 * @param defaultLocale
+	 * @return the updated locale array
+	 */
+	private String[] addDefaultLocale(String[] locales, String defaultLocale){
+	  if (defaultLocale == null) return locales;
+	  // If there is no locales list, create a new one with the defaultLocale in it
+	  if (locales == null) return new String[]{defaultLocale};
+	  // If it already exists, return the existing locales array
+	  for (String locale:locales){
+	    if (locale.equals(defaultLocale)) return locales;
+	  }
+	  // Create a copy of the locales array and add the defaultlocale to the end
+	  String[] newLocales = new String[locales.length+1];
+	  System.arraycopy(locales, 0, newLocales, 0, locales.length);
+	  newLocales[newLocales.length-1] = defaultLocale;
+	  return newLocales;
 	}
 
 	public Element toXml() {

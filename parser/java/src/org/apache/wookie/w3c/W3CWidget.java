@@ -24,6 +24,12 @@ import java.util.List;
  */
 public interface W3CWidget extends ILocalizedEntity{
 
+  /**
+   * Get the default locale
+   * @return a locale string, or Null if no default locale is specified
+   */
+  public String getDefaultLocale();
+  
 	/**
 	 * Get the list of access request entities for the widget
 	 */
