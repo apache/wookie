@@ -52,6 +52,34 @@ import org.junit.Test;
  *
  */
 public class PackagingAndConfiguration extends ConformanceTest{
+  
+  // Default Locale tests
+  @Test
+  public void de000(){
+    W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-defaultlocale-ignore/000/ta-de-000.wgt");
+  }
+  
+  @Test
+  public void de001(){
+    W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-defaultlocale-ignore/001/ta-de-001.wgt");
+    assertEquals("PASS",getName(widget));
+  }
+  @Test
+  public void de002(){
+    W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-defaultlocale-ignore/002/ta-de-002.wgt");
+    assertEquals("PASS",getDescription(widget));
+  }
+  
+  @Test
+  public void de003(){
+    W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-defaultlocale-ignore/003/ta-de-003.wgt");
+  }
+  
+  @Test
+  public void de004(){
+    W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-defaultlocale-ignore/004/ta-de-004.wgt");
+    assertEquals("PASS",getName(widget));
+  }
 	
 	// 1 files
 	@Test
@@ -1236,7 +1264,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	
 	private ILicenseEntity getLicense(W3CWidget widget){
 		ILicenseEntity[] descs = widget.getLicensesList().toArray(new ILicenseEntity[widget.getLicensesList().size()]);
-		return (ILicenseEntity) LocalizationUtils.getLocalizedElement(descs, null);		
+		return (ILicenseEntity) LocalizationUtils.getLocalizedElement(descs, null, widget.getDefaultLocale());		
 	}
 	
 	private String getLicenseText(W3CWidget widget){
@@ -1249,7 +1277,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	
 	private String getDescription(W3CWidget widget){
 		IDescriptionEntity[] descs = widget.getDescriptions().toArray(new IDescriptionEntity[widget.getDescriptions().size()]);
-		IDescriptionEntity desc = (IDescriptionEntity) LocalizationUtils.getLocalizedElement(descs, null);
+		IDescriptionEntity desc = (IDescriptionEntity) LocalizationUtils.getLocalizedElement(descs, null, widget.getDefaultLocale());
 		return desc.getDescription();
 	}
 	
@@ -1264,7 +1292,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	
 	private INameEntity getNameEntity(W3CWidget widget){
 		INameEntity[] names = widget.getNames().toArray(new INameEntity[widget.getNames().size()]);
-		return (INameEntity) LocalizationUtils.getLocalizedElement(names, null);
+		return (INameEntity) LocalizationUtils.getLocalizedElement(names, null, widget.getDefaultLocale());
 	}
 	
 	private String getSrc(W3CWidget widget){
@@ -1283,12 +1311,12 @@ public class PackagingAndConfiguration extends ConformanceTest{
 
 	private IContentEntity getDefaultStartFile(W3CWidget widget){
 		IContentEntity[] contents = widget.getContentList().toArray(new IContentEntity[widget.getContentList().size()]);
-		return (IContentEntity) LocalizationUtils.getLocalizedElement(contents, null);		
+		return (IContentEntity) LocalizationUtils.getLocalizedElement(contents, null, widget.getDefaultLocale());		
 	}
 
 	private IIconEntity getIconEntity(W3CWidget widget){
 		IIconEntity[] icons = widget.getIconsList().toArray(new IIconEntity[widget.getIconsList().size()]);
-		return (IIconEntity) LocalizationUtils.getLocalizedElement(icons, null);		
+		return (IIconEntity) LocalizationUtils.getLocalizedElement(icons, null, widget.getDefaultLocale());		
 	}
 	
 	private String getIcon(W3CWidget widget){
