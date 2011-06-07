@@ -44,7 +44,7 @@ public class UpdateDescriptionDocument{
 	 * @return the update details
 	 */
 	public String getDetails(String locale) {
-		Details localDetails = (Details) LocalizationUtils.getLocalizedElement(details.toArray(new Details[details.size()]), new String[]{locale});
+		Details localDetails = (Details) LocalizationUtils.getLocalizedElement(details.toArray(new Details[details.size()]), new String[]{locale}, null);
 		return localDetails.text;
 	}
 	

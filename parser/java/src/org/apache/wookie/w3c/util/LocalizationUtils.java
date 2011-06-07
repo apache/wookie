@@ -60,8 +60,7 @@ public class LocalizationUtils {
 	 * @param locales
 	 * @return an ILocalizedElement, or null if there are no valid entries
 	 */
-	@Deprecated
-	public static ILocalizedElement getLocalizedElement(ILocalizedElement[] elements,String[] locales){
+	protected static ILocalizedElement getLocalizedElement(ILocalizedElement[] elements,String[] locales){
 		if (elements == null) return null;
 		elements = processElementsByLocales(elements,locales);
 		if (elements.length == 0) return null;
@@ -101,8 +100,7 @@ public class LocalizationUtils {
 	 * @param locales
 	 * @return the sorted and filtered set of elements
 	 */
-  @Deprecated
-	public static ILocalizedElement[] processElementsByLocales(ILocalizedElement[] elements,String[] locales){
+	protected static ILocalizedElement[] processElementsByLocales(ILocalizedElement[] elements,String[] locales){
 		if (elements == null) return null;
 		List<ULocale> localesList = getProcessedLocaleList(locales);
 		Arrays.sort(elements, new LocaleComparator(localesList));
