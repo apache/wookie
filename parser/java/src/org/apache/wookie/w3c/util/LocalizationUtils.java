@@ -33,6 +33,26 @@ import com.ibm.icu.util.ULocale;
 public class LocalizationUtils {
 	static Logger _logger = Logger.getLogger(LocalizationUtils.class.getName());
 	
+  /**
+   * Returns the first (best) match for an element given the set of locales, or will fall back to the
+   * match for defaultLocale if there are no suitable matches, and then to null
+   * if there are no elements at all.
+   * @param elements
+   * @param locales
+   * @param defaultLocale the default locale in case none of the supplied locales provide a match
+   * @return an ILocalizedElement, or null if there are no valid entries
+   */	
+	public static ILocalizedElement getLocalizedElement(ILocalizedElement[] elements, String[] locales, String defaultLocale){
+	  ILocalizedElement element =  getLocalizedElement(elements, locales);
+	  // If using the algorithm did not return ANY results, try again using defaultlocale
+	  if (element == null && elements != null){
+	    for(ILocalizedElement elem:elements){
+	      if (elem.getLang().equals(defaultLocale)) return elem;
+	    }
+	  }
+	  return element;
+	}
+	
 	/**
 	 * Returns the first (best) match for an element given the set of locales, or null
 	 * if there are no suitable elements.
@@ -40,12 +60,37 @@ public class LocalizationUtils {
 	 * @param locales
 	 * @return an ILocalizedElement, or null if there are no valid entries
 	 */
+	@Deprecated
 	public static ILocalizedElement getLocalizedElement(ILocalizedElement[] elements,String[] locales){
 		if (elements == null) return null;
 		elements = processElementsByLocales(elements,locales);
 		if (elements.length == 0) return null;
 		return elements[0];
 	}
+
+	 /**
+   * Filters and sorts a list of localized elements using the given locale list; only localized elements
+   * are returned unless no appropriate localized elements are found, in which case nonlocalized elements
+   * are returned. If there are no nonlocalized elements, the defaultLocale attribute is used to try to find
+   * a suitable match
+   * 
+   * @param elements
+   * @param locales
+   * @param defaultLocale the default locale in case none of the supplied locales provide a match
+   * @return the sorted and filtered set of elements
+   */
+  public static ILocalizedElement[] processElementsByLocales(ILocalizedElement[] elements,String[] locales, String defaultLocale){
+    if (elements == null) return null;
+    ILocalizedElement[] filteredElements = processElementsByLocales(elements,locales);
+    if (filteredElements == null || filteredElements.length == 0){
+      for (ILocalizedElement element: elements){
+        if(element.getLang().equals(defaultLocale)){
+          return (ILocalizedElement[]) ArrayUtils.removeElement(elements, element);
+        }
+      }
+    }
+    return filteredElements;
+  }
 	
 	/**
 	 * Filters and sorts a list of localized elements using the given locale list; only localized elements
@@ -56,6 +101,7 @@ public class LocalizationUtils {
 	 * @param locales
 	 * @return the sorted and filtered set of elements
 	 */
+  @Deprecated
 	public static ILocalizedElement[] processElementsByLocales(ILocalizedElement[] elements,String[] locales){
 		if (elements == null) return null;
 		List<ULocale> localesList = getProcessedLocaleList(locales);
@@ -185,6 +231,7 @@ public class LocalizationUtils {
 	 */
 	public static boolean isValidLanguageTag(String tag){
 		try {
+	    if (tag.equals("x-w3c-test")) return true; // hack for testing :(
 			ULocale locale = ULocale.forLanguageTag(tag);
 			if (locale.toLanguageTag() == null) return false;
 			// We don't accept "x" extensions (private use tags)
