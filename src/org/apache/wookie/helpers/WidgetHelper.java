@@ -119,7 +119,7 @@ public class WidgetHelper {
 	private static String getLicenses(IWidget widget, String[] locales){
 		String out = "";
 		ILicense[] licenses = widget.getLicenses().toArray(new ILicense[widget.getLicenses().size()]);
-		licenses = (ILicense[])LocalizationUtils.processElementsByLocales(licenses, locales);
+		licenses = (ILicense[])LocalizationUtils.processElementsByLocales(licenses, locales, widget.getDefaultLocale());
 		for (ILicense license: licenses){
 			out +="\t\t<license ";
 			if (license.getLang()!=null) out+=" xml:lang=\""+license.getLang()+"\"";
@@ -140,7 +140,7 @@ public class WidgetHelper {
 
 	private static String getName(IWidget widget, String[] locales){
     	IName[] names = widget.getNames().toArray(new IName[widget.getNames().size()]);
-		IName name = (IName)LocalizationUtils.getLocalizedElement(names,locales);
+		IName name = (IName)LocalizationUtils.getLocalizedElement(names,locales, widget.getDefaultLocale());
 		String shortName = null;
 		String longName = null;
 		if (name != null) {
@@ -158,7 +158,7 @@ public class WidgetHelper {
 
 	private static String getDescription(IWidget widget, String[] locales){
     	IDescription[] descriptions = widget.getDescriptions().toArray(new IDescription[widget.getDescriptions().size()]);
-		IDescription desc = (IDescription)LocalizationUtils.getLocalizedElement(descriptions, locales);	
+		IDescription desc = (IDescription)LocalizationUtils.getLocalizedElement(descriptions, locales, widget.getDefaultLocale());	
 		String out = "\t\t<description";
 		if (desc!= null && desc.getDir()!=null) out+=" dir=\""+desc.getDir()+"\"";
 		out += ">";
@@ -180,7 +180,7 @@ public class WidgetHelper {
 		String out = "";
 		IWidgetIcon[] icons;
 		if (locales != null && locales.length != 0){
-			icons = (IWidgetIcon[])LocalizationUtils.processElementsByLocales(widget.getWidgetIcons().toArray(new IWidgetIcon[widget.getWidgetIcons().size()]), locales);
+			icons = (IWidgetIcon[])LocalizationUtils.processElementsByLocales(widget.getWidgetIcons().toArray(new IWidgetIcon[widget.getWidgetIcons().size()]), locales, widget.getDefaultLocale());
 		} else {
 			icons = widget.getWidgetIcons().toArray(new IWidgetIcon[widget.getWidgetIcons().size()]);
 		}
@@ -215,7 +215,7 @@ public class WidgetHelper {
 	 */
 	public static String getEncodedWidgetTitle(IWidget widget, String locale){
     	IName[] names = widget.getNames().toArray(new IName[widget.getNames().size()]);
-        IName name = (IName)LocalizationUtils.getLocalizedElement(names, new String[]{locale});
+        IName name = (IName)LocalizationUtils.getLocalizedElement(names, new String[]{locale}, widget.getDefaultLocale());
         return ((name != null) ? WidgetFormattingUtils.getEncoded(name.getDir(), name.getName()) : IW3CXMLConfiguration.UNKNOWN);   		
 	}
 
