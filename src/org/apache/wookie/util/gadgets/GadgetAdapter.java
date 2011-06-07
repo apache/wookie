@@ -199,7 +199,7 @@ public class GadgetAdapter implements W3CWidget {
 	}
 
 	public String getLocalName(String locale) {
-		INameEntity name = (INameEntity)LocalizationUtils.getLocalizedElement(fNamesList.toArray(new INameEntity[fNamesList.size()]), new String[]{locale});
+		INameEntity name = (INameEntity)LocalizationUtils.getLocalizedElement(fNamesList.toArray(new INameEntity[fNamesList.size()]), new String[]{locale}, null);
 		if (name != null) return name.getName();
 		return IW3CXMLConfiguration.UNKNOWN;
 	}

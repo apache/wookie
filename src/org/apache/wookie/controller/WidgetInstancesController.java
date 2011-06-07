@@ -298,9 +298,9 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		String url = "";
 
 		IStartFile[] startFiles = instance.getWidget().getStartFiles().toArray(new IStartFile[instance.getWidget().getStartFiles().size()]);
-        IStartFile sf = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, new String[]{instance.getLang()});
+        IStartFile sf = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, new String[]{instance.getLang()}, instance.getWidget().getDefaultLocale());
 		// Try default locale if no appropriate localization found
-		if (sf == null) sf = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, null);
+		if (sf == null) sf = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, null, instance.getWidget().getDefaultLocale());
 		// No start file found, so throw an exception
 		if (sf == null) throw new IOException("No start file located for widget "+instance.getWidget().getGuid());
 		
