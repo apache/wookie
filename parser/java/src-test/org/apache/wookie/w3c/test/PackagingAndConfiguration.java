@@ -80,6 +80,12 @@ public class PackagingAndConfiguration extends ConformanceTest{
     W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-defaultlocale-ignore/004/ta-de-004.wgt");
     assertEquals("PASS",getName(widget));
   }
+  
+  @Test
+  public void dlocuse01(){
+    W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-defaultlocale-usage/001/dlocuse01.wgt");
+    assertEquals("PASS",getName(widget));
+  }
 	
 	// 1 files
 	@Test
