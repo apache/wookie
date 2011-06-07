@@ -108,13 +108,13 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		if (widget.getWidgetAuthor() != null) author = WidgetFormattingUtils.getEncoded(widget.getDir(), widget.getWidgetAuthor());
 		
 		String name = "";
-		IName iname = (IName)LocalizationUtils.getLocalizedElement(widget.getNames().toArray(new IName[widget.getNames().size()]), locales);
+		IName iname = (IName)LocalizationUtils.getLocalizedElement(widget.getNames().toArray(new IName[widget.getNames().size()]), locales, widget.getDefaultLocale());
 		if (iname != null && iname.getName() != null) name = WidgetFormattingUtils.getEncoded(iname.getDir(), iname.getName());
 		String shortName = "";
 		if (iname != null && iname.getShortName() != null) shortName = WidgetFormattingUtils.getEncoded(iname.getDir(), iname.getShortName());
 		
 		String description = "";
-		IDescription idescription = (IDescription)LocalizationUtils.getLocalizedElement(widget.getDescriptions().toArray(new IDescription[widget.getDescriptions().size()]), locales);
+		IDescription idescription = (IDescription)LocalizationUtils.getLocalizedElement(widget.getDescriptions().toArray(new IDescription[widget.getDescriptions().size()]), locales, widget.getDefaultLocale());
 		if (idescription != null && idescription.getContent() != null) description = WidgetFormattingUtils.getEncoded(idescription.getDir(), idescription.getContent());
 		
 		String version = "";
