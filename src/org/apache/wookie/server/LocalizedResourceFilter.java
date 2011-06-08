@@ -169,6 +169,13 @@ public class LocalizedResourceFilter implements Filter {
 
 		// All attempts to locate a localized copy have failed, so we must try to find a non-localized version instead
 		if (new File(filterConfig.getServletContext().getRealPath(basePath)).exists()) return context+basePath;
+		
+		// As a last resort, we'll try defautLocale
+		if (instance.getWidget().getDefaultLocale() != null){
+		  String path = basePath.replace(resource, "locales/"+instance.getWidget().getDefaultLocale().toLowerCase()+"/"+resource);
+		  String filePath = filterConfig.getServletContext().getRealPath(path);		
+      if (new File(filePath).exists()) return context+path;
+		}
 
 		// No localized or even non-localized file exists, so just return the original. This situation shouldn't arise except
 		// where, e.g., the original request was for a non-existing resource
