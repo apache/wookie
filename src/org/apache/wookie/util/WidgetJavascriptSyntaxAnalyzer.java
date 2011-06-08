@@ -64,11 +64,67 @@ public class WidgetJavascriptSyntaxAnalyzer {
 	public void parse() throws IOException {
 		if(_searchFolder != null){
 			parseIEIncompatibilities();
+			parseDeprecatedMethods();
+			parseNonstandardMethods();
 			// parse for browser X 
 			// parse for browser Y
 			// other things to parse for....
 		}
 	}
+	
+	/**
+	 * Raise a warning for deprecated API calls in the Widget
+	 * @throws IOException
+	 */
+	private void parseDeprecatedMethods() throws IOException {
+	  // Pattern match on the syntax 'widget.preferemces.name=value' - including optional quotes & spaces around the value
+    Pattern pattern = Pattern.compile("Widget.preferenceForKey|Widget.setPreferenceForKey|Widget.sharedDataForKey|Widget.setSharedDataForKey|Widget.openURL", Pattern.CASE_INSENSITIVE);
+    Matcher matcher = pattern.matcher("");
+    // Search .js files, but also any html files
+    Iterator<?> iter =  FileUtils.iterateFiles(_searchFolder, new String[]{"js","htm","html"}, true);
+    while(iter.hasNext()) {
+      File file = (File) iter.next();
+      LineNumberReader lineReader = new LineNumberReader(new FileReader(file));
+      String line = null;
+      while ((line = lineReader.readLine()) != null){
+        matcher.reset(line);
+        if (matcher.find()){                
+          String message= "\n(Line " + lineReader.getLineNumber() + ") in file " + file;
+          message+= "\n\t "+line+"\n";
+          message+= "This file contains calls to Widget API methods that are deprecated and likely to be removed in future releases.\n";                             
+          FlashMessage.getInstance().message(formatWebMessage(message));
+          _logger.warn(message);
+        }
+      }
+    }
+	}
+	
+	 /**
+   * Raise a warning for API calls in the Widget that use non-standard Wookie-specific extensions
+   * @throws IOException
+   */
+  private void parseNonstandardMethods() throws IOException {
+    // Pattern match on the syntax 'widget.preferemces.name=value' - including optional quotes & spaces around the value
+    Pattern pattern = Pattern.compile("Widget.appendSharedDataForKey|Widget.lock|Widget.unlock|Widget.show|Widget.hide", Pattern.CASE_INSENSITIVE);
+    Matcher matcher = pattern.matcher("");
+    // Search .js files, but also any html files
+    Iterator<?> iter =  FileUtils.iterateFiles(_searchFolder, new String[]{"js","htm","html"}, true);
+    while(iter.hasNext()) {
+      File file = (File) iter.next();
+      LineNumberReader lineReader = new LineNumberReader(new FileReader(file));
+      String line = null;
+      while ((line = lineReader.readLine()) != null){
+        matcher.reset(line);
+        if (matcher.find()){                
+          String message= "\n(Line " + lineReader.getLineNumber() + ") in file " + file;
+          message+= "\n\t "+line+"\n";
+          message+= "This file contains calls to Widget API methods that are Wookie-specific extensions to the W3C Widget API, making it less likely the widget will work in other environments\n";                             
+          FlashMessage.getInstance().message(formatWebMessage(message));
+          _logger.warn(message);
+        }
+      }
+    }
+  }
 	
 	/**
 	 * Find occurrences of incompatible setter syntax for Internet explorer

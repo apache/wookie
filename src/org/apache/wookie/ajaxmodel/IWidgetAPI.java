@@ -31,6 +31,10 @@ public interface IWidgetAPI {
 	/**
 	 * Appends a string to the string contained in the shared data value in the DB, obtained
 	 * from the given "key" 
+	 * 
+	 * Note that this method is retained only as a workaround for some issues in the Wave Gadget API implementation
+	 * and is likely to be deprecated in the future.
+	 * 
 	 * @param id_key - the unique instance id key for a widget instance
 	 * @param key - key for the value to change
  	 * @param key - the value to change to
@@ -39,15 +43,10 @@ public interface IWidgetAPI {
 	public String appendSharedDataForKey(String id_key, String key, String value);	
 	
 	/**
-	 * ? not implemented yet
-	 * @param id_key
-	 * @param key
-	 * @return
-	 */
-	public String contextPropertyForKey(String id_key, String key);
-	
-	/**
 	 * Call to hide a widget instance based on the instance_key
+	 * 
+	 * Note this is not a part of the W3C standard interface, but a Wookie-specific extension
+	 * 
 	 * @param id_key
 	 * @return
 	 */
@@ -55,6 +54,9 @@ public interface IWidgetAPI {
 	
 	/**
 	 * Call to lock a widget instance
+	 * 
+   * Note this is not a part of the W3C standard interface, but a Wookie-specific extension
+   * 
 	 * @param id_key
 	 * @return
 	 */
@@ -89,16 +91,8 @@ public interface IWidgetAPI {
 	 * @param key - key for the value to retrieve
 	 * @return - a string value found in the DB or an error message
 	 */
+	 @Deprecated
 	public String preferenceForKey(String id_key, String key);
-	
-	/**
-	 * ? not implemented yet
-	 * @param id_key
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public String setContextPropertyForKey(String id_key, String key, String value);
 	
 	/**
 	 * Sets a string preference value in the DB, obtained
@@ -108,6 +102,7 @@ public interface IWidgetAPI {
  	 * @param key - the value to change to
 	 * @return - a string value marking status or an error message
 	 */
+	 @Deprecated
 	public String setPreferenceForKey(String id_key, String key, String value);
 		
 	/**
@@ -118,16 +113,8 @@ public interface IWidgetAPI {
  	 * @param key - the value to change to
 	 * @return - a string value marking status or an error message
 	 */
+	@Deprecated
 	public String setSharedDataForKey(String id_key, String key, String value);
-	
-	/**
-	 * ? not implemented yet
-	 * @param id_key
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public String setUserPropertyForKey(String id_key, String key, String value);
 	
 	/**
 	 * Returns a string value from the DB, obtained
@@ -137,10 +124,14 @@ public interface IWidgetAPI {
 	 * @param key - key for the value to retrieve
 	 * @return - a string value found in the DB or an error message
 	 */
+	 @Deprecated
 	public String sharedDataForKey(String id_key, String key);	
 	
 	/**
 	 * show a widget instance based on the id_key
+	 * 
+	 * Note this is not a part of the W3C standard interface, but a Wookie-specific extension
+	 * 
 	 * @param id_key
 	 * @return
 	 */
@@ -148,18 +139,12 @@ public interface IWidgetAPI {
 	
 	/**
 	 * Unlock a widget instance based on the id_key
+	 * 
+	 * Note this is not a part of the W3C standard interface, but a Wookie-specific extension
+	 * 
 	 * @param id_key
 	 * @return
 	 */
 	public String unlock(String id_key);
-	
-	/**
-	 * ? not implemented yet
-	 * @param id_key
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public String userPropertyForKey(String id_key, String key);
 	
 }

@@ -145,7 +145,10 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	/*
 	 * (non-Javadoc)
 	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#preferenceForKey(java.lang.String, java.lang.String)
+	 * 
+	 * DEPRECATED: This was replaced by the W3C Storage API
 	 */
+	@Deprecated
 	public String preferenceForKey(String id_key, String key) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
@@ -164,7 +167,10 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	/*
 	 * (non-Javadoc)
 	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#sharedDataForKey(java.lang.String, java.lang.String)
+	 * 
+	 * DEPRECATED: This was replaced by the Wave Gadget API
 	 */
+	@Deprecated
 	public String sharedDataForKey(String id_key, String key) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
@@ -181,7 +187,12 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	/*
 	 * (non-Javadoc)
 	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#setPreferenceForKey(java.lang.String, java.lang.String, java.lang.String)
+	 *    
+	 * DEPRECATED: This was replaced by the W3C Storage API. We do require a method to respond to preference storage events on
+	 * the client so this method will be retained unless/until an alternative is implemented, but widget authors are strongly discouraged
+	 * from invoking this method in client code.
 	 */
+	@Deprecated
 	@SuppressWarnings("static-access")
 	public String setPreferenceForKey(String id_key, String key, String value) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
@@ -201,7 +212,10 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	/*
 	 * (non-Javadoc)
 	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#setSharedDataForKey(java.lang.String, java.lang.String, java.lang.String)
+	 * 
+	 * DEPRECATED: This was replaced by the Wave Gadget API
 	 */
+	@Deprecated
 	@SuppressWarnings("static-access")
 	public String setSharedDataForKey(String id_key, String key, String value) {
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
@@ -224,6 +238,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	/*
 	 * (non-Javadoc)
 	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#appendSharedDataForKey(java.lang.String, java.lang.String, java.lang.String)
+	 * 
+	 * Note: this method may be deprecated in a future release 
 	 */
 	@SuppressWarnings("static-access")
 	public String appendSharedDataForKey(String id_key, String key, String value) {
@@ -304,38 +320,6 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		if(widgetInstance==null) return localizedMessages.getString("WidgetAPIImpl.0");
 		Notifier.callSiblings(widgetInstance,"window.onShow()"); //$NON-NLS-1$
 	    return "okay"; //$NON-NLS-1$
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#contextPropertyForKey(java.lang.String, java.lang.String)
-	 */
-	public String contextPropertyForKey(String id_key, String key) {
-		return "Not available"; //$NON-NLS-1$
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#setContextPropertyForKey(java.lang.String, java.lang.String, java.lang.String)
-	 */
-	public String setContextPropertyForKey(String id_key, String key, String value) {
-		return "Not available"; //$NON-NLS-1$
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#setUserPropertyForKey(java.lang.String, java.lang.String, java.lang.String)
-	 */
-	public String setUserPropertyForKey(String id_key, String key, String value) {
-		return "Not available"; //$NON-NLS-1$
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#userPropertyForKey(java.lang.String, java.lang.String)
-	 */
-	public String userPropertyForKey(String id_key, String key) {
-		return "Not available"; //$NON-NLS-1$
 	}
 
 	/*
