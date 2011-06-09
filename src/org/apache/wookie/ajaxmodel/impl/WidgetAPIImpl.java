@@ -105,8 +105,14 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		IWidget widget = widgetInstance.getWidget();
 			
 		String author = "";
-		if (widget.getWidgetAuthor() != null) author = WidgetFormattingUtils.getEncoded(widget.getDir(), widget.getWidgetAuthor());
-		
+        String email = "";
+        String href = "";
+		if (widget.getAuthor() != null){
+            if (widget.getAuthor().getAuthor() != null) author = WidgetFormattingUtils.getEncoded(widget.getAuthor().getDir(), widget.getAuthor().getAuthor());
+	        if (widget.getAuthor().getEmail() != null) email = widget.getAuthor().getEmail();
+	        if (widget.getAuthor().getHref() != null) href = widget.getAuthor().getHref();
+		}
+
 		String name = "";
 		IName iname = (IName)LocalizationUtils.getLocalizedElement(widget.getNames().toArray(new IName[widget.getNames().size()]), locales, widget.getDefaultLocale());
 		if (iname != null && iname.getName() != null) name = WidgetFormattingUtils.getEncoded(iname.getDir(), iname.getName());
@@ -130,8 +136,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 
 		map.put("id", String.valueOf(widget.getGuid()));	//$NON-NLS-1$
 		map.put("author", author);	//$NON-NLS-1$
-		map.put("authorEmail", String.valueOf(widget.getWidgetAuthorEmail()));//$NON-NLS-1$
-		map.put("authorHref", String.valueOf(widget.getWidgetAuthorHref()));//$NON-NLS-1$
+		map.put("authorEmail", email);//$NON-NLS-1$
+		map.put("authorHref", href);//$NON-NLS-1$
 		map.put("name", name);//$NON-NLS-1$
 		map.put("description", description);//$NON-NLS-1$	
 		map.put("shortName", shortName); //$NON-NLS-1$
