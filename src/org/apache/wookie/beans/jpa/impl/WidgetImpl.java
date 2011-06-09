@@ -33,6 +33,7 @@ import javax.persistence.Version;
 
 import org.apache.openjpa.persistence.ElementDependent;
 
+import org.apache.wookie.beans.IAuthor;
 import org.apache.wookie.beans.IDescription;
 import org.apache.wookie.beans.IFeature;
 import org.apache.wookie.beans.ILicense;
@@ -43,6 +44,7 @@ import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetIcon;
 import org.apache.wookie.beans.IWidgetType;
 import org.apache.wookie.beans.jpa.InverseRelationshipCollection;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 
 /**
  * WidgetImpl - JPA IWidget implementation.
@@ -94,18 +96,6 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     @Basic
     @Column(name="default_locale")
     private String defaultLocale;
-    
-    @Basic
-    @Column(name="widget_author")
-    private String widgetAuthor;
-
-    @Basic
-    @Column(name="widget_author_email")
-    private String widgetAuthorEmail;
-
-    @Basic
-    @Column(name="widget_author_href")
-    private String widgetAuthorHref;
 
     @Basic
     @Column(name="widget_version")
@@ -126,6 +116,10 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     @OneToMany(mappedBy="widget", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     @ElementDependent
     private Collection<NameImpl> names;
+    
+    @OneToMany(mappedBy="widget", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    @ElementDependent
+    private Collection<AuthorImpl> authors;
 
     @OneToMany(mappedBy="widget", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     @ElementDependent
@@ -302,6 +296,44 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     }
 
     /* (non-Javadoc)
+     * @see org.apache.wookie.beans.IWidget#getAuthor()
+     */
+    public IAuthor getAuthor() {
+      if (getAuthors().size() != 0)
+        return (IAuthor) getAuthors().iterator().next();
+      return null;
+    }
+    
+    public Collection<IAuthor> getAuthors(){
+      if (authors == null)
+      {
+        authors = new ArrayList<AuthorImpl>();
+      }
+      return new InverseRelationshipCollection<WidgetImpl,AuthorImpl,IAuthor>(this, authors);
+    }
+    
+    /**
+     * Utility method used to support legacy API calls, returns an IAuthor instance - whether pre-existing or newly
+     * created
+     * @return an IAuthor instance
+     */
+    private IAuthor getOrCreateAuthor(){
+      if (getAuthor() == null){
+        IAuthor author = PersistenceManagerFactory.getPersistenceManager().newInstance(IAuthor.class);
+        this.setAuthor(author);
+      }
+      return getAuthor();
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.wookie.beans.IWidget#setAuthor(org.apache.wookie.beans.IAuthor)
+     */
+    public void setAuthor(IAuthor author) {
+      getAuthors().clear();
+      authors.add((AuthorImpl) author);
+    }
+
+    /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getPreferenceDefaults()
      */
     public Collection<IPreferenceDefault> getPreferenceDefaults()
@@ -376,7 +408,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
      */
     public String getWidgetAuthor()
     {
-        return widgetAuthor;
+        return getOrCreateAuthor().getAuthor();
     }
 
     /* (non-Javadoc)
@@ -384,7 +416,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
      */
     public void setWidgetAuthor(String widgetAuthor)
     {
-        this.widgetAuthor = widgetAuthor;
+        this.getOrCreateAuthor().setAuthor(widgetAuthor);
     }
 
     /* (non-Javadoc)
@@ -392,7 +424,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
      */
     public String getWidgetAuthorEmail()
     {
-        return widgetAuthorEmail;
+        return getOrCreateAuthor().getEmail();
     }
 
     /* (non-Javadoc)
@@ -400,7 +432,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
      */
     public void setWidgetAuthorEmail(String widgetAuthorEmail)
     {
-        this.widgetAuthorEmail = widgetAuthorEmail;
+        this.getOrCreateAuthor().setEmail(widgetAuthorEmail);
     }
 
     /* (non-Javadoc)
@@ -408,7 +440,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
      */
     public String getWidgetAuthorHref()
     {
-        return widgetAuthorHref;
+        return getOrCreateAuthor().getHref();
     }
 
     /* (non-Javadoc)
@@ -416,7 +448,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
      */
     public void setWidgetAuthorHref(String widgetAuthorHref)
     {
-        this.widgetAuthorHref = widgetAuthorHref;
+        this.getOrCreateAuthor().setHref(widgetAuthorHref);
     }
 
     /* (non-Javadoc)

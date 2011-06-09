@@ -29,9 +29,6 @@
     <column name="width" type="INTEGER"/>
     <column name="guid" required="true" size="255" type="VARCHAR"/>
     <column name="update_location" type="LONGVARCHAR"/>
-    <column name="widget_author" size="255" type="VARCHAR"/>
-    <column name="widget_author_email" size="320" type="VARCHAR"/>
-    <column name="widget_author_href" type="LONGVARCHAR"/>
     <column name="widget_version" size="255" type="VARCHAR"/>
     <column name="dir" size="255" type="VARCHAR"/>
     <column name="lang" size="255" type="VARCHAR"/>
@@ -84,6 +81,23 @@
       <reference foreign="id" local="widget_id"/>
     </foreign-key>
     <index name="IXName1">
+      <index-column name="widget_id"/>
+    </index>
+  </table>
+  
+  <table name="Author">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="author" type="LONGVARCHAR"/>
+    <column name="email" type="LONGVARCHAR"/>
+    <column name="href"  type="LONGVARCHAR"/>
+    <column name="lang" size="255" type="VARCHAR"/>
+    <column name="dir" size="255" type="VARCHAR"/>
+    <column name="widget_id" type="INTEGER"/>
+    <foreign-key foreignTable="Widget" name="FKAuthor1">
+      <reference foreign="id" local="widget_id"/>
+    </foreign-key>
+    <index name="IXAuthor1">
       <index-column name="widget_id"/>
     </index>
   </table>

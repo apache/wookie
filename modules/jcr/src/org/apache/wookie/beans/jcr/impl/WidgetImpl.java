@@ -20,6 +20,7 @@ import java.util.Collection;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
 
+import org.apache.wookie.beans.IAuthor;
 import org.apache.wookie.beans.IDescription;
 import org.apache.wookie.beans.IFeature;
 import org.apache.wookie.beans.ILicense;
@@ -33,6 +34,7 @@ import org.apache.wookie.beans.jcr.IPathBean;
 import org.apache.wookie.beans.jcr.IUuidBean;
 import org.apache.wookie.beans.jcr.IdCollection;
 import org.apache.wookie.beans.jcr.JCRPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 
 /**
  * WidgetImpl - JCR OCM IWidget implementation.
@@ -68,15 +70,6 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     @Field(jcrName="wookie:guid")
     private String guid;
 
-    @Field(jcrName="wookie:widgetAuthor")
-    private String widgetAuthor;
-
-    @Field(jcrName="wookie:widgetAuthorEmail")
-    private String widgetAuthorEmail;
-
-    @Field(jcrName="wookie:widgetAuthorHref")
-    private String widgetAuthorHref;
-
     @Field(jcrName="wookie:widgetVersion")
     private String version;
     
@@ -94,6 +87,9 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     
     @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:names", elementClassName=NameImpl.class)
     private Collection<NameImpl> nameImpls;
+    
+    @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:authors", elementClassName=NameImpl.class)
+    private Collection<AuthorImpl> authorImpls;
     
     @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:descriptions", elementClassName=DescriptionImpl.class)
     private Collection<DescriptionImpl> descriptionImpls;
@@ -362,6 +358,67 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     {
         this.nameImpls = nameImpls;
     }
+    
+    public Collection<IAuthor> getAuthors()
+    {
+        if (authorImpls == null)
+        {
+          authorImpls = new ArrayList<AuthorImpl>();
+        }
+        return new IdCollection<AuthorImpl,IAuthor>(authorImpls);
+    }
+
+    public void setAuthors(Collection<IAuthor> authors)
+    {
+        getAuthors().clear();
+        if (authors != null)
+        {
+            for (IAuthor author : authors)
+            {
+                getAuthors().add((AuthorImpl)author);
+            }
+        }
+    }
+    
+    /* (non-Javadoc)
+     * @see org.apache.wookie.beans.IWidget#getAuthor()
+     */
+    public IAuthor getAuthor(){
+      if (getAuthors().size() == 0) return null;
+      return getAuthors().iterator().next();
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.wookie.beans.IWidget#setAuthor(org.apache.wookie.beans.IAuthor)
+     */
+    public void setAuthor(IAuthor author) {
+      getAuthors().clear();
+      getAuthors().add(author);
+    }
+    
+    public IAuthor getOrCreateAuthor(){
+      if(getAuthor() == null){
+        IAuthor author = PersistenceManagerFactory.getPersistenceManager().newInstance(IAuthor.class);
+        setAuthor(author);
+      }
+      return getAuthor();
+    }
+
+    /**
+     * Get author implementations collection.
+     */
+    public Collection<AuthorImpl> getAuthorImpls()
+    {
+        return authorImpls;
+    }
+
+    /**
+     * Set author implementations collection.
+     */
+    public void setAuthorImpls(Collection<AuthorImpl> authorImpls)
+    {
+        this.authorImpls = authorImpls;
+    }
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.jcr.IPathBean#getNodePath()
@@ -534,7 +591,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
      */
     public String getWidgetAuthor()
     {
-        return widgetAuthor;
+        return getOrCreateAuthor().getAuthor();
     }
 
     /* (non-Javadoc)
@@ -542,7 +599,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
      */
     public void setWidgetAuthor(String widgetAuthor)
     {
-        this.widgetAuthor = widgetAuthor;
+      getOrCreateAuthor().setAuthor(widgetAuthor);
     }
 
     /* (non-Javadoc)
@@ -550,7 +607,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
      */
     public String getWidgetAuthorEmail()
     {
-        return widgetAuthorEmail;
+        return getOrCreateAuthor().getEmail();
     }
 
     /* (non-Javadoc)
@@ -558,7 +615,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
      */
     public void setWidgetAuthorEmail(String widgetAuthorEmail)
     {
-        this.widgetAuthorEmail = widgetAuthorEmail;
+      getOrCreateAuthor().setEmail(widgetAuthorEmail);
     }
 
     /* (non-Javadoc)
@@ -566,7 +623,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
      */
     public String getWidgetAuthorHref()
     {
-        return widgetAuthorHref;
+        return getOrCreateAuthor().getHref();
     }
 
     /* (non-Javadoc)
@@ -574,7 +631,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
      */
     public void setWidgetAuthorHref(String widgetAuthorHref)
     {
-        this.widgetAuthorHref = widgetAuthorHref;
+      getOrCreateAuthor().setHref(widgetAuthorHref);
     }
 
     /* (non-Javadoc)
@@ -739,7 +796,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
       return this.defaultLocale;
     }
     
-    public voud setDefaultLocale(String locale){
+    public void setDefaultLocale(String locale){
       this.defaultLocale = locale;
     }
 }

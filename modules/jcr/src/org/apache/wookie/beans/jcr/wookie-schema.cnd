@@ -38,6 +38,14 @@
 - wookie:dir (string)
 - wookie:lang (string)
 
+[wookie:author] > nt:base
+- wookie:elementId (long)
+- wookie:authorName (string)
+- wookie:email (string)
+- wookie:href (string)
+- wookie:dir (string)
+- wookie:lang (string)
+
 [wookie:description] > nt:base
 - wookie:elementId (long)
 - wookie:content (string)

@@ -27,6 +27,7 @@
         <class>org.apache.wookie.beans.jpa.impl.LicenseImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.LocalizedBeanImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.NameImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.AuthorImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.ParamImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.ParticipantImpl</class>        
         <class>org.apache.wookie.beans.jpa.impl.PreferenceDefaultImpl</class>

@@ -117,12 +117,25 @@ public interface IWidget extends ILocalizedBean, IBean
      * @param guid widget GUID
      */
     void setGuid(String guid);
+    
+    /**
+     * Get the widget author
+     * @return widget author
+     */
+    IAuthor getAuthor();
+    
+    /**
+     * Set the widget author
+     * @param author the author to set
+     */
+    void setAuthor(IAuthor author);
 
     /**
      * Get widget author.
      * 
      * @return widget author
      */
+    @Deprecated
     String getWidgetAuthor();
     
     /**
@@ -130,6 +143,7 @@ public interface IWidget extends ILocalizedBean, IBean
      * 
      * @param widgetAuthor widget author
      */
+    @Deprecated
     void setWidgetAuthor(String widgetAuthor);
 
     /**
@@ -137,6 +151,7 @@ public interface IWidget extends ILocalizedBean, IBean
      * 
      * @return widget author email
      */
+    @Deprecated
     String getWidgetAuthorEmail();
     
     /**
@@ -144,6 +159,7 @@ public interface IWidget extends ILocalizedBean, IBean
      * 
      * @param widgetAuthorEmail widget author email
      */
+    @Deprecated
     void setWidgetAuthorEmail(String widgetAuthorEmail);
 
     /**
@@ -151,6 +167,7 @@ public interface IWidget extends ILocalizedBean, IBean
      * 
      * @return widget author href
      */
+    @Deprecated
     String getWidgetAuthorHref();
     
     /**
@@ -158,6 +175,7 @@ public interface IWidget extends ILocalizedBean, IBean
      * 
      * @param widgetAuthorHref widget author href
      */
+    @Deprecated
     void setWidgetAuthorHref(String widgetAuthorHref);
 
     /**
@@ -324,6 +342,7 @@ public interface IWidget extends ILocalizedBean, IBean
      */
     public static class Utilities
     {
+        
         /**
          * Get widget title for locale.
          * 
