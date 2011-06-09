@@ -26,11 +26,31 @@ public class WidgetInterface extends AbstractFunctionalConformanceTest{
 	
 	@Test
 	public void taza(){
+	  doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/aa/aa.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/author_attrexists/author_attrexists.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/authorEmail_attrexists/authorEmail_attrexists.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/authorHref_attrexists/authorHref_attrexists.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/description_attrexists/description_attrexists.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/height_attrexists/height_attrexists.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/id_attrexists/id_attrexists.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/name_attrexists/name_attrexists.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/preferences_attrexists/preferences_attrexists.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/shortName_attrexists/shortName_attrexists.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/version_attrexists/version_attrexists.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/width_attrexists/width_attrexists.wgt");
+		
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/author_attrreadonly/author_attrreadonly.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/authorEmail_attrreadonly/authorEmail_attrreadonly.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/authorHref_attrreadonly/authorHref_attrreadonly.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/description_attrreadonly/description_attrreadonly.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/height_attrreadonly/height_attrreadonly.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/id_attrreadonly/id_attrreadonly.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/name_attrreadonly/name_attrreadonly.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/preferences_attrreadonly/preferences_attrreadonly.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/shortName_attrreadonly/shortName_attrreadonly.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/version_attrreadonly/version_attrreadonly.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/width_attrreadonly/width_attrreadonly.wgt");
+		
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/author_attrtype/author_attrtype.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/authorEmail_attrtype/authorEmail_attrtype.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/authorHref_attrtype/authorHref_attrtype.wgt");
@@ -38,24 +58,30 @@ public class WidgetInterface extends AbstractFunctionalConformanceTest{
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/height_attrtype/height_attrtype.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/id_attrtype/id_attrtype.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/name_attrtype/name_attrtype.wgt");
-		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/preferences_attrtype/preferences_attrtype.wgt");
-		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/shortName_attrtype/shortName_attrtype.wgt");
-		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/version_attrtype/version_attrtype.wgt");
-		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/width_attrtype/width_attrtype.wgt");
-		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-ac/ad/ad.wgt");
-		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-ac/ae/ae.wgt");
-		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-ac/af/af.wgt");
-		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-ac/ag/ag.wgt");
-		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-ac/ah/ah.wgt");
-		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-ac/ai/ai.wgt");
-		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-ac/aj/aj.wgt");
-		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-ac/ak/ak.wgt");
+    doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/shortName_attrtype/shortName_attrtype.wgt");
+    doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/version_attrtype/version_attrtype.wgt");
+    doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/width_attrtype/width_attrtype.wgt");
+		
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/ad/ad.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/ae/ae.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/af/af.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/ag/ag.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/ah/ah.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/ai/ai.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/aj/aj.wgt");
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-za/ak/ak.wgt");
 	}
 	
 	@Test
 	public void taah(){
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-ah/ab/ab.wgt");		
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-ah/ax/ax.wgt");
+	}
+	
+	@Test
+	public void taAttr(){
+	  doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-attribute-tests/return-emtpy-strings/return-emtpy-strings.wgt");
+	  doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-attribute-tests/return-proper-strings/return-proper-strings.wgt");
 	}
 	
 	@Test
@@ -83,6 +109,7 @@ public class WidgetInterface extends AbstractFunctionalConformanceTest{
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-lro/041/i18nlro41.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-lro/042/i18nlro42.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-lro/044/i18nlro44.wgt");
+		
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rlo/001/i18nrlo01.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rlo/002/i18nrlo02.wgt");
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/i18n-rlo/003/i18nrlo03.wgt");
@@ -151,30 +178,34 @@ public class WidgetInterface extends AbstractFunctionalConformanceTest{
 	}
 
 	@Test
-	public void ao(){
+	public void tapa(){
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-pa/ao/ao.wgt");
 	}
 	@Test
-	public void ap(){
+	public void tapb(){
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-pb/ap/ap.wgt");
 	}
 	
 	@Test
-	public void ar(){
-		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-al/ar/ar.wgt");
+	public void tastorageevent(){
+	  doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-storage-event/setItem-fires-event/setItem-fires-event.wgt");
+    doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-storage-event/removeItem-fires-event/removeItem-fires-event.wgt");
+    doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-storage-event/clear-fires-event/clear-fires-event.wgt");
 	}
+	
 	@Test
-	public void as(){
-		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-al/as/as.wgt");
+	public void taal(){
+		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-al/ar/ar.wgt");
+    doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-al/as/as.wgt");
 	}
 
 	@Test
-	public void at(){
+	public void taae(){
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-ae/at/at.wgt");
 	}
 	
 	@Test
-	public void au(){
+	public void taaa(){
 		doTest("http://dev.w3.org/2006/waf/widgets-api/test-suite/test-cases/ta-aa/au/au.wgt");
 	}	
 
