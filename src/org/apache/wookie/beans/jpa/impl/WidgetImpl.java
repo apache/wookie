@@ -330,7 +330,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
      */
     public void setAuthor(IAuthor author) {
       getAuthors().clear();
-      authors.add((AuthorImpl) author);
+      getAuthors().add((AuthorImpl) author);
     }
 
     /* (non-Javadoc)
