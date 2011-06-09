@@ -17,6 +17,7 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.IAccessRequest;
+import org.apache.wookie.beans.IAuthor;
 import org.apache.wookie.beans.IDescription;
 import org.apache.wookie.beans.IFeature;
 import org.apache.wookie.beans.ILicense;
@@ -105,6 +106,7 @@ public class WidgetFactory {
 	public static IWidget addNewWidget(W3CWidget model, String[] widgetTypes, boolean grantAccessRequests) {
 	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidget widget = createWidget(persistenceManager, model);
+		createAuthor(persistenceManager, model, widget);
 		createTypes(persistenceManager, widgetTypes, widget);
 		createStartFiles(persistenceManager, model,widget);
 		createNames(persistenceManager, model,widget);
@@ -121,11 +123,6 @@ public class WidgetFactory {
 	private static IWidget createWidget(IPersistenceManager persistenceManager, W3CWidget model){
 		IWidget widget;
 		widget = persistenceManager.newInstance(IWidget.class);		
-		if (model.getAuthor() != null){
-			widget.setWidgetAuthor(model.getAuthor().getAuthorName());
-			widget.setWidgetAuthorEmail(model.getAuthor().getEmail());
-			widget.setWidgetAuthorHref(model.getAuthor().getHref());
-		}
 		widget.setDir(model.getDir());
 		widget.setGuid(model.getIdentifier());
 		widget.setHeight(model.getHeight());
@@ -133,6 +130,18 @@ public class WidgetFactory {
 		widget.setVersion(model.getVersion());
 		widget.setUpdateLocation(model.getUpdate());
 		return widget;
+	}
+	
+	private static void createAuthor(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
+	   if (model.getAuthor() != null){
+	      IAuthor author = persistenceManager.newInstance(IAuthor.class);
+	      author.setAuthor(model.getAuthor().getAuthorName());
+	      author.setEmail(model.getAuthor().getEmail());
+	      author.setHref(model.getAuthor().getHref());
+	      author.setDir(model.getAuthor().getDir());
+	      author.setLang(model.getAuthor().getLang());
+	      widget.setAuthor(author);
+	    }
 	}
 
 	private static void createTypes(IPersistenceManager persistenceManager, String[] widgetTypes, IWidget widget){
@@ -309,11 +318,7 @@ public class WidgetFactory {
 	 */
 	public static void update( W3CWidget model, IWidget widget,  boolean grantAccessRequests ){
 	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		if (model.getAuthor() != null){
-			widget.setWidgetAuthor(model.getAuthor().getAuthorName());
-			widget.setWidgetAuthorEmail(model.getAuthor().getEmail());
-			widget.setWidgetAuthorHref(model.getAuthor().getHref());
-		}
+    
 		widget.setDir(model.getDir());
 		widget.setGuid(model.getIdentifier());
 		widget.setHeight(model.getHeight());
@@ -331,6 +336,7 @@ public class WidgetFactory {
 		widget.setPreferenceDefaults(null);
 		
 		// Set with updated values
+		createAuthor(persistenceManager, model,widget);
 		createStartFiles(persistenceManager, model,widget);
 		createNames(persistenceManager, model,widget);
 		createDescriptions(persistenceManager, model,widget);
