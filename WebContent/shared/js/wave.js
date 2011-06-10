@@ -53,6 +53,14 @@
     	wave.submitDelta(delta);
     }
     
+    this.clear = function(){
+        var delta =  {};
+        for (key in state.map){
+            delta[key] = null;
+        }
+        wave.submitDelta(delta);
+    }
+    
     this.toString = function(){
         var str = "";
         for (key in state.map){
