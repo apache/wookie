@@ -35,7 +35,9 @@ import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
-import org.apache.wookie.exceptions.InvalidWidgetCallException;
+import org.apache.wookie.exceptions.InvalidParametersException;
+import org.apache.wookie.exceptions.ResourceNotFoundException;
+import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.helpers.SharedDataHelper;
 import org.apache.wookie.helpers.WidgetInstanceFactory;
@@ -52,34 +54,19 @@ import org.apache.wookie.w3c.util.LocalizationUtils;
  * (GET: redirect to other actions. Useful for some limited clients)
  *
  */
-public class WidgetInstancesController extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
+public class WidgetInstancesController extends Controller {
 
 	private static final long serialVersionUID = 308590474406800659L;		
 	static Logger _logger = Logger.getLogger(WidgetInstancesController.class.getName());	
 	protected static final String CONTENT_TYPE = "text/xml;charset=\"UTF-8\""; 	 //$NON-NLS-1$
 	protected static URL urlWidgetProxyServer = null;	
 	
-	public static String checkProxy(HttpServletRequest request){
-		// set the proxy url.
-		if(urlWidgetProxyServer==null){
-			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
-			String scheme = request.getScheme();
-			String serverName = request.getServerName();
-			int serverPort = request.getServerPort();
-			if (!properties.getString("widget.proxy.scheme").trim().equals("")) scheme = properties.getString("widget.proxy.scheme"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			if (!properties.getString("widget.proxy.hostname").trim().equals("")) serverName = properties.getString("widget.proxy.hostname"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			if (!properties.getString("widget.proxy.port").trim().equals("")) serverPort = Integer.parseInt(properties.getString("widget.proxy.port")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			try {
-				urlWidgetProxyServer = new URL(scheme,serverName,serverPort,properties.getString("widget.proxy.path"));
-			} catch (MalformedURLException e) {
-				// ignore errors
-			} 
-		}
-		return urlWidgetProxyServer.toExternalForm();
-	}
 
 	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @see org.apache.wookie.controller.Controller#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	/**
+	 * We override the default POST action as we need to support the legacy getOrCreate method
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -87,102 +74,137 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		if (!WidgetKeyManager.isValidRequest(request)){
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		} else {
-			doGetWidget(request, response);
+			doGetOrCreateWidget(request, response);
 		}
 	}
-
-
 
 	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @see org.apache.wookie.controller.Controller#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	/**
+	 * We override the default GET method to support legacy clients tunneling through GET to send other types of
+	 * requests usually sent over POST and PUT.
 	 */
 	@Override
-	protected void doPut(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		if (!WidgetKeyManager.isValidRequest(request)){
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		} else {
-			try {
-				String requestId = request.getParameter("requestid"); //$NON-NLS-1$
-				if (requestId == null || requestId.equals("")){
-					response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-				} else {
-					 if(requestId.equals("stopwidget")){ //$NON-NLS-1$
-						doStopWidget(request, response);
-					} else if(requestId.equals("resumewidget")){ //$NON-NLS-1$
-						doResumeWidget(request, response);
-					} else if(requestId.equals("clone")){ //$NON-NLS-1$
-						cloneSharedData(request, response);
-					} else {
-						response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-					}
-				}
-			} catch (Exception ex) {					
-				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			}
-		}
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{					
+	  if (!WidgetKeyManager.isValidRequest(request)){
+	    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	  } else {
+	    try {
+	      String resourceId = getResourceId(request);
+	      String requestId = request.getParameter("requestid"); //$NON-NLS-1$
+	      if (requestId == null || requestId.equals("")){
+	        show(resourceId, request, response);
+	      } else {
+	        if(requestId.equals("getwidget")){ //$NON-NLS-1$
+	          doGetOrCreateWidget(request, response);
+	        } else if(requestId.equals("stopwidget")){ //$NON-NLS-1$
+	          doStopWidget(request);
+	        } else if(requestId.equals("resumewidget")){ //$NON-NLS-1$
+	          doResumeWidget(request);
+	        } else if(requestId.equals("clone")){ //$NON-NLS-1$
+	          cloneSharedData(request);
+	        } else {
+	          response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+	        }
+	      }
+      } catch (ResourceNotFoundException e) {
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+      } catch (UnauthorizedAccessException e){
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+	    } catch (Exception ex) {					
+	      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	    }
+	  }
 	}
-
-
-
-	/* (non-Java-doc)
-	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response){					
-		if (!WidgetKeyManager.isValidRequest(request)){
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		} else {
-			try {
-				String requestId = request.getParameter("requestid"); //$NON-NLS-1$
-				if (requestId == null || requestId.equals("")){
-					response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-				} else {
-					if(requestId.equals("getwidget")){ //$NON-NLS-1$
-						doGetWidget(request, response);
-					} else if(requestId.equals("stopwidget")){ //$NON-NLS-1$
-						doStopWidget(request, response);
-					} else if(requestId.equals("resumewidget")){ //$NON-NLS-1$
-						doResumeWidget(request, response);
-					} else if(requestId.equals("clone")){ //$NON-NLS-1$
-						cloneSharedData(request, response);
-					} else {
-						response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-					}
-				}
-			} catch (Exception ex) {					
-				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			}
-		}
-	}
-	
 	
 	/// Implementation
-
-	public static void doStopWidget(HttpServletRequest request, HttpServletResponse response) throws IOException{				
-		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);	
-		if(instance!=null){
-			lockWidgetInstance(instance);
-			Notifier.notifyWidgets(request.getSession(), instance, Notifier.STATE_UPDATED);
-			response.setStatus(HttpServletResponse.SC_OK);
-		}else{
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST,localizedMessages.getString("WidgetServiceServlet.3"));//$NON-NLS-1$
-		}
-	}
-
-	public static void doResumeWidget(HttpServletRequest request, HttpServletResponse response) throws IOException{					
-		Messages localizedMessages = LocaleHandler.localizeMessages(request); 
-		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
-		if(instance!=null){
-			unlockWidgetInstance(instance);
-			Notifier.notifyWidgets(request.getSession(), instance, Notifier.STATE_UPDATED);
-			response.setStatus(HttpServletResponse.SC_OK);
-		}else{
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST,localizedMessages.getString("WidgetServiceServlet.3"));//$NON-NLS-1$
-		}
+	
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.controller.Controller#show(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	@Override
+	protected void show(String resourceId, HttpServletRequest request, HttpServletResponse response) throws ResourceNotFoundException, UnauthorizedAccessException, IOException {
+	   IWidgetInstance instance = WidgetInstancesController.getLocalizedWidgetInstance(request);
+	   if (instance == null){
+	     throw new ResourceNotFoundException();
+	   } else {
+	     // Check the API key matches
+	     String apiKey = request.getParameter("api_key");
+	     if (!instance.getApiKey().equals(apiKey)) throw new UnauthorizedAccessException();
+	     // Return the response XML
+	     checkProxy(request);
+	     String url = getUrl(request, instance);
+	     String locale = request.getParameter("locale");//$NON-NLS-1$
+	     response.setContentType(CONTENT_TYPE);
+	     response.setStatus(HttpServletResponse.SC_OK);
+	     PrintWriter out = response.getWriter();
+	     out.println(WidgetInstanceHelper.createXMLWidgetInstanceDocument(instance, url, locale));
+	   }
 	}
 	
-	public static void doGetWidget(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.controller.Controller#update(java.lang.String, javax.servlet.http.HttpServletRequest)
+	 */
+	@Override
+	protected void update(String resourceId, HttpServletRequest request)
+	throws ResourceNotFoundException, InvalidParametersException,
+	UnauthorizedAccessException {
+	  if (!WidgetKeyManager.isValidRequest(request))
+	    throw new UnauthorizedAccessException();
+	  String requestId = request.getParameter("requestid"); //$NON-NLS-1$
+	  if (requestId == null || requestId.equals(""))
+	    throw new InvalidParametersException();
+	  if(requestId.equals("stopwidget")){ //$NON-NLS-1$
+	    doStopWidget(request);
+	  } else if(requestId.equals("resumewidget")){ //$NON-NLS-1$
+	    doResumeWidget(request);
+	  } else if(requestId.equals("clone")){ //$NON-NLS-1$
+	    cloneSharedData(request);
+	  } else {
+	    throw new InvalidParametersException();
+	  }
+
+	}
+
+	/**
+	 * Locks a widget instance
+	 * @param request
+	 * @throws InvalidParametersException
+	 */
+	public static void doStopWidget(HttpServletRequest request) throws InvalidParametersException{				
+	  IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);	
+	  if(instance!=null){
+	    lockWidgetInstance(instance);
+	    Notifier.notifyWidgets(request.getSession(), instance, Notifier.STATE_UPDATED);
+	  }else{
+	    throw new InvalidParametersException();
+	  }
+	}
+
+	/**
+	 * UNlocks a widget insa
+	 * @param request
+	 * @throws InvalidParametersException
+	 */
+	public static void doResumeWidget(HttpServletRequest request) throws InvalidParametersException{					
+	  IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
+	  if(instance!=null){
+	    unlockWidgetInstance(instance);
+	    Notifier.notifyWidgets(request.getSession(), instance, Notifier.STATE_UPDATED);
+	  }else{
+	    throw new InvalidParametersException();
+	  }
+	}
+	
+	/**
+	 * This is the "legacy" get-or-create method accessed via POST or a tunnel through GET. This will be deprecated in future.
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	public static void doGetOrCreateWidget(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String userId = request.getParameter("userid"); //$NON-NLS-1$
 		String sharedDataKey =  request.getParameter("shareddatakey");	 //$NON-NLS-1$
         String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
@@ -191,42 +213,27 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
         sharedDataKey = SharedDataHelper.getInternalSharedDataKey(apiKey, widgetId, sharedDataKey);
 		HttpSession session = request.getSession(true);						
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-
-		try {						
-			if(userId==null || sharedDataKey==null || (serviceType==null && widgetId==null)){
-				throw new InvalidWidgetCallException();
-			}
-		} 
-		catch (InvalidWidgetCallException ex) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
+					
+		if(userId==null || sharedDataKey==null || (serviceType==null && widgetId==null)){
+		  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		  return;
 		}
-		
+
 		checkProxy(request);
 		
-		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
-		String locale = request.getParameter("locale");//$NON-NLS-1$
+		IWidgetInstance instance = WidgetInstancesController.getLocalizedWidgetInstance(request);
+        String locale = request.getParameter("locale");//$NON-NLS-1$
 		
 		// Widget exists
 		if(instance==null){
 			instance = WidgetInstanceFactory.getWidgetFactory(session, localizedMessages).newInstance(apiKey, userId, sharedDataKey, serviceType, widgetId, locale);
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
-			// If the requested locale is different to the saved locale, update the "lang" attribute
-			// of the widget instance and save it
-			if (
-					(locale == null && instance.getLang()!=null) || 
-					(locale != null && instance.getLang()==null) || 					
-					(locale != null && !instance.getLang().equals(locale))
-			){
-			        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-					instance.setLang(locale);
-					persistenceManager.save(instance);
-			}
 			response.setStatus(HttpServletResponse.SC_OK);			
 		}
 		
 		// Return the default widget if not created by now
+		
 		if(instance==null){
 			instance = WidgetInstanceFactory.defaultInstance(locale);
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);	
@@ -238,17 +245,20 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		out.println(WidgetInstanceHelper.createXMLWidgetInstanceDocument(instance, url, locale));
 	}  
 	
-	public static void cloneSharedData(HttpServletRequest request, HttpServletResponse response){
+	/**
+	 * Create a clone of the instance
+	 * @param request
+	 * @throws InvalidParametersException
+	 */
+	public static void cloneSharedData(HttpServletRequest request) throws InvalidParametersException{
 		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);	
 		if (instance == null){
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;			
+      throw new InvalidParametersException();		
 		}
 		String sharedDataKey = request.getParameter("shareddatakey");	 //$NON-NLS-1$;	
 		String cloneSharedDataKey = request.getParameter("cloneshareddatakey");
 		if (sharedDataKey == null || sharedDataKey.trim().equals("") || cloneSharedDataKey == null || cloneSharedDataKey.trim().equals("")){//$NON-NLS-1$ //$NON-NLS-2$
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
+      throw new InvalidParametersException();
 		}
 		String cloneKey = SharedDataHelper.getInternalSharedDataKey(instance, cloneSharedDataKey);
         IWidget widget = instance.getWidget();
@@ -262,15 +272,10 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
             persistenceManager.save(clone);
 		}
 		boolean ok = persistenceManager.save(widget);
-		if (ok){
-			response.setStatus(HttpServletResponse.SC_OK);
-		} else {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		}
+		if (!ok) throw new InvalidParametersException();
 	}
 	
 	public synchronized static void lockWidgetInstance(IWidgetInstance instance){
-		//doLock(instance, true);
 		PropertiesController.updateSharedDataEntry(instance, "isLocked", "true", false);//$NON-NLS-1$ //$NON-NLS-2$
 		instance.setLocked(true);
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
@@ -278,7 +283,6 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	}
 
 	public synchronized static void unlockWidgetInstance(IWidgetInstance instance){
-		//doLock(instance, false);
 		PropertiesController.updateSharedDataEntry(instance, "isLocked", "false", false);//$NON-NLS-1$ //$NON-NLS-2$
 		instance.setLocked(false);
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
@@ -286,6 +290,28 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	}
 	
 	// Utility methods
+	
+	/**
+	 * Updates the Proxy url if necessary.
+	 */
+	public static String checkProxy(HttpServletRequest request){
+	  // set the proxy url.
+	  if(urlWidgetProxyServer==null){
+	    Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
+	    String scheme = request.getScheme();
+	    String serverName = request.getServerName();
+	    int serverPort = request.getServerPort();
+	    if (!properties.getString("widget.proxy.scheme").trim().equals("")) scheme = properties.getString("widget.proxy.scheme"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	    if (!properties.getString("widget.proxy.hostname").trim().equals("")) serverName = properties.getString("widget.proxy.hostname"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	    if (!properties.getString("widget.proxy.port").trim().equals("")) serverPort = Integer.parseInt(properties.getString("widget.proxy.port")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	    try {
+	      urlWidgetProxyServer = new URL(scheme,serverName,serverPort,properties.getString("widget.proxy.path"));
+	    } catch (MalformedURLException e) {
+	      // ignore errors
+	    } 
+	  }
+	  return urlWidgetProxyServer.toExternalForm();
+	}
 	
 	/**
 	 * Returns the absolute URL of the widget instance including id key, proxy url and opensocial token 
@@ -319,6 +345,32 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		}
 		return url;
 	}
+
+	/**
+	 * Utility method for finding an instance localized for the request locale, and updating
+	 * the locale if the user has changed it.
+	 * @param request
+	 * @return the widget instance
+	 */
+	private static IWidgetInstance getLocalizedWidgetInstance(HttpServletRequest request){
+	  IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
+	  if (instance != null){
+	    String locale = request.getParameter("locale");//$NON-NLS-1$
+	    // If the requested locale is different to the saved locale, update the "lang" attribute
+	    // of the widget instance and save it
+	    if (
+	        (locale == null && instance.getLang()!=null) || 
+	        (locale != null && instance.getLang()==null) ||           
+	        (locale != null && !instance.getLang().equals(locale))
+	    ){
+	      IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+	      instance.setLang(locale);
+	      persistenceManager.save(instance);
+	    }
+	  }
+	  return instance;
+	}
+
 	
 	/**
 	 * Utility method for locating an instance based on various parameters. Consider moving to a utils class, or
@@ -328,14 +380,23 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 	 */
 	public static IWidgetInstance findWidgetInstance(HttpServletRequest request){
 		IWidgetInstance instance;
-
 		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		String id_key = request.getParameter("id_key"); //$NON-NLS-1$
+
+		// Try using the id_key parameter
+    String id_key = request.getParameter("id_key"); //$NON-NLS-1$
 		if (id_key != null & id_key != ""){
-			instance = persistenceManager.findWidgetInstanceByIdKey(id_key);
-			return instance;
+		  instance = persistenceManager.findWidgetInstanceByIdKey(id_key);
+		  return instance;
+		} 
+		
+		// Try using the resource part of the path as an id key e.g. widgetinstances/xyz
+		id_key = getResourceId(request);
+		if (id_key != null & id_key != ""){
+		  instance = persistenceManager.findWidgetInstanceByIdKey(id_key);
+		  return instance;
 		}
 
+    // If all else fails, try using instance parameters
 		try {
 			String apiKey = URLDecoder.decode(request.getParameter("api_key"), "UTF-8"); //$NON-NLS-1$
 			String userId = URLDecoder.decode(request.getParameter("userid"), "UTF-8"); //$NON-NLS-1$
@@ -358,6 +419,5 @@ public class WidgetInstancesController extends javax.servlet.http.HttpServlet im
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException("Server must support UTF-8 encoding", e);
 		} //$NON-NLS-1$
-
 	}
 }

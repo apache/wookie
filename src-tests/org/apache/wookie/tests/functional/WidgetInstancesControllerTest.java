@@ -16,7 +16,10 @@ package org.apache.wookie.tests.functional;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
@@ -32,6 +35,7 @@ import org.junit.Test;
 public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	
 	private static final String LOCALIZED_WIDGET = "http://www.getwookie.org/widgets/localetest";
+	private static String test_id_key = "";
 	
 	@Test
 	public void getLocalizedInstance(){
@@ -44,6 +48,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	        assertEquals(201,code);
 	        assertTrue(post.getResponseBodyAsString().contains("locales/fr/index.htm"));
 	        assertTrue(post.getResponseBodyAsString().contains("tester les param&#232;tres r&#233;gionaux"));
+	        test_id_key = post.getResponseBodyAsString().substring(post.getResponseBodyAsString().indexOf("<identifier>")+12,post.getResponseBodyAsString().indexOf("</identifier>"));
 	        post.releaseConnection();
 	    }
 	    catch (Exception e) {
@@ -51,6 +56,57 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	    	fail("post failed");
 	    }		
 	}
+	
+	@Test
+	public void getExistingInstanceByInstanceParams(){
+	  try {
+      HttpClient client = new HttpClient();
+      GetMethod get = new GetMethod(TEST_INSTANCES_SERVICE_URL_VALID);
+      get.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+LOCALIZED_WIDGET+"&userid=localetest&shareddatakey=localetest&locale=fr");
+      client.executeMethod(get);
+      int code = get.getStatusCode();
+      assertEquals(200, code);
+      assertTrue(get.getResponseBodyAsString().contains("locales/fr/index.htm"));
+      assertTrue(get.getResponseBodyAsString().contains("tester les param&#232;tres r&#233;gionaux"));
+    } catch (Exception e){ 
+      e.printStackTrace();
+      fail("get failed");
+    }
+	}
+	
+	 @Test
+	  public void getExistingInstanceByIdKey(){
+	    try {
+	      HttpClient client = new HttpClient();
+	      GetMethod get = new GetMethod(TEST_INSTANCES_SERVICE_URL_VALID);
+	      get.setQueryString("api_key="+API_KEY_VALID+"&id_key="+test_id_key);
+	      client.executeMethod(get);
+	      int code = get.getStatusCode();
+	      assertEquals(200, code);
+	      assertTrue(get.getResponseBodyAsString().contains("locales/en/index.htm"));
+	      assertTrue(get.getResponseBodyAsString().contains("locale test"));
+	    } catch (Exception e){ 
+	      e.printStackTrace();
+	      fail("get failed");
+	    }
+	  }
+	 
+   @Test
+   public void getExistingInstanceByIdResource(){
+     try {
+       HttpClient client = new HttpClient();
+       GetMethod get = new GetMethod(TEST_INSTANCES_SERVICE_URL_VALID+"/"+test_id_key);
+       get.setQueryString("api_key="+API_KEY_VALID);
+       client.executeMethod(get);
+       int code = get.getStatusCode();
+       assertEquals(200, code);
+       assertTrue(get.getResponseBodyAsString().contains("locales/en/index.htm"));
+       assertTrue(get.getResponseBodyAsString().contains("locale test"));
+     } catch (Exception e){ 
+       e.printStackTrace();
+       fail("get failed");
+     }
+   }
 	
 	@Test
 	// Tests if specifying "early modern french" locale returns standard FR start file

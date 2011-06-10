@@ -59,13 +59,13 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 			try {
 				String requestId = request.getParameter("requestid"); //$NON-NLS-1$
 				if(requestId.equals("getwidget")){ //$NON-NLS-1$
-					WidgetInstancesController.doGetWidget(request, response);
+					WidgetInstancesController.doGetOrCreateWidget(request, response);
 				}
 				else if(requestId.equals("stopwidget")){ //$NON-NLS-1$
-					WidgetInstancesController.doStopWidget(request, response);
+					WidgetInstancesController.doStopWidget(request);
 				}
 				else if(requestId.equals("resumewidget")){ //$NON-NLS-1$
-					WidgetInstancesController.doResumeWidget(request, response);
+					WidgetInstancesController.doResumeWidget(request);
 				}
 				else if(requestId.equals("setpublicproperty") || requestId.equals("setpersonalproperty")){ //$NON-NLS-1$
 					try {
@@ -98,7 +98,7 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 					}
 				}
 				else if(requestId.equals("cloneshareddata")){ //$NON-NLS-1$
-					WidgetInstancesController.cloneSharedData(request, response );
+					WidgetInstancesController.cloneSharedData(request);
 				}
 				else {
 					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
