@@ -16,7 +16,9 @@ package org.apache.wookie.ajaxmodel.impl;
 import org.apache.wookie.beans.IPreference;
 
 /**
- * Delegate for Preference implementations; this is used for DWR marshalling
+ * Delegate for Preference implementations; this is used  instead of the Preference Bean implementation
+ * in cases where we simply want to work with a preference object outside a transaction context, for example
+ * when the Ajax implementation needs to create a clone of the object for marshalling into JSON.
  */
 public class PreferenceDelegate implements IPreference {
 	
@@ -24,41 +26,70 @@ public class PreferenceDelegate implements IPreference {
 	private String dvalue;
 	private boolean readOnly;
 	
+	/**
+	 * Default constructor
+	 */
 	public PreferenceDelegate(){
 	}
 	
+	/**
+	 * Construct a delegate from a Preference bean 
+	 * @param pref
+	 */
 	public PreferenceDelegate(IPreference pref){
 		this.dkey = pref.getDkey();
 		this.dvalue = pref.getDvalue();
 		this.readOnly = pref.isReadOnly();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IPreference#getDkey()
+	 */
 	public String getDkey() {
 		return dkey;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IPreference#getDvalue()
+	 */
 	public String getDvalue() {
 		return dvalue;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IPreference#isReadOnly()
+	 */
 	public boolean isReadOnly() {
 		return readOnly;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IPreference#setDkey(java.lang.String)
+	 */
 	public void setDkey(String dkey) {
 		this.dkey = dkey;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IPreference#setDvalue(java.lang.String)
+	 */
 	public void setDvalue(String dvalue) {
 		this.dvalue = dvalue;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IPreference#setReadOnly(boolean)
+	 */
 	public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
 	}
 
+	/**
+	 * This method is required for the IPreference interface, but in the case of this
+	 * delegate isn't meaningful as this object is not persisted, and
+	 * is only used in a transient fashion.
+	 */
 	public Object getId() {
-		// TODO 
 		return null;
 	}
 
