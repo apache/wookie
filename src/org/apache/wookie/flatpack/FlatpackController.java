@@ -30,15 +30,17 @@ import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.WidgetKeyManager;
 
 /**
- * @author scottbw@apache.org
- *
+ * Controller for the Flatpack/exports API
+ * 
+ * This class provides a controller front end for the FlatpackFactory class, enabling the export of Widget Instances via a HTTP POST request.
+ * 
+ * POST /flatpack/ {params: api_key, instance_params OR id_key} creates a new W3C Widget package (.wgt) with an opaque file name for the specified widget instance, and returns the download URL. 
+ * If an invalid API key is supplied, a 401 error code is returned. If no instance can be found, or the parameters supplied are invalid, a 400 error code is returned.
  */
 public class FlatpackController extends Controller {
 
 	private static final long serialVersionUID = 2907712805939515004L;
 	static Logger _logger = Logger.getLogger(FlatpackController.class.getName());	
-	
-	
 
 	/**
 	 * Deny access to the listing of the flatpack folder
@@ -49,6 +51,9 @@ public class FlatpackController extends Controller {
 		response.sendError(HttpServletResponse.SC_FORBIDDEN);
 	}
 
+	/**
+	 * We override the default POST method from Controller as we need to return the package URL in the Response to the client
+	 */
 	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {

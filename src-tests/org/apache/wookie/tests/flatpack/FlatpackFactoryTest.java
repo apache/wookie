@@ -33,8 +33,6 @@ import org.junit.Test;
 
 /**
  * Tests the FlatpackFactory functionalty.
- * @author scottbw@apache.org
- *
  */
 public class FlatpackFactoryTest {
 	
@@ -78,7 +76,8 @@ public class FlatpackFactoryTest {
 	public void testNoInstance() throws Exception{
 		FlatpackFactory flatfac = new FlatpackFactory(null);
 		flatfac.setInputWidget(null); // this is the original .wgt
-		File file = flatfac.pack(); // Get the new .wgt file	
+		@SuppressWarnings("unused")
+    File file = flatfac.pack(); // Get the new .wgt file	
 	}
 
 	/**
@@ -214,37 +213,6 @@ public class FlatpackFactoryTest {
 		assertEquals("moderator", fpWidget.getPrefences().get(0).getName());
 		assertEquals("true", fpWidget.getPrefences().get(0).getValue());
 		assertEquals(1,fpWidget.getPrefences().size());
-	}
-	
-	/**
-	 * Test that we can add WAC feature
-	 * @throws Exception
-	 */
-	@Test
-	public void createFlatpackWithWAC() throws Exception{
-		
-		// upload a new widget to test with
-		W3CWidgetFactory fac = getFactory();
-		File testWidget = new File("build/widgets/bubbles.wgt");
-		fac.parse(testWidget);
-		download = fac.getUnzippedWidgetDirectory(); //download is where we unzipped the widget
-		
-		// Create an instance of it
-		IWidgetInstance instance = new WidgetInstanceMock();
-		
-		// Flatpack it
-		FlatpackFactory flatfac = new FlatpackFactory(instance);
-		flatfac.setParser(fac);
-		flatfac.setIncludeWacFeatures(true);
-		flatfac.setInputWidget(testWidget); // this is the original .wgt
-		flatfac.setFlatpackFolder(flatpack); // flatpack is our new temp folder. This would probably be "/flatpack" or similar in deployment
-		File file = flatfac.pack(); // Get the new .wgt file
-	
-		// Test it works!
-		System.out.println(file.getAbsolutePath());
-		fac.setFeatures(new String[]{"http://jil.org/jil/api/1.1/widget"});
-		W3CWidget fpWidget = fac.parse(file);
-		assertEquals("http://jil.org/jil/api/1.1/widget", fpWidget.getFeatures().get(0).getName());
 	}
 
 	/*

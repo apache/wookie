@@ -31,6 +31,7 @@ public class FlatpackControllerTest extends AbstractControllerTest {
 	
 	private static final String TEST_FLATPACK_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"flatpack";
 	private static final String TEST_EXPORT_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"export";
+	private static String test_id_key = "";
 	
 	@BeforeClass
 	public static void setup() throws HttpException, IOException{
@@ -38,6 +39,7 @@ public class FlatpackControllerTest extends AbstractControllerTest {
         PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
         post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=FPtest&shareddatakey=test");
         client.executeMethod(post);
+        test_id_key = post.getResponseBodyAsString().substring(post.getResponseBodyAsString().indexOf("<identifier>")+12,post.getResponseBodyAsString().indexOf("</identifier>"));
         post.releaseConnection();
 	}
 	
@@ -84,4 +86,28 @@ public class FlatpackControllerTest extends AbstractControllerTest {
 	    	fail("post failed");
 	    }
 	}
+	
+	 @Test
+	  public void getPackUsingResourceId(){
+	      try {
+	          HttpClient client = new HttpClient();
+	          PostMethod post = new PostMethod(TEST_FLATPACK_SERVICE_URL_VALID+"/"+test_id_key);
+	          post.setQueryString("api_key="+API_KEY_VALID);
+	          client.executeMethod(post);
+	          int code = post.getStatusCode();
+	          assertEquals(200,code);
+	          String url = post.getResponseBodyAsString();
+	          post.releaseConnection();
+	          
+	          // Now lets try to download it!
+	          GetMethod get = new GetMethod(url);
+	          client.executeMethod(get);
+	          code = get.getStatusCode();
+	          assertEquals(200, code);
+	      }
+	      catch (Exception e) {
+	        e.printStackTrace();
+	        fail("post failed");
+	      }
+	  }
 }

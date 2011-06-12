@@ -21,7 +21,6 @@ import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.w3c.IPreferenceEntity;
 import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
-import org.apache.wookie.w3c.impl.FeatureEntity;
 import org.apache.wookie.w3c.impl.PreferenceEntity;
 import org.apache.wookie.w3c.util.RandomGUID;
 import org.apache.wookie.w3c.util.WidgetOutputter;
@@ -41,8 +40,6 @@ import org.apache.wookie.w3c.util.WidgetPackageUtils;
  *   <dd>The Widget Instance to be flatpacked.</dd>
  *   <dt>flatpackFolder</dt>
  *   <dd>The folder on the file system where the flatpacked Widget package should be saved. If this is not specified, DEFAULT_FLATPACK_FOLDER will be used</dd>
- *   <dt>includeWacFeatures</dt>
- *   <dd>If set to true, the exported Widget package will include core WAC/JIL feature elements. This is false by default.</dd>
  *   <dt>featuresToFlatten</dt>
  *   <dd>The features that should be "flattened" rather than omitted - that is, that should be injected into the final package.</dd>
  * </dl>
@@ -54,13 +51,11 @@ public class FlatpackFactory {
 	public static final W3CWidgetFactory DEFAULT_PARSER = createDefaultParser();
 	public static final File DEFAULT_FLATPACK_FOLDER = new File("export");
 	private static final String DEFAULT_LOCAL_PATH = "/widgets"; // The default local path to use
-	private static final String WAC_FEATURE_NAME = "http://jil.org/jil/api/1.1/widget";
 	
 	private W3CWidgetFactory parser; // the widget parser to use
 	private IWidgetInstance instance; // the instance of the widget to flatpack
 	private File inputWidget; // the source .wgt file for the instance
 	private File flatpackFolder; // the folder where we put all our flatpack .wgt files once we've created them
-	private boolean includeWacFeatures = false; // set to true if the WAC/JIL core features should be added
 	
 	/**
 	 * Constructor, takes a Widget Instance as its argument
@@ -144,12 +139,6 @@ public class FlatpackFactory {
 		
 		// TODO Remove any flattened features
 		
-		// Add WAC/JIL features if needed
-		if (includeWacFeatures){
-			FeatureEntity wac = new FeatureEntity(WAC_FEATURE_NAME, true);
-			widget.getFeatures().add(wac);
-		}
-		
 		return widget;
 	}
 	
@@ -184,14 +173,6 @@ public class FlatpackFactory {
 	 */
 	public void setFlatpackFolder(File flatpackFolder) {
 		this.flatpackFolder = flatpackFolder;
-	}
-	
-	/**
-	 * Set whether to include WAC/JIL features in the flatpacked Widget
-	 * @param includeWacFeatures
-	 */
-	public void setIncludeWacFeatures(boolean includeWacFeatures){
-		this.includeWacFeatures = includeWacFeatures;
 	}
 	
 	/**
