@@ -107,13 +107,18 @@ public class WidgetHelper {
 	}
 	
 	private static String getAuthor(IWidget widget){
-		String out = "\t\t<author";
-		if (widget.getWidgetAuthorEmail() != null) out+= " email=\""+widget.getWidgetAuthorEmail()+"\"";
-		if (widget.getWidgetAuthorHref() != null) out+= " href=\""+widget.getWidgetAuthorHref()+"\"";
-		out += ">";
-		if (widget.getWidgetAuthor()!=null) out += StringEscapeUtils.escapeXml(widget.getWidgetAuthor());
-		out += "</author>\n";
-		return out;
+
+	  if (widget.getAuthor() != null){
+	    String out = "\t\t<author";
+	    if (widget.getAuthor().getEmail() != null) out+= " email=\""+widget.getAuthor().getEmail()+"\"";
+	    if (widget.getAuthor().getHref() != null) out+= " href=\""+widget.getAuthor().getHref()+"\"";
+	    out += ">";
+	    if (widget.getAuthor().getAuthor()!=null) out += StringEscapeUtils.escapeXml(widget.getAuthor().getAuthor());	    
+	    out += "</author>\n";
+	    return out;
+	  } else {
+	    return "";
+	  }
 	}
 	
 	private static String getLicenses(IWidget widget, String[] locales){
