@@ -57,53 +57,49 @@ public class LocalizedResourceFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 
-		// If I have an instance key in the query, set it in the session
-		// This will only happen if the resource is the Start File for the Widget
-		String idkey = ((HttpServletRequest)request).getParameter("idkey");
-		// We use the "localized" querystring parameter to indicate a resource
-		// has already been processed by this algorithm once, to prevent hunting and
-		// infinite recursion
-		String localized = ((HttpServletRequest)request).getParameter("localized");
-		
-		if (idkey!=null){
-			filterConfig.getServletContext().setAttribute("id_key", idkey);
-		} else {
-			// Skip if already localized
-			if (localized == null){
-				// Find the instance key in the current session
-				String key = (String)filterConfig.getServletContext().getAttribute("id_key");
-				if (key != null){
-				    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-					IWidgetInstance instance = persistenceManager.findWidgetInstanceByIdKey(key);
-					if (instance != null){
-						// Only if we have a valid instance and a resource which has no localization
-						// parameter do we start the locale algorithm
+	  // If I have an instance key in the query, set it in the session
+	  // This will only happen if the resource is the Start File for the Widget
+	  String idkey = ((HttpServletRequest)request).getParameter("idkey");
+	  // We use the "localized" querystring parameter to indicate a resource
+	  // has already been processed by this algorithm once, to prevent hunting and
+	  // infinite recursion
+	  String localized = ((HttpServletRequest)request).getParameter("localized");
+	  if (idkey!=null) filterConfig.getServletContext().setAttribute("id_key", idkey);
+	  // Skip if already localized
+	  if (localized == null){
+	    // Find the instance key in the current session
+	    String key = (String)filterConfig.getServletContext().getAttribute("id_key");
+	    if (key != null){
+	      IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+	      IWidgetInstance instance = persistenceManager.findWidgetInstanceByIdKey(key);
+	      if (instance != null){
+	        // Only if we have a valid instance and a resource which has no localization
+	        // parameter do we start the locale algorithm
 
-						// Get the original request URL
-						String uri = ((HttpServletRequest)request).getRequestURL().toString();
-						URL url = new URL(uri);
-						String path = url.getPath();
+	        // Get the original request URL
+	        String uri = ((HttpServletRequest)request).getRequestURL().toString();
+	        URL url = new URL(uri);
+	        String path = url.getPath();
 
-						// Process the resource with the localization algorithm
-						String localizedPath = getLocalizedResource(path, instance);
+	        // Process the resource with the localization algorithm
+	        String localizedPath = getLocalizedResource(path, instance);
 
-						// Redirect to localized resource URL only if different from the original resource URL
-						if (!path.equals(localizedPath)){
-							uri = uri.replace(path, localizedPath);
-							if (uri.contains("?")){
-								uri += "&localized=1";
-							} else {
-								uri += "?localized=1";
-							}
-							URL newUrl = new URL(uri);
-							((HttpServletResponse)response).sendRedirect(newUrl.toString());
-							return;							
-						}
-					}
-				}
-			}
-		}
-		chain.doFilter(request, response); 
+	        // Redirect to localized resource URL only if different from the original resource URL
+	        if (!path.equals(localizedPath)){
+	          uri = uri.replace(path, localizedPath);
+	          if (uri.contains("?")){
+	            uri += "&localized=1";
+	          } else {
+	            uri += "?localized=1";
+	          }
+	          URL newUrl = new URL(uri);
+	          ((HttpServletResponse)response).sendRedirect(newUrl.toString());
+	          return;							
+	        }
+	      }
+	    }
+	  }
+	  chain.doFilter(request, response); 
 	}
 
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -167,15 +163,15 @@ public class LocalizedResourceFilter implements Filter {
 			if (new File(filePath).exists()) return context+path;
 		}
 
+        // As the next resort, we'll try defautLocale
+        if (instance.getWidget().getDefaultLocale() != null){
+          String path = basePath.replace(resource, "locales/"+instance.getWidget().getDefaultLocale().toLowerCase()+"/"+resource);
+          String filePath = filterConfig.getServletContext().getRealPath(path);   
+          if (new File(filePath).exists()) return context+path;
+        }
+    
 		// All attempts to locate a localized copy have failed, so we must try to find a non-localized version instead
 		if (new File(filterConfig.getServletContext().getRealPath(basePath)).exists()) return context+basePath;
-		
-		// As a last resort, we'll try defautLocale
-		if (instance.getWidget().getDefaultLocale() != null){
-		  String path = basePath.replace(resource, "locales/"+instance.getWidget().getDefaultLocale().toLowerCase()+"/"+resource);
-		  String filePath = filterConfig.getServletContext().getRealPath(path);		
-      if (new File(filePath).exists()) return context+path;
-		}
 
 		// No localized or even non-localized file exists, so just return the original. This situation shouldn't arise except
 		// where, e.g., the original request was for a non-existing resource
