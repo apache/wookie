@@ -124,6 +124,8 @@ public class WidgetFactory {
 		IWidget widget;
 		widget = persistenceManager.newInstance(IWidget.class);		
 		widget.setDir(model.getDir());
+		widget.setLang(model.getLang());
+		widget.setDefaultLocale(model.getDefaultLocale());
 		widget.setGuid(model.getIdentifier());
 		widget.setHeight(model.getHeight());
 		widget.setWidth(model.getWidth());
@@ -320,6 +322,8 @@ public class WidgetFactory {
 	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
     
 		widget.setDir(model.getDir());
+        widget.setLang(model.getLang());
+        widget.setDefaultLocale(model.getDefaultLocale());
 		widget.setGuid(model.getIdentifier());
 		widget.setHeight(model.getHeight());
 		widget.setWidth(model.getWidth());
