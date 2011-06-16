@@ -35,10 +35,7 @@
 	<target name="pre-compile-core" description="Run before compile-core. intended to be overridden if your project needs any post compile processing"/>
 	
 	<target name="deploy-module" depends="publish-local">
-		<ivy:cachepath pathid="project.core.class.path" conf="dev" />
-		<copy file="dist/wookie-jcr-0.1.0-SNAPSHOT.jar" todir="../../${servletEngine.webapp.dir}/${ant.project.name}/WEB-INF/lib"></copy>
-
-		<ivy:retrieve conf="deploy" pattern="../../${servletEngine.webapp.dir}/${ant.project.name}/WEB-INF/lib/[artifact]-[revision].[ext]"/>
-		
+		<ivy:cachepath pathid="project.core.class.path" conf="*"/>
+		<ivy:retrieve conf="deploy" pattern="../../${servletEngine.webapp.dir}/wookie/WEB-INF/lib/[artifact]-[revision].[ext]"/>
 	</target>
 </project>

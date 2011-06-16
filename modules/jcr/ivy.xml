@@ -26,6 +26,8 @@
     <dependencies>
     	<dependency org="org.apache.incubator" name="wookie" rev="latest.integration" conf="deploy->default">
     	</dependency>
+    	<dependency org="org.apache.incubator" name="wookie-parser" rev="latest.integration" conf="deploy->default">
+    	</dependency>
         <dependency org="commons-pool" name="commons-pool" rev="1.3" conf="deploy->default">
 		</dependency>   
 		<dependency org="commons-configuration" name="commons-configuration" rev="1.4" conf="deploy->default">

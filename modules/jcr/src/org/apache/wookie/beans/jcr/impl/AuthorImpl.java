@@ -17,6 +17,7 @@ import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
 import org.apache.wookie.beans.IAuthor;
 import org.apache.wookie.beans.jcr.IIdElement;
+import org.apache.wookie.w3c.ILocalizedElement;
 
 /**
  * JCR Implementation of Author bean
