@@ -226,7 +226,7 @@ commons-compress-1.0.jar
 commons-configuration-1.4.jar
 	Containing Project URL: http://commons.apache.org/configuration/
 
-commons-dbcp-1.2.1.jar
+commons-dbcp-1.2.2.jar
 	Containing Project URL: http://commons.apache.org/dbcp/
 	
 commons-email-1.1.jar
@@ -247,7 +247,7 @@ commons-lang-2.4.jar
 commons-logging.jar
 	Containing Project URL: http://commons.apache.org/logging
 	
-commons-pool-1.2.jar
+commons-pool-1.3.jar
 	Containing Project URL: http://commons.apache.org/pool
 	
 ddl-utils-1.0.jar
@@ -275,7 +275,7 @@ jetty-util-6.1.3.jar;
 jetty-plus-6.1.3.jar; 
 jetty-naming-6.1.3.jar; 
 jsp-2.1.jar; 
-jsp-api-2.1.jar
+jsp-api-2.1-6.1.3.jar
 	Containing Project URL: http://jetty.codehaus.org/jetty/	
 
 log4j-1.2.14.jar
