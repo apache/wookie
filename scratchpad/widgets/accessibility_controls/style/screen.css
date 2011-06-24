@@ -1,0 +1,206 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+html, body {
+  height:100%; 
+  max-height:100%; 
+  padding:0; 
+  margin:0; 
+  border:0; 
+  font-family: "trebuchet ms", tahoma, verdana, arial, sans-serif;
+}
+
+#wookie-widget {
+	min-height:100%;
+    position:relative;
+}
+
+#wookie-toolbar {
+	background-color:#C0C0C0;
+    text-align:center;
+    font-size:75%;
+    height:16px;
+}
+
+#wookie-widget-icon {
+	float:left;
+}
+
+#wookie-content {
+    padding-bottom:1em;   /* Height of the footer */
+}
+
+#wookie-settings {
+	display:none;
+}
+
+#wookie-footer {
+	background-color:#C0C0C0;
+	position:absolute;
+    bottom:0;
+    width:100%;
+    font-size:75%;
+    text-align:center;
+    height:1.5em;   /* Height of the footer */
+}
+
+input.wookie-form-button {
+   font-size:9px;
+   font-family:Verdana,sans-serif;
+   font-weight:bold;
+   color:#fcfcfc;
+   background-color:#000000;
+   border-style:solid;
+   border-color:#cccccc;
+   border-width:1px;
+}
+
+body.jsdisabled #block_accessibility_launchtoolbar {
+    display: none;
+}
+/*
+#block_accessibility_textresize,  #block_accessibility_changecolour {
+    margin-left: auto;
+    margin-right: auto;
+    width: 160px;
+    height: 34px;
+}
+
+#block_accessibiltiy_textresize div, #block_accessibility_changecolour div {
+	display:inline;
+}
+
+#wookie-widget .outer {
+    width: 32px;
+    height: 32px;
+    border: 1px solid black;
+    color: black;
+    list-style: none;
+    display: table;
+    float: left;
+    cursor: pointer;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+    font-size: 16px !important;
+}
+
+#wookie-widget .outer {
+    background-color: #fcfcfc !important;
+color: #000 !important;
+}
+
+
+#wookie-widget .outer[id] {
+    display: table;
+    position: static;
+    list-style: none;
+}
+
+#wookie-widget .middle {
+    position: absolute;
+}
+
+#wookie-widget .middle[class] {
+    display: table-cell;
+    vertical-align: middle;
+    position: static;
+}*/
+
+#wookie-widget .inner {
+    position: relative;
+    top: 25%;
+    text-align:center;
+    vertical-align:center;
+    margin: 0;
+    padding: 0;
+}
+/*
+#block_accessibility_textresize .outer *:hover {
+    background-color: #9cf !important;
+    text-decoration:none;
+}
+
+#block_accessibility_textresize .inner {
+    background-color: inherit !important;
+
+}
+
+
+#block_accessibility_textresize .outer.disabled {
+    color: grey;
+    cursor: pointer;
+}
+
+#block_accessibility_textresize .outer.disabled:hover {
+    background-color: #fcfcfc !important;
+}
+
+
+#block_accessibility_dec {
+    font-size: 12px !important;
+}
+
+#block_accessibility_inc {
+    font-size: 20px !important;
+
+}
+
+#wookie-widget .right {
+    margin-left: 5px;
+}
+*/
+#wookie-widget .row {
+    margin-top: 5px;
+}/*
+
+#block_accessibility_changecolour .outer:hover {
+    font-weight: bold;
+}
+
+#wookie-widget .outer:hover {
+    text-decoration:none;
+}
+
+#block_accessibility_colour2 {
+    background-color: #ffc !important;
+}
+
+#block_accessibility_colour3 {
+    background-color: #9cf !important;
+}
+
+#block_accessibility_colour4 {
+    background-color: #000 !important;
+    color: #ff0 !important;
+}
+*/
+a.accessibility_colour4 {
+    color: #f00 !important;
+}
+
+#wookie-widget #requiresjavascript {
+    z-index: 10;
+    position: absolute;
+    color: rgba(0, 0, 0, 0); 
+}
+
+#wookie-widget #requiresjavascript:hover {
+    background-color: #fff;
+    color: rgba(0, 0, 0, 1); 
+}

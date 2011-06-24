@@ -1,0 +1,100 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta http-equiv="pragma" content="no-cache"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <script type="text/javascript" src="scripts/ui.js" charset="utf-8"></script>
+        <script type="text/javascript" src="scripts/accessibility.js" charset="utf-8"></script>
+        <script type="text/javascript" src="scripts/properties.js" charset="utf-8"></script>  
+        <script type="text/javascript" src="scripts/controller.js" charset="utf-8"></script> 
+        <script type="text/javascript" src="scripts/yui-min.js"></script>
+        <link rel="stylesheet" type="text/css" href="style/screen.css" />
+	<link rel="stylesheet" type="text/css" href="style/controls.css" />
+		<title>accessibility_controls</title>
+	</head>
+	<body>
+	  <div id="wookie-widget">
+		<div id="wookie-toolbar"><img id="wookie-widget-icon" src="images/icon_16x16.png" onclick="wookieShowSettings()" alt="accessibility_controls Icon"/>accessibility_controls</div>
+		<div id="wookie-content">
+		  <h2>accessibility_controls</h2>
+		  <div id="requiresjavascript"><h3>Javascript doesn't appear to be enabled on your browser. This widget will not function without Javascript, please enable it.</h3></div>
+		
+		  <div id="accessibility_controls" class="content">
+      <ul id="block_accessibility_textresize" class="button_row">
+        <li class="access-button">
+          <a title="Decrease Text Size" id="block_accessibility_dec">A-</a>
+        </li>
+        <li class="access-button">
+          <a id="block_accessibility_reset" title="Reset Text Size (Clears Saved Setting)">A</a>
+        </li>
+        <li class="access-button">
+          <a title="Increase Text Size" id="block_accessibility_inc">A+</a>
+        </li>
+        <!--li class="access-button">
+          <a title="Save Setting" id="block_accessibility_save" class="disabled">
+	      <img class="inner" src="images/document-save-grey.png">
+          </a>
+        </li-->
+      </ul>
+    
+      <ul id="block_accessibility_changecolour">
+        <li class="access-button">
+          <a id="block_accessibility_colour1"  onclick="change_size('dec')">
+            A
+          </a>
+        </li>
+        <li class="access-button">
+          <a id="block_accessibility_colour2">
+            A
+          </a>
+        </li>
+        <li class="access-button">
+          <a id="block_accessibility_colour3">
+            A
+          </a>
+        </li>
+        <li class="access-button">
+          <a id="block_accessibility_colour4">
+            A
+          </a>
+        </li>
+      </ul>
+  
+    <div id="block_accessibility_message" class="clearfix"></div>
+
+      <input value="Launch ATbar" id="block_accessibility_launchtoolbar" class="atbar_control" type="image" src="images/atbar.png" alt="Launch ATbar">
+      <input value="1" id="atbar_auto" name="atbar_auto" class="atbar_control" type="checkbox">
+      <label for="atbar_auto" class="atbar_control">(always?)</label>
+    </div>
+    
+  </div>
+</div>
+	  <script type="text/javascript">
+	  YUI().use('base', 'node', 'stylesheet', function(Y) {
+		  Accessibility.init(Y);
+		  });
+	  </script>
+	</body>
+<!-- fix forIE cashing - must go here even though its in the wrong place
+<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+</HEAD>
+-->
+</html>
+
+ 
