@@ -20,15 +20,17 @@
 	<import file="ivy-webapp-common.xml" />
 
 	<tstamp />
+	<property name="project.general.name" value="apache-wookie-0.9.0-incubating" />
+	
 	<property name="wookie.source.folder.name" value="wookie-source" />
 	<property name="wookie.war.folder.name" value="wookie-war" />
 	<property name="wookie.standalone.folder.name" value="Apache-Wookie" />
 	<property name="wookie.source.zip.name"
-		value="org.apache.incubator.wookie-source-${version}-${DSTAMP}" />	
+		value="apache-wookie-${version}-incubating-src" />	
 	<property name="wookie.standalone.zip.name"
-		value="org.apache.incubator.wookie-standalone-${version}-${DSTAMP}" />
+		value="apache-wookie-${version}-incubating-standalone" />
 	<property name="wookie.war.name"
-		value="org.apache.incubator.wookie-war-${version}-${DSTAMP}" />
+		value="apache-wookie-${version}-incubating-war" />
 
 
 	<target name="build-release-all"
@@ -229,6 +231,9 @@
 		<ivy:retrieve conf="runtime"
 			pattern="${wookie.release.dir}/${wookie.standalone.folder.name}/lib/[artifact]-[revision].[ext]" />
 
+		<!-- duplicate -->
+		<delete file="${wookie.release.dir}/${wookie.standalone.folder.name}/lib/servlet-api-2.5.jar" />
+		
 		<zip destfile="${wookie.release.dir}/${wookie.standalone.zip.name}.zip"
 			basedir="${wookie.release.dir}/" includes="${wookie.standalone.folder.name}/"
 			update="true" />
