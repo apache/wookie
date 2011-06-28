@@ -117,6 +117,15 @@ public class HtmlCleanerTest {
 		cleaner.process(writer);
 		fail();
 	}
+	
+	@Test (expected = IOException.class)
+	public void nullReader2() throws IOException{
+	  HtmlCleaner cleaner = new HtmlCleaner();
+	  StringWriter writer = new StringWriter();
+	  cleaner.process(writer);
+	  fail();
+	}
+	
 	@Test (expected = IOException.class)
 	public void nullContentInReader() throws IOException{
 		HtmlCleaner cleaner = new HtmlCleaner();
@@ -134,6 +143,28 @@ public class HtmlCleanerTest {
 		cleaner.injectStylesheet("test.css");
 		cleaner.process(writer);
 	}
+
+  @Test
+  public void setharset() throws IOException{
+    String in = "";
+    StringWriter out = new StringWriter();
+    HtmlCleaner cleaner = new HtmlCleaner();
+    cleaner.setReader(new StringReader(in));
+    cleaner.setTypeAndCharset("text/html", "UTF-8");
+    cleaner.process(out);    
+    assertEquals("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" /></head><body></body></html>", out.toString());    
+  }
+	
+  @Test
+  public void overrideCharset() throws IOException{
+    String in = "<html><head><meta http-equiv=\"content-type\" content=\"text/xhtml;charset=ASCII\" /></head><body></body></html>";
+    StringWriter out = new StringWriter();
+    HtmlCleaner cleaner = new HtmlCleaner();
+    cleaner.setReader(new StringReader(in));
+    cleaner.setTypeAndCharset("text/html", "UTF-8");
+    cleaner.process(out);    
+    assertEquals("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" /></head><body></body></html>", out.toString());    
+  }
 
 
 }
