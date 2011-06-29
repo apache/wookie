@@ -21,6 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.controller.Controller;
@@ -80,15 +81,45 @@ public class FlatpackController extends Controller {
 		if (!WidgetKeyManager.isValidRequest(request)) throw new UnauthorizedAccessException();
 		String path;
 		try {
+		  //
+		  // Construct a FlatpackFactory for the instance identified in the request
+		  // If no instance can be found, throw an exception
+		  //
 			IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
+			if (instance == null) throw new InvalidParametersException();
 			FlatpackFactory fac = new FlatpackFactory(instance);
+			
+			//
 			// Set the folder to save the flatpack to an appropriate location on this server
+			//
 			fac.setFlatpackFolder(new File(request.getSession().getServletContext().getRealPath(FlatpackFactory.DEFAULT_FLATPACK_FOLDER.getPath())));
-			// Construct the URL to the file
-			String serverName = request.getSession().getServletContext().getContextPath();
-			path = serverName + "/" + FlatpackFactory.DEFAULT_FLATPACK_FOLDER + "/" + fac.pack().getName();
-			URL url =  new URL(request.getScheme() , request.getServerName() , request.getServerPort() , path);
+			
+			// 
+			// Pack the widget instance and get the resulting File
+			//
+			File flatpack = fac.pack();
+			
+		  //
+			// Construct the URL pointing to the exported .wgt file
+			// Use settings defined in properties if available, otherwise use the request context
+			// to construct a URL. Note that the resource begins with the servlet path, typically
+			// "/wookie"
+			//
+      Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
+      String scheme = request.getScheme();
+      String serverName = request.getServerName();
+      int serverPort = request.getServerPort();
+      String resource = request.getSession().getServletContext().getContextPath() + "/" + FlatpackFactory.DEFAULT_FLATPACK_FOLDER + "/" + flatpack.getName();
+      if (properties.getString("widget.server.scheme")!=null && !properties.getString("widget.server.scheme").trim().equals("")) scheme = properties.getString("widget.server.scheme"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      if (properties.getString("widget.server.host")!=null && !properties.getString("widget.server.host").trim().equals("")) serverName = properties.getString("widget.server.host"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      if (properties.getString("widget.server.port")!=null && !properties.getString("widget.server.port").trim().equals("")) serverPort = Integer.parseInt(properties.getString("widget.server.port")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      URL url =  new URL(scheme, serverName, serverPort, resource);
+      
+      //
+      // Return the String version of the URL pointing to the exported .wgt file
+      //
 			path = url.toString();
+			
 		} catch (Exception e) {
 			throw new InvalidParametersException();
 		}

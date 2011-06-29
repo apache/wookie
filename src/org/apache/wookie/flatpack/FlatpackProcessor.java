@@ -30,92 +30,99 @@ import org.apache.wookie.w3c.IStartPageProcessor;
 import org.apache.wookie.w3c.W3CWidget;
 
 /**
- * Flatpack Processor
+ * <p>
+ * This class is used to help create a "Flatpack" - a .wgt archive that can also
+ * include WidgetInstance information.
+ * </p>
  * 
- * This class is used to help create a "Flatpack" - a .wgt archive that can also include WidgetInstance 
- * information.
+ * <p>
+ * This class is invoked by the W3CWidgetFactory class when invoked by
+ * FlatpackFactory to unpack a Widget.
+ * </p>
  * 
- * This class is invoked by the W3CWidgetFactory class when invoked by FlatpackFactory to unpack a
- * Widget. The purpose of this processor is to modify the HTML start files in the Widget package,
- * injecting scripts only for the features set in the includedFeatures array.
+ * <p>
+ * The purpose of this processor is to modify the Widget package, for Features
+ * that are flagged as being suitable for "flattening", it adds their resources
+ * to the exported package, injects script and stylesheet references in each
+ * start file, and removes the &lt;feature&gt; element from the Widget's
+ * config.xml
+ * </p>
  * 
- * NOTE: At the moment this class doesn't actually do _anything_ as we haven't decided how to flatten features
- * 
- * @author scottbw@apache.org
- *
  */
-public class FlatpackProcessor  implements	IStartPageProcessor {
+public class FlatpackProcessor implements IStartPageProcessor {
 
-	/**
-	 * Constructs a FlatpackProcessor 
-	 * @param instance
-	 */
-	public FlatpackProcessor() {
-	}
+  /**
+   * Constructs a FlatpackProcessor
+   * 
+   * @param instance
+   */
+  public FlatpackProcessor() {
+  }
 
-	/**
-	 * Processes the start file.
-	 * @param startFile the HTML file to process
-	 * @param model the Widget object to apply
-	 * @content the Content element to apply
-	 * TODO implement
-	 */
-	public void processStartFile(File startFile, W3CWidget model,IContentEntity content) throws Exception {
-	   if (startFile == null) throw new Exception("Start file cannot be processed: file is null");
-	    if (!startFile.exists()) throw new Exception("Start file cannot be processed:  file does not exist");
-	    if (!(startFile.canWrite()&&startFile.canRead())) throw new Exception("Start file cannot be processed: read or write permissions missing");
-	    if (model == null) throw new Exception("Start file cannot be processed: widget model is null");
-	    IHtmlProcessor engine = new HtmlCleaner();
-	    engine.setReader(new FileReader(startFile));
-	    addFlattenedFeatures(startFile.getParentFile(), engine, model);
-	    FileWriter writer = new FileWriter(startFile);
-	    engine.process(writer);
-	}
-	
-	 /**
+  /**
+   * Processes the start file.
+   * 
+   * @param startFile the HTML file to process
+   * @param model the Widget object to apply
+   * @content the Content element to apply TODO implement
+   */
+  public void processStartFile(File startFile, W3CWidget model,
+      IContentEntity content) throws Exception {
+    if (startFile == null)
+      throw new Exception("Start file cannot be processed: file is null");
+    if (!startFile.exists())
+      throw new Exception(
+          "Start file cannot be processed:  file does not exist");
+    if (!(startFile.canWrite() && startFile.canRead()))
+      throw new Exception(
+          "Start file cannot be processed: read or write permissions missing");
+    if (model == null)
+      throw new Exception(
+          "Start file cannot be processed: widget model is null");
+    //
+    // Set the HTML processing engine to use to modify the Widget start files
+    // and pass it a reference to a FileReader it can use to read the start file
+    //
+    IHtmlProcessor engine = new HtmlCleaner();
+    engine.setReader(new FileReader(startFile));
+    //
+    // Process Features
+    //
+    addFlattenedFeatures(startFile.getParentFile(), engine, model);
+    FileWriter writer = new FileWriter(startFile);
+    engine.process(writer);
+  }
+
+  /**
    * Adds features to widget start file by injecting javascript and stylesheets
    * required by each supported feature in the model.
+   * 
    * @param engine
    * @param model
    * @throws Exception if a feature cannot be found and instantiated for the widget.
    */
-  private void addFlattenedFeatures(File widgetFolder, IHtmlProcessor engine, W3CWidget model) throws Exception{
-    ArrayList<IFeatureEntity> featuresToRemove = new ArrayList<IFeatureEntity>();
-    for (IFeatureEntity feature: model.getFeatures()){
-      for (IFeature theFeature: Features.getFeatures()){
-        if (theFeature.getName().equals(feature.getName()) && theFeature.flattenOnExport()){
+  private void addFlattenedFeatures(File widgetFolder, IHtmlProcessor engine,
+      W3CWidget model) throws Exception {
+    for (IFeatureEntity feature : model.getFeatures()) {
+      for (IFeature theFeature : Features.getFeatures()) {
+        if (theFeature.getName().equals(feature.getName())
+            && theFeature.flattenOnExport()) {
           addScripts(engine, theFeature);
-          addStylesheets(engine, theFeature);  
-          addResources(widgetFolder, theFeature);
-          featuresToRemove.add(feature);
+          addStylesheets(engine, theFeature);
         }
       }
     }
-    // Remove flattened features
-    for (IFeatureEntity feature: featuresToRemove){
-      model.getFeatures().remove(feature);
-    }
-  }
-  
-  /**
-   * @param widgetFolder
-   * @param theFeature
-   * @throws IOException 
-   */
-  private void addResources(File widgetFolder, IFeature theFeature) throws IOException {
-    // Copy everything under the feature to the widgetfolder
-    File featureFolder = new File(theFeature.getFolder());
-    FileUtils.copyDirectoryToDirectory(featureFolder, widgetFolder);
   }
 
   /**
    * Adds scripts for a given feature
+   * 
    * @param engine
    * @param feature
    */
-  private void addScripts(IHtmlProcessor engine, IFeature feature){
-    if (feature.scripts() != null){
-      for (String script: feature.scripts()){
+  private void addScripts(IHtmlProcessor engine, IFeature feature) {
+    if (feature.scripts() != null) {
+      for (String script : feature.scripts()) {
         // remove the "base" path
         // FIXME this is fragile - consider replacing with a better solution
         script = script.replace("/wookie/features/", "");
@@ -123,15 +130,16 @@ public class FlatpackProcessor  implements	IStartPageProcessor {
       }
     }
   }
-  
+
   /**
    * Adds stylesheets for a given feature
+   * 
    * @param engine
    * @param feature
    */
-  private void addStylesheets(IHtmlProcessor engine, IFeature feature){
-    if (feature.stylesheets() != null){
-      for (String style: feature.stylesheets()){
+  private void addStylesheets(IHtmlProcessor engine, IFeature feature) {
+    if (feature.stylesheets() != null) {
+      for (String style : feature.stylesheets()) {
         // remove the "base" path
         // FIXME this is fragile - consider replacing with a better solution
         style = style.replace("/wookie/features/", "");
