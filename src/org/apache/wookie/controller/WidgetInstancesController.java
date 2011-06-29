@@ -324,15 +324,23 @@ public class WidgetInstancesController extends Controller {
 		String url = "";
 
 		IStartFile[] startFiles = instance.getWidget().getStartFiles().toArray(new IStartFile[instance.getWidget().getStartFiles().size()]);
-        IStartFile sf = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, new String[]{instance.getLang()}, instance.getWidget().getDefaultLocale());
+    IStartFile sf = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, new String[]{instance.getLang()}, instance.getWidget().getDefaultLocale());
 		// Try default locale if no appropriate localization found
 		if (sf == null) sf = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, null, instance.getWidget().getDefaultLocale());
 		// No start file found, so throw an exception
 		if (sf == null) throw new IOException("No start file located for widget "+instance.getWidget().getGuid());
 		
-		URL urlWidget =  new URL(request.getScheme() ,
-				request.getServerName() ,
-				request.getServerPort() , sf.getUrl());
+		// Use settings defined in properties if available, otherwise use the request context
+        Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
+        String scheme = request.getScheme();
+        String serverName = request.getServerName();
+        int serverPort = request.getServerPort();
+        String path = sf.getUrl();
+        if (properties.getString("widget.server.scheme")!=null && !properties.getString("widget.server.scheme").trim().equals("")) scheme = properties.getString("widget.server.scheme"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        if (properties.getString("widget.server.host")!=null && !properties.getString("widget.server.host").trim().equals("")) serverName = properties.getString("widget.server.host"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        if (properties.getString("widget.server.port")!=null && !properties.getString("widget.server.port").trim().equals("")) serverPort = Integer.parseInt(properties.getString("widget.server.port")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+		URL urlWidget =  new URL(scheme, serverName, serverPort, path);
 		
 		if (urlWidget.getQuery() != null){
 			url+= urlWidget + "&amp;idkey=" + instance.getIdKey()  //$NON-NLS-1$
