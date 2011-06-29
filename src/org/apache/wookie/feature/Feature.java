@@ -25,7 +25,38 @@ public class Feature implements IFeature {
   private String name;
   private String[] scripts;
   private String[] stylesheets;
+  private boolean flattenOnExport;
+  private String folder;
   
+  
+  /* (non-Javadoc)
+   * @see org.apache.wookie.feature.IFeature#getFolder()
+   */
+  public String getFolder() {
+    return folder;
+  }
+
+  /**
+   * @param folderName the folderName to set
+   */
+  public void setFolder(String folder) {
+    this.folder = folder;
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.wookie.feature.IFeature#flattenOnExport()
+   */
+  public boolean flattenOnExport() {
+    return flattenOnExport;
+  }
+
+  /**
+   * @param flattenOnExport the flattenOnExport to set
+   */
+  public void setFlattenOnExport(boolean flattenOnExport) {
+    this.flattenOnExport = flattenOnExport;
+  }
+
   public Feature(String name, String[] scripts, String[] stylesheets){
     this.name = name;
     this.scripts = scripts;

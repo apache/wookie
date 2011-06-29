@@ -15,7 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<feature>
+<feature flatten="true">
 	<name>http://jquerymobile.com</name>
 	<script src="shared/jquery-1.5.min.js"/>
 	<script src="shared/jquery.mobile-1.0a4-patched.min.js"/>

@@ -34,5 +34,15 @@ public interface IFeature {
 	 * @return
 	 */
 	public String[] stylesheets();
+	
+	/**
+	 * @return true if this feature should be flattened (injected) on export, or remain in the config.xml as a <feature> element
+	 */
+	public boolean flattenOnExport();
+	
+	/**
+	 * @return the path to the folder containing the feature and its resources
+	 */
+	public String getFolder();
 
 }

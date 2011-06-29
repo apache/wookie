@@ -38,7 +38,21 @@ import org.directwebremoting.WebContextFactory;
  */
 public class WaveAPIImpl implements IFeature, IWaveAPI{
 
-	public WaveAPIImpl() {
+	/* (non-Javadoc)
+   * @see org.apache.wookie.feature.IFeature#flattenOnExport()
+   */
+  public boolean flattenOnExport() {
+    return false;
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.wookie.feature.IFeature#getFolder()
+   */
+  public String getFolder() {
+    return null;
+  }
+  
+  public WaveAPIImpl() {
 	}
 	
 	public String getName() {

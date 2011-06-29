@@ -53,6 +53,16 @@ public class Features {
    */
   public static final File DEFAULT_FEATURE_FOLDER = new File("features");
   
+  /*
+   * The folder where deployed features live
+   */
+  private static File featuresFolder;
+  
+  public static File getFeaturesFolder(){
+    if (featuresFolder == null) return DEFAULT_FEATURE_FOLDER;
+    return featuresFolder;
+  }
+  
   /**
    * Get the currently installed features
    * @return a List of IFeature objects
@@ -92,8 +102,17 @@ public class Features {
     // Load defaults
     loadDefaultFeatures();
     
+    // Load features from file
+    loadFeatures(DEFAULT_FEATURE_FOLDER, context.getContextPath() + "/" + DEFAULT_FEATURE_FOLDER + "/");
+  }
+  
+  public static void loadFeatures(File theFeaturesFolder, String basePath){
+    featuresFolder = theFeaturesFolder;
+    
+    if (features == null) features = new ArrayList<IFeature>();
+    
     // Iterate over child folders of the /features folder
-    for (File folder: DEFAULT_FEATURE_FOLDER.listFiles()){
+    for (File folder: featuresFolder.listFiles()){
 
       // If the folder contains a feature.xml file, parse it and create a Feature object
       if (folder.isDirectory()){
@@ -101,9 +120,10 @@ public class Features {
         if (featureXml.exists() && featureXml.canRead()){
           try {
             // Create a base path for resources using the current servlet context and default feature folder 
-            String basePath = context.getContextPath() + "/" + DEFAULT_FEATURE_FOLDER + "/" + folder.getName();
+            String path = "/wookie/features/" + folder.getName();
             // Load the feature and add it to the features collection
-            IFeature feature = loadFeature(featureXml, basePath);
+            Feature feature = loadFeature(featureXml, path);
+            feature.setFolder(folder.getPath());
             features.add(feature);
             _logger.info("Installed feature:"+feature.getName());   
           } catch (Exception e) {
@@ -121,7 +141,7 @@ public class Features {
    * @return an IFeature implementation
    * @throws Exception
    */
-  private static IFeature loadFeature(File featureFile, String basePath) throws Exception{
+  private static Feature loadFeature(File featureFile, String basePath) throws Exception{
     // Parse the XML
     Document doc;
     doc = new SAXBuilder().build(featureFile);
@@ -146,7 +166,15 @@ public class Features {
       stylesheets[i] =  basePath + "/" + stylesheetElements.get(i).getAttributeValue("src");
     }
     // Create a Feature object and return it
-    IFeature feature = new Feature(name, scripts, stylesheets);
+    Feature feature = new Feature(name, scripts, stylesheets);
+    
+    // Set the "flatten" flag if set
+    if (doc.getRootElement().getAttributeValue("flatten")!=null){
+      if (doc.getRootElement().getAttributeValue("flatten").equals("true")){
+        ((Feature)feature).setFlattenOnExport(true);        
+      }
+    }
+    
     return feature;
   }
 

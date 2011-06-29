@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.feature.Features;
 import org.apache.wookie.w3c.IPreferenceEntity;
 import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
@@ -78,7 +79,7 @@ public class FlatpackFactory {
 			// try to locate the widget upload package from the WidgetInstance
 			inputWidget = new File(instance.getWidget().getPackagePath());
 		}
-		if (parser == null) parser = DEFAULT_PARSER;
+		if (parser == null) this.setParser(DEFAULT_PARSER);
 		
 		// Verify the file locations we're using exist
 		if (!inputWidget.exists()) throw new Exception("Input widget file does not exist:"+inputWidget.getPath());
@@ -184,7 +185,7 @@ public class FlatpackFactory {
 	 */
 	public void setParser(W3CWidgetFactory factory) throws IOException{
 		parser = factory;
-		parser.setStartPageProcessor(new FlatpackProcessor(this.instance));
+		parser.setStartPageProcessor(new FlatpackProcessor());
 		parser.setLocalPath(DEFAULT_LOCAL_PATH);
 	}
 	
@@ -194,6 +195,7 @@ public class FlatpackFactory {
 	private static W3CWidgetFactory createDefaultParser() {
 		W3CWidgetFactory fac = new W3CWidgetFactory();
 		fac.setLocalPath(DEFAULT_LOCAL_PATH);
+        fac.setFeatures(Features.getFeatureNames());
 		try {
 			fac.setEncodings(new String[]{"UTF-8"});
 		} catch (Exception e) {

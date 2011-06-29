@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.feature.Features;
 import org.apache.wookie.flatpack.FlatpackFactory;
 import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
@@ -48,6 +49,7 @@ public class FlatpackFactoryTest {
 		download = File.createTempFile("wookie-download", "wgt");
 		output = File.createTempFile("wookie-output", "tmp");
 		flatpack = File.createTempFile("wookie-flatpack", "");
+		Features.loadFeatures(new File("features"), "/wookie/features");
 	}
 	
 	/*
@@ -135,6 +137,37 @@ public class FlatpackFactoryTest {
 		assertNotNull(fpWidget);
 		
 	}
+	
+	 /**
+   * Test creating a flatpack for an instance of a widget using the factory defaults
+   * when the widget also uses Features
+   * @throws Exception
+   */
+  @Test
+  public void createFeatureFlatpackUsingDefaults() throws Exception{
+    // upload a new widget to test with
+    W3CWidgetFactory fac = getFactory();
+    fac.setFeatures(Features.getFeatureNames());
+    File testWidget = new File("build/widgets/freeder.wgt");
+    fac.parse(testWidget);
+    download = fac.getUnzippedWidgetDirectory(); //download is where we unzipped the widget
+    
+    // Create an instance of it
+    IWidgetInstance instance = new WidgetInstanceMock();
+    
+    // Flatpack it
+    FlatpackFactory flatfac = new FlatpackFactory(instance);
+    flatfac.setInputWidget(testWidget); // this is the original .wgt
+    File file = flatfac.pack(); // Get the new .wgt file
+  
+    // Test it works!
+    System.out.println("createFeatureFlatpackUsingDefaults: "+file.getAbsolutePath());
+    W3CWidget fpWidget = fac.parse(file);
+    assertNotNull(fpWidget);
+    // The JQM feature should have been removed from config.xml
+    assertEquals(0, fpWidget.getFeatures().size());
+    
+  }
 	
 	/**
 	 * Test that we add preference defaults from an instance
