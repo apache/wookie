@@ -124,5 +124,14 @@ Known Issues
 	* [WOOKIE-152] - There is a known issue when using Ant version 1.8.x to build and run Wookie; 
 				     you should instead use version 1.7.1. To check which version of ant you are using, 
 				     type ant -version.
-						
-							
+	* [WOOKIE-222] - There is a known issue when using Tomcat 7.* with Wookie. Sometimes when a widget is actually
+					 loaded, a browser alert box sometimes appears informing the user of a "Session Error".
+					 A workaround for this is to add the following to the WEB-INF/web.xml file
+					 
+					 <init-param>
+						<param-name>crossDomainSessionSecurity</param-name>
+						<param-value>false</param-value>
+					</init-param>
+					 			
+					 This is an issue for Tomcat 7.* only. Previous versions do not appear to have this issue. 
+					 				
