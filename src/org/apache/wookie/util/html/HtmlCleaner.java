@@ -87,17 +87,34 @@ public class HtmlCleaner implements IHtmlProcessor{
 		headNode.addChild(js);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.util.html.IHtmlProcessor#setCharset(java.lang.String)
-	 */
-	public void setTypeAndCharset(String type, String charset) {
-		// This overrides any existing encoding information in the HTML file.
-		TagNode meta = new TagNode(META_TAG);
-		meta.addAttribute("http-equiv", "Content-Type");
-		if (charset.equals("UTF-8")) charset="utf-8";
-		meta.addAttribute("content", type+";charset="+charset);
-		headNode.getChildren().add(0, meta);
-	}
+  /* (non-Javadoc)
+   * @see org.apache.wookie.util.html.IHtmlProcessor#setCharset(java.lang.String)
+   */
+  @SuppressWarnings("unchecked")
+  public void setTypeAndCharset(String type, String charset) {
+    // NB This overrides any existing encoding information in the HTML file.
+    
+    //
+    // Check if the page already has a META http-equiv=content-type tag,
+    // if it doesn't create one and add it to the head node
+    //
+    TagNode meta = headNode.findElementByAttValue("http-equiv", "content-type", true, false);
+    if (meta == null) {
+      meta = new TagNode(META_TAG);
+      meta.addAttribute("http-equiv", "Content-Type");
+      headNode.getChildren().add(0, meta);
+    }
+    //
+    // Force UTF into lowercase
+    //
+    if (charset.equals("UTF-8")) charset = "utf-8";
+    
+    //
+    // Override the charset and content-type values for the 
+    // META http-equiv=content-type tag
+    //
+    meta.addAttribute("content", type + ";charset=" + charset);
+  }
 	
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.util.html.IHtmlProcessor#process()

@@ -157,7 +157,7 @@ public class HtmlCleanerTest {
 	
   @Test
   public void overrideCharset() throws IOException{
-    String in = "<html><head><meta http-equiv=\"content-type\" content=\"text/xhtml;charset=ASCII\" /></head><body></body></html>";
+    String in = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/xhtml;charset=ASCII\" /></head><body></body></html>";
     StringWriter out = new StringWriter();
     HtmlCleaner cleaner = new HtmlCleaner();
     cleaner.setReader(new StringReader(in));
