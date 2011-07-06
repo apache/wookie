@@ -337,7 +337,7 @@ public class WidgetInstancesController extends Controller {
         int serverPort = request.getServerPort();
         String path = sf.getUrl();
         if (properties.getString("widget.server.scheme")!=null && !properties.getString("widget.server.scheme").trim().equals("")) scheme = properties.getString("widget.server.scheme"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        if (properties.getString("widget.server.host")!=null && !properties.getString("widget.server.host").trim().equals("")) serverName = properties.getString("widget.server.host"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        if (properties.getString("widget.server.hostname")!=null && !properties.getString("widget.server.hostname").trim().equals("")) serverName = properties.getString("widget.server.hostname"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         if (properties.getString("widget.server.port")!=null && !properties.getString("widget.server.port").trim().equals("")) serverPort = Integer.parseInt(properties.getString("widget.server.port")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		URL urlWidget =  new URL(scheme, serverName, serverPort, path);
