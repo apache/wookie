@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
 import org.apache.wookie.ajaxmodel.IWidgetAPI;
+import org.apache.wookie.ajaxmodel.IWookieExtensionAPI;
 import org.apache.wookie.beans.IDescription;
 import org.apache.wookie.beans.IName;
 import org.apache.wookie.beans.IPreference;
@@ -65,14 +66,14 @@ import org.directwebremoting.WebContextFactory;
  * @version $Id: WidgetAPIImpl.java,v 1.3 2009-09-14 21:15:07 scottwilson Exp $
  *
  */
-public class WidgetAPIImpl implements IWidgetAPI {
+public class WidgetAPIImpl implements IWidgetAPI, IWookieExtensionAPI {
 
 	static Logger _logger = Logger.getLogger(WidgetAPIImpl.class.getName());
 
 	public WidgetAPIImpl(){}
 	
 	/* (non-Javadoc)
-	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#preferences2(java.lang.String)
+	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#preferences(java.lang.String)
 	 */
 	public List<IPreference> preferences(String id_key) {
 		ArrayList<IPreference> prefs = new ArrayList<IPreference>();

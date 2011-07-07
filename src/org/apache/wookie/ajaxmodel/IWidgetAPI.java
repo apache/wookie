@@ -21,54 +21,10 @@ import org.apache.wookie.beans.IPreference;
 
 
 /**
- * Definition of the widget API.  
- * @author Paul Sharples
- * @version $Id: IWidgetAPI.java,v 1.3 2009-09-14 21:15:08 scottwilson Exp $
+ * The Widget API: functions required to support the W3C Widget Interface specification
  *
  */
 public interface IWidgetAPI {	
-	
-	/**
-	 * Appends a string to the string contained in the shared data value in the DB, obtained
-	 * from the given "key" 
-	 * 
-	 * Note that this method is retained only as a workaround for some issues in the Wave Gadget API implementation
-	 * and is likely to be deprecated in the future.
-	 * 
-	 * @param id_key - the unique instance id key for a widget instance
-	 * @param key - key for the value to change
- 	 * @param key - the value to change to
-	 * @return - a string value marking status or an error message
-	 */
-	public String appendSharedDataForKey(String id_key, String key, String value);	
-	
-	/**
-	 * Call to hide a widget instance based on the instance_key
-	 * 
-	 * Note this is not a part of the W3C standard interface, but a Wookie-specific extension
-	 * 
-	 * @param id_key
-	 * @return
-	 */
-	public String hide(String id_key);
-	
-	/**
-	 * Call to lock a widget instance
-	 * 
-   * Note this is not a part of the W3C standard interface, but a Wookie-specific extension
-   * 
-	 * @param id_key
-	 * @return
-	 */
-	public String lock(String id_key);
-	
-	/**
-	 * Open a url in a window
-	 * @param url
-	 * @return
-	 */
-	@Deprecated
-	public String openURL(String url);
 	
 	/**
 	 * Returns the set of preferences as a map of [key][value] objects
@@ -84,67 +40,6 @@ public interface IWidgetAPI {
 	 */
 	public Map<String, String> metadata(String id_key);
 	
-	/**
-	 * Returns a string preference value from the DB, obtained
-	 * from the given "key" 
-	 * @param id_key - the unique instance id key for a widget instance
-	 * @param key - key for the value to retrieve
-	 * @return - a string value found in the DB or an error message
-	 */
-	 @Deprecated
-	public String preferenceForKey(String id_key, String key);
-	
-	/**
-	 * Sets a string preference value in the DB, obtained
-	 * from the given "key" 
-	 * @param id_key - the unique instance id key for a widget instance
-	 * @param key - key for the value to change
- 	 * @param key - the value to change to
-	 * @return - a string value marking status or an error message
-	 */
-	 @Deprecated
-	public String setPreferenceForKey(String id_key, String key, String value);
-		
-	/**
-	 * Sets a string shared data value in the DB, obtained
-	 * from the given "key" 
-	 * @param id_key - the unique instance id key for a widget instance
-	 * @param key - key for the value to change
- 	 * @param key - the value to change to
-	 * @return - a string value marking status or an error message
-	 */
-	@Deprecated
-	public String setSharedDataForKey(String id_key, String key, String value);
-	
-	/**
-	 * Returns a string value from the DB, obtained
-	 * from the given "key". This is a shared data value
-	 * between widgets using the same data 
-	 * @param id_key - the unique instance id key for a widget instance
-	 * @param key - key for the value to retrieve
-	 * @return - a string value found in the DB or an error message
-	 */
-	 @Deprecated
-	public String sharedDataForKey(String id_key, String key);	
-	
-	/**
-	 * show a widget instance based on the id_key
-	 * 
-	 * Note this is not a part of the W3C standard interface, but a Wookie-specific extension
-	 * 
-	 * @param id_key
-	 * @return
-	 */
-	public String show(String id_key);
-	
-	/**
-	 * Unlock a widget instance based on the id_key
-	 * 
-	 * Note this is not a part of the W3C standard interface, but a Wookie-specific extension
-	 * 
-	 * @param id_key
-	 * @return
-	 */
-	public String unlock(String id_key);
+
 	
 }
