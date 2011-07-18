@@ -15,27 +15,12 @@
  * 
  */
 
-package org.apache.wookie.ajaxmodel;
+package org.apache.wookie.feature.ext;
 
 /**
  * Wookie-specific runtime API extensions, including "private" support methods
  */
-public interface IWookieExtensionAPI {
-  
-  
-  /**
-   * Appends a string to the string contained in the shared data value in the DB, obtained
-   * from the given "key" 
-   * 
-   * Note that this method is retained only as a workaround for some issues in the Wave Gadget API implementation
-   * and is likely to be deprecated in the future.
-   * 
-   * @param id_key - the unique instance id key for a widget instance
-   * @param key - key for the value to change
-   * @param key - the value to change to
-   * @return - a string value marking status or an error message
-   */
-  public String appendSharedDataForKey(String id_key, String key, String value);  
+public interface IWookieExtensionAPI { 
   
   /**
    * Call to hide a widget instance based on the instance_key
@@ -64,16 +49,6 @@ public interface IWookieExtensionAPI {
    */
    @Deprecated
   public String preferenceForKey(String id_key, String key);
-  
-  /**
-   * Sets a string preference value in the DB, obtained
-   * from the given "key" 
-   * @param id_key - the unique instance id key for a widget instance
-   * @param key - key for the value to change
-   * @param key - the value to change to
-   * @return - a string value marking status or an error message
-   */
-  public String setPreferenceForKey(String id_key, String key, String value);
     
   /**
    * Sets a string shared data value in the DB, obtained
@@ -106,5 +81,20 @@ public interface IWookieExtensionAPI {
    * @return
    */
   public String show(String id_key);
+  
+  /**
+   * Appends a string to the string contained in the shared data value in the DB, obtained
+   * from the given "key" 
+   * 
+   * Note that this method is retained only as a workaround for some issues in the Wave Gadget API implementation
+   * and is likely to be deprecated in the future.
+   * 
+   * @param id_key - the unique instance id key for a widget instance
+   * @param key - key for the value to change
+   * @param key - the value to change to
+   * @return - a string value marking status or an error message
+   */
+  public String appendSharedDataForKey(String id_key, String key, String value); 
+
   
 }

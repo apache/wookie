@@ -23,6 +23,6 @@ public interface IWidgetRuntimeHelper {
 	static final String USE_PREFERENCE_INSTANCE_QUEUES = "widget.preferences.useinstancequeues";
 	static final String USE_SHAREDDATA_INSTANCE_QUEUES = "widget.shareddata.useinstancequeues";
 	static final String DWR_SET_PREFERENCE_CALL = "/wookie/dwr/call/plaincall/WidgetImpl.setPreferenceForKey.dwr";
-	static final String DWR_SET_SHAREDDATA_CALL = "/wookie/dwr/call/plaincall/WidgetImpl.setSharedDataForKey.dwr";	
-	static final String DWR_APPEND_SHAREDDATA_CALL = "/wookie/dwr/call/plaincall/WidgetImpl.appendSharedDataForKey.dwr";	
+	static final String DWR_SET_SHAREDDATA_CALL = "/wookie/dwr/call/plaincall/WookieImpl.setSharedDataForKey.dwr";	
+	static final String DWR_APPEND_SHAREDDATA_CALL = "/wookie/dwr/call/plaincall/WookieImpl.appendSharedDataForKey.dwr";	
 }

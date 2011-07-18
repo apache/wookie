@@ -35,11 +35,15 @@
       <param name="class" value="org.apache.wookie.ajaxmodel.impl.WidgetAPIImpl"/>
       <include method="preferences"/> 
       <include method="metadata"/> 
-      <include method="preferenceForKey"/>
       <include method="setPreferenceForKey"/>
+    </create>
+    
+    <create creator="new" javascript="WookieImpl" scope="application">
+      <param name="class" value="org.apache.wookie.feature.ext.WookieAPIImpl"/>
+      <include method="appendSharedDataForKey"/>
+      <include method="preferenceForKey"/>
       <include method="setSharedDataForKey"/>
       <include method="sharedDataForKey"/>
-      <include method="appendSharedDataForKey"/>
       <include method="lock"/>
       <include method="unlock"/>
       <include method="system"/>

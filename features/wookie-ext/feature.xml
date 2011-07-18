@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"?>
 <!--
   Licensed to the Apache Software Foundation (ASF) under one or more
   contributor license agreements.  See the NOTICE file distributed with
@@ -15,14 +15,15 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<widget xmlns="http://www.w3.org/ns/widgets"
- 		id="http://wookie.apache.org/widgets/blitz"
- 		version="0.1"
-        width="420"
-        height="320">
- <name>Blitz</name>
- <description>Preference and shared data test widget</description>
- <content src="index.html"/>
- <feature name="http://wave.google.com" required="true"/>
- <feature name="http://incubator.apache.org/wookie/ext" required="true"/>
-</widget>
+<feature>
+	<!-- 
+		This is the Wookie Extensions API, and includes
+		a number of extra methods such as lock(), unlock(), show(), hide() 
+		as well as methods for working with shared data and preferences. 
+		Many of these are now deprecated as standards have matured.
+		For more information, see org.apache.wookie.feature.ext.IWookieExntesionAPI.java
+	 -->
+	<name>http://incubator.apache.org/wookie/ext</name>
+	<script src="/wookie/dwr/interface/WookieImpl.js"/>
+	<script src="wookie.js"/>
+</feature>

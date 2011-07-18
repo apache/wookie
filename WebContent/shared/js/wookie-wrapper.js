@@ -94,6 +94,8 @@ WidgetPreferences = new function WidgetPreferences(){
             	delete this.prefs[key];
             	Widget.setPreferenceForKey(key,null);
             	this.calcLength();
+                
+                
             }
         }
 	}
@@ -116,10 +118,6 @@ var Widget = {
 	proxyUrl : null,	
 	// this should be assigned by the calling JS app
 	onSharedUpdate : null,
-	// this should be assigned by the calling JS app
-	onLocked : null,
-	// this should be assigned by the calling JS app
-	onUnlocked : null,
 	// initialised below as a singleton
 	preferences: null,
 
@@ -209,42 +207,6 @@ var Widget = {
 	
 	setPreferenceForKey : function(wName, wValue){
 		WidgetImpl.setPreferenceForKey(this.instanceid_key, wName, wValue);	
-	},
-
-	preferenceForKey : function(wName, callBackFunction){
-		WidgetImpl.preferenceForKey(this.instanceid_key, wName, callBackFunction);
-	},
-	
-	setSharedDataForKey : function(wName, wValue){
-		WidgetImpl.setSharedDataForKey(this.instanceid_key, wName, wValue);
-	},
-	
-	sharedDataForKey : function(wName, callBackFunction){
-		WidgetImpl.sharedDataForKey(this.instanceid_key, wName, callBackFunction)
-	},
-	
-	appendSharedDataForKey : function(wName, wValue){
-		WidgetImpl.appendSharedDataForKey(this.instanceid_key, wName, wValue)		
-	},	
-	
-	lock : function(){
-		WidgetImpl.lock(this.instanceid_key);
-	},
-	
-	unlock : function(){
-		WidgetImpl.unlock(this.instanceid_key);
-	},
-	
-	hide : function(){
-		WidgetImpl.hide(this.instanceid_key);
-	},
-	
-	show : function(){
-		WidgetImpl.show(this.instanceid_key);
-	},
-	
-	openURL : function(url){
-		window.open(url);
 	},
 	
 	getInstanceKey : function(){
