@@ -33,7 +33,11 @@ var Controller = {
 	 */
 	update:function() {
 		$.mobile.pageLoading();
-        var feedUrl = Widget.proxify(Properties.getFeedURL());
+        if (widget.proxify){
+            var feedUrl = widget.proxify(Properties.getFeedURL());
+        } else {
+            var feedUrl = Properties.getFeedURL();
+        }
         $.getFeed({
             url: feedUrl, 
             success: Controller.updateFeed

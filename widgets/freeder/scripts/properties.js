@@ -21,7 +21,7 @@
 var Properties = {
 	
 	submitForm: function() {
-		Widget.preferences.setItem("feedURL", $("#input-url").val());
+		widget.preferences.setItem("feedURL", $("#input-url").val());
 		Controller.update();
         $.mobile.changePage("#home", "pop", true);
 	},
@@ -30,6 +30,6 @@ var Properties = {
 	 * Get the base URL for the Simal REST interface.
 	 */
 	getFeedURL: function() {
-        return Widget.preferences.getItem("feedURL") || "http://osswatch.jiscinvolve.org/feed";
+        return widget.preferences.getItem("feedURL") || "http://osswatch.jiscinvolve.org/feed";
 	}		
 }
