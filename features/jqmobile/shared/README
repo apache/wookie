@@ -1,14 +1,10 @@
-This is a modified version of JQuery Mobile to support use of Widgets in Safari inside an iFrame. 
+This is the standard JQuery Mobile distribution (1.0b1).
 
-It replaces the function:
+Note that in the context of widgets there are certain practices to consider in that default "dialog.close" and "window.back" behaviour
+has unpredictable results on a more complex page with iFrames in different browsers. You should wherever possible use either links
+or scripts that directly invoke a page transition rather than rely on browser functions in these cases. 
 
-	window.history.back()
+For more information see https://github.com/jquery/jquery-mobile/issues/560
 
-... with:
-
-	var url = $.mobile.urlHistory.getPrev().url;
-	if (url === null || url == "") url = $.mobile.firstPage.attr("data-url");
-	url = "#" + url;
-	$.mobile.changePage(url, "slide", true, true, true);
-
-See https://github.com/jquery/jquery-mobile/issues/560
+Note that JQuery Mobile will no longer automatically create "Back" buttons for pages, and instead encourages developers to
+create a "home" link/button/image/logo or similar in the page header, as is typical of web applications more generally.

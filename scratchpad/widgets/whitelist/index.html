@@ -37,8 +37,9 @@
 			</div><!-- /content -->
 		</div><!-- /page -->
 		
-		<div data-role="dialog" id="detail">
+		<div data-role="page" id="detail">
 		    <div data-role="header">
+		    	<a href="#home" data-icon="home" data-direction="reverse" data-role="button" data-iconpos="notext">Home</a>
 				<h4>Entry Details</h4>
 			</div> <!-- /header -->
 		
@@ -46,7 +47,7 @@
 				<p><b>URL:</b> <span id="detail-url"></span></p>
 				<p>We could put some stats here from the proxy...</p>
 				<button id="revoke-button">Remove this entry</button>	
-				<button id="cancel-button" onclick="$('#detail').dialog('close')">Cancel</button>
+			</div>
 			</div><!-- /content -->
 			</div>
 			

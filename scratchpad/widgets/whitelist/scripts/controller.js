@@ -61,7 +61,7 @@ var Controller = {
             type:"DELETE",
             success: function(){
                 Controller.update();
-                $('#detail').dialog('close');
+                $.mobile.changePage("#home", "slide", true);
             }
         });
     },
@@ -74,7 +74,7 @@ var Controller = {
             type:"POST",
             success: function(){
                 Controller.update();
-                $('#add').dialog('close');
+                $.mobile.changePage("#home", "pop", true);
             }
         });
     },
