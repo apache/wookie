@@ -23,7 +23,6 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import org.apache.log4j.Logger;
-import org.apache.wookie.feature.wave.WaveAPIImpl;
 import org.apache.wookie.w3c.util.IRIValidator;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -82,13 +81,6 @@ public class Features {
     }
     return featureNames.toArray(new String[featureNames.size()]);
   }
-  
-  /**
-   * Explicitly load any "special" features
-   */
-  public static void loadDefaultFeatures(){
-    features.add(new WaveAPIImpl());
-  }
 
   /**
    * Loads features from the default feature folder in the current servlet context
@@ -98,9 +90,6 @@ public class Features {
     
     // Clear any existing installed features
     features = new ArrayList<IFeature>();
-    
-    // Load defaults
-    loadDefaultFeatures();
     
     // Load features from file
     loadFeatures(DEFAULT_FEATURE_FOLDER, context.getContextPath() + "/" + DEFAULT_FEATURE_FOLDER + "/");
@@ -159,7 +148,16 @@ public class Features {
     // Construct arrays for scripts and stylesheet URLs
     String[] scripts = new String[doc.getRootElement().getChildren("script").size()];
     for (int i=0;i<scriptElements.size();i++){
-      scripts[i] = basePath + "/" + scriptElements.get(i).getAttributeValue("src");
+      String src = scriptElements.get(i).getAttributeValue("src");
+      //
+      // If the script begins with "/" append as-is; otherwise prepend with
+      // a base path. This means that a feature can refer to generic shared scripts
+      // and DWR-generated scripts.
+      //
+      if (!src.startsWith("/")){
+        src =  basePath + "/" + src;
+      }
+      scripts[i] = src;
     }
     String[] stylesheets = new String[doc.getRootElement().getChildren("stylesheet").size()];
     for (int i=0;i<stylesheetElements.size();i++){
