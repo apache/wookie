@@ -218,7 +218,7 @@ public class FlatpackFactoryTest {
 		
 		// upload a new widget to test with
 		W3CWidgetFactory fac = getFactory();
-		fac.setFeatures(new String[]{"http://wave.google.com"});
+		fac.setFeatures(Features.getFeatureNames());
 		File testWidget = new File("build/widgets/simplechat.wgt");
 		fac.parse(testWidget);
 		download = fac.getUnzippedWidgetDirectory(); //download is where we unzipped the widget
