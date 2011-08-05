@@ -85,13 +85,10 @@ public class Features {
    */
   public static void loadFeatures(ServletContext context){
     
+    //
+    // Create a file for the features folder in the server filesystem
+    //
     featuresFolder = new File(context.getRealPath(DEFAULT_FEATURE_FOLDER));
-    System.out.println(featuresFolder.list());
-    
-    //
-    // Clear any existing installed features
-    //
-    features = new ArrayList<IFeature>();
     
     //
     // Load features from file
@@ -107,6 +104,11 @@ public class Features {
    */
   public static void loadFeatures(File theFeaturesFolder, String basePath){
     featuresFolder = theFeaturesFolder;
+    
+    //
+    // Clear any existing installed features
+    //
+    features = new ArrayList<IFeature>();
     
     //
     // Create a new ArrayList if it hasn't been instantiated
