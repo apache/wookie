@@ -67,43 +67,69 @@ public abstract class AbstractPersistenceTest
         }
         logger.info("Run test");
         
+        //
         // allocate and begin persistence manager transaction
+        //
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
         persistenceManager.begin();
 
-        // test generic findAll methods
+        //
+        // test findAll method for IWidget
+        //
         IWidget [] allWidgets = persistenceManager.findAll(IWidget.class);
         assertNotNull(allWidgets);
         assertEquals(1, allWidgets.length);
+        
+        //
+        // test findAll method for IWidgetDefault
+        //
         IWidgetDefault [] allWidgetDefaults = persistenceManager.findAll(IWidgetDefault.class);
         assertNotNull(allWidgetDefaults);
         assertEquals(1, allWidgetDefaults.length);
+        
+        //
+        // test findAll method for IWidgetService
+        //
         IWidgetService [] widgetServices = persistenceManager.findAll(IWidgetService.class);
         assertNotNull(widgetServices);
         assertEquals(5, widgetServices.length);
 
-        // test generic findById methods
+        //
+        // test findById  for IWidget
+        //
         Object widgetId = allWidgets[0].getId();
         IWidget widgetById = persistenceManager.findById(IWidget.class, widgetId);
         assertNotNull(widgetById);
         assertEquals(allWidgets[0], widgetById);
+        
+        //
+        // test findById  for IWidgetDefault
+        //
         Object widgetDefaultId = allWidgetDefaults[0].getId();
         IWidgetDefault widgetDefaultById = persistenceManager.findById(IWidgetDefault.class, widgetDefaultId);
         assertNotNull(widgetDefaultById);
         assertEquals(allWidgetDefaults[0], widgetDefaultById);
 
-        // test generic findByValue methods
+        //
+        // test findByValue method for IWidget
+        //
         String widgetGuid = allWidgets[0].getGuid();
         IWidget [] widgetsByValue = persistenceManager.findByValue(IWidget.class, "guid", widgetGuid);
         assertNotNull(widgetsByValue);
         assertEquals(1, widgetsByValue.length);
         assertEquals(allWidgets[0], widgetsByValue[0]);
+        
+        //
+        // test findByValue method for IWidgetDefault
+        //
         IWidgetDefault [] widgetDefaultsByValue = persistenceManager.findByValue(IWidgetDefault.class, "widget", widgetById);
         assertNotNull(widgetDefaultsByValue);
         assertEquals(1, widgetDefaultsByValue.length);
         assertEquals(allWidgetDefaults[0], widgetDefaultsByValue[0]);
         
-        // test generic findByValues methods
+        //
+        // test findByValues methods for IWidget
+        //
         Map<String,Object> values = new HashMap<String,Object>();
         values.put("height", allWidgets[0].getHeight());
         values.put("width", allWidgets[0].getWidth());
@@ -113,7 +139,9 @@ public abstract class AbstractPersistenceTest
         assertEquals(1, widgetsByValues.length);
         assertEquals(allWidgets[0], widgetsByValues[0]);
         
+        //
         // test custom widget query methods
+        //
         IWidget widgetByGuid = persistenceManager.findWidgetByGuid(widgetGuid);
         assertNotNull(widgetByGuid);
         assertEquals(allWidgets[0], widgetByGuid);
@@ -126,23 +154,43 @@ public abstract class AbstractPersistenceTest
         assertEquals(1, widgetsByType.length);
         assertEquals(allWidgets[0], widgetsByType[0]);
         
+        //
         // rollback and close persistence manager transaction
+        //
         persistenceManager.rollback();
         PersistenceManagerFactory.closePersistenceManager();
         
+        //
         // allocate and begin persistence manager transaction
+        //
         persistenceManager = PersistenceManagerFactory.getPersistenceManager();
         persistenceManager.begin();
 
-        // create widget instance
+        //
+        // Get the first existing API key
+        // and first existing Widget to use as the basis of a  
+        // new Widget Instance
+        //
         IApiKey [] apiKeys = persistenceManager.findAll(IApiKey.class);
         String apiKey = apiKeys[0].getValue();
         IWidget [] widgets = persistenceManager.findAll(IWidget.class);
         IWidget widget = widgets[0];        
         widgetGuid = widget.getGuid();
+        
+        //
+        // check that the Widget Instance does not yet exist
+        //
         IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByGuid(apiKey, "test", "test-shared-data-key", widgetGuid);
         assertNull(widgetInstance);
+        
+        //
+        // Create the Widget Instance
+        //
         widgetInstance = persistenceManager.newInstance(IWidgetInstance.class);
+        
+        //
+        // Set some properties, including preferences
+        //
         widgetInstance.setApiKey(apiKey);
         widgetInstance.setWidget(widget);
         widgetInstance.setIdKey("test");
@@ -157,9 +205,14 @@ public abstract class AbstractPersistenceTest
         widgetInstancePreference.setDvalue("test-shared-data-key");
         widgetInstancePreference.setReadOnly(true);
         widgetInstance.getPreferences().add(widgetInstancePreference);
+        //
+        // Save the widget instance
+        //
         persistenceManager.save(widgetInstance);
 
-        // create participant
+        //
+        // create a participant
+        //
         IParticipant participant = persistenceManager.newInstance(IParticipant.class);
         //participant.setWidget(widget);
         participant.setSharedDataKey("test-shared-data-key");
@@ -168,7 +221,9 @@ public abstract class AbstractPersistenceTest
         participant.setParticipantThumbnailUrl("");
         persistenceManager.save(participant);
 
+        //
         // create access request
+        //
         IAccessRequest accessRequest = persistenceManager.newInstance(IAccessRequest.class);
         accessRequest.setOrigin("localhost");
         accessRequest.setSubdomains(false);
@@ -176,15 +231,21 @@ public abstract class AbstractPersistenceTest
         accessRequest.setWidget(widget);
         persistenceManager.save(accessRequest);
 
+        //
         // commit and close persistence manager transaction
+        //
         persistenceManager.commit();
         PersistenceManagerFactory.closePersistenceManager();
 
+        //
         // allocate and begin persistence manager transaction
+        //
         persistenceManager = PersistenceManagerFactory.getPersistenceManager();
         persistenceManager.begin();
         
-        // test custom widget instance query methods
+        //
+        // Get the widget instance created in the previous transaction via its "service context" (category)
+        // 
         apiKeys = persistenceManager.findAll(IApiKey.class);
         apiKey = apiKeys[0].getValue();
         widgets = persistenceManager.findAll(IWidget.class);
@@ -193,40 +254,64 @@ public abstract class AbstractPersistenceTest
         IWidgetInstance widgetInstance0 = persistenceManager.findWidgetInstance(apiKey, "test", "test-shared-data-key", serviceContext);
         assertNotNull(widgetInstance0);
         widgetGuid = widget.getGuid();
+        
+        //
+        // Get the widget instance created in the previous transaction via "widget GUID"
+        //
         IWidgetInstance widgetInstance1 = persistenceManager.findWidgetInstanceByGuid(apiKey, "test", "test-shared-data-key", widgetGuid);
         assertNotNull(widgetInstance1);
         assertEquals(widgetInstance0, widgetInstance1);
+        
+        //
+        // Get the widget instance created in the previous transaction via instance_idkey
+        //
         IWidgetInstance widgetInstance2 = persistenceManager.findWidgetInstanceByIdKey("test");
         assertNotNull(widgetInstance2);
         assertEquals(widgetInstance0, widgetInstance2);
         
-        // test custom participant query methods
+        //
+        // Get the participant created in the previous transaction by widget instance
+        //
         IParticipant [] participants = persistenceManager.findParticipants(widgetInstance0);
         assertNotNull(participants);
         assertEquals(1, participants.length);
+        
+        //
+        // Get the participant created in the previous transaction by finding the viewer
+        //
         participant = persistenceManager.findParticipantViewer(widgetInstance0);
         assertNotNull(participant);
         assertEquals(participants[0], participant);
         
-        
+        //
+        // Get the access request created in the previous transaction
+        //
         IAccessRequest [] accessRequests = persistenceManager.findAll(IAccessRequest.class);
         assertNotNull(accessRequests);
         assertEquals(1, accessRequests.length);
         
-        // delete test objects
+        //
+        // delete all the test objects
+        //
         persistenceManager.delete(widgetInstance0);
         persistenceManager.delete(participant);
         persistenceManager.delete(accessRequests);
         
+        //
         // commit and close persistence manager transaction
+        //
         persistenceManager.commit();
         PersistenceManagerFactory.closePersistenceManager();
 
+        //
         // allocate and begin persistence manager transaction
+        //
         persistenceManager = PersistenceManagerFactory.getPersistenceManager();
         persistenceManager.begin();
         
+        //
         // verify test deletes
+        //
         IWidgetInstance [] widgetInstances = persistenceManager.findAll(IWidgetInstance.class);
         assertNotNull(widgetInstances);
         assertEquals(0, widgetInstances.length);
@@ -234,7 +319,9 @@ public abstract class AbstractPersistenceTest
         assertNotNull(participants);
         assertEquals(0, participants.length);
         
+        //
         // rollback and close persistence manager transaction
+        //
         persistenceManager.rollback();
         PersistenceManagerFactory.closePersistenceManager();
 

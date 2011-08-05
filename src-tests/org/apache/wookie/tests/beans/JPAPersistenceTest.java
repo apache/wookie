@@ -73,7 +73,9 @@ public class JPAPersistenceTest extends AbstractPersistenceTest
     {
         logger.info("JPA set up test");
 
+        //
         // load database configuration from environment
+        //
         String testDatabaseDir = (System.getProperty("user.dir")+"/build/test-database").replace(File.separatorChar, '/');
         dbUser = getSystemProperty(DB_USER_PROPERTY_NAME, "java");
         dbPassword = getSystemProperty(DB_PASSWORD_PROPERTY_NAME, "java");
@@ -81,30 +83,42 @@ public class JPAPersistenceTest extends AbstractPersistenceTest
         dbUri = getSystemProperty(DB_URI_PROPERTY_NAME, "jdbc:derby:"+testDatabaseDir+"/widgetdb;create=true");
         dbType = getSystemProperty(DB_TYPE_PROPERTY_NAME, "derby");
         
+        //
         // load driver
+        //
         Class.forName(dbDriver);
         
+        //
         // test connection
+        //
         Connection conn = DriverManager.getConnection(dbUri, dbUser, dbPassword);
         conn.close();
         
+        //
         // construct pooling datasource
+        //
         connectionPool = new GenericObjectPool(null, 0, GenericObjectPool.WHEN_EXHAUSTED_GROW, 0, 5);
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(dbUri, dbUser, dbPassword);
         new PoolableConnectionFactory(connectionFactory, connectionPool, null, null, false, true);
         DataSource dataSource = new PoolingDataSource(connectionPool);            
         
+        //
         // create JNDI context
+        //
         rootContext = new InitialContext();
         Context namingContext = lookupOrCreateNamingContext(rootContext, "java:comp");
         namingContext = lookupOrCreateNamingContext(namingContext, "env");
         lookupOrCreateNamingContext(namingContext, "jdbc");
         
+        //
         // bind datasource to JNDI context
+        //
         rootContext.rebind(JPAPersistenceManager.WIDGET_DATABASE_JNDI_DATASOURCE_FULL_NAME, dataSource);
 
+        //
         // initialize persistence manager factory and persistence manager;
         // truncate and initialize persistent store
+        //
         Configuration configuration = new PropertiesConfiguration();
         configuration.setProperty(PersistenceManagerFactory.PERSISTENCE_MANAGER_CLASS_NAME_PROPERTY_NAME, JPAPersistenceManager.class.getName());
         configuration.setProperty(PersistenceManagerFactory.PERSISTENCE_MANAGER_INITIALIZE_STORE_PROPERTY_NAME, "true");
@@ -113,6 +127,10 @@ public class JPAPersistenceTest extends AbstractPersistenceTest
         PersistenceManagerFactory.initialize(configuration);
 
         logger.info("JPA test set up");
+        
+        //
+        // This tells the abstract persistence test case we are ready to run 
+        //
         configured = true;
     }
 
@@ -124,38 +142,56 @@ public class JPAPersistenceTest extends AbstractPersistenceTest
     @After
     public void tearDownPerTest() throws Exception
     {
+        //
+        // This tells the abstract persistence test case not to run the JPA tests
+        //
         configured = false;
         logger.info("JPA tear down test");
 
+        //
         // terminate persistence manager factory
+        //
         PersistenceManagerFactory.terminate();
 
+        //
         // unbind datasource from JNDI context
+        //
         rootContext.unbind(JPAPersistenceManager.WIDGET_DATABASE_JNDI_DATASOURCE_FULL_NAME);
         
+        //
         // shutdown datasource pool
+        //
         connectionPool.close();
         
+        //
         // special shutdown handling for derby
+        //
         if (dbDriver.equals("org.apache.derby.jdbc.EmbeddedDriver") && dbUri.startsWith("jdbc:derby:") && dbType.equals("derby"))
         {
+            //
             // derby shutdown connection
+            //
             String shutdownDBUri = dbUri;
             int parametersIndex = shutdownDBUri.indexOf(";");
-            if (parametersIndex != -1)
-            {
+            if (parametersIndex != -1) {
                 shutdownDBUri = shutdownDBUri.substring(0, parametersIndex);
             }
             shutdownDBUri += ";shutdown=true";
-            try
-            {
+            //
+            // Try to connect to the database - if we can, throw an exception that
+            // the shutdown hasn't worked.
+            //
+            try {
                 DriverManager.getConnection(shutdownDBUri, dbUser, dbPassword);
                 throw new SQLException("Derby database not shutdown");
-            }
-            catch (SQLException sqle)
-            {
-                if (!sqle.getSQLState().equals("08006") && !sqle.getSQLState().equals("XJ015"))
-                {
+            } catch (SQLException sqle) {
+                //
+                // Check that we have the correct shutdown code - either 08006 which
+                // is the code for a single database shutdown, or XJ015 which means
+                // the whole Derby instance has shutdown successfully. If not, we
+                // throw the exception.
+                //
+                if (!sqle.getSQLState().equals("08006") && !sqle.getSQLState().equals("XJ015")) {
                     throw sqle;
                 }
             }

@@ -27,11 +27,20 @@ import org.apache.wookie.feature.Features;
 import org.junit.Test;
 
 /**
- *
+ * Tests the Features capability by loading and parsing various
+ * test feature.xml files, and checking the mechanism for iterating
+ * over feature folders
  */
 public class FeaturesTest {
   
+  /**
+   * The location of the test data folder
+   */
   private static final String testDataFolder = "src-tests/org/apache/wookie/tests/features/";
+  
+  /**
+   * Base path for feature resources
+   */
   private static final String basePath = "/test";
   
   /**
@@ -104,7 +113,7 @@ public class FeaturesTest {
 
   
   /**
-   * Loads features from the test folder, ignoring everrything
+   * Loads features from the test folder, ignoring everything
    * that isn't a folder that contains a "features.xml" file
    */
   @Test

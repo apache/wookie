@@ -41,7 +41,7 @@ public class FlatpackFactoryTest {
 	static File output;
 	static File flatpack;
 	
-	/*
+	/**
 	 * Create some temporary folders
 	 */
 	@BeforeClass
@@ -52,8 +52,8 @@ public class FlatpackFactoryTest {
 		Features.loadFeatures(new File("features"), "/wookie/features");
 	}
 	
-	/*
-	 * Setup temporary folders before using
+	/**
+	 * Setup temporary folders before each test
 	 */
 	@Before
 	public void setupEach(){
@@ -64,8 +64,8 @@ public class FlatpackFactoryTest {
 		flatpack.mkdir();
 	}
 	
-	/*
-	 * Delete temporary folders
+	/**
+	 * Delete temporary folders after tests have been completed
 	 */
 	@AfterClass
 	public static void tearDown(){
@@ -74,6 +74,11 @@ public class FlatpackFactoryTest {
 		flatpack.delete();
 	}
 	
+	/**
+	 * Tests that the factory throws an exception if no widget instance
+	 * is specified
+	 * @throws Exception
+	 */
 	@Test(expected=Exception.class)
 	public void testNoInstance() throws Exception{
 		FlatpackFactory flatfac = new FlatpackFactory(null);
@@ -88,21 +93,29 @@ public class FlatpackFactoryTest {
 	 */
 	@Test
 	public void createBasicFlatpackUsingDefaults() throws Exception{
+	  //
 		// upload a new widget to test with
+	  //
 		W3CWidgetFactory fac = getFactory();
 		File testWidget = new File("build/widgets/bubbles.wgt");
 		fac.parse(testWidget);
 		download = fac.getUnzippedWidgetDirectory(); //download is where we unzipped the widget
 		
+		//
 		// Create an instance of it
+		//
 		IWidgetInstance instance = new WidgetInstanceMock();
 		
+		//
 		// Flatpack it
+		//
 		FlatpackFactory flatfac = new FlatpackFactory(instance);
 		flatfac.setInputWidget(testWidget); // this is the original .wgt
 		File file = flatfac.pack(); // Get the new .wgt file
 	
+		//
 		// Test it works!
+		//
 		System.out.println(file.getAbsolutePath());
 		W3CWidget fpWidget = fac.parse(file);
 		assertNotNull(fpWidget);
@@ -115,23 +128,31 @@ public class FlatpackFactoryTest {
 	 */
 	@Test
 	public void createBasicFlatpack() throws Exception{
+	  //
 		// upload a new widget to test with
+	  //
 		W3CWidgetFactory fac = getFactory();
 		File testWidget = new File("build/widgets/bubbles.wgt");
 		fac.parse(testWidget);
 		download = fac.getUnzippedWidgetDirectory(); //download is where we unzipped the widget
 		
+		//
 		// Create an instance of it
+		//
 		IWidgetInstance instance = new WidgetInstanceMock();
 		
+		//
 		// Flatpack it
+		//
 		FlatpackFactory flatfac = new FlatpackFactory(instance);
 		flatfac.setParser(fac);
 		flatfac.setInputWidget(testWidget); // this is the original .wgt
 		flatfac.setFlatpackFolder(flatpack); // flatpack is our new temp folder. This would probably be "/flatpack" or similar in deployment
 		File file = flatfac.pack(); // Get the new .wgt file
 	
+		//
 		// Test it works!
+		//
 		System.out.println(file.getAbsolutePath());
 		W3CWidget fpWidget = fac.parse(file);
 		assertNotNull(fpWidget);
@@ -145,26 +166,42 @@ public class FlatpackFactoryTest {
    */
   @Test
   public void createFeatureFlatpackUsingDefaults() throws Exception{
+    
+    //
     // upload a new widget to test with
+    //
     W3CWidgetFactory fac = getFactory();
     fac.setFeatures(Features.getFeatureNames());
     File testWidget = new File("build/widgets/freeder.wgt");
     fac.parse(testWidget);
-    download = fac.getUnzippedWidgetDirectory(); //download is where we unzipped the widget
     
+    //
+    //download is where we unzipped the widget
+    //
+    download = fac.getUnzippedWidgetDirectory(); 
+    
+    //
     // Create an instance of it
+    //
     IWidgetInstance instance = new WidgetInstanceMock();
     
+    //
     // Flatpack it
+    //
     FlatpackFactory flatfac = new FlatpackFactory(instance);
     flatfac.setInputWidget(testWidget); // this is the original .wgt
     File file = flatfac.pack(); // Get the new .wgt file
   
+    //
     // Test it works!
+    //
     System.out.println("createFeatureFlatpackUsingDefaults: "+file.getAbsolutePath());
     W3CWidget fpWidget = fac.parse(file);
     assertNotNull(fpWidget);
+    
+    //
     // The JQM feature should have been removed from config.xml
+    //
     assertEquals(0, fpWidget.getFeatures().size());
     
   }
@@ -176,13 +213,17 @@ public class FlatpackFactoryTest {
 	@Test
 	public void createFlatpackWithPreferences() throws Exception{
 		
+	  //
 		// upload a new widget to test with
+	  //
 		W3CWidgetFactory fac = getFactory();
 		File testWidget = new File("build/widgets/bubbles.wgt");
 		fac.parse(testWidget);
 		download = fac.getUnzippedWidgetDirectory(); //download is where we unzipped the widget
 		
+		//
 		// Create an instance of it
+		//
 		IWidgetInstance instance = new WidgetInstanceMock();
 		ArrayList<IPreference> prefs = new ArrayList<IPreference>();
 		IPreference pref = new PreferenceMock();
@@ -192,14 +233,18 @@ public class FlatpackFactoryTest {
 		prefs.add(pref);
 		instance.setPreferences(prefs);
 		
+		//
 		// Flatpack it
+		//
 		FlatpackFactory flatfac = new FlatpackFactory(instance);
 		flatfac.setParser(fac);
 		flatfac.setInputWidget(testWidget); // this is the original .wgt
 		flatfac.setFlatpackFolder(flatpack); // flatpack is our new temp folder. This would probably be "/flatpack" or similar in deployment
 		File file = flatfac.pack(); // Get the new .wgt file
 	
+		//
 		// Test it works!
+		//
 		System.out.println(file.getAbsolutePath());
 		W3CWidget fpWidget = fac.parse(file);
 		assertEquals("hiScore", fpWidget.getPrefences().get(0).getName());
@@ -216,14 +261,18 @@ public class FlatpackFactoryTest {
 	@Test
 	public void createFlatpackWithPreferences2() throws Exception{
 		
+	  //
 		// upload a new widget to test with
+	  //
 		W3CWidgetFactory fac = getFactory();
 		fac.setFeatures(Features.getFeatureNames());
 		File testWidget = new File("build/widgets/simplechat.wgt");
 		fac.parse(testWidget);
 		download = fac.getUnzippedWidgetDirectory(); //download is where we unzipped the widget
 		
+		//
 		// Create an instance of it
+		//
 		IWidgetInstance instance = new WidgetInstanceMock();
 		ArrayList<IPreference> prefs = new ArrayList<IPreference>();
 		IPreference pref = new PreferenceMock();
@@ -233,14 +282,18 @@ public class FlatpackFactoryTest {
 		prefs.add(pref);
 		instance.setPreferences(prefs);
 		
+		//
 		// Flatpack it
+		//
 		FlatpackFactory flatfac = new FlatpackFactory(instance);
 		flatfac.setParser(fac);
 		flatfac.setInputWidget(testWidget); // this is the original .wgt
 		flatfac.setFlatpackFolder(flatpack); // flatpack is our new temp folder. This would probably be "/flatpack" or similar in deployment
 		File file = flatfac.pack(); // Get the new .wgt file
 	
+		//
 		// Test it works!
+		//
 		System.out.println(file.getAbsolutePath());
 		W3CWidget fpWidget = fac.parse(file);
 		assertEquals("moderator", fpWidget.getPrefences().get(0).getName());
@@ -248,7 +301,7 @@ public class FlatpackFactoryTest {
 		assertEquals(1,fpWidget.getPrefences().size());
 	}
 
-	/*
+	/**
 	 * Construct a standard W3CWidgetFactory for testing
 	 */
 	private W3CWidgetFactory getFactory() throws Exception{

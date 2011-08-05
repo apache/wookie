@@ -17,8 +17,6 @@ import org.apache.wookie.beans.IPreference;
 
 /**
  * Mock used for testing preferences
- * @author scottbw@apache.org
- *
  */
 public class PreferenceMock implements IPreference {
 	

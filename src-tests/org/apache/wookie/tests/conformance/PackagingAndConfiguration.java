@@ -39,9 +39,6 @@ import org.junit.Test;
  * For more information see http://dev.w3.org/2006/waf/widgets/test-suite/index.html
  * 
  * Note that in order to run the Feature tests, a ServerFeature named "feature:a9bb79c1" must be set up in the DB
- * 
- * @author scott
- *
  */
 public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest {
 	// 1 files

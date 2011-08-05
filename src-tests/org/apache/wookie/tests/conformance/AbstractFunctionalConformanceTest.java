@@ -32,7 +32,12 @@ import org.junit.BeforeClass;
 
 /**
  * Abstract superclass for conformance tests including utility functions
- * for working with widgets and outputting results
+ * for working with widgets and outputting results. This is used for generating
+ * HTML output for "eyeball tests" where the developer wants to scan the results
+ * of instantiating widgets, for example the W3C Test Cases which present a green
+ * "PASS" or red "FAIL" output based on runtime behaviour.
+ * 
+ * FIXME there is some duplication in the methods here that could be rationalized.
  */
 public abstract class AbstractFunctionalConformanceTest extends
 AbstractControllerTest {
@@ -51,6 +56,14 @@ AbstractControllerTest {
 	}
 
 	//// Utility methods
+	
+	/**
+	 * Execute the test for the given widget; upload the widget,
+	 * create an instance of it, obtain the URL for it, generate 
+	 * an iframe for it, and add it to the HTML output for the test
+	 * 
+	 * @param widget the widget to test
+	 */
 	protected static void doTest(String widget){
 		String url;
 		try {
@@ -61,6 +74,11 @@ AbstractControllerTest {
 		}
 	}
 
+	/**
+	 * Create an output <iframe> for an instance 
+	 * of the specified widget
+	 * @param widgetId the widget to instantiate and output
+	 */
 	protected static void outputInstance(String widgetId){
 		String url;
 		String response = instantiateWidget(widgetId);
@@ -68,6 +86,13 @@ AbstractControllerTest {
 		html += "<iframe src=\""+url+"\"></iframe>";
 	}
 
+	/**
+	 * Upload a widget, create an instance of it, and return the URL for the instance
+	 * 
+	 * @param widgetfname the widget to upload
+	 * @return the URL to access an instance of the uploaded widget
+	 * @throws IOException
+	 */
 	protected static String getWidgetUrl(String widgetfname) throws IOException{
 		WidgetUploader.uploadWidget(widgetfname);
 		Element widget = WidgetUploader.getLastWidget();
@@ -75,13 +100,25 @@ AbstractControllerTest {
 		return getStartFile(response);
 	}
 
+	/**
+	 * Create an instance of the specified widget
+	 * @param widget the widget to create an instance of
+	 * @return the id of the widget instance that was created
+	 */
 	protected static String instantiateWidget(Element widget){
 		return instantiateWidget(widget.getAttributeValue("identifier"));	
 	}
 
+	/**
+	 * Create an instance of the specified widget
+	 * @param identifier the identifier of the widget to create an instance of
+	 * @return the XML representation of the widget instance as a String
+	 */
 	protected static String instantiateWidget(String identifier){
 		String response = null;
+		//
 		// instantiate widget and parse results
+		//
 		try {
 			HttpClient client = new HttpClient();
 			PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
@@ -96,6 +133,11 @@ AbstractControllerTest {
 		return response;		
 	}
 
+	/**
+	 * Get the URL of a widget instance from the XML representation
+	 * @param response the XML returned from a request to create a new widget instance
+	 * @return the URL of the instance, as a String
+	 */
 	protected static String getStartFile(String response){
 		SAXBuilder builder = new SAXBuilder();
 		Reader in = new StringReader(response);

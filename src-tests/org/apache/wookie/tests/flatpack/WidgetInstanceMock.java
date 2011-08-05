@@ -24,7 +24,6 @@ import org.apache.wookie.beans.IWidgetInstance;
 
 /**
  * Mock used for simulating a Widget Instance in tests
- * @author scottbw@apache.org
  */
 public class WidgetInstanceMock implements IWidgetInstance {
 	
@@ -155,7 +154,6 @@ public class WidgetInstanceMock implements IWidgetInstance {
 	 * @see org.apache.wookie.beans.IWidgetInstance#getNonce()
 	 */
 	public String getNonce() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -163,8 +161,6 @@ public class WidgetInstanceMock implements IWidgetInstance {
 	 * @see org.apache.wookie.beans.IWidgetInstance#setNonce(java.lang.String)
 	 */
 	public void setNonce(String nonce) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
@@ -185,7 +181,6 @@ public class WidgetInstanceMock implements IWidgetInstance {
 	 * @see org.apache.wookie.beans.IWidgetInstance#isUpdated()
 	 */
 	public boolean isUpdated() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -193,8 +188,6 @@ public class WidgetInstanceMock implements IWidgetInstance {
 	 * @see org.apache.wookie.beans.IWidgetInstance#setUpdated(boolean)
 	 */
 	public void setUpdated(boolean updated) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
@@ -215,7 +208,6 @@ public class WidgetInstanceMock implements IWidgetInstance {
 	 * @see org.apache.wookie.beans.IWidgetInstance#isLocked()
 	 */
 	public boolean isLocked() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -223,8 +215,6 @@ public class WidgetInstanceMock implements IWidgetInstance {
 	 * @see org.apache.wookie.beans.IWidgetInstance#setLocked(boolean)
 	 */
 	public void setLocked(boolean locked) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
@@ -246,7 +236,6 @@ public class WidgetInstanceMock implements IWidgetInstance {
 	 * @see org.apache.wookie.beans.IWidgetInstance#getTokens()
 	 */
 	public Collection<IToken> getTokens() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -254,8 +243,6 @@ public class WidgetInstanceMock implements IWidgetInstance {
 	 * @see org.apache.wookie.beans.IWidgetInstance#setTokens(java.util.Collection)
 	 */
 	public void setTokens(Collection<IToken> tokens) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
