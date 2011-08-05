@@ -37,30 +37,27 @@ import org.jdom.input.SAXBuilder;
  * 
  * The <name> element contains the Feature name IRI; the <script> and <stylesheet> elements should contain a src attribute
  * with the filename of the resource relative to the feature folder (e.g. "myfile.js")
+ * 
+ * For more information on developing features, see http://incubator.apache.org/wookie/docs/developer/features.html.
  */
 public class Features {
   
-  /*
+  /**
    * The current features installed
    */
   private static ArrayList<IFeature> features;
 
   static Logger _logger = Logger.getLogger(Features.class.getName());
 
-  /*
+  /**
    * The default folder name for features 
    */
-  public static final File DEFAULT_FEATURE_FOLDER = new File("features");
+  public static final String DEFAULT_FEATURE_FOLDER = "features";
   
-  /*
+  /**
    * The folder where deployed features live
    */
   private static File featuresFolder;
-  
-  public static File getFeaturesFolder(){
-    if (featuresFolder == null) return DEFAULT_FEATURE_FOLDER;
-    return featuresFolder;
-  }
   
   /**
    * Get the currently installed features
@@ -88,32 +85,63 @@ public class Features {
    */
   public static void loadFeatures(ServletContext context){
     
+    featuresFolder = new File(context.getRealPath(DEFAULT_FEATURE_FOLDER));
+    System.out.println(featuresFolder.list());
+    
+    //
     // Clear any existing installed features
+    //
     features = new ArrayList<IFeature>();
     
+    //
     // Load features from file
-    loadFeatures(DEFAULT_FEATURE_FOLDER, context.getContextPath() + "/" + DEFAULT_FEATURE_FOLDER + "/");
+    //
+    loadFeatures(featuresFolder, context.getContextPath() + "/" + DEFAULT_FEATURE_FOLDER + "/");
   }
   
+  /**
+   * Loads features from a specified folder
+   * 
+   * @param theFeaturesFolder the folder to use for loading features
+   * @param basePath the base path to prepend to feature resources
+   */
   public static void loadFeatures(File theFeaturesFolder, String basePath){
     featuresFolder = theFeaturesFolder;
     
+    //
+    // Create a new ArrayList if it hasn't been instantiated
+    //
     if (features == null) features = new ArrayList<IFeature>();
     
+    //
     // Iterate over child folders of the /features folder
+    //
     for (File folder: featuresFolder.listFiles()){
 
-      // If the folder contains a feature.xml file, parse it and create a Feature object
+      //
+      // If the file is a folder that contains a feature.xml file, parse it and create a Feature object
+      //
       if (folder.isDirectory()){
         File featureXml = new File(folder.getPath()+"/feature.xml");
         if (featureXml.exists() && featureXml.canRead()){
           try {
-            // Create a base path for resources using the current servlet context and default feature folder 
-            String path = "/wookie/features/" + folder.getName();
+            
+            //
+            // Create the feature path by prepending the feature folder with the base path
+            //
+            String path = basePath + folder.getName();
+            
+            //
             // Load the feature and add it to the features collection
+            //
             Feature feature = loadFeature(featureXml, path);
             feature.setFolder(folder.getPath());
+            
+            //
+            // Add feature to the features collection
+            //
             features.add(feature);
+            
             _logger.info("Installed feature:"+feature.getName());   
           } catch (Exception e) {
             _logger.error("Error installing feature:"+e.getMessage());
@@ -130,22 +158,36 @@ public class Features {
    * @return an IFeature implementation
    * @throws Exception
    */
-  private static Feature loadFeature(File featureFile, String basePath) throws Exception{
+  public static Feature loadFeature(File featureFile, String basePath) throws Exception{
+    //
     // Parse the XML
+    //
     Document doc;
     doc = new SAXBuilder().build(featureFile);
 
+    //
+    // Get the name of the feature
+    //
     String name = doc.getRootElement().getChild("name").getText();
+    
+    //
+    // Get any child <script> and <stylesheet> elements
+    //
     @SuppressWarnings("unchecked")
     List<Element> scriptElements = doc.getRootElement().getChildren("script");
     @SuppressWarnings("unchecked")
     List<Element> stylesheetElements = doc.getRootElement().getChildren("stylesheet");
 
+    //
     // Is the feature name a valid IRI?
+    //
     if (!IRIValidator.isValidIRI(name)){
       throw new Exception("Invalid feature: name is not a valid IRI");            
     }
+    
+    //
     // Construct arrays for scripts and stylesheet URLs
+    //
     String[] scripts = new String[doc.getRootElement().getChildren("script").size()];
     for (int i=0;i<scriptElements.size();i++){
       String src = scriptElements.get(i).getAttributeValue("src");
@@ -159,14 +201,25 @@ public class Features {
       }
       scripts[i] = src;
     }
+    
+    //
+    // Create an array of strings and populate it with
+    // the src attributes of the stylesheet elements prepended
+    // with the base path.
+    //
     String[] stylesheets = new String[doc.getRootElement().getChildren("stylesheet").size()];
     for (int i=0;i<stylesheetElements.size();i++){
       stylesheets[i] =  basePath + "/" + stylesheetElements.get(i).getAttributeValue("src");
     }
+    
+    //
     // Create a Feature object and return it
+    //
     Feature feature = new Feature(name, scripts, stylesheets);
     
-    // Set the "flatten" flag if set
+    //
+    // Set the "flatten" flag if the flatten attribute is set in feature.xml
+    //
     if (doc.getRootElement().getAttributeValue("flatten")!=null){
       if (doc.getRootElement().getAttributeValue("flatten").equals("true")){
         ((Feature)feature).setFlattenOnExport(true);        
