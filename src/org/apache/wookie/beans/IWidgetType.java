@@ -17,10 +17,9 @@ package org.apache.wookie.beans;
 /**
  * IWidgetType - what type of service a particular widget can be.
  * 
- * @author Paul Sharples
- * @author <a href="mailto:rwatler@apache.org">Randy Watler</a>
- * @version $Id$
+ * DEPRECATED: This interface is deprecated and will be removed in a future release
  */
+@Deprecated
 public interface IWidgetType
 {
     /**

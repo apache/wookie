@@ -34,19 +34,10 @@ import org.apache.wookie.helpers.WidgetServiceHelper;
 /**
  * <p>Controller for widget service resources.</p>
  * 
- * <p>Supports the following methods:</p>
- * 
- * <ul>
- * <li>GET /services- index</li>
- * <li>GET /services/{id} - show</li>
- * <li>GET /services/{name} - show</li>
- * <li>POST /services/{name} - create <em>requires authentication</em></li>
- * <li>PUT /services/{id} {name} - rename <em>requires authentication</em></li>
- * <li>DELETE /services/{id} - remove <em>requires authentication</em></li>
- * </ul>
- * @author scott
+ * <p>DEPRECATED: This functionality is  deprecated and will be removed from the Wookie server in a future release.</p>
  *
  */
+@Deprecated
 public class WidgetServicesController extends Controller{
 
 	private static final long serialVersionUID = 6652819258720061792L;
