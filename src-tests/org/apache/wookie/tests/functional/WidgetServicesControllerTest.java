@@ -24,6 +24,11 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.junit.Test;
 
+/**
+ * Test cases for the Widget Services REST API
+ * 
+ * Note that this API is deprecated and may be removed in a future release.
+ */
 public class WidgetServicesControllerTest extends AbstractControllerTest {
 
 	@Test
