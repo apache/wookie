@@ -14,9 +14,11 @@
 package org.apache.wookie.tests.functional;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+
+import java.io.IOException;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -24,269 +26,337 @@ import org.apache.commons.httpclient.methods.PutMethod;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * Test cases for the Properties REST API
+ */
 public class PropertiesControllerTest extends AbstractControllerTest {
-	
-	@BeforeClass
-	public static void setup(){
-	    try {
-	        HttpClient client = new HttpClient();
-	        PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&shareddatakey=propstest");
-	        client.executeMethod(post);
-	        int code = post.getStatusCode();
-	        assertEquals(201,code);
-	        post.releaseConnection();
-	    }
-	    catch (Exception e) {
-	    	e.printStackTrace();
-	    	fail("post failed");
-	    }
-	}
-	
-	@Test
-	public void setPreferenceUsingPostParameters() throws Exception{
-	    try {
-	    	String url = TEST_PROPERTIES_SERVICE_URL_VALID;
-	    	//String url = TEST_PROPERTIES_SERVICE_URL_VALID;
-	        HttpClient client = new HttpClient();
-	        PostMethod post = new PostMethod(url);
-	        post.addParameter("api_key", API_KEY_VALID);
-	        post.addParameter("widgetid", WIDGET_ID_VALID);
-	        post.addParameter("userid", "test");
-	        post.addParameter("is_public", "false");
-	        post.addParameter("shareddatakey","propstest");
-	        post.addParameter("propertyname", "testpost");
-	        post.addParameter("propertyvalue","pass");
-	        client.executeMethod(post);
-	        int code = post.getStatusCode();
-	        assertEquals(201,code);
-	        post.releaseConnection();
-	    }
-	    catch (Exception e) {
-	    	fail("POST failed");
-	    }	 
-	    try {
-	        HttpClient client = new HttpClient();
-	        GetMethod get = new GetMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-	        get.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&shareddatakey=propstest&propertyname=testpost");
-	        client.executeMethod(get);
-	        int code = get.getStatusCode();
-	        assertEquals(200, code);
-	        String resp = get.getResponseBodyAsString();
-	        assertEquals("pass",resp);
-	        get.releaseConnection();
-	    }
-	    catch (Exception e) {
-	    	fail("POST  failed to set info correctly");
-	    }
-	}
-	
-	@Test
-	public void setPreference(){
-		// Set some shared data
-	    try {
-	        HttpClient client = new HttpClient();
-	        PostMethod post = new PostMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&is_public=false&shareddatakey=propstest&propertyname=pass&propertyvalue=pass");
-	        client.executeMethod(post);
-	        int code = post.getStatusCode();
-	        assertEquals(201,code);
-	        post.releaseConnection();
-	    }
-	    catch (Exception e) {
-	    	fail("set shared data failed");
-	    }	 
-	    
-	    try {
-	        HttpClient client = new HttpClient();
-	        GetMethod get = new GetMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-	        get.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&shareddatakey=propstest&propertyname=pass");
-	        client.executeMethod(get);
-	        int code = get.getStatusCode();
-	        assertEquals(200, code);
-	        String resp = get.getResponseBodyAsString();
-	        assertEquals("pass",resp);
-	        get.releaseConnection();
-	    }
-	    catch (Exception e) {
-	    	fail("get preference failed");
-	    }		
-	}
-	
-	@Test
-	public void setSharedData(){
-		// Set some shared data
-	    try {
-	        HttpClient client = new HttpClient();
-	        PostMethod post = new PostMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&is_public=true&shareddatakey=propstest&propertyname=cat&propertyvalue=garfield");
-	        client.executeMethod(post);
-	        int code = post.getStatusCode();
-	        assertEquals(201,code);
-	        post.releaseConnection();
-	    }
-	    catch (Exception e) {
-	    	fail("set shared data failed");
-	    }	 
-	    
-	    try {
-	        HttpClient client = new HttpClient();
-	        GetMethod get = new GetMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-	        get.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&shareddatakey=propstest&propertyname=cat");
-	        client.executeMethod(get);
-	        int code = get.getStatusCode();
-	        assertEquals(200, code);
-	        String resp = get.getResponseBodyAsString();
-	        assertEquals("garfield",resp);
-	        get.releaseConnection();
-	    }
-	    catch (Exception e) {
-	    	fail("get property failed");
-	    }	
-	}
-	
-	@Test
-	public void updateProperty(){
-	    try {
-	        HttpClient client = new HttpClient();
-	        PutMethod put = new PutMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-	        put.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&is_public=true&shareddatakey=propstest&propertyname=cat&propertyvalue=felix");
-	        client.executeMethod(put);
-	        int code = put.getStatusCode();
-	        assertEquals(200,code);
-	        put.releaseConnection();
-	    }
-	    catch (Exception e) {
-	    	fail("set shared data failed");
-	    }	 
-	    
-	    try {
-	        HttpClient client = new HttpClient();
-	        GetMethod get = new GetMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-	        get.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&shareddatakey=propstest&propertyname=cat");
-	        client.executeMethod(get);
-	        int code = get.getStatusCode();
-	        assertEquals(200, code);
-	        String resp = get.getResponseBodyAsString();
-	        assertEquals("felix",resp);
-	        get.releaseConnection();
-	    }
-	    catch (Exception e) {
-	    	fail("get property failed");
-	    }	
-		
-	}
-	
-	@Test
-	public void removeProperty(){
-	    try {
-	        HttpClient client = new HttpClient();
-	        DeleteMethod delete = new DeleteMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-	        delete.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&is_public=true&shareddatakey=propstest&propertyname=cat");
-	        client.executeMethod(delete);
-	        int code = delete.getStatusCode();
-	        assertEquals(200,code);
-	        delete.releaseConnection();
-	    }
-	    catch (Exception e) {
-	    	fail("delete failed");
-	    }			
-	}
-	
-	@Test
-	public void removePropertyNonExisting(){
-	    try {
-	        HttpClient client = new HttpClient();
-	        DeleteMethod delete = new DeleteMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-	        delete.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&is_public=true&shareddatakey=propstest&propertyname=bogus");
-	        client.executeMethod(delete);
-	        int code = delete.getStatusCode();
-	        assertEquals(404,code);
-	        delete.releaseConnection();
-	    }
-	    catch (Exception e) {
-	    	fail("delete failed");
-	    }			
-	}
-	
-	@Test
-	public void setPropertyNoName(){
-	    try {
-	        HttpClient client = new HttpClient();
-	        PostMethod post = new PostMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&is_public=true&shareddatakey=propstest&propertyvalue=garfield");
-	        client.executeMethod(post);
-	        int code = post.getStatusCode();
-	        assertEquals(400,code);
-	        post.releaseConnection();
-	    }
-	    catch (Exception e) {
-	    	fail("set shared data failed");
-	    }	
-	}
-	
-	@Test
-	public void setPropertyEmptyName(){
-	    try {
-	        HttpClient client = new HttpClient();
-	        PostMethod post = new PostMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&is_public=true&shareddatakey=propstest&propertyname=&propertyvalue=garfield");
-	        client.executeMethod(post);
-	        int code = post.getStatusCode();
-	        assertEquals(400,code);
-	        post.releaseConnection();
-	    }
-	    catch (Exception e) {
-	    	fail("set shared data failed");
-	    }	
-	}
-	
-	@Test
-	public void setPropertyWhitespaceName(){
-	    try {
-	        HttpClient client = new HttpClient();
-	        PostMethod post = new PostMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-	        post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&is_public=true&shareddatakey=propstest&propertyname=%20%20&propertyvalue=garfield");
-	        client.executeMethod(post);
-	        int code = post.getStatusCode();
-	        assertEquals(400,code);
-	        post.releaseConnection();
-	    }
-	    catch (Exception e) {
-	    	fail("set shared data failed");
-	    }	
-	}
-	
-	@Test
-	public void getPropertyInvalidAPIKey(){
-	    try {
-	        HttpClient client = new HttpClient();
-	        GetMethod get = new GetMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-	        get.setQueryString("api_key="+API_KEY_INVALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&shareddatakey=propstest&propertyname=cat");
-	        client.executeMethod(get);
-	        int code = get.getStatusCode();
-	        assertEquals(401, code);
-	        get.releaseConnection();
-	    }
-	    catch (Exception e) {
-	    	fail("get property failed");
-	    }	
-	}
-	
-	@Test
-	public void getPropertyInvalidName(){
-	    try {
-	        HttpClient client = new HttpClient();
-	        GetMethod get = new GetMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-	        get.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+WIDGET_ID_VALID+"&userid=test&shareddatakey=propstest&propertyname=madeupname");
-	        client.executeMethod(get);
-	        int code = get.getStatusCode();
-	        assertEquals(404, code);
-	        get.releaseConnection();
-	    }
-	    catch (Exception e) {
-	    	fail("get property failed");
-	    }	
-	}
+
+  /**
+   * Create a new instance for use in testing
+   * 
+   * @throws HttpException
+   * @throws IOException
+   */
+  @BeforeClass
+  public static void setup() throws HttpException, IOException {
+    HttpClient client = new HttpClient();
+    PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
+    post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
+        + WIDGET_ID_VALID + "&userid=test&shareddatakey=propstest");
+    client.executeMethod(post);
+    int code = post.getStatusCode();
+    assertEquals(201, code);
+    post.releaseConnection();
+  }
+
+  /**
+   * Test that we can set preferences using post parameters
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void setPreferenceUsingPostParameters() throws Exception {
+    //
+    // Set a property ("testpost=pass") using POST
+    //
+    String url = TEST_PROPERTIES_SERVICE_URL_VALID;
+    HttpClient client = new HttpClient();
+    PostMethod post = new PostMethod(url);
+    post.addParameter("api_key", API_KEY_VALID);
+    post.addParameter("widgetid", WIDGET_ID_VALID);
+    post.addParameter("userid", "test");
+    post.addParameter("is_public", "false");
+    post.addParameter("shareddatakey", "propstest");
+    post.addParameter("propertyname", "testpost");
+    post.addParameter("propertyvalue", "pass");
+    client.executeMethod(post);
+    int code = post.getStatusCode();
+    assertEquals(201, code);
+    post.releaseConnection();
+
+    //
+    // Read back property using GET
+    //
+    client = new HttpClient();
+    GetMethod get = new GetMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
+    get.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
+        + WIDGET_ID_VALID
+        + "&userid=test&shareddatakey=propstest&propertyname=testpost");
+    client.executeMethod(get);
+    code = get.getStatusCode();
+    assertEquals(200, code);
+    String resp = get.getResponseBodyAsString();
+    assertEquals("pass", resp);
+    get.releaseConnection();
+
+  }
+
+  /**
+   * Tests that we can set a property using querystring parameters on a POST
+   * method
+   * 
+   * @throws IOException
+   * @throws HttpException
+   */
+  @Test
+  public void setPreference() throws HttpException, IOException {
+    //
+    // Set a preference using POST with querystring parameters
+    //
+    HttpClient client = new HttpClient();
+    PostMethod post = new PostMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
+    post.setQueryString("api_key="
+        + API_KEY_VALID
+        + "&widgetid="
+        + WIDGET_ID_VALID
+        + "&userid=test&is_public=false&shareddatakey=propstest&propertyname=pass&propertyvalue=pass");
+    client.executeMethod(post);
+    int code = post.getStatusCode();
+    assertEquals(201, code);
+    post.releaseConnection();
+
+    //
+    // Read it back using GET
+    //
+    client = new HttpClient();
+    GetMethod get = new GetMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
+    get.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
+        + WIDGET_ID_VALID
+        + "&userid=test&shareddatakey=propstest&propertyname=pass");
+    client.executeMethod(get);
+    code = get.getStatusCode();
+    assertEquals(200, code);
+    String resp = get.getResponseBodyAsString();
+    assertEquals("pass", resp);
+    get.releaseConnection();
+
+  }
+
+  /**
+   * Test we can set shared data values using querystring parameters
+   * 
+   * @throws IOException
+   * @throws HttpException
+   */
+  @Test
+  public void setSharedData() throws HttpException, IOException {
+
+    //
+    // Set some shared data with a POST and querystring
+    //
+    HttpClient client = new HttpClient();
+    PostMethod post = new PostMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
+    post.setQueryString("api_key="
+        + API_KEY_VALID
+        + "&widgetid="
+        + WIDGET_ID_VALID
+        + "&userid=test&is_public=true&shareddatakey=propstest&propertyname=cat&propertyvalue=garfield");
+    client.executeMethod(post);
+    int code = post.getStatusCode();
+    assertEquals(201, code);
+    post.releaseConnection();
+
+    //
+    // Read back the value using GET
+    //
+    client = new HttpClient();
+    GetMethod get = new GetMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
+    get.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
+        + WIDGET_ID_VALID
+        + "&userid=test&shareddatakey=propstest&propertyname=cat");
+    client.executeMethod(get);
+    code = get.getStatusCode();
+    assertEquals(200, code);
+    String resp = get.getResponseBodyAsString();
+    assertEquals("garfield", resp);
+    get.releaseConnection();
+
+  }
+
+  /**
+   * Test we can update an existing property
+   * 
+   * @throws IOException
+   * @throws HttpException
+   */
+  @Test
+  public void updateProperty() throws HttpException, IOException {
+
+    //
+    // Set propstest=cat using POST
+    //
+    HttpClient client = new HttpClient();
+    PutMethod put = new PutMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
+    put.setQueryString("api_key="
+        + API_KEY_VALID
+        + "&widgetid="
+        + WIDGET_ID_VALID
+        + "&userid=test&is_public=true&shareddatakey=propstest&propertyname=cat&propertyvalue=felix");
+    client.executeMethod(put);
+    int code = put.getStatusCode();
+    assertEquals(200, code);
+    put.releaseConnection();
+
+    //
+    // Read back the value using GET
+    //
+    client = new HttpClient();
+    GetMethod get = new GetMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
+    get.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
+        + WIDGET_ID_VALID
+        + "&userid=test&shareddatakey=propstest&propertyname=cat");
+    client.executeMethod(get);
+    code = get.getStatusCode();
+    assertEquals(200, code);
+    String resp = get.getResponseBodyAsString();
+    assertEquals("felix", resp);
+    get.releaseConnection();
+
+  }
+
+  /**
+   * Test removing a property
+   * 
+   * @throws HttpException
+   * @throws IOException
+   */
+  @Test
+  public void removeProperty() throws HttpException, IOException {
+    HttpClient client = new HttpClient();
+    DeleteMethod delete = new DeleteMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
+    delete
+        .setQueryString("api_key="
+            + API_KEY_VALID
+            + "&widgetid="
+            + WIDGET_ID_VALID
+            + "&userid=test&is_public=true&shareddatakey=propstest&propertyname=cat");
+    client.executeMethod(delete);
+    int code = delete.getStatusCode();
+    assertEquals(200, code);
+    delete.releaseConnection();
+  }
+
+  /**
+   * Test removing a non-existing property.
+   * 
+   * @throws IOException
+   * @throws HttpException
+   */
+  @Test
+  public void removePropertyNonExisting() throws HttpException, IOException {
+    HttpClient client = new HttpClient();
+    DeleteMethod delete = new DeleteMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
+    delete
+        .setQueryString("api_key="
+            + API_KEY_VALID
+            + "&widgetid="
+            + WIDGET_ID_VALID
+            + "&userid=test&is_public=true&shareddatakey=propstest&propertyname=bogus");
+    client.executeMethod(delete);
+    int code = delete.getStatusCode();
+    assertEquals(404, code);
+    delete.releaseConnection();
+  }
+
+  /**
+   * Try to set a property without specifying the property name
+   * 
+   * @throws IOException
+   * @throws HttpException
+   */
+  @Test
+  public void setPropertyNoName() throws HttpException, IOException {
+    HttpClient client = new HttpClient();
+    PostMethod post = new PostMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
+    post.setQueryString("api_key="
+        + API_KEY_VALID
+        + "&widgetid="
+        + WIDGET_ID_VALID
+        + "&userid=test&is_public=true&shareddatakey=propstest&propertyvalue=garfield");
+    client.executeMethod(post);
+    int code = post.getStatusCode();
+    assertEquals(400, code);
+    post.releaseConnection();
+  }
+
+  /**
+   * Try to set a property with an empty (zero length) property name
+   * 
+   * @throws IOException
+   * @throws HttpException
+   */
+  @Test
+  public void setPropertyEmptyName() throws HttpException, IOException {
+    HttpClient client = new HttpClient();
+    PostMethod post = new PostMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
+    post.setQueryString("api_key="
+        + API_KEY_VALID
+        + "&widgetid="
+        + WIDGET_ID_VALID
+        + "&userid=test&is_public=true&shareddatakey=propstest&propertyname=&propertyvalue=garfield");
+    client.executeMethod(post);
+    int code = post.getStatusCode();
+    assertEquals(400, code);
+    post.releaseConnection();
+  }
+
+  /**
+   * Try to set a property with a whitespace-only name
+   * 
+   * @throws IOException
+   * @throws HttpException
+   */
+  @Test
+  public void setPropertyWhitespaceName() throws HttpException, IOException {
+    HttpClient client = new HttpClient();
+    PostMethod post = new PostMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
+    post.setQueryString("api_key="
+        + API_KEY_VALID
+        + "&widgetid="
+        + WIDGET_ID_VALID
+        + "&userid=test&is_public=true&shareddatakey=propstest&propertyname=%20%20&propertyvalue=garfield");
+    client.executeMethod(post);
+    int code = post.getStatusCode();
+    assertEquals(400, code);
+    post.releaseConnection();
+  }
+
+  /**
+   * Try to set a property without a valid API key
+   * 
+   * @throws IOException
+   * @throws HttpException
+   */
+  @Test
+  public void getPropertyInvalidAPIKey() throws HttpException, IOException {
+    HttpClient client = new HttpClient();
+    GetMethod get = new GetMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
+    get.setQueryString("api_key=" + API_KEY_INVALID + "&widgetid="
+        + WIDGET_ID_VALID
+        + "&userid=test&shareddatakey=propstest&propertyname=cat");
+    client.executeMethod(get);
+    int code = get.getStatusCode();
+    assertEquals(401, code);
+    get.releaseConnection();
+  }
+
+  /**
+   * Try to get the value of a non-existant property
+   * 
+   * @throws IOException
+   * @throws HttpException
+   */
+  @Test
+  public void getPropertyInvalidName() throws HttpException, IOException {
+    HttpClient client = new HttpClient();
+    GetMethod get = new GetMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
+    get.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
+        + WIDGET_ID_VALID
+        + "&userid=test&shareddatakey=propstest&propertyname=madeupname");
+    client.executeMethod(get);
+    int code = get.getStatusCode();
+    assertEquals(404, code);
+    get.releaseConnection();
+  }
 
 }
