@@ -13,7 +13,10 @@
  */
 package org.apache.wookie.flatpack;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 
@@ -27,6 +30,7 @@ import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.controller.Controller;
 import org.apache.wookie.controller.WidgetInstancesController;
 import org.apache.wookie.exceptions.InvalidParametersException;
+import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.WidgetKeyManager;
 
@@ -36,6 +40,8 @@ import org.apache.wookie.helpers.WidgetKeyManager;
  * This class provides a controller front end for the FlatpackFactory class, enabling the export of Widget Instances via a HTTP POST request.
  * 
  * POST /flatpack/ {params: api_key, instance_params OR id_key} creates a new W3C Widget package (.wgt) with an opaque file name for the specified widget instance, and returns the download URL. 
+ * GET /flatpack/id.wgt download a previously created flatpack
+ * 
  * If an invalid API key is supplied, a 401 error code is returned. If no instance can be found, or the parameters supplied are invalid, a 400 error code is returned.
  */
 public class FlatpackController extends Controller {
@@ -43,16 +49,131 @@ public class FlatpackController extends Controller {
 	private static final long serialVersionUID = 2907712805939515004L;
 	static Logger _logger = Logger.getLogger(FlatpackController.class.getName());	
 
+	/* (non-Javadoc)
+   * @see org.apache.wookie.controller.Controller#show(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+   */
 	/**
-	 * Deny access to the listing of the flatpack folder
+	 * Downloads a previously generated export file.
+	 * 
+	 * <p><b>Note:</b> currently there is no authentication for this method, which relies solely
+	 * on the hard-to-guess exported widget name. </p>
+	 * 
+	 * <p>For the future we may want to:</p>
+	 * 
+	 * <ul>
+	 * <li> require an access token of some kind before allowing download. </ul>
+	 * <li> delete exported widgets after they have been downloaded. </ul>
+	 * <li> delete exported widgets at a set period after they have been created. </ul>
+	 * </ul>
 	 */
-	@Override
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		response.sendError(HttpServletResponse.SC_FORBIDDEN);
-	}
+  @Override
+  protected void show(String resourceId, HttpServletRequest request,
+      HttpServletResponse response) throws ResourceNotFoundException,
+      UnauthorizedAccessException, IOException {
+    
+    //
+    // If there is no resource part of the requested path, or the request is not for a ".wgt" file, return a 404 immediately
+    //
+    if (resourceId == null || resourceId.trim().length() == 0 || !resourceId.endsWith(".wgt")) {
+      throw new ResourceNotFoundException();
+    }
+    
+    //
+    // Get the file path for the requested item
+    //
+    String requestedPackageFilePath = request.getSession().getServletContext().getRealPath(FlatpackFactory.DEFAULT_FLATPACK_FOLDER+"/"+resourceId);
+    
+    //
+    // Get the widget package corresponding to the path, and throw a 404 if it doesn't exist
+    //
+    File widgetPackage = new File(requestedPackageFilePath);
+    if (!widgetPackage.exists()){
+      throw new ResourceNotFoundException();
+    }
+    
+    //
+    // Log the download and the IP used
+    //
+    _logger.info("exported widget package " + resourceId + " downloaded; IP:" + request.getRemoteAddr());
+    
+    //
+    // Set the content-type of the response to application/widget, which
+    // is the standard MIME type for widgets.
+    //
+    final String contentType = "application/widget";
+    
+    //
+    // Set buffer size of response to 10k
+    //
+    final int bufferSize = 10240;
+    
+    //
+    // Initialize the response
+    //
+    response.reset();
+    response.setBufferSize(bufferSize);
+    response.setContentType(contentType);
+    response.setHeader("Content-Length", String.valueOf(widgetPackage.length()));
+    
+    //
+    // We can override the browser default behaviour to force it to open a save dialog box;
+    // however at least Opera will treat this as a Widget package and do something smarter, and
+    // perhaps other browsers may do so in future, so leaving this commented out.
+    //
+    //response.setHeader("Content-Disposition", "attachment; filename=\"" + widgetPackage.getName() + "\"");
 
-	/**
+    //
+    // Prepare streams
+    //
+    BufferedInputStream input = null;
+    BufferedOutputStream output = null;
+
+    //
+    // Send the file
+    //
+    try {
+      
+        //
+        // Open streams
+        //
+        input = new BufferedInputStream(new FileInputStream(widgetPackage), bufferSize);
+        output = new BufferedOutputStream(response.getOutputStream(), bufferSize);
+
+        //
+        // Stream the file to the response
+        //
+        byte[] buffer = new byte[bufferSize];
+        int length;
+        while ((length = input.read(buffer)) > 0) {
+            output.write(buffer, 0, length);
+        }
+        
+    } finally {
+      
+        //
+        // Close streams
+        //
+        output.close();
+        input.close();
+    }
+
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.wookie.controller.Controller#index(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+   */
+  /**
+   * Deny access to the listing of the flatpack folder
+   */
+  @Override
+  protected void index(HttpServletRequest request, HttpServletResponse response)
+      throws UnauthorizedAccessException, IOException {
+    response.sendError(HttpServletResponse.SC_FORBIDDEN);
+  }
+
+
+
+  /**
 	 * We override the default POST method from Controller as we need to return the package URL in the Response to the client
 	 */
 	@Override

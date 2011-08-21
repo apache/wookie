@@ -33,7 +33,7 @@ public class FlatpackControllerTest extends AbstractControllerTest {
   private static final String TEST_FLATPACK_SERVICE_URL_VALID = TEST_SERVER_LOCATION
       + "flatpack";
   private static final String TEST_EXPORT_SERVICE_URL_VALID = TEST_SERVER_LOCATION
-      + "export";
+      + "flatpack";
   private static final String TEST_WIDGET_ID_JQM = "http://wookie.apache.org/widgets/freeder";
   private static String test_id_key = "";
 
@@ -81,12 +81,7 @@ public class FlatpackControllerTest extends AbstractControllerTest {
     GetMethod get = new GetMethod(TEST_EXPORT_SERVICE_URL_VALID);
     client.executeMethod(get);
     int code = get.getStatusCode();
-    if (code != 404) {
-      String html = get.getResponseBodyAsString();
-      System.out.println(html);
-      assertEquals(html.length(), 0);
-    }
-
+    assertEquals(403, code);
   }
 
   /**

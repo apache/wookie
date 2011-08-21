@@ -135,7 +135,6 @@
 		<url-pattern>/updates/*</url-pattern>
 	</servlet-mapping>
 	
-	
 	<servlet>
 		<description></description>
 		<display-name>Flatpack</display-name>
@@ -148,10 +147,6 @@
 	<servlet-mapping>
 		<servlet-name>Flatpack</servlet-name>
 		<url-pattern>/flatpack/*</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
- 		<servlet-name>default</servlet-name>
- 		<url-pattern>/export/*</url-pattern>	
 	</servlet-mapping>
 
 	<servlet>
