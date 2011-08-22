@@ -119,17 +119,11 @@ public class ContextListener implements ServletContextListener {
 			 *  load the opensocial.properties file and put it into this context
 			 *  as an attribute 'opensocial' available to all resources
 			 */
-			PropertiesConfiguration opensocialConfiguration;
 			File localOpenSocialPropsFile = new File(System.getProperty("user.dir") + File.separator + "local.opensocial.properties");
-			if (localOpenSocialPropsFile.exists()) {
-				opensocialConfiguration = new PropertiesConfiguration(localOpenSocialPropsFile);
-				_logger.info("Using local open social properties file: " + localOpenSocialPropsFile.toString());
-			} else {
-				opensocialConfiguration = new PropertiesConfiguration("opensocial.properties");
-				opensocialConfiguration.setFile(localOpenSocialPropsFile);
-				opensocialConfiguration.save();
-				_logger.info("Using default open social properties, configure your local server using: " + localOpenSocialPropsFile.toString());
-			}
+            PropertiesConfiguration localOpenSocialConfiguration = new PropertiesConfiguration(localOpenSocialPropsFile);
+            CompositeConfiguration opensocialConfiguration = new CompositeConfiguration();
+            opensocialConfiguration.addConfiguration(localOpenSocialConfiguration);
+            opensocialConfiguration.addConfiguration(new PropertiesConfiguration("opensocial.properties"));
 			context.setAttribute("opensocial", (Configuration) opensocialConfiguration);
 			
 			/*
