@@ -16,11 +16,18 @@ package org.apache.wookie.tests.functional;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
 import org.junit.Test;
 
 /**
@@ -127,6 +134,84 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	        int code = get.getStatusCode();
 	        assertEquals(404,code);
 	        get.releaseConnection();
+	}
+	
+	@Test
+	public void importWidget_unauthorized() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
+    client.executeMethod(post);
+    int code = post.getStatusCode();
+    assertEquals(401,code);
+    post.releaseConnection();	  
+	}
+	
+	@Test
+	public void importWidget() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    //
+    // Use admin credentials
+    //
+    client.getState().setCredentials(
+        new AuthScope("localhost", 8080, "wookie"),
+        new UsernamePasswordCredentials("java", "java")
+        );
+    PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
+    
+    //
+    // We'll use a copy of the unsupported widget widget for testing
+    //
+    File file = new File("src-tests/testdata/notsupported.wgt");
+    assertTrue(file.exists());
+    
+    //
+    // Add test wgt file to POST
+    //
+    Part[] parts = { new FilePart(file.getName(), file) };
+    post.setRequestEntity(new MultipartRequestEntity(parts, post
+        .getParams()));
+    
+    //
+    // POST the file to /widgets and check we get 201 (Created)
+    //
+    client.executeMethod(post);   
+    int code = post.getStatusCode();
+    assertEquals(201,code);
+    post.releaseConnection();  	  
+	}
+	
+	@Test
+	public void importWrongFileType() throws HttpException, IOException{
+	  HttpClient client = new HttpClient();
+	  //
+	  // Use admin credentials
+	  //
+	  client.getState().setCredentials(
+	      new AuthScope("localhost", 8080, "wookie"),
+	      new UsernamePasswordCredentials("java", "java")
+	  );
+	  PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
+
+	  //
+	  // We'll use a copy of the unsupported widget widget for testing
+	  //
+	  File file = new File("src-tests/testdata/not_a_widget.zip");
+	  assertTrue(file.exists());
+
+	  //
+	  // Add test wgt file to POST
+	  //
+	  Part[] parts = { new FilePart(file.getName(), file) };
+	  post.setRequestEntity(new MultipartRequestEntity(parts, post
+	      .getParams()));
+
+	  //
+	  // POST the file to /widgets and check we get a 400
+	  //
+	  client.executeMethod(post);   
+	  int code = post.getStatusCode();
+	  assertEquals(400,code);
+	  post.releaseConnection();     
 	}
 	
 }
