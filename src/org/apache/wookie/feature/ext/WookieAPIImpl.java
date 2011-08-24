@@ -103,7 +103,7 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
     if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
     if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2");
     if(ContextListener.useSharedDataInstanceQueues){//  
-      QueueManager.getInstance().queueSetSharedDataRequest(id_key, widgetInstance.getSharedDataKey(), key, value, false);
+      QueueManager.getInstance().queueSetSharedDataRequest(id_key, SharedDataHelper.getInternalSharedDataKey(widgetInstance), key, value, false);
     }
     else{
       PropertiesController.updateSharedDataEntry(widgetInstance, key, value, false);
@@ -123,7 +123,7 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
         IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
     if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
     //
-    String sharedDataKey = widgetInstance.getSharedDataKey();
+    String sharedDataKey = SharedDataHelper.getInternalSharedDataKey(widgetInstance);
     WidgetInstancesController.lockWidgetInstance(widgetInstance);
     Notifier.callSiblings(widgetInstance,"Widget.onLocked(\""+sharedDataKey+"\");");//$NON-NLS-1$
         return "okay"; //$NON-NLS-1$
@@ -140,7 +140,7 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
         IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
     if(widgetInstance==null) return localizedMessages.getString("WidgetAPIImpl.0");
     //
-    String sharedDataKey = widgetInstance.getSharedDataKey();
+    String sharedDataKey = SharedDataHelper.getInternalSharedDataKey(widgetInstance);
     WidgetInstancesController.unlockWidgetInstance(widgetInstance);
     Notifier.callSiblings(widgetInstance,"Widget.onUnlocked(\""+sharedDataKey+"\");");//$NON-NLS-1$
         return "okay"; //$NON-NLS-1$
@@ -207,7 +207,7 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
     if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
     if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2");
     if(ContextListener.useSharedDataInstanceQueues){//
-      QueueManager.getInstance().queueSetSharedDataRequest(id_key, widgetInstance.getSharedDataKey(), key, value, true);
+      QueueManager.getInstance().queueSetSharedDataRequest(id_key, SharedDataHelper.getInternalSharedDataKey(widgetInstance), key, value, true);
     }
     else{
       PropertiesController.updateSharedDataEntry(widgetInstance, key, value, true);

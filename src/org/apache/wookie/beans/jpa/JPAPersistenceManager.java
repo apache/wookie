@@ -92,6 +92,7 @@ import org.apache.wookie.beans.jpa.impl.WidgetServiceImpl;
 import org.apache.wookie.beans.jpa.impl.WidgetTypeImpl;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceCommitException;
+import org.apache.wookie.helpers.SharedDataHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -682,7 +683,7 @@ public class JPAPersistenceManager implements IPersistenceManager
         {
             try
             {
-                String sharedDataKey = widgetInstance.getSharedDataKey();
+                String sharedDataKey = SharedDataHelper.getInternalSharedDataKey(widgetInstance);
                 Query query = entityManager.createNamedQuery("PARTICIPANTS");
                 query.setParameter("sharedDataKey", sharedDataKey);
                 List<IParticipant> participantsList = query.getResultList();
@@ -715,7 +716,7 @@ public class JPAPersistenceManager implements IPersistenceManager
         {
             try
             {
-                String sharedDataKey = widgetInstance.getSharedDataKey();
+                String sharedDataKey = SharedDataHelper.getInternalSharedDataKey(widgetInstance);
                 String userId = widgetInstance.getUserId();
                 Query query = entityManager.createNamedQuery("PARTICIPANT_VIEWER");
                 query.setParameter("sharedDataKey", sharedDataKey);

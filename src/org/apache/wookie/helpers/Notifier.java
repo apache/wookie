@@ -59,7 +59,7 @@ public class Notifier {
 	 * @param widgetInstance the instance that is the source of the update
 	 */
 	public static void notifySiblings(IWidgetInstance widgetInstance){
-		String sharedDataKey = widgetInstance.getSharedDataKey();
+		String sharedDataKey = SharedDataHelper.getInternalSharedDataKey(widgetInstance);
 		String script = "Widget.onSharedUpdate(\""+sharedDataKey+"\");"; //$NON-NLS-1$ //$NON-NLS-2$
 		callSiblings(widgetInstance,script);
 	}

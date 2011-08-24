@@ -18,6 +18,7 @@ import java.util.HashMap;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
+import org.apache.wookie.helpers.SharedDataHelper;
 import org.directwebremoting.impl.DefaultPageNormalizer;
 
 /**
@@ -43,7 +44,7 @@ org.directwebremoting.extend.PageNormalizer {
 	 * @return the normalized URI of the widget instance
 	 */
 	public String getNormalizedPage(IWidgetInstance instance){
-		return super.normalizePage(instance.getWidget().getUrl())+"?"+instance.getApiKey()+"="+instance.getSharedDataKey();
+		return super.normalizePage(instance.getWidget().getUrl())+"?"+instance.getApiKey()+"="+SharedDataHelper.getInternalSharedDataKey(instance);
 	}
 
 	/**
@@ -73,7 +74,7 @@ org.directwebremoting.extend.PageNormalizer {
 		// Strip off query and add on API key and shared data key
 		setNormalizeIncludesQueryString(false);
 		page = super.normalizePage(page);
-		page += "?"+widgetInstance.getApiKey()+"="+widgetInstance.getSharedDataKey();
+		page += "?"+widgetInstance.getApiKey()+"="+SharedDataHelper.getInternalSharedDataKey(widgetInstance);
 		setNormalizeIncludesQueryString(true);
 		return page;
 	}
