@@ -1,0 +1,137 @@
+Apache Wookie Release Notes
+===========================
+See https://issues.apache.org/jira/browse/WOOKIE-* (where * is the number of the issue below)
+
+Version 0.9.0
+=============
+
+Bugs Fixed
+===========
+    * [WOOKIE-9] - Return Widget types in all Widget representations
+    * [WOOKIE-10] - Add methods to API for getting list of widgets by type
+    * [WOOKIE-37] - Make wookie to conform to W3C Widgets API
+    * [WOOKIE-92] - Add Locale parameter for requesting a widget instance
+    * [WOOKIE-94] - Add filter to enable folder-based localization
+    * [WOOKIE-95] - Update documentation on use of Locale parameters
+    * [WOOKIE-96] - Ensure all start files have JS injected
+    * [WOOKIE-97] - Recode default widgets to use W3C localization model, and remove old localization shared JS
+    * [WOOKIE-122] - Create an admin user interface to review, grant and revoke widget access requests
+    * [WOOKIE-13] - java.sql.SQLException: Connections could not be acquired from the underlying database!
+    * [WOOKIE-21] - Website sync script
+    * [WOOKIE-23] - Invalid web.xml files
+    * [WOOKIE-25] - Reporting failed API request as success
+    * [WOOKIE-40] - Website Sync not working
+    * [WOOKIE-42] - Wookie rewrites HTML start file incorrectly when injecting JavaScript, where there are self-closing script tags
+    * [WOOKIE-43] - SQL script incorrectly configures server features
+    * [WOOKIE-45] - Wookie does not seem to support .html as start files?
+    * [WOOKIE-47] - add required properties to build.properties and add docs to readme
+    * [WOOKIE-48] - W3C Widgets conformance: incorrect processing of height/width attributes
+    * [WOOKIE-49] - Error in algorithm for determining the start page for a widget
+    * [WOOKIE-53] - Eclipse .classpath configuration uses hardcoded local user path for ivysettings.xml and is missing classpath references to a few additionally required jars
+    * [WOOKIE-54] - W3C Widgets conformance: incorrect processing of whitespace and localized elements
+    * [WOOKIE-55] - W3C Widgets conformance: does not support Short name attribute
+    * [WOOKIE-56] - W3C Widgets conformance: does not correctly handle language-localized elements
+    * [WOOKIE-58] - W3C Widgets conformance: problems processing icons
+    * [WOOKIE-59] - W3C Widgets conformance: problems processing preferences
+    * [WOOKIE-60] - W3C Widgets conformance: need to fix default identifiers to support valid IRIs
+    * [WOOKIE-61] - W3C Widgets conformance: problems processing content elements with inner tags
+    * [WOOKIE-62] - W3C Widgets conformance: treat widget as invalid if it requires an unsupported feature
+    * [WOOKIE-63] - HibernateException: flush is not valid without active transaction
+    * [WOOKIE-64] - Wookie rewrites HTML start file incorrectly when injecting JavaScript: incorrectly encodes inline scripts
+    * [WOOKIE-77] - W3C Widgets conformance: feature name must be a valid IRI
+    * [WOOKIE-78] - W3C Widgets conformance: author href must be a valid URL
+    * [WOOKIE-79] - W3C Widgets conformance: language tags should be verified
+    * [WOOKIE-82] - WARN C3P0ConnectionProvider messages at server runtim
+    * [WOOKIE-83] - Improvements to widget template
+    * [WOOKIE-84] - Remove injected script tags from widget source
+    * [WOOKIE-101] - Binary files are filtered when seeding a widget
+    * [WOOKIE-102] - Javascript can be broken on reformatting
+    * [WOOKIE-105] - Servlet.service() for servlet default threw exception java.lang.NoSuchMethodError
+    * [WOOKIE-106] - Buildbot gives warnings when running 'ant'
+    * [WOOKIE-107] - warnings when running 'ant compile test'
+    * [WOOKIE-108] - incorrectly named jar when running 'ant jar'
+    * [WOOKIE-109] - Build Failure for 'ant publish-local'
+    * [WOOKIE-113] - Wookie reordering script tags
+    * [WOOKIE-118] - GET and POST request broken (jQuery + Widget.proxify)
+    * [WOOKIE-120] - Testinstallation jetty fails on start on case sensitve Operationg systems
+    * [WOOKIE-123] - DELETE {wookie}/properties creates property with NULL value
+    * [WOOKIE-124] - Error when starting development server: cannot run due to initialisation problem
+    * [WOOKIE-129] - Ant task 'stopserver' does not stop the server
+    * [WOOKIE-136] - Demo of any widget returns 401
+    * [WOOKIE-145] - JPA error when Widget sets preference values
+    * [WOOKIE-148] - Posting XML in the body of a text/xml HTTP request through the proxy fails
+    * [WOOKIE-157] - Redirected error page has bad links
+    * [WOOKIE-158] - Butterfly widget causes javascript error alert in IE8
+    * [WOOKIE-159] - Old 'basic chat widget' not updating online users when user navigates away from page
+    * [WOOKIE-160] - Forum widget lists user who posted message as 'No matching key found'
+    * [WOOKIE-161] - Missing icon in natter widget for user
+    * [WOOKIE-162] - Sharedraw widget has JS errors in IE8
+    * [WOOKIE-163] - Simple chat - typed in messages are being lost
+    * [WOOKIE-164] - Original 'Vote' widget not working
+    * [WOOKIE-165] - Camera widget causes js errors in IE8
+    * [WOOKIE-166] - Geolocation widget causes JS errors in IE8
+    * [WOOKIE-168] - Cannot remove widget from wookie after it has become an instance.
+    * [WOOKIE-171] - There is a suspected problem with the way the id handler of the manifest parser is managing odd characters
+    * [WOOKIE-195] - Source and Binary distribution need a few more disclaimers and notices
+    * [WOOKIE-196] - initDB = True in distribution files
+    * [WOOKIE-197] - readme for WAR is incomplete
+    * [WOOKIE-198] - Standalone binary distribution does not mention 3rd party license library licenses
+    * [WOOKIE-199] - Unnecessary build directories being created
+    * [WOOKIE-200] - Source distribution is missing MIT license for JQuery
+    * [WOOKIE-202] - Release candidate includes snapshot Jars
+
+Improvements
+============
+    * [WOOKIE-24] - Javadocs still refer to old package names
+    * [WOOKIE-26] - Standalone version of Wookie for development
+    * [WOOKIE-28] - Preview widgets within server application
+    * [WOOKIE-39] - Allow deployment specific properties
+    * [WOOKIE-41] - Enable local configuration of the email server
+    * [WOOKIE-50] - Creation and management of widgets
+    * [WOOKIE-51] - Remove binary widget packages from core server source
+    * [WOOKIE-57] - Use commons-io to replace file util methods
+    * [WOOKIE-69] - deploy-webbapp creates unnecessary interim lib directory
+    * [WOOKIE-70] - Inform the user when an a widget fails to be deployed using hot-deploy
+    * [WOOKIE-72] - Don't silently swallow exceptions
+    * [WOOKIE-73] - localisation messages are meaningless
+    * [WOOKIE-86] - Configure standalone port
+    * [WOOKIE-87] - Widget template improvements
+    * [WOOKIE-88] - "Friendly" error message to recommend clean-db?
+    * [WOOKIE-91] - Deploy a widget to a running server
+    * [WOOKIE-116] - POST and Basic Auth through proxy
+    * [WOOKIE-125] - Updated PHP framework
+    * [WOOKIE-128] - PHP framework patch
+    * [WOOKIE-130] - Run diagnostic tests on server when starting up
+    * [WOOKIE-135] - Wigets locale changing
+    * [WOOKIE-137] - In CSharp connector all reference to maximize should be removed.
+    * [WOOKIE-138] - Widgets are not ordered when viewing widget gallery
+    * [WOOKIE-144] - Pluggable Persistence Component
+    * [WOOKIE-153] - Minimal chat widget
+
+New Features
+============
+    * [WOOKIE-33] - testing issues for review subscription
+    * [WOOKIE-85] - Implement W3C Widget Access Request Policy (WARP) specification
+    * [WOOKIE-99] - Dynamic deployment of Features
+    * [WOOKIE-121] - PHP Connector framework
+    * [WOOKIE-126] - C# Inital framework
+    * [WOOKIE-127] - Python inital framework
+    * [WOOKIE-143] - ActionScript 3.0 / Flex Connector
+    
+    
+Known Issues
+============	
+	* [WOOKIE-152] - There is a known issue when using Ant version 1.8.x to build and run Wookie; 
+				     you should instead use version 1.7.1. To check which version of ant you are using, 
+				     type ant -version.
+	* [WOOKIE-222] - There is a known issue when using Tomcat 7.* with Wookie. Sometimes when a widget is actually
+					 loaded, a browser alert box sometimes appears informing the user of a "Session Error".
+					 A workaround for this is to add the following to the WEB-INF/web.xml file
+					 
+					 <init-param>
+						<param-name>crossDomainSessionSecurity</param-name>
+						<param-value>false</param-value>
+					</init-param>
+					 			
+					 This is an issue for Tomcat 7.* only. Previous versions do not appear to have this issue. 
+					 				
