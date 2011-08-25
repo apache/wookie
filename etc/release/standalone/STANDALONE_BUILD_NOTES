@@ -1,0 +1,30 @@
+Apache Wookie - Standalone distribution instructions
+====================================================
+This folder should contain...
+
+lib
+etc
+build
+startup.sh
+startup.bat
+shutdown.sh
+shutdown.bat
+DISCLAIMER
+KEYS
+NOTICE
+LICENSE
+RUNTIME_LICENSE
+RELEASE_NOTES
+STANDALONE_BUILD_NOTES (this file!)
+
+This installation of wookie is not meant for full deployment purposes, 
+rather it is intended as an easy and simple way to quickly see what wookie
+is about without the need to configure various databases and servers.
+As such it uses a preconfigured Jetty server and Derby database.
+
+Starting and stopping the server
+================================
+To start the server on windows run the startup.bat script 
+To start the server on *nix systems run the startup.sh script
+To stop the server on windows run the shutdown.bat script 
+To stop the server on *nix systems run the shutdown.sh script
