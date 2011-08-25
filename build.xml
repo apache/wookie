@@ -34,6 +34,7 @@
   <property name="compilerargs" value="-Aopenjpa.metamodel=true" />
 
   <import file="ant/ivy-webapp-common.xml"/>
+  <import file="ant/ivy-release-common.xml"/>
   <property file="${project.core.src.dir}/widgetserver.properties"/>
   <property name="servletEngine.repository.dir" location="${servletEngine.webapp.dir}/../repository"/>
 	

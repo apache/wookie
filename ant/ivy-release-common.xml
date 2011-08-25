@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+		Licensed to the Apache Software Foundation (ASF) under one or more
+		contributor license agreements. See the NOTICE file distributed with
+		this work for additional information regarding copyright ownership.
+		The ASF licenses this file to You under the Apache License, Version
+		2.0 (the "License"); you may not use this file except in compliance
+		with the License. You may obtain a copy of the License at
+
+		http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+		applicable law or agreed to in writing, software distributed under the
+		License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+		CONDITIONS OF ANY KIND, either express or implied. See the License for
+		the specific language governing permissions and limitations under the
+		License.
+	-->
+<project xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<import file="ivy-java-common.xml" />
+	<import file="ivy-webapp-common.xml" />
+
+	<tstamp />
+	<property name="project.general.name" value="apache-wookie-${version}-incubating" />
+	
+	<property name="wookie.source.folder.name" value="wookie-source" />
+	<property name="wookie.war.folder.name" value="wookie-war" />
+	<property name="wookie.standalone.folder.name" value="Apache-Wookie" />
+	<property name="wookie.source.zip.name"
+		value="apache-wookie-${version}-incubating-src" />	
+	<property name="wookie.standalone.zip.name"
+		value="apache-wookie-${version}-incubating-standalone" />
+	<property name="wookie.war.name"
+		value="apache-wookie-${version}-incubating-war" />
+
+
+	<target name="build-release-all"
+		depends="build-release-src, build-release-standalone, build-release-war, add-extra-files">
+		<echo>Building all releases</echo>
+	</target>
+	
+	<target name="build-release-src" depends="">
+		<echo>Building source release</echo>
+		<mkdir dir="${wookie.release.dir}/${version}-incubating/source" />
+		
+		<zip destfile="${wookie.release.dir}/${version}-incubating/source/${wookie.source.zip.name}.zip"
+		       basedir="."
+			includes=".settings/, 
+			ant/, 
+			connector/CSharp/, 
+			connector/flash_flex/,
+			connector/java/src/,
+			connector/java/src-test/,
+			connector/java/build.properties,
+			connector/java/build.xml,
+			connector/java/ivy.xml,
+			connector/java/README.txt,
+			connector/java/version.properties,
+			connector/php/,
+			connector/python/,
+			connector/ruby/,
+			connector/README.txt,
+			docs/,
+			etc/, 
+			features/, 
+			licenses/, 
+			modules/,
+			parser/java/src/,
+			parser/java/src-test/,
+			parser/java/ant/,
+			parser/java/build.properties,
+			parser/java/build.xml,
+			parser/java/ivy.xml,
+			parser/java/README.txt,
+			parser/java/test.wgt,
+			project_admin/, 
+			schemas/,
+			scratchpad/,
+			scripts/, 
+			shindig/,
+			src/,
+			src-tests/, 
+			tutorials/, 
+			WebContent/, 
+			widgets/,
+			.classpath,
+			.project,
+			build.properties,
+			build.xml,
+			BUILDING,
+			DISCLAIMER,
+			ivy.xml,			
+			LICENSE,
+			NOTICE,
+			README,
+			RELEASE_NOTES"   
+		  />
+		
+		<!-- tar -->
+		<tar destfile="${wookie.release.dir}/${version}-incubating/source/${wookie.source.zip.name}.tar.gz"
+			compression="gzip">
+			<zipfileset src="${wookie.release.dir}/${version}-incubating/source/${wookie.source.zip.name}.zip" />
+		</tar>
+		
+	</target>
+
+	<target name="build-release-war" depends="clean-build, compile-core, deploy-webapp, post-deploy-webapp">
+		<echo>Building war release</echo>
+		<delete dir="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}" />
+		<mkdir dir="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/scripts/" />
+		
+		<!-- back the widgetserver.properties file up -->
+		<copy file="${build.dir}/webapp/wookie/WEB-INF/classes/widgetserver.properties"
+				          tofile="${build.dir}/widgetserver.properties"
+				          overwrite="true"/>
+			
+		<!-- update widgetserver.properties file so that it points to mysql as db type-->			
+		<copy file="${project.core.src.dir}/widgetserver.properties"
+		          todir="${build.dir}/webapp/wookie/WEB-INF/classes/"
+		          overwrite="true">
+			<filterset>
+			    <filter token="PERSISTENCE_MANAGER_CLASSNAME" value="org.apache.wookie.beans.jpa.JPAPersistenceManager"/>
+		    	<filter token="DATABASE_TYPE" value="mysql"/>
+		        <filter token="REPOSITORY_USER" value=""/>
+		        <filter token="REPOSITORY_PASSWORD" value=""/>
+		        <filter token="REPOSITORY_ROOTPATH" value=""/>
+		        <filter token="REPOSITORY_WORKSPACE" value=""/>
+		    </filterset>
+		</copy>
+
+		<copy file="DISCLAIMER" tofile="${build.dir}/webapp/wookie/DISCLAIMER" overwrite="yes" />		
+		<copy file="LICENSE" tofile="${build.dir}/webapp/wookie/LICENSE" overwrite="yes" />		
+		<copy file="NOTICE" tofile="${build.dir}/webapp/wookie/NOTICE" overwrite="yes" />
+		<copy file="etc/release/RUNTIME_LICENSE" tofile="${build.dir}/webapp/wookie/RUNTIME_LICENSE" overwrite="yes" />
+
+		<!-- build war file -->
+		<war
+			destfile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/wookie.war"
+			webxml="${build.dir}/webapp/wookie/WEB-INF/web.xml">	
+			<lib dir="${build.dir}/webapp/wookie/WEB-INF/lib">
+				<exclude name="derby-10.2.1.6.jar"/>
+			</lib>		
+			<classes dir="${build.dir}/webapp/wookie/WEB-INF/classes" />
+			<fileset dir="${build.dir}/webapp/wookie/">
+				<exclude name="WEB-INF/classes/" />
+				<exclude name="WEB-INF/lib/" />
+			</fileset>
+		</war>
+			
+		<!-- put original widgetserver.properties file back -->
+		<copy file="${build.dir}/widgetserver.properties" 
+			tofile="${build.dir}/webapp/wookie/WEB-INF/classes/widgetserver.properties" 
+			overwrite="true" />	
+		<delete file="${build.dir}/widgetserver.properties" />
+		<delete file="${build.dir}/webapp/wookie/DISCLAIMER" />		
+		<delete file="${build.dir}/webapp/wookie/LICENSE" />
+		<delete file="${build.dir}/webapp/wookie/NOTICE" />
+		<delete file="${build.dir}/webapp/wookie/RUNTIME_LICENSE" />
+
+		<!-- copy sql scripts across -->
+		<copy todir="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/scripts/">
+			<fileset dir="${build.dir}/classes/org/apache/wookie/beans/jpa/">
+				<include name="*.sql" />
+			</fileset>
+		</copy>
+
+		<!-- copy over project readme files-->
+		<copy file="DISCLAIMER" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/DISCLAIMER" overwrite="yes" />
+		<!--<copy file="KEYS" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/KEYS" overwrite="yes" />-->
+		<copy file="LICENSE" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/LICENSE" overwrite="yes" />		
+		<copy file="etc/release/RUNTIME_LICENSE" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/RUNTIME_LICENSE" overwrite="yes" />			
+		<copy file="README" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/README" overwrite="yes" />
+		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/RELEASE_NOTES" overwrite="yes" />
+		<copy file="NOTICE" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/NOTICE" overwrite="yes" />
+		<!-- copy WAR readme-->
+		<copy file="etc/release/war/WAR_BUILD_NOTES"
+			tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/WAR_BUILD_NOTES"
+			overwrite="yes" />
+
+		<!-- update context for mysql -->
+		<copy file="${etc.dir}/tomcat/conf/jpa-context.xml" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/${ant.project.name}.xml" overwrite="true">
+			<filterset>
+				<filter token="DATABASE_USER" value="java" />
+				<filter token="DATABASE_PASSWORD" value="java" />
+				<filter token="DATABASE_DRIVER" value="com.mysql.jdbc.Driver" />
+				<filter token="DATABASE_URI" value="jdbc:mysql://localhost:3306/widgetdb" />
+			</filterset>
+		</copy>
+
+		<!-- zip -->
+		<zip destfile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.name}.zip" basedir="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/" update="true" />
+
+		<!-- tar -->
+		<tar destfile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.name}.tar.gz"
+			compression="gzip">
+			<zipfileset src="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.name}.zip" />
+		</tar>
+
+		<!-- clean up -->
+		<delete dir="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}" />
+
+	</target>
+
+	<target name="build-release-standalone" depends="clean-build, compile-core, deploy-webapp, post-deploy-webapp">
+
+		<echo>Building standalone release</echo>
+		<delete dir="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}" />
+		<mkdir dir="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/build/" />
+		<mkdir dir="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/lib/" />
+		<mkdir dir="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/etc/" />
+
+		<copy todir="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/build/">
+			<fileset dir="${build.dir}/">
+				<exclude name="classes/" />
+				<exclude name="widgets/" />
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+
+		<copy todir="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/">
+			<fileset dir="etc/release/standalone/" />
+		</copy>
+
+		<copy file="./etc/jetty-realm.properties" tofile="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/etc/jetty-realm.properties" />
+		<copy file="DISCLAIMER" tofile="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/DISCLAIMER" overwrite="yes" />
+		<!--<copy file="KEYS" tofile="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/KEYS" overwrite="yes" />-->
+		<copy file="LICENSE" tofile="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/LICENSE" overwrite="yes" />
+		<copy file="README" tofile="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/README" overwrite="yes" />
+		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/RELEASE_NOTES" overwrite="yes" />
+		<copy file="NOTICE" tofile="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/NOTICE" overwrite="yes" />
+		<copy file="etc/release/RUNTIME_LICENSE" tofile="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/RUNTIME_LICENSE" overwrite="yes" />		
+
+		<ivy:retrieve conf="runtime"
+			pattern="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/lib/[artifact]-[revision].[ext]" />
+
+		<!-- duplicate -->
+		<delete file="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/lib/servlet-api-2.5.jar" />
+		
+		<zip destfile="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.zip.name}.zip"
+			basedir="${wookie.release.dir}/${version}-incubating/binary/standalone/" includes="${wookie.standalone.folder.name}/"
+			update="true" />
+
+		<tar destfile="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.zip.name}.tar.gz"
+			compression="gzip">
+			<zipfileset src="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.zip.name}.zip" />
+		</tar>
+
+		<delete dir="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}" />
+	</target>
+	
+	<target name="add-extra-files" depends="">
+		<copy file="etc/release/runsignatures.bat" tofile="${wookie.release.dir}/runsignatures.bat" overwrite="yes" />			
+	</target>
+
+</project>
