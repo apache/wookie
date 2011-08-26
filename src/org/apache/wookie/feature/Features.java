@@ -114,6 +114,9 @@ public class Features {
     // Create a new ArrayList if it hasn't been instantiated
     //
     if (features == null) features = new ArrayList<IFeature>();
+
+    // Sanity check 
+    if(!featuresFolder.exists()){return;}
     
     //
     // Iterate over child folders of the /features folder
