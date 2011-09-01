@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
@@ -350,5 +351,35 @@ public abstract class Controller extends HttpServlet{
 		return HTML;
 	}
 
+	/**
+	 * Get a URL for a resource on the current Wookie server; this is either determined from the request or overridden by properties
+	 * defined in widgetserver.properties to support virtual hosts
+	 * @param request the originating request
+	 * @param path an optional path to the resource
+	 * @return a URL pointing to the resource on the Wookie server
+	 * @throws MalformedURLException
+	 */
+	protected static URL getWookieServerURL(HttpServletRequest request, String path) throws MalformedURLException{
+
+    //
+    // Use the request to generate the initial URL components
+    //
+    String scheme = request.getScheme();
+    String serverName = request.getServerName();
+    int serverPort = request.getServerPort();
+    
+    //
+    // Override with configuration properties where present
+    //
+    Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
+    if (properties.getString("widget.server.scheme")!=null && !properties.getString("widget.server.scheme").trim().equals("")) scheme = properties.getString("widget.server.scheme"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    if (properties.getString("widget.server.hostname")!=null && !properties.getString("widget.server.hostname").trim().equals("")) serverName = properties.getString("widget.server.hostname"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    if (properties.getString("widget.server.port")!=null && !properties.getString("widget.server.port").trim().equals("")) serverPort = Integer.parseInt(properties.getString("widget.server.port")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+    //
+    // Construct and return URL
+    //
+    return new URL(scheme, serverName, serverPort, path);
+	}
 
 }
