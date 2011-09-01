@@ -329,9 +329,9 @@ public class WidgetInstancesController extends Controller {
 		IStartFile[] startFiles = instance.getWidget().getStartFiles().toArray(new IStartFile[instance.getWidget().getStartFiles().size()]);
         IStartFile sf = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, new String[]{instance.getLang()}, instance.getWidget().getDefaultLocale());
     
-        //
-        // Try default locale if no appropriate localization found
-        //
+    //
+    // Try default locale if no appropriate localization found
+    //
 		if (sf == null) sf = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, null, instance.getWidget().getDefaultLocale());
 		
 		//
@@ -342,7 +342,7 @@ public class WidgetInstancesController extends Controller {
 		//
 		// Get a URL for the start file on this Wookie server
 		//
-        String path = sf.getUrl();
+    String path = sf.getUrl();
 		URL urlWidget =  getWookieServerURL(request, path);
 		
 		//
