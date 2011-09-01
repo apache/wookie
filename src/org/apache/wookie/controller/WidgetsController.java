@@ -38,7 +38,10 @@ import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
+import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetHelper;
+import org.apache.wookie.util.gadgets.GadgetUtils;
+import org.apache.wookie.w3c.W3CWidget;
 
 /**
  * <p>Controller for widget resources.</p>
@@ -155,79 +158,111 @@ public class WidgetsController extends Controller{
 	 */
 	@Override
 	protected boolean create(String resourceId, HttpServletRequest request)
-			throws ResourceDuplicationException, InvalidParametersException,
-			UnauthorizedAccessException {
-	  
+	throws ResourceDuplicationException, InvalidParametersException,
+	UnauthorizedAccessException {
+
 	  //
-    // Check for a "url" parameter in the request, indicating this is a remote widget or opensocial gadget xml file 
+	  // Check for a "url" parameter in the request, indicating this is a remote widget or opensocial gadget xml file 
 	  // FIXME implement this 
-    //
-    String url = request.getParameter("url");
-    if (url != null && url.trim().length() != 0){
-      _logger.info("POSTing URLs instead of files it not yet supported");
-      throw new InvalidParametersException();
-    }
-		
+	  //
+	  String url = request.getParameter("url");
+	  if (url != null && url.trim().length() != 0){
+	    return createGadget(request, url);
+	  }
+
 	  //
 	  // Get the path for the deploy folder
 	  //
-		Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
-		final String DEPLOY_FOLDER = getServletContext().getRealPath(properties.getString("widget.deployfolder"));//$NON-NLS-1$
-		
-		//
-		// Create factory for processing POSTed files
-		//
-		FileItemFactory factory = new DiskFileItemFactory();
-		
-		//
-		// Create a new file upload handler
-		//
-		ServletFileUpload upload = new ServletFileUpload(factory);
-		
-		//
-		// Create a flag we'll use to check if we got any .wgt files in the POST
-		//
-    boolean requestContainedWgtFile = false;
-		
-		//
-		// Save file in the deploy folder
-		//
-		try {
-			@SuppressWarnings("unchecked")
-			List <FileItem> items = upload.parseRequest(request);
-			
-			//
-			// Only save .wgt files and ignore any others in the POST
-			//
-			for (FileItem item: items){
-			  if (item.getName().endsWith(".wgt")){
-			    File saveFile = new File(DEPLOY_FOLDER + "/" + item.getName());
-			    item.write(saveFile);
-			    requestContainedWgtFile = true;
-			  }
-			}
-			
-		} catch (FileUploadException e) {
-			throw new InvalidParametersException();
-		} catch (Exception e) {
-		  //
-		  // Catch any other exceptions thrown by the save file operation
-		  // and throw a basic 400 response to the client, though really
-		  // this is more like a 500. At least we can log the details.
-		  // 
-		  _logger.error(e.getMessage(), e);
-			throw new InvalidParametersException();
-		}
-		
-    //
-    // If there are no .wgt files in the POST, throw an exception
-		// We have to check for this here as other exceptions are caught in 
-		// the code above, e.g. generic file system errors
-    //
-    if (requestContainedWgtFile == false){
-      throw new InvalidParametersException();
-    }
-    
-		return true;
+	  Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
+	  final String DEPLOY_FOLDER = getServletContext().getRealPath(properties.getString("widget.deployfolder"));//$NON-NLS-1$
+
+	  //
+	  // Create factory for processing POSTed files
+	  //
+	  FileItemFactory factory = new DiskFileItemFactory();
+
+	  //
+	  // Create a new file upload handler
+	  //
+	  ServletFileUpload upload = new ServletFileUpload(factory);
+
+	  //
+	  // Create a flag we'll use to check if we got any .wgt files in the POST
+	  //
+	  boolean requestContainedWgtFile = false;
+
+	  //
+	  // Save file in the deploy folder
+	  //
+	  try {
+	    @SuppressWarnings("unchecked")
+	    List <FileItem> items = upload.parseRequest(request);
+
+	    //
+	    // Only save .wgt files and ignore any others in the POST
+	    //
+	    for (FileItem item: items){
+	      if (item.getName().endsWith(".wgt")){
+	        File saveFile = new File(DEPLOY_FOLDER + "/" + item.getName());
+	        item.write(saveFile);
+	        requestContainedWgtFile = true;
+	      }
+	    }
+
+	  } catch (FileUploadException e) {
+	    throw new InvalidParametersException();
+	  } catch (Exception e) {
+	    //
+	    // Catch any other exceptions thrown by the save file operation
+	    // and throw a basic 400 response to the client, though really
+	    // this is more like a 500. At least we can log the details.
+	    // 
+	    _logger.error(e.getMessage(), e);
+	    throw new InvalidParametersException();
+	  }
+
+	  //
+	  // If there are no .wgt files in the POST, throw an exception
+	  // We have to check for this here as other exceptions are caught in 
+	  // the code above, e.g. generic file system errors
+	  //
+	  if (requestContainedWgtFile == false){
+	    throw new InvalidParametersException();
+	  }
+
+	  return true;
 	}
+	
+	/**
+	 * Register a gadget
+	 * @param request
+	 * @param gadgetUrl
+	 * @return true if the gadget is added; false if it was already registered
+	 * @throws InvalidParametersException 
+	 * @throws Exception
+	 */
+	public boolean createGadget(HttpServletRequest request, String gadgetUrl) throws InvalidParametersException{
+
+	  //
+	  // Create a new widget from the gadget URL
+	  //
+	  W3CWidget widget;
+	  try {
+	    widget = GadgetUtils.createWidget(request);
+	  } catch (Exception e) {
+	    throw new InvalidParametersException();
+	  }
+
+	  //
+	  // If the gadget is not already registered, add it
+	  //
+	  IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+	  if(persistenceManager.findWidgetByGuid(widget.getIdentifier()) == null){
+	    WidgetFactory.addNewWidget(widget);
+	    return true;
+	  } else {
+	    return false;
+	  }
+	}
+    
 }
