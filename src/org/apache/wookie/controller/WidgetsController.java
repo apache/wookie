@@ -202,7 +202,7 @@ public class WidgetsController extends Controller{
 	    // Only save .wgt files and ignore any others in the POST
 	    //
 	    for (FileItem item: items){
-	      if (item.getName().endsWith(".wgt")){
+	      if (item.getName()!=null && item.getName().endsWith(".wgt")){
 	        File saveFile = new File(DEPLOY_FOLDER + "/" + item.getName());
 	        item.write(saveFile);
 	        requestContainedWgtFile = true;
