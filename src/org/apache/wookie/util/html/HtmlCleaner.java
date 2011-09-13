@@ -47,7 +47,12 @@ public class HtmlCleaner implements IHtmlProcessor{
 		cleaner = new  org.htmlcleaner.HtmlCleaner();
 		// set cleaner properties	
 		properties  = cleaner.getProperties();
-		properties.setOmitDoctypeDeclaration(true);
+		//
+		// The following setting has been removed as it can cause issues with IE going
+		// into "quirks mode" - see WOOKIE-236
+		//
+		// properties.setOmitDoctypeDeclaration(true);
+		//
 		properties.setOmitXmlDeclaration(true);
 		properties.setUseCdataForScriptAndStyle(true);
 		properties.setUseEmptyElementTags(false);	
