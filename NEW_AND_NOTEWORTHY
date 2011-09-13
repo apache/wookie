@@ -1,0 +1,46 @@
+NEW AND NOTEWORTHY: 0.9.1
+=========================
+
+Fully conforms to the W3C Widget Packaging and Configuration specification
+==========================================================================
+Wookie now has 100% conformance to the W3C Widgets Packaging and Configuration Specification, passing all implementation tests (see http://dev.w3.org/2006/waf/widgets/imp-report/). This means there is very good interoperability between Wookie and other W3C Widget platforms such as Opera. 
+
+Improved conformance to W3C Widget Interface specification including localization support
+=========================================================================================
+Wookie 0.9.1 has improved support for the W3C Widget Interface, and now passes 97% of conformance tests. For more information, see http://dev.w3.org/2006/waf/widgets-api/imp-report/
+
+Support for W3C WARP specification
+=====================================
+Widgets can now use the WARP <access> element in config.xml and Wookie will use this to generate widget-specific access policies for external web services.
+
+Improved and Simplified Feature Extensions
+==========================================
+From 0.9.1, there is a much simpler way for developers to add <feature> extensions Wookie that inject scripts and stylesheets into Widgets that require them. Simply create a directory that contains a feature.xml file that contains the URI of the feature, and links to the scripts and CSS to inject. Add the directory to Wookie's /features directory, and Wookie will install the feature on startup and make it available to widgets via the W3C <feature> element in config.xml. 
+
+For detailed documentation see http://incubator.apache.org/wookie/docs/developer/features.html.
+
+Exporting Widget Instances as new Widget Packages
+=================================================
+Wookie now has a feature called "flatpack" which enables any Widget Instance to be exported as a W3C .wgt package for use on other systems. For example, a Widget Instance created for a user in a portal can be exported as a .wgt to be side-loaded onto their mobile device if it supports W3C Widgets natively (e.g. Blackberry, Samsung Bada, or an Android phone running the Opera WAC Runtime). The exported .wgt package includes all the user's preference settings, and any <feature> scripts and stylesheets that are marked as exportable.
+
+For more information see the "Flatpack" section of the API reference documentation: http://incubator.apache.org/wookie/docs/api.html
+
+Sandbox
+=======
+Widgets and Features are now split into "extra" and "sandbox"; experimental features and widget are found in the "sandbox" folder of the Wookie installation. To install these in your deployment, see http://incubator.apache.org/wookie/docs/developer/widgets.html
+
+Comprehensive REST API including support for admin functions such as uploading new widgets
+==========================================================================================
+The REST API provided by Wookie now includes access to all functionality, including managing the whitelist, adding new widgets, and managing client API keys. For more information see http://incubator.apache.org/wookie/docs/api.html
+
+Updated Apache Shindig Support
+==============================
+Wookie now comes with integration support for Shindig 2.0.
+
+JCR support now optional module
+===============================
+From 0.9.1 Wookie supports JPA by default; JCR now needs to be built as an optional module. This significantly reduces the number of dependencies for a default installation.
+
+Virtual Hosts
+=============
+You can now install Wookie on a virtual host or behind a proxy by setting the scheme, hostname and port properties for the server in widgetserver.properties. For more information see "Running Wookie in a virtual host configuration" at http://incubator.apache.org/wookie/docs/developer/running.html
