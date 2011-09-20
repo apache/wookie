@@ -42,8 +42,8 @@ Jason Hunter & Brett McLaughlin. (http://www.jdom.org/).
 This product includes software (Jetty) developed by
 Mort Bay Consulting Pty. Ltd.  (http://jetty.codehaus.org/jetty/).
 
-This product includes software (JQuery) developed by
-the JQUery Project, a member of the Software Freedom Conservancy.  (http://www.jquery.org/).
+This product includes software (JQuery, JQuery Mobile) developed by
+the JQuery Project, a member of the Software Freedom Conservancy.  (http://www.jquery.org/).
 
 This product includes software (JSON) developed by
 JSON.org.  (http://json.org).
@@ -65,3 +65,6 @@ Stan Wiechers. (http://code.google.com/p/geo-location-javascript/).
 
 This produce includes software (S5) developed by
 Eric Meyer (http://meyerweb.com/eric/tools/s5/)
+
+This product includes software (YUI Library) developed by
+Yahoo! Inc (http://yuilibrary.com/)

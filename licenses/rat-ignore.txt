@@ -56,6 +56,9 @@ features/camera/shared/camcanvas.html
 features/camera/shared/jquery.js
 features/camera/shared/thickbox.css
 features/camera/shared/thickbox.js
+features/jqmobile/shared/jquery-1.6.1.min.js
+features/jqmobile/shared/jquery.mobile-1.0b1.min.css
+features/jqmobile/shared/jquery.mobile-1.0b1.min.js
 src/org/apache/wookie/util/UrlEncodedQueryString.java
 tutorials/geoLocation/scripts/geo.js
 tutorials/geoLocation/scripts/geo_position_js_simulator.js
@@ -71,4 +74,5 @@ widgets/todo/json2.js
 widgets/geo/scripts/json2.js
 widgets/natter/jquery.js
 widgets/wookiewiki/creole.js
+scratchpad/widgets/accessibility_controls/scripts/yui-min.js
 
