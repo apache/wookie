@@ -25,7 +25,8 @@ widgets/localetest/index.htm
 widgets/localetest/locales/
 widgets/camera/icon.svg
 widgets/geo/icon.svg
-widgets/widget-template/s5/lib/s5/**
+widgets/widget-template/s5/lib/s5/ui/default/**
+widgets/widget-template/s5/legal/s5_license.txt
 
 # anything below is under a different license header
 # needs checking if relevant licenses are included
