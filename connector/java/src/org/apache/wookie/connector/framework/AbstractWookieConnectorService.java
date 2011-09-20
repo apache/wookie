@@ -324,8 +324,8 @@ public abstract class AbstractWookieConnectorService implements
 	        Element participantEl = (Element) participantsList.item(idx);
 	        String id = participantEl.getAttribute("id");
 	        String name = participantEl.getAttribute("display_name");
-	        //FIXME implement: String thumbnail = participantEl.getAttribute("thumbnail_url");
-	        User user = new User(id,name);
+	        String thumbnail = participantEl.getAttribute("thumbnail_url");
+	        User user = new User(id,name, thumbnail);
 	        users[idx] = user;
 	      }
 	      return users;

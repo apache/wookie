@@ -20,6 +20,7 @@ package org.apache.wookie.connector.framework;
 public class User {
   private String loginName = "UNKNOWN";
   private String screenName = "UNKNOWN";
+  private String thumbnailUrl = "";
   
   /**
    * Create a new user.
@@ -30,6 +31,18 @@ public class User {
   public User(String loginName, String screenName) {
     setLoginName(loginName);
     setScreenName(screenName);
+  }
+  
+  /**
+   * Create a new user.
+   * 
+   * @param loginName
+   * @param screenName
+   */
+  public User(String loginName, String screenName, String thumbnailUrl) {
+    setLoginName(loginName);
+    setScreenName(screenName);
+    setThumbnailUrl(thumbnailUrl);
   }
 
   /**
@@ -66,13 +79,26 @@ public class User {
   public void setScreenName(String screenName) {
     this.screenName = screenName;
   }
+  
+  /**
+   * Set the thumbnail URL for this user. This is the src value for an image used to represent the user
+   * @param thumbnailUrl
+   * 
+   * TODO validate the URL
+   */
+  public void setThumbnailUrl(String thumbnailUrl){
+    //
+    // Never set to null, only to an empty string
+    //
+    if (thumbnailUrl == null) thumbnailUrl = "";
+    this.thumbnailUrl = thumbnailUrl;
+  }
 
   /**
    * Get the URL for a thumbnail representing this user.
    * @return
    */
   public String getThumbnailUrl() {
-    // FIXME: manage user thumbnails
-    return "http://fixme.org/thumbnail";
+    return this.thumbnailUrl;
   } 
 }

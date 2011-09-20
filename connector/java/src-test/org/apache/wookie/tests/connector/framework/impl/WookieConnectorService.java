@@ -72,4 +72,16 @@ public class WookieConnectorService {
     assertTrue("Wrong user returned", users[0].getLoginName().equals("testuser"));
     assertTrue("Wrong user returned", users[1].getLoginName().equals("test1"));
   }
+  
+  @Test
+  public void addParticipantWithThumbnailUrl() throws WookieConnectorException, IOException{
+    HashMap<String, Widget> widgets = service.getAvailableWidgets();
+    WidgetInstance instance = service.getOrCreateInstance((Widget)widgets.values().toArray()[0]);
+    assertNotNull("Retrieved widget instance is null", instance);    
+    User user = new User("thumbnailtestuser","thumbnail test user","http://bar.com/icon.png");
+    service.addParticipant(instance, user);
+    User[] users = service.getUsers(instance);
+    user = users[users.length-1];
+    assertTrue("Incorrect thumbnail", user.getThumbnailUrl().equals("http://bar.com/icon.png"));
+  }
 }

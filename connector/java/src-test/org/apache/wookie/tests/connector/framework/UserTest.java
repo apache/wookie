@@ -59,4 +59,16 @@ public class UserTest {
     assertEquals("Login name not correctly set", SCREEN_NAME, user.getScreenName());
   }
   
+  @Test
+  public void testSetThumbnailUrl(){
+    user.setThumbnailUrl(null);
+    assertEquals("Thumbnail URL not correctly set", "", user.getThumbnailUrl());
+    
+    user.setThumbnailUrl("http://foo.com/test.jpg");
+    assertEquals("Thumbnail URL not correctly set", "http://foo.com/test.jpg", user.getThumbnailUrl());
+    
+    user.setThumbnailUrl(null);
+    assertEquals("Thumbnail URL not correctly set", "", user.getThumbnailUrl());
+  }
+  
 }
