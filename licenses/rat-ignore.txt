@@ -41,7 +41,7 @@ widgets/geo/icon.svg
 WebContent/shared/js/jquery/**
 widgets/widget-template/s5/lib/s5/ui/default/**
 widgets/widget-template/s5/legal/s5_licence.txt
-tutorials/tutorial_installation/lib/s5/ui/default/**
+tutorials/tutorial_Installation/lib/s5/ui/default/**
 util/UrlEncodedQueryString.java
 connector/flash_flex/com/google/code/flexiframe/IFrame.as
 connector/flash_flex/com/google/code/flexiframe/IFrameExternalCalls.as
