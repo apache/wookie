@@ -15,7 +15,7 @@
   limitations under the License.
 -->
 <ivy-module version="2.0">
-    <info organisation="org.apache.incubator" module="wookie" revision="0.9.1-SNAPSHOT"/>
+    <info organisation="org.apache.wookie" module="wookie" revision="0.9.1-SNAPSHOT"/>
     
     <configurations>
       <conf name="deploy" description="Provide the necessary files and libraries to deploy in a production environment"/>
@@ -24,11 +24,11 @@
 	  <conf name="test" extends="dev" visibility="private" description="for our testing frameowrk"/>
 	  <conf name="ddlutils" visibility="private" description="Provide the necessary libraries to invoke DDLUtils schema generation"/>
 	</configurations>
-    
+	    
     <dependencies>
-        <dependency org="org.apache.incubator" name="wookie-connector" rev="latest.integration" conf="deploy->default">
+        <dependency org="org.apache.wookie" name="wookie-java-connector" rev="latest.integration" conf="deploy->default">
         </dependency>
-        <dependency org="org.apache.incubator" name="wookie-parser" rev="latest.integration" conf="deploy->default">
+        <dependency org="org.apache.wookie" name="wookie-parser" rev="latest.integration" conf="deploy->default">
         </dependency>
         
         <!--  Uncomment to include JCR persistence manager -->

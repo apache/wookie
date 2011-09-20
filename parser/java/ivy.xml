@@ -14,14 +14,27 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<ivy-module version="2.0">
-    <info organisation="org.apache.incubator" module="wookie-parser" revision="0.9.1-SNAPSHOT"/>
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+    <info organisation="org.apache.wookie" module="wookie-parser" revision="0.9.1-incubating-SNAPSHOT"/>
     
     <configurations>
       <conf name="deploy" description="Provide the necessary files and libraries to deploy in a production environment"/>
 	  <conf name="dev" extends="deploy" description="Provide the necessary files and libraries to run in standalone (development) mode"/>
 	  <conf name="test" extends="dev" visibility="private" description="for our testing frameowrk"/>
 	</configurations>
+	
+	<publications>      
+	  <!-- 
+	  Need to figure out why the publish task in ivy-java-common.xml does not pick up the source & javadoc jars
+	  Commented out for now as they appear to be copied over without the classifier added in which may
+	  cause the original compiled wookie-parser.jar to be overwritten
+	  	 
+      <artifact name="wookie-parser" type="sources" ext="jar" m:classifier="sources"/>
+      <artifact name="wookie-parser" type="javadoc" ext="jar" m:classifier="javadoc"/>
+       -->
+      <artifact name="wookie-parser" type="pom" ext="pom"/>
+      <artifact name="wookie-parser" type="jar"/>
+	</publications>
     
     <dependencies>
         <dependency org="com.ibm.icu" name="icu4j" rev="4_6_0" conf="deploy->default">

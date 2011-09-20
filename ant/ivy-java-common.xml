@@ -15,7 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns:ivy="antlib:org.apache.ivy.ant">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:m="http://ant.apache.org/ivy/maven">
 
     <import file="ivy-common.xml"/>
 	
@@ -145,9 +145,68 @@
     
     <target name="jar" depends="clean-dist, compile-core" description="--> make a jar file for this project">
     	<mkdir dir="${dist.dir}"/>
-        <jar destfile="${dist.dir}/${ant.project.name}-${version}.jar">
-            <fileset dir="${project.build.classes.dir}"/>
+    	<!-- Create compiled jar -->
+        <jar destfile="${dist.dir}/${ant.project.name}.jar">
+            <fileset dir="${project.build.classes.dir}">
+            	<exclude name="**/*.java"/>
+        	</fileset>
+        	<metainf dir="../../">
+        		<include name="LICENSE"/>
+        		<include name="NOTICE"/>
+        	</metainf>
+        	<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+				<attribute name="Implementation-Title" value="${ant.project.name}"/>
+				<attribute name="Implementation-Version" value="${version}"/>
+			</manifest>
         </jar>
+    	
+    	<!-- Create source JAR -->
+    	<jar destfile="${dist.dir}/${ant.project.name}-sources.jar">
+    		<fileset dir="${project.core.src.dir}">
+    			<include name="**/*"/>
+    		</fileset>
+			<metainf dir="../../">
+				<include name="LICENSE"/>
+				<include name="NOTICE"/>  
+			</metainf>    
+        	<manifest>				
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+				<attribute name="Implementation-Title" value="${ant.project.name}"/>
+				<attribute name="Implementation-Version" value="${version}"/>
+			</manifest>   		
+    	</jar>
+
+    	<!-- Create javadoc JAR -->    	
+    	<mkdir dir="${dist.dir}/javadoc/"/>
+    	<javadoc packagenames="*"
+			sourcepath="${project.core.src.dir}"
+			destdir="${dist.dir}/javadoc"
+			author="true"
+			version="true"
+			classpathref="project.core.class.path"
+			use="true"
+			windowtitle="${ant.project.name}-${version}"
+			doctitle="&lt;h1&gt;${ant.project.name}-${version}&lt;/h1&gt;">
+    		<bottom><![CDATA[<i>2011 Apache Software Foundation.</i>]]></bottom>
+    	</javadoc>
+    	<jar destfile="${dist.dir}/${ant.project.name}-javadoc.jar">
+    		<fileset dir="${dist.dir}/javadoc"/>
+			<metainf dir="../../">
+				<include name="LICENSE"/>
+				<include name="NOTICE"/>  
+			</metainf>    
+        	<manifest>				
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+				<attribute name="Implementation-Title" value="${ant.project.name}"/>
+				<attribute name="Implementation-Version" value="${version}"/>
+			</manifest>   		
+    	</jar>
+    	<!--remove folder-->
+    	<delete dir="${dist.dir}/javadoc" />
     </target>
 	
     <target name="publish" depends="clean-build, jar" description="--> publish this project in the ivy repository">
@@ -158,6 +217,38 @@
     	/>
         <echo message="project ${ant.project.name} released with version ${revision}" />
     </target>
+	
+	<!--
+	Note to run this task, you must first add your credentials on the command line 
+	
+	i.e.
+	
+	 -Dupload.user=mysuername -Dupload.password=mypassword
+	 
+	-->
+    <target name="publish-snapshots" depends="clean-dist, jar" description="--> publishes this project in the apache snapshot repository. Dont run this from the root, see instead 'snapshot-repo-publish-subprojects'">
+    	<echo>Locally publishing ${ant.project.name}-${version}</echo>
+    	<fail unless="upload.user" message="supply upload.user on the command line"/>
+    	<fail unless="upload.password" message="supply upload.password on the command line"/>
+    	<delete file="${dist.dir}/ivy.xml"/> <!-- delete last produced ivy file to be sure a new one will be generated -->
+    	<tstamp>
+    		<format property="now" pattern="yyyyMMddHHmmss"/>
+    	</tstamp>    	 
+    	<ivy:makepom ivyfile="${basedir}/ivy.xml"
+    	    		templatefile="${basedir}/pom-template.xml"
+    	    		pomfile="${dist.dir}/${ant.project.name}.pom"/>
+	
+    	<ivy:publish resolver="apache-snapshot"
+    	    		pubrevision="${version}"
+    	    		forcedeliver="true"
+    	    		publishivy="false"
+    	    		srcivypattern="${dist.dir}/ivy.xml"    	    		
+    				pubdate="${now}"
+    	    		overwrite="true">    	    		
+    				<artifacts pattern="${dist.dir}/[artifact](-[classifier]).[ext]"/>    	    		    		
+    	    	</ivy:publish>
+    	<echo message="project ${ant.project.name} published to nexus snapshot repo with version ${version}" />    	
+    </target>	
 
     <target name="publish-local" depends="clean-dist, jar" description="--> publish this project in the local ivy repository">
     	<echo>Locally publishing ${ant.project.name}-${version}</echo>
@@ -165,15 +256,18 @@
     	<tstamp>
 			<format property="now" pattern="yyyyMMddHHmmss"/>
 		</tstamp>
-    	<ivy:makepom ivyfile="${basedir}/ivy.xml" pomfile="${dist.dir}/${ant.project.name}.pom"/>
+    	<ivy:makepom ivyfile="${basedir}/ivy.xml"
+    		templatefile="${basedir}/pom-template.xml"
+    		pomfile="${dist.dir}/${ant.project.name}.pom"/>
     	<ivy:publish resolver="local"
     		pubrevision="${version}"
     		forcedeliver="true"
+    		publishivy="false"
     		srcivypattern="${dist.dir}/ivy.xml"
 			pubdate="${now}"
     		overwrite="true">
-    		<artifact name="${ant.project.name}" type="pom" ext="pom"/>
-    		<artifacts pattern="${dist.dir}/${ant.project.name}-${version}.jar"/>
+    		<!--<artifacts pattern="${dist.dir}/[artifact].[ext]"/>-->
+    		<artifacts pattern="${dist.dir}/[artifact](-[classifier]).[ext]"/>
     	</ivy:publish>
         <echo message="project ${ant.project.name} published locally with version ${version}" />
     </target>

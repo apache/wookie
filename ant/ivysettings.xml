@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   Licensed to the Apache Software Foundation (ASF) under one or more
   contributor license agreements.  See the NOTICE file distributed with
@@ -15,21 +16,31 @@
   limitations under the License.
 -->
 <ivysettings>
+  <property name="apache.repo.snapshot.url" value="https://repository.apache.org/content/repositories/snapshots/" override="false" />
+  <credentials host="repository.apache.org" realm="Sonatype Nexus Repository Manager" username="${upload.user}" passwd="${upload.password}"/>
+  <property name="maven2.pattern" value="[organisation]/[module]/[revision]/[module]-[revision]" />
+  <property name="maven2.pattern.ext" value="${maven2.pattern}.[ext]" />
   <settings defaultResolver="wookie-chain" />
   <caches>
   	<cache useOrigin="true" name="null"/>
   </caches>
   <resolvers>
-      <filesystem name="local" m2compatible="true" local="true" cache="null">
-          <artifact pattern="${user.home}/.m2/repository/[organisation]/[module]/[revision]/[module]-[revision].[ext]" />
-      </filesystem>
-    <chain name="wookie-chain">
-      <resolver ref="local"></resolver>
-      <filesystem name="wookie-local">
-        <artifact pattern="${basedir}/${ivy.repository.dir}/lib/[artifact]-[revision].[type]" />
-      </filesystem>
-      <ibiblio name="public" m2compatible="true"/>
-    </chain>
+	  <filesystem name="local" m2compatible="true" local="true" cache="null">
+		  <artifact pattern="${user.home}/.m2/repository/${maven2.pattern.ext}" />
+	  </filesystem>
+	  <chain name="wookie-chain">
+		<resolver ref="local"></resolver>
+		<filesystem name="wookie-local">
+			<artifact pattern="${basedir}/${ivy.repository.dir}/lib/[artifact]-[revision].[type]" />
+		</filesystem>
+		<ibiblio name="public" m2compatible="true" />
+		<!-- According to the ivy docs only a url resolver can publish, however the ibiblio resolver (below) appears to work.
+		<url name="apache-snapshot" m2compatible="true">
+			<artifact pattern="${apache.repo.snapshot.url}/${maven2.pattern.ext}"/>
+		</url>
+		-->
+		<ibiblio name="apache-snapshot" root="${apache.repo.snapshot.url}" pattern="${maven2.pattern.ext}" m2compatible="true" />
+	  </chain>
   </resolvers>
 </ivysettings>
 

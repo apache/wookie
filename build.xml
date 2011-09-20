@@ -235,6 +235,12 @@
   	<ant dir="${wookie.connector.dir}/java" target="publish-local" inheritAll="false"/>
   	<ant dir="${wookie.parser.w3c.dir}/java" target="publish-local" inheritAll="false"/>
   </target>
+	
+  <target name="snapshot-repo-publish-subprojects" description="Publishes all sub projects (i.e. java connector and parser projects) to the apache snapshot repository">
+	<!-- publish snapshot sub-projects -->
+	<ant dir="${wookie.connector.dir}/java" target="publish-snapshots" inheritAll="false"/>
+	<ant dir="${wookie.parser.w3c.dir}/java" target="publish-snapshots" inheritAll="false"/>
+  </target>	
   	
   <target name="pre-compile-core">
     <!-- build supported database schema scripts -->

@@ -15,7 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project default="compile-core" basedir="." name="wookie-connector">
+<project default="compile-core" basedir="." name="wookie-java-connector">
 	<description>
       Ivy based build system for Apache Wookie Java Connector.
     </description>
@@ -24,7 +24,7 @@
 	<property file="build.properties" />
 
 	<import file="../../ant/ivy-java-common.xml" />
-
+		
 	<target name="pre-compile-core" description="Run before compile-core. intended to be overridden if your project needs any post compile processing"/>
-	
+		
 </project>
