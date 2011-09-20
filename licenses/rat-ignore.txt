@@ -25,10 +25,12 @@ widgets/localetest/index.htm
 widgets/localetest/locales/
 widgets/camera/icon.svg
 widgets/geo/icon.svg
+widgets/widget-template/s5/lib/s5/
 
 # anything below is under a different license header
 # needs checking if relevant licenses are included
 # at top level
+
 
 connector/flash_flex/com/google/code/flexiframe/IFrame.as
 connector/flash_flex/com/google/code/flexiframe/IFrameExternalCalls.as
