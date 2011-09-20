@@ -23,7 +23,7 @@ import org.apache.wookie.connector.framework.User;
 import org.apache.wookie.connector.framework.WookieConnectorException;
 /**
  * A Wookie connector for testing purposes. It will first try to connect to
- * http;//localhost:8888/wookie and run tests against that server. If no instance
+ * http;//localhost:8080/wookie and run tests against that server. If no instance
  * is running locally it will connect to http://bombax.oucs.ox.ac.uk:8888 a test
  * server hosted at the University of Oxford.
  * 
@@ -66,8 +66,8 @@ public class TestWookieConnectorService extends AbstractWookieConnectorService {
   public static TestWookieConnectorService getInstance() throws WookieConnectorException, MalformedURLException, IOException {
     if (instance == null) {
       try {
-        new URL("http://localhost:8888/wookie").openStream();
-        instance = new TestWookieConnectorService("http://localhost:8888/wookie", "TEST", "myshareddata");
+        new URL("http://localhost:8080/wookie").openStream();
+        instance = new TestWookieConnectorService("http://localhost:8080/wookie", "TEST", "myshareddata");
       } catch (ConnectException e) {
         // assume localhost is not running so run against bombax
         instance = new TestWookieConnectorService("http://bombax.oucs.ox.ac.uk:8888/wookie", "TEST", "myshareddata");
