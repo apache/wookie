@@ -90,6 +90,7 @@
 			DISCLAIMER,
 			ivy.xml,			
 			LICENSE,
+			NEW_AND_NOTEWORTHY,
 			NOTICE,
 			README,
 			RELEASE_NOTES"   
@@ -130,6 +131,7 @@
 		<copy file="DISCLAIMER" tofile="${build.dir}/webapp/wookie/DISCLAIMER" overwrite="yes" />		
 		<copy file="LICENSE" tofile="${build.dir}/webapp/wookie/LICENSE" overwrite="yes" />		
 		<copy file="NOTICE" tofile="${build.dir}/webapp/wookie/NOTICE" overwrite="yes" />
+		<copy file="NEW_AND_NOTEWORTHY" tofile="${build.dir}/webapp/wookie/NEW_AND_NOTEWORTHY" overwrite="yes" />
 		<copy file="etc/release/RUNTIME_LICENSE" tofile="${build.dir}/webapp/wookie/RUNTIME_LICENSE" overwrite="yes" />
 
 		<!-- build war file -->
@@ -171,6 +173,7 @@
 		<copy file="README" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/README" overwrite="yes" />
 		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/RELEASE_NOTES" overwrite="yes" />
 		<copy file="NOTICE" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/NOTICE" overwrite="yes" />
+		<copy file="NEW_AND_NOTEWORTHY" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/NEW_AND_NOTEWORTHY" overwrite="yes" />
 		<!-- copy WAR readme-->
 		<copy file="etc/release/war/WAR_BUILD_NOTES"
 			tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/WAR_BUILD_NOTES"
@@ -227,6 +230,7 @@
 		<copy file="README" tofile="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/README" overwrite="yes" />
 		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/RELEASE_NOTES" overwrite="yes" />
 		<copy file="NOTICE" tofile="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/NOTICE" overwrite="yes" />
+		<copy file="NEW_AND_NOTEWORTHY" tofile="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/NEW_AND_NOTEWORTHY" overwrite="yes" />
 		<copy file="etc/release/RUNTIME_LICENSE" tofile="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/RUNTIME_LICENSE" overwrite="yes" />		
 
 		<ivy:retrieve conf="runtime"
