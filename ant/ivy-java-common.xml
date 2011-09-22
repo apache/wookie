@@ -143,7 +143,7 @@
 	    </java>    	    	
 	</target>	
     
-    <target name="jar" depends="clean-dist, compile-core" description="--> make a jar file for this project">
+    <target name="jar" depends="test-calling-project, clean-dist, compile-core" unless="not-subproject" description="--> make a jar file for this project">
     	<mkdir dir="${dist.dir}"/>
     	<!-- Create compiled jar -->
         <jar destfile="${dist.dir}/${ant.project.name}.jar">
@@ -248,9 +248,15 @@
     				<artifacts pattern="${dist.dir}/[artifact](-[classifier]).[ext]"/>    	    		    		
     	    	</ivy:publish>
     	<echo message="project ${ant.project.name} published to nexus snapshot repo with version ${version}" />    	
-    </target>	
+    </target>
 
-    <target name="publish-local" depends="clean-dist, jar" description="--> publish this project in the local ivy repository">
+    <target name="test-calling-project">
+    	<condition property="not-subproject">
+    		<equals arg1="${ant.project.name}" arg2="wookie"/>
+    	</condition>
+    </target>
+
+    <target name="publish-local" depends="test-calling-project, clean-dist, jar" unless="not-subproject" description="--> publish this project in the local ivy repository">
     	<echo>Locally publishing ${ant.project.name}-${version}</echo>
 		<delete file="${dist.dir}/ivy.xml"/> <!-- delete last produced ivy file to be sure a new one will be generated -->
     	<tstamp>
