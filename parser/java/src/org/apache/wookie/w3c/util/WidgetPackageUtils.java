@@ -47,7 +47,7 @@ public class WidgetPackageUtils {
 	 * @param path
 	 * @param locales the supported locales, in list of preference
 	 * @param zip
-	 * @return
+	 * @return the path to the file as a String
 	 * @throws Exception
 	 */
 	public static String locateFilePath(String path, String[] locales, ZipFile zip) throws Exception{
@@ -62,7 +62,7 @@ public class WidgetPackageUtils {
 	 * @param path
 	 * @param locales
 	 * @param zip
-	 * @return
+	 * @return an array of paths for the resource
 	 * @throws Exception
 	 */
 	public static String[] locateFilePaths(String path, String[] locales, ZipFile zip) throws Exception{
@@ -89,7 +89,7 @@ public class WidgetPackageUtils {
 	/**
 	 * Return the language tag for a given path
 	 * @param path
-	 * @return
+	 * @return the language tag for the path
 	 */
 	public static String languageTagForPath(String path){
 		if (path == null) return null;
@@ -107,7 +107,7 @@ public class WidgetPackageUtils {
 	 * @param zip
 	 * @param locales
 	 * @param defaults
-	 * @return
+	 * @return an array of file paths as Strings
 	 */
 	public static String[] getDefaults(ZipFile zip, String[] locales, String[] defaults){
 		ArrayList<String> content = new ArrayList<String>();
@@ -143,7 +143,7 @@ public class WidgetPackageUtils {
 	 * @param widgetFolder the folder that contains unpacked widgets
 	 * @param id the widget identifier URI
 	 * @param file a file in the widget package; use "" to obtain the root of the widget folder
-	 * @return
+	 * @return the URL for the widget as a String
 	 */
 	public static String getURLForWidget(String widgetFolder, String id, String file){
 		String folder = convertIdToFolderName(id);

@@ -67,7 +67,7 @@ public class ContentTypeUtils {
 
 	/**
 	 * Sniffs the content type for images and other common types
-	 * @param the file to sniff
+	 * @param file the file to sniff
 	 * @return the content type of the file if it matches a known signature, otherwise Null
 	 * @throws IOException 
 	 */

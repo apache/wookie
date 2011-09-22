@@ -110,7 +110,7 @@ public class LocalizationUtils {
 	/**
 	 * Sorts an array of localized elements using default locales (*). This places
 	 * any localized elements first, then any unlocalized elements
-	 * @return
+	 * @return the sorted list of elements
 	 */
 	public static ILocalizedElement[] processElementsByDefaultLocales(ILocalizedElement[] elements){
 		if (elements == null) return null;
@@ -185,7 +185,7 @@ public class LocalizationUtils {
 	 * rules. For example "en-us-posix" will be returned as a List
 	 * containing the ULocales for "en-us-posix", "en-us", and "en".
 	 * @param locales
-	 * @return
+	 * @return the sorted list of ULocale instances
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<ULocale> getProcessedLocaleList(String[] locales){
@@ -214,7 +214,7 @@ public class LocalizationUtils {
 	
 	/**
 	 * Gets the default locales list
-	 * @return
+	 * @return a list of ULocale instances for the default locale
 	 */
 	@SuppressWarnings("unchecked")
 	protected static List<ULocale> getDefaultLocaleList(){

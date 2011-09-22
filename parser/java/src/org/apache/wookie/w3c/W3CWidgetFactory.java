@@ -174,7 +174,7 @@ public class W3CWidgetFactory {
 	 * Parse a widget at a given URL and return a W3CWidget object representing the processed information in the package.
 	 * The widget will be saved in the outputFolder.
 	 * @param url
-	 * @return
+	 * @return the widget model
 	 * @throws BadWidgetZipFileException if there is a problem with the zip package
 	 * @throws BadManifestException if there is a problem with the config.xml manifest file in the package
 	 * @throws InvalidContentTypeException if the widget has an invalid content type
@@ -190,7 +190,7 @@ public class W3CWidgetFactory {
 	 * The widget will be saved in the outputFolder.
 	 * @param url
 	 * @param ignoreContentType set to true to instruct the parser to ignore invalid content type exceptions
-	 * @return
+	 * @return the widget model
 	 * @throws BadWidgetZipFileException if there is a problem with the zip package
 	 * @throws BadManifestException if there is a problem with the config.xml manifest file in the package
 	 * @throws InvalidContentTypeException if the widget has an invalid content type
@@ -207,7 +207,7 @@ public class W3CWidgetFactory {
 	 * @param url
 	 * @param ignoreContentType set to true to instruct the parser to ignore invalid content type exceptions
 	 * @param defaultIdentifier an identifier to use if the downloaded widget has no identifier - for example when updating a widget
-	 * @return
+	 * @return the widget model
 	 * @throws BadWidgetZipFileException if there is a problem with the zip package
 	 * @throws BadManifestException if there is a problem with the config.xml manifest file in the package
 	 * @throws InvalidContentTypeException if the widget has an invalid content type

@@ -45,7 +45,7 @@ public abstract class AbstractLocalizedEntity implements ILocalizedEntity {
 	
 	/**
 	 * Set the language tag for the object
-	 * @param language the language tag to set; this should be a valid BCP-47 language tag
+	 * @param lang the language tag to set; this should be a valid BCP-47 language tag
 	 */
 	public void setLang(String lang) {
 		this.lang = lang;

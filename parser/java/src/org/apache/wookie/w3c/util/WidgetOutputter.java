@@ -64,7 +64,7 @@ public class WidgetOutputter {
 	/**
 	 * Output config.xml as a String
 	 * @param widget
-	 * @return
+	 * @return the config.xml as a String
 	 */
 	public String outputXMLString(W3CWidget widget){
 		Document doc = createWidgetDocument(widget);
