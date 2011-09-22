@@ -153,8 +153,6 @@ public class FlashMessage {
      * Utility to clear flash messages when displayed.
      * 
      * @param session current request session
-     * @param request current request
-     * @return merged messages
      */
 	public static void clearErrorsAndMessages(HttpSession session) {
         session.setAttribute("error_value", null);

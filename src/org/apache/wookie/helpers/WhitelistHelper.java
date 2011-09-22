@@ -21,8 +21,8 @@ public class WhitelistHelper {
 
 	/**
 	 * Creates an XML return document 
-	 * @param accessRequests
-	 * @return
+	 * @param entries the set of whitelist entries to represent
+	 * @return an XML representation of the set of whitelist entries as a String
 	 */
 	public static String createXMLDocument(IWhitelist[] entries){
 		String document = XMLDECLARATION;

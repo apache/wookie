@@ -27,12 +27,10 @@ public class WidgetInstanceHelper {
 
 	/**
 	 * Generate a Widget Instance representation doc in XML for a single instance of the given widget
-	 * @param widget the widget instantiated
-	 * @param token the opensocial token of the instance
-	 * @param key the id key of the instance
-	 * @param urlWidget the local URL of the widget instance
-	 * @param urlWidgetProxyServer the local URL of the proxy service
-	 * @return
+	 * @param instance the widget instance
+	 * @param url the URL of the widget instance
+	 * @param locale the locale of the widget instance
+	 * @return an XML representation of the Widget Instance as a String
 	 */
 	public static String createXMLWidgetInstanceDocument(IWidgetInstance instance, String url, String locale){
 		String xml = XMLDECLARATION;

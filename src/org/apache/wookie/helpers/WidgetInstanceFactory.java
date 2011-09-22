@@ -50,7 +50,7 @@ public class WidgetInstanceFactory{
 	 * Return a handle on a Widget Factory localized for the session
 	 * @param session
 	 * @param localizedMessages
-	 * @return
+	 * @return the WidgetInstanceFactory
 	 */
 	public static WidgetInstanceFactory getWidgetFactory(HttpSession session, Messages localizedMessages){
 		WidgetInstanceFactory factory = (WidgetInstanceFactory)session.getAttribute(WidgetInstanceFactory.class.getName());				
@@ -65,7 +65,7 @@ public class WidgetInstanceFactory{
 	
 	/**
 	 * Return the "default widget" instance
-	 * @return
+	 * @return an IWidgetInstance for the default widget, typically the "unsupported widget widget"
 	 */
 	public static IWidgetInstance defaultInstance(String locale){
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
@@ -79,14 +79,12 @@ public class WidgetInstanceFactory{
 	
 	/**
 	 * Create a new widget instance with the given parameters
-	 * @param session
 	 * @param apiKey
 	 * @param userId
 	 * @param sharedDataKey
 	 * @param serviceType
 	 * @param widgetId
-	 * @param localizedMessages
-	 * @return
+	 * @return a new WidgetInstance, or null if the instance cannot be created
 	 */
 	public IWidgetInstance newInstance(String apiKey, String userId, String sharedDataKey, String serviceType, String widgetId, String lang){
 		try {

@@ -26,7 +26,7 @@ public class WidgetServiceHelper {
 	 * Generate a Widget Service representation doc in XML for a single service
 	 * @param service
 	 * @param localIconPath
-	 * @return
+	 * @return an XML representation of the service as a String
 	 */
 	public static String createXMLWidgetServiceDocument(IWidgetService service, String localIconPath, String[] locales){
 		return XMLDECLARATION + WidgetServiceHelper.toXml(service, localIconPath, locales);
@@ -36,7 +36,7 @@ public class WidgetServiceHelper {
 	 * Generate a Widget Service representation doc in XML for an array of services
 	 * @param services
 	 * @param localIconPath
-	 * @return
+	 * @return an XML representation of the set of services as a String
 	 */
 	public static String createXMLWidgetServicesDocument(IWidgetService[] services, String localIconPath, boolean defaults, String[] locales){
 		String out = XMLDECLARATION;

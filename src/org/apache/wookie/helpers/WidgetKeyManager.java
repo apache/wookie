@@ -64,8 +64,9 @@ public class WidgetKeyManager{
 	/**
 	 * Registers a new API key and notifies the requestor via email of the key values.
 	 * 
-	 * @param key
-	 * @param domain
+	 * @param request the request to create a new API key
+	 * @param email the email address of the registering party
+	 * @param localizedMessages the set of localized messages
 	 * @throws EmailException if there is a problem sending the email notification about this key
 	 * @throws SystemUnavailableException if there is a problem generating the key
 	 */

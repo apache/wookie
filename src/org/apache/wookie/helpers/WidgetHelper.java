@@ -41,7 +41,7 @@ public class WidgetHelper {
 	 * Generate a Widgets representation doc in XML for a single widget
 	 * @param widget
 	 * @param localIconPath
-	 * @return
+	 * @return an XML representation of the widget as a String
 	 */
 	public static String createXMLWidgetsDocument(IWidget widget, String localIconPath, String[] locales){
 		IWidget[] widgets = {widget};
@@ -53,7 +53,7 @@ public class WidgetHelper {
 	 * 
 	 * @param widgets
 	 * @param localIconPath
-	 * @return
+	 * @return an XML representation of the set of widgets as a String
 	 */
 	public static String createXMLWidgetsDocument(IWidget[] widgets, String localIconPath, String[] locales){
 		String document = XMLDECLARATION;

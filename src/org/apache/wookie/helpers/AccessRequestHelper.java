@@ -25,7 +25,7 @@ public class AccessRequestHelper {
 	/**
 	 * Creates an XML return document 
 	 * @param accessRequests
-	 * @return
+	 * @return an XML representation of the set of access requests as a String
 	 */
 	public static String createXMLAccessRequestDocument(IAccessRequest[] accessRequests){
 		String document = XMLDECLARATION;
@@ -39,6 +39,11 @@ public class AccessRequestHelper {
 		return document;
 	}
 	
+	/**
+	 * Creates a JSON return document
+	 * @param accessRequests
+	 * @return a JSON representaiton of the accessRequests as a String
+	 */
 	public static String createJSON(IAccessRequest[] accessRequests){
 		String json = "{ \"policies\":[";
 		if (accessRequests != null){
@@ -56,7 +61,7 @@ public class AccessRequestHelper {
 	/**
 	 * Creates a HTML table with controls
 	 * @param accessRequests
-	 * @return
+	 * @return a HTML table representation of the accessRequests as a String
 	 */
 	public static String createAccessRequestHTMLTable(IAccessRequest[] accessRequests){		
 		String document = "<table width=\"500\" class=\"ui-widget ui-widget-content\" align=\"center\">\n";
