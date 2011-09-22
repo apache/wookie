@@ -14,7 +14,11 @@
 		the specific language governing permissions and limitations under the
 		License.
 	-->
-<project xmlns:ivy="antlib:org.apache.ivy.ant">
+<project 
+	xmlns:rat="antlib:org.apache.rat.anttasks"
+	xmlns:ivy="antlib:org.apache.ivy.ant"
+	xmlns="antlib:org.apache.tools.ant"
+	>
 
 	<import file="ivy-java-common.xml" />
 	<import file="ivy-webapp-common.xml" />
@@ -42,58 +46,17 @@
 		<echo>Building source release</echo>
 		<mkdir dir="${wookie.release.dir}/${version}-incubating/source" />
 		
+		<!-- run RAT report -->
+		<rat:report reportFile="${wookie.release.dir}/${version}-incubating/source/rat-report.txt">
+		        <fileset dir=".">
+		        	<includesFile name="./etc/release/src-build-include.txt" />
+                    <excludesfile name="./licenses/rat-ignore.txt"/> 
+	            </fileset>
+		</rat:report>
+		
 		<zip destfile="${wookie.release.dir}/${version}-incubating/source/${wookie.source.zip.name}.zip"
 		       basedir="."
-			includes=".settings/, 
-			ant/, 
-			connector/CSharp/, 
-			connector/flash_flex/,
-			connector/java/src/,
-			connector/java/src-test/,
-			connector/java/build.properties,
-			connector/java/build.xml,
-			connector/java/ivy.xml,
-			connector/java/README.txt,
-			connector/java/version.properties,
-			connector/php/,
-			connector/python/,
-			connector/ruby/,
-			connector/README.txt,
-			docs/,
-			etc/, 
-			features/, 
-			licenses/, 
-			modules/,
-			parser/java/src/,
-			parser/java/src-test/,
-			parser/java/ant/,
-			parser/java/build.properties,
-			parser/java/build.xml,
-			parser/java/ivy.xml,
-			parser/java/README.txt,
-			parser/java/test.wgt,
-			project_admin/, 
-			schemas/,
-			scratchpad/,
-			scripts/, 
-			shindig/,
-			src/,
-			src-tests/, 
-			tutorials/, 
-			WebContent/, 
-			widgets/,
-			.classpath,
-			.project,
-			build.properties,
-			build.xml,
-			BUILDING,
-			DISCLAIMER,
-			ivy.xml,			
-			LICENSE,
-			NEW_AND_NOTEWORTHY,
-			NOTICE,
-			README,
-			RELEASE_NOTES"   
+			includesFile="./etc/release/src-build-include.txt"   
 		  />
 		
 		<!-- tar -->
@@ -197,6 +160,13 @@
 			compression="gzip">
 			<zipfileset src="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.name}.zip" />
 		</tar>
+		
+		<!-- run RAT report -->
+		<rat:report reportFile="${wookie.release.dir}/${version}-incubating/binary/war/rat-report.txt">
+		        <fileset dir="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/">
+                    <excludesfile name="./licenses/rat-ignore.txt"/> 
+	            </fileset>
+		</rat:report>
 
 		<!-- clean up -->
 		<delete dir="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}" />
@@ -238,6 +208,13 @@
 
 		<!-- duplicate -->
 		<delete file="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}/lib/servlet-api-2.5.jar" />
+		
+		<!-- run RAT report -->
+		<rat:report reportFile="${wookie.release.dir}/${version}-incubating/binary/standalone/rat-report.txt">
+		        <fileset dir="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}">
+		            <excludesfile name="./licenses/rat-ignore.txt"/> 
+			    </fileset>
+		</rat:report>
 		
 		<zip destfile="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.zip.name}.zip"
 			basedir="${wookie.release.dir}/${version}-incubating/binary/standalone/" includes="${wookie.standalone.folder.name}/"
