@@ -16,10 +16,10 @@
   limitations under the License.
 -->
 <project default="build-widget" basedir="." name="Wookie_widgets_build_file">
-	<property name="wookie_root_dir" location="../"/>
+	<property name="wookie.root.dir" location="../"/>
 	<property file="../local.build.properties"/>
-    <property file="../build.properties"/>
-	<property name="project.build.dir" location="../build"/>
+        <property file="../build.properties"/>
+	<property name="project.build.dir" location="${wookie.root.dir}/build"/>
 	<property name="widget.deploy.dir" location="${project.build.dir}/webapp/wookie/deploy"/>
 	<property name="wookie.widgets.dir" location="."/>
 	<property name="widget.template.dir" value="${wookie.widgets.dir}/widget-template"/>
@@ -64,7 +64,7 @@
    </target>
    
    <target name="_init" depends="_get-widget-name, _clean">
-     <delete file="${widget.build.dir}/${widget_name}" failonerror="false"/>
+     <delete file="${widget.build.dir}/${widget.shortname}.wgt" failonerror="false"/>
      <mkdir dir="${widget.build.dir}"/>
    </target>
 	
@@ -110,9 +110,9 @@
     </target>
 	
 	<target name="deploy-widget" depends="build-widget">
-		<copy tofile="${wookie.root.dir}/${widget.deploy.dir}/${widget.shortname}.wgt" 
+		<copy tofile="${widget.deploy.dir}/${widget.shortname}.wgt" 
 			  file="${widget.build.dir}/${widget.shortname}.wgt"/>
-   		<echo>Deployed "${widget.shortname}" to ${wookie.root.dir}/${widget.deploy.dir}/${widget.shortname}.wgt</echo>
+   		<echo>Deployed "${widget.shortname}" to ${widget.deploy.dir}/${widget.shortname}.wgt</echo>
 	</target>
 	
 	<target name="deploy-all" description="deploy all widgets in the base directory">
