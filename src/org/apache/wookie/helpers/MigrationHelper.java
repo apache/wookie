@@ -19,6 +19,7 @@ package org.apache.wookie.helpers;
 
 import java.io.UnsupportedEncodingException;
 
+import org.apache.log4j.Logger;
 import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.util.IPersistenceManager;
@@ -33,6 +34,8 @@ import org.apache.wookie.controller.WidgetInstancesController;
  * Note that this class and/or its methods may be deprecated in future releases.
  */
 public class MigrationHelper {
+  
+  static Logger _logger = Logger.getLogger(MigrationHelper.class.getName());
 
   /**
    * Finds a widget instance using supplied parameters, using legacy shared data key generation methods. If an instance
@@ -111,6 +114,8 @@ public class MigrationHelper {
       sharedData.setSharedDataKey(newKey);
       persistenceManager.save(sharedData);
     }
+    
+    _logger.debug("upgraded widget instances and shared data from 0.9.0. Old key:"+oldKey+" . New key:"+newKey+". "+widgetInstances.length+" widget instances  and "+sharedDataItems.length+" shared data objects updated.");
   }
 
 }
