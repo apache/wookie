@@ -35,14 +35,38 @@
 		value="apache-wookie-${version}-incubating-standalone" />
 	<property name="wookie.war.name"
 		value="apache-wookie-${version}-incubating-war" />
+	
+	<property name="rat.install.version" value="0.7" />	
+	<property name="rat.home" value="${user.home}/.ant" />
+	<property name="rat.jar.dir" value="${rat.home}/lib" />
+	<property name="rat.jar.file" value="${rat.jar.dir}/rat.jar" />
 
-
+	<!-- get the rat jar as we do with ivy -->
+	<target name="download-rat" unless="offline">
+		<mkdir dir="${rat.jar.dir}"/>
+		<!-- download rat from web site so that it can be used even without any special installation -->
+		<get src="http://repo2.maven.org/maven2/org/apache/rat/apache-rat/${rat.install.version}/apache-rat-${rat.install.version}.jar" 
+	             dest="${rat.jar.file}" usetimestamp="true"/>
+	</target>
+	
+	<target name="init-rat" depends="download-rat">
+		<!-- try to load rat here from rat home, in case the user has not already dropped
+			it into ant's lib dir (note that the latter copy will always take precedence).
+			We will not fail as long as local lib dir exists (it may be empty) and
+			rat is in at least one of ant's lib dir or the local lib dir. -->
+		<path id="rat.lib.path">
+			<fileset dir="${rat.jar.dir}" includes="*.jar"/>
+		</path>
+		<taskdef resource="org/apache/rat/anttasks/antlib.xml"
+			uri="antlib:org.apache.rat.anttasks" classpathref="rat.lib.path"/>
+	</target>
+	
 	<target name="build-release-all"
 		depends="build-release-src, build-release-standalone, build-release-war, add-extra-files">
 		<echo>Building all releases</echo>
 	</target>
 	
-	<target name="build-release-src" depends="">
+	<target name="build-release-src" depends="init-rat">
 		<echo>Building source release</echo>
 		<mkdir dir="${wookie.release.dir}/${version}-incubating/source" />
 		
@@ -67,7 +91,7 @@
 		
 	</target>
 
-	<target name="build-release-war" depends="clean-build, compile-core, deploy-webapp, post-deploy-webapp">
+	<target name="build-release-war" depends="init-rat,clean-build, compile-core, deploy-webapp, post-deploy-webapp">
 		<echo>Building war release</echo>
 		<delete dir="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}" />
 		<mkdir dir="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/scripts/" />
@@ -173,7 +197,7 @@
 
 	</target>
 
-	<target name="build-release-standalone" depends="clean-build, compile-core, deploy-webapp, post-deploy-webapp">
+	<target name="build-release-standalone" depends="init-rat, clean-build, compile-core, deploy-webapp, post-deploy-webapp">
 
 		<echo>Building standalone release</echo>
 		<delete dir="${wookie.release.dir}/${version}-incubating/binary/standalone/${wookie.standalone.folder.name}" />
