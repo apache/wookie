@@ -5,6 +5,7 @@
 	<classpathentry kind="src" output="parser/java/bin" path="parser/java/src"/>
 	<classpathentry kind="src" output="parser/java/bin" path="parser/java/src-test"/>
 	<classpathentry kind="src" path="connector/java/src"/>
+	<classpathentry kind="src" path="connector/java/src-test"/>
 	<classpathentry exported="true" kind="lib" path="ant/lib/htmlcleaner-2.1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="ant/lib/dwr-2.0.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="ant/lib/commons-compress-1.0.jar"/>
