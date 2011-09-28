@@ -56,6 +56,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
   // Default Locale tests
   @Test
   public void de000(){
+    @SuppressWarnings("unused")
     W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-defaultlocale-ignore/000/ta-de-000.wgt");
   }
   
@@ -72,6 +73,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
   
   @Test
   public void de003(){
+    @SuppressWarnings("unused")
     W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-defaultlocale-ignore/003/ta-de-003.wgt");
   }
   
@@ -1193,7 +1195,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	@Test
 	public void bl(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/002/bl.wgt");
-		List icons = widget.getIconsList();
+		List<IIconEntity> icons = widget.getIconsList();
 		assertTrue(icons.size() == 2);
 		String icon1 = getLocalIconPath(widget,0);
 		String icon2 = getLocalIconPath(widget,1); 
@@ -1203,7 +1205,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	@Test
 	public void bm(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/003/bm.wgt");
-		List icons = widget.getIconsList();
+		List<IIconEntity> icons = widget.getIconsList();
 		assertEquals(2,icons.size());
 		String icon1 = getLocalIconPath(widget,0);
 		String icon2 = getLocalIconPath(widget,1); 
@@ -1214,7 +1216,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	@Test
 	public void bn(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/004/bn.wgt");
-		List icons = widget.getIconsList();
+		List<IIconEntity> icons = widget.getIconsList();
 		assertTrue(icons.size() == 2);
 		String icon1 = getLocalIconPath(widget,0);
 		String icon2 = getLocalIconPath(widget,1);
@@ -1224,7 +1226,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	@Test
 	public void bo(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/005/bo.wgt");
-		List icons = widget.getIconsList();
+		List<IIconEntity> icons = widget.getIconsList();
 		assertTrue(icons.size() == 2);
 		String icon1 = getLocalIconPath(widget,0);
 		String icon2 = getLocalIconPath(widget,1);
@@ -1233,13 +1235,13 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	
 	@Test
 	public void bp(){
-		// Note the original test case is in error here
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/006/bp.wgt");
-		List icons = widget.getIconsList();
-		assertTrue(icons.size() == 2);
-		assertEquals("icon.png",getLocalIconPath(widget,0));
-		assertEquals("locales/en/icon.jpg",getLocalIconPath(widget,1));
+		List<IIconEntity> iconList = widget.getIconsList();
+		assertTrue(iconList.size() == 2);
+		String icons = getLocalIconPath(widget,0) + " " + getLocalIconPath(widget,1);
+		assertTrue(icons.equals("icon.png locales/en/icon.png")||icons.equals("locales/en/icon.png icon.png"));
 	}
+	
 	@Test
 	public void ad(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-FAFYMEGELU/007/ad.wgt");
