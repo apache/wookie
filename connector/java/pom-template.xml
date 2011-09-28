@@ -71,6 +71,19 @@
 		</roles>
 	</developer>
 	<developer>
+		<id>rgardler</id>
+		<name>Ross Gardler</name>
+		<email>rgardler@opendirective.com</email>
+		<timezone>0</timezone>
+		<organization>Opendirective</organization>
+		<organizationUrl>http://www.opendirective.com</organizationUrl>
+		<roles>
+			<role>mentor</role>
+			<role>IPMC member</role>
+			<role>PPMC member</role>
+		</roles>
+	</developer>	
+	<developer>
 		<id>psharples</id>
 		<name>Paul Sharples</name>
 		<email>psharples@apache.org</email>
