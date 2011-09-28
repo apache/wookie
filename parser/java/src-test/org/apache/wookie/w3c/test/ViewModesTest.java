@@ -34,7 +34,7 @@ public class ViewModesTest extends ConformanceTest{
 	@Test
 	public void viewb(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-viewmodes/001/viewb.wgt");
-		assertTrue(widget.getViewModes().equals("floating"));
+		assertTrue(widget.getViewModes().equals("floating maximized"));
 	}
 	@Test
 	@Ignore // deprecated
@@ -67,7 +67,7 @@ public class ViewModesTest extends ConformanceTest{
 	@Test
 	public void viewh(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-viewmodes/007/viewh.wgt");
-		assertEquals("floating windowed",widget.getViewModes());
+		assertEquals("floating windowed maximized",widget.getViewModes());
 	}
 	@Test
 	public void viewi(){
