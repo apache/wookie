@@ -30,6 +30,7 @@ etc/eclipse/code_templates.xml
 # Documentation files
 
 NEW_AND_NOTEWORTHY
+UPGRADING
 etc/release/standalone/STANDALONE_BUILD_NOTES
 STANDALONE_BUILD_NOTES
 etc/release/war/WAR_BUILD_NOTES
@@ -44,6 +45,8 @@ widgets/localetest/index.htm
 widgets/localetest/locales/
 widgets/camera/icon.svg
 widgets/geo/icon.svg
+# see widgets/freeder/legal/jquery.jfeed.pack.js.license.txt
+widgets/freeder/scripts/jquery.jfeed.pack.js
 
 # anything below is under a different license header
 # needs checking if relevant licenses are included

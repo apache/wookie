@@ -1,0 +1,12 @@
+This document details any special actions that need to be taken when upgrading Wookie from a previous version. For
+general information on new features and improvements, see NEW_AND_NOTEWORTHY.
+
+FROM 0.9.0 TO 0.9.1
+===================
+
+A number of changes to the data model were put in place in 0.9.1, meaning that any existing databases must be updated.
+
+Scripts for migrating databases to 0.9.1 can be found in /scripts/migration.
+
+From 0.9.1 the JCR persistence mechanism is an optional module that must be built separately; any installations using 
+JCR will need to upgrade using a source release, building the modules/jcr subproject.
