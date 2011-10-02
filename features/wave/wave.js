@@ -53,7 +53,7 @@
     	wave.submitDelta(delta);
     }
     
-    this.clear = function(){
+    this.reset = function(){
         var delta =  {};
         for (key in state.map){
             delta[key] = null;
