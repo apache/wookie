@@ -8,10 +8,8 @@
 	<classpathentry kind="src" path="connector/java/src-test"/>
 	<classpathentry exported="true" kind="lib" path="ant/lib/htmlcleaner-2.1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="ant/lib/dwr-2.0.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant/lib/commons-compress-1.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
-	<classpathentry kind="lib" path="ant/lib/icu4j-4_6_0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

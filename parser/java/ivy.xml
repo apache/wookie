@@ -37,7 +37,7 @@
 	</publications>
     
     <dependencies>
-        <dependency org="com.ibm.icu" name="icu4j" rev="4_6_0" conf="deploy->default">
+        <dependency org="com.ibm.icu" name="icu4j" rev="4.6.1" conf="deploy->default">
         </dependency>
         <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="deploy->default">
         </dependency>
@@ -45,7 +45,7 @@
         </dependency> 
          <dependency org="commons-lang" name="commons-lang" rev="2.4" conf="deploy->default">
         </dependency>
-        <dependency org="commons-compress" name="commons-compress" rev="1.0" conf="deploy->default">
+        <dependency org="org.apache.commons" name="commons-compress" rev="1.0" conf="deploy->default">
 		</dependency>
 		<dependency org="commons-io" name="commons-io" rev="1.4" conf="deploy->default">
         </dependency>
