@@ -236,7 +236,9 @@
     	</tstamp>    	 
     	<ivy:makepom ivyfile="${basedir}/ivy.xml"
     	    		templatefile="${basedir}/pom-template.xml"
-    	    		pomfile="${dist.dir}/${ant.project.name}.pom"/>
+    	    		pomfile="${dist.dir}/${ant.project.name}.pom">
+    		<mapping conf="deploy" scope="compile"/>
+    	</ivy:makepom>
 	
     	<ivy:publish resolver="apache-snapshot"
     	    		pubrevision="${version}"
@@ -264,7 +266,10 @@
 		</tstamp>
     	<ivy:makepom ivyfile="${basedir}/ivy.xml"
     		templatefile="${basedir}/pom-template.xml"
-    		pomfile="${dist.dir}/${ant.project.name}.pom"/>
+    		pomfile="${dist.dir}/${ant.project.name}.pom">
+    		<mapping conf="deploy" scope="compile"/>
+    	</ivy:makepom>    	
+    	
     	<ivy:publish resolver="local"
     		pubrevision="${version}"
     		forcedeliver="true"
