@@ -379,7 +379,7 @@ function BubbleGame( gameAreaId, newGameId, scoreId, hiScoreId )
     var hiScore;
     try{
 	    hiScore = widget.preferences.getItem('hiScore');
-	    if(hiScore == "undefined"){
+	    if(typeof hiScore === "undefined" || hiScore === "undefined" || hiScore === null){
 	    	hiScore = 0;
 	    }	    	
     }
