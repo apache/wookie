@@ -23,8 +23,6 @@ import org.junit.Test;
  * Tests for some simple cases of encoding text containing direction instructions
  * 
  * Some of these tests are derived from examples ones used in http://dev.w3.org/2006/waf/widgets-api/#getting-localizable-strings-
- * 
- * @author scottbw@apache.org
  *
  */
 public class FormattingUtilsTest {

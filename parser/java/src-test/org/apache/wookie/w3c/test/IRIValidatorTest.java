@@ -19,7 +19,9 @@ import static org.junit.Assert.assertTrue;
 import org.apache.wookie.w3c.util.IRIValidator;
 import org.junit.Test;
 
-
+/**
+ * Test the IRI Validator behaves correctly according to the IRI spec
+ */
 public class IRIValidatorTest {
 	
 	@Test

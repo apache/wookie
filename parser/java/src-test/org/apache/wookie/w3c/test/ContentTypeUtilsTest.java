@@ -23,14 +23,23 @@ import java.io.IOException;
 import org.apache.wookie.w3c.util.ContentTypeUtils;
 import org.junit.Test;
 
+/**
+ * Test cases for content-type handling
+ */
 public class ContentTypeUtilsTest extends ContentTypeUtils {
 	
+  /**
+   * Test that we can instantiate the ContentTypeUtils class
+   */
 	@Test
 	public void classTest(){
 		@SuppressWarnings("unused")
 		ContentTypeUtils test = new ContentTypeUtils();
 	}
 	
+	/**
+	 * Checking whether null is a supported file type should return False 
+	 */
 	@Test
 	public void Nulls(){
 		File nullFile = null;
@@ -39,11 +48,19 @@ public class ContentTypeUtilsTest extends ContentTypeUtils {
 		assertFalse(ContentTypeUtils.isSupportedImageType(nullString));
 	}
 	
+	/**
+	 * Checking whether an empty string is a supported file type should return False
+	 */
 	@Test
 	public void Empty(){
 		assertFalse(ContentTypeUtils.isSupportedImageType(""));
 	}
 	
+	/**
+	 * Test the behaviour of file names with different kinds of dot placement. Only the
+	 * final file extension should matter - the utils should ignore any dots elsewhere in
+	 * the file name
+	 */
 	@Test
 	public void Dots(){
 		assertFalse(ContentTypeUtils.isSupportedImageType(".\\."));
@@ -66,6 +83,9 @@ public class ContentTypeUtilsTest extends ContentTypeUtils {
 		assertFalse(ContentTypeUtils.isSupportedImageType(new File("test.png.")));
 	}
 
+	/**
+	 * Tests for positives on supported types
+	 */
 	@Test
 	public void Types(){
 		assertTrue(ContentTypeUtils.isSupportedImageType("test.gif"));
@@ -75,6 +95,9 @@ public class ContentTypeUtilsTest extends ContentTypeUtils {
 		assertTrue(ContentTypeUtils.isSupportedImageType("test.ico"));
 	}
 	
+	/**
+	 * Tests for negatives on some definitely unsupported types
+	 */
 	@Test
 	public void Types2(){
 		assertFalse(ContentTypeUtils.isSupportedImageType("test.exe"));
@@ -91,6 +114,9 @@ public class ContentTypeUtilsTest extends ContentTypeUtils {
 		assertFalse(ContentTypeUtils.isSupportedImageType("test.xht"));
 	}
 	
+	/**
+	 * Test with invalid characters in file extensions
+	 */
 	@Test
 	public void InvalidExtensions(){
 		assertFalse(ContentTypeUtils.isSupportedImageType("test.1exe"));
@@ -100,6 +126,10 @@ public class ContentTypeUtilsTest extends ContentTypeUtils {
 		assertFalse(ContentTypeUtils.isSupportedImageType("test.pñg"));
 	}
 	
+	/**
+	 * Test the content type sniffer correctly identifies the types of files without an extension
+	 * @throws IOException
+	 */
 	@Test
 	public void sniff() throws IOException{
 		
