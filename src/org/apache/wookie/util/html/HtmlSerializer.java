@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.htmlcleaner.BaseToken;
 import org.htmlcleaner.CleanerProperties;
-import org.htmlcleaner.ContentToken;
+import org.htmlcleaner.ContentNode;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XmlSerializer;
 
@@ -116,8 +116,8 @@ public class HtmlSerializer extends XmlSerializer {
             while ( childrenIt.hasNext() ) {
                 Object item = childrenIt.next();
                 if (item != null) {
-                    if ( item instanceof ContentToken ) {
-                        String content = ((ContentToken) item).getContent();
+                    if ( item instanceof ContentNode ) {
+                        String content = ((ContentNode) item).getContent().toString();
                         writer.write( dontEscape(tagNode) ? content.replaceAll("]]>", "]]&gt;") : escapeXml(content) );
                     } else {
                         ((BaseToken)item).serialize(this, writer);
