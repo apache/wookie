@@ -68,7 +68,7 @@ var Controller = {
 	 * Update the story details page for a given story and navigate to it.
 	 */
 	gotoStory:function(key) {
-		item = Controller.items[key];
+		var item = Controller.items[key];
         $("#story-detail-title").text(item.title);
         $("#story-detail-content").empty();
         $("#story-detail-content")
