@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.htmlcleaner.CleanerProperties;
+import org.htmlcleaner.DoctypeToken;
 import org.htmlcleaner.TagNode;
 
 /**
@@ -64,11 +65,12 @@ public class HtmlCleaner implements IHtmlProcessor{
 	public void setReader(Reader reader) throws IOException{
 		if (reader == null) throw new IOException("Reader was null");
 		this.reader = reader;
-		htmlNode = cleaner.clean(this.reader);			
+		htmlNode = cleaner.clean(this.reader);
 		headNode = htmlNode.findElementByName(HEAD_TAG, false);	
 		// remove widget-specific scripts. These will be replaced
 		// after processing, so that the injected scripts come first
 		removeUserScripts();
+		fixHTML5Doctype();
 	}
 	
 	/* (non-Javadoc)
@@ -165,6 +167,18 @@ public class HtmlCleaner implements IHtmlProcessor{
 	private void replaceUserScripts(){
 		for(TagNode node : scriptList){
 			headNode.addChild(node);
+		}
+	}
+	
+	/**
+	 *  Fix for a bug in HTMLCleaner which cannot handle HTML5 doctypes correctly
+	 *  See http://sourceforge.net/tracker/?func=detail&aid=3190583&group_id=183053&atid=903696
+	 */
+	private void fixHTML5Doctype(){
+		DoctypeToken docType = htmlNode.getDocType();
+		if(docType.getContent().equalsIgnoreCase(Html5DoctypeToken.BADDOCTYPE)){
+			Html5DoctypeToken newToken = new Html5DoctypeToken("html",null,null,null);
+			htmlNode.setDocType(newToken);
 		}
 	}
 
