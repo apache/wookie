@@ -32,7 +32,7 @@ var Controller = {
 	 * Load the feed
 	 */
 	update:function() {
-		$.mobile.pageLoading();
+		$.mobile.showPageLoadingMsg();
         if (widget.proxify){
             var feedUrl = widget.proxify(Properties.getFeedURL());
         } else {
@@ -48,7 +48,7 @@ var Controller = {
      * Refresh the feed list
      */
     updateFeed: function(feed){
-        $.mobile.pageLoading(true);
+        $.mobile.hidePageLoadingMsg();
         var index = $('#stories-listview');
         index.empty();
         var items = feed.items
