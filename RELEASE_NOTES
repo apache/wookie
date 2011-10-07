@@ -49,7 +49,6 @@ Improvements
     * WOOKIE-207 - Ensure all administrative tasks can be carried out using REST API
     * WOOKIE-7   - Search capabilities in the advertise?all=true servlet
     * WOOKIE-111 - Enable support for virtual hosts
-    * WOOKIE-131 - Skinnable widgets
     * WOOKIE-210 - Refactor Feature loading and enable runtime inclusion
     * WOOKIE-98  - Widget upload
     * WOOKIE-194 - shouldn't be able to add a widget if Shindig is not deployed
