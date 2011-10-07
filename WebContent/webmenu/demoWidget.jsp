@@ -62,12 +62,12 @@
   <table>
       <tr>
         <td>
-          <div><a href="#" onclick="window.open('<%= request.getAttribute("firstWidgetURL") %>?idkey=<%= request.getParameter("idkey") %>&proxy=<%=request.getAttribute("proxy")%>')"><img src="../shared/images/view_1.gif" alt="open in new window"></a><h2 style="display: inline;">Widget for first test user</h2></div><br>
+          <div><a href="#" onclick="window.open('<%= request.getAttribute("firstWidgetURL") %>?idkey=<%= request.getParameter("idkey") %>&proxy=<%=request.getAttribute("proxy")%>')"><img src="../shared/images/view_1.gif" alt="open in new window" border="0"></a><h2 style="display: inline;">Widget for first test user</h2></div><br>
 		  <iframe width="<%= request.getAttribute("widgetWidth") %>" height="<%= request.getAttribute("widgetHeight") %>" src="<%= request.getAttribute("firstWidgetURL") %>?idkey=<%= request.getParameter("idkey") %>&proxy=<%=request.getAttribute("proxy")%>">
 		  </iframe>
 		</td>
         <td>
-          <div><a href="#" onclick="window.open('<%= request.getAttribute("secondWidgetURL") %>?idkey=<%= request.getParameter("idkey") %>&proxy=<%=request.getAttribute("proxy")%>')"><img  src="../shared/images/view_1.gif" alt="open in new window"></a><h2 style="display: inline;">Widget for second test user</h2></div><br>
+          <div><a href="#" onclick="window.open('<%= request.getAttribute("secondWidgetURL") %>?idkey=<%= request.getParameter("idkey") %>&proxy=<%=request.getAttribute("proxy")%>')"><img  src="../shared/images/view_1.gif" alt="open in new window" border="0"></a><h2 style="display: inline;">Widget for second test user</h2></div><br>
 		  <iframe width="<%= request.getAttribute("widgetWidth") %>" height="<%= request.getAttribute("widgetHeight") %>" src="<%= request.getAttribute("secondWidgetURL") %>?idkey=<%= request.getParameter("idkey") %>&proxy=<%=request.getAttribute("proxy")%>">
 		  </iframe>
         </td>
