@@ -53,7 +53,7 @@ public class HtmlCleaner implements IHtmlProcessor{
 		// into "quirks mode" - see WOOKIE-236. 
 		// However, it appears we explicitly have to declare it as false to work correctly.
 		//
-		properties.setOmitDoctypeDeclaration(false);
+		//properties.setOmitDoctypeDeclaration(false);
 		properties.setOmitXmlDeclaration(true);
 		properties.setUseCdataForScriptAndStyle(true);
 		properties.setUseEmptyElementTags(false);	
@@ -70,7 +70,7 @@ public class HtmlCleaner implements IHtmlProcessor{
 		// remove widget-specific scripts. These will be replaced
 		// after processing, so that the injected scripts come first
 		removeUserScripts();
-		fixHTML5Doctype();
+		//fixHTML5Doctype();
 	}
 	
 	/* (non-Javadoc)
