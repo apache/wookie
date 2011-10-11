@@ -318,9 +318,9 @@ public class WidgetFactory {
 	 * @param widget the existing widget
 	 * @param grantAccessRequests set to true to grant any access requests defined by the model
 	 */
-	public static void update( W3CWidget model, IWidget widget,  boolean grantAccessRequests ){
+	public static void update( W3CWidget model, IWidget widget,  boolean grantAccessRequests, File zipFile){
 	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-    
+	   
 		widget.setDir(model.getDir());
         widget.setLang(model.getLang());
         widget.setDefaultLocale(model.getDefaultLocale());
@@ -338,7 +338,11 @@ public class WidgetFactory {
 		widget.setFeatures(null);	
 		widget.setWidgetIcons(null);
 		widget.setPreferenceDefaults(null);
-		
+		// We set this here to ensure widgets already imported in to
+		// a 0.9.0 version of wookie get this value set. See WOOKIE-256
+	    if(zipFile != null){
+	    	widget.setPackagePath(zipFile.getPath());
+	    }
 		// Set with updated values
 		createAuthor(persistenceManager, model,widget);
 		createStartFiles(persistenceManager, model,widget);

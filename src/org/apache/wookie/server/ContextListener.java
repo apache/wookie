@@ -194,7 +194,7 @@ public class ContextListener implements ServletContextListener {
 	 							FlashMessage.getInstance().message(message);
 	 						} else {
 	 							String message = model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.20");
-	 							WidgetFactory.update(model, persistenceManager.findWidgetByGuid(model.getIdentifier()), true);
+	 							WidgetFactory.update(model, persistenceManager.findWidgetByGuid(model.getIdentifier()), true, upload);
 	 							_logger.info(message);
 	 							FlashMessage.getInstance().message(message);
 	 						}

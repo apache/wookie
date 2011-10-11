@@ -169,7 +169,7 @@ public class UpdatesController extends Controller {
 	private void installUpdate(W3CWidgetFactory factory, IWidget widget, boolean onlyUseHttps) throws InvalidContentTypeException, BadWidgetZipFileException, BadManifestException, IOException, Exception{
 		W3CWidget updatedWidget = UpdateUtils.getUpdate(factory, widget.getGuid(), widget.getUpdateLocation(), widget.getVersion(), onlyUseHttps);
 		if (updatedWidget != null){
-			WidgetFactory.update(updatedWidget, widget, false);
+			WidgetFactory.update(updatedWidget, widget, false, null);
 			_logger.info("Successfully updated "+widget.getGuid()+" to version "+updatedWidget.getVersion());
 			FlashMessage.getInstance().message("Successfully updated "+widget.getGuid()+" to version "+updatedWidget.getVersion());
 		}
