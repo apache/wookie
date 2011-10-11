@@ -176,9 +176,11 @@ public class HtmlCleaner implements IHtmlProcessor{
 	 */
 	private void fixHTML5Doctype(){
 		DoctypeToken docType = htmlNode.getDocType();
-		if(docType.getContent().equalsIgnoreCase(Html5DoctypeToken.BADDOCTYPE)){
-			Html5DoctypeToken newToken = new Html5DoctypeToken("html",null,null,null);
-			htmlNode.setDocType(newToken);
+		if(docType != null){
+			if(docType.getContent().equalsIgnoreCase(Html5DoctypeToken.BADDOCTYPE)){
+				Html5DoctypeToken newToken = new Html5DoctypeToken("html",null,null,null);
+				htmlNode.setDocType(newToken);
+			}
 		}
 	}
 
