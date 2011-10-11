@@ -124,7 +124,6 @@ public class HtmlSerializer extends XmlSerializer {
                     }
                 }
             }
-
             serializeEndTag(tagNode, writer, false);
         }
     }
