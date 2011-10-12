@@ -152,7 +152,7 @@
 		<!-- copy over project readme files-->
 		<copy file="DISCLAIMER" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/DISCLAIMER" overwrite="yes" />
 		<!--<copy file="KEYS" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/KEYS" overwrite="yes" />-->
-		<copy file="/etc/release/war/LICENSE" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/LICENSE" overwrite="yes" />		
+		<copy file="etc/release/war/LICENSE" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/LICENSE" overwrite="yes" />		
 		<copy file="README" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/README" overwrite="yes" />
 		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/RELEASE_NOTES" overwrite="yes" />
 		<copy file="NEW_AND_NOTEWORTHY" tofile="${wookie.release.dir}/${version}-incubating/binary/war/${wookie.war.folder.name}/build/NEW_AND_NOTEWORTHY" overwrite="yes" />
