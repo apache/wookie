@@ -68,6 +68,7 @@ if (version==null){
 	$(document).ready(function() {		 
 		$("#email").change(validate);
 		$("#email").keyup(validate);
+		$("#email").blur(validate); // fixes google chrome		
 	});
 	
 
