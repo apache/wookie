@@ -1,0 +1,43 @@
+Apache Wookie  - source distribution instructions
+=================================================
+
+Initial Setup
+-------------
+
+1) Install a JDK (1.6.* or higher)
+	See http://www.oracle.com/technetwork/java/javase/downloads/index.html
+	or http://java.com/en/download/
+	(Be sure to choose a JDK and not a JRE version)
+	
+2) Make sure that your PATH includes %JAVA_HOME%\bin (windows) or 
+   $JAVA_HOME$/bin (unix). Optionally, you may also wish to add an environment variable
+   named %JAVA_HOME% and point that to the %JAVA_HOME%\bin folder of the java JDK install.
+ 
+3) Install Apache Ant
+	See http://archive.apache.org/dist/ant/binaries/
+	for an applicable binary. Once installed ensure your PATH includes %ANT_HOME%\bin (windows) 
+	or $ANT_HOME$/bin (unix). (otherwise you won't be able to run it unless you are in the
+	%ANT_HOME%\bin folder.) NOTE: There is a known issue when using Ant version 1.8.x to build and run
+	Wookie; you should instead use version 1.7.1. To check which version of ant you are using, type 
+	ant -version. See the RELEASE_NOTES for more information.
+	
+4) Build using default ant target (Optional - skip to 5 if you want to compile & run together)
+	Navigate to the top level of the source distribution in a command prompt/console window.
+	Type "ant", to start the build process. The first time you run this command all dependencies will 
+	be downloaded so you must be online and it will take some time. Subsequent builds will be much faster.
+	
+5) Run Wookie 
+	The quickest way to run Wookie is in "standalone" mode; in this mode Wookie uses a local database and 
+	embedded server. This is a good way to experiment with Wookie in development. Navigate to the root folder 
+	of the source distribution in a command prompt/console window. Once there type "ant run".
+	
+	Once the server is running go to 'http://localhost:8080/wookie' in your favourite browser.
+
+6) Additional Information
+	Note that by default, Wookie will clean the database each time it is run, this ensures that your development 
+	environment starts in a consistent state. However, any modifications you have made to the database during 
+	previous runs will be lost. To run the development server without cleaning the database you need to set initDB=false. 
+	
+	To access the administration menu (http://localhost:8080/wookie/admin) use the username 'java' and password 'java'.
+
+	If you want to start with a completely clean build then use "ant clean-build run" at the console/command prompt.
