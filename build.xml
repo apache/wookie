@@ -236,11 +236,17 @@
   	<ant dir="${wookie.parser.w3c.dir}/java" target="publish-local" inheritAll="false"/>
   </target>
 	
-  <target name="snapshot-repo-publish-subprojects" description="Publishes all sub projects (i.e. java connector and parser projects) to the apache snapshot repository">
+  <target name="publish-subproject-artifacts-to-snapshot-repo" description="Publishes all sub projects (i.e. java connector and parser projects) to the apache snapshot repository">
 	<!-- publish snapshot sub-projects -->
-	<ant dir="${wookie.connector.dir}/java" target="publish-snapshots" inheritAll="false"/>
-	<ant dir="${wookie.parser.w3c.dir}/java" target="publish-snapshots" inheritAll="false"/>
+	<ant dir="${wookie.connector.dir}/java" target="publish-maven-snapshot-artifacts" inheritAll="false"/>
+	<ant dir="${wookie.parser.w3c.dir}/java" target="publish-maven-snapshot-artifacts" inheritAll="false"/>
   </target>	
+	
+  <target name="publish-subproject-artifacts-to-release-repo" description="Publishes all sub projects (i.e. java connector and parser projects) to the apache release repository">
+	<!-- publish staging/release sub-projects -->
+	<ant dir="${wookie.connector.dir}/java" target="publish-maven-release-artifacts" inheritAll="false"/>
+	<ant dir="${wookie.parser.w3c.dir}/java" target="publish-maven-release-artifacts" inheritAll="false"/>
+  </target>		
   	
   <target name="pre-compile-core">
     <!-- build supported database schema scripts -->

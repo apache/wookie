@@ -24,16 +24,10 @@
 	</configurations>
 	
 	<publications>      
-	  <!-- 
-	  Need to figure out why the publish task in ivy-java-common.xml does not pick up the source & javadoc jars
-	  Commented out for now as they appear to be copied over without the classifier added in which may
-	  cause the original compiled wookie-parser.jar to be overwritten
-	  	 
-      <artifact name="wookie-parser" type="sources" ext="jar" m:classifier="sources"/>
-      <artifact name="wookie-parser" type="javadoc" ext="jar" m:classifier="javadoc"/>
-       -->
-      <artifact name="wookie-parser" type="pom" ext="pom"/>
-      <artifact name="wookie-parser" type="jar"/>
+	  <artifact name="wookie-parser" conf="deploy" type="pom" ext="pom"/>
+      <artifact name="wookie-parser" conf="deploy" type="jar"/>
+      <artifact name="wookie-parser" conf="deploy" type="sources" ext="jar" m:classifier="sources"/>
+      <artifact name="wookie-parser" conf="deploy" type="javadoc" ext="jar" m:classifier="javadoc"/>            
 	</publications>
     
     <dependencies>

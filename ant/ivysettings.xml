@@ -16,9 +16,10 @@
   limitations under the License.
 -->
 <ivysettings>
-  <property name="apache.repo.snapshot.url" value="https://repository.apache.org/content/repositories/snapshots/" override="false" />
+  <property name="apache.repo.release.url" value="https://repository.apache.org/service/local/staging/deploy/maven2" override="false" />  
+  <property name="apache.repo.snapshot.url" value="https://repository.apache.org/content/repositories/snapshots/" override="false" />  
   <credentials host="repository.apache.org" realm="Sonatype Nexus Repository Manager" username="${upload.user}" passwd="${upload.password}"/>
-  <property name="maven2.pattern" value="[organisation]/[module]/[revision]/[module]-[revision]" />
+  <property name="maven2.pattern" value="[organisation]/[module]/[revision]/[module]-[revision](-[classifier])" />
   <property name="maven2.pattern.ext" value="${maven2.pattern}.[ext]" />
   <settings defaultResolver="wookie-chain" />
   <caches>
@@ -39,7 +40,8 @@
 			<artifact pattern="${apache.repo.snapshot.url}/${maven2.pattern.ext}"/>
 		</url>
 		-->
-		<ibiblio name="apache-snapshot" root="${apache.repo.snapshot.url}" pattern="${maven2.pattern.ext}" m2compatible="true" />
+		<ibiblio name="apache-snapshot-artifacts" root="${apache.repo.snapshot.url}" pattern="${maven2.pattern.ext}" m2compatible="true" />
+		<ibiblio name="apache-release-artifacts" root="${apache.repo.release.url}" pattern="${maven2.pattern.ext}" m2compatible="true" />
 	  </chain>
   </resolvers>
 </ivysettings>

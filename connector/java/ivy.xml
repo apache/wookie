@@ -22,19 +22,12 @@
 	  <conf name="dev" extends="deploy" description="Provide the necessary files and libraries to run in standalone (development) mode"/>
 	  <conf name="test" extends="dev" visibility="private" description="for our testing framework"/>
 	</configurations>
-	
-	
-	<publications xmlns:e="urn:ant.apache.org:ivy-extras">	
-	<!-- 
-	  Need to figure out why the publish task in ivy-java-common.xml does not pick up the source & javadoc jars
-	  Commented out for now as they appear to be copied over without the classifier added in which may
-	  cause the original compiled wookie-java-connector.jar to be overwritten
-	  	       
+		
+	<publications xmlns:e="urn:ant.apache.org:ivy-extras">		
+	  <artifact name="wookie-java-connector" type="pom" ext="pom" conf="deploy"/>
+      <artifact name="wookie-java-connector" type="jar" conf="deploy"/>	  	
       <artifact name="wookie-java-connector" type="sources" conf="deploy" ext="jar" e:classifier="sources"/>
-      <artifact name="wookie-java-connector" type="javadoc" conf="deploy" ext="jar" e:classifier="javadoc"/>
-       -->
-      <artifact name="wookie-java-connector" type="pom" ext="pom" conf="deploy"/>
-      <artifact name="wookie-java-connector" type="jar" conf="deploy"/>   
+      <artifact name="wookie-java-connector" type="javadoc" conf="deploy" ext="jar" e:classifier="javadoc"/>                
 	</publications>
     
     <dependencies>

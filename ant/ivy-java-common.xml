@@ -209,6 +209,12 @@
     	<delete dir="${dist.dir}/javadoc" />
     </target>
 	
+    <target name="test-calling-project">
+    	<condition property="not-subproject">
+    		<equals arg1="${ant.project.name}" arg2="wookie"/>
+    	</condition>
+    </target>	
+		
     <target name="publish" depends="clean-build, jar" description="--> publish this project in the ivy repository">
         <ivy:publish
     	   artifactspattern="[artifact].[ext]"
@@ -217,47 +223,30 @@
     	/>
         <echo message="project ${ant.project.name} released with version ${revision}" />
     </target>
+		
+	<!-- 
+	================================================================================
+	We have 3 tasks that are almost identical, except one parameter - the resolver
 	
-	<!--
-	Note to run this task, you must first add your credentials on the command line 
+	publish-local
+	publish-maven-snapshot-artifacts
+	publish-maven-release-artifacts
+	
+	TODO - merge these into one task & pass the resolver as parameter
+	
+	Note to run either the...
+	 
+	'publish-maven-snapshot-artifacts' OR 
+	'publish-maven-release-artifacts'
+	 
+	...tasks, you must first add your credentials on the command line 
 	
 	i.e.
 	
-	 -Dupload.user=mysuername -Dupload.password=mypassword
-	 
+	 -Dupload.user=myusername -Dupload.password=mypassword
+	================================================================================
 	-->
-    <target name="publish-snapshots" depends="clean-dist, jar" description="--> publishes this project in the apache snapshot repository. Dont run this from the root, see instead 'snapshot-repo-publish-subprojects'">
-    	<echo>Locally publishing ${ant.project.name}-${version}</echo>
-    	<fail unless="upload.user" message="supply upload.user on the command line"/>
-    	<fail unless="upload.password" message="supply upload.password on the command line"/>
-    	<delete file="${dist.dir}/ivy.xml"/> <!-- delete last produced ivy file to be sure a new one will be generated -->
-    	<tstamp>
-    		<format property="now" pattern="yyyyMMddHHmmss"/>
-    	</tstamp>    	 
-    	<ivy:makepom ivyfile="${basedir}/ivy.xml"
-    	    		templatefile="${basedir}/pom-template.xml"
-    	    		pomfile="${dist.dir}/${ant.project.name}.pom">
-    		<mapping conf="deploy" scope="compile"/>
-    	</ivy:makepom>
 	
-    	<ivy:publish resolver="apache-snapshot"
-    	    		pubrevision="${version}"
-    	    		forcedeliver="true"
-    	    		publishivy="false"
-    	    		srcivypattern="${dist.dir}/ivy.xml"    	    		
-    				pubdate="${now}"
-    	    		overwrite="true">    	    		
-    				<artifacts pattern="${dist.dir}/[artifact](-[classifier]).[ext]"/>    	    		    		
-    	    	</ivy:publish>
-    	<echo message="project ${ant.project.name} published to nexus snapshot repo with version ${version}" />    	
-    </target>
-
-    <target name="test-calling-project">
-    	<condition property="not-subproject">
-    		<equals arg1="${ant.project.name}" arg2="wookie"/>
-    	</condition>
-    </target>
-
     <target name="publish-local" depends="test-calling-project, clean-dist, jar" unless="not-subproject" description="--> publish this project in the local ivy repository">
     	<echo>Locally publishing ${ant.project.name}-${version}</echo>
 		<delete file="${dist.dir}/ivy.xml"/> <!-- delete last produced ivy file to be sure a new one will be generated -->
@@ -275,12 +264,60 @@
     		forcedeliver="true"
     		publishivy="false"
     		srcivypattern="${dist.dir}/ivy.xml"
-			pubdate="${now}"
-    		overwrite="true">
-    		<!--<artifacts pattern="${dist.dir}/[artifact].[ext]"/>-->
-    		<artifacts pattern="${dist.dir}/[artifact](-[classifier]).[ext]"/>
-    	</ivy:publish>
+			pubdate="${now}"    		
+    		overwrite="true"    		    		
+    		artifactspattern="${dist.dir}/[artifact](-[classifier]).[ext]"/>    	
         <echo message="project ${ant.project.name} published locally with version ${version}" />
+    </target>	
+	
+    <target name="publish-maven-snapshot-artifacts" depends="clean-dist, jar" description="--> publishes this project in the apache snapshot repository. Dont run this from the root, see instead 'publish-subproject-artifacts-to-snapshot-repo'">
+    	<echo>Locally publishing ${ant.project.name}-${version}</echo>
+    	<fail unless="upload.user" message="supply upload.user on the command line"/>
+    	<fail unless="upload.password" message="supply upload.password on the command line"/>
+    	<delete file="${dist.dir}/ivy.xml"/> <!-- delete last produced ivy file to be sure a new one will be generated -->
+    	<tstamp>
+    		<format property="now" pattern="yyyyMMddHHmmss"/>
+    	</tstamp>    	 
+    	<ivy:makepom ivyfile="${basedir}/ivy.xml"
+    	    		templatefile="${basedir}/pom-template.xml"
+    	    		pomfile="${dist.dir}/${ant.project.name}.pom">
+    		<mapping conf="deploy" scope="compile"/>
+    	</ivy:makepom>
+	
+    	<ivy:publish resolver="apache-snapshot-artifacts"
+			pubrevision="${version}"
+			forcedeliver="true"
+			publishivy="false"
+			srcivypattern="${dist.dir}/ivy.xml"    	    		
+			pubdate="${now}"
+			overwrite="true"
+			artifactspattern="${dist.dir}/[artifact](-[classifier]).[ext]"/>    		    		    		    	    	
+    	<echo message="project ${ant.project.name} published to nexus snapshot repo with version ${version}" />    	
     </target>
 
+    <target name="publish-maven-release-artifacts" depends="clean-dist, jar" description="--> publishes this project in the apache staging area repository (prior to release). Dont run this from the root, see instead 'publish-subproject-artifacts-to-release-repo'">
+    	<echo>Locally publishing ${ant.project.name}-${version}</echo>
+    	<fail unless="upload.user" message="supply upload.user on the command line"/>
+    	<fail unless="upload.password" message="supply upload.password on the command line"/>
+    	<delete file="${dist.dir}/ivy.xml"/> <!-- delete last produced ivy file to be sure a new one will be generated -->
+    	<tstamp>
+    		<format property="now" pattern="yyyyMMddHHmmss"/>
+    	</tstamp>    	 
+    	<ivy:makepom ivyfile="${basedir}/ivy.xml"
+    	    		templatefile="${basedir}/pom-template.xml"
+    	    		pomfile="${dist.dir}/${ant.project.name}.pom">
+    		<mapping conf="deploy" scope="compile"/>
+    	</ivy:makepom>
+	
+    	<ivy:publish resolver="apache-release-artifacts"
+			pubrevision="${version}"
+			forcedeliver="true"
+			publishivy="false"
+			srcivypattern="${dist.dir}/ivy.xml"    	    		
+			pubdate="${now}"
+			overwrite="true"
+			artifactspattern="${dist.dir}/[artifact](-[classifier]).[ext]"/>    		    		    		    	    	
+    	<echo message="project ${ant.project.name} published to nexus snapshot repo with version ${version}" />    	
+    </target>	
+	
 </project>
