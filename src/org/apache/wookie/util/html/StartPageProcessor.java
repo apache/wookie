@@ -17,8 +17,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.Features;
 import org.apache.wookie.feature.IFeature;
 import org.apache.wookie.w3c.IContentEntity;

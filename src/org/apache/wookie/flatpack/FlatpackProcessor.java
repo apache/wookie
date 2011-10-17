@@ -16,10 +16,7 @@ package org.apache.wookie.flatpack;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.wookie.feature.Features;
 import org.apache.wookie.feature.IFeature;
 import org.apache.wookie.util.html.HtmlCleaner;
