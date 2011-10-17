@@ -153,6 +153,7 @@
         	<metainf dir="../../">
         		<include name="LICENSE"/>
         		<include name="NOTICE"/>
+        		<include name="DISCLAIMER"/>
         	</metainf>
         	<manifest>
 				<attribute name="Built-By" value="${user.name}"/>
@@ -169,7 +170,8 @@
     		</fileset>
 			<metainf dir="../../">
 				<include name="LICENSE"/>
-				<include name="NOTICE"/>  
+				<include name="NOTICE"/>
+				<include name="DISCLAIMER"/>
 			</metainf>    
         	<manifest>				
 				<attribute name="Built-By" value="${user.name}"/>
@@ -196,7 +198,8 @@
     		<fileset dir="${dist.dir}/javadoc"/>
 			<metainf dir="../../">
 				<include name="LICENSE"/>
-				<include name="NOTICE"/>  
+				<include name="NOTICE"/>
+				<include name="DISCLAIMER"/>
 			</metainf>    
         	<manifest>				
 				<attribute name="Built-By" value="${user.name}"/>
