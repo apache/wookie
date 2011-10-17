@@ -2,6 +2,8 @@ Apache Wookie Release Notes
 ===========================
 See https://issues.apache.org/jira/browse/WOOKIE-* (where * is the number of the issue below)
 
+For more detailed information on significant changes, see NEW_AND_NOTEWORTHY
+
 Version 0.9.1
 =============
 
@@ -16,9 +18,7 @@ Bugs Fixed
     * WOOKIE-156 - API Test widget causes DB errors when opened in two browsers at the same time
     * WOOKIE-186 - Settings widget template not in build file
     * WOOKIE-14  - juel.jar - java.lang.LinkageError: loader constraint violation: when resolving interface method
-    * WOOKIE-201 - Run RAT for all Wookie distributions
     * WOOKIE-204 - Widget metadata values are being returned using styled i18n content rather than encoded
-    * WOOKIE-203 - Widget metadata values are being returned using styled i18n content rather than encoded
     * WOOKIE-183 - JQuery Mobile doesn't work on IE workaround necessary
     * WOOKIE-230 - Features are loaded from the wrong location
     * WOOKIE-187 - Don't create local.*.properties files automatically
@@ -27,15 +27,22 @@ Bugs Fixed
     * WOOKIE-175 - Version attribute is not BIDI-compliant
     * WOOKIE-169 - Request API Key Form Problem
     * WOOKIE-193 - Eclipse .classpath file contains mac specific java settings
-    * WOOKIE-44	 - Default widget returns js "error" when loaded into a browser
     * WOOKIE-191 - Images missing from JQuery Mobile widgets
     * WOOKIE-114 - Ant 1.8 build error on Windows
     * WOOKIE-217 - HtmlCleaner appends rather than overrides charset and content-type information
     * WOOKIE-17	 - Embedding Wookie Widget in Flex/Flash based Rich Internet Application
-    * WOOKIE-15	 - Companion document links
     * WOOKIE-221 - Build.properties has two 'run.args="port=8080"' entries
     * WOOKIE-192 - web.xml violates schema contraints
     * WOOKIE-178 - Result of widget.getWidgetTitle() can sometimes contain html span tags which may upset javascript code in jsps
+    * WOOKIE-240 - Connector framework tests fail - wrong number of users
+    * WOOKIE-243 - Shared data/widget instances issue when migrating to 0.9.1
+    * WOOKIE-247 - Parser POM declares all dependencies as "optional"
+    * WOOKIE-252 - Freeder widget has bug in IE
+    * WOOKIE-254 - JQuery mobile lib (jquery.mobile-1.0b1.min.js) throws errors in IE9 when widget is loaded into an iframe in wookies gallery
+    * WOOKIE-256 - Flatpack export fails on existing 0.9.0 widgets under tomcat once you have upgraded wookie from 0.9.0 to 0.9.1
+    * WOOKIE-259 - uploading a widget file causes java.lang.NullPointerException
+    * WOOKIE-194 - shouldn't be able to add a widget if Shindig is not deployed
+    * WOOKIE-71  - No services listed on default install
 
 Improvements
 ============
@@ -46,54 +53,54 @@ Improvements
     * WOOKIE-65  - Refactored comet notifications with sibling-instance scope
     * WOOKIE-52  - Improve integration with Shindig
     * WOOKIE-170 - Update Shindig integration to support Shindig 2.0.0
-    * WOOKIE-207 - Ensure all administrative tasks can be carried out using REST API
-    * WOOKIE-7   - Search capabilities in the advertise?all=true servlet
-    * WOOKIE-111 - Enable support for virtual hosts
     * WOOKIE-210 - Refactor Feature loading and enable runtime inclusion
-    * WOOKIE-98  - Widget upload
-    * WOOKIE-194 - shouldn't be able to add a widget if Shindig is not deployed
-    * WOOKIE-71  - No services listed on default install
     * WOOKIE-225 - Refactor Widget API impl to separate standard W3C API and Wookie-specific extensions
     * WOOKIE-190 - Making required Ant version more apparent
     * WOOKIE-67  - Implement localization of widgets on per-instance basis
     * WOOKIE-174 - Complete user thumbnail handling in connection framework
-    * WOOKIE-180 - Write documentation for access policies UI and WARP
-    * WOOKIE-215 - Deprecate "services"
     * WOOKIE-220 - Update JQueryMobile Feature to use latest patched version
     * WOOKIE-233 - readme.txt and README files in the trunk
     * WOOKIE-93  - Implementing charset selection for start files
-    * WOOKIE-18  - Write Plugin developers guide
     * WOOKIE-209 - Add support for registering OpenSocial gadgets to the Widget admin API
     * WOOKIE-208 - Add REST API for API Key management
     * WOOKIE-211 - Implement defaultlocale attribute
-    * WOOKIE-19  - Write server admin guide
-    * WOOKIE-229 - Add API documentation to website
-    * WOOKIE-231 - Fix configuration for Tomcat
+    * WOOKIE-248 - Update HTMLCleaner to 2.2
+    * WOOKIE-250 - Improve license files
+    * WOOKIE-257 - Remove JUnit dependency for binary releases
+    * WOOKIE-255 - Change file names to not include version numbers in features
+    * WOOKIE-147 - Implement tests for text directionality
 
 New Features
 ============
 
-    * [WOOKIE-112] - Widget management
-    * [WOOKIE-182] - Flatpack: Allow exporting of Widgets including instance information.
-    * [WOOKIE-189] - Packaging of Wookie to run portably from a usb stick   
+    * WOOKIE-98  - Widget upload
+    * WOOKIE-182 - Flatpack: Allow exporting of Widgets including instance information.
+    * WOOKIE-237 - Data migration script for 0.9.0 -> 0.9.1
+    * WOOKIE-111 - Enable support for virtual hosts
+    * WOOKIE-207 - Ensure all administrative tasks can be carried out using REST API
+    
+Deprecations
+============
+
+    * WOOKIE-215 - Deprecate "services"
     
 Known Issues
 ============	
 
-	* [WOOKIE-222] - There is a known issue when using Tomcat 7.* with Wookie. Sometimes when a widget is actually
-					 loaded, a browser alert box sometimes appears informing the user of a "Session Error". 
+	* WOOKIE-222 - There is a known issue when using Tomcat 7.* with Wookie. Sometimes when a widget is actually 
+	loaded, a browser alert box sometimes appears informing the user of a "Session Error". 
 					 
-					 This is caused by the DWR library used by Wookie for Comet-based widgets handling HTTP-only cookies incorrectly; 
-					 Tomcat 7 uses HTTP-only cookies as the default setting to prevent cross-site scripting (XSS) attacks.
+    This is caused by the DWR library used by Wookie for Comet-based widgets handling HTTP-only cookies incorrectly; 
+    Tomcat 7 uses HTTP-only cookies as the default setting to prevent cross-site scripting (XSS) attacks.
 					 
-					 A workaround is to add the following to the WEB-INF/web.xml file
+    A workaround is to add the following to the WEB-INF/web.xml file
 					 
-					 <init-param>
-						<param-name>crossDomainSessionSecurity</param-name>
-						<param-value>false</param-value>
-					</init-param>
+    <init-param>
+        <param-name>crossDomainSessionSecurity</param-name>
+        <param-value>false</param-value>
+    </init-param>
 					
-					Note that XSS prevention will still be in place in Tomcat 7; this just disables the additional mechanism
-					implemented in DWR that conflicts with it.
-					 			
-					This is an issue for DWR 2.* with Tomcat 7.* (or earlier versions of Tomcat where useHttpOnly="true" is set.)				
+    Note that XSS prevention will still be in place in Tomcat 7; this just disables the additional mechanism
+    implemented in DWR that conflicts with it.
+ 
+    This is an issue for DWR 2.* with Tomcat 7.* (or earlier versions of Tomcat where useHttpOnly="true" is set.)				
