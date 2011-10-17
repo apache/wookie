@@ -44,8 +44,8 @@ This is designed for users who wish to use/integrate Wookie into their existing 
 environment - an existing Tomcat instance for example.
 	* Please read WAR_BUILD_NOTES for this
 	
-You may also want to refer to RELEASE_NOTES for list of supported and unsupported 
-features.
+You may also want to refer to RELEASE_NOTES for the list of changes in this release; this
+also contains information about any known issues.
 
 Questions? Need Help?
 =====================
