@@ -37,12 +37,12 @@ instructions on building Apache Wookie.
 Apache Wookie is made available in a standalone binary distribution,
 which means that once you download it, you should be able to run wookie
 'out of the box' without having to download and configure any other components
-	* Please read STANDALONE_BUILD_NOTES for this
+	* Please read STANDALONE_BUILD_NOTES for this (Available if you have the standalone build only)
 	
 Additionally a WAR archive binary distribution is also made available for Wookie. 
 This is designed for users who wish to use/integrate Wookie into their existing server 
 environment - an existing Tomcat instance for example.
-	* Please read WAR_BUILD_NOTES for this
+	* Please read WAR_BUILD_NOTES for this (Available If you have the WAR build only)
 	
 You may also want to refer to RELEASE_NOTES for the list of changes in this release; this
 also contains information about any known issues.
