@@ -9,31 +9,34 @@ Version 0.9.1
 
 Bugs Fixed
 ===========
-    * WOOKIE-206 - SharedDataKey not kept unique internally
-    * WOOKIE-151 - Numeric keys for preferences result in Parse Error in Safari
-    * WOOKIE-119 - Author info does not support bidirectional text
+
+	* WOOKIE-14  - juel.jar - java.lang.LinkageError: loader constraint violation: when resolving interface method
+    * WOOKIE-17	 - Embedding Wookie Widget in Flex/Flash based Rich Internet Application
+    * WOOKIE-71  - No services listed on default install        
     * WOOKIE-80  - W3C Widgets conformance: check content type of icons
     * WOOKIE-90  - JQuery document ready function not working
+    * WOOKIE-114 - Ant 1.8 build error on Windows    
+	* WOOKIE-119 - Author info does not support bidirectional text
+	* WOOKIE-151 - Numeric keys for preferences result in Parse Error in Safari    
     * WOOKIE-152 - Problem building Wookie using Ant 1.8 (was: Build paths doubling up Windows XP SP3 & 7)
     * WOOKIE-156 - API Test widget causes DB errors when opened in two browsers at the same time
-    * WOOKIE-186 - Settings widget template not in build file
-    * WOOKIE-14  - juel.jar - java.lang.LinkageError: loader constraint violation: when resolving interface method
-    * WOOKIE-204 - Widget metadata values are being returned using styled i18n content rather than encoded
-    * WOOKIE-183 - JQuery Mobile doesn't work on IE workaround necessary
-    * WOOKIE-230 - Features are loaded from the wrong location
-    * WOOKIE-187 - Don't create local.*.properties files automatically
-    * WOOKIE-236 - HTMLCleaner removes doctype from pages which causes IE 9 problems
-    * WOOKIE-222 - "Session Error" dialog for each widget appears in tomcat 7 (using the WAR build)
+    * WOOKIE-169 - Request API Key Form Problem        	
     * WOOKIE-175 - Version attribute is not BIDI-compliant
-    * WOOKIE-169 - Request API Key Form Problem
-    * WOOKIE-193 - Eclipse .classpath file contains mac specific java settings
-    * WOOKIE-191 - Images missing from JQuery Mobile widgets
-    * WOOKIE-114 - Ant 1.8 build error on Windows
-    * WOOKIE-217 - HtmlCleaner appends rather than overrides charset and content-type information
-    * WOOKIE-17	 - Embedding Wookie Widget in Flex/Flash based Rich Internet Application
-    * WOOKIE-221 - Build.properties has two 'run.args="port=8080"' entries
-    * WOOKIE-192 - web.xml violates schema contraints
     * WOOKIE-178 - Result of widget.getWidgetTitle() can sometimes contain html span tags which may upset javascript code in jsps
+    * WOOKIE-183 - JQuery Mobile doesn't work on IE workaround necessary
+    * WOOKIE-186 - Settings widget template not in build file
+    * WOOKIE-187 - Don't create local.*.properties files automatically
+    * WOOKIE-191 - Images missing from JQuery Mobile widgets
+    * WOOKIE-192 - web.xml violates schema contraints
+    * WOOKIE-193 - Eclipse .classpath file contains mac specific java settings
+    * WOOKIE-194 - shouldn't be able to add a widget if Shindig is not deployed            
+    * WOOKIE-204 - Widget metadata values are being returned using styled i18n content rather than encoded    
+    * WOOKIE-206 - SharedDataKey not kept unique internally
+    * WOOKIE-217 - HtmlCleaner appends rather than overrides charset and content-type information
+    * WOOKIE-221 - Build.properties has two 'run.args="port=8080"' entries
+    * WOOKIE-222 - "Session Error" dialog for each widget appears in tomcat 7 (using the WAR build)            
+    * WOOKIE-230 - Features are loaded from the wrong location
+    * WOOKIE-236 - HTMLCleaner removes doctype from pages which causes IE 9 problems
     * WOOKIE-240 - Connector framework tests fail - wrong number of users
     * WOOKIE-243 - Shared data/widget instances issue when migrating to 0.9.1
     * WOOKIE-247 - Parser POM declares all dependencies as "optional"
@@ -41,43 +44,42 @@ Bugs Fixed
     * WOOKIE-254 - JQuery mobile lib (jquery.mobile-1.0b1.min.js) throws errors in IE9 when widget is loaded into an iframe in wookies gallery
     * WOOKIE-256 - Flatpack export fails on existing 0.9.0 widgets under tomcat once you have upgraded wookie from 0.9.0 to 0.9.1
     * WOOKIE-259 - uploading a widget file causes java.lang.NullPointerException
-    * WOOKIE-194 - shouldn't be able to add a widget if Shindig is not deployed
-    * WOOKIE-71  - No services listed on default install
 
 Improvements
 ============
 
-    * WOOKIE-34  - Accept/reject REST API proposal for getting/creating widgets
-    * WOOKIE-110 - Implement reset() method of Wave Gadget API
     * WOOKIE-8   - Categories for widgets
-    * WOOKIE-65  - Refactored comet notifications with sibling-instance scope
+    * WOOKIE-18	 - Write Plugin developers guide
+    * WOOKIE-34  - Accept/reject REST API proposal for getting/creating widgets
     * WOOKIE-52  - Improve integration with Shindig
-    * WOOKIE-170 - Update Shindig integration to support Shindig 2.0.0
-    * WOOKIE-210 - Refactor Feature loading and enable runtime inclusion
-    * WOOKIE-225 - Refactor Widget API impl to separate standard W3C API and Wookie-specific extensions
-    * WOOKIE-190 - Making required Ant version more apparent
+    * WOOKIE-65  - Refactored comet notifications with sibling-instance scope
     * WOOKIE-67  - Implement localization of widgets on per-instance basis
+    * WOOKIE-93  - Implementing charset selection for start files    
+	* WOOKIE-110 - Implement reset() method of Wave Gadget API
+	* WOOKIE-147 - Implement tests for text directionality
+    * WOOKIE-170 - Update Shindig integration to support Shindig 2.0.0
     * WOOKIE-174 - Complete user thumbnail handling in connection framework
-    * WOOKIE-220 - Update JQueryMobile Feature to use latest patched version
-    * WOOKIE-233 - readme.txt and README files in the trunk
-    * WOOKIE-93  - Implementing charset selection for start files
-    * WOOKIE-209 - Add support for registering OpenSocial gadgets to the Widget admin API
+    * WOOKIE-190 - Making required Ant version more apparent
     * WOOKIE-208 - Add REST API for API Key management
+	* WOOKIE-209 - Add support for registering OpenSocial gadgets to the Widget admin API
+    * WOOKIE-210 - Refactor Feature loading and enable runtime inclusion
     * WOOKIE-211 - Implement defaultlocale attribute
+    * WOOKIE-220 - Update JQueryMobile Feature to use latest patched version
+    * WOOKIE-225 - Refactor Widget API impl to separate standard W3C API and Wookie-specific extensions
+    * WOOKIE-233 - readme.txt and README files in the trunk    
     * WOOKIE-248 - Update HTMLCleaner to 2.2
     * WOOKIE-250 - Improve license files
+	* WOOKIE-255 - Change file names to not include version numbers in features    
     * WOOKIE-257 - Remove JUnit dependency for binary releases
-    * WOOKIE-255 - Change file names to not include version numbers in features
-    * WOOKIE-147 - Implement tests for text directionality
-
+    
 New Features
 ============
 
     * WOOKIE-98  - Widget upload
-    * WOOKIE-182 - Flatpack: Allow exporting of Widgets including instance information.
-    * WOOKIE-237 - Data migration script for 0.9.0 -> 0.9.1
     * WOOKIE-111 - Enable support for virtual hosts
+    * WOOKIE-182 - Flatpack: Allow exporting of Widgets including instance information.
     * WOOKIE-207 - Ensure all administrative tasks can be carried out using REST API
+    * WOOKIE-237 - Data migration script for 0.9.0 -> 0.9.1
     
 Deprecations
 ============
