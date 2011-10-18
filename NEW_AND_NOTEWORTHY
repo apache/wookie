@@ -24,6 +24,8 @@ Wookie now has a feature called "flatpack" which enables any Widget Instance to 
 
 For more information see the "Flatpack" section of the API reference documentation: http://incubator.apache.org/wookie/docs/api.html
 
+Note that this is a "beta" feature and still has some issues and limitations.
+
 ## Scratchpad
 
 Widgets and Features are now split into "extra" and "scratchpad"; experimental features and widget are found in the "scratchpad" folder of the Wookie installation. To install these in your deployment, see http://incubator.apache.org/wookie/docs/developer/widgets.html
