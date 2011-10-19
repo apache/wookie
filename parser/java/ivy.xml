@@ -20,14 +20,20 @@
     <configurations>
       <conf name="deploy" description="Provide the necessary files and libraries to deploy in a production environment"/>
 	  <conf name="dev" extends="deploy" description="Provide the necessary files and libraries to run in standalone (development) mode"/>
-	  <conf name="test" extends="dev" visibility="private" description="for our testing frameowrk"/>
+	  <conf name="test" extends="dev" visibility="private" description="for our testing framework"/>
+	  <conf name="deploy-with-src-and-docs" extends="deploy" description="Used for publishing maven artifacts to the snapshot repo"/>
+	  <conf name="deploy-signed" extends="deploy-with-src-and-docs" description="Used for publishing maven artifacts to the staging area repo"/>
 	</configurations>
 	
 	<publications>      
 	  <artifact name="wookie-parser" conf="deploy" type="pom" ext="pom"/>
       <artifact name="wookie-parser" conf="deploy" type="jar"/>
-      <artifact name="wookie-parser" conf="deploy" type="sources" ext="jar" m:classifier="sources"/>
-      <artifact name="wookie-parser" conf="deploy" type="javadoc" ext="jar" m:classifier="javadoc"/>            
+      <artifact name="wookie-parser" conf="deploy-with-src-and-docs" type="sources" ext="jar" m:classifier="sources"/>
+      <artifact name="wookie-parser" conf="deploy-with-src-and-docs" type="javadoc" ext="jar" m:classifier="javadoc"/>
+      <artifact name="wookie-parser" conf="deploy-signed" type="pom.asc" ext="pom.asc"/>
+      <artifact name="wookie-parser" conf="deploy-signed" type="jar.asc" ext="jar.asc"/>
+      <artifact name="wookie-parser" conf="deploy-signed" type="sources.asc" ext="jar.asc" m:classifier="sources"/>
+	  <artifact name="wookie-parser" conf="deploy-signed" type="javadoc.asc" ext="jar.asc" m:classifier="javadoc"/>
 	</publications>
     
     <dependencies>

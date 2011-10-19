@@ -15,7 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:m="http://ant.apache.org/ivy/maven">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:m="http://ant.apache.org/ivy/maven" xmlns:openpgp="antlib:org.apache.commons.openpgp.ant">
 
     <import file="ivy-common.xml"/>
 	
@@ -217,6 +217,11 @@
     		<equals arg1="${ant.project.name}" arg2="wookie"/>
     	</condition>
     </target>	
+
+	<target name="test-upload-credentials">
+		<fail unless="upload.user" message="supply upload.user on the command line"/>
+		<fail unless="upload.password" message="supply upload.password on the command line"/>
+	</target>
 		
     <target name="publish" depends="clean-build, jar" description="--> publish this project in the ivy repository">
         <ivy:publish
@@ -227,30 +232,68 @@
         <echo message="project ${ant.project.name} released with version ${revision}" />
     </target>
 		
+
 	<!-- 
 	================================================================================
-	We have 3 tasks that are almost identical, except one parameter - the resolver
-	
-	publish-local
-	publish-maven-snapshot-artifacts
-	publish-maven-release-artifacts
-	
-	TODO - merge these into one task & pass the resolver as parameter
-	
-	Note to run either the...
 	 
-	'publish-maven-snapshot-artifacts' OR 
-	'publish-maven-release-artifacts'
-	 
-	...tasks, you must first add your credentials on the command line 
+	To use the target of sign-artifacts you must first add your pgp credentials on the 
+	command line, otherwise it will fail. 
 	
 	i.e.
 	
-	 -Dupload.user=myusername -Dupload.password=mypassword
+	 -Dpgp.password=yourpgppassword -Dpgp.keyId=yourpgpkeyId
 	================================================================================
 	-->
+	<target name="sign-artifacts">				
+		<fail unless="pgp.password" message="supply -Dpgp.password=yourpassword on the command line"/>
+		<fail unless="pgp.keyId" message="supply -Dpgp.keyId=yourkeyid on the command line"/>
+		
+		<ivy:settings id="sign.settingsId" file="../../ant/ivysettings.xml"/>		
+		<ivy:cachepath organisation="org.apache.commons" settingsRef="sign.settingsId" 
+			transitive="false" log="download-only" module="commons-openpgp" revision="1.0-SNAPSHOT" 
+			inline="true" pathid="openpgp.classpath"/>
+		<ivy:cachepath organisation="org.bouncycastle" settingsRef="sign.settingsId" log="download-only" 
+			module="bcprov-jdk16" revision="1.45" inline="true" pathid="bouncycastle.bcprov.classpath"/>
+		<ivy:cachepath organisation="org.bouncycastle" settingsRef="sign.settingsId" transitive="false" 
+			log="download-only" module="bcpg-jdk16" revision="1.45" inline="true" pathid="bouncycastle.bcpg.classpath"/>
+		<!--
+		For some reason, if we use the openpgp:signer task here directly, the bouncycastle security
+		provider cannot be loaded. If we launch it as a forked process everything works fine !?!
+		
+		- NOTE: I guess it needs to be loaded into memory first hence why you cant run it in the same thread.
+		-->
+		<java classname="org.apache.tools.ant.launch.Launcher" fork="true">
+			<classpath>
+				<fileset dir="${ant.home}" includes="**/*.jar"/>
+				<path refid="bouncycastle.bcprov.classpath"/>
+				<path refid="bouncycastle.bcpg.classpath"/>
+				<path refid="openpgp.classpath"/>
+				<path refid="openpgp.classpath"/>
+			</classpath>
+			<arg line="-f ../../ant/ivy-java-common.xml"/>
+			<arg line="sign-internal"/>
+			<arg line="-Dpgp.password=${pgp.password}"/>
+			<arg line="-Dpgp.keyId=${pgp.keyId}"/>
+			<arg line="-Dlocal.dist.dir=${dist.dir}"/>
+		</java>
+	</target>
+		
+	<target name="sign-internal">
+		<taskdef resource="org/apache/commons/openpgp/ant/antlib.xml" uri="antlib:org.apache.commons.openpgp.ant"/>
+		<!-- NOTE - The two paths below are on windows, you may have to change this - perhaps refactor to put into build.properties-->
+		<openpgp:signer secring="${user.home}/AppData/Roaming/gnupg/secring.gpg" 
+			pubring="${user.home}/AppData/Roaming/gnupg/pubring.gpg" 
+			password="${pgp.password}" 
+			keyid="${pgp.keyId}" 
+			asciiarmor="true">
+			<fileset dir="${local.dist.dir}">
+				<include name="**/*.pom"/>
+				<include name="**/*.jar"/>			
+			</fileset>
+		</openpgp:signer>		
+	</target>
 	
-    <target name="publish-local" depends="test-calling-project, clean-dist, jar" unless="not-subproject" description="--> publish this project in the local ivy repository">
+    <target name="make-subproject-pom">
     	<echo>Locally publishing ${ant.project.name}-${version}</echo>
 		<delete file="${dist.dir}/ivy.xml"/> <!-- delete last produced ivy file to be sure a new one will be generated -->
     	<tstamp>
@@ -261,63 +304,56 @@
     		pomfile="${dist.dir}/${ant.project.name}.pom">
     		<mapping conf="deploy" scope="compile"/>
     	</ivy:makepom>    	
-    	
+    </target>
+
+	<!-- 
+	================================================================================		
+	Note to run either the...
+	 
+	'publish-maven-snapshot-artifacts' OR 
+	'publish-maven-release-artifacts'
+	 
+	...tasks, you must first add your apache credentials on the command line 
+	
+	i.e.
+	
+	 -Dupload.user=myusername -Dupload.password=mypassword
+	================================================================================
+	-->
+  	<target name="publish-local" depends="test-calling-project, clean-dist, jar, make-subproject-pom" unless="not-subproject" description="--> publish this project in the local ivy repository">    	
     	<ivy:publish resolver="local"
     		pubrevision="${version}"
     		forcedeliver="true"
     		publishivy="false"
     		srcivypattern="${dist.dir}/ivy.xml"
-			pubdate="${now}"    		
+			pubdate="${now}"
+    		conf="deploy"
     		overwrite="true"    		    		
     		artifactspattern="${dist.dir}/[artifact](-[classifier]).[ext]"/>    	
         <echo message="project ${ant.project.name} published locally with version ${version}" />
     </target>	
 	
-    <target name="publish-maven-snapshot-artifacts" depends="clean-dist, jar" description="--> publishes this project in the apache snapshot repository. Dont run this from the root, see instead 'publish-subproject-artifacts-to-snapshot-repo'">
-    	<echo>Locally publishing ${ant.project.name}-${version}</echo>
-    	<fail unless="upload.user" message="supply upload.user on the command line"/>
-    	<fail unless="upload.password" message="supply upload.password on the command line"/>
-    	<delete file="${dist.dir}/ivy.xml"/> <!-- delete last produced ivy file to be sure a new one will be generated -->
-    	<tstamp>
-    		<format property="now" pattern="yyyyMMddHHmmss"/>
-    	</tstamp>    	 
-    	<ivy:makepom ivyfile="${basedir}/ivy.xml"
-    	    		templatefile="${basedir}/pom-template.xml"
-    	    		pomfile="${dist.dir}/${ant.project.name}.pom">
-    		<mapping conf="deploy" scope="compile"/>
-    	</ivy:makepom>
-	
+    <target name="publish-maven-snapshot-artifacts" depends="test-upload-credentials, clean-dist, jar, make-subproject-pom" description="--> publishes this project in the apache snapshot repository. Dont run this from the root, see instead 'publish-subproject-artifacts-to-snapshot-repo'">
     	<ivy:publish resolver="apache-snapshot-artifacts"
 			pubrevision="${version}"
 			forcedeliver="true"
 			publishivy="false"
 			srcivypattern="${dist.dir}/ivy.xml"    	    		
 			pubdate="${now}"
+    		conf="deploy, deploy-with-src-and-docs"
 			overwrite="true"
 			artifactspattern="${dist.dir}/[artifact](-[classifier]).[ext]"/>    		    		    		    	    	
     	<echo message="project ${ant.project.name} published to nexus snapshot repo with version ${version}" />    	
     </target>
 
-    <target name="publish-maven-release-artifacts" depends="clean-dist, jar" description="--> publishes this project in the apache staging area repository (prior to release). Dont run this from the root, see instead 'publish-subproject-artifacts-to-release-repo'">
-    	<echo>Locally publishing ${ant.project.name}-${version}</echo>
-    	<fail unless="upload.user" message="supply upload.user on the command line"/>
-    	<fail unless="upload.password" message="supply upload.password on the command line"/>
-    	<delete file="${dist.dir}/ivy.xml"/> <!-- delete last produced ivy file to be sure a new one will be generated -->
-    	<tstamp>
-    		<format property="now" pattern="yyyyMMddHHmmss"/>
-    	</tstamp>    	 
-    	<ivy:makepom ivyfile="${basedir}/ivy.xml"
-    	    		templatefile="${basedir}/pom-template.xml"
-    	    		pomfile="${dist.dir}/${ant.project.name}.pom">
-    		<mapping conf="deploy" scope="compile"/>
-    	</ivy:makepom>
-	
+    <target name="publish-maven-release-artifacts" depends="test-upload-credentials, clean-dist, jar, make-subproject-pom, sign-artifacts" description="--> publishes this project in the apache staging area repository (prior to release). Dont run this from the root, see instead 'publish-subproject-artifacts-to-release-repo'">
     	<ivy:publish resolver="apache-release-artifacts"
 			pubrevision="${version}"
 			forcedeliver="true"
 			publishivy="false"
 			srcivypattern="${dist.dir}/ivy.xml"    	    		
 			pubdate="${now}"
+    		conf="deploy, deploy-with-src-and-docs, deploy-signed"
 			overwrite="true"
 			artifactspattern="${dist.dir}/[artifact](-[classifier]).[ext]"/>    		    		    		    	    	
     	<echo message="project ${ant.project.name} published to nexus snapshot repo with version ${version}" />    	
