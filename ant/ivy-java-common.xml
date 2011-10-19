@@ -293,7 +293,7 @@
 		</openpgp:signer>		
 	</target>
 	
-    <target name="make-subproject-pom">
+    <target name="make-subproject-pom" unless="not-subproject">
     	<echo>Locally publishing ${ant.project.name}-${version}</echo>
 		<delete file="${dist.dir}/ivy.xml"/> <!-- delete last produced ivy file to be sure a new one will be generated -->
     	<tstamp>
