@@ -154,7 +154,7 @@ function BubbleGame( gameAreaId, newGameId, scoreId, hiScoreId )
                 width++;
             }
 
-            isFull = !(++tiles%width) && (newTile.offsetTop+newTile.offsetHeight*2)>=gameArea.clientHeight;
+            isFull = !(++tiles%width) && (newTile.offsetTop+newTile.offsetHeight*2)>=hGameArea.clientHeight;
         }
         height = hGameArea.childNodes.length/width;
     }
