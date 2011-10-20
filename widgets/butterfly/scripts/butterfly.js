@@ -15,8 +15,11 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */
-var canvas, context, tool;
+ */ 
+ 
+var canvas, context;
+var lastPoints = Array();
+var mirrorPoints = Array();
   
 var Controller = {
 
@@ -34,13 +37,14 @@ var Controller = {
     },
 
     init: function(){
-        init_canvas();
+        this.init_canvas();
     }
 }
 
-function init_canvas () {
- 
+Controller.init_canvas = function() {
+    //
     // Find the canvas element.
+    //
     canvas = document.getElementById('imageView');
     if (!canvas) {
       alert('Error: I cannot find the canvas element!');
@@ -54,87 +58,126 @@ function init_canvas () {
     
     canvas.style.cursor="crosshair";
 
+    //
     // Get the 2D canvas context.
+    //
     context = canvas.getContext('2d');
     if (!context) {
       alert('Error: failed to getContext!');
       return;
     }
-
-    // Pencil tool instance.
-    tool = new tool_pencil();
     
     // Mask
     mask();
-    // If IE
-	if (canvas.attachEvent) {
-    	canvas.attachEvent("onmousedown", ev_canvas, false);
-	    canvas.attachEvent('onmousemove', ev_canvas, false);
-	    canvas.attachEvent('onmouseup',   ev_canvas, false);	
+    
+    // If IE or OperaMobile
+	if (typeof canvas.attachEvent !== 'undefined') {
+    	canvas.attachEvent("onmousedown", Controller.startDraw, false);
+	    canvas.attachEvent('onmouseup',   Controller.stopDraw, false);	
+        canvas.attachEvent("ontouchstart", Controller.startDraw, false);
+	    canvas.attachEvent('ontouchstop', Controller.stopDraw, false);
+	    canvas.attachEvent('ontouchmove',   Controller.drawMouse, false);	
 	}
-	 else if (canvas.addEventListener) { 
-    	// Attach the mousedown, mousemove and mouseup event listeners.
-	    canvas.addEventListener('mousedown', ev_canvas, false);
-    	canvas.addEventListener('mousemove', ev_canvas, false);
-	    canvas.addEventListener('mouseup',   ev_canvas, false);
-    }
-
-  }
- 
-
-  // This painting tool works like a drawing pencil which tracks the mouse 
-  // movements.
-  function tool_pencil () {
-    context.lineWidth = 4;
-    var tool = this;
-    this.started = false;
-
-    // This is called when you start holding down the mouse button.
-    // This starts the pencil drawing.
-    this.mousedown = function (ev) {    
-        tool.started = true;
-    };
-
-    // This function is called every time you move the mouse. Obviously, it only 
-    // draws if the tool.started state is set to true (when you are holding down 
-    // the mouse button).
-    this.mousemove = function (ev) {
-      if (tool.started) {
-        // Mirroring
-            brush(ev._x,ev._y);
-            brush(400-ev._x,ev._y);
-      }
-    };
-
-    // This is called when you release the mouse button.
-    this.mouseup = function (ev) {
-      if (tool.started) {
-        tool.mousemove(ev);
-        tool.started = false;
-      }
-    };
-  }
-
-  // The general-purpose event handler. This function just determines the mouse 
-  // position relative to the canvas element.
-  function ev_canvas (ev) {
-    if (ev.layerX || ev.layerX == 0) { // Firefox
-      ev._x = ev.layerX;
-      ev._y = ev.layerY;
-    } 
-    else if (ev.offsetX || ev.offsetX == 0) { // Opera    
-      ev._x = ev.offsetX;
-      ev._y = ev.offsetY;
-    }
-
-    // Call the event handler of the tool.
-    var func = tool[ev.type];
-    if (func) {
-      func(ev);
+	 else { 
+    	// Attach the mouse and touch event listeners.
+        canvas.onmousedown = Controller.startDraw;
+		canvas.onmouseup = Controller.stopDraw;
+		canvas.ontouchstart = Controller.startDraw;
+		canvas.ontouchstop = Controller.stopDraw;
+		canvas.ontouchmove = Controller.drawMouse;
     }
   }
   
   
+//
+// Start drawing - get the start position, and mirror position on the other side of the image.
+//
+Controller.startDraw = function(e) {
+	if (e.touches) {
+		// Touch event
+		for (var i = 1; i <= e.touches.length; i++) {
+			lastPoints[i] = getCoords(e.touches[i - 1]); // Get info for finger #1
+            mirrorPoints[i] = getCoords(e.touches[i - 1]); // Get info for finger #1
+            mirrorPoints[i].x =   400-mirrorPoints[i].x 
+		}
+	}
+	else {
+		// Mouse event
+		lastPoints[0] = getCoords(e);
+        mirrorPoints[0] = getCoords(e);
+        mirrorPoints[0].x =   400-mirrorPoints[0].x 
+		canvas.onmousemove = Controller.drawMouse;
+	}
+	
+	return false;
+}
+
+//
+// Stop drawing
+//
+Controller.stopDraw = function(e) {
+    e.preventDefault();
+    
+    //
+    // Add a "dab" in cases where there was no move action
+    //
+    Controller.drawMouse(e);
+    
+	canvas.onmousemove = null;
+}
+
+//
+// Draw
+//
+Controller.drawMouse = function(e) {
+	if (e.touches) {
+		// Touch Enabled
+		for (var i = 1; i <= e.touches.length; i++) {
+			var p = getCoords(e.touches[i - 1]); // Get info for finger i
+			lastPoints[i] = paint(lastPoints[i].x, lastPoints[i].y, p.x, p.y);
+            mirrorPoints[i] = paint(mirrorPoints[i].x, mirrorPoints[i].y, 400-p.x, p.y);
+		}
+	}
+	else {
+		// Not touch enabled
+		var p = getCoords(e);
+		lastPoints[0] = paint(lastPoints[0].x, lastPoints[0].y, p.x, p.y);
+        mirrorPoints[0] = paint(mirrorPoints[0].x, mirrorPoints[0].y, 400-p.x, p.y);
+	}
+	context.closePath();
+	context.beginPath();
+
+	return false;
+}
+
+//
+// Paint on the canvas from the (s)tart to (e)nd
+//
+function paint(sX, sY, eX, eY) {
+	context.moveTo(sX, sY);
+    brush(eX,eY);
+	return { x: eX, y: eY };
+}
+
+//
+// Get the coordinates for a mouse or touch event
+//
+function getCoords(e) {
+	if (e.offsetX) {
+		return { x: e.offsetX, y: e.offsetY };
+	}
+	else if (e.layerX) {
+		return { x: e.layerX, y: e.layerY };
+	}
+	else {
+		return { x: e.pageX - canvas.offsetLeft, y: e.pageY - canvas.offsetTop };
+	}
+}
+  
+  
+//
+// Add a brush splodge onto the canvas
+//
 brush = function (x,y) {
 		var c = context,
 			D = 15,
