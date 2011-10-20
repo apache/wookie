@@ -11,7 +11,7 @@ rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 rem See the License for the specific language governing permissions and
 rem limitations under the License.
 
-set WOOKIE-VERSION=0.9.1-SNAPSHOT
+set WOOKIE-VERSION=0.9.2-SNAPSHOT
 set ROOT-FOLDER=%WOOKIE-VERSION%-incubating
 set SOURCE-FOLDER=source
 set SRC-BUILD-TAR=apache-wookie-%WOOKIE-VERSION%-incubating-src.tar.gz
