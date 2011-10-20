@@ -17,8 +17,8 @@
   <artifactId>${ivy.pom.artifactId}</artifactId>
   <packaging>${ivy.pom.packaging}</packaging>
   <version>${ivy.pom.version}</version>
-  <name>${ivy.pom.name}</name>
-  <description>${ivy.pom.description}</description>
+  <name>Apache Wookie parser</name>
+  <description>Apache Wookie W3C widget parser</description>
   <licenses>
 	<license>
       <name>The Apache Software License, Version 2.0</name>
