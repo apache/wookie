@@ -15,7 +15,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>${ivy.pom.groupId}</groupId> 
   <artifactId>${ivy.pom.artifactId}</artifactId>
-  <packaging>${ivy.pom.packaging}</packaging>
+  <packaging>jar</packaging>
   <version>${ivy.pom.version}</version>
   <name>Apache Wookie parser</name>
   <description>Apache Wookie W3C widget parser</description>
