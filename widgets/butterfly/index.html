@@ -18,7 +18,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="target-densitydpi=device-dpi, width=480, user-scalable=no">
     <title>Butterfly</title>
     <style type="text/css"><!--
       * {
@@ -80,7 +80,7 @@
         }
       }
       /*
-       * Make the buttons and viewport thinner when short on horizontal space
+       * Make the buttons thinner when short on horizontal space
        *
        */
       @media all and (max-width: 470px){
@@ -88,12 +88,21 @@
           width:32px;
         }
       }
+      /*
+       * Make the buttons even thinner when short on horizontal space
+       *
+       */
+      @media all and (max-width: 400px){
+        button{
+          width:20px;
+        }
+      }
       
     --></style>
     	<!--[if lt IE 9]><script type="text/javascript" src="scripts/flashcanvas.js"></script><![endif]-->
         <script type="text/javascript" src="scripts/butterfly.js"></script>
   </head>
-  <body onload="Controller.init()">
+  <body onload="Controller.init();">
       <div id="wrapper">
         <div id="canvas-wrapper">
         <canvas id="imageView" width="400" height="300">
