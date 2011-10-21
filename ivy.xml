@@ -39,9 +39,9 @@
 	</publications>
 
     <dependencies>
-        <dependency org="org.apache.wookie" name="wookie-java-connector" rev="latest.integration" conf="deploy->default">
+        <dependency org="org.apache.wookie" name="wookie-java-connector" rev="0.9.1-incubating" conf="deploy->default">
         </dependency>
-        <dependency org="org.apache.wookie" name="wookie-parser" rev="latest.integration" conf="deploy->default">
+        <dependency org="org.apache.wookie" name="wookie-parser" rev="0.9.1-incubating" conf="deploy->default">
         </dependency>
         
         <!--  Uncomment to include JCR persistence manager -->
