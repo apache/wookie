@@ -41,6 +41,14 @@ var Controller = {
     }
 }
 
+Controller.push = function(button){
+    var buttons = document.getElementsByTagName("button");
+    for (var i=0;i<buttons.length;i++){
+      buttons[i].style.border="2px solid black";
+    }
+    button.style.border="2px solid white";
+}
+
 Controller.init_canvas = function() {
     //
     // Find the canvas element.
@@ -56,7 +64,7 @@ Controller.init_canvas = function() {
       return;
     }
     
-    canvas.style.cursor="crosshair";
+    canvas.style.cursor="url(images/brush.png),auto";
 
     //
     // Get the 2D canvas context.
@@ -82,6 +90,7 @@ Controller.init_canvas = function() {
     	// Attach the mouse and touch event listeners.
         canvas.onmousedown = Controller.startDraw;
 		canvas.onmouseup = Controller.stopDraw;
+        
 		canvas.ontouchstart = Controller.startDraw;
 		canvas.ontouchstop = Controller.stopDraw;
 		canvas.ontouchmove = Controller.drawMouse;
@@ -210,7 +219,7 @@ mask = function(){
     context.rotate(Math.PI);
     context.moveTo(0,300);
     // if IE - TODO butterfly image is not quite drawn correctly
-    if (canvas.attachEvent) {
+    if (!context.bezierCurveTo) {
     	context.quadraticCurveTo(80.1783,301.0774,134.5506,273.2636,168.0000,228.0000);
     	context.quadraticCurveTo(174.6660,215.3346,181.3340,202.6654,188.0000,190.0000);
     	context.quadraticCurveTo(189.3332,194.9995,190.6668,200.0005,192.0000,205.0000);    

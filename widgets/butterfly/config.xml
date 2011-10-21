@@ -18,7 +18,7 @@
  		id="http://wookie.apache.org/widgets/butterfly"
  		version="0.1"
         width="420"
-        height="330"
+        height="350"
         >
   <name>Butterfly</name>
   <description>Paint colourful butterflies!</description>

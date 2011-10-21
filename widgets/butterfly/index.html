@@ -18,42 +18,85 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, user-scalable=no">
     <title>Butterfly</title>
     <style type="text/css"><!--
-      body{
-        margin:0px;
-        padding:0px;
-        cursor: crosshair;
+      * {
+        margin: 0;
       }
-      #imageView { 
-        display: block;
-        margin: 0; border: 0; 
-        background: url(images/background.jpg);
-        cursor: crosshair;
-        position:absolute;
+      html, body{
+        height: 100%;
+        padding:0px;
+        cursor:url(images/brush.png),auto;
+      }
+      #wrapper {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        margin: 0 auto -60px;
+        background: url(images/background.jpg) center;
+      }
+      #canvas-wrapper {
+        padding-top: 20px;
+        width: 400px;
+        margin: auto;
+      }
+      #imageView {
+        border: 0; 
+        cursor:url(images/brush.png),auto;
+      }
+      #push {
+        height: 60px;   
+        clear: both; 
       }
       #toolbox{
-        position:absolute;
-        margin-top: 300px;
-        text-align:center;
         background: black;
-        width: 400px;
-        height: 26px;
-      }
-      button {
-        border: 0;
-        width: 32px;
-        border: 1px solid gray;
-        height: 20px;
+        width: 100%;
+        text-align:center;
+        height: 60px;
+        margin: auto; 
         cursor: pointer;
       }
+      button {
+        border-radius: 3px;
+        width: 38px;
+        border: 2px solid black;
+        height: 50px;
+        box-shadow:inset 0 0 10px #ffffff;
+      }
+      /*
+       * Make the buttons smaller when we have a shorter screen (e.g. small widget space)
+       * By default the buttons are quite tall to make them easier for touch interfaces
+       */
+      @media all and (max-height: 400px){
+        button{
+          height:20px;
+        }
+        #push, #toolbox{
+           height: 26px;
+        }
+        #wrapper{
+            margin: 0 auto -26px;
+        }
+      }
+      /*
+       * Make the buttons and viewport thinner when short on horizontal space
+       *
+       */
+      @media all and (max-width: 470px){
+        button{
+          width:32px;
+        }
+      }
+      
     --></style>
     	<!--[if lt IE 9]><script type="text/javascript" src="scripts/flashcanvas.js"></script><![endif]-->
         <script type="text/javascript" src="scripts/butterfly.js"></script>
   </head>
   <body onload="Controller.init()">
-      <canvas id="imageView" width="400" height="300">
+      <div id="wrapper">
+        <div id="canvas-wrapper">
+        <canvas id="imageView" width="400" height="300">
         <p>Unfortunately, your browser is currently unsupported by this widget.  
         We are sorry for the inconvenience. Please use one of the 
         supported browsers listed below:</p>
@@ -61,18 +104,21 @@
           href="http://www.mozilla.com">Firefox</a>, <a 
           href="http://www.apple.com/safari">Safari</a>, and <a 
           href="http://www.konqueror.org">Konqueror</a>.</p>
-      </canvas>
+        </canvas>
+        </div>
+        <div id="push"></div>
+    </div>
     <div id="toolbox">
-        <button style="background-color: #F66" onclick="Controller.setRGB(255,64,64)"></button>
-        <button style="background-color: #66F"  onclick="Controller.setRGB(64,64,255)"></button>
-        <button style="background-color: #6F6"  onclick="Controller.setRGB(64,255,64)"></button>
-        <button style="background-color: #F96"  onclick="Controller.setRGB(255,128,64)"></button>
-        <button style="background-color: #FF6"  onclick="Controller.setRGB(255,255,64)"></button>
-        <button style="background-color: #F6F"  onclick="Controller.setRGB(255,64,255)"></button>
-        <button style="background-color: #909"  onclick="Controller.setRGB(128,0,128)"></button>
-        <button style="background-color: #9CF"  onclick="Controller.setRGB(128,192,255)"></button>
-        <button style="background-color: black"  onclick="Controller.setRGB(0,0,0)"></button>
-        <button style="background-color: white"  onclick="Controller.setRGB(255,255,255)"></button>
+        <button style="background-color: #F66" onclick="Controller.setRGB(255,64,64);Controller.push(this);"></button>
+        <button style="background-color: #66F"  onclick="Controller.setRGB(64,64,255);Controller.push(this);"></button>
+        <button style="background-color: #6F6"  onclick="Controller.setRGB(64,255,64);Controller.push(this);"></button>
+        <button style="background-color: #F96"  onclick="Controller.setRGB(255,128,64);Controller.push(this);"></button>
+        <button style="background-color: #FF6"  onclick="Controller.setRGB(255,255,64);Controller.push(this);"></button>
+        <button style="background-color: #F6F"  onclick="Controller.setRGB(255,64,255);Controller.push(this);"></button>
+        <button style="background-color: #909"  onclick="Controller.setRGB(128,0,128);Controller.push(this);"></button>
+        <button style="background-color: #9CF"  onclick="Controller.setRGB(128,192,255);Controller.push(this);"></button>
+        <button style="background-color: black"  onclick="Controller.setRGB(0,0,0);Controller.push(this);"></button>
+        <button style="background-color: white"  onclick="Controller.setRGB(255,255,255);Controller.push(this);"></button>
         <button style="background: url(images/splat.png) no-repeat"  onclick="Controller.fill()"></button>
     </div>
   </body>
