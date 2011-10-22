@@ -8,6 +8,7 @@ connector/java/build.properties
 connector/java/build.xml
 connector/java/ivy.xml
 connector/java/README.txt
+connector/java/pom-template.xml
 connector/java/version.properties
 connector/php/
 connector/python/
@@ -25,6 +26,7 @@ parser/java/build.properties
 parser/java/build.xml
 parser/java/ivy.xml
 parser/java/README.txt
+parser/java/pom-template.xml
 parser/java/test.wgt
 project_admin/
 schemas/
@@ -49,3 +51,4 @@ UPGRADING
 NOTICE
 README
 RELEASE_NOTES
+pom-template.xml
