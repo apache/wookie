@@ -143,6 +143,9 @@
 	    </java>    	    	
 	</target>	
 
+	<!-- buildbot moans of this is not here -->
+	<target name="jar"/>
+	
 	<target name="jar-compiled" unless="not-subproject" depends="test-calling-project,clean-dist, compile-core">
     	<mkdir dir="${dist.dir}"/>
     	<!-- Create compiled jar -->
