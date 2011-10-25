@@ -26,9 +26,9 @@
 	</configurations>
 	    
     <dependencies>
-        <dependency org="org.apache.wookie" name="wookie-java-connector" rev="latest.integration" conf="deploy->default">
+        <dependency org="org.apache.wookie" name="wookie-java-connector" rev="0.9.2-incubating-SNAPSHOT" conf="deploy->default">
         </dependency>
-        <dependency org="org.apache.wookie" name="wookie-parser" rev="latest.integration" conf="deploy->default">
+        <dependency org="org.apache.wookie" name="wookie-parser" rev="0.9.2-incubating-SNAPSHOT" conf="deploy->default">
         </dependency>
         
         <!--  Uncomment to include JCR persistence manager -->
@@ -76,9 +76,9 @@
       	-->  
         <dependency  org="org.apache.shindig" name="shindig-common" transitive="false" rev="2.0.0" conf="deploy->default">
         </dependency>
-        <dependency  org="com.google.collections" name="google-collections" rev="latest.integration" conf="deploy->default">
+        <dependency  org="com.google.collections" name="google-collections" rev="1.0-rc2" conf="deploy->default">
         </dependency>
-         <dependency org="commons-codec" name="commons-codec" rev="latest.integration" conf="deploy->default">
+         <dependency org="commons-codec" name="commons-codec" rev="1.5" conf="deploy->default">
         </dependency>
         
         
