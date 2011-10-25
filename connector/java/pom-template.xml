@@ -22,10 +22,10 @@
   
   <groupId>${ivy.pom.groupId}</groupId>
   <artifactId>${ivy.pom.artifactId}</artifactId>
-  <packaging>${ivy.pom.packaging}</packaging>
+  <packaging>jar</packaging>
   <version>${ivy.pom.version}</version>
-  <name>${ivy.pom.name}</name>
-  <description>${ivy.pom.description}</description>
+  <name>Apache Wookie java connector</name>
+  <description>Apache Wookie remote java connector</description>
   <licenses>
 	<license>
       <name>The Apache Software License, Version 2.0</name>

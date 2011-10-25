@@ -230,7 +230,7 @@
   	<ant antfile="${wookie.widgets.dir}/${widget.shortname}/build.xml" target="build-widget"/>
   </target>
 	
-  <target name="local-publish-subprojects">
+  <target name="local-publish-subprojects" description="Publishes all sub projects (i.e. java connector and parser projects) to the local repository found under user.home/.m2">
   	<!-- localy publish sub-projects -->
   	<ant dir="${wookie.connector.dir}/java" target="publish-local" inheritAll="false"/>
   	<ant dir="${wookie.parser.w3c.dir}/java" target="publish-local" inheritAll="false"/>

@@ -11,17 +11,17 @@ rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 rem See the License for the specific language governing permissions and
 rem limitations under the License.
 
-set WOOKIE-VERSION=0.9.2-SNAPSHOT
-set ROOT-FOLDER=%WOOKIE-VERSION%-incubating
+set WOOKIE-VERSION=0.9.2-incubating-SNAPSHOT
+set ROOT-FOLDER=%WOOKIE-VERSION%
 set SOURCE-FOLDER=source
-set SRC-BUILD-TAR=apache-wookie-%WOOKIE-VERSION%-incubating-src.tar.gz
-set SRC-BUILD-ZIP=apache-wookie-%WOOKIE-VERSION%-incubating-src.zip
+set SRC-BUILD-TAR=apache-wookie-%WOOKIE-VERSION%-src.tar.gz
+set SRC-BUILD-ZIP=apache-wookie-%WOOKIE-VERSION%-src.zip
 set BINARY-FOLDER-STANDALONE=binary/standalone
-set BINARY-STANDALONE-TAR=apache-wookie-%WOOKIE-VERSION%-incubating-standalone.tar.gz
-set BINARY-STANDALONE-ZIP=apache-wookie-%WOOKIE-VERSION%-incubating-standalone.zip
+set BINARY-STANDALONE-TAR=apache-wookie-%WOOKIE-VERSION%-standalone.tar.gz
+set BINARY-STANDALONE-ZIP=apache-wookie-%WOOKIE-VERSION%-standalone.zip
 set BINARY-FOLDER-WAR=binary/war
-set BINARY-WAR-TAR=apache-wookie-%WOOKIE-VERSION%-incubating-war.tar.gz
-set BINARY-WAR-ZIP=apache-wookie-%WOOKIE-VERSION%-incubating-war.zip
+set BINARY-WAR-TAR=apache-wookie-%WOOKIE-VERSION%-war.tar.gz
+set BINARY-WAR-ZIP=apache-wookie-%WOOKIE-VERSION%-war.zip
 
 cd %ROOT-FOLDER%/%SOURCE-FOLDER%
 gpg2 --armor --output %SRC-BUILD-TAR%.asc --detach-sig %SRC-BUILD-TAR%

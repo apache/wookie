@@ -15,7 +15,7 @@
   limitations under the License.
 -->
 <ivy-module version="2.0">
-    <info organisation="org.apache.wookie" module="wookie" revision="0.9.2-SNAPSHOT"/>
+    <info organisation="org.apache.wookie" module="wookie" revision="0.9.2-incubating-SNAPSHOT"/>
     
     <configurations>
       <conf name="deploy" description="Provide the necessary files and libraries to deploy in a production environment"/>
@@ -23,7 +23,20 @@
 	  <conf name="dev" extends="deploy, runtime" description="Provide the necessary files and libraries to run in standalone (development) mode"/>
 	  <conf name="test" extends="dev" visibility="private" description="for our testing frameowrk"/>
 	  <conf name="ddlutils" visibility="private" description="Provide the necessary libraries to invoke DDLUtils schema generation"/>
+  	  <conf name="deploy-with-src-and-docs" extends="deploy" description="Used for publishing maven artifacts to the snapshot repo"/>
+	  <conf name="deploy-signed" extends="deploy-with-src-and-docs" description="Used for publishing maven artifacts to the staging area repo"/>	  
 	</configurations>
+	
+	<publications xmlns:e="urn:ant.apache.org:ivy-extras">
+	  <artifact name="wookie" conf="deploy" type="pom" ext="pom" />
+      <artifact name="wookie" conf="deploy" type="war" />
+      <artifact name="wookie" conf="deploy-with-src-and-docs" type="sources" ext="jar" e:classifier="sources"/>
+      <artifact name="wookie" conf="deploy-with-src-and-docs" type="javadoc" ext="jar" e:classifier="javadoc"/>
+      <artifact name="wookie" conf="deploy-signed" type="war.asc" ext="war.asc" />
+      <artifact name="wookie" conf="deploy-signed" type="pom.asc" ext="pom.asc"/>      
+      <artifact name="wookie" conf="deploy-signed" type="sources.asc" ext="jar.asc" e:classifier="sources"/>
+	  <artifact name="wookie" conf="deploy-signed" type="javadoc.asc" ext="jar.asc" e:classifier="javadoc"/>
+	</publications>	
 	    
     <dependencies>
         <dependency org="org.apache.wookie" name="wookie-java-connector" rev="0.9.2-incubating-SNAPSHOT" conf="deploy->default">

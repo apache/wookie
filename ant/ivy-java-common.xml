@@ -18,7 +18,7 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:m="http://ant.apache.org/ivy/maven" xmlns:openpgp="antlib:org.apache.commons.openpgp.ant">
 
     <import file="ivy-common.xml"/>
-	
+
 	<property name="project.lib.dir" location="${project.webapp.dir}/WEB-INF/lib" />
 
 	<property name="project.core.src.dir" location="src" />
@@ -142,8 +142,8 @@
             <syspropertyset refid="run.syspropertyset.id"/>
 	    </java>    	    	
 	</target>	
-    
-    <target name="jar" depends="test-calling-project, clean-dist, compile-core" unless="not-subproject" description="--> make a jar file for this project">
+
+	<target name="jar-compiled" unless="not-subproject" depends="test-calling-project,clean-dist, compile-core">
     	<mkdir dir="${dist.dir}"/>
     	<!-- Create compiled jar -->
         <jar destfile="${dist.dir}/${ant.project.name}.jar">
@@ -162,7 +162,42 @@
 				<attribute name="Implementation-Version" value="${version}"/>
 			</manifest>
         </jar>
-    	
+	</target>
+	
+	<target name="jar-javadoc" depends="clean-dist, compile-core">
+		<!-- Create javadoc JAR -->    	
+    	<mkdir dir="${dist.dir}/javadoc/"/>
+    	<javadoc packagenames="*"
+			sourcepath="${project.core.src.dir}"
+			destdir="${dist.dir}/javadoc"
+			author="true"
+			version="true"
+			classpathref="project.core.class.path"
+			use="true"
+			windowtitle="${ant.project.name}-${version}"
+			doctitle="&lt;h1&gt;${ant.project.name}-${version}&lt;/h1&gt;">
+    		<bottom><![CDATA[<i>2011 Apache Software Foundation.</i>]]></bottom>
+    	</javadoc>
+    	<jar destfile="${dist.dir}/${ant.project.name}-javadoc.jar">
+    		<fileset dir="${dist.dir}/javadoc"/>
+			<metainf dir="../../">
+			<include name="LICENSE"/>
+			<include name="NOTICE"/>
+				<include name="DISCLAIMER"/>
+			</metainf>    
+        	<manifest>				
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+				<attribute name="Implementation-Title" value="${ant.project.name}"/>
+				<attribute name="Implementation-Version" value="${version}"/>
+			</manifest>   		
+    	</jar>
+    	<!--remove folder-->
+    	<delete dir="${dist.dir}/javadoc" />
+	</target>
+    
+    <target name="jar-sources" depends="clean-dist, compile-core"  description="--> make a jar file for this project">
+    	<mkdir dir="${dist.dir}"/>
     	<!-- Create source JAR -->
     	<jar destfile="${dist.dir}/${ant.project.name}-sources.jar">
     		<fileset dir="${project.core.src.dir}">
@@ -180,50 +215,115 @@
 				<attribute name="Implementation-Version" value="${version}"/>
 			</manifest>   		
     	</jar>
-
-    	<!-- Create javadoc JAR -->    	
-    	<mkdir dir="${dist.dir}/javadoc/"/>
-    	<javadoc packagenames="*"
-			sourcepath="${project.core.src.dir}"
-			destdir="${dist.dir}/javadoc"
-			author="true"
-			version="true"
-			classpathref="project.core.class.path"
-			use="true"
-			windowtitle="${ant.project.name}-${version}"
-			doctitle="&lt;h1&gt;${ant.project.name}-${version}&lt;/h1&gt;">
-    		<bottom><![CDATA[<i>2011 Apache Software Foundation.</i>]]></bottom>
-    	</javadoc>
-    	<jar destfile="${dist.dir}/${ant.project.name}-javadoc.jar">
-    		<fileset dir="${dist.dir}/javadoc"/>
-			<metainf dir="../../">
-				<include name="LICENSE"/>
-				<include name="NOTICE"/>
-				<include name="DISCLAIMER"/>
-			</metainf>    
-        	<manifest>				
-				<attribute name="Built-By" value="${user.name}"/>
-				<attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
-				<attribute name="Implementation-Title" value="${ant.project.name}"/>
-				<attribute name="Implementation-Version" value="${version}"/>
-			</manifest>   		
-    	</jar>
-    	<!--remove folder-->
-    	<delete dir="${dist.dir}/javadoc" />
     </target>
 	
+	<!-- TODO - figure how to call NOT from init-war, rather then have 2 similar methods -->
     <target name="test-calling-project">
     	<condition property="not-subproject">
     		<equals arg1="${ant.project.name}" arg2="wookie"/>
     	</condition>
-    </target>	
+    </target>
 
+	<target name="test-calling-project-true">
+	   	<condition property="subproject">
+			<not>
+	   			<equals arg1="${ant.project.name}" arg2="wookie"/>
+	   		</not>
+	   	</condition>
+	</target>
+	
+	<target name="init-war" unless="subproject" depends="test-calling-project-true" >		
+		<ivy:cachepath pathid="project.core.class.path" conf="dev" />
+		<copy todir="${servletEngine.webapp.dir}/${ant.project.name}/WEB-INF/classes">
+			<fileset dir="${project.build.classes.dir}" />
+		</copy>
+
+		<copy todir="${servletEngine.webapp.dir}/${ant.project.name}">
+			<fileset dir="${project.webapp.dir}" />
+		</copy>
+		<ivy:retrieve conf="deploy" pattern="${servletEngine.webapp.dir}/${ant.project.name}/WEB-INF/lib/[artifact]-[revision].[ext]"/>		
+		<antcall target="post-deploy-webapp" inheritRefs="true"/>		
+		<echo>Building war</echo>
+
+		<!-- back the widgetserver.properties file up -->
+		<copy file="${build.dir}/webapp/wookie/WEB-INF/classes/widgetserver.properties"
+		         tofile="${build.dir}/widgetserver.properties" overwrite="true"/>
+
+		<!-- update widgetserver.properties file so that it points to mysql as db type-->
+		<copy file="${project.core.src.dir}/widgetserver.properties"
+		         todir="${build.dir}/webapp/wookie/WEB-INF/classes/" overwrite="true">
+			<filterset>
+			    <filter token="PERSISTENCE_MANAGER_CLASSNAME" value="org.apache.wookie.beans.jpa.JPAPersistenceManager"/>
+		    	<filter token="DATABASE_TYPE" value="mysql"/>
+		        <filter token="REPOSITORY_USER" value=""/>
+		        <filter token="REPOSITORY_PASSWORD" value=""/>
+				<filter token="REPOSITORY_ROOTPATH" value=""/>
+				<filter token="REPOSITORY_WORKSPACE" value=""/>
+		    </filterset>
+		</copy>
+
+		<!-- build war file -->
+		<war
+			destfile="${dist.dir}/wookie.war"
+			webxml="${build.dir}/webapp/wookie/WEB-INF/web.xml">
+			<lib dir="${build.dir}/webapp/wookie/WEB-INF/lib">
+				<exclude name="derby-10.2.1.6.jar"/>
+			</lib>
+			<classes dir="${build.dir}/webapp/wookie/WEB-INF/classes" />
+			<fileset dir="${build.dir}/webapp/wookie/">
+				<exclude name="WEB-INF/classes/" />
+				<exclude name="WEB-INF/lib/" />
+			</fileset>
+			<metainf dir=".">
+				<include name="NOTICE"/>
+				<include name="DISCLAIMER"/>
+				<include name="UPGRADING"/>
+			</metainf>
+			<metainf dir="etc/release/war/">
+				<include name="LICENSE"/>
+			</metainf>
+		</war>
+
+		<!-- put original widgetserver.properties file back -->
+		<copy file="${build.dir}/widgetserver.properties"
+			tofile="${build.dir}/webapp/wookie/WEB-INF/classes/widgetserver.properties"
+			overwrite="true" />
+		<delete file="${build.dir}/widgetserver.properties" />
+
+	</target>	
+
+	<!-- make sure the credentials have been passed via command line -->
 	<target name="test-upload-credentials">
 		<fail unless="upload.user" message="supply upload.user on the command line"/>
 		<fail unless="upload.password" message="supply upload.password on the command line"/>
 	</target>
+	
+	<!-- 
+	Checks to see if the ivysettings is available and sets a property if so.
+	This is because when you run build.xml -> local-publish-subprojects
+	the current path is set to one of the subprojects i.e. connector/java
+	But if you run build.xml -> ivy-java-common.xml -> publish-local
+	then the root "wookie" project is set to the top level. The 
+	following 4 targets figure out where the properties files are relative
+	to whre the current directory is.  It is used eventually in the
+	'sign-artifacts' target below.
+	-->
+	<target name="check-first-location-for-settings">
+	    <available file="../../ant/ivysettings.xml" property="firstivysettings.present"/>
+	</target>
+	<target name="check-second-location-for-settings">
+	    <available file="ant/ivysettings.xml" property="secondivysettings.present"/>
+	</target>	
+	<target name="checkfirstrootivyrootpath" depends="check-first-location-for-settings" if="firstivysettings.present">
+		<property name="calculated-ivy-path" value="../../ant/ivysettings.xml"/>
+		<property name="calculated-this-path" value="../../ant/ivy-java-common.xml"/>
+	</target>		
+	<target name="checksecondrootivyrootpath" depends="check-second-location-for-settings" if="secondivysettings.present">
+		<property name="calculated-ivy-path" value="ant/ivysettings.xml"/>
+		<property name="calculated-this-path" value="ant/ivy-java-common.xml"/>
+	</target>
 		
-    <target name="publish" depends="clean-build, jar" description="--> publish this project in the ivy repository">
+    <target name="publish" depends="clean-build, jar-compiled" description="--> publish this project in the ivy repository">
         <ivy:publish
     	   artifactspattern="[artifact].[ext]"
            resolver="shared"
@@ -244,11 +344,10 @@
 	 -Dpgp.password=yourpgppassword -Dpgp.keyId=yourpgpkeyId
 	================================================================================
 	-->
-	<target name="sign-artifacts">				
+	<target name="sign-artifacts" depends="checkfirstrootivyrootpath, checksecondrootivyrootpath">					
 		<fail unless="pgp.password" message="supply -Dpgp.password=yourpassword on the command line"/>
 		<fail unless="pgp.keyId" message="supply -Dpgp.keyId=yourkeyid on the command line"/>
-		
-		<ivy:settings id="sign.settingsId" file="../../ant/ivysettings.xml"/>		
+		<ivy:settings id="sign.settingsId" file="${calculated-ivy-path}"/>
 		<ivy:cachepath organisation="org.apache.commons" settingsRef="sign.settingsId" 
 			transitive="false" log="download-only" module="commons-openpgp" revision="1.0-SNAPSHOT" 
 			inline="true" pathid="openpgp.classpath"/>
@@ -270,7 +369,7 @@
 				<path refid="openpgp.classpath"/>
 				<path refid="openpgp.classpath"/>
 			</classpath>
-			<arg line="-f ../../ant/ivy-java-common.xml"/>
+			<arg line="-f ${calculated-this-path}"/>
 			<arg line="sign-internal"/>
 			<arg line="-Dpgp.password=${pgp.password}"/>
 			<arg line="-Dpgp.keyId=${pgp.keyId}"/>
@@ -288,13 +387,14 @@
 			asciiarmor="true">
 			<fileset dir="${local.dist.dir}">
 				<include name="**/*.pom"/>
-				<include name="**/*.jar"/>			
+				<include name="**/*.jar"/>
+				<include name="**/*.war"/>
 			</fileset>
 		</openpgp:signer>		
 	</target>
 	
-    <target name="make-subproject-pom" unless="not-subproject">
-    	<echo>Locally publishing ${ant.project.name}-${version}</echo>
+    <target name="make-subproject-pom">
+    	<echo>Making POM file: ${ant.project.name}-${version}</echo>
 		<delete file="${dist.dir}/ivy.xml"/> <!-- delete last produced ivy file to be sure a new one will be generated -->
     	<tstamp>
 			<format property="now" pattern="yyyyMMddHHmmss"/>
@@ -320,20 +420,20 @@
 	 -Dupload.user=myusername -Dupload.password=mypassword
 	================================================================================
 	-->
-  	<target name="publish-local" depends="test-calling-project, clean-dist, jar, make-subproject-pom" unless="not-subproject" description="--> publish this project in the local ivy repository">    	
+  	<target name="publish-local" depends="clean-dist, jar-compiled, jar-sources, jar-javadoc, init-war, make-subproject-pom" description="--> publishes this project in the local repository (found under user.home/.m2). Run this from the root to publish the 'wookie' project, as well as all subprojects. To only publish the subprojects see instead 'publish-local'">    	
     	<ivy:publish resolver="local"
     		pubrevision="${version}"
     		forcedeliver="true"
     		publishivy="false"
     		srcivypattern="${dist.dir}/ivy.xml"
 			pubdate="${now}"
-    		conf="deploy"
+    		conf="deploy, deploy-with-src-and-docs"
     		overwrite="true"    		    		
     		artifactspattern="${dist.dir}/[artifact](-[classifier]).[ext]"/>    	
         <echo message="project ${ant.project.name} published locally with version ${version}" />
     </target>	
 	
-    <target name="publish-maven-snapshot-artifacts" depends="test-upload-credentials, clean-dist, jar, make-subproject-pom" description="--> publishes this project in the apache snapshot repository. Dont run this from the root, see instead 'publish-subproject-artifacts-to-snapshot-repo'">
+    <target name="publish-maven-snapshot-artifacts" depends="test-upload-credentials, clean-dist, jar-compiled, jar-sources, jar-javadoc, init-war, make-subproject-pom" description="--> publishes this project in the apache snapshot repository. Run this from the root to publish the 'wookie' project, as well as all subprojects. To only publish the subprojects see instead 'publish-subproject-artifacts-to-snapshot-repo'">
     	<ivy:publish resolver="apache-snapshot-artifacts"
 			pubrevision="${version}"
 			forcedeliver="true"
@@ -342,11 +442,11 @@
 			pubdate="${now}"
     		conf="deploy, deploy-with-src-and-docs"
 			overwrite="true"
-			artifactspattern="${dist.dir}/[artifact](-[classifier]).[ext]"/>    		    		    		    	    	
+			artifactspattern="${dist.dir}/[artifact](-[classifier]).[ext]"/>
     	<echo message="project ${ant.project.name} published to nexus snapshot repo with version ${version}" />    	
     </target>
 
-    <target name="publish-maven-release-artifacts" depends="test-upload-credentials, clean-dist, jar, make-subproject-pom, sign-artifacts" description="--> publishes this project in the apache staging area repository (prior to release). Dont run this from the root, see instead 'publish-subproject-artifacts-to-release-repo'">
+    <target name="publish-maven-release-artifacts" depends="test-upload-credentials, clean-dist, jar-compiled, jar-sources, jar-javadoc, init-war, make-subproject-pom, sign-artifacts" description="--> publishes this project in the apache staging area repository (prior to release). Run this from the root to publish the 'wookie' project, as well as all subprojects. To only publish the subprojects see instead 'publish-subproject-artifacts-to-release-repo'">
     	<ivy:publish resolver="apache-release-artifacts"
 			pubrevision="${version}"
 			forcedeliver="true"
