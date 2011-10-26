@@ -87,16 +87,16 @@ is generated. For example, you can write:
 
 <p>Welcome to the ${widget.name}</p>
 
-You can also call methods in javascripr provided by any of the
+You can also call methods in javascript provided by any of the
 templates used to create the widget, for example:
 
 <form method="post" 
-      onsubmit="javascript:${widget.shortname}_autho_controller.authenticate(username, password)">
+      onsubmit="javascript:${widget.shortname}_auth_controller.authenticate(username, password)">
 
 FIXME - bad practice to have JS in HTML file - shoudl be added with load event or JQ/JQM mechanisms. As you point out above
 can use tokens in JS
 
-What tokens are avaialable depends on the templates used, but in
+What tokens are available depends on the templates used, but in
 generally anything that appears in the widget.properties file can be
 used as a token.
 
@@ -104,39 +104,39 @@ used as a token.
 
 Each template can provide complete CSS files which will be copied into
 widgets just like any other resources. In addition templates can add
-(or modify) CSS rules to those defined in parent templates.
+to or modify CSS rules defined in parent templates.
 
 To create additive CSS simply add files with names in the form of
 "foo.css.add". The contents of these files will be added to the start
-of a final CSS file called "all.css". Your "index.html" should define
-this stylesheet.
+of a final CSS file called "all.css". 
 
-FIXME - this is a little confusing from the point of widget creation where there is no index.hmtl.
-Also the last sentence doesn't seem to make sense as the templating system will process the .add files
-why 'define' it in the index.html (and what does define mean?)
-Shouldn't the .add content be at the and of the generated CSS as that has precidence according to cascade rules
+The base template provides a link to the "all.css" in its "index.html" file. Therefore, if your template
+should extends the base template you do not need to explicitly include "all.css". However, any additional
+CSS files you provide will not be included automatically so you will need to provide a new "index.html" with
+appropriate style references.
+
+Note, there is a feature request to improve the handling of CSS provided by sub-templates or widgets see: 
+https://issues.apache.org/jira/browse/WOOKIE-276
 
 *** Scripts
 
-**** TODO Action #1 explain what the controller.js is 			 :#1:
-
 Each template can provide one or more controller Javascript
-definitions. These are named "foo_controller.js". When a widget is
+definitions. The controller code is where the UI and the data 
+model are wired together. 
+
+Templates should provide any controller code in files named 
+"PROJECTNAME_controller.js". When a widget is
 generated from a template all its controller javascript files, along
 with those defined in any parents, are concatenated into a single
 "controller.js" file. This allows each template to define Javascript
 controller objects.
 
-Note that there is currently no way to make one templates Controllers
-override anothers. So you will always end up with all controllers
-defined in all of the templates. For this reason it is important that
-each controller object has a unique neame. Therefore, we recommend
+It is important that
+each controller object has a unique name. Therefore, we recommend
 that you define your controllers using tokens that will be replaced
-during widget generation.
-
-For example, the login template defines an "auth_controller.js" which
-provides a controller for authorisation activities. This file defines
-an object as follows:
+during widget generation. For example, the login template defines an 
+"auth_controller.js" which provides a controller for authorisation 
+activities. This file defines an object as follows:
 
 var ${widget.shortname}_auth_controller = {
   basic_auth:function(username, password) {
@@ -144,17 +144,24 @@ var ${widget.shortname}_auth_controller = {
   }
 }
 
-FIXME: FYI previously you verbally stated tokens only used in 'content'. This is behaviour </nit>
-
 We then need to use the same token replacement approach when this
-object is used. An example of this is shown in the section on
-"template content".
+object is used. For example, calling the basid_auth function defined 
+above is done with "${widget.shortname}_auth_controller.basic_auth(...)"
 
-FIXME: again not quite clear what widget creators need todo to get JS included. it's in there but doesn't jump out. Also can order be controlled?
+You can also provide other JS files by adding them to the scripts 
+directory.
+
+As with CSS the default index.html provided by the base template loads
+the controller.js file. It does not load other JS you might provide in 
+other templates. In order to to ensure these are loaded you need to 
+provide a new index.html with the appropriate <script...> tags.
+
+A feature request has been made to enhance this handling of Javascript,
+see https://issues.apache.org/jira/browse/WOOKIE-277
 
 *** Test widgets
 
-When creating a new tempate you should also create a new test
+When creating a new template you should also create a new test
 widget. Test widgets are used to demonstrate and test the
 functionality of widget templates.
 
