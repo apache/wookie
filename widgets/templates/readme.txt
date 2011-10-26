@@ -60,7 +60,7 @@ These properties can then be reused in any of the files by inserting
 "${property.name}". When the template is used to create a widget these 
 properties will be expanded.
 
-Alternatively properties can values can be provided in files. This is 
+Alternatively properties values can be provided in files. This is 
 useful for properties that are intended to contain lots of information 
 or formatting, such as HTML snippets.
 
