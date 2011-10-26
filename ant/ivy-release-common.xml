@@ -169,6 +169,7 @@
 		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/RELEASE_NOTES" overwrite="yes" />
 		<copy file="NEW_AND_NOTEWORTHY" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/NEW_AND_NOTEWORTHY" overwrite="yes" />
 		<copy file="UPGRADING" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/UPGRADING" overwrite="yes" />
+		<copy file="etc/release/war/NOTICE" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/NOICE" overwrite="yes" />
 		<!-- copy WAR readme-->
 		<copy file="etc/release/war/WAR_BUILD_NOTES"
 			tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/WAR_BUILD_NOTES"
@@ -233,7 +234,8 @@
 		<copy file="NEW_AND_NOTEWORTHY" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/NEW_AND_NOTEWORTHY" overwrite="yes" />
 		<copy file="UPGRADING" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/UPGRADING" overwrite="yes" />
 		<copy file="etc/release/standalone/LICENSE" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/LICENSE" overwrite="yes" />		
-
+		<copy file="etc/release/standalone/NOTICE" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/NOTICE" overwrite="yes" />
+		
 		<ivy:retrieve conf="runtime"
 			pattern="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/lib/[artifact]-[revision].[ext]" />
 
