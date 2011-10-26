@@ -1,0 +1,164 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="style/media.css" />
+<link rel="stylesheet" href="style/all.css" />
+
+<link rel="stylesheet"
+	href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
+<script type="text/javascript"
+	src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+<script type="text/javascript"
+	src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
+
+<script type="text/javascript" src="lib/XSLTransform.js"></script>
+<script type="text/javascript" src="scripts/controller.js"></script>
+
+<title>${widget.name}</title>
+</head>
+
+<body>
+	<div data-role="page" class="type-home" id="home" data-theme="d">
+		<div data-role="header">
+			<img class="logo" src="images/myExperiment_logo_32h.png"
+				alt="MyExperiment" title="MyExperiment Logo" />
+			<div class="header_title" id="view_title">${widget.name}</div>
+		</div>
+		<!-- /header -->
+
+		<div data-role="content">
+
+			<div data-role="collapsible" class="content-secondary" data-theme="c"
+				data-content-theme="c">
+				<h2>Search and Filter</h2>
+
+				<form
+					action="javascript:${widget.shortname}_browse_controller.submitSearchForm()"
+					method="get">
+					<div data-role="fieldcontain">
+						<label for="searchString">Search:</label> <input type="text"
+							name="searchString" id="searchString" value=""
+							placeholder="Search terms..." />
+					</div>
+<!-- 
+					<div data-role="fieldcontain">
+						<label for="filter-term-1" class="ui-hidden-accessible">Filter
+							term:</label> <input type="text" name="filter-term-1" id="filter-term-1"
+							value="" placeholder="Filter term..." /> <label
+							for="filter-by-1" class="ui-hidden-accessible">Filter in:</label>
+						<select name="filter-by-1" id="sort">
+							<option value="type">Type</option>
+							<option value="tag">Tag</option>
+							<option value="user">User</option>
+							<option value="license">Licence</option>
+							<option value="group">Group</option>
+							<option value="wsdl">WSDL</option>
+							<option value="curation">Curation</option>
+						</select>
+					</div>
+
+					<div data-role="fieldcontain">
+						<label for="filter-term-2" class="ui-hidden-accessible">Filter
+							term:</label> <input class="left" type="text" name="filter-term-2"
+							id="filter-term-2" value="" placeholder="Filter term..." /> <label
+							for="filter-by-2" class="ui-hidden-accessible">Filter in:</label>
+						<select name="filter-by-2" id="sort">
+							<option value="type">Type</option>
+							<option value="tag">Tag</option>
+							<option value="user">User</option>
+							<option value="license">Licence</option>
+							<option value="group">Group</option>
+							<option value="wsdl">WSDL</option>
+							<option value="curation">Curation</option>
+						</select>
+					</div>
+
+					<div data-role="fieldcontain">
+						<label for="filter-term-3" class="ui-hidden-accessible">Filter
+							term:</label> <input class="left" type="text" name="filter-term-3"
+							id="filter-term-3" value="" placeholder="Filter term..." /> <label
+							for="filter-by-3" class="ui-hidden-accessible">Filter in:</label>
+						<select name="filter-by-3" id="sort">
+							<option value="type">Type</option>
+							<option value="tag">Tag</option>
+							<option value="user">User</option>
+							<option value="license">Licence</option>
+							<option value="group">Group</option>
+							<option value="wsdl">WSDL</option>
+							<option value="curation">Curation</option>
+						</select>
+					</div>
+-->
+
+					<input type="submit" value="Search" />
+				</form>
+			</div>
+			<!-- /content-secondary -->
+
+			<div class="content-primary" id="content-primary">
+				<div id="results" data-role="collapsible-set">
+
+					<div class="result" data-role="collapsible" data-collapsed="true">
+						<h3>Result 1</h3>
+						<p>I'm the collapsible set content for section B.</p>
+					</div>
+
+					<div class="result" data-role="collapsible">
+						<h3>Result 2</h3>
+						<p>I'm the collapsible set content for section B.</p>
+					</div>
+
+					<div class="result" data-role="collapsible">
+						<h3>Result 3</h3>
+						<p>I'm the collapsible set content for section B.</p>
+					</div>
+				</div>
+			</div>
+			<!-- /content-primary -->
+		</div>
+		<!-- /content -->
+
+		<div data-role="footer" class="footer">
+			<div class="content">&copy; University of Oxford</div>
+			<a class="button" href="#help" data-role="button" data-rel="dialog"
+				data-transition="pop" data-icon="info" data-iconpos="left">Help</a>
+
+		</div>
+		<!-- /footer -->
+	</div>
+	<!-- /page -->
+
+	<div data-role="dialog" id="help">
+		<div data-role="header">
+			<h4>Help: ${widget.name}</h4>
+		</div>
+		<!-- /header -->
+
+		<div data-role="content" class="ui-content" id="content-help">
+			${widget.help}</div>
+		<!-- /content -->
+	</div>
+	<!-- /page -->
+
+</body>
+</html>
