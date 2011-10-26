@@ -70,6 +70,8 @@
   	  	  <fileset dir="${wookie.widgets.dir}">
   	  	  	<include name="${widget.deploy.include}"/>
   	  	  	<exclude name="${widget.deploy.exclude}"/>
+  	  	  	<exclude name="widget-template/build.xml"/>
+  	  	  	<exclude name="templates/build.xml"/>
   	  	  </fileset>
   	  	</subant>
   </target>
