@@ -1,0 +1,138 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="style/all.css" />
+
+<link rel="stylesheet"
+	href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.css" />
+<script type="text/javascript"
+	src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+<script type="text/javascript"
+	src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
+
+<script type="text/javascript" src="lib/XSLTransform.js"></script>
+<script type="text/javascript" src="scripts/controller.js"></script>
+
+<title>${widget.name}</title>
+</head>
+
+<body>
+	<div data-role="page" class="type-home" id="home" data-theme="d">
+		<div data-role="header">
+			<img class="logo" src="images/myExperiment_logo_32h.png"
+				alt="MyExperiment" title="MyExperiment Logo" />
+			<div class="header_title" id="view_title">${widget.name}</div>
+		</div>
+		<!-- /header -->
+
+		<div data-role="content">
+
+			<div data-role="collapsible" class="content-secondary" data-theme="c"
+				data-content-theme="c">${content.secondary.actions}</div>
+			<!-- /content-secondary -->
+
+			<div class="content-primary" id="content-primary">
+				<div id="detail">
+					<p>NOTE: this section will be replaced by dynamic content when
+						the widget is run.</p>
+					<div class="overview">
+						<div class="thumbnail">
+							<img
+								src="http://www.myexperiment.org/workflows/16/versions/7/previews/medium.png"
+								/
+				       alt="Preview image of the workflow" width="160">
+						</div>
+						<div class="meta-data">
+							<h3>Title</h3>
+							<p>Uploaded by:</p>
+							<div class="update-rating">
+								<div class="update"
+									<p>Last Updated</p>
+								</div>
+								<div class="rating">
+									<p>Rating</p>
+								</div>
+							</div>
+							<div class="clearer"/>
+							<div class="version-info">
+								<p>Version</p>
+								<p>Type</p>
+								<p>Licence</p>
+							</div>
+						</div>
+						<div class="description">
+							<p>This workflow searches for genes which reside in a QTL
+								(Quantitative Trait Loci) region in the mouse, Mus musculus. The
+								workflow requires an input of: a chromosome name or number; a
+								QTL start base pair position; QTL end base pair position. Data
+								is then extracted from BioMart to annotate each of the genes
+								found in this region. The Entrez and UniProt identifiers are
+								then sent to KEGG to obtain KEGG gene identifiers. The KEGG gene
+								identifiers are then used to searcg for pathways in the KEGG
+								pathway database.</p>
+						</div>
+					</div>
+
+					<div class="clear">
+
+						<div class="boxed">
+							<p>Created on</p>
+							<p>Viewed</p>
+							<p>Downloaded</p>
+						</div>
+
+						<div class="boxed">
+							<p>Tags:</p>
+							<p>Groups</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /content-primary -->
+		</div>
+		<!-- /content -->
+
+		<div data-role="footer" class="footer">
+			<div class="content">&copy; University of Oxford</div>
+			<a class="button" href="#help" data-role="button" data-rel="dialog"
+				data-transition="pop" data-icon="info" data-iconpos="left">Help</a>
+
+		</div>
+		<!-- /footer -->
+	</div>
+	<!-- /page -->
+
+	<div data-role="dialog" id="help">
+		<div data-role="header">
+			<h4>Help: ${widget.name}</h4>
+		</div>
+		<!-- /header -->
+
+		<div data-role="content" class="ui-content" id="content-help">
+			${widget.help}</div>
+		<!-- /content -->
+	</div>
+	<!-- /page -->
+
+</body>
+</html>
