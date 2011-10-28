@@ -24,7 +24,7 @@
   <description>${widget.description}</description>
   <content src="index.html"/>
   <icon src="images/icon.png"/>
-  <author>OpenDirective</author>
+  <author>Apache Wookie (Incubating) Community</author>
   <access origin="*"/>  
   
   <licence>Licensed to the University of Oxford under one or more
