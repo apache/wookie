@@ -141,7 +141,10 @@
 	        <arg line="${run.args}"/>
             <syspropertyset refid="run.syspropertyset.id"/>
 	    </java>    	    	
-	</target>	
+	</target>
+	
+	<!-- buildbot moans if this is not here -->
+	<target name="jar"/>
 
 	<target name="jar-compiled" unless="not-subproject" depends="test-calling-project,clean-dist, compile-core, checkfirstrootivyrootpath, checksecondrootivyrootpath">
     	<mkdir dir="${dist.dir}"/>
