@@ -73,7 +73,7 @@
             <p>
                 <xsl:text>They describe themselves as '</xsl:text>
                 <xsl:value-of select="description" />
-                <xsl:text>' They provide more information about themselves at</xsl:text>
+                <xsl:text>' They provide more information about themselves at </xsl:text>
                 <a>
                     <xsl:atrribute name="href">
                         <xsl:value-of select="url" />
