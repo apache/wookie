@@ -1,0 +1,67 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+ body{
+    margin: 0px;
+    background-color: #602010;
+    background-image: url(http://farm5.static.flickr.com/4079/4930127890_01bfafacff_b.jpg);
+    background-repeat: no-repeat;
+    background-size: 100%, 100%;
+}
+header{
+    display: block;
+    width:100%; 
+    height: 60px; 
+    background-color: black;
+    background-image: url(http://localhost:8080/wookie/shared/images/furry_white.png);
+    background-repeat: no-repeat;
+    position: absolute; 
+    left:0px;
+    margin-top 0px;
+    color:white;
+}
+header h1{
+    margin-left:220px;
+    margin-top:10px;
+}
+article{
+    position: absolute; 
+    background: none;
+    margin-top:60px;
+    width: 100%;
+    height: 100%;
+}
+nav{
+    display: none;
+}
+.ui-header{
+    display: none;
+}
+.widget {
+    display: inline;
+    position: relative;
+    border:15px;
+    border-radius: 10px; 
+    margin:5px;
+    max-width: 100%;
+}
+
+.icon {
+    width: 64px;
+    height: 64px;
+}

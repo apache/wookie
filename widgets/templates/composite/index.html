@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html>
+
+<head>
+<title>Wookie Admin Demo</title>
+<meta name="viewport" content="width=device-width, height=device-height" />
+<link rel="stylesheet" type="text/css"
+	href="http://code.jquery.com/mobile/1.0a3/jquery.mobile-1.0a3.min.css"
+	media="screen" />
+<link rel="stylesheet" type="text/css" href="style/all.css"
+	media="screen" />
+<link rel="stylesheet" type="text/css" href="style/desktop.css"
+	media="screen and (min-device-width:1024px)" />
+<!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+<script src="http://code.jquery.com/jquery-1.5.min.js"></script>
+<script src="scripts/composite_picker.js"></script>
+<script src="scripts/composite_widgetLoader.js"></script>
+<script src="scripts/controller.js"></script>
+
+</head>
+
+<body>
+
+	<header role="banner">
+		<h1>Composite</h1>
+	</header>
+
+	<nav role="navigation" class="ui-bar-e ui-header">
+		<h4 class="ui-title">
+			<a onClick="${widget.shortname}_Picker.prev()" href="#" title="left"
+				class="ui-btn ui-btn-left ui-btn-icon-notext ui-btn-corner-all ui-shadow ui-btn-hover-e ui-btn-down-e"><span
+				class="ui-btn-inner ui-btn-corner-all"><span
+					class="ui-btn-text">Left</span><span
+					class="ui-icon ui-icon-arrow-l ui-icon-shadow"></span></span></a> <span
+				id="current-widget-title">Workspace 1</span> <a
+				onClick="${widget.shortname}_Picker.next()" href="#" title="right"
+				class="ui-btn ui-btn-right ui-btn-icon-notext ui-btn-corner-all ui-shadow ui-btn-hover-e ui-btn-down-a"><span
+				class="ui-btn-inner ui-btn-corner-all"><span
+					class="ui-btn-text">Right</span><span
+					class="ui-icon ui-icon-arrow-r ui-icon-shadow"></span></span></a>
+		</h4>
+	</nav>
+
+	<article role="main"></article>
+
+</body>
+</html>
