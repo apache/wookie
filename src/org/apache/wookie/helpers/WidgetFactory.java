@@ -236,7 +236,22 @@ public class WidgetFactory {
 		}
 	}
 
+	/**
+	 * Create or update the access policies associated with a widget
+	 * @param persistenceManager the persistence manager
+	 * @param model the W3C model of the widget 
+	 * @param widget the Wookie widget object
+	 * @param grantAccessRequests whether access requests are granted by default
+	 */
 	private static void createAccessRequests(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget, boolean grantAccessRequests){
+	  //
+	  // Remove any existing access policies
+	  //
+	  persistenceManager.delete(persistenceManager.findApplicableAccessRequests(widget));
+	  
+	  //
+	  // Create access policies for each access request in the widget model
+	  //
 		for(IAccessEntity accessEntity:model.getAccessList()){
             IAccessRequest acc = persistenceManager.newInstance(IAccessRequest.class);
 			acc.setOrigin(accessEntity.getOrigin());

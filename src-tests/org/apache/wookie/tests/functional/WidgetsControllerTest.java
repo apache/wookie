@@ -17,6 +17,7 @@ package org.apache.wookie.tests.functional;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -28,6 +29,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
+import org.jdom.Element;
 import org.junit.Test;
 
 /**
@@ -212,6 +214,72 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	  int code = post.getStatusCode();
 	  assertEquals(400,code);
 	  post.releaseConnection();     
+	}
+	
+	/**
+	 * Check that when we update a widget, we don't duplicate access policies. See WOOKIE-273.
+	 * @throws HttpException
+	 * @throws IOException
+	 * @throws InterruptedException 
+	 */
+	@Test
+	public void checkForDuplicateAccessRequests() throws HttpException, IOException, InterruptedException{
+
+	    //
+	    // Add the test widget, and update it a few times
+	    //
+	    for (int i=0;i<4;i++){
+	      
+	      HttpClient client = new HttpClient();
+	      //
+	      // Use admin credentials
+	      //
+	      client.getState().setCredentials(
+	          new AuthScope("localhost", 8080, "wookie"),
+	          new UsernamePasswordCredentials("java", "java")
+	      );
+	      
+	      PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
+
+	      //
+	      // Add the access test widget. This just has a single access request
+	      // for the origin "http://accesstest.incubator.apache.org"
+	      //
+	      File file = new File("src-tests/testdata/access-test.wgt");
+	      assertTrue(file.exists());
+
+	      //
+	      // Add test wgt file to POST
+	      //
+	      Part[] parts = { new FilePart(file.getName(), file) };
+	      post.setRequestEntity(new MultipartRequestEntity(parts, post
+	          .getParams()));
+
+	      //
+	      // POST the file to /widgets 
+	      //
+	      client.executeMethod(post);   
+	      post.releaseConnection(); 
+	      
+	      //
+	      // Wait a few seconds for Wookie to finish updating
+	      //
+	      Thread.sleep(5000);
+	    }
+
+	    //
+	    // Check that we only have one copy of the access request, not two
+	    //
+	    int policies = 0;
+	    final String POLICY_ORIGIN = "http://accesstest.incubator.apache.org:80";
+	    Element[] policyElements = WidgetAccessRequestPolicyControllerTest.getPolicies();
+	    for (Element policy: policyElements){
+	      if (policy.getAttribute("origin").getValue().equals(POLICY_ORIGIN)) {
+	        policies ++;
+	      }
+	    }
+	    assertEquals(1, policies);
+
 	}
 	
 }

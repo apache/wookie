@@ -246,7 +246,7 @@ public class WidgetAccessRequestPolicyControllerTest extends
    * @throws IOException
    * @throws HttpException
    */
-  private static Element[] getPolicies() throws HttpException, IOException {
+  public static Element[] getPolicies() throws HttpException, IOException {
     HttpClient client = new HttpClient();
     setAuthenticationCredentials(client);
     GetMethod get = new GetMethod(TEST_WARP_SERVICE_URL_VALID);
