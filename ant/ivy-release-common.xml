@@ -25,17 +25,10 @@
 
 	<tstamp />
 	<property name="project.general.name" value="apache-wookie-${version}" />
-	
-	<property name="wookie.source.folder.name" value="wookie-source" />
-	<property name="wookie.war.folder.name" value="wookie-war" />
-	<property name="wookie.standalone.folder.name" value="Apache-Wookie" />
-	<property name="wookie.source.zip.name"
-		value="apache-wookie-${version}-src" />	
-	<property name="wookie.standalone.zip.name"
-		value="apache-wookie-${version}-standalone" />
-	<property name="wookie.war.name"
-		value="apache-wookie-${version}-war" />
-	
+	<property name="wookie.source.folder.name" value="${project.general.name}-src" />
+	<property name="wookie.war.folder.name" value="${project.general.name}-war" />
+	<property name="wookie.standalone.folder.name" value="${project.general.name}-standalone" />
+		
 	<property name="rat.install.version" value="0.7" />	
 	<property name="rat.home" value="${user.home}/.ant" />
 	<property name="rat.jar.dir" value="${rat.home}/lib" />
@@ -68,33 +61,53 @@
 	
 	<target name="build-release-src" depends="init-rat">
 		<echo>Building source release</echo>
-		<mkdir dir="${wookie.release.dir}/${version}/source" />
+		<mkdir dir="${wookie.release.dir}/${version}/source/${wookie.source.folder.name}" />
+						
+		<copy todir="${wookie.release.dir}/${version}/source/${wookie.source.folder.name}">
+			<fileset dir="."/>
+		</copy>
 		
-		<!-- run RAT report -->
-		<rat:report reportFile="${wookie.release.dir}/${version}/source/rat-report.txt">
-		        <fileset dir=".">
-		        	<includesFile name="./etc/release/src-build-include.txt" />
-                    <excludesfile name="./licenses/rat-ignore.txt"/> 
-	            </fileset>
-		</rat:report>
+		<copy file="./etc/release/src-build-include.txt" toFile="${wookie.release.dir}/${version}/source/src-build-include.txt">
+		  <filterset>
+		  	<filter token="FOLDERNAME" value="${wookie.source.folder.name}/"/>
+		  </filterset>
+		</copy>
 		
-		<zip destfile="${wookie.release.dir}/${version}/source/${wookie.source.zip.name}.zip"
-		       basedir="."
-			includesFile="./etc/release/src-build-include.txt"   
+		<copy file="./etc/release/src-build-include.txt" toFile="${wookie.release.dir}/${version}/source/src-build-include-rat-test.txt">
+		  <filterset>
+		  	<filter token="FOLDERNAME" value=""/>
+		  </filterset>
+		</copy>
+		
+		<zip destfile="${wookie.release.dir}/${version}/source/${wookie.source.folder.name}.zip"
+		       basedir="${wookie.release.dir}/${version}/source/"
+			includesFile="${wookie.release.dir}/${version}/source/src-build-include.txt"   
 		  />
 		
 		<!-- tar -->
-		<tar destfile="${wookie.release.dir}/${version}/source/${wookie.source.zip.name}.tar.gz"
+		<tar destfile="${wookie.release.dir}/${version}/source/${wookie.source.folder.name}.tar.gz"
 			compression="gzip">
-			<zipfileset src="${wookie.release.dir}/${version}/source/${wookie.source.zip.name}.zip" />
+			<zipfileset src="${wookie.release.dir}/${version}/source/${wookie.source.folder.name}.zip" />
 		</tar>
 		
+		<!-- run RAT report -->
+		<rat:report reportFile="${wookie.release.dir}/${version}/source/rat-report.txt">
+			<fileset dir=".">
+		      	<includesFile name="${wookie.release.dir}/${version}/source/src-build-include-rat-test.txt" />
+		        <excludesfile name="./licenses/rat-ignore.txt"/> 
+		    </fileset>
+		</rat:report>	
+		
+		<!-- clean up -->
+		<delete dir="${wookie.release.dir}/${version}/source/${wookie.source.folder.name}"/>
+		<delete file="${wookie.release.dir}/${version}/source/src-build-include.txt"/>
+		<delete file="${wookie.release.dir}/${version}/source/src-build-include-rat-test.txt"/>
 	</target>
 
 	<target name="build-release-war" depends="init-rat,clean-build, compile-core, deploy-webapp, post-deploy-webapp">
 		<echo>Building war release</echo>
 		<delete dir="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}" />
-		<mkdir dir="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/scripts/" />
+		<mkdir dir="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/scripts/" />
 		
 		<!-- back the widgetserver.properties file up -->
 		<copy file="${build.dir}/webapp/wookie/WEB-INF/classes/widgetserver.properties"
@@ -114,17 +127,10 @@
 		        <filter token="REPOSITORY_WORKSPACE" value=""/>
 		    </filterset>
 		</copy>
-
-		<!--
-		<copy file="DISCLAIMER" tofile="${build.dir}/webapp/wookie/DISCLAIMER" overwrite="yes" />		
-		<copy file="NEW_AND_NOTEWORTHY" tofile="${build.dir}/webapp/wookie/NEW_AND_NOTEWORTHY" overwrite="yes" />
-        <copy file="UPGRADING" tofile="${build.dir}/webapp/wookie/UPGRADING" overwrite="yes" />
-		<copy file="etc/release/war/LICENSE" tofile="${build.dir}/webapp/wookie/LICENSE" overwrite="yes" />
-		-->
 		
 		<!-- build war file -->
 		<war
-			destfile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/wookie.war"
+			destfile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/wookie.war"
 			webxml="${build.dir}/webapp/wookie/WEB-INF/web.xml">	
 			<lib dir="${build.dir}/webapp/wookie/WEB-INF/lib">
 				<exclude name="derby-10.2.1.6.jar"/>
@@ -134,13 +140,13 @@
 				<exclude name="WEB-INF/classes/" />
 				<exclude name="WEB-INF/lib/" />
 			</fileset>
-			<metainf dir=".">				
-				<include name="NOTICE"/>
+			<metainf dir=".">
 				<include name="DISCLAIMER"/>
 				<include name="UPGRADING"/>				
 			</metainf> 
 			<metainf dir="etc/release/war/">
 				<include name="LICENSE"/>
+				<include name="NOTICE"/>
 			</metainf> 				
 		</war>
 			
@@ -156,26 +162,27 @@
 		-->
 
 		<!-- copy sql scripts across -->
-		<copy todir="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/scripts/">
+		<copy todir="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/scripts/">
 			<fileset dir="${build.dir}/classes/org/apache/wookie/beans/jpa/">
 				<include name="*.sql" />
 			</fileset>
 		</copy>
 
 		<!-- copy over project readme files-->
-		<copy file="DISCLAIMER" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/DISCLAIMER" overwrite="yes" />
-		<copy file="etc/release/war/LICENSE" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/LICENSE" overwrite="yes" />		
-		<copy file="README" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/README" overwrite="yes" />
-		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/RELEASE_NOTES" overwrite="yes" />
-		<copy file="NEW_AND_NOTEWORTHY" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/NEW_AND_NOTEWORTHY" overwrite="yes" />
-		<copy file="UPGRADING" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/UPGRADING" overwrite="yes" />
+		<copy file="DISCLAIMER" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/DISCLAIMER" overwrite="yes" />
+		<copy file="README" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/README" overwrite="yes" />
+		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/RELEASE_NOTES" overwrite="yes" />
+		<copy file="NEW_AND_NOTEWORTHY" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/NEW_AND_NOTEWORTHY" overwrite="yes" />
+		<copy file="UPGRADING" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/UPGRADING" overwrite="yes" />
+		<copy file="etc/release/war/NOTICE" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/NOTICE" overwrite="yes" />
+		<copy file="etc/release/war/LICENSE" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/LICENSE" overwrite="yes" />
 		<!-- copy WAR readme-->
 		<copy file="etc/release/war/WAR_BUILD_NOTES"
-			tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/WAR_BUILD_NOTES"
+			tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/WAR_BUILD_NOTES"
 			overwrite="yes" />
 
 		<!-- update context for mysql -->
-		<copy file="${etc.dir}/tomcat/conf/jpa-context.xml" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/${ant.project.name}.xml" overwrite="true">
+		<copy file="${etc.dir}/tomcat/conf/jpa-context.xml" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/${ant.project.name}.xml" overwrite="true">
 			<filterset>
 				<filter token="DATABASE_USER" value="java" />
 				<filter token="DATABASE_PASSWORD" value="java" />
@@ -185,17 +192,17 @@
 		</copy>
 
 		<!-- zip -->
-		<zip destfile="${wookie.release.dir}/${version}/binary/war/${wookie.war.name}.zip" basedir="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/" update="true" />
+		<zip destfile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}.zip" basedir="${wookie.release.dir}/${version}/binary/war/" update="true" />
 
 		<!-- tar -->
-		<tar destfile="${wookie.release.dir}/${version}/binary/war/${wookie.war.name}.tar.gz"
+		<tar destfile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}.tar.gz"
 			compression="gzip">
-			<zipfileset src="${wookie.release.dir}/${version}/binary/war/${wookie.war.name}.zip" />
+			<zipfileset src="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}.zip" />
 		</tar>
 		
 		<!-- run RAT report -->
 		<rat:report reportFile="${wookie.release.dir}/${version}/binary/war/rat-report.txt">
-		        <fileset dir="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/build/">
+		        <fileset dir="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/">
                     <excludesfile name="./licenses/rat-ignore.txt"/> 
 	            </fileset>
 		</rat:report>
@@ -227,13 +234,13 @@
 
 		<copy file="./etc/jetty-realm.properties" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/etc/jetty-realm.properties" />
 		<copy file="DISCLAIMER" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/DISCLAIMER" overwrite="yes" />
-		<!--<copy file="KEYS" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/KEYS" overwrite="yes" />-->
 		<copy file="README" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/README" overwrite="yes" />
 		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/RELEASE_NOTES" overwrite="yes" />
 		<copy file="NEW_AND_NOTEWORTHY" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/NEW_AND_NOTEWORTHY" overwrite="yes" />
 		<copy file="UPGRADING" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/UPGRADING" overwrite="yes" />
 		<copy file="etc/release/standalone/LICENSE" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/LICENSE" overwrite="yes" />		
-
+		<copy file="etc/release/standalone/NOTICE" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/NOTICE" overwrite="yes" />
+		
 		<ivy:retrieve conf="runtime"
 			pattern="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/lib/[artifact]-[revision].[ext]" />
 
@@ -247,13 +254,13 @@
 			    </fileset>
 		</rat:report>
 		
-		<zip destfile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.zip.name}.zip"
+		<zip destfile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}.zip"
 			basedir="${wookie.release.dir}/${version}/binary/standalone/" includes="${wookie.standalone.folder.name}/"
 			update="true" />
 
-		<tar destfile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.zip.name}.tar.gz"
+		<tar destfile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}.tar.gz"
 			compression="gzip">
-			<zipfileset src="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.zip.name}.zip" />
+			<zipfileset src="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}.zip" />
 		</tar>
 
 		<delete dir="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}" />

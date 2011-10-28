@@ -141,19 +141,19 @@
 	        <arg line="${run.args}"/>
             <syspropertyset refid="run.syspropertyset.id"/>
 	    </java>    	    	
-	</target>	
-
-	<!-- buildbot moans of this is not here -->
-	<target name="jar"/>
+	</target>
 	
-	<target name="jar-compiled" unless="not-subproject" depends="test-calling-project,clean-dist, compile-core">
+	<!-- buildbot moans if this is not here -->
+	<target name="jar"/>
+
+	<target name="jar-compiled" unless="not-subproject" depends="test-calling-project,clean-dist, compile-core, checkfirstrootivyrootpath, checksecondrootivyrootpath">
     	<mkdir dir="${dist.dir}"/>
     	<!-- Create compiled jar -->
         <jar destfile="${dist.dir}/${ant.project.name}.jar">
             <fileset dir="${project.build.classes.dir}">
             	<exclude name="**/*.java"/>
         	</fileset>
-        	<metainf dir="../../">
+        	<metainf dir="${calculated-generic-path}etc/release/maven/">
         		<include name="LICENSE"/>
         		<include name="NOTICE"/>
         		<include name="DISCLAIMER"/>
@@ -167,7 +167,7 @@
         </jar>
 	</target>
 	
-	<target name="jar-javadoc" depends="clean-dist, compile-core">
+	<target name="jar-javadoc" depends="clean-dist, compile-core, checkfirstrootivyrootpath, checksecondrootivyrootpath">
 		<!-- Create javadoc JAR -->    	
     	<mkdir dir="${dist.dir}/javadoc/"/>
     	<javadoc packagenames="*"
@@ -183,9 +183,9 @@
     	</javadoc>
     	<jar destfile="${dist.dir}/${ant.project.name}-javadoc.jar">
     		<fileset dir="${dist.dir}/javadoc"/>
-			<metainf dir="../../">
-			<include name="LICENSE"/>
-			<include name="NOTICE"/>
+    		<metainf dir="${calculated-generic-path}etc/release/maven/">
+				<include name="LICENSE"/>
+				<include name="NOTICE"/>
 				<include name="DISCLAIMER"/>
 			</metainf>    
         	<manifest>				
@@ -199,14 +199,14 @@
     	<delete dir="${dist.dir}/javadoc" />
 	</target>
     
-    <target name="jar-sources" depends="clean-dist, compile-core"  description="--> make a jar file for this project">
+    <target name="jar-sources" depends="clean-dist, compile-core, checkfirstrootivyrootpath, checksecondrootivyrootpath"  description="--> make a jar file for this project">
     	<mkdir dir="${dist.dir}"/>
     	<!-- Create source JAR -->
     	<jar destfile="${dist.dir}/${ant.project.name}-sources.jar">
     		<fileset dir="${project.core.src.dir}">
     			<include name="**/*"/>
     		</fileset>
-			<metainf dir="../../">
+			<metainf dir="${calculated-generic-path}etc/release/maven/">
 				<include name="LICENSE"/>
 				<include name="NOTICE"/>
 				<include name="DISCLAIMER"/>
@@ -278,12 +278,11 @@
 				<exclude name="WEB-INF/lib/" />
 			</fileset>
 			<metainf dir=".">
-				<include name="NOTICE"/>
 				<include name="DISCLAIMER"/>
-				<include name="UPGRADING"/>
 			</metainf>
 			<metainf dir="etc/release/war/">
 				<include name="LICENSE"/>
+				<include name="NOTICE"/>
 			</metainf>
 		</war>
 
@@ -320,10 +319,12 @@
 	<target name="checkfirstrootivyrootpath" depends="check-first-location-for-settings" if="firstivysettings.present">
 		<property name="calculated-ivy-path" value="../../ant/ivysettings.xml"/>
 		<property name="calculated-this-path" value="../../ant/ivy-java-common.xml"/>
+		<property name="calculated-generic-path" value="../../"/>
 	</target>		
 	<target name="checksecondrootivyrootpath" depends="check-second-location-for-settings" if="secondivysettings.present">
 		<property name="calculated-ivy-path" value="ant/ivysettings.xml"/>
 		<property name="calculated-this-path" value="ant/ivy-java-common.xml"/>
+		<property name="calculated-generic-path" value="./"/>
 	</target>
 		
     <target name="publish" depends="clean-build, jar-compiled" description="--> publish this project in the ivy repository">
