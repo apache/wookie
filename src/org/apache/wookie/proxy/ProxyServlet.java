@@ -15,7 +15,6 @@
 package org.apache.wookie.proxy;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -29,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.auth.AuthenticationException;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.IAccessRequest;
@@ -68,13 +68,17 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 		try {
 			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties");
 
+			//
 			// Check that the request is coming from the same domain (i.e. from a widget served by this server)
+			//
 			if (properties.getBoolean("widget.proxy.checkdomain") && !isSameDomain(request)){
 				response.sendError(HttpServletResponse.SC_FORBIDDEN,"<error>"+UNAUTHORISED_MESSAGE+"</error>");	
 				return;				
 			}
 
+			//
 			// Check that the request is coming from a valid widget
+			//
 			IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 			IWidgetInstance instance = persistenceManager.findWidgetInstanceByIdKey(request.getParameter("instanceid_key"));	
 			if(instance == null && !isDefaultGadget(request)){
@@ -82,7 +86,9 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 				return;
 			}
 
+			//
 			// Create the proxy bean for the request
+			//
 			ProxyURLBean bean;
 			try {
 				bean = new ProxyURLBean(request);
@@ -91,24 +97,50 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 				return;
 			}		
 
+			//
 			// should we filter urls?
+			//
 			if (properties.getBoolean("widget.proxy.usewhitelist") && !isAllowed(bean.getNewUrl().toURI(), instance)){
 				response.sendError(HttpServletResponse.SC_FORBIDDEN,"<error>URL Blocked</error>");
 				fLogger.warn("URL " + bean.getNewUrl().toExternalForm() + " Blocked");
 				return;
 			}	
 
+			//
+			// Create a ProxyClient instance for the request
+			//
 			ProxyClient proxyclient = new ProxyClient(request);
-			PrintWriter out = response.getWriter();	
+			ProxyClient.ResponseObject responseObject = null;
+
 			//TODO - find all the links etc & make them absolute - to make request come thru this servlet
-			String output = "";
+
+			//
+			// Execute the request and populate the ResponseObject
+			//
 			if(httpMethod.equals("get")){
-				output = proxyclient.get(bean.getNewUrl().toExternalForm(), properties);
-			}else{	
-				output = proxyclient.post(bean.getNewUrl().toExternalForm(),getXmlData(request), properties);
+			  responseObject = proxyclient.get(bean.getNewUrl().toExternalForm(), request, properties);
+			} else {	
+			  responseObject = proxyclient.post(bean.getNewUrl().toExternalForm(), request, properties);
 			}
-			response.setContentType(proxyclient.getCType());
-			out.print(output);
+			
+			//
+			// Set Status
+			//
+	    response.setStatus(responseObject.status);
+	     
+			//
+			// Set Headers
+			//
+			for (Header header:responseObject.headers){
+			  response.setHeader(header.getName(), header.getValue());
+			}
+			
+			//
+			// Set Body
+			//
+			if(responseObject.body != null && responseObject.body.length > 0){
+			  response.getOutputStream().write(responseObject.body);
+			}
 		}
 		catch (Exception ex) {
 			try {
@@ -124,22 +156,6 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 				throw new ServletException(e);
 			}
 		}
-	}
-
-	/**
-	 * Gets the content of the request
-	 * @param request
-	 * @return
-	 * @throws IOException
-	 */
-	private String getXmlData(HttpServletRequest request) throws IOException{
-		// Note that we cannot use a Reader for this as we already
-		// call getParameter() which works on an InputStream - and you
-		// can only use an InputStream OR a Reader, not both.
-		byte[] b = new byte[request.getContentLength()];
-		request.getInputStream().read(b, 0, request.getContentLength());
-		String xml = new String(b);
-		return xml;
 	}
 
 	/**
