@@ -22,5 +22,5 @@
   <content src="index.htm"/>  
   <access origin="http://newsrss.bbc.co.uk"/>  
   <author>Scott Wilson</author>  
-  <licence>Licensed under the Apache 2.0 License (see http://www.apache.org/licenses/LICENSE-2.0).</licence> 
+  <license>Licensed under the Apache 2.0 License (see http://www.apache.org/licenses/LICENSE-2.0).</license> 
 </widget>

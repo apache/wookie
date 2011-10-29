@@ -22,5 +22,5 @@
 	<description>A shared to-do list widget</description>
     <author>Apache Wookie (Incubating) Team</author>
   <feature name="http://wave.google.com" required="true"/>
-  <licence>Licensed under the Apache 2.0 License (see http://www.apache.org/licenses/LICENSE-2.0).</licence>
+  <license>Licensed under the Apache 2.0 License (see http://www.apache.org/licenses/LICENSE-2.0).</license>
 </widget>
