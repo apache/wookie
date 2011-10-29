@@ -14,7 +14,7 @@
  */
 --%>
 <%@ page import='org.apache.wookie.helpers.FlashMessage' %>
-<%@ page import='org.apache.wookie.Messages,org.apache.wookie.beans.IWidget,org.apache.wookie.beans.IWidgetInstance,java.util.ArrayList;' %>
+<%@ page import='org.apache.wookie.Messages,org.apache.wookie.beans.IWidget,java.util.ArrayList;' %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <% Messages localizedMessages = (Messages)session.getAttribute(Messages.class.getName()); %>
 <!DOCTYPE html>
@@ -48,14 +48,11 @@
 	<table align="center">	
 	<tr align="center">
 	<%	
-	IWidgetInstance[] widgetInstances = (IWidgetInstance[])request.getAttribute("widgetInstances");
+	IWidget[] widgets = (IWidget[])request.getAttribute("widgets");
 	ArrayList<String> guids = new ArrayList<String>();
 	int count = -1;
 		
-	for(IWidgetInstance instance: widgetInstances){				
-		String id = instance.getIdKey();
-		IWidget widget = instance.getWidget();
-		
+	for(IWidget widget: widgets){						
 		if (!widget.getGuid().equalsIgnoreCase("http://www.tencompetence.org/widgets/default/notsupported")){
 			String guid = widget.getGuid();
 			if(!guids.contains(guid)){
@@ -71,7 +68,7 @@
 						</tr>
 				    	<tr align="center"><td class="wookie-title" align="center" valign="top"><%=widget.getWidgetTitle()%></td></tr>
 				    	<tr align="center"><td class="wookie-description" align="center" valign="top"><%=widget.getWidgetDescription()%></td></tr>
-				    	<tr align="right"><td class="wookie-demo-link"><a href="WidgetWebMenuServlet?operation=DEMO_WIDGET&amp;idkey=<%= id %>">Demo</a></td></tr>
+				    	<tr align="right"><td class="wookie-demo-link"><a href="WidgetWebMenuServlet?operation=DEMO_WIDGET&amp;widgetId=<%=widget.getGuid()%>">Demo</a></td></tr>
 				    </table>			    
 				 </td> 		 		   
 				<%

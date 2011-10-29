@@ -30,14 +30,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.connector.framework.AbstractWookieConnectorService;
 import org.apache.wookie.connector.framework.WookieConnectorException;
 import org.apache.wookie.connector.framework.WookieConnectorService;
 import org.apache.wookie.controller.WidgetInstancesController;
-import org.apache.wookie.helpers.WidgetInstanceFactory;
 import org.apache.wookie.helpers.WidgetKeyManager;
 import org.apache.wookie.manager.IWidgetAdminManager;
 import org.apache.wookie.manager.impl.WidgetAdminManager;
@@ -104,16 +102,14 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 					break;
 				}
 				case DEMO_WIDGET:{
-          String idKey = request.getParameter("idkey");
+				  String widgetId = request.getParameter("widgetId");
           try {
-            IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-            String guid = persistenceManager.findWidgetInstanceByIdKey(idKey).getWidget().getGuid();
             AbstractWookieConnectorService conn = getConnectorService(request);
             conn.setCurrentUser("testuser");
-            org.apache.wookie.connector.framework.WidgetInstance instanceOne = conn.getOrCreateInstance(guid);
+            org.apache.wookie.connector.framework.WidgetInstance instanceOne = conn.getOrCreateInstance(widgetId);
             conn.setPropertyForInstance(instanceOne, "setpersonalproperty", "moderator", "true");
             conn.setCurrentUser("testuser2");
-            org.apache.wookie.connector.framework.WidgetInstance instanceTwo = conn.getOrCreateInstance(guid);            
+            org.apache.wookie.connector.framework.WidgetInstance instanceTwo = conn.getOrCreateInstance(widgetId);            
             request.setAttribute("firstWidgetURL", instanceOne.getUrl());
             request.setAttribute("secondWidgetURL", instanceTwo.getUrl());
             request.setAttribute("widgetHeight", instanceOne.getHeight());
@@ -193,35 +189,23 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 	 * @param manager
 	 */
 	private void listOperation(HttpServletRequest request, HttpSession session, IWidgetAdminManager manager){
-		ArrayList<IWidgetInstance> widgetInstances = new ArrayList<IWidgetInstance>();
-
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        IWidget[] widgets = persistenceManager.findAll(IWidget.class);
-		for(IWidget widget : widgets){
-			// Create an instance of the widget so that we can display it as the demo widget
-			IWidgetInstance instance = null;
-			String apiKey = "TEST"; //$NON-NLS-1$
-			String userId = "testuser"; //$NON-NLS-1$
-			String sharedDataKey = "myshareddata"; //$NON-NLS-1$
-			String widgetId = widget.getGuid();
-			instance = WidgetInstanceFactory.getWidgetFactory(session, LocaleHandler.localizeMessages(request)).newInstance(apiKey, userId, sharedDataKey, null, widgetId, null);
-			if (instance != null) {
-				widgetInstances.add(instance);
-			}
+		ArrayList<IWidget> widgets = new ArrayList<IWidget>();
+    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		for(IWidget widget : persistenceManager.findAll(IWidget.class)){
+		  widgets.add(widget);
 		}
 		
 		// Sort the widget instances by name
-		Collections.sort(widgetInstances, new Comparator<Object>(){
+		Collections.sort(widgets, new Comparator<Object>(){
 			public int compare(Object o1, Object o2) {
-				String w1 = ((IWidgetInstance)o1).getWidget().getWidgetTitle(null);
-				String w2 = ((IWidgetInstance)o2).getWidget().getWidgetTitle(null);
+				String w1 = ((IWidget)o1).getWidgetTitle(null);
+				String w2 = ((IWidget)o2).getWidgetTitle(null);
 				return w1.compareTo(w2);
 			}
-			
 		});
 		
 		// Store the array of instances in the request attribute
-		request.setAttribute("widgetInstances", widgetInstances.toArray( new IWidgetInstance[widgetInstances.size()])); //$NON-NLS-1$
+		request.setAttribute("widgets", widgets.toArray( new IWidget[widgets.size()])); //$NON-NLS-1$
 	}
 
 	private void requestApiKeyOperation(HttpServletRequest request, Configuration properties, IWidgetAdminManager manager){
