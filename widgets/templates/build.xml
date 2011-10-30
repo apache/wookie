@@ -201,6 +201,9 @@
 
       <mkdir dir="${widget.build.dir}/${widget.shortname}"/>
 
+      <ant antfile="${template.dir}/${template.name}/template_build.xml" 
+           target="_init_template"/>
+    	
       <property file="${widget.build.dir}/${widget.shortname}.properties"/>
       <property file="${template.dir}/default.widget.properties"/>
 
