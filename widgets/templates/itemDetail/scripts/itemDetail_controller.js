@@ -21,25 +21,42 @@
  */ 
 var ${widget.shortname}_browse_controller = {
     init:function() {
-    	var id = Widget.preferences.getItem("itemId");
+    	var id = ${widget.shortname}_browse_controller.get("itemId");
     	if (id === undefined) {
+	    id = Widget.preferences.getItem("itemId");
+	    if (id === undefined) {
     		id = ${itemDetail.default.itemId}
+	    }
     	}
-        ${widget.shortname}_browse_controller.populate(id);
+	Widget.preferences.setItem("itemId", id);
+        ${widget.shortname}_browse_controller.populate();
     },
     
    /**
-    * Populate the results list with data from a given URL. The data is transformed using the "index2html.xsl" stylesheet.
+    * Populate the results list with data for a given item.
+    * The id of the item is obtained from  Widget.preferences.getItem("itemId");. 
+    * The data is transformed using the stylesheet named in the itemDetail.xsl.url property.
     */
-    populate:function(itemId) {
-		var url = widget.proxify(${itemDetail.get.url});
+    populate:function() {
+	var itemId = Widget.preferences.getItem("itemId");
+	var url = widget.proxify(${itemDetail.get.url});
         $('#detail').remove();
         var html = $.XSLTransform({
             xmlurl:url,
             xslurl:${itemDetail.xsl.url}
         });
         $('#content-primary').html(html).trigger("create");
+    },
+
+    /**
+     * get a parameter from the URL
+     */
+    get:function(name){
+	if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+	    return decodeURIComponent(name[1]);
     }
+
+
 }
 
 /**
