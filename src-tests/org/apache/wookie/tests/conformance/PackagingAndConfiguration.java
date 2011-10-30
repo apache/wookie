@@ -565,7 +565,9 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-iuJHnskSHq/001/za.wgt");
 		assertEquals("pass.png",getIcon(widget));
 	}
-	@Test
+	
+	@Test 
+	@Ignore // No longer in test suite
 	public void zb(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-iuJHnskSHq/002/zb.wgt");
 		assertEquals("locales/en/icon.png",getIcon(widget));
@@ -1157,7 +1159,7 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 		assertTrue(icons.size() == 2);
 		String icon1 = getLocalIconPath(widget,((Element)icons.get(0)));
 		String icon2 = getLocalIconPath(widget,((Element)icons.get(1))); 
-		assertTrue((icon1.equals("locales/en/icon.jpg") && (icon2.equals("icon.png"))) || (icon2.equals("locales/en/icon.jpg") && (icon1.equals("icon.png"))));
+		assertTrue((icon1.equals("locales/en/icon.png") && (icon2.equals("icon.png"))) || (icon2.equals("locales/en/icon.png") && (icon1.equals("icon.png"))));
 	}
 	@Test
 	public void ad(){
