@@ -376,7 +376,7 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidget widget = persistenceManager.findById(IWidget.class, widgetId);
 		String guid = widget.getGuid();
-		if(WidgetFactory.destroy(widgetId)){
+		if(WidgetFactory.destroy(widget)){
 			if(WidgetFileUtils.removeWidgetResources(WIDGETFOLDER, guid)){			
 				request.setAttribute("message_value", localizedMessages.getString("WidgetAdminServlet.12"));			 //$NON-NLS-1$ //$NON-NLS-2$ 
 			}

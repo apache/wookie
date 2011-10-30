@@ -267,17 +267,6 @@ public class WidgetFactory {
 
 	/**
 	 * Destroy a widget and all dependent objects and references
-	 * @param id the id of the widget
-	 * @return true if the widget is destroyed successfully
-	 */
-	public static boolean destroy(Object id){
-	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWidget widget = persistenceManager.findById(IWidget.class, id);
-		return destroy(widget);
-	}
-
-	/**
-	 * Destroy a widget and all dependent objects and references
 	 * @param widget the widget to destroy
 	 * @return true if the widget is destroyed successfully
 	 */
@@ -310,7 +299,7 @@ public class WidgetFactory {
 	        persistenceManager.delete(sharedData);
 	        
 			// remove any preferences
-			IPreference[] preferences = persistenceManager.findByValue(IPreference.class, "widgetInstance", instance);
+			IPreference[] preferences = instance.getPreferences().toArray(new IPreference[instance.getPreferences().size()]);// persistenceManager.findByValue(IPreference.class, "widgetInstance", instance);
 			persistenceManager.delete(preferences);
 			
 			// remove the instance
@@ -319,7 +308,7 @@ public class WidgetFactory {
 		}
 
 		// remove any AccessRequests
-        IAccessRequest[] accessRequests = persistenceManager.findByValue(IAccessRequest.class, "widget", widget);
+        IAccessRequest[] accessRequests = persistenceManager.findApplicableAccessRequests(widget);
         persistenceManager.delete(accessRequests);
         
 		// remove the widget itself
