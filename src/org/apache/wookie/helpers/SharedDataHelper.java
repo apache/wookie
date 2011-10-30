@@ -13,12 +13,8 @@
  */
 package org.apache.wookie.helpers;
 
-import java.util.HashMap;
-
-import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.beans.IWidgetInstance;
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
+
 
 /**
  * Service facade for managing SharedDataKeys in a consistent fashion.
@@ -72,60 +68,5 @@ public class SharedDataHelper {
 	    String key = externalSharedDataKey + ":" + apiKey + ":" + widgetUri;
 	    return String.valueOf(key.hashCode());
 	  }
-	
-	 /**
-	  * Find shared data for a Widget Instance
-	  * @param instance the widget instance
-	  * @return an array of SharedData objects for the widget instance
-	  */
-	public static ISharedData[] findSharedData(IWidgetInstance instance){
-	  
-	  //
-    // Use the internal shared data key of the instance for one index of the query
-    //
-    String sharedDataKey = SharedDataHelper.getInternalSharedDataKey(instance);
-    
-    //
-    // Obtain a persistence manager and return the results of executing a query of SharedData objects matching the sharedDataKey
-    //
-    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-    return (ISharedData[]) persistenceManager.findByValue(ISharedData.class, "sharedDataKey", sharedDataKey);
-	}
-	
-	/**
-	 * Find a specific shared data object for a given Widget Instance and object key
-	 * @param instance the widget instance
-	 * @param key the key of the shared data object, i.e. the tuple key not the shared data key
-	 * @return a SharedData object, or null if no matches are found
-	 */
-	public static ISharedData findSharedData(IWidgetInstance instance, String key){
-	  
-	  //
-	  // Use the internal shared data key of the instance for one index of the query
-	  //
-    String sharedDataKey = SharedDataHelper.getInternalSharedDataKey(instance);
-    
-    //
-    // Obtain a persistence manager and construct a query of SharedData objects matching the sharedDataKey and dkey
-    //
-    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-    HashMap<String, Object> params = new HashMap<String, Object>();
-    params.put("sharedDataKey", sharedDataKey);
-    params.put("dkey", key);
-    
-    //
-    // Execute the query and obtain array of results
-    // We assert that there are never duplicates.
-    //
-    ISharedData[] results = (ISharedData[]) persistenceManager.findByValues(ISharedData.class, params);
-    assert(results.length <= 1);
-    
-    //
-    // If the result contains a single item, return it, otherwise return null.
-    //
-
-    if (results.length != 0) return results[0];
-    return null;
-	}	
 
 }

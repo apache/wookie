@@ -15,8 +15,6 @@
 package org.apache.wookie.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -26,15 +24,13 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.IParticipant;
 import org.apache.wookie.beans.IWidgetInstance;
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
+import org.apache.wookie.beans.SharedContext;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.helpers.ParticipantHelper;
-import org.apache.wookie.helpers.SharedDataHelper;
 import org.apache.wookie.helpers.WidgetKeyManager;
 
 /**
@@ -77,8 +73,7 @@ public class ParticipantsController extends Controller {
 		if (!WidgetKeyManager.isValidRequest(request)) throw new UnauthorizedAccessException();
 		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
 		if (instance == null) throw new ResourceNotFoundException();
-		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IParticipant[] participants = persistenceManager.findParticipants(instance);
+		IParticipant[] participants = new SharedContext(instance).getParticipants();
 		returnXml(ParticipantHelper.createXMLParticipantsDocument(participants), response);
 	}
 
@@ -117,7 +112,7 @@ public class ParticipantsController extends Controller {
 			throw new InvalidParametersException();
 		}
 
-		if (addParticipantToWidgetInstance(instance, participantId, participantDisplayName, participantThumbnailUrl)){
+		if (new SharedContext(instance).addParticipant(participantId, participantDisplayName, participantThumbnailUrl)){
 			Notifier.notifyWidgets(session, instance, Notifier.PARTICIPANTS_UPDATED);
 			_logger.debug("added user to widget instance: " + participantId);
 			return true;
@@ -141,61 +136,11 @@ public class ParticipantsController extends Controller {
 		if (instance == null) throw new InvalidParametersException();
 		HttpSession session = request.getSession(true);						
 		String participantId = request.getParameter("participant_id"); //$NON-NLS-1$
-		if(removeParticipantFromWidgetInstance(instance, participantId)){
+		if(new SharedContext(instance).removeParticipant(participantId)){
 			Notifier.notifyWidgets(session, instance, Notifier.PARTICIPANTS_UPDATED);
 			return true;
 		}else{
 			throw new ResourceNotFoundException();				
 		}
-	}
-
-	/**
-	 * Add a participant to a widget instance
-	 * @param instance the widget instance
-	 * @param participantId the id property of the participant to add
-	 * @param participantDisplayName the display name property of the participant to add
-	 * @param participantThumbnailUrl the thumbnail url property of the participant to add
-	 * @return true if the participant was successfully added, otherwise false
-	 */
-	public static boolean addParticipantToWidgetInstance(IWidgetInstance instance,
-			String participantId, String participantDisplayName,
-			String participantThumbnailUrl) {
-
-		// Does participant already exist?
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("sharedDataKey", SharedDataHelper.getInternalSharedDataKey(instance));//$NON-NLS-1$
-		map.put("participantId", participantId);//$NON-NLS-1$
-		if (persistenceManager.findByValues(IParticipant.class, map).length != 0) return false;		
-
-		// Add participant
-		IParticipant participant = persistenceManager.newInstance(IParticipant.class);
-		participant.setParticipantId(participantId);
-		participant.setParticipantDisplayName(participantDisplayName);
-		participant.setParticipantThumbnailUrl(participantThumbnailUrl);
-		participant.setSharedDataKey(SharedDataHelper.getInternalSharedDataKey(instance));
-		persistenceManager.save(participant);
-		return true;
-	}
-
-	/**
-	 * Removes a participant from a widget instance
-	 * @param instance the instance from which to remove the participant
-	 * @param participantId the id property of the participant
-	 * @return true if the participant is successfully removed, otherwise false
-	 */
-	private static boolean removeParticipantFromWidgetInstance(IWidgetInstance instance,
-			String participantId) {
-		IParticipant[] participants;
-		// Does participant exist?
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("sharedDataKey", SharedDataHelper.getInternalSharedDataKey(instance));//$NON-NLS-1$
-		map.put("participantId", participantId);//$NON-NLS-1$
-		participants = persistenceManager.findByValues(IParticipant.class, map);
-		if (participants.length != 1) return false;	
-		// Remove participant
-		persistenceManager.delete(participants[0]);
-		return true;
 	}
 }

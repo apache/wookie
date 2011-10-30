@@ -29,6 +29,7 @@ import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetDefault;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.IWidgetService;
+import org.apache.wookie.beans.SharedContext;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 
@@ -276,16 +277,10 @@ public abstract class AbstractPersistenceTest
         //
         // Get the participant created in the previous transaction by widget instance
         //
-        IParticipant [] participants = persistenceManager.findParticipants(widgetInstance0);
+       
+        IParticipant [] participants =  new SharedContext(widgetInstance0).getParticipants();
         assertNotNull(participants);
         assertEquals(1, participants.length);
-        
-        //
-        // Get the participant created in the previous transaction by finding the viewer
-        //
-        participant = persistenceManager.findParticipantViewer(widgetInstance0);
-        assertNotNull(participant);
-        assertEquals(participants[0], participant);
         
         //
         // Get the access request created in the previous transaction

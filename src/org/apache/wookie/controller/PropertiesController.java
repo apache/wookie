@@ -24,8 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.ISharedData;
-import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.beans.SharedContext;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.exceptions.InvalidParametersException;
@@ -33,7 +33,6 @@ import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.Notifier;
-import org.apache.wookie.helpers.SharedDataHelper;
 import org.apache.wookie.helpers.WidgetKeyManager;
 
 /**
@@ -92,7 +91,7 @@ public class PropertiesController extends Controller {
 		// We let the shared data values override.
 		IPreference pref = instance.getPreference(name);
 		if (pref != null) value = pref.getDvalue();
-		ISharedData data = SharedDataHelper.findSharedData(instance, name);
+		ISharedData data = new SharedContext(instance).getSharedData(name);
 		if (data != null) value = data.getDvalue();
 		if (value == null) throw new ResourceNotFoundException();
 		PrintWriter out = response.getWriter();
@@ -111,7 +110,7 @@ public class PropertiesController extends Controller {
 		
 		boolean found = false;
 		if (isPublic(request)){ 
-			found = updateSharedDataEntry(instance, name, null, false);
+			found = new SharedContext(instance).removeSharedData(name);
 			Notifier.notifyWidgets(request.getSession(), instance, Notifier.STATE_UPDATED);
 		} else {
 			found = updatePreference(instance, name, null);
@@ -151,7 +150,7 @@ public class PropertiesController extends Controller {
 		if (name == null || name.trim().equals("")) throw new InvalidParametersException();
 		
 		if (isPublic(request)){ 
-			updateSharedDataEntry(instance, name, value, false);
+		  new SharedContext(instance).updateSharedData(name, value, false);
 			Notifier.notifyWidgets(request.getSession(), instance, Notifier.STATE_UPDATED);
 		} else {
 			updatePreference(instance, name, value);
@@ -187,48 +186,6 @@ public class PropertiesController extends Controller {
         	}
         }  
         persistenceManager.save(widgetInstance);
-        return found;
-	}
-	
-	/**
-	 * Update a shared data entry
-	 * @param widgetInstance
-	 * @param name
-	 * @param value
-	 * @param append
-	 * @return
-	 */
-	public synchronized static boolean updateSharedDataEntry(IWidgetInstance widgetInstance, String name, String value, boolean append){
-		IWidget widget = widgetInstance.getWidget();
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        boolean found=false;
-        ISharedData sharedData = SharedDataHelper.findSharedData(widgetInstance, name);
-        if (sharedData != null)
-        {
-            if(value==null || value.equalsIgnoreCase("null")){ 
-            	persistenceManager.delete(sharedData);
-            }
-            else{    
-                if(append){
-                    sharedData.setDvalue(sharedData.getDvalue() + value);
-                }
-                else{
-                    sharedData.setDvalue(value);
-                }
-            }
-            found=true;
-        }
-		if(!found){     
-			if(value!=null){
-				String sharedDataKey = SharedDataHelper.getInternalSharedDataKey(widgetInstance);		
-				sharedData = persistenceManager.newInstance(ISharedData.class);
-				sharedData.setSharedDataKey(sharedDataKey);
-				sharedData.setDkey(name);
-				sharedData.setDvalue(value);
-				persistenceManager.save(sharedData);
-			}
-		}
-        persistenceManager.save(widget);
         return found;
 	}
 

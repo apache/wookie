@@ -33,6 +33,7 @@ import org.apache.wookie.beans.IWidgetDefault;
 import org.apache.wookie.beans.IWidgetIcon;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.IWidgetType;
+import org.apache.wookie.beans.SharedContext;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.w3c.IAccessEntity;
@@ -293,9 +294,9 @@ public class WidgetFactory {
 			// Note also that we have to use the instance as the hook for removing participants as there is no
 			// specific query for getting participants for a widget.
 			//						
-			IParticipant[] participants = persistenceManager.findParticipants(instance);
+			IParticipant[] participants = new SharedContext(instance).getParticipants();
 			persistenceManager.delete(participants);
-	        ISharedData[] sharedData =  SharedDataHelper.findSharedData(instance);
+	        ISharedData[] sharedData = new SharedContext(instance).getSharedData();
 	        persistenceManager.delete(sharedData);
 	        
 			// remove any preferences

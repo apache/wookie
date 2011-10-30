@@ -33,6 +33,7 @@ import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.beans.SharedContext;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.exceptions.InvalidParametersException;
@@ -264,7 +265,7 @@ public class WidgetInstancesController extends Controller {
 		String cloneKey = SharedDataHelper.getInternalSharedDataKey(instance, cloneSharedDataKey);
         IWidget widget = instance.getWidget();
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		for (ISharedData sharedData : SharedDataHelper.findSharedData(instance))
+		for (ISharedData sharedData : new SharedContext(instance).getSharedData())
 		{
 		    ISharedData clone = persistenceManager.newInstance(ISharedData.class);
             clone.setDkey(sharedData.getDkey());
@@ -277,17 +278,17 @@ public class WidgetInstancesController extends Controller {
 	}
 	
 	public synchronized static void lockWidgetInstance(IWidgetInstance instance){
-		PropertiesController.updateSharedDataEntry(instance, "isLocked", "true", false);//$NON-NLS-1$ //$NON-NLS-2$
+	  new SharedContext(instance).updateSharedData("isLocked", "true", false); //$NON-NLS-1$ //$NON-NLS-2$
 		instance.setLocked(true);
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        persistenceManager.save(instance);
+    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+    persistenceManager.save(instance);
 	}
 
 	public synchronized static void unlockWidgetInstance(IWidgetInstance instance){
-		PropertiesController.updateSharedDataEntry(instance, "isLocked", "false", false);//$NON-NLS-1$ //$NON-NLS-2$
+	  new SharedContext(instance).updateSharedData("isLocked", "false", false); //$NON-NLS-1$ //$NON-NLS-2$
 		instance.setLocked(false);
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        persistenceManager.save(instance);
+    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+    persistenceManager.save(instance);
 	}
 	
 	// Utility methods

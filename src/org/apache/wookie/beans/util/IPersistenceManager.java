@@ -18,7 +18,6 @@ import java.util.Map;
 
 import org.apache.wookie.beans.IAccessRequest;
 import org.apache.wookie.beans.IBean;
-import org.apache.wookie.beans.IParticipant;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 
@@ -196,22 +195,6 @@ public interface IPersistenceManager
      * @return retrieved IWidgetInstance bean instance or null if not found
      */
     IWidgetInstance findWidgetInstanceByIdKey(String idKey);
-    
-    /**
-     * Custom widget instance IParticipant query.
-     * 
-     * @param widgetInstance widget instance query value
-     * @return retrieved matching IParticipant beans array or empty array if none found
-     */
-    IParticipant [] findParticipants(IWidgetInstance widgetInstance);
-    
-    /**
-     * Custom widget instance viewer IParticipant query.
-     * 
-     * @param widgetInstance widget instance query value
-     * @return retrieved IParticipant bean instance or null if not found
-     */
-    IParticipant findParticipantViewer(IWidgetInstance widgetInstance);
     
     /**
      * Custom name IAccessRequest query.

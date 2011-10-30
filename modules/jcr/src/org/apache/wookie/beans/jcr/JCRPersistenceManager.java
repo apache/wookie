@@ -14,8 +14,6 @@
 
 package org.apache.wookie.beans.jcr;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -34,13 +32,11 @@ import javax.jcr.SimpleCredentials;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.pool.BasePoolableObjectFactory;
 import org.apache.commons.pool.PoolableObjectFactory;
 import org.apache.commons.pool.impl.GenericObjectPool;
-import org.apache.jackrabbit.core.TransientRepository;
 import org.apache.jackrabbit.core.nodetype.NodeTypeManagerImpl;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.atomictypeconverter.impl.DefaultAtomicTypeConverterProvider;
@@ -98,7 +94,6 @@ import org.apache.wookie.beans.jcr.impl.WidgetTypeImpl;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceCommitException;
 
-import org.mortbay.jetty.plus.naming.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -826,67 +821,6 @@ public class JCRPersistenceManager implements IPersistenceManager
     public <T extends IBean> T[] findByValues(Class<T> beansInterface, Map<String, Object> values)
     {
         return findByValues(beansInterface, values, null, true);
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IPersistenceManager#findParticipants(org.apache.wookie.beans.IWidgetInstance)
-     */
-    public IParticipant[] findParticipants(IWidgetInstance widgetInstance)
-    {
-        // validate object content manager transaction
-        if (ocm == null)
-        {
-            throw new IllegalStateException("Transaction not initiated or already closed");
-        }
-
-        // get participants for widget instance
-        if (widgetInstance != null)
-        {
-            try
-            {
-                Map<String, Object> values = new HashMap<String, Object>();
-                values.put("sharedDataKey", widgetInstance.getSharedDataKey());
-                return findByValues(IParticipant.class, values);
-            }
-            catch (Exception e)
-            {
-                logger.error("Unexpected exception: "+e, e);
-            }
-        }
-        return new IParticipant[0];
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IPersistenceManager#findParticipantViewer(org.apache.wookie.beans.IWidgetInstance)
-     */
-    public IParticipant findParticipantViewer(IWidgetInstance widgetInstance)
-    {
-        // validate object content manager transaction
-        if (ocm == null)
-        {
-            throw new IllegalStateException("Transaction not initiated or already closed");
-        }
-
-        // get participant viewer for widget instance
-        if (widgetInstance != null)
-        {
-            try
-            {
-                Map<String, Object> values = new HashMap<String, Object>();
-                values.put("sharedDataKey", widgetInstance.getSharedDataKey());
-                values.put("participantId", widgetInstance.getUserId());
-                IParticipant [] participantViewer = findByValues(IParticipant.class, values);
-                if (participantViewer.length == 1)
-                {
-                    return participantViewer[0];
-                }
-            }
-            catch (Exception e)
-            {
-                logger.error("Unexpected exception: "+e, e);
-            }
-        }
-        return null;
     }
 
     /* (non-Javadoc)

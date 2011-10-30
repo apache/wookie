@@ -23,13 +23,12 @@ import org.apache.wookie.Messages;
 import org.apache.wookie.beans.IParticipant;
 import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.beans.SharedContext;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
-import org.apache.wookie.controller.PropertiesController;
 import org.apache.wookie.feature.IFeature;
 import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.helpers.ParticipantHelper;
-import org.apache.wookie.helpers.SharedDataHelper;
 import org.apache.wookie.server.LocaleHandler;
 import org.directwebremoting.WebContextFactory;
 
@@ -94,7 +93,7 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 			return state;			
 		}
 		//
-		for(ISharedData data : SharedDataHelper.findSharedData(widgetInstance)){
+		for(ISharedData data : new SharedContext(widgetInstance).getSharedData()){
 			state.put(data.getDkey(), data.getDvalue());
 		}
 		return state;
@@ -110,7 +109,7 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if(widgetInstance==null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
-		IParticipant[] participants = persistenceManager.findParticipants(widgetInstance);
+		IParticipant[] participants = new SharedContext(widgetInstance).getParticipants();
 		return ParticipantHelper.createJSONParticipantsDocument(participants);
 	}
 	
@@ -124,7 +123,7 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
         IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
-        IParticipant participant = persistenceManager.findParticipantViewer(widgetInstance);
+		IParticipant participant = new SharedContext(widgetInstance).getViewer(widgetInstance);
 		if (participant != null) return ParticipantHelper.createJSONParticipantDocument(participant); //$NON-NLS-1$
 		return null; // no viewer i.e. widget is anonymous
 	}
@@ -141,7 +140,7 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 		if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2"); //$NON-NLS-1$
 		//
 		for (String key: map.keySet())
-		 	PropertiesController.updateSharedDataEntry(widgetInstance, key, map.get(key), false);
+		  new SharedContext(widgetInstance).updateSharedData(key, map.get(key), false);
 		Notifier.notifySiblings(widgetInstance);
 		return "okay"; //$NON-NLS-1$
 	}

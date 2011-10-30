@@ -24,9 +24,9 @@ import org.apache.wookie.Messages;
 import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.beans.SharedContext;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
-import org.apache.wookie.controller.PropertiesController;
 import org.apache.wookie.controller.WidgetInstancesController;
 import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.helpers.SharedDataHelper;
@@ -81,7 +81,7 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
         IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
     if (widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
-    ISharedData data = SharedDataHelper.findSharedData(widgetInstance, key);
+    ISharedData data = new SharedContext(widgetInstance).getSharedData(key);
     if (data == null) return localizedMessages.getString("WidgetAPIImpl.1");
     return data.getDvalue();
   }
@@ -106,7 +106,7 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
       QueueManager.getInstance().queueSetSharedDataRequest(id_key, SharedDataHelper.getInternalSharedDataKey(widgetInstance), key, value, false);
     }
     else{
-      PropertiesController.updateSharedDataEntry(widgetInstance, key, value, false);
+      new SharedContext(widgetInstance).updateSharedData(key, value, false);
     }
     Notifier.notifySiblings(widgetInstance);
     return "okay"; //$NON-NLS-1$
@@ -210,7 +210,7 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
       QueueManager.getInstance().queueSetSharedDataRequest(id_key, SharedDataHelper.getInternalSharedDataKey(widgetInstance), key, value, true);
     }
     else{
-      PropertiesController.updateSharedDataEntry(widgetInstance, key, value, true);
+      new SharedContext(widgetInstance).updateSharedData(key, value, true);
     }
     Notifier.notifySiblings(widgetInstance);
     return "okay"; //$NON-NLS-1$

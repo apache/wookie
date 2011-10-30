@@ -17,9 +17,9 @@ import java.util.concurrent.BlockingQueue;
 
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.beans.SharedContext;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
-import org.apache.wookie.controller.PropertiesController;
 import org.apache.wookie.queues.beans.IQueuedBean;
 /**
  * Implementation of the shareddata Queue consumer
@@ -48,7 +48,7 @@ public class SharedDataQueueConsumer extends AbstractQueueConsumer {
     		persistenceManager.begin();
     		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(bean.getId_key());
     		if (widgetInstance != null){
-    			PropertiesController.updateSharedDataEntry(widgetInstance, bean.getKey(), bean.getValue(), bean.append());
+    		  new SharedContext(widgetInstance).updateSharedData(bean.getKey(), bean.getValue(), bean.append());
     			persistenceManager.commit();
     		}
     	} 

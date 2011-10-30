@@ -92,7 +92,6 @@ import org.apache.wookie.beans.jpa.impl.WidgetServiceImpl;
 import org.apache.wookie.beans.jpa.impl.WidgetTypeImpl;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceCommitException;
-import org.apache.wookie.helpers.SharedDataHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -664,74 +663,6 @@ public class JPAPersistenceManager implements IPersistenceManager
     public <T extends IBean> T [] findByValues(Class<T> beansInterface, Map<String, Object> values)
     {
         return findByValues(beansInterface, values, null, true);
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IPersistenceManager#findParticipants(org.apache.wookie.beans.IWidgetInstance)
-     */
-    @SuppressWarnings("unchecked")
-    public IParticipant[] findParticipants(IWidgetInstance widgetInstance)
-    {
-        // validate entity manager transaction
-        if (entityManager == null)
-        {
-            throw new IllegalStateException("Transaction not initiated or already closed");
-        }        
-
-        // get participants for widget instance using custom query
-        if (widgetInstance != null)
-        {
-            try
-            {
-                String sharedDataKey = SharedDataHelper.getInternalSharedDataKey(widgetInstance);
-                Query query = entityManager.createNamedQuery("PARTICIPANTS");
-                query.setParameter("sharedDataKey", sharedDataKey);
-                List<IParticipant> participantsList = query.getResultList();
-                if ((participantsList != null) && !participantsList.isEmpty())
-                {
-                    return participantsList.toArray(new IParticipant[participantsList.size()]);
-                }
-            }
-            catch (Exception e)
-            {
-                logger.error("Unexpected exception: "+e, e);
-            }
-        }
-        return new IParticipant[0];
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IPersistenceManager#findParticipantViewer(org.apache.wookie.beans.IWidgetInstance)
-     */
-    public IParticipant findParticipantViewer(IWidgetInstance widgetInstance)
-    {
-        // validate entity manager transaction
-        if (entityManager == null)
-        {
-            throw new IllegalStateException("Transaction not initiated or already closed");
-        }        
-
-        // get participant viewer for widget instance using custom query
-        if (widgetInstance != null)
-        {
-            try
-            {
-                String sharedDataKey = SharedDataHelper.getInternalSharedDataKey(widgetInstance);
-                String userId = widgetInstance.getUserId();
-                Query query = entityManager.createNamedQuery("PARTICIPANT_VIEWER");
-                query.setParameter("sharedDataKey", sharedDataKey);
-                query.setParameter("userId", userId);
-                return (IParticipant)query.getSingleResult();
-            }
-            catch (NoResultException nre)
-            {
-            }
-            catch (Exception e)
-            {
-                logger.error("Unexpected exception: "+e, e);
-            }
-        }
-        return null;
     }
 
     /* (non-Javadoc)
