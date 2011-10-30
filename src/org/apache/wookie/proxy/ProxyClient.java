@@ -46,7 +46,7 @@ public class ProxyClient {
 
 	private String fProxyUsername = null;
 	private String fProxyPassword = null;
-	private String fBase64Auth = null;
+	//private String fBase64Auth = null;
 	private NameValuePair[] parameters = null;
 	private boolean fUseProxyAuthentication = false;
 
@@ -57,11 +57,12 @@ public class ProxyClient {
 	  //
 		String proxyUserName = request.getParameter("username");
 		String proxyPassword = request.getParameter("password");
-		String base64Auth = request.getHeader("Authorization");  
+		//String base64Auth = request.getHeader("Authorization");  
 		if(proxyUserName != null && proxyPassword != null )	
 			this.setProxyAuthConfig(proxyUserName, proxyPassword);
-		if(base64Auth != null)
-			this.setBase64AuthConfig(base64Auth);
+		//if(base64Auth != null)
+		//	this.setBase64AuthConfig(base64Auth);
+    
 		//
 		// Filter out instructions to the proxy server from the original request parameters
 		//
@@ -74,10 +75,10 @@ public class ProxyClient {
 		fProxyPassword = password;
 	}
 
-	private void setBase64AuthConfig(String base64Auth){
-		fUseProxyAuthentication = true;
-		fBase64Auth = base64Auth;
-	}
+	//private void setBase64AuthConfig(String base64Auth){
+	//	fUseProxyAuthentication = true;
+	//	fBase64Auth = base64Auth;
+	//}
 	
 	/**
 	 * Process a proxied GET request
@@ -168,19 +169,23 @@ public class ProxyClient {
 	      // We can't use content-length headers in case we altered the original body when filtering out
 	      // the proxy parameters, so exclude them when adding the headers to the request
 	      //
-	      if(!header.equalsIgnoreCase("Content-Length")){
+	      //
+          // We don't want to pass any authz headers along either (see WOOKIE-283)
+          //
+	      if(!(header.equalsIgnoreCase("Content-Length") || header.equalsIgnoreCase("authorization"))){
 	          method.addRequestHeader(header, request.getHeader(header));
 	      }
+	     
 	    }
 
 	    //
 	    // Include authentication if required
 	    //
 	    if(fUseProxyAuthentication){
-	      if (fBase64Auth != null) {
-	        method.setRequestHeader("Authorization", fBase64Auth);
-	      }
-	      else {
+	      //if (fBase64Auth != null) {
+	      // method.setRequestHeader("Authorization", fBase64Auth);
+	      //}
+	      //else {
 	        List<String> authPrefs =  new ArrayList<String>(2);
 	        authPrefs.add(AuthPolicy.DIGEST );
 	        authPrefs.add(AuthPolicy.BASIC);
@@ -197,7 +202,7 @@ public class ProxyClient {
 	        client.getState().setCredentials(
 	            new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM),
 	            new UsernamePasswordCredentials(fProxyUsername, fProxyPassword));
-	      }
+	      //}
 	    }
 
 	    //
