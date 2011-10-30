@@ -52,7 +52,7 @@ public class WidgetAccessRequestPolicyController extends Controller {
 		if (widgetId != null && widgetId.trim().length()>0){
 			// Filter by widgetId
 			IWidget widget = persistenceManager.findById(IWidget.class, widgetId);
-            if (widget != null) accessRequests = persistenceManager.findByValue(IAccessRequest.class, "widget", widget);
+            if (widget != null) accessRequests = persistenceManager.findApplicableAccessRequests(widget);
 		}
 		
 		switch (format(request)) {
