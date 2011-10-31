@@ -35,6 +35,21 @@ var ${widget.shortname}_controller = {
     */
     getTitle:function() {
         return "${widget.name}";
+    },
+
+    /**
+     * Get the viewport width and height.
+     * returns an object with width and height properties.
+     */
+    getViewport:function() {
+	var e = window
+	, a = 'inner';
+	if ( !( 'innerWidth' in window ) )
+	{
+	    a = 'client';
+	    e = document.documentElement || document.body;
+	}
+	return { width : e[ a+'Width' ] , height : e[ a+'Height' ] }
     }
 };
 
