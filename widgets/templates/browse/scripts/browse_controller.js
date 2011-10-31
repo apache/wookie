@@ -26,26 +26,30 @@ var ${widget.shortname}_browse_controller = {
     },
     
     /**
-     * Search the myExperiment system and display the results
+     * Search the remote service and sort results if possible.
      */
-    search:function(query) {
-		// Load data into the initial results list
-    	if (query === undefined) {
-		  var url = widget.proxify(${browse.index.url});
+    search:function(query, sort, order) {
+	if (sort === undefined) {
+	    sort = "${browse.sort}";
+	}
+    	if (query === undefined || query == "") {
+	    var url = widget.proxify(${browse.index.url});
     	} else {
-    		var url = widget.proxify(${browse.search.url});
+    	    var url = widget.proxify(${browse.search.url});
     	}
     	${widget.shortname}_browse_controller.populate(url);
-	},
+    },
 	
 	
-	/**
-	 * Extract the values from the search form, do the search and display the results.
-	 */
-	submitSearchForm:function() {
-		var query = $('#searchString').val();
-		${widget.shortname}_browse_controller.search(query);
-	},
+    /**
+     * Extract the values from the search form, do the search and display the results.
+     */
+    submitSearchForm:function() {
+	var query = $('#searchString').val();
+	var sort = $('#sort').val();
+	var order = ($("input[@name='sortOrder']:checked").val());
+	${widget.shortname}_browse_controller.search(query, sort, order);
+    },
 
     /**
      * Update the display

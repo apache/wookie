@@ -87,6 +87,7 @@
           <propertyref prefix="wookie"/>
           <propertyref prefix="template."/>
           <propertyref prefix="widget."/>
+          <propertyref prefix="${widget.shortname}"/>
         </propertyset>
       </antcall>
 

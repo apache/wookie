@@ -48,71 +48,42 @@
 
 		<div data-role="content">
 
-			<div data-role="collapsible" class="content-secondary" data-theme="c"
-				data-content-theme="c">
-				<h2>Search and Filter</h2>
+		  <div data-role="collapsible" class="content-secondary" data-theme="c"
+		       data-content-theme="c">
+		    <h2>Search</h2>
 
-				<form
-					action="javascript:${widget.shortname}_browse_controller.submitSearchForm()"
-					method="get">
-					<div data-role="fieldcontain">
-						<label for="searchString">Search:</label> <input type="text"
-							name="searchString" id="searchString" value=""
-							placeholder="Search terms..." />
-					</div>
-<!-- 
-					<div data-role="fieldcontain">
-						<label for="filter-term-1" class="ui-hidden-accessible">Filter
-							term:</label> <input type="text" name="filter-term-1" id="filter-term-1"
-							value="" placeholder="Filter term..." /> <label
-							for="filter-by-1" class="ui-hidden-accessible">Filter in:</label>
-						<select name="filter-by-1" id="sort">
-							<option value="type">Type</option>
-							<option value="tag">Tag</option>
-							<option value="user">User</option>
-							<option value="license">Licence</option>
-							<option value="group">Group</option>
-							<option value="wsdl">WSDL</option>
-							<option value="curation">Curation</option>
-						</select>
-					</div>
+		    <form
+		       action="javascript:${widget.shortname}_browse_controller.submitSearchForm()"
+		       method="get">
+		      <div data-role="fieldcontain">
+			<label for="searchString">Search:</label> <input type="text"
+									 name="searchString" id="searchString" value=""
+									 placeholder="Search terms..." />
+		      </div>
 
-					<div data-role="fieldcontain">
-						<label for="filter-term-2" class="ui-hidden-accessible">Filter
-							term:</label> <input class="left" type="text" name="filter-term-2"
-							id="filter-term-2" value="" placeholder="Filter term..." /> <label
-							for="filter-by-2" class="ui-hidden-accessible">Filter in:</label>
-						<select name="filter-by-2" id="sort">
-							<option value="type">Type</option>
-							<option value="tag">Tag</option>
-							<option value="user">User</option>
-							<option value="license">Licence</option>
-							<option value="group">Group</option>
-							<option value="wsdl">WSDL</option>
-							<option value="curation">Curation</option>
-						</select>
-					</div>
+		      <div data-role="fieldcontain">
+			<label for="sort">Sort:</label> 
+			<select name="sort" id="sort"> creation time (created), update time (updated), title (title) and name (name) 
+			  <option value="updated">Updated</option>
+			  <option value="created">Created</option>
+			  <option value="title">Title</option>
+			  <option value="name">Name</option>
+			</select>
+		      </div>
 
-					<div data-role="fieldcontain">
-						<label for="filter-term-3" class="ui-hidden-accessible">Filter
-							term:</label> <input class="left" type="text" name="filter-term-3"
-							id="filter-term-3" value="" placeholder="Filter term..." /> <label
-							for="filter-by-3" class="ui-hidden-accessible">Filter in:</label>
-						<select name="filter-by-3" id="sort">
-							<option value="type">Type</option>
-							<option value="tag">Tag</option>
-							<option value="user">User</option>
-							<option value="license">Licence</option>
-							<option value="group">Group</option>
-							<option value="wsdl">WSDL</option>
-							<option value="curation">Curation</option>
-						</select>
-					</div>
--->
+		      <fieldset data-role="controlgroup" data-type="horizontal">
+			<legend>Sort order</legend>
+     			<input type="radio" name="sortOrder" id="reverseOrder" value="reverse" checked="checked" />
+     			<label for="reverseOrder">Reverse</label>
+			
+     			<input type="radio" name="sortOrder" id="forwardOrder" value="forward"  />
+     			<label for="forwardOrder">Forward</label>
+		      </fieldset>
 
-					<input type="submit" value="Search" />
-				</form>
-			</div>
+		      <input type="submit" value="Search" />
+		    </form>
+
+		  </div>
 			<!-- /content-secondary -->
 
 			<div class="content-primary" id="content-primary">
