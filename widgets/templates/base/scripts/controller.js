@@ -28,6 +28,11 @@ var ${widget.shortname}_controller = {
      * Update the display
      */
     update:function() { 
+	var viewport =  ${widget.shortname}_controller.getViewport();
+	var header = $(".header").outerHeight(true);
+	var footer = $(".footer").outerHeight(true);
+	var space = $(".ui-content").outerHeight(true) - $(".ui-content").height();
+	$(".content-primary").height(viewport.height - space - header - footer);
     },
 
    /**
@@ -44,12 +49,11 @@ var ${widget.shortname}_controller = {
     getViewport:function() {
 	var e = window
 	, a = 'inner';
-	if ( !( 'innerWidth' in window ) )
-	{
+	if ( !( 'innerWidth' in window ) ) {
 	    a = 'client';
 	    e = document.documentElement || document.body;
 	}
-	return { width : e[ a+'Width' ] , height : e[ a+'Height' ] }
+	return { width : e[ a + 'Width' ] , height : e[ a + 'Height' ] }
     }
 };
 

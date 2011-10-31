@@ -14,6 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+.ui-content {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.content-primary {
+  overflow: auto;
+}
  
 .ui-content {
   padding: 5px;
