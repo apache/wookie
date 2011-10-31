@@ -269,7 +269,6 @@ to a locally running Wookie server. Once this command has successfully
 executed you can examine your widget in action.
 
 
-
 ** Adding some style
 
 This section builds on the previous tutorial. We will add some simple
@@ -351,6 +350,16 @@ Note that you can add additional libraries to your widget by placing
 them in a "lib" directory in the root of the widget directory. Be sure
 to add any copyright notices and licenses to a "NOTICE" file and
 "legal" directory respectfully.
+
+** Common Files
+When building a family of related widgets you are likely to provide a
+set of common files that will be reused by multiple widgets. These can
+be placed in a directory called "common" in the same directory as your
+widget definitions. All files in this folder will be copied, with
+token replacement, into each widget.
+
+Because we use token replacement in these files too, it is possible
+for each widget to customise the common files appropriately.
 
 * Building widgets
 

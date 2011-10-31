@@ -98,6 +98,16 @@
       <copy todir="${widget.build.dir}/${widget.shortname}"
             overwrite="true"
             failonerror="false">
+        <fileset dir="../common">
+          <exclude name="widget.properties"/>
+        </fileset>     
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+      </copy>
+      <copy todir="${widget.build.dir}/${widget.shortname}"
+            overwrite="true"
+            failonerror="false">
         <fileset dir=".">
           <exclude name="widget.properties"/>
         </fileset>     
@@ -110,12 +120,30 @@
       <copy todir="${widget.build.dir}/${widget.shortname}/images"
             overwrite="true"
             failonerror="false">
+        <fileset dir="../common/images">
+          <include name="**/*.*"/>
+        </fileset>     
+      </copy>
+      <copy todir="${widget.build.dir}/${widget.shortname}/images"
+            overwrite="true"
+            failonerror="false">
         <fileset dir="./images">
           <include name="**/*.*"/>
         </fileset>     
       </copy>
 
       <!-- Copy/Create the javascript -->
+      <copy todir="${widget.build.dir}/${widget.shortname}/scripts"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="../common/scripts">
+          <include name="**/*.js"/>
+          <exclude name="**/*_controller.js"/>
+        </fileset>     
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+      </copy>
       <copy todir="${widget.build.dir}/${widget.shortname}/scripts"
             overwrite="true"
             failonerror="false">
@@ -154,10 +182,18 @@
       <copy todir="${widget.build.dir}/${widget.shortname}/style"
             overwrite="true"
             failonerror="false">
+        <fileset dir="../common/style">
+          <include name="**/*.css"/>
+        </fileset>     
+      </copy>
+      <copy todir="${widget.build.dir}/${widget.shortname}/style"
+            overwrite="true"
+            failonerror="false">
         <fileset dir="./style">
           <include name="**/*.css"/>
         </fileset>     
       </copy>
+
       <concat destfile="${widget.build.dir}/${widget.shortname}/style/all.css.new"
       		  fixlastline="true">
         <fileset dir="${widget.build.dir}/${widget.shortname}/style"
@@ -177,12 +213,26 @@
       <copy todir="${widget.build.dir}/${widget.shortname}/lib"
             overwrite="true"
             failonerror="false">
+        <fileset dir="../common/lib">
+          <include name="**/*.*"/>
+        </fileset>     
+      </copy>
+      <copy todir="${widget.build.dir}/${widget.shortname}/lib"
+            overwrite="true"
+            failonerror="false">
         <fileset dir="./lib">
           <include name="**/*.*"/>
         </fileset>     
       </copy>
 
       <!-- Copy/Create the legal -->
+      <copy todir="${widget.build.dir}/${widget.shortname}/legal"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="../common/legal">
+          <include name="**/*.*"/>
+        </fileset>     
+      </copy>
       <copy todir="${widget.build.dir}/${widget.shortname}/legal"
             overwrite="true"
             failonerror="false">
