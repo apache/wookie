@@ -71,6 +71,7 @@ Improvements
     * WOOKIE-250 - Improve license files
 	* WOOKIE-255 - Change file names to not include version numbers in features    
     * WOOKIE-257 - Remove JUnit dependency for binary releases
+	* WOOKIE-283 - Logging into admin interface inteferes with API calls
     
 New Features
 ============
