@@ -283,6 +283,12 @@ public abstract class AbstractPersistenceTest
         assertEquals(1, participants.length);
         
         //
+        // Get the participant created in the previous transaction by widget instance
+        //
+        participant =  new SharedContext(widgetInstance0).getViewer(widgetInstance0);
+        assertNotNull(participant);
+        
+        //
         // Get the access request created in the previous transaction
         //
         IAccessRequest [] accessRequests = persistenceManager.findAll(IAccessRequest.class);
@@ -293,8 +299,7 @@ public abstract class AbstractPersistenceTest
         // delete all the test objects
         //
         persistenceManager.delete(widgetInstance0);
-        //this object was in the previous transaction
-        //persistenceManager.delete(participant);
+        persistenceManager.delete(participant);
         persistenceManager.delete(accessRequests);
         
         //
