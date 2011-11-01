@@ -293,7 +293,8 @@ public abstract class AbstractPersistenceTest
         // delete all the test objects
         //
         persistenceManager.delete(widgetInstance0);
-        persistenceManager.delete(participant);
+        //this object was in the previous transaction
+        //persistenceManager.delete(participant);
         persistenceManager.delete(accessRequests);
         
         //
