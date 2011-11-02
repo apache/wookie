@@ -20,6 +20,12 @@
  * This is used to wire up the view and model with actions
  */ 
 var ${widget.shortname}_browse_controller = {
+    /**
+     * A dictionary of callback function that are called whenver an
+     * event is fired by this widget.
+     */
+    callbacks: {},
+
     init:function() {
         ${widget.shortname}_browse_controller.update();
         ${widget.shortname}_browse_controller.search()
@@ -78,6 +84,18 @@ var ${widget.shortname}_browse_controller = {
     },
     
     /**
+     * Register a callback function for an an event in this widget.
+     */
+    register:function(event, callback) {
+	var cbks = ${widget.shortname}_browse_controller.callbacks[event];
+	if (cbks === undefined) {
+	    cbks = new Array();
+	}
+	cbks.push(callback);
+	${widget.shortname}_browse_controller.callbacks[event] = cbks;
+    },
+    
+    /**
      * Retrieve the details of an item and display them in the detail section.
      */
     displaySummary:function(itemId){
@@ -103,5 +121,10 @@ $('#home').live('pageshow',function(event) {
  * Display the content of a result item when it is expanded.
  */
 $('div.result').live('expand', function(event) {
-	${widget.shortname}_browse_controller.displaySummary($(this).attr("wid"))
+    ${widget.shortname}_browse_controller.displaySummary($(this).attr("wid"));
+    var cbks = ${widget.shortname}_browse_controller.callbacks["expand"];
+    if (cbks === undefined) return;
+    for (var i = 0; i < cbks.length; i++) {
+	cbks[i](event, $(this).attr("wid"));
+    }
 });
