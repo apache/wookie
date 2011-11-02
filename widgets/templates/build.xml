@@ -157,20 +157,17 @@
         </filterchain>
       </copy>
 
-      <concat destfile="${widget.build.dir}/${widget.shortname}/scripts/controller.js.new">
-        <fileset dir="./scripts"
-                 erroronmissingdir="false">
-          <include name="**/*_controller.js"/>
-        </fileset>
+      <concat destfile="${widget.build.dir}/${widget.shortname}/scripts/controller.js.new"
+	      fixlastline="true">
         <fileset dir="${widget.build.dir}/${widget.shortname}/scripts"
                  erroronmissingdir="false">
           <include name="controller.js"/>
         </fileset>
-        <header filtering="yes" trimleading="yes">
-          /*
-           *  Javascript from template: ${template.name}
-           */ 
-        </header>
+        <fileset dir="./scripts"
+                 erroronmissingdir="false">
+          <include name="**/*_controller.js"/>
+        </fileset>
+
         <filterchain>
           <expandproperties/>
         </filterchain>
