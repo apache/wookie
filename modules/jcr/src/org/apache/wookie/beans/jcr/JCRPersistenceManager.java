@@ -57,6 +57,7 @@ import org.apache.wookie.beans.IDescription;
 import org.apache.wookie.beans.IFeature;
 import org.apache.wookie.beans.ILicense;
 import org.apache.wookie.beans.IName;
+import org.apache.wookie.beans.IOAuthToken;
 import org.apache.wookie.beans.IParam;
 import org.apache.wookie.beans.IParticipant;
 import org.apache.wookie.beans.IPreference;
@@ -1384,5 +1385,10 @@ public class JCRPersistenceManager implements IPersistenceManager
             // remove from cache
             return cache.remove(path);
         }
+    }
+    
+    public IOAuthToken findOAuthToken(IWidgetInstance widgetInstance) {
+       // TODO Auto-generated method stub
+       return null;
     }
 }

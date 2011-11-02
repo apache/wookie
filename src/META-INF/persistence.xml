@@ -42,6 +42,7 @@
         <class>org.apache.wookie.beans.jpa.impl.WidgetInstanceImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.WidgetServiceImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.WidgetTypeImpl</class>
+        <class>org.apache.wookie.beans.jpa.impl.OAuthTokenImpl</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

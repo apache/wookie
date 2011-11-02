@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.apache.wookie.beans.IAccessRequest;
 import org.apache.wookie.beans.IBean;
+import org.apache.wookie.beans.IOAuthToken;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 
@@ -203,5 +204,12 @@ public interface IPersistenceManager
      * @return retrieved matching IAccessRequest beans array or empty array if none found
      */
     IAccessRequest [] findApplicableAccessRequests(IWidget widget);
+    
+    /**
+     * Find oAuth token for widget instance
+     * @param widgetInstance
+     * @return
+     */
+    IOAuthToken findOAuthToken(IWidgetInstance widgetInstance);
  
 }

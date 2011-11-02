@@ -330,4 +330,19 @@
     </index>
   </table>
 
+  <table name="OAuthToken">
+    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="jpa_version" type="INTEGER"/>
+    <column name="authzUrl" required="true" size="255" type="VARCHAR"/>
+    <column name="accessToken" required="true" size="255" type="VARCHAR"/>
+    <column name="clientId" required="true" size="255" type="VARCHAR"/>
+    <column name="expires" required="true" type="BIGINT"/>
+    <column name="widget_instance_id" type="INTEGER"/>
+    <foreign-key foreignTable="WidgetInstance" name="FKOAuthToken1">
+      <reference foreign="id" local="widget_instance_id"/>
+    </foreign-key>
+    <index name="IXOAuthToken1">
+      <index-column name="widget_instance_id"/>
+    </index>
+  </table>
 </database>

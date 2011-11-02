@@ -55,6 +55,7 @@ import org.apache.wookie.beans.IDescription;
 import org.apache.wookie.beans.IFeature;
 import org.apache.wookie.beans.ILicense;
 import org.apache.wookie.beans.IName;
+import org.apache.wookie.beans.IOAuthToken;
 import org.apache.wookie.beans.IParam;
 import org.apache.wookie.beans.IParticipant;
 import org.apache.wookie.beans.IPreference;
@@ -76,6 +77,7 @@ import org.apache.wookie.beans.jpa.impl.DescriptionImpl;
 import org.apache.wookie.beans.jpa.impl.FeatureImpl;
 import org.apache.wookie.beans.jpa.impl.LicenseImpl;
 import org.apache.wookie.beans.jpa.impl.NameImpl;
+import org.apache.wookie.beans.jpa.impl.OAuthTokenImpl;
 import org.apache.wookie.beans.jpa.impl.ParamImpl;
 import org.apache.wookie.beans.jpa.impl.ParticipantImpl;
 import org.apache.wookie.beans.jpa.impl.PreferenceDefaultImpl;
@@ -138,6 +140,7 @@ public class JPAPersistenceManager implements IPersistenceManager
         INTERFACE_TO_CLASS_MAP.put(IWidgetInstance.class, WidgetInstanceImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IWidgetService.class, WidgetServiceImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IWidgetType.class, WidgetTypeImpl.class);
+        INTERFACE_TO_CLASS_MAP.put(IOAuthToken.class, OAuthTokenImpl.class);
 
         BEAN_INTERFACE_TO_CLASS_MAP.put(IAccessRequest.class, AccessRequestImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IApiKey.class, ApiKeyImpl.class);
@@ -149,6 +152,7 @@ public class JPAPersistenceManager implements IPersistenceManager
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetDefault.class, WidgetDefaultImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetInstance.class, WidgetInstanceImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetService.class, WidgetServiceImpl.class);
+        BEAN_INTERFACE_TO_CLASS_MAP.put(IOAuthToken.class, OAuthTokenImpl.class);
 
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IAccessRequest.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IApiKey.class, Integer.class);
@@ -158,6 +162,7 @@ public class JPAPersistenceManager implements IPersistenceManager
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IWidgetDefault.class, String.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IWidgetInstance.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IWidgetService.class, Integer.class);
+        BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IOAuthToken.class, Integer.class);
         
         DB_TYPE_TO_JPA_DICTIONARY_MAP.put("db2", "db2");
         DB_TYPE_TO_JPA_DICTIONARY_MAP.put("derby", "derby");
@@ -926,4 +931,21 @@ public class JPAPersistenceManager implements IPersistenceManager
             return false;
         }
     }
+
+	public IOAuthToken findOAuthToken(IWidgetInstance widgetInstance) {
+
+        if (entityManager == null) {
+            throw new IllegalStateException("Transaction not initiated or already closed");
+        }        
+
+        if (widgetInstance != null) {
+            try {
+                Query query = entityManager.createNamedQuery("ACCESS_TOKEN");
+                query.setParameter("widgetInstance", widgetInstance);
+                return (IOAuthToken) query.getSingleResult();
+            } catch (Exception e) {
+            }
+        }
+        return null;
+	}
 }

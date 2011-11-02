@@ -26,7 +26,14 @@
       <include method="getParticipants"/>
       <include method="getViewer"/>      
     </create>
-    
+
+    <create creator="new" javascript="OAuthConnector" scope="application">
+      <param name="class" value="org.apache.wookie.feature.oauth.oAuthClient"/>  
+      <include method="authenticate"/>
+      <include method="updateToken"/>
+      <include method="queryToken"/>
+    </create>
+        
     <convert converter="object" match="org.apache.wookie.ajaxmodel.impl.PreferenceDelegate" javascript="Preference">
         <param name="force" value="true"/>
         <param name="include" value="dkey, dvalue, readOnly"/>
