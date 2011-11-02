@@ -185,13 +185,15 @@
             failonerror="false">
         <fileset dir="../common/style">
           <include name="**/*.css"/>
-        </fileset>     
+          <include name="**/*.css.add"/>
+	  </fileset>    
       </copy>
       <copy todir="${widget.build.dir}/${widget.shortname}/style"
             overwrite="true"
             failonerror="false">
         <fileset dir="./style">
           <include name="**/*.css"/>
+          <include name="**/*.css.add"/>
         </fileset>     
       </copy>
 
@@ -201,7 +203,7 @@
                  erroronmissingdir="false">
           <include name="all.css"/>
         </fileset>
-        <fileset dir="./style"
+        <fileset dir="${widget.build.dir}/${widget.shortname}/style"
                  erroronmissingdir="false">
           <include name="*.css.add"/>
         </fileset>
