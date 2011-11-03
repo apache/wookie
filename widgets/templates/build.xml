@@ -96,11 +96,17 @@
       <echo message="+------------------------------------------"/>
 
       <!-- Copy/Create root files -->
+
       <copy todir="${widget.build.dir}/${widget.shortname}"
             overwrite="true"
             failonerror="false">
         <fileset dir="../common">
           <exclude name="widget.properties"/>
+          <exclude name="scripts/*"/>
+          <exclude name="style/*"/>
+          <exclude name="images/*"/>
+          <exclude name="lib/*"/>
+          <exclude name="legal/*"/>
         </fileset>     
         <filterchain>
           <expandproperties/>
@@ -111,6 +117,11 @@
             failonerror="false">
         <fileset dir=".">
           <exclude name="widget.properties"/>
+          <exclude name="scripts/*"/>
+          <exclude name="style/*"/>
+          <exclude name="images/*"/>
+          <exclude name="lib/*"/>
+          <exclude name="legal/*"/>
         </fileset>     
         <filterchain>
           <expandproperties/>
@@ -138,7 +149,6 @@
             overwrite="true"
             failonerror="false">
         <fileset dir="../common/scripts">
-          <include name="**/*.js"/>
           <exclude name="**/*_controller.js"/>
         </fileset>     
         <filterchain>
@@ -149,7 +159,6 @@
             overwrite="true"
             failonerror="false">
         <fileset dir="./scripts">
-          <include name="**/*.js"/>
           <exclude name="**/*_controller.js"/>
         </fileset>     
         <filterchain>
@@ -163,6 +172,13 @@
                  erroronmissingdir="false">
           <include name="controller.js"/>
         </fileset>
+        <fileset dir="${widget.build.dir}/${widget.shortname}/scripts"
+                 erroronmissingdir="false">
+          <include name="**/*_controller.js"/>
+        </fileset>
+        <fileset dir="../common/scripts">
+          <include name="**/*_controller.js"/>
+        </fileset>     
         <fileset dir="./scripts"
                  erroronmissingdir="false">
           <include name="**/*_controller.js"/>
@@ -175,7 +191,8 @@
       <move tofile="${widget.build.dir}/${widget.shortname}/scripts/controller.js" 
             file="${widget.build.dir}/${widget.shortname}/scripts/controller.js.new"
             failonerror="false"/>
-      
+
+
       <!-- Copy/Create the stylesheets -->
       <copy todir="${widget.build.dir}/${widget.shortname}/style"
             overwrite="true"
@@ -282,7 +299,12 @@
             overwrite="true"
             failonerror="false">
         <fileset dir="${template.dir}/${template.name}">
-          <include name="*.*"/>
+          <exclude name="widget.properties"/>
+          <exclude name="scripts/*"/>
+          <exclude name="style/*"/>
+          <exclude name="images/*"/>
+          <exclude name="lib/*"/>
+          <exclude name="legal/*"/>
         </fileset>     
         <filterchain>
           <expandproperties/>
@@ -332,7 +354,7 @@
       <move tofile="${widget.build.dir}/${widget.shortname}/scripts/controller.js" 
             file="${widget.build.dir}/${widget.shortname}/scripts/controller.js.new"
             failonerror="false"/>
-      
+
       <!-- Copy/Create the stylesheets -->
       <copy todir="${widget.build.dir}/${widget.shortname}/style"
             overwrite="true"
