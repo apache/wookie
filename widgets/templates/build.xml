@@ -176,7 +176,8 @@
                  erroronmissingdir="false">
           <include name="**/*_controller.js"/>
         </fileset>
-        <fileset dir="../common/scripts">
+        <fileset dir="../common/scripts"
+                 erroronmissingdir="false">
           <include name="**/*_controller.js"/>
         </fileset>     
         <fileset dir="./scripts"
