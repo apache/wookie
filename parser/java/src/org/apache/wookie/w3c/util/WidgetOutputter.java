@@ -91,7 +91,9 @@ public class WidgetOutputter {
 		
 		// Get folder name for widget id
 		String folder = WidgetPackageUtils.convertIdToFolderName(widget.getIdentifier());
-		String installedPath = widgetFolder + File.separator + folder + File.separator;
+		// NOTE: the following path separators always need to be forward slashes as they 
+		// are relative web links, not platform specific folder separators
+		String installedPath = widgetFolder + "/" + folder + "/";
 		
 		W3CWidget localWidget = widget;
 		
