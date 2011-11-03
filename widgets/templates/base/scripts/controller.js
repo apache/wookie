@@ -20,6 +20,12 @@
  * This is used to wire up the view and model with actions
  */ 
 var ${widget.shortname}_controller = {
+    /**
+     * A dictionary of callback functions that are called whenever an
+     * event is fired by this widget.
+     */
+    callbacks: {},
+
     init:function() {
         ${widget.shortname}_controller.update();
     },
@@ -54,6 +60,59 @@ var ${widget.shortname}_controller = {
 	    e = document.documentElement || document.body;
 	}
 	return { width : e[ a + 'Width' ] , height : e[ a + 'Height' ] }
+    },
+
+    /**
+     * Register a callback function. 
+     *
+     * type: the name of the type of event to respond to 
+     *
+     * widget: [optional] the name of the widget where the event must
+     * occur for the callback to be executed. This allows callbacks to
+     * be register so that they will only respond to events in
+     * specific widgets, or to all events.
+     */
+    register:function(event, callback, widget) {
+	if (widget === undefined) {
+	    var cbks = ${widget.shortname}_controller.callbacks[event];
+	} else {
+	    var cbks = ${widget.shortname}_controller.callbacks[widget + "." + event];
+	}
+	if (cbks === undefined) {
+	    cbks = new Array();
+	}
+	cbks.push(callback);
+	${widget.shortname}_controller.callbacks[event] = cbks;
+    },
+
+    /**
+     * Execute all the callbacks registered for a given event.
+     *
+     * The event object is passed directly to the callback function
+     * and can contani any number of properties. Two properties that
+     * important to the callback functionality are:
+     *
+     * type: the name of the type of event to respond to 
+     *
+     * widget: [optional] the name of the widget where the event
+     * occured. This allows callbacks to be register so that they will
+     * only respond to events in specific widgets, or to all events.
+     */
+    executeCallbacks:function(event) {
+	// Execute all callbacks not restricted to a widget
+	var cbks = ${widget.shortname}_controller.callbacks[event.type];
+	if (cbks === undefined) return;
+	for (var i = 0; i < cbks.length; i++) {
+	    cbks[i](event);
+	}
+
+	// Execute all callbacks restricted to a widget
+	if (event.widget === undefined) return;
+	var cbks = ${widget.shortname}_controller.callbacks[event.widget + "." + event.type];
+	if (cbks === undefined) return;
+	for (var i = 0; i < cbks.length; i++) {
+	    cbks[i](event);
+	}
     }
 };
 
