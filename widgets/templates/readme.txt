@@ -102,6 +102,37 @@ used as a token.
 
 *** CSS
 
+**** Default CSS
+
+Each template provides a minimum of CSS styles to allow widgets to be
+consistent in their styling. Your own templates and widgets based on
+these can override these styles as necessary, see below.
+
+**** Media Queries
+
+The root "default.widget.properties" file provides a number of useful
+properties for performing media queries in your CSS and
+Javascript. These properties define many common form factors in
+various orientations. Please check the file for the full list.
+
+To use these in your CSS simply include them as properties. for example:
+
+#+BEGIN_SRC CSS
+@media ${widget.media.screen.wide} {
+/* Styles */
+}
+#+END_SRC
+
+To use them in your javascript you can use the JQuery Mobile media function, for example:
+
+#+BEGINE_SRC Javascript
+if ($.mobile.media("${widget.media.screen.wide}")) {
+  $('#searchPanel').trigger('expand');
+}
+#+END_SRC
+
+**** Custom CSS
+
 Each template can provide complete CSS files which will be copied into
 widgets just like any other resources. In addition templates can add
 to or modify CSS rules defined in parent templates.

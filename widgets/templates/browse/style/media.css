@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- @media all and (min-width: 650px){
+ @media ${widget.media.screen.wide} {
     .content-secondary {
 	text-align: left;
 	float: left;
@@ -26,9 +26,8 @@
 	margin-right: 1%;
 	padding-right: 1%;
     }
-}
 
-@media all and (min-width: 750px){
+@media ${widget.media.screen.veryWide} {
     .content-secondary {
 	width: 34%;
     }
@@ -37,16 +36,4 @@
 	padding-right: 1%;
     }	
 }
-
-@media all and (min-width: 1200px){
-    .content-secondary {
-	width: 30%;
-	padding-right:6%;
-	margin-right: 5%;
-    }
-    .content-primary {
-	width: 50%;
-	margin-right: 5%;
-	padding-right: 3%;
-    }
 }
