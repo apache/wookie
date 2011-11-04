@@ -1,0 +1,9 @@
+Walkthrough contains materials originally developed by OpenDirective for the University of Oxford
+These materials are copyright University of Oxford, 2011 
+
+This product includes jQueryMobile and jQuery developed by jQuery Project
+http://jquerymobile.com/
+
+This product incudes the Creole 1.0 wiki markup parser by 
+Ivan Fomichev with portions by Chris Purcell
+http://www.ivan.fomichev.name/2008/04/javascript-creole-10-wiki-markup-parser.html

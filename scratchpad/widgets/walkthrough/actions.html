@@ -1,0 +1,65 @@
+<!DOCTYPE html> 
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html lang=en>
+	<head>
+        <meta http-equiv="pragma" content="no-cache"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"> 
+        <title>Actions list</title>
+
+        <!-- everything in this file so can be saved as a single file -->
+
+        <style type="text/css">
+        </style>
+
+        <script type="text/javascript">
+        //<![CDATA[
+        window.onload = function(e){  
+            var actions = opener.Controller.actions;
+            var html='';
+            for (var i = 0; i < actions.length; ++i)
+            {
+                var action = actions[i];
+                html += '<li>';
+                html += action.text;
+                if ('href' in action)
+                {
+                  html += ' - <a href="'+action.href+'">'+action.href+'</a>';
+                }
+                else if ('notetext' in action)
+                {
+                  html += '<br/>' + action.notetext;
+                }
+                html += '</li>';
+            }
+            var alist = document.getElementById('actionlist');
+            alist.innerHTML = html;
+            
+            var doPrint = function() {window.print();};
+            document.getElementById('print').onclick = doPrint;
+        };
+        //]]
+        </script>
+	</head>
+    
+	<body>
+		<h1> Actions </h1> 
+        <button id='print'>Print these actions</button> or save them using your browser's save action.
+        <ol id='actionlist'></ol>
+	</body>
+</html>
