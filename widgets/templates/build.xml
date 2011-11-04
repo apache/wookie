@@ -201,7 +201,11 @@
         <fileset dir="../common/style">
           <include name="**/*.css"/>
           <include name="**/*.css.add"/>
-	  </fileset>    
+	</fileset>  
+
+        <filterchain>
+          <expandproperties/>
+        </filterchain>  
       </copy>
       <copy todir="${widget.build.dir}/${widget.shortname}/style"
             overwrite="true"
@@ -209,7 +213,11 @@
         <fileset dir="./style">
           <include name="**/*.css"/>
           <include name="**/*.css.add"/>
-        </fileset>     
+        </fileset>    
+
+        <filterchain>
+          <expandproperties/>
+        </filterchain> 
       </copy>
 
       <concat destfile="${widget.build.dir}/${widget.shortname}/style/all.css.new"
@@ -222,6 +230,10 @@
                  erroronmissingdir="false">
           <include name="*.css.add"/>
         </fileset>
+
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
       </concat>
       <move tofile="${widget.build.dir}/${widget.shortname}/style/all.css" 
             file="${widget.build.dir}/${widget.shortname}/style/all.css.new"
@@ -363,6 +375,10 @@
         <fileset dir="${template.dir}/${template.name}/style">
           <include name="**/*.css"/>
         </fileset>     
+
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
       </copy>
       <concat destfile="${widget.build.dir}/${widget.shortname}/style/all.css.new">
         <fileset dir="${template.dir}/${template.name}/style"
@@ -373,6 +389,10 @@
                  erroronmissingdir="false">
           <include name="all.css"/>
         </fileset>
+
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
       </concat>
       <move tofile="${widget.build.dir}/${widget.shortname}/style/all.css" 
             file="${widget.build.dir}/${widget.shortname}/style/all.css.new"
