@@ -18,10 +18,10 @@
     .content-secondary {
 	text-align: left;
 	float: left;
-	width: 45%;
+	width: 35%;
     }
     .content-primary {
-	width: 45%;
+	width: 55%;
 	float: right;
 	margin-right: 1%;
 	padding-right: 1%;
@@ -29,10 +29,10 @@
 
 @media ${widget.media.screen.veryWide} {
     .content-secondary {
-	width: 34%;
+	width: 24%;
     }
     .content-primary {
-	width: 56%;
+	width: 66%;
 	padding-right: 1%;
     }	
 }
