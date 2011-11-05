@@ -34,11 +34,6 @@ var ${widget.shortname}_controller = {
      * Update the display
      */
     update:function() { 
-	var viewport =  ${widget.shortname}_controller.getViewport();
-	var header = $(".header").outerHeight(true);
-	var footer = $(".footer").outerHeight(true);
-	var space = $(".ui-content").outerHeight(true) - $(".ui-content").height();
-	$(".content-primary").height(viewport.height - space - header - footer);
     },
 
    /**
