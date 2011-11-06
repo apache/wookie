@@ -218,40 +218,101 @@ The following components come under Apache Software License 2.0
 dwr-2.0.5
     Containing Project URL: http://directwebremoting.org/
     
-google-collections-1.0-rc2.jar	
-	Containing Project URL: http://code.google.com/p/google-collections/
-	
-jetty-6.1.3.jar
-jetty-naming-6.1.3.jar
-jetty-plus-6.1.3.jar
-jetty-util-6.1.3.jar
-jsp-2.1-6.1.3.jar 
-jsp-api-2.1-6.1.3.jar 
-servlet-api-2.5-6.1.3.jar
-	Containing Project URL: http://jetty.codehaus.org/jetty/
-		
-xml-apis-1.0.b2.jar	
-	Containing Project URL: http://xml.apache.org/commons/components/external/ 
-	
+ /*
+  * Copyright 2005 Joe Walker
+  *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+  * you may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at
+  *
+  *     http://www.apache.org/licenses/LICENSE-2.0
+  *
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  */
+    	
 ===============================================================================	
 The following components are MIT Licensed 
 ===============================================================================	
-slf4j-api-1.5.3.jar
-slf4j-log4j12-1.5.2.jar
-	Containing Project URL: http://www.slf4j.org/
 
 camcanvas.swf
 camcanvas.html
     Containing Project URL: https://github.com/taboca/CamCanvas-API-
+    
+Copyright (c) 2009 Marcio S Galli, http://www.taboca.com/
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 geo.js
 geo_position_js_simulator.js
     Containing Project URL: http://code.google.com/p/geo-location-javascript/
+
+Copyright (c) 2009 Stan Wiechers
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     
 thickbox.js
 thickbox.css
     Containing Project URL: http://jquery.com/demo/thickbox/
+    Copyright (c) 2007 cody lindley
+    Licensed under the MIT License: http://www.opensource.org/licenses/mit-license.php
     
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 jquery.js
 jquery-ui-1.7-custom.min.js
 jquery-ui-1.7.1.css
@@ -259,13 +320,55 @@ jquery-1.3.2.min.js
 ui.core.css
 ui.theme.css
     Containing Project URL: http://jquery.org
-    
 jquery.mobile.min.js
 jquery.mobile.min.css
     Containing Project URL: http://jquerymobile.org/
+
+Copyright (c) 2011 John Resig, http://jquery.com/
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     
 jquery.jfeed.pack.js
     Containing Project URL: http://hovinne.com/articles/jfeed-jquery-rss-atom-feed-parser-plugin
+
+Copyright (C) 2007 Jean-François Hovinne - http://www.hovinne.com/
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
     
 flexiframe/IFrame.as
 flexiframe/IFrameExternalCalls.as
@@ -274,14 +377,91 @@ flexiframe/assets/flex-iframe-logo-32.png
 flexiframe/assets/flex-iframe-logo-48.png
 flexiframe/assets/flex-iframe-logo-128.png
     Containing Project URL: https://github.com/flex-users/flex-iframe/
+
+Copyright (c) 2007-2011 flex-iframe contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
     
 flashcanvas.js
 flashcanvas.swf
     Containing Project URL: http://code.google.com/p/flashcanvas/
     
+/*
+ * FlashCanvas
+ *
+ * Copyright (c) 2009      Tim Cameron Ryan
+ * Copyright (c) 2009-2011 FlashCanvas Project
+ * Licensed under the MIT License.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *
+ * @author Tim Cameron Ryan
+ * @author Shinya Muramatsu
+ */
+
+        
 creole.js
     Containing Project URL: http://www.ivan.fomichev.name/2008/04/javascript-creole-10-wiki-markup-parser.html
-    
+
+/*
+ * JavaScript Creole 1.0 Wiki Markup Parser
+ * $Id: creole.js 14 2009-03-21 16:15:08Z ifomichev $
+ *
+ * Copyright (c) 2009 Ivan Fomichev
+ *
+ * Portions Copyright (c) 2007 Chris Purcell
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 ===============================================================================	
 The following components are BSD Licensed 
 ===============================================================================	
@@ -297,32 +477,273 @@ bubbles/sprite.png
 bubbles/styles.css
 bubbles/win.png
     Containing Project URL: http://widgets.opera.com/widget/10982/
+    
+Copyright (c) 2007, Opera Software ASA
+All rights reserved.
 
-dom4j-1.6.1.jar
-    Containing Project URL: http://sourceforge.net/projects/dom4j/
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+* Redistributions of source code must retain the above copyright
+  notice, this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright
+  notice, this list of conditions and the following disclaimer in the
+  documentation and/or other materials provided with the distribution.
+* Neither the name of Opera Software ASA nor the
+  names of its contributors may be used to endorse or promote products
+  derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY OPERA SOFTWARE ASA ``AS IS'' AND ANY
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL OPERA SOFTWARE ASA BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 yui-min.js
-	Containing Project URL: http://yuilibrary.com/
+    Containing Project URL: http://yuilibrary.com/
+	
+Copyright © 2011 Yahoo! Inc. All rights reserved.
+
+Redistribution and use of this software in source and binary forms, with or 
+without modification, are permitted provided that the following conditions are met:
+* Redistributions of source code must retain the above copyright notice, this list of 
+conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice, this list 
+of conditions and the following disclaimer in the documentation and/or other materials 
+provided with the distribution.
+* Neither the name of Yahoo! Inc. nor the names of YUI's contributors may be used to 
+endorse or promote products derived from this software without specific prior written 
+permission of Yahoo! Inc.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY 
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND 
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.	
 	
 URLEncodedQueryString.java
     Containing Project URL: http://java.net/projects/urlencodedquerystring/
-	
-htmlcleaner-2.2.jar
-	Containing Project URL: http://htmlcleaner.sourceforge.net/
+    
+ Copyright (c) 2009, Richard Kennard  All rights reserved.
 
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in the
+ documentation and/or other materials provided with the distribution.
+ * Neither the name of Richard Kennard nor the
+ names of its contributors may be used to endorse or promote products
+ derived from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY RICHARD KENNARD ''AS IS'' AND ANY
+ EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL RICHARD KENNARD BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+	
 ===============================================================================	
 The following components are in the public domain 
 ===============================================================================	
 
 s5
  Containing Project URL: http://meyerweb.com/eric/tools/s5/
+ 
+"As of version 1.1, the technology itself has been explicitly released into the 
+Public Domain, so there are no restrictions whatsoever on its use or reuse 
+(nor can there ever be)"
+ 
+===============================================================================	
+The following components come under the JSON License 
+===============================================================================
+
+json.js
+json2.js
+json-20080701.jar
+    Containing project URL: http://www.json.org/
+    
+NOTE: See also http://www.apache.org/legal/resolved.html#json
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of 
+this software and associated documentation files (the "Software"), to deal in the 
+Software without restriction, including without limitation the rights to use, 
+copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the 
+Software, and to permit persons to whom the Software is furnished to do so, 
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all 
+copies or substantial portions of the Software.
+
+The Software shall be used for Good, not Evil.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE 
+OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+------------------------------------------------------------------------------	
+
+===============================================================================
+The following components come under Apache Software License 2.0
+===============================================================================
+
+    
+google-collections-1.0-rc2.jar	
+	Containing Project URL: http://code.google.com/p/google-collections/
+	
+/*
+ * Copyright (C) 2009 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+	
+===============================================================================	
+The following components are MIT Licensed 
+===============================================================================	
+slf4j-api-1.5.3.jar
+slf4j-log4j12-1.5.2.jar
+	Containing Project URL: http://www.slf4j.org/
+	
+ Copyright (c) 2004-2011 QOS.ch
+ All rights reserved.
+
+ Permission is hereby granted, free  of charge, to any person obtaining
+ a  copy  of this  software  and  associated  documentation files  (the
+ "Software"), to  deal in  the Software without  restriction, including
+ without limitation  the rights to  use, copy, modify,  merge, publish,
+ distribute,  sublicense, and/or sell  copies of  the Software,  and to
+ permit persons to whom the Software  is furnished to do so, subject to
+ the following conditions:
+ 
+ The  above  copyright  notice  and  this permission  notice  shall  be
+ included in all copies or substantial portions of the Software.
+ 
+ THE  SOFTWARE IS  PROVIDED  "AS  IS", WITHOUT  WARRANTY  OF ANY  KIND,
+ EXPRESS OR  IMPLIED, INCLUDING  BUT NOT LIMITED  TO THE  WARRANTIES OF
+ MERCHANTABILITY,    FITNESS    FOR    A   PARTICULAR    PURPOSE    AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ OF CONTRACT, TORT OR OTHERWISE,  ARISING FROM, OUT OF OR IN CONNECTION
+ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  
+
+
+===============================================================================	
+The following components are BSD Licensed 
+===============================================================================	
+
+
+dom4j-1.6.1.jar
+    Containing Project URL: http://sourceforge.net/projects/dom4j/
+    
+Copyright 2001-2005 (C) MetaStuff, Ltd. All Rights Reserved.
+
+Redistribution and use of this software and associated documentation
+("Software"), with or without modification, are permitted provided
+that the following conditions are met:
+
+1. Redistributions of source code must retain copyright
+   statements and notices.  Redistributions must also contain a
+   copy of this document.
+ 
+2. Redistributions in binary form must reproduce the
+   above copyright notice, this list of conditions and the
+   following disclaimer in the documentation and/or other
+   materials provided with the distribution.
+ 
+3. The name "DOM4J" must not be used to endorse or promote
+   products derived from this Software without prior written
+   permission of MetaStuff, Ltd.  For written permission,
+   please contact dom4j-info@metastuff.com.
+ 
+4. Products derived from this Software may not be called "DOM4J"
+   nor may "DOM4J" appear in their names without prior written
+   permission of MetaStuff, Ltd. DOM4J is a registered
+   trademark of MetaStuff, Ltd.
+ 
+5. Due credit should be given to the DOM4J Project - 
+   http://www.dom4j.org
+ 
+THIS SOFTWARE IS PROVIDED BY METASTUFF, LTD. AND CONTRIBUTORS
+``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT
+NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL
+METASTUFF, LTD. OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+OF THE POSSIBILITY OF SUCH DAMAGE.
+	
+htmlcleaner-2.2.jar
+	Containing Project URL: http://htmlcleaner.sourceforge.net/
+
+    Copyright (c) 2006-2011, HtmlCleaner team.
+    All rights reserved.
+    
+    Redistribution and use of this software in source and binary forms, 
+    with or without modification, are permitted provided that the 
+    following conditions are met:
+    
+    * Redistributions of source code must retain the above
+      copyright notice, this list of conditions and the
+      following disclaimer.
+    
+    * Redistributions in binary form must reproduce the above
+      copyright notice, this list of conditions and the
+      following disclaimer in the documentation and/or other
+      materials provided with the distribution.
+    
+    * The name of HtmlCleaner may not be used to endorse or promote
+      products derived from this software without specific prior
+      written permission.
+    
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR 
+    A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT 
+    OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+    SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT 
+    LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY 
+    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ===============================================================================	
 The following components come under the CDDL License 
 ===============================================================================	
 activation-1.1.jar
 	Containing Project URL: http://java.sun.com/javase/technologies/desktop/javabeans/jaf/index.jsp
-	
 mail-1.4.jar
 	Containing Project URL: https://glassfish.dev.java.net/javaee5/mail
 
@@ -369,8 +790,8 @@ documentation included in or with such code.
 
 1.13. You (or Your) means an individual or a legal entity exercising rights under, and complying with all of the terms of, 
 this License. For legal entities, You includes any entity which controls, is controlled by, or is under common control with You. 
-For purposes of this definition, control means (a)·the power, direct or indirect, to cause the direction or management of such 
-entity, whether by contract or otherwise, or (b)·ownership of more than fifty percent (50%) of the outstanding shares or beneficial 
+For purposes of this definition, control means (a)¬∑the power, direct or indirect, to cause the direction or management of such 
+entity, whether by contract or otherwise, or (b)¬∑ownership of more than fifty percent (50%) of the outstanding shares or beneficial 
 ownership of such entity.
 
 2. License Grants.
@@ -383,10 +804,10 @@ modify, display, perform, sublicense and distribute the Original Software (or po
 and/or as part of a Larger Work; and
 (b) under Patent Claims infringed by the making, using or selling of Original Software, to make, have made, use, practice, sell,
  and offer for sale, and/or otherwise dispose of the Original Software (or portions thereof).
-(c) The licenses granted in Sections·2.1(a) and (b) are effective on the date Initial Developer first distributes or otherwise 
+(c) The licenses granted in Sections¬∑2.1(a) and (b) are effective on the date Initial Developer first distributes or otherwise 
 makes the Original Software available to a third party under the terms of this License.
-(d) Notwithstanding Section·2.1(b) above, no patent license is granted: (1)·for code that You delete from the Original Software, 
-or (2)·for infringements caused by: (i)·the modification of the Original Software, or (ii)·the combination of the Original Software 
+(d) Notwithstanding Section¬∑2.1(b) above, no patent license is granted: (1)¬∑for code that You delete from the Original Software, 
+or (2)¬∑for infringements caused by: (i)¬∑the modification of the Original Software, or (ii)¬∑the combination of the Original Software 
 with other software or devices.
 
 2.2. Contributor Grant.
@@ -397,12 +818,12 @@ perform, sublicense and distribute the Modifications created by such Contributor
 with other Modifications, as Covered Software and/or as part of a Larger Work; and
 (b) under Patent Claims infringed by the making, using, or selling of Modifications made by that Contributor either alone and/or in 
 combination with its Contributor Version (or portions of such combination), to make, use, sell, offer for sale, have made, and/or 
-otherwise dispose of: (1)·Modifications made by that Contributor (or portions thereof); and (2)·the combination of Modifications made
+otherwise dispose of: (1)¬∑Modifications made by that Contributor (or portions thereof); and (2)¬∑the combination of Modifications made
  by that Contributor with its Contributor Version (or portions of such combination).
-(c) The licenses granted in Sections·2.2(a) and 2.2(b) are effective on the date Contributor first distributes or otherwise makes the 
+(c) The licenses granted in Sections¬∑2.2(a) and 2.2(b) are effective on the date Contributor first distributes or otherwise makes the 
 Modifications available to a third party.
-(d) Notwithstanding Section·2.2(b) above, no patent license is granted: (1)·for any code that Contributor has deleted from the 
-Contributor Version; (2)·for infringements caused by: (i)·third party modifications of Contributor Version, or (ii)·the combination 
+(d) Notwithstanding Section¬∑2.2(b) above, no patent license is granted: (1)¬∑for any code that Contributor has deleted from the 
+Contributor Version; (2)¬∑for infringements caused by: (i)¬∑third party modifications of Contributor Version, or (ii)¬∑the combination 
 of Modifications made by that Contributor with other software (except as part of the Contributor Version) or other devices; or (3)
 under Patent Claims infringed by Covered Software in the absence of Modifications made by that Contributor.
 
@@ -465,8 +886,8 @@ version of the License published by the license steward.
 4.3. Modified Versions.
 
 When You are an Initial Developer and You want to create a new license for Your Original Software, You may create and use a modified 
-version of this License if You: (a)·rename the license and remove any references to the name of the license steward (except to note 
-that the license differs from this License); and (b)·otherwise make it clear that the license contains terms which differ from this License.
+version of this License if You: (a)¬∑rename the license and remove any references to the name of the license steward (except to note 
+that the license differs from this License); and (b)¬∑otherwise make it clear that the license contains terms which differ from this License.
 
 5. DISCLAIMER OF WARRANTY.
 
@@ -487,12 +908,12 @@ termination of this License shall survive.
 (the Initial Developer or Contributor against whom You assert such claim is referred to as Participant) alleging that the Participant 
 Software (meaning the Contributor Version where the Participant is a Contributor or the Original Software where the Participant is the 
 Initial Developer) directly or indirectly infringes any patent, then any and all rights granted directly or indirectly to You by such 
-Participant, the Initial Developer (if the Initial Developer is not the Participant) and all Contributors under Sections·2.1 and/or 2.2 
+Participant, the Initial Developer (if the Initial Developer is not the Participant) and all Contributors under Sections¬∑2.1 and/or 2.2 
 of this License shall, upon 60 days notice from Participant terminate prospectively and automatically at the expiration of such 60 day
  notice period, unless if within such 60 day period You withdraw Your claim with respect to the Participant Software against such 
  Participant either unilaterally or pursuant to a written agreement with Participant.
 
-6.3. In the event of termination under Sections·6.1 or 6.2 above, all end user licenses that have been validly granted by You or any
+6.3. In the event of termination under Sections¬∑6.1 or 6.2 above, all end user licenses that have been validly granted by You or any
  distributor hereunder prior to termination (excluding licenses granted to You by any distributor) shall survive termination.
 
 7. LIMITATION OF LIABILITY.
@@ -508,9 +929,9 @@ MAY NOT APPLY TO YOU.
 
 8. U.S. GOVERNMENT END USERS.
 
-The Covered Software is a commercial item, as that term is defined in 48·C.F.R.·2.101 (Oct. 1995), consisting of commercial computer 
-software (as that term is defined at 48 C.F.R. ·252.227-7014(a)(1)) and commercial computer software documentation as such terms are 
-used in 48·C.F.R.·12.212 (Sept. 1995). Consistent with 48 C.F.R. 12.212 and 48 C.F.R. 227.7202-1 through 227.7202-4 (June 1995), all U.S.
+The Covered Software is a commercial item, as that term is defined in 48¬∑C.F.R.¬∑2.101 (Oct. 1995), consisting of commercial computer 
+software (as that term is defined at 48 C.F.R. ¬∑252.227-7014(a)(1)) and commercial computer software documentation as such terms are 
+used in 48¬∑C.F.R.¬∑12.212 (Sept. 1995). Consistent with 48 C.F.R. 12.212 and 48 C.F.R. 227.7202-1 through 227.7202-4 (June 1995), all U.S.
  Government End Users acquire Covered Software with only those rights set forth herein. This U.S. Government Rights clause is in lieu of, 
  and supersedes, any other FAR, DFAR, or other clause or provision that addresses Government rights in computer software under this License.
 
@@ -536,26 +957,7 @@ equitable basis. Nothing herein is intended or shall be deemed to constitute any
 NOTICE PURSUANT TO SECTION 9 OF THE COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL)
 The GlassFish code released under the CDDL shall be governed by the laws of the State of California (excluding conflict-of-law provisions). 
 Any litigation relating to this License shall be subject to the jurisdiction of the Federal Courts of the Northern District of California 
-and the state courts of the State of California, with venue lying in Santa Clara County, California.
-
-===============================================================================	
-The following components come under the JSON License 
-===============================================================================
-
-json.js
-json2.js
-json-20080701.jar
-    Containing project URL: http://www.json.org/
-    
-    NOTE: See also http://www.apache.org/legal/resolved.html#json
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-The Software shall be used for Good, not Evil.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+and the state courts of the State of California, with venue lying in Santa Clara County, California.	
 
 ===============================================================================	
 The following components come under the JDOM License 
@@ -632,6 +1034,34 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF THIRD PARTY RIGHTS. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 Except as contained in this notice, the name of a copyright holder shall not be used in advertising or otherwise to promote the sale, use or other dealings in this Software without prior written authorization of the copyright holder.
+
+------------------------------------------------------------------------------	
+
+===============================================================================
+The following components come under Apache Software License 2.0
+===============================================================================
+	
+jetty-6.1.3.jar
+jetty-naming-6.1.3.jar
+jetty-plus-6.1.3.jar
+jetty-util-6.1.3.jar
+jsp-2.1-6.1.3.jar 
+jsp-api-2.1-6.1.3.jar 
+servlet-api-2.5-6.1.3.jar
+	Containing Project URL: http://jetty.codehaus.org/jetty/
+
+// Copyright 1996-2004 Mort Bay Consulting Pty. Ltd.
+// ------------------------------------------------------------------------
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at 
+// http://www.apache.org/licenses/LICENSE-2.0
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ========================================================================			
 
 ===============================================================================	
 The following components come under the Eclipse Public 1.0 License 
