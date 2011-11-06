@@ -231,7 +231,7 @@ public class WidgetAccessRequestPolicyControllerTest extends
   public void testGetWithoutAuthentication() throws HttpException, IOException {
     HttpClient client = new HttpClient();
     GetMethod get = new GetMethod(TEST_WARP_SERVICE_URL_VALID);
-    get.addRequestHeader("content-type", "text/xml");
+    get.addRequestHeader("Accept", "text/xml");
     client.executeMethod(get);
     int code = get.getStatusCode();
     assertEquals(401, code);
@@ -251,7 +251,7 @@ public class WidgetAccessRequestPolicyControllerTest extends
     setAuthenticationCredentials(client);
     GetMethod get = new GetMethod(TEST_WARP_SERVICE_URL_VALID);
     get.setDoAuthentication(true);
-    get.addRequestHeader("content-type", "text/xml");
+    get.addRequestHeader("Accept", "text/xml");
     client.executeMethod(get);
     int code = get.getStatusCode();
     assertEquals(200, code);

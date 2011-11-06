@@ -119,7 +119,7 @@ public class WhiteListControllerTest extends AbstractControllerTest {
     HttpClient client = new HttpClient();
     GetMethod get = new GetMethod(WHITELIST_SERVICE_URL_VALID);
     setAuthenticationCredentials(client);
-    get.setRequestHeader("Content-type", "application/json");
+    get.setRequestHeader("Accept", "application/json");
     client.executeMethod(get);
     int code = get.getStatusCode();
     assertEquals(200, code);

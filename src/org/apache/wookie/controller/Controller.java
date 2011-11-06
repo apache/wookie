@@ -333,7 +333,7 @@ public abstract class Controller extends HttpServlet{
 	 * request, this method will return HTML (1)
 	 */
 	protected int format(HttpServletRequest request){
-		String type = request.getContentType();
+		String type = request.getHeader("Accept");
 		if (type == null){
 			// check for format parameters in the request
 			if (request.getParameter("format")!=null){
