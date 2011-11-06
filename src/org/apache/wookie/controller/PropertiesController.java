@@ -33,7 +33,6 @@ import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.Notifier;
-import org.apache.wookie.helpers.WidgetKeyManager;
 
 /**
  * REST implementation for widgetInstance
@@ -81,7 +80,6 @@ public class PropertiesController extends Controller {
 	protected void show(String resourceId, HttpServletRequest request,
 			HttpServletResponse response) throws ResourceNotFoundException,
 			UnauthorizedAccessException, IOException {
-		if (!WidgetKeyManager.isValidRequest(request)) throw new UnauthorizedAccessException();
 		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
 		if (instance == null) throw new ResourceNotFoundException();
 		String name = request.getParameter("propertyname"); //$NON-NLS-1$
@@ -101,7 +99,6 @@ public class PropertiesController extends Controller {
 	@Override
 	protected boolean remove(String resourceId, HttpServletRequest request)
 			throws ResourceNotFoundException,UnauthorizedAccessException,InvalidParametersException {
-		if (!WidgetKeyManager.isValidRequest(request)) throw new UnauthorizedAccessException();
 		if (request.getParameter("value") != null) throw new InvalidParametersException();//$NON-NLS-1$
 		String name = request.getParameter("propertyname"); //$NON-NLS-1$
 		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
@@ -142,7 +139,6 @@ public class PropertiesController extends Controller {
 	 */
 	public static void createOrUpdate(HttpServletRequest request)
 	throws InvalidParametersException,UnauthorizedAccessException {
-		if (!WidgetKeyManager.isValidRequest(request)) throw new UnauthorizedAccessException();
 		String name = request.getParameter("propertyname"); //$NON-NLS-1$
 		String value = request.getParameter("propertyvalue"); //$NON-NLS-1$
 		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);

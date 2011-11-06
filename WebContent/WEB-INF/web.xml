@@ -322,9 +322,34 @@
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
 
-	<!--****************** SECURITY SECTION ************************
-	  uncomment to enable password protection on admin pages
-	-->
+	<!--****************** SECURITY SECTION ************************-->
+	
+	<!-- Use Authorization Filter for REST API  -->
+	<filter>
+   	    <filter-name>AuthorizationFilter</filter-name>
+   	    <filter-class>org.apache.wookie.server.security.AuthorizationFilter</filter-class>
+  	</filter>
+  	<filter-mapping>
+    	<filter-name>AuthorizationFilter</filter-name>
+		<servlet-name>WidgetInstancesServlet</servlet-name>
+  	</filter-mapping>
+  	<filter-mapping>
+    	<filter-name>AuthorizationFilter</filter-name>
+		<servlet-name>PropertiesServlet</servlet-name>
+  	</filter-mapping>
+  	<filter-mapping>
+    	<filter-name>AuthorizationFilter</filter-name>
+ 		<servlet-name>ParticipantServlet</servlet-name>
+  	</filter-mapping>
+   	<filter-mapping>
+    	<filter-name>AuthorizationFilter</filter-name>
+		<servlet-name>WidgetServiceServlet</servlet-name>
+  	</filter-mapping>
+    <filter-mapping>
+    	<filter-name>AuthorizationFilter</filter-name>
+		<servlet-name>Flatpack</servlet-name>
+  	</filter-mapping>
+  	
 		<security-constraint>		
 			<web-resource-collection>
 				<web-resource-name>Widget Admin Section</web-resource-name>

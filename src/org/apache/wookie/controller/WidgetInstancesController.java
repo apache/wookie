@@ -44,7 +44,6 @@ import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.helpers.SharedDataHelper;
 import org.apache.wookie.helpers.WidgetInstanceFactory;
 import org.apache.wookie.helpers.WidgetInstanceHelper;
-import org.apache.wookie.helpers.WidgetKeyManager;
 import org.apache.wookie.server.LocaleHandler;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 
@@ -73,11 +72,7 @@ public class WidgetInstancesController extends Controller {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		if (!WidgetKeyManager.isValidRequest(request)){
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		} else {
 			doGetOrCreateWidget(request, response);
-		}
 	}
 
 	/* (non-Javadoc)
@@ -89,9 +84,6 @@ public class WidgetInstancesController extends Controller {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{					
-	  if (!WidgetKeyManager.isValidRequest(request)){
-	    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-	  } else {
 	    try {
 	      String resourceId = getResourceId(request);
 	      String requestId = request.getParameter("requestid"); //$NON-NLS-1$
@@ -117,7 +109,6 @@ public class WidgetInstancesController extends Controller {
 	    } catch (Exception ex) {					
 	      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 	    }
-	  }
 	}
 	
 	/// Implementation
@@ -152,8 +143,6 @@ public class WidgetInstancesController extends Controller {
 	protected void update(String resourceId, HttpServletRequest request)
 	throws ResourceNotFoundException, InvalidParametersException,
 	UnauthorizedAccessException {
-	  if (!WidgetKeyManager.isValidRequest(request))
-	    throw new UnauthorizedAccessException();
 	  String requestId = request.getParameter("requestid"); //$NON-NLS-1$
 	  if (requestId == null || requestId.equals(""))
 	    throw new InvalidParametersException();

@@ -31,7 +31,6 @@ import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.helpers.ParticipantHelper;
-import org.apache.wookie.helpers.WidgetKeyManager;
 
 /**
  * Implementation of the REST API for working with Participants. For a description of the methods implemented by this controller see 
@@ -70,7 +69,6 @@ public class ParticipantsController extends Controller {
 	
 	@Override
 	public void show(String resourceId,HttpServletRequest request, HttpServletResponse response) throws UnauthorizedAccessException,ResourceNotFoundException, IOException{
-		if (!WidgetKeyManager.isValidRequest(request)) throw new UnauthorizedAccessException();
 		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
 		if (instance == null) throw new ResourceNotFoundException();
 		IParticipant[] participants = new SharedContext(instance).getParticipants();
@@ -96,7 +94,6 @@ public class ParticipantsController extends Controller {
 	public static boolean create(HttpServletRequest request)
 			throws ResourceDuplicationException, InvalidParametersException,
 			UnauthorizedAccessException {
-		if (!WidgetKeyManager.isValidRequest(request)) throw new UnauthorizedAccessException();
 
 		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
 		if (instance == null) throw new InvalidParametersException();
@@ -131,7 +128,6 @@ public class ParticipantsController extends Controller {
 	public static boolean remove(HttpServletRequest request)
 			throws ResourceNotFoundException, UnauthorizedAccessException,
 			InvalidParametersException {
-		if (!WidgetKeyManager.isValidRequest(request)) throw new UnauthorizedAccessException();
 		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
 		if (instance == null) throw new InvalidParametersException();
 		HttpSession session = request.getSession(true);						

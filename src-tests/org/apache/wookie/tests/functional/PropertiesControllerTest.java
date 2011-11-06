@@ -336,7 +336,7 @@ public class PropertiesControllerTest extends AbstractControllerTest {
         + "&userid=test&shareddatakey=propstest&propertyname=cat");
     client.executeMethod(get);
     int code = get.getStatusCode();
-    assertEquals(401, code);
+    assertEquals(403, code);
     get.releaseConnection();
   }
 

@@ -31,7 +31,6 @@ import org.apache.wookie.controller.WidgetInstancesController;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
-import org.apache.wookie.helpers.WidgetKeyManager;
 
 /**
  * Controller for the Flatpack/exports API
@@ -198,7 +197,6 @@ public class FlatpackController extends Controller {
 	 * @throws InvalidParametersException if there is no valid widget instance
 	 */
 	private String createFlatpack(HttpServletRequest request) throws UnauthorizedAccessException, InvalidParametersException{
-		if (!WidgetKeyManager.isValidRequest(request)) throw new UnauthorizedAccessException();
 		String path;
 		try {
 		    //

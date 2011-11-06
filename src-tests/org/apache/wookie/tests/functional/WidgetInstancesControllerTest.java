@@ -243,7 +243,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
         + WIDGET_ID_VALID + "&userid=test&shareddatakey=test");
     client.executeMethod(post);
     int code = post.getStatusCode();
-    assertEquals(401, code);
+    assertEquals(403, code);
     post.releaseConnection();
   }
 

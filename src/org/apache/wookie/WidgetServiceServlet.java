@@ -53,9 +53,6 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){					
-		if (!WidgetKeyManager.isValidRequest(request)){
-				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-		} else {
 			try {
 				String requestId = request.getParameter("requestid"); //$NON-NLS-1$
 				if(requestId.equals("getwidget")){ //$NON-NLS-1$
@@ -108,7 +105,6 @@ public class WidgetServiceServlet extends javax.servlet.http.HttpServlet impleme
 			catch (Exception ex) {					
 				_logger.error("Error in doGet():", ex); //$NON-NLS-1$
 			}
-		}
 	}
 
 	/* (non-Javadoc)

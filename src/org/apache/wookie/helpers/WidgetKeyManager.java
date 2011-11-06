@@ -104,38 +104,6 @@ public class WidgetKeyManager{
 	}
 
 	/**
-	 * Check if the given key is valid
-	 * @param key the api key supplied with the request
-	 * @return true if valid, otherwise false
-	 */
-	public static boolean isValid(String key) {
-		// No key/n
-		if (key == null) {
-		  _logger.info("No API key supplied");
-		  return false;
-		}
-
-		// Empty key/empty origin
-		if (key.trim().equals("")) return false; //$NON-NLS-1$
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IApiKey[] apiKey = persistenceManager.findByValue(IApiKey.class, "value", key);
-		if (apiKey == null || apiKey.length !=1) {
-		  _logger.info("Invalid API key supplied: " + key);
-		  return false;
-		}
-		return true;
-	}
-
-	/**
-	 * Checks if the given request is accompanied by a valid API key
-	 * @param request
-	 * @return true if valid, otherwise false
-	 */
-	public static boolean isValidRequest(HttpServletRequest request) {
-		return isValid(request.getParameter("api_key")); //$NON-NLS-1$
-	}
-
-	/**
 	 * Send email.
 	 * 
 	 * @param mailserver - the SMTP mail server address
