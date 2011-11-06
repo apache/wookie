@@ -94,7 +94,7 @@
 		<rat:report reportFile="${wookie.release.dir}/${version}/source/rat-report.txt">
 			<fileset dir=".">
 		      	<includesFile name="${wookie.release.dir}/${version}/source/src-build-include-rat-test.txt" />
-		        <excludesfile name="./licenses/rat-ignore.txt"/> 
+		        <excludesfile name="./etc/rat-ignore.txt"/> 
 		    </fileset>
 		</rat:report>	
 		
@@ -203,7 +203,7 @@
 		<!-- run RAT report -->
 		<rat:report reportFile="${wookie.release.dir}/${version}/binary/war/rat-report.txt">
 		        <fileset dir="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/">
-                    <excludesfile name="./licenses/rat-ignore.txt"/> 
+                    <excludesfile name="./etc/rat-ignore.txt"/> 
 	            </fileset>
 		</rat:report>
 
@@ -250,7 +250,7 @@
 		<!-- run RAT report -->
 		<rat:report reportFile="${wookie.release.dir}/${version}/binary/standalone/rat-report.txt">
 		        <fileset dir="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}">
-		            <excludesfile name="./licenses/rat-ignore.txt"/> 
+		            <excludesfile name="./etc/rat-ignore.txt"/> 
 			    </fileset>
 		</rat:report>
 		
