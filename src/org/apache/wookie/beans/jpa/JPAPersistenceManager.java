@@ -14,6 +14,7 @@
 
 package org.apache.wookie.beans.jpa;
 
+import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.sql.Connection;
@@ -92,6 +93,7 @@ import org.apache.wookie.beans.jpa.impl.WidgetImpl;
 import org.apache.wookie.beans.jpa.impl.WidgetInstanceImpl;
 import org.apache.wookie.beans.jpa.impl.WidgetServiceImpl;
 import org.apache.wookie.beans.jpa.impl.WidgetTypeImpl;
+import org.apache.wookie.beans.util.DatabaseUtils;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceCommitException;
 import org.slf4j.Logger;
@@ -181,6 +183,7 @@ public class JPAPersistenceManager implements IPersistenceManager
     private static String dbType;
     private static String dictionaryType;
     private static OpenJPAEntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
     
     /**
      * Initialize implementation with configuration.
@@ -199,6 +202,12 @@ public class JPAPersistenceManager implements IPersistenceManager
             if ((dbType != null) && (dictionaryType == null)) 
             {
                 throw new IllegalArgumentException("Unsupported database type: "+dbType);
+            }
+            
+            // if we are not initializing the store and we are using derby, then check to see if the DB files
+            // exist in the filesystem. If they do not then override and create them.
+            if(!initializeStore && dbType.equals("derby")){
+                initializeStore = DatabaseUtils.derbyDatabaseDoesNotExist();
             }
 
             // initialize persistent store
@@ -301,8 +310,6 @@ public class JPAPersistenceManager implements IPersistenceManager
             throw new RuntimeException("Unable to terminate: "+e, e);
         }
     }
-
-    private EntityManager entityManager;
     
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.util.IPersistenceManager#begin()

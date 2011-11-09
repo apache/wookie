@@ -17,6 +17,8 @@
 -->
 <project xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:m="http://ant.apache.org/ivy/maven" xmlns:openpgp="antlib:org.apache.commons.openpgp.ant">
 
+	<tstamp/>
+		
     <import file="ivy-common.xml"/>
 
 	<property name="project.lib.dir" location="${project.webapp.dir}/WEB-INF/lib" />
@@ -159,10 +161,11 @@
         		<include name="DISCLAIMER"/>
         	</metainf>
         	<manifest>
-				<attribute name="Built-By" value="${user.name}"/>
 				<attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
 				<attribute name="Implementation-Title" value="${ant.project.name}"/>
 				<attribute name="Implementation-Version" value="${version}"/>
+				<attribute name="Built-By" value="${user.name}"/>
+        		<attribute name="Build-Date" value="${TODAY}"/>        		        		        		
 			</manifest>
         </jar>
 	</target>
@@ -189,10 +192,11 @@
 				<include name="DISCLAIMER"/>
 			</metainf>    
         	<manifest>				
-				<attribute name="Built-By" value="${user.name}"/>
 				<attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
 				<attribute name="Implementation-Title" value="${ant.project.name}"/>
 				<attribute name="Implementation-Version" value="${version}"/>
+				<attribute name="Built-By" value="${user.name}"/>
+        		<attribute name="Build-Date" value="${TODAY}"/>        		        		
 			</manifest>   		
     	</jar>
     	<!--remove folder-->
@@ -211,11 +215,12 @@
 				<include name="NOTICE"/>
 				<include name="DISCLAIMER"/>
 			</metainf>    
-        	<manifest>				
-				<attribute name="Built-By" value="${user.name}"/>
+        	<manifest>
 				<attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
 				<attribute name="Implementation-Title" value="${ant.project.name}"/>
 				<attribute name="Implementation-Version" value="${version}"/>
+				<attribute name="Built-By" value="${user.name}"/>
+        		<attribute name="Build-Date" value="${TODAY}"/>        		
 			</manifest>   		
     	</jar>
     </target>
@@ -236,44 +241,71 @@
 	</target>
 	
 	<target name="init-war" unless="subproject" depends="test-calling-project-true" >		
-		<ivy:cachepath pathid="project.core.class.path" conf="dev" />
-		<copy todir="${servletEngine.webapp.dir}/${ant.project.name}/WEB-INF/classes">
+
+		<copy todir="${build.dir}/maven-webapp/${ant.project.name}/WEB-INF/classes">
 			<fileset dir="${project.build.classes.dir}" />
 		</copy>
 
-		<copy todir="${servletEngine.webapp.dir}/${ant.project.name}">
+		<copy todir="${build.dir}/maven-webapp/${ant.project.name}">
 			<fileset dir="${project.webapp.dir}" />
 		</copy>
-		<ivy:retrieve conf="deploy" pattern="${servletEngine.webapp.dir}/${ant.project.name}/WEB-INF/lib/[artifact]-[revision].[ext]"/>		
-		<antcall target="post-deploy-webapp" inheritRefs="true"/>		
-		<echo>Building war</echo>
+		<ivy:retrieve conf="deploy" pattern="${build.dir}/maven-webapp/wookie/WEB-INF/lib/[artifact]-[revision].[ext]"/>
+		<ivy:retrieve conf="database" pattern="${build.dir}/maven-webapp/wookie/WEB-INF/lib/[artifact]-[revision].[ext]" />
 
-		<!-- back the widgetserver.properties file up -->
-		<copy file="${build.dir}/webapp/wookie/WEB-INF/classes/widgetserver.properties"
-		         tofile="${build.dir}/widgetserver.properties" overwrite="true"/>
-
-		<!-- update widgetserver.properties file so that it points to mysql as db type-->
+		<!-- update widgetserver.properties file so that it points to derby as db type-->
 		<copy file="${project.core.src.dir}/widgetserver.properties"
-		         todir="${build.dir}/webapp/wookie/WEB-INF/classes/" overwrite="true">
+		         todir="${build.dir}/maven-webapp/wookie/WEB-INF/classes/" overwrite="true">
 			<filterset>
 			    <filter token="PERSISTENCE_MANAGER_CLASSNAME" value="org.apache.wookie.beans.jpa.JPAPersistenceManager"/>
-		    	<filter token="DATABASE_TYPE" value="mysql"/>
+		    	<filter token="DATABASE_TYPE" value="derby"/>
 		        <filter token="REPOSITORY_USER" value=""/>
 		        <filter token="REPOSITORY_PASSWORD" value=""/>
 				<filter token="REPOSITORY_ROOTPATH" value=""/>
 				<filter token="REPOSITORY_WORKSPACE" value=""/>
 		    </filterset>
 		</copy>
-
+		
+		<!-- configure JPA context.xml configuration -->
+		<copy file="${etc.dir}/tomcat/conf/jpa-context.xml"
+		          tofile="${build.dir}/maven-webapp/wookie/META-INF/context.xml"
+		          overwrite="true">
+		      <filterset>
+		        <filter token="DATABASE_USER" value="java"/>
+		        <filter token="DATABASE_PASSWORD" value="java"/>
+		        <filter token="DATABASE_DRIVER" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+		        <filter token="DATABASE_URI" value="jdbc:derby:widgetDatabase/widgetDB;create=true"/>
+		      </filterset>
+		</copy>
+		
+		<copy file="${project.webapp.dir}/WEB-INF/web.xml"
+		          todir="${build.dir}/maven-webapp/wookie/WEB-INF" overwrite="true">
+		     <filterset>
+		       <filter token="RESOURCE_REF_DESCRIPTION" value="The JPA database connection."/>
+		       <filter token="RESOURCE_REF_NAME" value="jdbc/widgetdb"/>
+		       <filter token="RESOURCE_REF_TYPE" value="javax.sql.DataSource"/>
+		      </filterset>
+		</copy>
+								
+	    <mkdir dir="${build.dir}/maven-webapp/wookie/features"/>
+	    <copy todir="${build.dir}/maven-webapp/wookie/features">
+   		    <fileset dir="${user.dir}/features"/>
+	    </copy>
+		
+		<!-- make all the widgets -->
+		<antcall target="post-deploy-webapp-widgets-extra"/>
+		<!-- copy them into the maven webapp -->
+		<copy todir="${build.dir}/maven-webapp/wookie/deploy">
+			<fileset dir="${build.dir}/widgets"/>
+		</copy>
+		
 		<!-- build war file -->
+		<echo>Building war...</echo>
 		<war
 			destfile="${dist.dir}/wookie.war"
-			webxml="${build.dir}/webapp/wookie/WEB-INF/web.xml">
-			<lib dir="${build.dir}/webapp/wookie/WEB-INF/lib">
-				<exclude name="derby-10.2.1.6.jar"/>
-			</lib>
-			<classes dir="${build.dir}/webapp/wookie/WEB-INF/classes" />
-			<fileset dir="${build.dir}/webapp/wookie/">
+			webxml="${build.dir}/maven-webapp/wookie/WEB-INF/web.xml">
+			<lib dir="${build.dir}/maven-webapp/wookie/WEB-INF/lib"/>
+			<classes dir="${build.dir}/maven-webapp/wookie/WEB-INF/classes" />
+			<fileset dir="${build.dir}/maven-webapp/wookie/">
 				<exclude name="WEB-INF/classes/" />
 				<exclude name="WEB-INF/lib/" />
 			</fileset>
@@ -284,13 +316,16 @@
 				<include name="LICENSE"/>
 				<include name="NOTICE"/>
 			</metainf>
+        	<manifest>								
+				<attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+				<attribute name="Implementation-Title" value="${ant.project.name}"/>
+				<attribute name="Implementation-Version" value="${version}"/>
+				<attribute name="Built-By" value="${user.name}"/>
+        		<attribute name="Build-Date" value="${TODAY}"/>
+			</manifest>			
 		</war>
-
-		<!-- put original widgetserver.properties file back -->
-		<copy file="${build.dir}/widgetserver.properties"
-			tofile="${build.dir}/webapp/wookie/WEB-INF/classes/widgetserver.properties"
-			overwrite="true" />
-		<delete file="${build.dir}/widgetserver.properties" />
+		<!-- clean up -->
+		<delete dir="${build.dir}/maven-webapp" />
 
 	</target>	
 

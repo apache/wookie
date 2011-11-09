@@ -133,7 +133,7 @@
 			destfile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/wookie.war"
 			webxml="${build.dir}/webapp/wookie/WEB-INF/web.xml">	
 			<lib dir="${build.dir}/webapp/wookie/WEB-INF/lib">
-				<exclude name="derby-10.2.1.6.jar"/>
+				<exclude name="derby-10.4.2.0.jar"/>
 			</lib>		
 			<classes dir="${build.dir}/webapp/wookie/WEB-INF/classes" />
 			<fileset dir="${build.dir}/webapp/wookie/">
