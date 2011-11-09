@@ -341,6 +341,7 @@ var Widget = {
             eval("this.preferences.prefs[\"" + key + "\"]=obj;");
         }
         this.preferences.calcLength();
+        Widget.setMetadataProperty("preferences",this.preferences);
     },
     
     /**
