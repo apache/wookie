@@ -77,21 +77,22 @@ public class ViewModesTest extends ConformanceTest{
 	@Test
 	public void i18nlro43(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/i18n-lro/043/i18nlro43.wgt");
-		assertTrue(widget.getViewModes().equals("windowed floating"));
+		assertTrue(widget.getViewModes().equals("maximized floating"));
 	}	
 	@Test
 	public void i18nltr43(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/i18n-ltr/043/i18nltr43.wgt");
-		assertTrue(widget.getViewModes().equals("windowed floating"));
-	}	
-	@Test
-	public void i18nrlo43(){
-		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/i18n-rlo/043/i18nrlo43.wgt");
-		assertTrue(widget.getViewModes().equals("windowed floating"));
+		assertTrue(widget.getViewModes().equals("windowed floating maximized"));
 	}	
 	@Test
 	public void i18nrtl43(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/i18n-rtl/043/i18nrtl43.wgt");
-		assertTrue(widget.getViewModes().equals("windowed floating"));
+		assertTrue(widget.getViewModes().equals("windowed floating maximized"));
 	}	
+	@Test
+  public void i18nrlo43(){
+	   W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/i18n-rlo/043/i18nrlo43.wgt");
+	   System.out.println(widget.getViewModes());
+	   assertTrue(widget.getViewModes().equals("windowed floating"));
+	} 
 }

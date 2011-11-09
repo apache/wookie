@@ -626,6 +626,8 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-iuJHnskSHq/001/za.wgt");
 		assertEquals("pass.png",getIcon(widget));
 	}
+	
+	@Ignore // Has been removed from test suite
 	@Test
 	public void zb(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-iuJHnskSHq/002/zb.wgt");
