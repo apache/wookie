@@ -181,7 +181,8 @@ var WidgetPreferences = new function WidgetPreferences() {
     this.clear = function () {
         for (var key in this.prefs) {
             try {
-                this.removeItem(key);
+                if(this.prefs[key]["readOnly"] === false)
+                   this.removeItem(key);
             } catch (e) {
                 // swallow errors, as this method must never throw them according to spec.
             }
