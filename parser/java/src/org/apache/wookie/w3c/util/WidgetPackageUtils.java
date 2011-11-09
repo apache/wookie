@@ -26,6 +26,7 @@ import java.util.Enumeration;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.wookie.w3c.util.LocalizationUtils;
@@ -211,6 +212,11 @@ public class WidgetPackageUtils {
 	 * @throws IOException
 	 */
 	public static void unpackZip(ZipFile zipfile, File targetFolder) throws IOException {
+	  //
+	  // Delete directory and contents if it already exists. See WOOKIE-239
+	  //
+	  if (targetFolder.exists() && targetFolder.isDirectory()) FileUtils.deleteDirectory(targetFolder);
+	  
 		targetFolder.mkdirs();
 		BufferedOutputStream out = null;
 		InputStream in = null;
