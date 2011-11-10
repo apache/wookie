@@ -75,7 +75,6 @@ public interface IW3CXMLConfiguration {
 	// Other values used
 	public static final String DEFAULT_WIDGET_VERSION = "1.0";
 	public static final String UNKNOWN = "unknown";
- 	public static final String DEFAULT_ICON_PATH = "/wookie/shared/images/cog.gif";
 	public static final int DEFAULT_HEIGHT_SMALL = 32;
 	public static final int DEFAULT_WIDTH_SMALL = 32;
 	public static final int DEFAULT_HEIGHT_LARGE = 300;

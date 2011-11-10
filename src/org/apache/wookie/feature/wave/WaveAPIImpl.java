@@ -29,6 +29,7 @@ import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.IFeature;
 import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.helpers.ParticipantHelper;
+import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.server.LocaleHandler;
 import org.directwebremoting.WebContextFactory;
 
@@ -59,7 +60,8 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 	}
 
 	public String[] scripts() {
-		return new String[]{"/wookie/dwr/interface/WaveImpl.js", "/wookie/shared/js/wave.js"};
+		return new String[]{WidgetRuntimeHelper.getWebContextPath() + "/dwr/interface/WaveImpl.js", 
+		    WidgetRuntimeHelper.getWebContextPath() + "/shared/js/wave.js"};
 	}
 
 	public String[] stylesheets() {

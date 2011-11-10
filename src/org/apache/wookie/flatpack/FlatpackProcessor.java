@@ -19,6 +19,7 @@ import java.io.FileWriter;
 
 import org.apache.wookie.feature.Features;
 import org.apache.wookie.feature.IFeature;
+import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.util.html.HtmlCleaner;
 import org.apache.wookie.util.html.IHtmlProcessor;
 import org.apache.wookie.w3c.IContentEntity;
@@ -122,7 +123,7 @@ public class FlatpackProcessor implements IStartPageProcessor {
       for (String script : feature.scripts()) {
         // remove the "base" path
         // FIXME this is fragile - consider replacing with a better solution
-        script = script.replace("/wookie/features/", "");
+        script = script.replace(WidgetRuntimeHelper.getWebContextPath() + "/features/", "");
         engine.injectScript(script);
       }
     }
@@ -139,7 +140,7 @@ public class FlatpackProcessor implements IStartPageProcessor {
       for (String style : feature.stylesheets()) {
         // remove the "base" path
         // FIXME this is fragile - consider replacing with a better solution
-        style = style.replace("/wookie/features/", "");
+        style = style.replace(WidgetRuntimeHelper.getWebContextPath() + "/features/", "");
         engine.injectStylesheet(style);
       }
     }

@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import org.apache.log4j.Logger;
+import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.w3c.util.IRIValidator;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -202,7 +203,12 @@ public class Features {
       // and DWR-generated scripts.
       //
       if (!src.startsWith("/")){
-        src =  basePath + "/" + src;
+        if(src.startsWith("dwr/")){
+          src = WidgetRuntimeHelper.getWebContextPath() + "/" + src;
+        }
+        else{
+          src =  basePath + "/" + src;
+        }
       }
       scripts[i] = src;
     }

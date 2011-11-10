@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.w3c.IAccessEntity;
 import org.apache.wookie.w3c.IAuthorEntity;
 import org.apache.wookie.w3c.IContentEntity;
@@ -54,11 +55,6 @@ public class GadgetAdapter implements W3CWidget {
 	private ArrayList<IIconEntity> fIconsList;
 	private ArrayList<IContentEntity> fContentList;
 	
-	/**
-	 * The default Gadget icon
-	 */
-	private static final String DEFAULT_ICON = "/wookie/shared/images/defaultwidget.png";
-
 	public GadgetAdapter(JSONObject gadget, String shindig) throws Exception {
 		if (gadget.has("errors")) throw new Exception("Invalid gadget - Shindig error");
 		if (!gadget.has("url")) throw new Exception("Invalid gadget - URL missing");
@@ -112,7 +108,7 @@ public class GadgetAdapter implements W3CWidget {
 		
 		// Icons
 		this.fIconsList = new ArrayList<IIconEntity>();
-		String icon = getValue(gadget,"thumbnail", DEFAULT_ICON);	
+		String icon = getValue(gadget,"thumbnail", WidgetRuntimeHelper.DEFAULT_GADGET_ICON);	
 		IconEntity iconEntity = new IconEntity(icon,null,null);
 		this.fIconsList.add(iconEntity);
 	}

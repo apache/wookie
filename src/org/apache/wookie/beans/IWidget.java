@@ -16,6 +16,7 @@ package org.apache.wookie.beans;
 
 import java.util.Collection;
 
+import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.util.WidgetFormattingUtils;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.util.LocalizationUtils;
@@ -411,6 +412,7 @@ public interface IWidget extends ILocalizedBean, IBean
             return ((startFile != null) ? startFile.getUrl() : null);
         }
 
+        
         /**
          * Get widget icon location for locale.
          * 
@@ -422,7 +424,7 @@ public interface IWidget extends ILocalizedBean, IBean
         {
         	IWidgetIcon[] icons = widget.getWidgetIcons().toArray(new IWidgetIcon[widget.getWidgetIcons().size()]);
             IWidgetIcon icon = (IWidgetIcon)LocalizationUtils.getLocalizedElement(icons, new String[]{locale}, widget.getDefaultLocale());
-            return ((icon != null) ? icon.getSrc() : IW3CXMLConfiguration.DEFAULT_ICON_PATH);
+            return ((icon != null) ? icon.getSrc() : WidgetRuntimeHelper.DEFAULT_ICON_PATH);
         }
     }
 }

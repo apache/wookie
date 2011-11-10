@@ -29,11 +29,11 @@ import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
-import org.apache.wookie.ajaxmodel.IWidgetRuntimeHelper;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.Features;
 import org.apache.wookie.helpers.FlashMessage;
+import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.util.WgtWatcher;
 import org.apache.wookie.util.WidgetFileUtils;
@@ -68,7 +68,7 @@ public class ContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent event) {
 		try {
 			ServletContext context = event.getServletContext();
-			
+			WidgetRuntimeHelper.setWebContextPath(context.getContextPath());			
 			/* 
 			 *  load the widgetserver.properties and local.widget.properties file
 			 *  and put it into this context as an attribute 'properties' available to all resources
@@ -82,8 +82,8 @@ public class ContextListener implements ServletContextListener {
       context.setAttribute("properties", (Configuration) configuration);
 		 	
 		 	// load these up now so we don't have to do it on every request(i.e. filter) in the future
-		 	usePreferenceInstanceQueues = configuration.getBoolean(IWidgetRuntimeHelper.USE_PREFERENCE_INSTANCE_QUEUES);	
-			useSharedDataInstanceQueues = configuration.getBoolean(IWidgetRuntimeHelper.USE_SHAREDDATA_INSTANCE_QUEUES);		 	
+		 	usePreferenceInstanceQueues = configuration.getBoolean(WidgetRuntimeHelper.USE_PREFERENCE_INSTANCE_QUEUES);	
+			useSharedDataInstanceQueues = configuration.getBoolean(WidgetRuntimeHelper.USE_SHAREDDATA_INSTANCE_QUEUES);		 	
 		 	
 			/*
 		 	 * Merge in system properties overrides

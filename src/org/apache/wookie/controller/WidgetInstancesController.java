@@ -44,6 +44,7 @@ import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.helpers.SharedDataHelper;
 import org.apache.wookie.helpers.WidgetInstanceFactory;
 import org.apache.wookie.helpers.WidgetInstanceHelper;
+import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.server.LocaleHandler;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 
@@ -296,7 +297,7 @@ public class WidgetInstancesController extends Controller {
 	    if (!properties.getString("widget.proxy.hostname").trim().equals("")) serverName = properties.getString("widget.proxy.hostname"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	    if (!properties.getString("widget.proxy.port").trim().equals("")) serverPort = Integer.parseInt(properties.getString("widget.proxy.port")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	    try {
-	      urlWidgetProxyServer = new URL(scheme,serverName,serverPort,properties.getString("widget.proxy.path"));
+	      urlWidgetProxyServer = new URL(scheme, serverName, serverPort, WidgetRuntimeHelper.getWebContextPath() + properties.getString("widget.proxy.path"));
 	    } catch (MalformedURLException e) {
 	      // ignore errors
 	    } 

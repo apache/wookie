@@ -19,6 +19,7 @@ import java.io.FileWriter;
 
 import org.apache.wookie.feature.Features;
 import org.apache.wookie.feature.IFeature;
+import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.w3c.IContentEntity;
 import org.apache.wookie.w3c.IFeatureEntity;
 import org.apache.wookie.w3c.W3CWidget;
@@ -29,10 +30,10 @@ import org.apache.wookie.w3c.IStartPageProcessor;
  */
 public class StartPageProcessor implements IStartPageProcessor {
 	
-	static final String DWR_UTIL_SRC_VALUE = "/wookie/dwr/util.js";
-	static final String DWR_ENGINE_SRC_VALUE = "/wookie/dwr/engine.js";
-	static final String WIDGET_IMPL_SRC_VALUE = "/wookie/dwr/interface/WidgetImpl.js";
-	static final String WOOKIE_WRAPPER_SRC_VALUE = "/wookie/shared/js/wookie-wrapper.js";
+	static final String DWR_UTIL_SRC_VALUE = WidgetRuntimeHelper.getWebContextPath() + "/dwr/util.js";
+	static final String DWR_ENGINE_SRC_VALUE = WidgetRuntimeHelper.getWebContextPath() + "/dwr/engine.js";
+	static final String WIDGET_IMPL_SRC_VALUE = WidgetRuntimeHelper.getWebContextPath() + "/dwr/interface/WidgetImpl.js";
+	static final String WOOKIE_WRAPPER_SRC_VALUE = WidgetRuntimeHelper.getWebContextPath() + "/shared/js/wookie-wrapper.js";
 
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.util.html.IStartPageProcessor#processStartFile(java.io.File, org.apache.wookie.w3c.IManifestModel)
