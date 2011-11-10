@@ -24,10 +24,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Current Widgets</title>   
-  <link type="text/css" href="/wookie/shared/js/jquery/themes/redmond/jquery-ui-1.7.1.custom.css" rel="stylesheet" />  
+  <link type="text/css" href="../shared/js/jquery/themes/redmond/jquery-ui-1.7.1.custom.css" rel="stylesheet" />  
   <link type="text/css" href="../layout.css" rel="stylesheet" />
-  <script type="text/javascript" src="/wookie/shared/js/jquery/jquery-1.3.2.min.js"></script>
-  <script type="text/javascript" src="/wookie/shared/js/jquery/jquery-ui-1.7.custom.min.js"></script>
+  <script type="text/javascript" src="../shared/js/jquery/jquery-1.3.2.min.js"></script>
+  <script type="text/javascript" src="../shared/js/jquery/jquery-ui-1.7.custom.min.js"></script>
 
   <script type="text/javascript">
   $(document).ready(function(){
@@ -281,7 +281,7 @@ var answer = confirm("Are you sure you wish to remove the service type...\n\n<" 
 				        		}	
 				        }
 				        %>
-				        (<a href="/wookie/admin/WidgetAdminServlet?operation=REVISETYPES&dbkey=<%=widget.getId() %>">Add new<img border="0" src="../shared/images/add_1.gif"></a>)</div>
+				        (<a href="./WidgetAdminServlet?operation=REVISETYPES&dbkey=<%=widget.getId() %>">Add new<img border="0" src="../shared/images/add_1.gif"></a>)</div>
 				    	
 				    </div></div>
 				    	<b class="rbottom">

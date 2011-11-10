@@ -17,7 +17,7 @@
 <head>
 <title>Add an OpenSocial gadget</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link type="text/css" href="/wookie/shared/js/jquery/themes/redmond/jquery-ui-1.7.1.custom.css" rel="stylesheet" />  
+<link type="text/css" href="../shared/js/jquery/themes/redmond/jquery-ui-1.7.1.custom.css" rel="stylesheet" />  
 <link type="text/css" href="../layout.css" rel="stylesheet" />
 
 <div id="header">
@@ -37,7 +37,7 @@
 	<p>Enter the URL of an OpenSocial gadget, and then click the 'Publish' button to add the gadget to Wookie.</p>
     <br>
 	
-<form method="post" action="/wookie/admin/WidgetAdminServlet?operation=REGISTERGADGET"> 	 
+<form method="post" action="WidgetAdminServlet?operation=REGISTERGADGET"> 	 
 <table id="newwidget" class="ui-widget ui-widget-content" align="center">
 		<thead>
 			<tr class="ui-widget-header">

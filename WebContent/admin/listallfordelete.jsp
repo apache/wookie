@@ -21,10 +21,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <link type="text/css" href="/wookie/shared/js/jquery/themes/redmond/jquery-ui-1.7.1.custom.css" rel="stylesheet" />  
+  <link type="text/css" href="../shared/js/jquery/themes/redmond/jquery-ui-1.7.1.custom.css" rel="stylesheet" />  
   <link type="text/css" href="../layout.css" rel="stylesheet" />
-  <script type="text/javascript" src="/wookie/shared/js/jquery/jquery-1.3.2.min.js"></script>
-  <script type="text/javascript" src="/wookie/shared/js/jquery/jquery-ui-1.7.custom.min.js"></script>
+  <script type="text/javascript" src="../shared/js/jquery/jquery-1.3.2.min.js"></script>
+  <script type="text/javascript" src="../shared/js/jquery/jquery-ui-1.7.custom.min.js"></script>
 <title>Current Widgets</title>
 <script>
 <!--

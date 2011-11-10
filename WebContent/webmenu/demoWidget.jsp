@@ -28,13 +28,13 @@
 <title><%=localizedMessages.getString("webmenu.demo.title")%></title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <link type="text/css"
-	href="/wookie/shared/js/jquery/themes/redmond/jquery-ui-1.7.1.custom.css"
+	href="../shared/js/jquery/themes/redmond/jquery-ui-1.7.1.custom.css"
 	rel="stylesheet" />
 <link type="text/css" href="../layout.css" rel="stylesheet" />
 <script type="text/javascript"
-	src="/wookie/shared/js/jquery/jquery-1.3.2.min.js"></script>
+	src="../shared/js/jquery/jquery-1.3.2.min.js"></script>
 <script type="text/javascript"
-	src="/wookie/shared/js/jquery/jquery-ui-1.7.custom.min.js"></script>
+	src="../shared/js/jquery/jquery-ui-1.7.custom.min.js"></script>
 </head>
 <body>
 <div id="header">

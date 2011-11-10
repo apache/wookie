@@ -21,10 +21,10 @@
 <head>
 <title><%=localizedMessages.getString("webmenu.instantiate.header.title")%></title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
- <link type="text/css" href="/wookie/shared/js/jquery/themes/redmond/jquery-ui-1.7.1.custom.css" rel="stylesheet" />    
+ <link type="text/css" href="../shared/js/jquery/themes/redmond/jquery-ui-1.7.1.custom.css" rel="stylesheet" />    
   <link type="text/css" href="../layout.css" rel="stylesheet" />
-  <script type="text/javascript" src="/wookie/shared/js/jquery/jquery-1.3.2.min.js"></script>
-  <script type="text/javascript" src="/wookie/shared/js/jquery/jquery-ui-1.7.custom.min.js"></script>
+  <script type="text/javascript" src="../shared/js/jquery/jquery-1.3.2.min.js"></script>
+  <script type="text/javascript" src="../shared/js/jquery/jquery-ui-1.7.custom.min.js"></script>
 </head>
 <body>
    <div id="header">
@@ -43,7 +43,7 @@
     <div id="content">   	
 	<p><%=localizedMessages.getString("webmenu.instantiate.intro")%></p>
 	
-	<form name="form1" method="post" action="/wookie/WidgetServiceServlet">
+	<form name="form1" method="post" action="../WidgetServiceServlet">
 	
 		<table width="300" class="ui-widget ui-widget-content" align="center">  
 		<tr class="ui-widget-header"><td colspan="2">&nbsp;<%=localizedMessages.getString("webmenu.instantiate.form.title")%></td></tr>		
