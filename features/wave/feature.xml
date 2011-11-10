@@ -17,6 +17,6 @@
 -->
 <feature>
 	<name>http://wave.google.com</name>
-	<script src="/wookie/dwr/interface/WaveImpl.js"/>
+	<script src="dwr/interface/WaveImpl.js"/>
 	<script src="wave.js"/>
 </feature>

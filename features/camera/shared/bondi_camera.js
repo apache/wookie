@@ -22,7 +22,8 @@ webcam = new function webcam(){
     this.takePicture = function(success_callback, error_callback, options){
         this.callback = success_callback;
         this.error = error_callback;
-        tb_show("","/wookie/features/camera/shared/camcanvas.html?TB_iframe=true&height=320&width=335",""); 
+        var pathArray = window.location.pathname.split( '/' );
+        tb_show("","/" + pathArray[1] + "/features/camera/shared/camcanvas.html?TB_iframe=true&height=320&width=335",""); 
     }
     
     this.snapped = function(image){

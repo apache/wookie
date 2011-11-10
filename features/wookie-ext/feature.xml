@@ -24,6 +24,6 @@
 		For more information, see org.apache.wookie.feature.ext.IWookieExntesionAPI.java
 	 -->
 	<name>http://incubator.apache.org/wookie/ext</name>
-	<script src="/wookie/dwr/interface/WookieImpl.js"/>
+	<script src="dwr/interface/WookieImpl.js"/>
 	<script src="wookie.js"/>
 </feature>

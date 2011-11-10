@@ -17,6 +17,6 @@
 -->
 <feature>
 	<name>http://oauth.net/2</name>
-	<script src="/wookie/dwr/interface/OAuthConnector.js"/>
+	<script src="dwr/interface/OAuthConnector.js"/>
 	<script src="oauth.js"/>
 </feature>
