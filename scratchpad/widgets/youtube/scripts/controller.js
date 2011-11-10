@@ -77,7 +77,8 @@ var Controller = {
     
     getState: function() {
             ytplayer = $("#youtube-player-container").tubeplayer('player');
-            var state = ytplayer.getPlayerState(); 
+            var state = -1; // "unstarted"
+            if (ytplayer) state = ytplayer.getPlayerState(); 
             return state;    
     },
     
