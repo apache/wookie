@@ -108,7 +108,7 @@ function isAdminUser(){
 }	
 		
 function getAdminUnlockText(){
-	var adminUnlockText = "<a href=\"#\" onclick=\"unlockchat()\"><img border=\"0\" src=\"/wookie/shared/images/unlock.gif\" alt=\""+getLocalizedString('Unlock this widget')+"\"></a>";
+	var adminUnlockText = "<div id=\"lock\"><a href=\"#\" onclick=\"unlockchat()\"><img border=\"0\" src=\"Images/unlock.png\" alt=\""+getLocalizedString('Unlock this widget')+"\"></a></div>";
 	return adminUnlockText;
 }
 
@@ -179,7 +179,7 @@ function refreshMemberList(){
     if (viewer!=null) viewerId=viewer.getId();
 	for (participant in participants) {	
 		var thisUserIcon = participants[participant].getThumbnailUrl();
-		if(thisUserIcon == FIXME_THUMBNAIL_URI){
+		if(thisUserIcon == FIXME_THUMBNAIL_URI || thisUserIcon == ""){
 			thisUserIcon = localthumbnail;
 		}		
 		if(participants[participant].getId() == viewerId){	
