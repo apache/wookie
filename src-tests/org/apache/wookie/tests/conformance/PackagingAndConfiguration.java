@@ -28,6 +28,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wookie.tests.helpers.WidgetUploader;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
+import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.TagNode;
 import org.jdom.Element;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -184,6 +186,7 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 		assertFalse(err == null||err.equals(""));
 	}
 
+	@Ignore // This test passes in the parser; we don't need to test it here as its not a valid URL
 	@Test 
 	public void bv(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-klLDaEgJeU/002/bv.wgt");
@@ -236,11 +239,12 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RawAIWHoMs/001/rd.wgt");
 		assertTrue(widget.getAttributeValue("identifier").contains("generated"));
 	}
+	
+	@Ignore // Note that this test will pass on its own, but not if run in a series including b1, as it will update b1 rather than create a new widget");
 	@Test
 	public void b2(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RawAIWHoMs/002/b2.wgt");
-		assertEquals("pass:", widget.getAttributeValue("identifier")); //Note that this test will pass on its own, but not if run in a series including b1, as it will update b1 rather than create a new widget");
-
+		assertEquals("pass:", widget.getAttributeValue("identifier")); 
 	}
 
 	// 11 Version
@@ -902,6 +906,9 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 	}
 	
 	//34
+	@Ignore 
+	// This test passes in the parser test suite. We can't test it here as "index.php" is not a valid file for us to serve
+	// In future we may want to reparse a widget like this and change to .html, but its never come up
 	@Test
 	public void dc(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-paIabGIIMC/000/dc.wgt");
@@ -1215,8 +1222,25 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 			client.executeMethod(get);
 			int code = get.getStatusCode();
 			assertEquals(200,code);
+			String charset = get.getRequestCharSet();
+
+	    //
+	    //
+	    //
+      String body = get.getResponseBodyAsString();
+      HtmlCleaner cleaner = new HtmlCleaner();
+ 
+      TagNode httpEquivNode = cleaner.clean(get.getResponseBodyAsStream()).findElementByAttValue("http-equiv", "content-type", true, false);
+      if (httpEquivNode != null && httpEquivNode.hasAttribute("content")){
+        String value = httpEquivNode.getAttributeByName("content");
+        int offset = value.indexOf("charset=");
+        if (offset >= -1){
+            charset = value.substring(offset+8).toUpperCase();
+        }
+      }
+      
 			get.releaseConnection();
-			return get.getResponseCharSet();
+			return charset;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
