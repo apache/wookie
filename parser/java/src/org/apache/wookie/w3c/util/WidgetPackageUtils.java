@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.zip.ZipException;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
@@ -201,6 +202,21 @@ public class WidgetPackageUtils {
 		return IOUtils.toString(zipFile.getInputStream(entry), "UTF-8");
 	}
 
+	/**
+	 * Gets the input stream for an entry in the zip 
+	 * @param entry the name of the entry
+	 * @param zipFile
+	 * @return the input stream
+	 * @throws ZipException
+	 * @throws IOException
+	 */
+	public static InputStream getEntryStream(String entry, ZipFile zipFile) throws ZipException, IOException{
+	  ZipArchiveEntry zipEntry;
+	  zipEntry = zipFile.getEntry(entry);
+	  if (zipEntry == null) return null;
+	  return zipFile.getInputStream(zipEntry);
+	}
+	
 	/**
 	 * uses apache commons compress to unpack all the zip entries into a target folder
 	 * partly adapted from the examples on the apache commons compress site, and an

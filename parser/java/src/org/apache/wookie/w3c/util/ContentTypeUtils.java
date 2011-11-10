@@ -16,6 +16,7 @@ package org.apache.wookie.w3c.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -46,6 +47,17 @@ public class ContentTypeUtils {
 		String type = getContentType(file);
 		return isSupported(type, SUPPORTED_IMAGE_TYPES);
 	}	
+	
+	/**
+	 * Checks to see if an inputstream contains a supported image type
+	 * @param inputStream
+	 * @return true if the file is a supported image type 
+	 * @throws IOException
+	 */
+	public static boolean isSupportedImageType(InputStream inputStream) throws IOException{
+	  String type = sniffContentType(inputStream);
+	  return isSupported(type, SUPPORTED_IMAGE_TYPES);
+	}
 
 	/**
 	 * Gets the content type of a file
@@ -73,21 +85,32 @@ public class ContentTypeUtils {
 	 */
 	protected static String sniffContentType(File file) throws IOException{
 		FileInputStream stream = new FileInputStream(file);
-		byte[] bytes = new byte[8];
-		stream.read(bytes);
-		String[] hex = new String[8];
-		String hexString = "";	
-		for (int i=0;i<8;i++){
-			hex[i]= getHexValue(bytes[i]);
-			hexString += hex[i]+" ";
-		}	
-		String prefix = new String(bytes);
-		if (prefix.startsWith("GIF87") || prefix.startsWith("GIF89")) return "image/gif";
-		if (hex[0].equals("ff") && hex[1].equals("d8")) return "image/jpeg";
-		if (hex[0].equals("42") && hex[1].equals("4d")) return "image/bmp";
-		if (hex[0].equals("00") && hex[1].equals("00") && hex[2].equals("01") && hex[3].equals("00")) return "image/vnd.microsoft.icon";
-		if (hexString.trim().equals("89 50 4e 47 0d 0a 1a 0a")) return "image/png";	
-		return null;
+		return sniffContentType(stream);
+	}
+	
+	 /**
+   * Sniffs the content type for images and other common types
+   * @param inpuStream the inputStream to sniff
+   * @return the content type of the stream if it matches a known signature, otherwise Null
+   * @throws IOException 
+   */
+	protected static String sniffContentType(InputStream inputStream) throws IOException{
+	  if (inputStream == null) return null;
+	  byte[] bytes = new byte[8];
+    inputStream.read(bytes);
+    String[] hex = new String[8];
+    String hexString = "";  
+    for (int i=0;i<8;i++){
+      hex[i]= getHexValue(bytes[i]);
+      hexString += hex[i]+" ";
+    } 
+    String prefix = new String(bytes);
+    if (prefix.startsWith("GIF87") || prefix.startsWith("GIF89")) return "image/gif";
+    if (hex[0].equals("ff") && hex[1].equals("d8")) return "image/jpeg";
+    if (hex[0].equals("42") && hex[1].equals("4d")) return "image/bmp";
+    if (hex[0].equals("00") && hex[1].equals("00") && hex[2].equals("01") && hex[3].equals("00")) return "image/vnd.microsoft.icon";
+    if (hexString.trim().equals("89 50 4e 47 0d 0a 1a 0a")) return "image/png"; 
+    return null;
 	}
 	
 	/**

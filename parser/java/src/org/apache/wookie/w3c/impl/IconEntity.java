@@ -80,9 +80,13 @@ public class IconEntity extends AbstractLocalizedEntity implements IIconEntity{
 			fSrc = null;
 		}
 		try {
-			if (!ContentTypeUtils.isSupportedImageType(fSrc)) fSrc = null;
+			if ( !ContentTypeUtils.isSupportedImageType(fSrc)){
+			  if (!ContentTypeUtils.isSupportedImageType(WidgetPackageUtils.getEntryStream (fSrc, zip)) ){
+		       fSrc = null;			    
+			  }
+			}  
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
+			fSrc = null;
 			e1.printStackTrace();
 		}
 
