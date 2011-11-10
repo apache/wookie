@@ -92,7 +92,6 @@ public class ViewModesTest extends ConformanceTest{
 	@Test
   public void i18nrlo43(){
 	   W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/i18n-rlo/043/i18nrlo43.wgt");
-	   System.out.println(widget.getViewModes());
 	   assertTrue(widget.getViewModes().equals("windowed floating"));
 	} 
 }
