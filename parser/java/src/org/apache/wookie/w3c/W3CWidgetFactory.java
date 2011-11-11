@@ -151,8 +151,7 @@ public class W3CWidgetFactory {
 	 * @throws BadManifestException if there is a problem with the config.xml manifest file in the package
 	 */
 	public W3CWidget parse(final File zipFile) throws Exception, BadWidgetZipFileException, BadManifestException{
-		if (outputDirectory == null) throw new Exception("No output directory has been set; use setOutputDirectory(File) to set the location to output widget files");
-		return processWidgetPackage(zipFile, null);
+		return parse(zipFile, null);
 	}
 	
 	/**
@@ -166,6 +165,7 @@ public class W3CWidgetFactory {
 	 * @throws BadManifestException if there is a problem with the config.xml manifest file in the package
 	 */
 	public W3CWidget parse(final File zipFile, String defaultIdentifier) throws Exception, BadWidgetZipFileException, BadManifestException{
+	  if (outputDirectory == null) throw new Exception("No output directory has been set; use setOutputDirectory(File) to set the location to output widget files");
 		return processWidgetPackage(zipFile, defaultIdentifier);
 	}
 	
