@@ -23,8 +23,6 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
-import org.apache.wookie.w3c.exceptions.BadManifestException;
-import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
