@@ -15,6 +15,7 @@
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -35,6 +36,10 @@ import org.apache.wookie.w3c.impl.NameEntity;
 import org.apache.wookie.w3c.impl.ParamEntity;
 import org.apache.wookie.w3c.impl.PreferenceEntity;
 import org.apache.wookie.w3c.impl.WidgetManifestModel;
+import org.apache.wookie.w3c.util.FormattingUtils;
+import org.apache.wookie.w3c.util.LocalizationUtils;
+import org.apache.wookie.w3c.util.UnicodeUtils;
+import org.apache.wookie.w3c.util.WidgetPackageUtils;
 import org.jdom.JDOMException;
 import org.junit.Test;
 
@@ -157,6 +162,18 @@ public class EntityTest {
 		assertNull(widget.getAuthor());
 		assertEquals(IW3CXMLConfiguration.UNKNOWN,widget.getLocalName("en"));
 		assertEquals("fullscreen",widget.getViewModes());
+	}
+	
+	@Test
+	public void utils(){
+	  UnicodeUtils utils = new UnicodeUtils();
+	  LocalizationUtils lutils = new LocalizationUtils();
+	  FormattingUtils futils = new FormattingUtils();
+	  WidgetPackageUtils wputils = new WidgetPackageUtils();
+	  assertNotNull(utils);
+    assertNotNull(futils);
+	  assertNotNull(lutils);
+	  assertNotNull(wputils);
 	}
 
 }

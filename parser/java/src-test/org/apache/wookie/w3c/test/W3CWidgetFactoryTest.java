@@ -13,13 +13,18 @@
  */
 package org.apache.wookie.w3c.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
+import org.apache.wookie.w3c.exceptions.BadManifestException;
+import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -131,7 +136,7 @@ public class W3CWidgetFactoryTest {
 		W3CWidgetFactory fac = new W3CWidgetFactory();
 		fac.setLocales(new String[]{"en"});
 		fac.setOutputDirectory(testfolder.getPath());
-		fac.parse(wgt);
+		W3CWidget widget = fac.parse(wgt);
 	}
 	
 	@Test
@@ -141,4 +146,17 @@ public class W3CWidgetFactoryTest {
 		fac.setOutputDirectory(testfolder.getPath());
 		fac.parse(wgt);
 	}
+	
+	 @Test
+	  public void testGetUnzipped() throws Exception{
+	    W3CWidgetFactory fac = new W3CWidgetFactory();
+	    fac.setStartPageProcessor(null);
+	    fac.setOutputDirectory(testfolder.getPath());
+	    fac.parse(wgt);
+	    File file = fac.getUnzippedWidgetDirectory();
+	    assertEquals("parser/java/test/www.getwookie.org/widgets/test", file.getPath());
+      assertTrue(file.isDirectory());
+	  }
 }
+
+

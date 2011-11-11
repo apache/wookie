@@ -26,6 +26,7 @@ import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
+import org.apache.wookie.w3c.impl.IconEntity;
 import org.apache.wookie.w3c.util.WidgetOutputter;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
 import org.junit.Test;
@@ -76,6 +77,21 @@ public class WidgetOutputterTest extends ConformanceTest{
 		assertTrue(manifest.contains("id=\"http://www.getwookie.org/widgets/localetest\""));
 		assertTrue(manifest.contains("xml:lang=\"fr\">tester les paramètres régionaux</name>"));
 	}
+ @Test
+  public void outputString5() throws Exception{
+    File testWidget = new File("build/widgets/localetest.wgt");
+    W3CWidget widget = load(testWidget);
+    widget.getIconsList().add(new IconEntity("icon.png",100,100));
+    widget.getNames().get(0).setShort("shortName");
+    WidgetOutputter outputter = new WidgetOutputter();
+    outputter.setWidgetFolder("/widgets");
+    String manifest = outputter.outputXMLString(widget);
+    System.out.println(manifest);
+    assertTrue(manifest.contains("id=\"http://www.getwookie.org/widgets/localetest\""));
+    assertTrue(manifest.contains("xml:lang=\"fr\">tester les paramètres régionaux</name>"));
+    assertTrue(manifest.contains("<icon src=\"icon.png\" height=\"100\" width=\"100\" />"));
+    assertTrue(manifest.contains("name short=\"shortName\""));
+  }
 	
 	@Test
 	public void outputStream() throws Exception{
