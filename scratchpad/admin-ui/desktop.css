@@ -28,7 +28,7 @@ header{
     width:100%; 
     height: 60px; 
     background-color: black;
-    background-image: url(http://localhost:8080/wookie/shared/images/furry_white.png);
+    background-image: url(../../shared/images/furry_white.png);
     background-repeat: no-repeat;
     position: absolute; 
     left:0px;
