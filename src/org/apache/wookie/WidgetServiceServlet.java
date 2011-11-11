@@ -27,7 +27,6 @@ import org.apache.wookie.controller.WidgetInstancesController;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
-import org.apache.wookie.helpers.WidgetKeyManager;
 
 /**
  * Servlet implementation class for Servlet: WidgetService
