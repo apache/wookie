@@ -21,12 +21,16 @@
  */ 
 var Controller = {
 
+	contextPath: 'wookie',
+	
 	init:function() {
+		var pathArray = window.location.pathname.split( '/' );
+		this.contextPath = pathArray[1];		
         Controller.update();
 	},
 
 	update:function() {
-        $.get("/wookie/warp?format=xml", Controller.parseTopLevel);
+		$.ajax({ type: 'GET', url: '/' + this.contextPath+'/warp', dataType: 'xml', success: Controller.parseTopLevel});	
 	},
     
     // Parse the complete policy list for all Widgets
@@ -82,7 +86,7 @@ var Controller = {
         Controller.widget = widget;
         $(".widget-title").text(widget.title);
         $.mobile.changePage("#widget");
-        $.get("/wookie/warp?format=xml&widgetId="+widget.id, Controller.parseWidgetLevel);
+		$.ajax({ type: 'GET', url: '/' + this.contextPath+'/warp?widgetId='+widget.id, dataType: 'xml', success: Controller.parseWidgetLevel});
     },
     
     // Refresh the list view of policies for the current Widget
@@ -155,10 +159,10 @@ var Controller = {
     put: function(state){
         $.ajax({
           type: "PUT",
-          url: '/wookie/warp/'+Controller.policy_id+'?granted='+state,
+          url: '/' + this.contextPath + '/warp/' + Controller.policy_id + '?granted=' + state,
           datatype:'json',
           success: function(msg) {
-            $.get("/wookie/warp?format=xml&widgetId="+Controller.widget.id, Controller.parseWidgetLevel);
+        	  $.ajax({ type: 'GET', url: '/' + this.contextPath + '/warp?widgetId='+Controller.widget.id, dataType: 'xml', success: Controller.parseWidgetLevel});
           }
         });
     }
