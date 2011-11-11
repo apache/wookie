@@ -1225,9 +1225,8 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 			String charset = get.getRequestCharSet();
 
 	    //
+	    // Check for charset overrides in the HTML start page
 	    //
-	    //
-      String body = get.getResponseBodyAsString();
       HtmlCleaner cleaner = new HtmlCleaner();
  
       TagNode httpEquivNode = cleaner.clean(get.getResponseBodyAsStream()).findElementByAttValue("http-equiv", "content-type", true, false);

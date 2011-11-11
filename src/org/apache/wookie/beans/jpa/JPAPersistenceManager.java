@@ -14,7 +14,6 @@
 
 package org.apache.wookie.beans.jpa;
 
-import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.sql.Connection;

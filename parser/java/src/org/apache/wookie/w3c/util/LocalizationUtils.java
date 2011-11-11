@@ -187,7 +187,6 @@ public class LocalizationUtils {
 	 * @param locales
 	 * @return the sorted list of ULocale instances
 	 */
-	@SuppressWarnings("unchecked")
 	public static List<ULocale> getProcessedLocaleList(String[] locales){
 		if (locales == null) return getDefaultLocaleList();
 		GlobalizationPreferences prefs = new GlobalizationPreferences();
@@ -216,7 +215,6 @@ public class LocalizationUtils {
 	 * Gets the default locales list
 	 * @return a list of ULocale instances for the default locale
 	 */
-	@SuppressWarnings("unchecked")
 	protected static List<ULocale> getDefaultLocaleList(){
 		GlobalizationPreferences prefs = new GlobalizationPreferences();
 		return prefs.getLocales();

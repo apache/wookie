@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -134,7 +133,7 @@ public class W3CWidgetFactoryTest {
 		W3CWidgetFactory fac = new W3CWidgetFactory();
 		fac.setLocales(new String[]{"en"});
 		fac.setOutputDirectory(testfolder.getPath());
-		W3CWidget widget = fac.parse(wgt);
+		fac.parse(wgt);
 	}
 	
 	@Test
