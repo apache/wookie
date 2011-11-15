@@ -55,9 +55,10 @@ var ${widget.shortname}_browse_controller = {
      * Update the display
      */
     update:function() {
+	// expand the search box
 	if ($.mobile.media("${widget.media.screen.wide}")) {
 	    $('#searchPanel').trigger('expand');
-	} else if ($.mobile.media("$(widget.media.screen.veryWide}")) {
+	} else if ($.mobile.media("${widget.media.screen.veryWide}")) {
 	    $('#searchPanel').trigger('expand');
 	} else {
 	    $('#searchPanel').trigger('collapse');
