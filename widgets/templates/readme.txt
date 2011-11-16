@@ -403,9 +403,16 @@ versions of the templates.
 ** Building the real widgets
 
 To build and deploy the Rave in Context widgets run "ant
-generate-widgets". You can optionally add
-"-Dwidget.include=WIDGET_PATTERN" where "WIDGET_PATTERN" is an include
-pattern that describes which widgets should be generated and
-deployed. For example, "and generate-widgets -Dwidget.include=*browse"
+generate-widgets". 
+
+You can optionally add
+
+"-Dwidget.include=WIDGET_PATTERN" 
+
+where "WIDGET_PATTERN" is an include pattern that describes which widgets should be generated and deployed. For example, 
+
+"ant generate-widgets -Dwidget.include=*browse"
+
 will generate all widgets that have a name ending in "browse".
+
 
