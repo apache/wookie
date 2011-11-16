@@ -23,13 +23,13 @@
     <echo message="|  Initialising template properties"/>
     <echo message="+------------------------------------------"/>
 
-	<loadfile property="content.header"
-			  srcFile="content_header.html"
-			  failonerror="false">
-		<filterchain>
-		  <expandproperties/>
-		</filterchain>
-	</loadfile>
+    <loadfile property="content.header"
+	      srcFile="content_header.html"
+	      failonerror="false">
+      <filterchain>
+	<expandproperties/>
+      </filterchain>
+    </loadfile>
 	
     <loadfile property="content.header"
               srcFile="${template.dir}/${template.name}/content_header.html"
@@ -51,6 +51,24 @@
     <!-- load content from template definition -->
     <loadfile property="content.primary"
               srcFile="${template.dir}/${template.name}/content_primary.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <!-- load content from widget definition -->
+    <loadfile property="content.secondary"
+              srcFile="content_secondary.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <!-- load content from template definition -->
+    <loadfile property="content.secondary"
+              srcFile="${template.dir}/${template.name}/content_secondary.html"
               failonerror="false">
         <filterchain>
           <expandproperties/>

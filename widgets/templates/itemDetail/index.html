@@ -37,90 +37,30 @@
 </head>
 
 <body>
-	<div data-role="page" class="type-home" id="home" data-theme="d">
-		<div class="header" data-role="header" data-position="fixed">
-			<img class="logo" src="images/myExperiment_logo_32h.png"
-				alt="MyExperiment" title="MyExperiment Logo" />
-			<div class="header_title" id="view_title">${widget.name}</div>
-		</div>
-		<!-- /header -->
+  <div data-role="page" class="type-home" id="home" data-theme="d">
+    <div class="header" data-role="header" data-position="fixed">
+      ${content.header}
+    </div>
 
-		<div data-role="content">
 
-			<div data-role="collapsible" class="content-secondary" data-theme="c"
-				data-content-theme="c">${content.secondary.actions}</div>
-			<!-- /content-secondary -->
+    <div data-role="content">
 
-			<div class="content-primary" id="content-primary">
-				<div id="detail">
-					<p>NOTE: this section will be replaced by dynamic content when
-						the widget is run.</p>
-					<div class="overview">
-						<div class="thumbnail">
-							<img
-								src="http://www.myexperiment.org/workflows/16/versions/7/previews/medium.png"
-								/
-				       alt="Preview image of the workflow" width="160">
-						</div>
-						<div class="meta-data">
-							<h3>Title</h3>
-							<p>Uploaded by:</p>
-							<div class="update-rating">
-								<div class="update"
-									<p>Last Updated</p>
-								</div>
-								<div class="rating">
-									<p>Rating</p>
-								</div>
-							</div>
-							<div class="clearer"/>
-							<div class="version-info">
-								<p>Version</p>
-								<p>Type</p>
-								<p>Licence</p>
-							</div>
-						</div>
-						<div class="description">
-							<p>This workflow searches for genes which reside in a QTL
-								(Quantitative Trait Loci) region in the mouse, Mus musculus. The
-								workflow requires an input of: a chromosome name or number; a
-								QTL start base pair position; QTL end base pair position. Data
-								is then extracted from BioMart to annotate each of the genes
-								found in this region. The Entrez and UniProt identifiers are
-								then sent to KEGG to obtain KEGG gene identifiers. The KEGG gene
-								identifiers are then used to searcg for pathways in the KEGG
-								pathway database.</p>
-						</div>
-					</div>
+      <div data-role="collapsible" class="content-secondary" data-theme="c"
+	   data-content-theme="c">
+	${content.secondary}
+      </div>
 
-					<div class="clear">
+      <div class="content-primary" id="content-primary">
+	${content.primary}
+      </div>
+    </div>
+  </div>
 
-						<div class="boxed">
-							<p>Created on</p>
-							<p>Viewed</p>
-							<p>Downloaded</p>
-						</div>
+  <div data-role="footer" class="footer" data-position="fixed">
+    ${content.footer}
+  </div>
 
-						<div class="boxed">
-							<p>Tags:</p>
-							<p>Groups</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- /content-primary -->
-		</div>
-		<!-- /content -->
-
-		<div data-role="footer" class="footer" data-position="fixed">
-			<div class="content">&copy; University of Oxford</div>
-			<a class="button" href="#help" data-role="button" data-rel="dialog"
-				data-transition="pop" data-icon="info" data-iconpos="left">Help</a>
-
-		</div>
-		<!-- /footer -->
-	</div>
-	<!-- /page -->
+</div>
 
 	<div data-role="dialog" id="help">
 		<div data-role="header">
