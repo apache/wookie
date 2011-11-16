@@ -62,7 +62,7 @@
   width: 25%;
   font-size: 80%;
 }
-
+ 
 .description {
   float:left;
   width: 100%;
@@ -110,4 +110,4 @@
 .ui-field-contain {
     border-bottom-width: 0px;
     margin: 0.5em 0;
-
+}
