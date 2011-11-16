@@ -60,7 +60,7 @@
         </dependency>
         <dependency org="org.apache.commons" name="commons-compress" rev="1.0" conf="deploy->default">
 		</dependency>
-        <dependency org="commons-configuration" name="commons-configuration" rev="1.4" conf="deploy->default">
+        <dependency org="commons-configuration" name="commons-configuration" rev="1.7" conf="deploy->default">
         </dependency>
         <dependency org="commons-fileupload" name="commons-fileupload" rev="1.2.1" conf="deploy->default">
         </dependency>
