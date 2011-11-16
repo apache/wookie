@@ -67,3 +67,12 @@
 	width: 75%;
     }	
 }
+
+/* TODO use templates as above */
+@media only screen and (min-width : 321px) {
+  .ui-grid-a .ui-block-a,
+  .ui-grid-a .ui-block-b {
+	float: none;
+	width: 100%;
+  }
+}

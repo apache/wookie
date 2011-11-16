@@ -26,36 +26,60 @@
 
 .thumbnail {
   float:left;
-}
-
-.summary {
-  clear: both;
+  width: 100px;
 }
 
 .meta-data {
-  clear: both;
+	margin-left: 0.6em;
+	float: left;
+	width: 70%;
 }
 
 .uploader {
-  float: right;
+  float: left;
+  text-align: left;
+  width: 75%;
+  font-size: 90%;
 }
 
-.update {
-  font-size: 70%;
-  float: left;
+.rating {
+  float: right;
+  text-align: right;
+  font-size: 80%;
+  width: 25%;
 }
 
 .type {
-  font-size: 80%;
+  clear: left;
   float: left;
-}
-
-.location {
-  font-size: 80%;
-  float: right;
+  text-align: left;
+  width: 75%;
 }
 
 .license {
+  float: left;
+  text-align: right;
+  width: 25%;
+  font-size: 80%;
+}
+
+.description {
+  float:left;
+  width: 100%;
+  font-size: 95%;
+  margin-top: 0.6em;
+}
+
+.update {
+  font-size: 75%;
+  text-align: center;
+}
+
+/*.summary {
+  clear: both;
+}*/
+
+.location {
   font-size: 80%;
   float: right;
 }
@@ -63,3 +87,27 @@
 .clear {
   clear:both;
 }
+
+.header {
+/* note removed div from markup to get JQM styling */
+  background: white;
+  color: black;
+  text-shadow: none;
+  border: none;
+}
+
+.ui-header .ui-title {
+  margin-right: 70px;
+}
+
+/* theme buttons */
+.ui-btn-active {
+    background: -moz-linear-gradient(center top , #85BA00, #539300) repeat scroll 0 0 #459600;
+	border: 1px solid #155600;
+	text-shadow: 0 -1px 1px #145000;
+}
+
+.ui-field-contain {
+    border-bottom-width: 0px;
+    margin: 0.5em 0;
+
