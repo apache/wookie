@@ -26,16 +26,17 @@
 
 .thumbnail {
   float:left;
-  width: 100px;
+  width: 16%;
 }
 
 .meta-data {
 	margin-left: 0.6em;
 	float: left;
-	width: 70%;
+	width: 80%;
 }
 
 .uploader {
+  clear: left;
   float: left;
   text-align: left;
   width: 75%;
@@ -53,13 +54,13 @@
   clear: left;
   float: left;
   text-align: left;
-  width: 75%;
+  width: 70%;
 }
 
 .license {
   float: left;
   text-align: right;
-  width: 25%;
+  width: 30%;
   font-size: 80%;
 }
  
@@ -71,6 +72,8 @@
 }
 
 .update {
+  clear: left;
+  float:left;
   font-size: 75%;
   text-align: center;
 }
@@ -96,9 +99,6 @@
   border: none;
 }
 
-.ui-header .ui-title {
-  margin-right: 70px;
-}
 
 /* theme buttons */
 .ui-btn-active {

@@ -15,19 +15,6 @@
  * limitations under the License.
  */
 
-/* TODO use templates as above */
-@media ${widget.media.screen.narrow},
-       ${widget.media.screen.moderateWidth},
-       ${widget.media.screen.wide},
-       ${widget.media.screen.veryWide} {
-  .ui-grid-a .ui-block-a,
-  .ui-grid-a .ui-block-b {
-	float: none;
-	width: 100%;
-  }
-}
-
-
  @media ${widget.media.screen.veryNarrow}, ${widget.media.screen.narrow} {
     .content-secondary {
 	text-align: left;

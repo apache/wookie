@@ -5,16 +5,12 @@
   <form
      action="javascript:${widget.shortname}_browse_controller.submitSearchForm()"
      method="get">
-    <div class="ui-grid-a">
-      <div class="ui-block-a">
 	<div data-role="fieldcontain">
 	  <label for="searchString">Search:</label> <input type="text"
 							   name="searchString" id="searchString" value=""
 							   placeholder="Search terms..." />
 	</div>
-      </div>
 
-      <div class="ui-block-b">
 	<div data-role="fieldcontain">
 	  <label for="sort">Sort:</label> 
 	  <select name="sort" id="sort" data-native-menu="false"> creation time (created), update time (updated), title (title) and name (name) 
@@ -24,8 +20,6 @@
 	    <option value="name">Name</option>
 	  </select>
 	</div>
-      </div>
-    </div>
 
     <div data-role="fieldcontain">
       <fieldset data-role="controlgroup" data-type="horizontal">
