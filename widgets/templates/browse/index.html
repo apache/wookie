@@ -38,94 +38,27 @@
 </head>
 
 <body>
-	<div data-role="page" class="type-home" id="home" data-theme="d">
-		<div class="header" data-role="header" data-position="fixed">
-			<img class="logo" src="images/myExperiment_logo_32h.png"
-				alt="MyExperiment" title="MyExperiment Logo" />
-			<h1>${widget.name}</h1>
-		</div>
-		<!-- /header -->
+  <div data-role="page" class="type-home" id="home" data-theme="d">
+    <div class="header" data-role="header" data-position="fixed">
+      ${content.header}
+    </div> 
 
-		<div data-role="content">
+    <div data-role="content">
+      <div class="content-secondary" id="content.secondary">
+        ${content.secondary}
+      </div>
 
-		  <div id="searchPanel" data-role="collapsible" class="content-secondary" data-theme="c"
-		       data-content-theme="c">
-		    <h2>Search</h2>
+      <div class="content-primary" id="content-primary">
+        ${content.primary}
+      </div>
 
-		    <form
-		       action="javascript:${widget.shortname}_browse_controller.submitSearchForm()"
-		       method="get">
-				<div class="ui-grid-a">
-				  <div class="ui-block-a">
-					<div data-role="fieldcontain">
-						<label for="searchString">Search:</label> <input type="text"
-									 name="searchString" id="searchString" value=""
-									 placeholder="Search terms..." />
-					</div>
-				  </div>
+    </div>
 
-				  <div class="ui-block-b">
-					<div data-role="fieldcontain">
-						<label for="sort">Sort:</label> 
-						<select name="sort" id="sort" data-native-menu="false"> creation time (created), update time (updated), title (title) and name (name) 
-						  <option value="updated">Updated</option>
-						  <option value="created">Created</option>
-						  <option value="title">Title</option>
-						  <option value="name">Name</option>
-						</select>
-					</div>
-				  </div>
-				</div>
+    <div data-role="footer" class="footer" id="footer" data-position="fixed">
+      ${content.footer}
+    </div>
+  </div>
 
-				<div data-role="fieldcontain">
-				  <fieldset data-role="controlgroup" data-type="horizontal">
-					<legend>Sort order</legend>
-					<input type="radio" name="sortOrder" id="reverseOrder" value="reverse" checked="checked" />
-					<label for="reverseOrder">Reverse</label>
-				
-					<input type="radio" name="sortOrder" id="forwardOrder" value="forward"  />
-					<label for="forwardOrder">Forward</label>
-				  </fieldset>
-				</div>
-
-		      <input type="submit" value="Search" />
-		    </form>
-
-		  </div>
-			<!-- /content-secondary -->
-
-			<div class="content-primary" id="content-primary">
-				<div id="results" data-role="collapsible-set">
-
-					<div class="result" data-role="collapsible" data-collapsed="true">
-						<h3>Result 1</h3>
-						<p>I'm the collapsible set content for section B.</p>
-					</div>
-
-					<div class="result" data-role="collapsible">
-						<h3>Result 2</h3>
-						<p>I'm the collapsible set content for section B.</p>
-					</div>
-
-					<div class="result" data-role="collapsible">
-						<h3>Result 3</h3>
-						<p>I'm the collapsible set content for section B.</p>
-					</div>
-				</div>
-			</div>
-			<!-- /content-primary -->
-		</div>
-		<!-- /content -->
-
-		<div data-role="footer" class="footer" data-position="fixed">
-			<div class="content">&copy; University of Oxford</div>
-			<a class="button" href="#help" data-role="button" data-rel="dialog"
-				data-transition="pop" data-icon="info" data-iconpos="left">Help</a>
-
-		</div>
-		<!-- /footer -->
-	</div>
-	<!-- /page -->
 
 	<div data-role="dialog" id="help">
 		<div data-role="header">
