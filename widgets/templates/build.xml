@@ -32,19 +32,25 @@
 
     <target name="generate-widgets"
             description="Generate all the required widgets from the templates">
+
+      <property name="widget.include" value="*"/>
+
       <echo message="+------------------------------------------+"/>
       <echo message="|                                          |"/>
       <echo message="|  Generating widgets                      |"/>
+      <echo message="|  include: ${widget.include}              |"/>
       <echo message="|  in: ${basedir}                          |"/>
       <echo message="|                                          |"/>
       <echo message="+------------------------------------------+"/>
 
 
+ 
       <subant target="_generate_and_deploy_widget"
               genericantfile="${basedir}/build.xml"
               inheritall="true">
         <dirset dir="widgets">
-          <include name="*"/>
+          <include name="${widget.include}"/>
+	  <exclude name="common"/>
         </dirset>
       </subant>
     </target>
