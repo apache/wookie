@@ -82,6 +82,7 @@ var ${widget.shortname}_browse_controller = {
             xslurl:${browse.index.xsl.url}
         });
         $('#content-primary').html(html).trigger("create");
+	$('.result:first').trigger('expand');
     },
         
     /**
@@ -105,7 +106,7 @@ var ${widget.shortname}_browse_controller = {
 /**
  * Initialise page layout
  */
-$('#home').live('pageshow',function(event) {
+$('#home').live('pageinit',function(event) {
    ${widget.shortname}_browse_controller.init(); 
 });
 
