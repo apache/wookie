@@ -83,6 +83,7 @@ var ${widget.shortname}_browse_controller = {
         });
         $('#content-primary').html(html).trigger("create");
 	$('.result:first').trigger('expand');
+	${widget.shortname}_browse_controller.update();
     },
         
     /**
