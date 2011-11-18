@@ -78,7 +78,5 @@
         <delete includeemptydirs="true" dir="${dist.dir}"/>
     </target>
 
-    <target name="clean" depends="clean-build, clean-lib" description="--> clean the project">
-      <ivy:cleancache />
-    </target>
+    <target name="clean" depends="clean-build, clean-lib" description="--> clean the project"/>
 </project>
