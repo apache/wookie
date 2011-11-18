@@ -1,0 +1,36 @@
+##
+## Access Policies File
+##
+## This file is dynamically loaded by Wookie and configures
+## access policies for the proxy service, including both
+## whitelist (global) and widget-specific access policies
+##
+## Note that when new widgets are added to Wookie their
+## access policy requests are automatically added to this
+## file.
+## 
+##
+## The format of entries is widget-uri origin directive
+## The widget-uri and origin may be a wildcard (*). To enable
+## subdomains, use a wildcard as the first element of the
+## origin host, e.g. http://*.apache.org
+##
+## The default (implicit) policy is to deny all origins for all widgets
+##
+## Example:
+##
+## * http://127.0.0.1 ALLOW
+## http\://www.getwookie.org/widgets/weather http://newsrss.bbc.co.uk ALLOW
+## http\://www.getwookie.org/widgets/rss * ALLOW
+##
+## This set of policies would allow access to 127.0.0.1 for all 
+## widgets, while the "weather" widget would be allowed to access 
+## URLs from  http://newsrss.bbc.co.uk, and the RSS widget could 
+## access any URL from any origin.
+##
+## Note that it is necessary to escape the ":" character with a "\"
+##
+
+* http://127.0.0.1 ALLOW
+* http://localhost:8080 ALLOW
+* http://*.apache.org ALLOW

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 
@@ -28,13 +29,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.auth.AuthenticationException;
 import org.apache.log4j.Logger;
-import org.apache.wookie.beans.IAccessRequest;
 import org.apache.wookie.beans.IWidgetInstance;
-import org.apache.wookie.beans.IWhitelist;
-import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 
@@ -102,7 +101,7 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			//
 			if (properties.getBoolean("widget.proxy.usewhitelist") && !isAllowed(bean.getNewUrl().toURI(), instance)){
 				response.sendError(HttpServletResponse.SC_FORBIDDEN,"<error>URL Blocked</error>");
-				fLogger.warn("URL " + bean.getNewUrl().toExternalForm() + " Blocked");
+				fLogger.warn("URL " + bean.getNewUrl().toExternalForm() + " Blocked for scope "+instance.getWidget().getGuid());
 				return;
 			}	
 
@@ -186,32 +185,14 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 	 * @return
 	 */
 	public boolean isAllowed(URI requestedUri, IWidgetInstance instance){
-		// Check global whitelist
-	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		for (IWhitelist whiteList : persistenceManager.findAll(IWhitelist.class)){
-			// TODO - make this better then just comparing the beginning...
-			if(requestedUri.toString().toLowerCase().startsWith(whiteList.getfUrl().toLowerCase()))			
-				return true;
-		}
-
-		// Check widget-specific policies using W3C WARP
-		if (instance != null && isAllowedByPolicy(requestedUri, instance.getWidget())) return true;
-
-		return false;		
-	}
-
-	/**
-	 * Check widget-specific policies using W3C WARP
-	 * @param requestedUri the URI requested
-	 * @param widget the Widget requesting access to the URI
-	 * @return true if a policy grants access to the requested URI
-	 */
-	private boolean isAllowedByPolicy(URI requestedUri, IWidget widget){
-	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-	    for (IAccessRequest policy: persistenceManager.findApplicableAccessRequests(widget))
-			if (policy.isAllowed(requestedUri)) return true;
-		fLogger.warn("No policy grants widget "+widget.getWidgetTitle("en")+" access to: "+requestedUri.toString());
-		return false;
+	  try {
+      return Policies.getInstance().validate(requestedUri, instance.getWidget().getGuid());
+    } catch (ConfigurationException e) {
+      fLogger.error("Problem with policies configuration", e);
+      return false;
+    } catch (URISyntaxException e) {
+      return false;
+    }
 	}
 
 	/**
