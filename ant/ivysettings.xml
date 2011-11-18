@@ -30,7 +30,7 @@
    -->
   <settings defaultResolver="wookie-chain" />
   <caches>
-  	<cache useOrigin="true" name="null"/>
+  	<cache useOrigin="false" name="null"/>
   </caches>
   <resolvers>
 	  <filesystem name="local" m2compatible="true" local="true" cache="null">
