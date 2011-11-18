@@ -24,9 +24,7 @@ after the edit.
 
 To create a new template simply create a directory in the templates
 folder with an appropriate template name and copy
-"base/template_build.xml" to this folder and edit it as appropriate.
-
-You'll need to edit this file, changing the following as appropriate:
+"base/template_build.xml" edit as follows:
 
   * name attribute of the <project ...> element
   * "_generate_from_parent_templates" target (see below)
@@ -240,15 +238,16 @@ commands:
 
   * cd widgets
   * mkdir helloWorld
-  * cp ../templates/default.widget.properties ./widget.properties
-  * open widget.properties in your favourite editor and set the following:
+  * create a file called "./widget.properties"
+  * open widget.properties in your favourite editor and add the following:
+    * template.name=base
     * widget.shortname=HelloWorld
     * widget.name=Hello World
     * widget.description=A very friendly widget to demonstrate how easy it is to build a widget from templates.
   * Create a file called "content_primary.html" and the following content
     * <p>Hello World!</p>
   * Ensure that Wookie is running locally
-  * ant generate-widgets
+  * ant generate-widgets -D widget.include==helloWorld
   * take a look at your new widget in your local instance of Wookie
 
 **** What did we just do?
@@ -381,6 +380,33 @@ Note that you can add additional libraries to your widget by placing
 them in a "lib" directory in the root of the widget directory. Be sure
 to add any copyright notices and licenses to a "NOTICE" file and
 "legal" directory respectfully.
+
+*** Overriding Template functionality
+
+The scripts provided by your widget implementation can override the
+functionality provided by the template. For example, the message
+template provides a simple interface for creating and sending
+messages. However, there is no way the template can implement the
+message send functionality since each widget will use a different
+delivery mechanism.
+
+For this reason the ${widget.shortname}_message_controller provides
+the following function:
+
+send:function(subject, message) {
+    alert("Send message:\n\n" + subject + "\n\n" + message);
+}
+
+If you want to implement a true message widget you need to override
+this function in your widget javascript.
+
+To do this you simply add code such as the following to your widgets
+WIDGET_controller.js file:
+
+${widget.shortname}_message_controller.send = function(subject, message) {
+    // message send code here
+}
+
 
 ** Common Files
 When building a family of related widgets you are likely to provide a
