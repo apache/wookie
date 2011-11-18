@@ -21,7 +21,6 @@ import org.apache.wookie.beans.IApiKey;
 import org.apache.wookie.beans.IDescription;
 import org.apache.wookie.beans.IName;
 import org.apache.wookie.beans.IStartFile;
-import org.apache.wookie.beans.IWhitelist;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetDefault;
 import org.apache.wookie.beans.IWidgetIcon;
@@ -133,6 +132,7 @@ public class PersistenceManagerFactory
                 }
                 else
                 {
+                  System.out.println("initializing=false0");
                     initializing = false;
                 }
 
@@ -147,6 +147,7 @@ public class PersistenceManagerFactory
                 }
                 else
                 {
+                  System.out.println("initializing=false1");
                     initializing = false;
                 }
 
@@ -169,6 +170,7 @@ public class PersistenceManagerFactory
                 }
                 else
                 {
+                  System.out.println("initializing=false2");
                     initializing = false;
                 }
                 if (persistenceManager.findByValue(IWidgetService.class, "serviceName", "unsupported").length == 0)
@@ -180,48 +182,15 @@ public class PersistenceManagerFactory
                 }
                 else
                 {
+                  System.out.println("initializing=false3");
                     initializing = false;
                 }
-
-                // Whitelist
-                if (initializing && (persistenceManager.findAll(IWhitelist.class).length == 0))
-                {
-                    // optional: create only if initializing
-                    IWhitelist wookieServerWhitelist = persistenceManager.newInstance(IWhitelist.class);
-                    wookieServerWhitelist.setfUrl("http://incubator.apache.org/wookie");
-                    persistenceManager.save(wookieServerWhitelist);
-                }
-                else
-                {
-                    initializing = false;
-                }
-                if (persistenceManager.findByValue(IWhitelist.class, "fUrl", "http://127.0.0.1").length == 0)
-                {
-                    // required: always create if not found
-                    IWhitelist localhostIPAddrWhitelist = persistenceManager.newInstance(IWhitelist.class);
-                    localhostIPAddrWhitelist.setfUrl("http://127.0.0.1");
-                    persistenceManager.save(localhostIPAddrWhitelist);
-                }
-                else
-                {
-                    initializing = false;
-                }
-                if (persistenceManager.findByValue(IWhitelist.class, "fUrl", "http://localhost").length == 0)
-                {
-                    // required: always create if not found
-                    IWhitelist localhostWhitelist = persistenceManager.newInstance(IWhitelist.class);
-                    localhostWhitelist.setfUrl("http://localhost");
-                    persistenceManager.save(localhostWhitelist);
-                }
-                else
-                {
-                    initializing = false;
-                }
-
+                
                 // ApiKey
                 if (initializing && (persistenceManager.findAll(IApiKey.class).length == 0))
                 {
                     // optional: create only if initializing
+                  System.out.println("SCOTT DEBUG creating default api key");
                     IApiKey apiKey = persistenceManager.newInstance(IApiKey.class);
                     apiKey.setValue("TEST");
                     apiKey.setEmail("test@127.0.0.1");

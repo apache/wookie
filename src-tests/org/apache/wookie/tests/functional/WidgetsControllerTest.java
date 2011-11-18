@@ -269,15 +269,15 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	    //
 	    // Check that we only have one copy of the access request, not two
 	    //
-	    int policies = 0;
-	    final String POLICY_ORIGIN = "http://accesstest.incubator.apache.org:80";
-	    Element[] policyElements = WidgetAccessRequestPolicyControllerTest.getPolicies();
-	    for (Element policy: policyElements){
-	      if (policy.getAttribute("origin").getValue().equals(POLICY_ORIGIN)) {
-	        policies ++;
-	      }
-	    }
-	    assertEquals(1, policies);
+//	    int policies = 0;
+//	    final String POLICY_ORIGIN = "http://accesstest.incubator.apache.org:80";
+//	    Element[] policyElements = WidgetAccessRequestPolicyControllerTest.getPolicies();
+//	    for (Element policy: policyElements){
+//	      if (policy.getAttribute("origin").getValue().equals(POLICY_ORIGIN)) {
+//	        policies ++;
+//	      }
+//	    }
+//	    assertEquals(1, policies);
 
 	}
 	

@@ -29,7 +29,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.IApiKey;
-import org.apache.wookie.beans.IWhitelist;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetDefault;
 import org.apache.wookie.beans.IWidgetService;
@@ -80,15 +79,12 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 
 	// jsp page handles
 	private static final String fAddNewServicesPage = "/admin/addnewservice.jsp"; //$NON-NLS-1$
-	private static final String faddToWhiteListPage = "/admin/addtowhitelist.jsp"; //$NON-NLS-1$
 	private static final String fListServicesPage = "/admin/listservices.jsp"; //$NON-NLS-1$
 	private static final String fListWidgetsForDeletePage = "/admin/listallfordelete.jsp";	 //$NON-NLS-1$
 	private static final String fListWidgetsPage = "/admin/listall.jsp"; //$NON-NLS-1$
 	private static final String fMainPage = "/admin/index.jsp"; //$NON-NLS-1$
 	private static final String fRemoveServicesPage = "/admin/removeservice.jsp"; //$NON-NLS-1$
-	private static final String fremoveWhiteListPage = "/admin/removewhitelist.jsp";	 //$NON-NLS-1$
 	private static final String fUpLoadResultsPage = "/admin/uploadresults.jsp"; //$NON-NLS-1$
-	private static final String fViewWhiteListPage = "/admin/viewwhitelist.jsp"; //$NON-NLS-1$
 	private static final String fRegisterGadgetPage = "/admin/registergadget.jsp"; //$NON-NLS-1$
 	private static final String fListAPIKeysPage = "/admin/keys.jsp"; //$NON-NLS-1$
 
@@ -120,23 +116,6 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 			request.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.1")); //$NON-NLS-1$ //$NON-NLS-2$ 
 		} catch (InvalidParametersException e) {
 			request.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.1")); //$NON-NLS-1$ //$NON-NLS-2$ 
-		}
-	}
-
-	/**
-	 *  Adds a new entry to the whitelist DB
-	 */
-	private void addWhiteListEntry(HttpServletRequest request) {
-		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		String uri = request.getParameter("newuri"); //$NON-NLS-1$
-		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWhitelist list = persistenceManager.newInstance(IWhitelist.class);
-		list.setfUrl(uri);
-		if(persistenceManager.save(list)){
-			request.setAttribute("message_value", localizedMessages.getString("WidgetAdminServlet.2")); //$NON-NLS-1$ //$NON-NLS-2$ 
-		}
-		else{
-			request.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.3")); //$NON-NLS-1$ //$NON-NLS-2$ 
 		}
 	}
 
@@ -180,25 +159,6 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		}	
 		if(op!=null){
 			switch (op) {
-			case ADDNEWWHITELISTENTRY: {
-				addWhiteListEntry(request);					
-				listWhiteListOperation(request);
-				doForward(request, response, faddToWhiteListPage);
-				break;
-			}
-			case VIEWWHITELIST: {
-				listWhiteListOperation(request);
-				if(request.getParameter("param").equalsIgnoreCase("list")){											 //$NON-NLS-1$ //$NON-NLS-2$
-					doForward(request, response, fViewWhiteListPage);
-				}
-				else if(request.getParameter("param").equalsIgnoreCase("add")){					 //$NON-NLS-1$ //$NON-NLS-2$
-					doForward(request, response, faddToWhiteListPage);
-				}
-				else if(request.getParameter("param").equalsIgnoreCase("remove")){					 //$NON-NLS-1$ //$NON-NLS-2$
-					doForward(request, response, fremoveWhiteListPage);						
-				}
-				break;
-			}
 			case REMOVEWIDGET: {
 				removeWidget(request, properties, manager);										
 				listOperation(request, false);					
@@ -254,12 +214,6 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 			case REMOVESERVICE:{
 				removeServiceOperation(request);
 				doForward(request, response, fRemoveServicesPage);
-				break;
-			}
-			case REMOVEWHITELISTENTRY: {
-				removeWhiteListEntry(request);										
-				listWhiteListOperation(request);
-				doForward(request, response, fremoveWhiteListPage);
 				break;
 			}
 			case REMOVESINGLEWIDGETTYPE:{
@@ -326,11 +280,6 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		}
 	}
 
-	private void listWhiteListOperation(HttpServletRequest request) {
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		request.setAttribute("whitelist", persistenceManager.findAll(IWhitelist.class)); //$NON-NLS-1$
-	}  	
-
 	private void removeServiceOperation(HttpServletRequest request) {
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		String serviceId = request.getParameter("serviceId"); //$NON-NLS-1$
@@ -354,19 +303,6 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 			request.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.9")); //$NON-NLS-1$ //$NON-NLS-2$ 
 		}	
 		request.setAttribute("widgets", null);						 //$NON-NLS-1$
-	}
-
-	private void removeWhiteListEntry(HttpServletRequest request) {
-		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		String entryId = request.getParameter("entryId"); //$NON-NLS-1$
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWhitelist entry = persistenceManager.findById(IWhitelist.class, entryId);
-		if(persistenceManager.delete(entry)){
-			request.setAttribute("message_value", localizedMessages.getString("WidgetAdminServlet.10")); 				 //$NON-NLS-1$ //$NON-NLS-2$ 
-		}
-		else{
-			request.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.11")); //$NON-NLS-1$ //$NON-NLS-2$ 
-		}				
 	}
 
 	private void removeWidget(HttpServletRequest request, Configuration properties, IWidgetAdminManager manager) {

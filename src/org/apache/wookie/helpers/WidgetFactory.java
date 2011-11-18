@@ -15,8 +15,8 @@ package org.apache.wookie.helpers;
 
 import java.io.File;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
-import org.apache.wookie.beans.IAccessRequest;
 import org.apache.wookie.beans.IAuthor;
 import org.apache.wookie.beans.IDescription;
 import org.apache.wookie.beans.IFeature;
@@ -36,6 +36,8 @@ import org.apache.wookie.beans.IWidgetType;
 import org.apache.wookie.beans.SharedContext;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
+import org.apache.wookie.proxy.Policies;
+import org.apache.wookie.proxy.Policy;
 import org.apache.wookie.w3c.IAccessEntity;
 import org.apache.wookie.w3c.IContentEntity;
 import org.apache.wookie.w3c.IDescriptionEntity;
@@ -245,25 +247,31 @@ public class WidgetFactory {
 	 * @param grantAccessRequests whether access requests are granted by default
 	 */
 	private static void createAccessRequests(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget, boolean grantAccessRequests){
-	  //
-	  // Remove any existing access policies
-	  //
-	  persistenceManager.delete(persistenceManager.findApplicableAccessRequests(widget));
-	  
-	  //
-	  // Create access policies for each access request in the widget model
-	  //
-		for(IAccessEntity accessEntity:model.getAccessList()){
-            IAccessRequest acc = persistenceManager.newInstance(IAccessRequest.class);
-			acc.setOrigin(accessEntity.getOrigin());
-			acc.setSubdomains(accessEntity.hasSubDomains());
-			acc.setGranted(grantAccessRequests);
-			acc.setWidget(widget);
-			if (grantAccessRequests){
-				_logger.info("access policy granted for "+widget.getWidgetTitle("en")+" to access "+acc.getOrigin());
-			}
-			persistenceManager.save(acc);
-		}
+	  try {
+      //
+      // Remove any existing access policies
+      //
+      Policies.getInstance().clearPolicies(widget.getGuid());
+
+      //
+      // Create access policies for each access request in the widget model
+      //
+      for(IAccessEntity accessEntity:model.getAccessList()){
+        Policy policy = new Policy();
+        policy.setOrigin(accessEntity.getOrigin());
+        policy.setScope(widget.getGuid());
+        policy.setDirective("DENY");
+        if (grantAccessRequests){
+          policy.setDirective("ALLOW");
+          _logger.info("access policy granted for "+widget.getWidgetTitle("en")+" to access "+policy.getOrigin());
+        }
+        Policies.getInstance().addPolicy(policy);
+      }
+    } catch (ConfigurationException e) {
+      _logger.error("problem with policies configuration", e);
+    } catch (Exception e) {
+      _logger.error("problem setting policies", e);
+    }
 	}
 
 	/**
@@ -309,8 +317,11 @@ public class WidgetFactory {
 		}
 
 		// remove any AccessRequests
-        IAccessRequest[] accessRequests = persistenceManager.findApplicableAccessRequests(widget);
-        persistenceManager.delete(accessRequests);
+    try {
+      Policies.getInstance().clearPolicies(widget.getGuid());
+    } catch (ConfigurationException e) {
+      _logger.error("Problem with properties configuration", e);
+    }
         
 		// remove the widget itself
 		persistenceManager.delete(widget);

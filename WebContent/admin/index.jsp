@@ -213,7 +213,7 @@ if (opensocialEnabled == null) opensocialEnabled = false;
 				
 	    </div>	
 				
-	    <h3><a href="#"><img height="20" width="20" border="0" src="../shared/images/view_1.gif"/>White list</a></h3>
+	    <h3><a href="#"><img height="20" width="20" border="0" src="../shared/images/view_1.gif"/>Proxy</a></h3>
 	    <div>
 				<div id="nifty">
 				<b class="rtop">
@@ -222,60 +222,7 @@ if (opensocialEnabled == null) opensocialEnabled = false;
 				<b class="r3"></b>
 				<b class="r4"></b>
 				</b>	    
-			    <div class="adminLayerDetail"><a href="warp.jsp" class="hypercolour"><img src="../shared/images/view_1.gif" width="16" height="16" border="0">&nbsp;Manage widget access request policies</a></div>
-			    				<b class="rbottom">
-				<b class="r4"></b>
-				<b class="r3"></b>
-				<b class="r2"></b>
-				<b class="r1"></b>
-				</b>
-				</div>
-				
-				<div id="spacer"></div>
-				<div id="nifty">
-				<b class="rtop">
-				<b class="r1"></b>
-				<b class="r2"></b>
-				<b class="r3"></b>
-				<b class="r4"></b>
-				</b>	    
-			    <div class="adminLayerDetail"><a href="WidgetAdminServlet?operation=VIEWWHITELIST&param=list" class="hypercolour"><img src="../shared/images/view_1.gif" width="16" height="16" border="0">&nbsp;View white list</a></div>
-			    				<b class="rbottom">
-				<b class="r4"></b>
-				<b class="r3"></b>
-				<b class="r2"></b>
-				<b class="r1"></b>
-				</b>
-				</div>
-				
-				<div id="spacer"></div>
-			    
-			    <div id="nifty">
-				<b class="rtop">
-				<b class="r1"></b>
-				<b class="r2"></b>
-				<b class="r3"></b>
-				<b class="r4"></b>
-				</b>
-			    <div class="adminLayerDetail"><a href="WidgetAdminServlet?operation=VIEWWHITELIST&param=add" class="hypercolour"><img src="../shared/images/add_1.gif" width="16" height="16" border="0">&nbsp;Add entry to white list</a></div>
-				<b class="rbottom">
-				<b class="r4"></b>
-				<b class="r3"></b>
-				<b class="r2"></b>
-				<b class="r1"></b>
-				</b>
-				</div>
-				
-				<div id="spacer"></div>
-				
-				<div id="nifty">
-				<b class="rtop">
-				<b class="r1"></b>
-				<b class="r2"></b>
-				<b class="r3"></b>
-				<b class="r4"></b>
-				</b>
-			    <div class="adminLayerDetail"><a href="WidgetAdminServlet?operation=VIEWWHITELIST&param=remove" class="hypercolour"><img src="../shared/images/delete_1.gif" width="16" height="16" border="0">&nbsp;Remove entry from white list</a></div>
+			    <div class="adminLayerDetail"><a href="viewwhitelist.jsp" class="hypercolour"><img src="../shared/images/view_1.gif" width="16" height="16" border="0">&nbsp;Manage policies</a></div>
 			    				<b class="rbottom">
 				<b class="r4"></b>
 				<b class="r3"></b>

@@ -20,7 +20,6 @@
 
         <non-jta-data-source>java:comp/env/jdbc/widgetdb</non-jta-data-source>
 
-        <class>org.apache.wookie.beans.jpa.impl.AccessRequestImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.ApiKeyImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.DescriptionImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.FeatureImpl</class>
@@ -35,7 +34,6 @@
         <class>org.apache.wookie.beans.jpa.impl.SharedDataImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.StartFileImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.TokenImpl</class>
-        <class>org.apache.wookie.beans.jpa.impl.WhitelistImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.WidgetDefaultImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.WidgetIconImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.WidgetImpl</class>

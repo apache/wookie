@@ -21,7 +21,6 @@ import javax.naming.Context;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 
-import org.apache.wookie.beans.IAccessRequest;
 import org.apache.wookie.beans.IApiKey;
 import org.apache.wookie.beans.IParticipant;
 import org.apache.wookie.beans.IPreference;
@@ -227,16 +226,6 @@ public abstract class AbstractPersistenceTest
         persistenceManager.save(participant);
 
         //
-        // create access request
-        //
-        IAccessRequest accessRequest = persistenceManager.newInstance(IAccessRequest.class);
-        accessRequest.setOrigin("localhost");
-        accessRequest.setSubdomains(false);
-        accessRequest.setGranted(true);
-        accessRequest.setWidget(widget);
-        persistenceManager.save(accessRequest);
-
-        //
         // commit and close persistence manager transaction
         //
         persistenceManager.commit();
@@ -289,18 +278,10 @@ public abstract class AbstractPersistenceTest
         assertNotNull(participant);
         
         //
-        // Get the access request created in the previous transaction
-        //
-        IAccessRequest [] accessRequests = persistenceManager.findAll(IAccessRequest.class);
-        assertNotNull(accessRequests);
-        assertEquals(1, accessRequests.length);
-        
-        //
         // delete all the test objects
         //
         persistenceManager.delete(widgetInstance0);
         persistenceManager.delete(participant);
-        persistenceManager.delete(accessRequests);
         
         //
         // commit and close persistence manager transaction

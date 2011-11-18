@@ -47,7 +47,6 @@ import org.apache.openjpa.persistence.OpenJPAEntityManagerFactory;
 import org.apache.openjpa.persistence.OpenJPAPersistence;
 import org.apache.openjpa.persistence.QueryResultCache;
 import org.apache.openjpa.persistence.StoreCache;
-import org.apache.wookie.beans.IAccessRequest;
 import org.apache.wookie.beans.IApiKey;
 import org.apache.wookie.beans.IAuthor;
 import org.apache.wookie.beans.IBean;
@@ -63,14 +62,12 @@ import org.apache.wookie.beans.IPreferenceDefault;
 import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IToken;
-import org.apache.wookie.beans.IWhitelist;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetDefault;
 import org.apache.wookie.beans.IWidgetIcon;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.IWidgetService;
 import org.apache.wookie.beans.IWidgetType;
-import org.apache.wookie.beans.jpa.impl.AccessRequestImpl;
 import org.apache.wookie.beans.jpa.impl.ApiKeyImpl;
 import org.apache.wookie.beans.jpa.impl.AuthorImpl;
 import org.apache.wookie.beans.jpa.impl.DescriptionImpl;
@@ -85,7 +82,6 @@ import org.apache.wookie.beans.jpa.impl.PreferenceImpl;
 import org.apache.wookie.beans.jpa.impl.SharedDataImpl;
 import org.apache.wookie.beans.jpa.impl.StartFileImpl;
 import org.apache.wookie.beans.jpa.impl.TokenImpl;
-import org.apache.wookie.beans.jpa.impl.WhitelistImpl;
 import org.apache.wookie.beans.jpa.impl.WidgetDefaultImpl;
 import org.apache.wookie.beans.jpa.impl.WidgetIconImpl;
 import org.apache.wookie.beans.jpa.impl.WidgetImpl;
@@ -120,7 +116,6 @@ public class JPAPersistenceManager implements IPersistenceManager
     private static final Map<String,String> DB_TYPE_TO_JPA_DICTIONARY_MAP = new HashMap<String,String>();
     static
     {
-        INTERFACE_TO_CLASS_MAP.put(IAccessRequest.class, AccessRequestImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IApiKey.class, ApiKeyImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IDescription.class, DescriptionImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IFeature.class, FeatureImpl.class);
@@ -134,7 +129,6 @@ public class JPAPersistenceManager implements IPersistenceManager
         INTERFACE_TO_CLASS_MAP.put(ISharedData.class, SharedDataImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IStartFile.class, StartFileImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IToken.class, TokenImpl.class);
-        INTERFACE_TO_CLASS_MAP.put(IWhitelist.class, WhitelistImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IWidget.class, WidgetImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IWidgetDefault.class, WidgetDefaultImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IWidgetIcon.class, WidgetIconImpl.class);
@@ -143,22 +137,18 @@ public class JPAPersistenceManager implements IPersistenceManager
         INTERFACE_TO_CLASS_MAP.put(IWidgetType.class, WidgetTypeImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IOAuthToken.class, OAuthTokenImpl.class);
 
-        BEAN_INTERFACE_TO_CLASS_MAP.put(IAccessRequest.class, AccessRequestImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IApiKey.class, ApiKeyImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IParticipant.class, ParticipantImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IPreference.class, PreferenceImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(ISharedData.class, SharedDataImpl.class);
-        BEAN_INTERFACE_TO_CLASS_MAP.put(IWhitelist.class, WhitelistImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidget.class, WidgetImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetDefault.class, WidgetDefaultImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetInstance.class, WidgetInstanceImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetService.class, WidgetServiceImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IOAuthToken.class, OAuthTokenImpl.class);
 
-        BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IAccessRequest.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IApiKey.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IParticipant.class, Integer.class);
-        BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IWhitelist.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IWidget.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IWidgetDefault.class, String.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IWidgetInstance.class, Integer.class);
@@ -470,40 +460,6 @@ public class JPAPersistenceManager implements IPersistenceManager
         return (T [])Array.newInstance(beansInterface, 0);
     }
     
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IPersistenceManager#findApplicableAccessRequests(org.apache.wookie.beans.IWidget)
-     */
-    @SuppressWarnings("unchecked")
-    public IAccessRequest [] findApplicableAccessRequests(IWidget widget)
-    {
-        // validate entity manager transaction
-        if (entityManager == null)
-        {
-            throw new IllegalStateException("Transaction not initiated or already closed");
-        }        
-
-        // get applicable access requests for widget using custom query
-        if (widget != null)
-        {
-            try
-            {
-                Query query = entityManager.createNamedQuery("ACCESS_REQUESTS");
-                query.setParameter("widget", widget);
-                List<IParticipant> accessRequestsList = query.getResultList();
-                if ((accessRequestsList != null) && !accessRequestsList.isEmpty())
-                {
-                    return accessRequestsList.toArray(new IAccessRequest[accessRequestsList.size()]);
-                }
-            }
-            catch (Exception e)
-            {
-                logger.error("Unexpected exception: "+e, e);
-            }
-        }
-        return new IAccessRequest[0];
-        
-    }
-
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.util.IPersistenceManager#findById(java.lang.Class, java.lang.Object)
      */

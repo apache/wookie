@@ -50,7 +50,6 @@ import org.apache.jackrabbit.ocm.mapper.impl.annotation.AnnotationMapperImpl;
 import org.apache.jackrabbit.ocm.query.Filter;
 import org.apache.jackrabbit.ocm.query.Query;
 import org.apache.jackrabbit.ocm.query.QueryManager;
-import org.apache.wookie.beans.IAccessRequest;
 import org.apache.wookie.beans.IApiKey;
 import org.apache.wookie.beans.IBean;
 import org.apache.wookie.beans.IDescription;
@@ -65,14 +64,12 @@ import org.apache.wookie.beans.IPreferenceDefault;
 import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IToken;
-import org.apache.wookie.beans.IWhitelist;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetDefault;
 import org.apache.wookie.beans.IWidgetIcon;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.IWidgetService;
 import org.apache.wookie.beans.IWidgetType;
-import org.apache.wookie.beans.jcr.impl.AccessRequestImpl;
 import org.apache.wookie.beans.jcr.impl.ApiKeyImpl;
 import org.apache.wookie.beans.jcr.impl.DescriptionImpl;
 import org.apache.wookie.beans.jcr.impl.FeatureImpl;
@@ -85,7 +82,6 @@ import org.apache.wookie.beans.jcr.impl.PreferenceImpl;
 import org.apache.wookie.beans.jcr.impl.SharedDataImpl;
 import org.apache.wookie.beans.jcr.impl.StartFileImpl;
 import org.apache.wookie.beans.jcr.impl.TokenImpl;
-import org.apache.wookie.beans.jcr.impl.WhitelistImpl;
 import org.apache.wookie.beans.jcr.impl.WidgetDefaultImpl;
 import org.apache.wookie.beans.jcr.impl.WidgetIconImpl;
 import org.apache.wookie.beans.jcr.impl.WidgetImpl;
@@ -121,7 +117,6 @@ public class JCRPersistenceManager implements IPersistenceManager
     private static final Map<String,String> IMPLEMENTATION_FIELD_MAP = new HashMap<String,String>();
     static
     {
-        INTERFACE_TO_CLASS_MAP.put(IAccessRequest.class, AccessRequestImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IApiKey.class, ApiKeyImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IDescription.class, DescriptionImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IFeature.class, FeatureImpl.class);
@@ -134,7 +129,6 @@ public class JCRPersistenceManager implements IPersistenceManager
         INTERFACE_TO_CLASS_MAP.put(ISharedData.class, SharedDataImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IStartFile.class, StartFileImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IToken.class, TokenImpl.class);
-        INTERFACE_TO_CLASS_MAP.put(IWhitelist.class, WhitelistImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IWidget.class, WidgetImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IWidgetDefault.class, WidgetDefaultImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IWidgetIcon.class, WidgetIconImpl.class);
@@ -142,10 +136,8 @@ public class JCRPersistenceManager implements IPersistenceManager
         INTERFACE_TO_CLASS_MAP.put(IWidgetService.class, WidgetServiceImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IWidgetType.class, WidgetTypeImpl.class);
 
-        BEAN_INTERFACE_TO_CLASS_MAP.put(IAccessRequest.class, AccessRequestImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IApiKey.class, ApiKeyImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IParticipant.class, ParticipantImpl.class);
-        BEAN_INTERFACE_TO_CLASS_MAP.put(IWhitelist.class, WhitelistImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidget.class, WidgetImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetDefault.class, WidgetDefaultImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetInstance.class, WidgetInstanceImpl.class);
@@ -608,35 +600,7 @@ public class JCRPersistenceManager implements IPersistenceManager
         }
         return (T [])Array.newInstance(beansInterface, 0);
     }
-    
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IPersistenceManager#findApplicableAccessRequests(org.apache.wookie.beans.IWidget)
-     */
-    public IAccessRequest [] findApplicableAccessRequests(IWidget widget)
-    {
-        // validate object content manager transaction
-        if (ocm == null)
-        {
-            throw new IllegalStateException("Transaction not initiated or already closed");
-        }
-
-        // get applicable access requests for widget using custom query
-        if (widget != null)
-        {
-            try
-            {
-                Map<String, Object> values = new HashMap<String, Object>();
-                values.put("widget", widget);
-                values.put("granted", Boolean.TRUE);
-                return findByValues(IAccessRequest.class, values);
-            }
-            catch (Exception e)
-            {
-                logger.error("Unexpected exception: "+e, e);
-            }
-        }
-        return new IAccessRequest[0];
-    }
+   
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.util.IPersistenceManager#findById(java.lang.Class, java.lang.Object)
