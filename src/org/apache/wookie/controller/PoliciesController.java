@@ -53,6 +53,13 @@ public class PoliciesController extends Controller {
     Policy[] policies;
     
     //
+    // For some reason the main controller resourceId method isn't parsing
+    // the resource part correctly
+    //
+    resourceId = request.getPathInfo().trim();
+    if (resourceId != null) resourceId = StringUtils.stripStart(resourceId, "/");
+    
+    //
     // The resource id is the policy scope. E.g., calling
     // policies/* would get the global policies
     //
