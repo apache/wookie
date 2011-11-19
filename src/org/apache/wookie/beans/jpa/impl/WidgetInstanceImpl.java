@@ -38,7 +38,6 @@ import org.apache.openjpa.persistence.ExternalValues;
 import org.apache.openjpa.persistence.Type;
 
 import org.apache.wookie.beans.IPreference;
-import org.apache.wookie.beans.IToken;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.jpa.InverseRelationshipCollection;
@@ -125,10 +124,6 @@ public class WidgetInstanceImpl implements IWidgetInstance
     @OneToMany(mappedBy="widgetInstance", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     @ElementDependent
     private Collection<PreferenceImpl> preferences;
-
-    @OneToMany(mappedBy="widgetInstance", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-    @ElementDependent
-    private Collection<TokenImpl> tokens;
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidgetInstance#getApiKey()
@@ -259,33 +254,6 @@ public class WidgetInstanceImpl implements IWidgetInstance
     public void setSharedDataKey(String sharedDataKey)
     {
         this.sharedDataKey = sharedDataKey;
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidgetInstance#getTokens()
-     */
-    public Collection<IToken> getTokens()
-    {
-        if (tokens == null)
-        {
-            tokens = new ArrayList<TokenImpl>();
-        }
-        return new InverseRelationshipCollection<WidgetInstanceImpl,TokenImpl,IToken>(this, tokens);
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidgetInstance#setTokens(java.util.Collection)
-     */
-    public void setTokens(Collection<IToken> tokens)
-    {
-        getTokens().clear();
-        if (tokens != null)
-        {
-            for (IToken token : tokens)
-            {
-                getTokens().add((TokenImpl)token);
-            }
-        }
     }
 
     /* (non-Javadoc)

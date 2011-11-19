@@ -18,7 +18,6 @@ import java.util.Collection;
 
 import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.ISharedData;
-import org.apache.wookie.beans.IToken;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 
@@ -230,19 +229,6 @@ public class WidgetInstanceMock implements IWidgetInstance {
 	public void setPreferences(Collection<IPreference> preferences) {
 		this.preferences.clear();
 		this.preferences.addAll(preferences);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.beans.IWidgetInstance#getTokens()
-	 */
-	public Collection<IToken> getTokens() {
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.beans.IWidgetInstance#setTokens(java.util.Collection)
-	 */
-	public void setTokens(Collection<IToken> tokens) {
 	}
 
 	/* (non-Javadoc)

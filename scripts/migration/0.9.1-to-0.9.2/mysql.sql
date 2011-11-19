@@ -42,9 +42,18 @@ CREATE INDEX IXOAuthToken1 ON OAuthToken (widget_instance_id);
 ALTER TABLE OAuthToken ADD CONSTRAINT FKOAuthToken1 FOREIGN KEY (widget_instance_id) REFERENCES WidgetInstance (id);
 
 
+
+
+# ----------------------------------------------------------------------- 
+# Token replaced by oAuth Token table above
+# 
+# ----------------------------------------------------------------------- 
+DROP TABLE IF EXISTS Token;
+
 # ----------------------------------------------------------------------- 
 # Access Request and WhiteList are now managed using a properties file
 # 
 # ----------------------------------------------------------------------- 
 DROP TABLE IF EXISTS AccessRequest;
 DROP TABLE IF EXISTS whitelist;
+

@@ -23,7 +23,6 @@ import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
 
 import org.apache.wookie.beans.IPreference;
-import org.apache.wookie.beans.IToken;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.jcr.IPathBean;
@@ -84,9 +83,6 @@ public class WidgetInstanceImpl implements IWidgetInstance, IPathBean, IUuidBean
 
     @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:preferences", elementClassName=PreferenceImpl.class)    
     private Collection<PreferenceImpl> preferenceImpls;
-
-    @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:tokens", elementClassName=TokenImpl.class)    
-    private Collection<TokenImpl> tokenImpls;
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidgetInstance#getApiKey()
@@ -277,53 +273,6 @@ public class WidgetInstanceImpl implements IWidgetInstance, IPathBean, IUuidBean
     public void setSharedDataKey(String sharedDataKey)
     {
         this.sharedDataKey = sharedDataKey;
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidgetInstance#getTokens()
-     */
-    public Collection<IToken> getTokens()
-    {
-        if (tokenImpls == null)
-        {
-            tokenImpls = new ArrayList<TokenImpl>();
-        }
-        return new IdCollection<TokenImpl,IToken>(tokenImpls);
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidgetInstance#setTokens(java.util.Collection)
-     */
-    public void setTokens(Collection<IToken> tokens)
-    {
-        getTokens().clear();
-        if (tokens != null)
-        {
-            for (IToken token : tokens)
-            {
-                getTokens().add((TokenImpl)token);
-            }
-        }
-    }
-
-    /**
-     * Get token implementations collection.
-     * 
-     * @return token implementations collection
-     */
-    public Collection<TokenImpl> getTokenImpls()
-    {
-        return tokenImpls;
-    }
-
-    /**
-     * Set token implementations collection.
-     * 
-     * @param tokenImpls token implementations collection
-     */
-    public void setTokenImpls(Collection<TokenImpl> tokenImpls)
-    {
-        this.tokenImpls = tokenImpls;
     }
 
     /* (non-Javadoc)

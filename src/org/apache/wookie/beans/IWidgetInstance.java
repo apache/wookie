@@ -201,20 +201,6 @@ public interface IWidgetInstance extends IBean, ILocalizedElement
      * @param preferences preferences collection
      */
     void setPreferences(Collection<IPreference> preferences);
-    
-    /**
-     * Get collection of widget instance tokens.
-     * 
-     * @return tokens collection
-     */
-    Collection<IToken> getTokens();
-
-    /**
-     * Set collection of widget instance tokens.
-     * 
-     * @param tokens tokens collection
-     */
-    void setTokens(Collection<IToken> tokens);
 
     /**
      * Get preference with specified key for widget instance.
