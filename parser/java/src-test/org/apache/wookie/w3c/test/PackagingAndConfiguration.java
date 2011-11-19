@@ -57,7 +57,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
   @Test
   public void de000(){
     @SuppressWarnings("unused")
-    W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-defaultlocale-ignore/000/ta-de-000.wgt");
+    W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-defaultlocale-ignore/000/dlocignore00.wgt");
   }
   
   @Test
