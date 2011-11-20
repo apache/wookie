@@ -19,29 +19,50 @@
   * The ${widget.shortname}_controller object is used to manage authentication.
   */
 var ${widget.shortname}_auth_controller = {
+
+    init:function() {
+	$('#loginForm').submit(function(event) {
+	    var username = $('#username').val();
+	    var password = $('#password').val();
+	    ${widget.shortname}_auth_controller.basic_auth(username, password);
+	});
+    },
+
   basic_auth:function(username, password) {
       var payload = "<session><username>" + username + "</username>";
       payload = payload + "<password>" + password + "</password></session>";
       var proxy = widget.proxify("http://www.myexperiment.org/session/create");
+      $.mobile.showPageLoadingMsg() 
       $.ajax({
+	  beforeSend: function() { $.mobile.showPageLoadingMsg(); },
+          complete: function() { $.mobile.hidePageLoadingMsg() },
           url: proxy, 
           type: "POST",
-          contentType: "application/xml",
-          dataType: "html",
           data: payload,     
           cache: false,
-          xhrFields: { cookie:"_m2_session_id=b7821ca7a8a19110d2f0d3b74bed2f52" },
-          success: function (response) {              
-              if (response==1) {                  
-                  alert("success reported");
-              } else {
-                  alert('Sorry, unexpected error. Please try again later.');                   
-              }
+          success: function (html, statusText, response) {
+	      var headers = response.getAllResponseHeaders();
+	      session_controller.session_id = ${widget.shortname}_auth_controller.get_cookie("_m2_session_id");
+	      alert("logged in");
           },
           error: function (xhr, error) {
               alert("readyState: "+xhr.readyState+"\nstatus: "+xhr.status);
               alert("responseText: "+xhr.responseText);
           }
       });
-  }
-}
+  },
+
+    get_cookie:function ( cookie_name ) {
+	var results = document.cookie.match ( '(^|;) ?' + cookie_name + '=([^;]*)(;|$)' );
+
+	if ( results )
+	    return ( unescape ( results[2] ) );
+	else
+	    return null;
+    }
+
+};
+
+$('#home').live('pageshow',function(event) {
+    ${widget.shortname}_auth_controller.init(); 
+});
