@@ -23,8 +23,9 @@
     <echo message="|  Initialising template properties"/>
     <echo message="+------------------------------------------"/>
 
+    <!-- load content from template definition -->
     <loadfile property="content.primary"
-              srcFile="ric_content_primary.html"
+              srcFile="${template.dir}/${template.name}/content_primary.html"
               failonerror="false">
         <filterchain>
           <expandproperties/>
