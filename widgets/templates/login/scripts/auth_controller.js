@@ -41,9 +41,13 @@ var ${widget.shortname}_auth_controller = {
           data: payload,     
           cache: false,
           success: function (html, statusText, response) {
-	      var headers = response.getAllResponseHeaders();
-	      session_controller.session_id = ${widget.shortname}_auth_controller.get_cookie("_m2_session_id");
-	      alert("logged in");
+	      if (html.indexOf("Invalid username or password") > -1) {
+		  alert("There seems to be a problem with your login details.");
+	      } else {
+		  var headers = response.getAllResponseHeaders();
+		  session_controller.setSessionId(${widget.shortname}_auth_controller.get_cookie("_m2_session_id"));;
+		  alert("logged in");
+	      }
           },
           error: function (xhr, error) {
               alert("readyState: "+xhr.readyState+"\nstatus: "+xhr.status);
