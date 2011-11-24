@@ -19,9 +19,9 @@
  * The ${widget.shortname}_controller object
  * This is used to wire up the view and model with actions
  */ 
-var ${widget.shortname}_browse_controller = {
+var ${widget.shortname}_detail_controller = {
     init:function() {
-    	var id = ${widget.shortname}_browse_controller.get("itemId");
+    	var id = ${widget.shortname}_detail_controller.get("itemId");
     	if (id === undefined) {
 	    id = Widget.preferences.getItem("itemId");
 	    if (id === undefined) {
@@ -29,7 +29,7 @@ var ${widget.shortname}_browse_controller = {
 	    }
     	}
 	Widget.preferences.setItem("itemId", id);
-        ${widget.shortname}_browse_controller.populate();
+        ${widget.shortname}_detail_controller.populate();
     },
     
    /**
@@ -63,6 +63,6 @@ var ${widget.shortname}_browse_controller = {
  * Initialise page
  */
 $('#home').live('pageshow',function(event) {
-   ${widget.shortname}_browse_controller.init(); 
+   ${widget.shortname}_detail_controller.init(); 
 });
 
