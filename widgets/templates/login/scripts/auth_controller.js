@@ -25,6 +25,7 @@ var ${widget.shortname}_auth_controller = {
 	    var username = $('#username').val();
 	    var password = $('#password').val();
 	    ${widget.shortname}_auth_controller.basic_auth(username, password);
+	    return false;
 	});
     },
 
