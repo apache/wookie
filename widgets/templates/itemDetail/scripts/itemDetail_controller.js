@@ -44,7 +44,7 @@ var ${widget.shortname}_detail_controller = {
         var html = $.XSLTransform({
             xmlurl:url,
             xslurl:${itemDetail.xsl.url}
-        });
+        });	
         $('#content-primary').html(html).trigger("create");
     },
 

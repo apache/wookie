@@ -5,6 +5,10 @@ var ${widget.shortname}_message_controller = {
 	    var message = $('#message').val();
 	    ${widget.shortname}_message_controller.send(subject, message);
 	});
+	$('#cancel').click(function(event) {
+	    ${widget.shortname}_message_controller.cancel();
+	});
+
     },
 
     send:function(subject, message) {
@@ -21,8 +25,12 @@ var ${widget.shortname}_message_controller = {
 		alert("Sorry, there was an error sending your message");
 	    }
 	});
-    }
+    },
 
+    cancel:function() {
+	history.back();
+	return false;
+    }
 }
 
 $('#home').live('pageshow',function(event) {
