@@ -100,6 +100,7 @@
     <ant antfile="../../build.xml"
 	 target="_generate_widget">
       <property name="template.name" value="base"/>
+      <property name="copyWidgetFiles" value="false"/>
     </ant>
   </target>
 </project>
