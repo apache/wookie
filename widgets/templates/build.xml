@@ -97,6 +97,12 @@
         </propertyset>
       </antcall>
 
+      <antcall target="_copy_widget_files"/>
+
+    </target>
+
+    <target name="_copy_widget_files"
+	    unless="copyWiodgetFiles">
       <echo message="+------------------------------------------"/>
       <echo message="|  Copying widget files: ${widget.shortname}"  />
       <echo message="+------------------------------------------"/>
@@ -276,8 +282,6 @@
           <include name="**/*.*"/>
         </fileset>     
       </copy>
-      
-
     </target>
 
     <target name="_process_template">
