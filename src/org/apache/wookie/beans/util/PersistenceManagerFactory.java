@@ -190,7 +190,6 @@ public class PersistenceManagerFactory
                 if (initializing && (persistenceManager.findAll(IApiKey.class).length == 0))
                 {
                     // optional: create only if initializing
-                  System.out.println("SCOTT DEBUG creating default api key");
                     IApiKey apiKey = persistenceManager.newInstance(IApiKey.class);
                     apiKey.setValue("TEST");
                     apiKey.setEmail("test@127.0.0.1");
