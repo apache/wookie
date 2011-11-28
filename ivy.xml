@@ -78,7 +78,7 @@
         </dependency>
         <dependency org="org.directwebremoting" name="dwr" rev="2.0.5" conf="deploy->default">
 		</dependency>
-        <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.5.2" conf="deploy->default">
+        <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.4" conf="deploy->default">
         </dependency> 
         
       	<!-- Note that we only require the "BlobCrypterToken" part of Shindig in order to create valid tokens, so
@@ -135,7 +135,7 @@
 		<!-- DDLUtils Library -->
         <dependency org="org.apache.ddlutils" name="ddlutils" rev="1.0" conf="ddlutils->default">
         </dependency>
-        <dependency org="log4j" name="log4j" rev="1.2.14" conf="ddlutils->default">
+        <dependency org="log4j" name="log4j" rev="1.2.16" conf="ddlutils->default">
         </dependency>
         
         <exclude module="juel-api"/>
