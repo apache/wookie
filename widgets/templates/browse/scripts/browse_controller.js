@@ -92,6 +92,7 @@ var ${widget.shortname}_browse_controller = {
     displaySummary:function(itemId){
         $(".detail").html("<p>Loading...</p>");
         var sourceUrl = widget.proxify(${browse.get.detail.url});
+	$.mobile.showPageLoadingMsg();
         var html = $.XSLTransform({
             xmlurl:sourceUrl,
             xslurl:${browse.detail.xsl.url}
@@ -101,6 +102,7 @@ var ${widget.shortname}_browse_controller = {
 	    var event = { widget: "${widget.shortname}", type: "clickItem", itemId: itemId};	    
 	    ${widget.shortname}_controller.executeCallbacks(event);
 	});
+	$.mobile.hidePageLoadingMsg();
     }			  
 }
 
