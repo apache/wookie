@@ -233,10 +233,7 @@ defined by your widget. Check the details of the template.
 In this section we will create a simple widget that says hello to the
 world (what else would the first widget be?)
 
-Starting in the templating systems root directory run the following
-commands:
-
-  * cd widgets
+  * cd [WOOKIE_HOME/widgets/template/widget
   * mkdir helloWorld
   * create a file called "./widget.properties"
   * open widget.properties in your favourite editor and add the following:
@@ -246,7 +243,12 @@ commands:
     * widget.description=A very friendly widget to demonstrate how easy it is to build a widget from templates.
   * Create a file called "content_primary.html" and the following content
     * <p>Hello World!</p>
+
+That's it, you have built your first template based widget. Now you
+need to generate and deploy it:
+
   * Ensure that Wookie is running locally
+  * cd [WOOKIE_HOME]/widgets/template
   * ant generate-widgets -D widget.include==helloWorld
   * take a look at your new widget in your local instance of Wookie
 
@@ -298,6 +300,16 @@ The command "ant generate-widgets" builds and deploys all your widgets
 to a locally running Wookie server. Once this command has successfully
 executed you can examine your widget in action.
 
+
+**** Advanced Topics
+
+***** Your own widgets directory
+
+You can create a widgets directory anywhere you want it. To create
+your own directory for widget definitions simply create the directory
+and copy [WOOKIE_HOME]/widgets/template/widgets/build.xml into your
+new directory. Then edit the value of the "wookie.root.dir" property
+so that it points to the root of your Wookie src folder.
 
 ** Adding some style
 

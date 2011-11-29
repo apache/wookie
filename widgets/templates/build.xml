@@ -20,7 +20,8 @@
     <property name="project.build.dir" location="${wookie.root.dir}/build"/>
     <property name="template.dir" location="."/>
     <property name="widget.build.dir" location="./build"/>
-  
+    <property name="widget.defintions.dir" location="widgets"/>
+
     <import file="${wookie.root.dir}/widgets/build.xml"/>
 	
     <target name="build-widget">
@@ -48,7 +49,7 @@
       <subant target="_generate_and_deploy_widget"
               genericantfile="${basedir}/build.xml"
               inheritall="true">
-        <dirset dir="widgets">
+        <dirset dir="${widget.definitions.dir}">
           <include name="${widget.include}"/>
 	  <exclude name="common"/>
         </dirset>
