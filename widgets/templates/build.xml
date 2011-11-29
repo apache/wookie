@@ -58,6 +58,9 @@
 
     <target name="generate-test-widgets"
             description="Generate a single test widget from the template">
+
+      <property name="widget.include" value="*TestWidget"/>
+
       <!-- This target is intended to be used to test any changes to the 
       template before all widgets are regenerated -->
       <echo message="+------------------------------------------+"/>
@@ -70,7 +73,7 @@
               genericantfile="${basedir}/build.xml"
               inheritall="true">
         <dirset dir="testWidgets">
-          <include name="*TestWidget"/>
+          <include name="${widget.include}"/>
         </dirset>
       </subant>
     </target>

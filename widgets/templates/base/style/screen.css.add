@@ -40,6 +40,11 @@
   float:left;
 }
 
+.footer .content {
+  font: 70%
+  float:left;
+}
+
 .footer .button {
     float:right;
 }
