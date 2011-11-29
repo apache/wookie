@@ -440,6 +440,10 @@ To test changes to the templates run "ant generate-test-widgets". This
 will generate and deploy one or more test widgets using the latest
 versions of the templates.
 
+In order to make the build faster in a development process you can
+define which templates are to be built using the "widget.include"
+property discussed in the next section.
+
 ** Building the real widgets
 
 To build and deploy the Rave in Context widgets run "ant
