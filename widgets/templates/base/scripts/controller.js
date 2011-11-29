@@ -114,3 +114,7 @@ var ${widget.shortname}_controller = {
 $('#home').live('pageshow',function(event) {
    ${widget.shortname}_controller.init(); 
 });
+
+$('body').bind('orientationchange',function(event){
+    ${widget.shortname}_controller.update();
+})
