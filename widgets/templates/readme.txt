@@ -300,6 +300,8 @@ The command "ant generate-widgets" builds and deploys all your widgets
 to a locally running Wookie server. Once this command has successfully
 executed you can examine your widget in action.
 
+The property "widget.include" defines a matcher for the widgets which
+are to be generated.
 
 **** Advanced Topics
 
