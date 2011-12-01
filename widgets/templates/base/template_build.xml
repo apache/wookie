@@ -39,13 +39,23 @@
       </filterchain>
     </loadfile>
 
-	<loadfile property="content.header"
-			  srcFile="content_header.html"
-			  failonerror="false">
-		<filterchain>
-		  <expandproperties/>
-		</filterchain>
-	</loadfile>
+
+    <!-- Load the content header -->
+    <loadfile property="content.header"
+              srcFile="content_header.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <loadfile property="content.header"
+	      srcFile="../common/content_header.html"
+	      failonerror="false">
+      <filterchain>
+	<expandproperties/>
+      </filterchain>
+    </loadfile>
 	
     <loadfile property="content.header"
               srcFile="${template.dir}/${template.name}/content_header.html"
@@ -64,6 +74,14 @@
         </filterchain>
     </loadfile>
 
+    <loadfile property="content.primary"
+              srcFile="../common/content_primary.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
     <!-- load content from template definition -->
     <loadfile property="content.primary"
               srcFile="${template.dir}/${template.name}/content_primary.html"
@@ -75,6 +93,14 @@
 
     <loadfile property="content.footer"
               srcFile="content_footer.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <loadfile property="content.footer"
+              srcFile="../common/content_footer.html"
               failonerror="false">
         <filterchain>
           <expandproperties/>

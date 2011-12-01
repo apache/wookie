@@ -30,6 +30,14 @@
 	<expandproperties/>
       </filterchain>
     </loadfile>
+
+    <loadfile property="content.header"
+	      srcFile="../common/content_header.html"
+	      failonerror="false">
+      <filterchain>
+	<expandproperties/>
+      </filterchain>
+    </loadfile>
 	
     <loadfile property="content.header"
               srcFile="${template.dir}/${template.name}/content_header.html"
@@ -42,6 +50,14 @@
     <!-- load content from widget definition -->
     <loadfile property="content.primary"
               srcFile="content_primary.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <loadfile property="content.primary"
+              srcFile="../common/content_primary.html"
               failonerror="false">
         <filterchain>
           <expandproperties/>
@@ -66,6 +82,14 @@
         </filterchain>
     </loadfile>
 
+    <loadfile property="content.secondary"
+              srcFile="../common/content_secondary.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
     <!-- load content from template definition -->
     <loadfile property="content.secondary"
               srcFile="${template.dir}/${template.name}/content_secondary.html"
@@ -77,6 +101,14 @@
 
     <loadfile property="content.footer"
               srcFile="content_footer.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <loadfile property="content.footer"
+              srcFile="../common/content_footer.html"
               failonerror="false">
         <filterchain>
           <expandproperties/>
