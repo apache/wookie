@@ -14,17 +14,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+ @media ${widget.media.screen.veryNarrow}, ${widget.media.screen.narrow} {
+    .content-secondary {
+	text-align: left;
+	margin-right: 1%;
+	padding-right: 1%;
+    }
+    .content-primary {
+	margin-right: 1%;
+	padding-right: 1%;
+    }
+ }
+
+ @media ${widget.media.screen.moderateWidth} {
+    .content-secondary {
+	text-align: left;
+	float: right;
+	width: 42%;
+	margin-right: 1%;
+	padding-right: 2%;
+    }
+    .content-primary {
+	width: 55%;
+	float: left;
+    }
+ }
+
+ @media ${widget.media.screen.wide} {
+    .content-secondary {
+	text-align: left;
+	float: right;
+	width: 32%;
+	margin-right: 1%;
+	padding-right: 2%;
+    }
+    .content-primary {
+	width: 65%;
+	float: left;
+    }
+ }
  
- .ui-grid-a .ui-block-a {
-  width:70%;
-}
-.ui-grid-a .ui-block-b {
-  width:28%;
-  float:right;
+@media ${widget.media.screen.veryWide} {
+    .content-secondary {
+	text-align: left;
+	float: right;
+	width: 22%;
+	margin-right: 1%;
+	padding-right: 2%;
+    }
+    .content-primary {
+	width: 75%;
+	float: left;
+    }	
 }
 
-
-#page {
+#home {
 /*  background: #f1f2ea url(images/background.gif) repeat-y right;*/
   background: #f1f2ea;
   text-shadow: none;
@@ -80,3 +125,5 @@ a.action_delete {
 #actions_form {
     display: hidden;
 }
+
+

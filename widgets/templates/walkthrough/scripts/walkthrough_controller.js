@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-var Controller = 
+var ${widget.shortname}_walkthrough_controller = 
 {
     initPage: function()
     {
@@ -40,7 +40,7 @@ var Controller =
         this.setupSave();
     },
     
-	showQuestion: function(url, options)
+    showQuestion: function(url, options)
     {
         if (url == '')
         {
@@ -61,7 +61,7 @@ var Controller =
         this.showQuestionText(question);
         this.showAnswerText(question);
 
-        var page = $("#page");
+        var page = $("#home");
         page.page();
         //var content = page.children( ":jqmData(role=content)" );
         
@@ -207,10 +207,10 @@ var Controller =
     }
 };
 
-$("#page").live('pagebeforecreate',function(event)
+$("#home").live('pagebeforecreate',function(event)
 { 
   // called for URL without hash or F5 on any page
-  Controller.initPage();
+  ${widget.shortname}_walkthrough_controller.initPage();
 });
 
 
@@ -223,7 +223,7 @@ $(document).bind( "pagebeforechange", function( e, data ) {
             return;
 
         var hash = $.mobile.path.parseUrl( data.toPage ).hash;
-        Controller.showQuestion( hash, data.options );
+        ${widget.shortname}_walkthrough_controller.showQuestion( hash, data.options );
         e.preventDefault();
     }
 });
