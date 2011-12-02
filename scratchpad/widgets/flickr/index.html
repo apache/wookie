@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+--> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Flickr API - Photo/Photoset Search</title>
+<link rel="shortcut icon" type="image/ico" href="favicon.ico" />
+<!-- jQuery -->
+<script type="text/javascript" src="lib/jquery.min.js"></script>
+<link type="text/css" href="css/reset.css" rel="stylesheet" />
+<link type="text/css" href="css/hover.css" rel="stylesheet" />
+<!-- Flickr API integration (using JSONp) -->
+<script type="text/javascript">
+/**
+ * searchPhotos
+ * 	small non-jquery helper function
+ */
+	function searchPhotos() {
+	    var photoType = document.getElementById('searchby').options[document.getElementById('searchby').selectedIndex].value;
+		var searchKey = document.getElementById('photos_url').value;
+		var newPhotos = './?'+photoType+'='+searchKey; 
+		window.location.href=newPhotos;
+	}
+		
+/**
+ * gup
+ *   Get URL Parameters
+ *   Credit: 
+ *      http://www.netlobo.com/url_query_string_javascript.html
+ */
+	function gup( name ) {
+	  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+	  var regexS = "[\\?&]"+name+"=([^&#]*)";
+	  var regex = new RegExp( regexS );
+	  var results = regex.exec( window.location.href );
+	  if( results == null )
+		return "";
+	  else
+		return results[1];
+	}
+
+var SEARCH_PHOTOSET = false; //placeholder to tell us whether we're searching by photoset or searching by title
+
+//try to grab two different URL Parameters for title-based photo search, 't' and 'title'
+var photos = gup('t'); 
+if (photos === null || photos == "") { photos = gup('title'); } 
+SEARCH_PHOTOSET = (photos === null || photos == "") ? true : false;
+//try to grab two different URL Parameters for photoset-based search, 'p' and 'photoset'
+if (photos === null || photos == "") { photos = gup('p'); }
+if (photos === null || photos == "") { photos = gup('photoset'); SEARCH_PHOTOSET = true; }
+if (SEARCH_PHOTOSET && (photos === null || photos == "")) {   
+  photos = '72157610707590708';   
+}
+
+var FLICKR_API_KEY = '57d30be449caf9032b1027d468885a40';
+var FLICKR_API_CALL = (SEARCH_PHOTOSET) ? 'http://api.flickr.com/services/rest/?&method=flickr.photosets.getPhotos&api_key=' + FLICKR_API_KEY + '&photoset_id='+photos+'&format=json&per_page=30&jsoncallback=?' : 'http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=' + FLICKR_API_KEY + '&text='+photos+'&format=json&per_page=30&jsoncallback=?';
+
+/**
+ * Document Ready
+ *  To learn more about using JSONp with jQuery (and Flickr API) see: 
+ *   http://api.jquery.com/jQuery.getJSON/
+ */
+	$(document).ready(function () {	      
+		var images = "";
+		jQuery('#a-link').remove();
+		jQuery('<img />').attr('id', 'loader').attr('src', 'images/loadingAnimation.gif').appendTo('li');
+
+		$.getJSON(FLICKR_API_CALL, function (data) {
+			var processed = 0;	
+			//search photos by Photoset ID (need to get this from Flickr itself, or know it already)			
+			if (SEARCH_PHOTOSET)
+			{
+				var count = data.photoset.photo.length;	//total number of results	
+				//loop through the results with the following function
+				$.each(data.photoset.photo, function (i, item) {
+					//turn the photo id into a variable
+					var photoID = item.id;
+					//build the url of the photo in order to link to it and choose size of image being pulled
+					var photoURL = 'http://farm' + item.farm + '.static.flickr.com/' + item.server + '/' + photoID + '_' + item.secret + '_s.jpg';
+					var photoBigURL = 'http://farm' + item.farm + '.static.flickr.com/' + item.server + '/' + photoID + '_' + item.secret + '.jpg';
+					//use another ajax request to get the tags of a specific image in the photoset
+					$.getJSON('http://api.flickr.com/services/rest/?&method=flickr.photos.getInfo&api_key=' + FLICKR_API_KEY + '&photo_id=' + photoID + '&format=json&jsoncallback=?', function (data) {
+						//if the image has tags
+						if (data.photo.tags.tag != '') {						
+							var tagsArr = new Array(); //create an empty array to contain all the tags
+							//for each tag, run this function
+							$.each(data.photo.tags.tag, function (j, item) {
+								//push each tag into the empty 'tagsArr' created above
+								tagsArr.push('<a href="http://www.flickr.com/photos/tags/' + item._content + '">' + item.raw + '</a>');
+							});							
+							var tags = tagsArr.join(', '); //turn the tags array into a string variable
+						}
+						//if the image has a title
+						if (data.photo.title != '') {							
+							var photoTitle = data.photo.title._content; //turn the photo title into a string variable
+  					    }
+							//create an imgContainer string variable which will hold all the images/link locations in a text string
+							var imgCont = '<li class="thumb"><a href="'+photoBigURL+'" title="'+photoTitle+'" class="thickbox" rel="'+photos+'"><img class="resize" src="' + photoURL + '" /></a></li>';
+							//append the 'imgCont' variable to the HTML DOM
+							$(imgCont).appendTo('ul.thumb');
+						processed++;
+						//process photo following desired view
+						if (count == processed) { DoSubscriptions(); }
+					}); // get tags
+				}); // each photo				
+			}
+			//search photos by Title
+			else
+			{				
+				var count = data.photos.photo.length;	//total number of results
+				//loop through the results with the following function
+				$.each(data.photos.photo, function (i, item) {
+					//turn the photo id into a variable
+					var photoID = item.id;				
+					//build the url of the photo in order to link to it and choose size of image being pulled
+					var photoURL = 'http://farm' + item.farm + '.static.flickr.com/' + item.server + '/' + photoID + '_' + item.secret + '_s.jpg';
+					var photoBigURL = 'http://farm' + item.farm + '.static.flickr.com/' + item.server + '/' + photoID + '_' + item.secret + '.jpg';
+						//if the image has a title
+						if (item.title != '') {							
+							var photoTitle = item.title; //turn the photo title into a string variable
+  					    }					
+							//create an imgContainer string variable which will hold all the images/link locations in a text string
+							var imgCont = '<li class="thumb"><a href="'+photoBigURL+'" title="'+photoTitle+'" class="thickbox" rel="'+photos+'"><img class="resize" src="' + photoURL + '" /></a></li>';
+							//append the 'imgCont' variable to the HTML DOM
+							$(imgCont).appendTo('ul.thumb');					
+					processed++;
+					//process photo following desired view
+					if (count == processed) { DoSubscriptions(); }							
+				});
+			}
+			jQuery('#loader').remove();
+		}); // get photos
+	}); // onLoad
+
+
+	function DoSubscriptions() {	
+		//Larger thumbnail preview
+		$("ul.thumb li").hover(function () {
+			$(this).css({
+				'z-index': '56'
+			});
+			/*Add a higher z-index value so this image stays on top*/
+			$(this).find('img').addClass("hover").stop()
+			/* Add class of "hover", then stop animation queue buildup*/
+			.animate({
+				marginTop: '-55px',
+				/* The next 4 lines will vertically align this image */
+				marginLeft: '-55px',
+				top: '50%',
+				left: '50%',
+				width: '75px',
+				/* Set new width */
+				height: '75px',
+				/* Set new height */
+				padding: '15px'
+			},
+			200);
+			/* this value of "200" is the speed of how fast/slow this hover animates */			
+		},
+		function () {
+			$(this).css({
+				'z-index': '0'
+			});
+			/* Set z-index back to 0 */
+			$(this).find('img').removeClass("hover").stop()
+			/* Remove the "hover" class , then stop animation queue buildup*/
+			.animate({
+				marginTop: '0',
+				/* Set alignment back to default */
+				marginLeft: '0',
+				top: '0',
+				left: '0',
+				width: '50px',
+				/* Set width back to default */
+				height: '50px',
+				/* Set height back to default */
+				padding: '0px'
+			},
+			200);
+		});
+	} // DoSubscriptions()
+</script>
+</head>
+
+<body>
+<h3>Flickr Photo/Photoset Search</h3>
+<div id="container">
+  <ul class="thumb">
+  </ul>
+</div>
+<div id="gallery">   
+    <script type="text/javascript">		
+		document.write('<label>Photos by: <select id="searchby" name="searchby" tabindex="2">');
+		if (SEARCH_PHOTOSET) { document.write('<option value="t">Title</option><option value="p" selected="selected">Photoset</option>'); }
+		else { document.write('<option value="t" selected="selected">Title</option><option value="p">Photoset</option>'); }
+		document.write('</select></label>');
+		document.write('<input type="text" id="photos_url" name="photos_url" tabindex="1" size="20" maxlength="100" value="'+photos.replace(/%20/g,' ')+'" />');
+	</script>
+	 <button id="view" onclick="searchPhotos();">View</button>   
+</div>
+</body>
+</html>
