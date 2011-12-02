@@ -249,7 +249,7 @@ need to generate and deploy it:
 
   * Ensure that Wookie is running locally
   * cd [WOOKIE_HOME]/widgets/template
-  * ant generate-widgets -D widget.include==helloWorld
+  * ant generate-widgets -Dwidget.include=helloWorld
   * take a look at your new widget in your local instance of Wookie
 
 **** What did we just do?
