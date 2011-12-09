@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  Licensed to the Apache Software Foundation (ASF) under one or more
+  Licensed to the University of Oxford under one or more
   contributor license agreements.  See the NOTICE file distributed with
   this work for additional information regarding copyright ownership.
   The ASF licenses this file to You under the Apache License, Version 2.0
@@ -15,16 +15,55 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project basedir="." name="Wookie_widgets_from_templates_build_file">
 
-    <!-- To create your own widgets directory copy this 
-	 build file into it and change the value of 
-	 wookie.root.dir -->
-    <property name="wookie.root.dir" location="../../.."/>
+<!--
 
-    <property name="widget.definitions.dir" location="."/>
+This is a template file for widget build directories that exist outside of
+the Wookie directory. It is useful for managing widgets in your own projects.
+
+For instructions on how to build and manage your own widgets see 
+http://incubator.apache.org/wookie/docs/widgets.html
+
+
+-->
+<project basedir="." name="widgets_build_file">
+
+    <property name="wookie.root.dir" location="../wookie/"/>
+    <property name="default.widget.definitions.dir" location="."/>
     <property name="wookie.template.dir" location="${wookie.root.dir}/widgets/templates"/>
     <property name="template.dir" location="${wookie.template.dir}"/>
 		
     <import file="${wookie.template.dir}/build.xml"/>
+
+    <!-- Generate all widgets in one go. If you create a new
+         subdirectory of widgets you'll need to add appropriate ant
+         tasks to this target.
+    -->
+    <target name="generate-all-widgets">
+
+      <ant antfile="${wookie.template.dir}/build.xml"
+	   target="generate-widgets">
+	<property name="widget.definitions.dir" location="${default.widget.definitions.dir}"/>
+      </ant>
+
+      <ant antfile="${wookie.template.dir}/build.xml"
+	   target="generate-widgets">
+	<property name="widget.definitions.dir" location="adminWidgets"/>
+      </ant>
+    </target>
+
+    <target name="_get-widgets-dir" unless="widget.definitions.dir">
+      <input
+	  message="What is the widget directory you wish to deploy?"
+	  addproperty="widget.definitions.dir"
+	  defaultvalue="${default.widget.definitions.dir}"
+	  />
+
+    </target>
+
+    <target name="generate-widgets" depends="_get-widgets-dir">
+      <ant antfile="${wookie.template.dir}/build.xml"
+	   target="generate-widgets">
+      </ant>
+    </target>
 </project>
