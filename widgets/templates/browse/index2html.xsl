@@ -25,15 +25,37 @@
 	  </div>
 	</xsl:template>
 
-	<xsl:template match="workflow">
-      <div class='result' data-role='collapsible'>
-        <xsl:attribute name="wid"><xsl:value-of select="@uri"/></xsl:attribute>
-	  
-	    <h3><xsl:value-of select="."/></h3>
+	<xsl:template match="widget">
+	  <div class='result' data-role='collapsible'>
+	    <xsl:attribute name="wid"><xsl:value-of select="@id"/></xsl:attribute>
+	    
+	    <xsl:apply-templates select="title"/>
 	    <div class="detail">
-	      <p>Loading...</p>
-        </div>
-      </div>
+	      <xsl:apply-templates select="icon"/>
+	      <xsl:apply-templates select="description"/>
+	      <xsl:apply-templates select="author"/>
+	    </div>
+	  </div>
 	</xsl:template>
+
+	<xsl:template match="title">
+	  <h3><xsl:value-of select="."/></h3>
+	</xsl:template>
+
+	<xsl:template match="icon">
+	  <img alt="icon">
+	    <xsl:attribute name="src"><xsl:value-of select="."/></xsl:attribute>
+	  </img>
+	</xsl:template>
+
+	<xsl:template match="description">
+	  <p><xsl:value-of select="."/></p>
+	</xsl:template>
+
+	<xsl:template match="author">
+	  <p>Author: <xsl:value-of select="."/></p>
+	</xsl:template>
+
+
 </xsl:stylesheet>
 

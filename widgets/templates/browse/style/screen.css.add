@@ -98,16 +98,3 @@
   text-shadow: none;
   border: none;
 }
-
-
-/* theme buttons */
-.ui-btn-active {
-    background: -moz-linear-gradient(center top , #85BA00, #539300) repeat scroll 0 0 #459600;
-	border: 1px solid #155600;
-	text-shadow: 0 -1px 1px #145000;
-}
-
-.ui-field-contain {
-    border-bottom-width: 0px;
-    margin: 0.5em 0;
-}
