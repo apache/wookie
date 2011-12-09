@@ -305,13 +305,19 @@ are to be generated.
 
 **** Advanced Topics
 
-***** Your own widgets directory
+***** Your own widgets directories
 
 You can create a widgets directory anywhere you want it. To create
 your own directory for widget definitions simply create the directory
 and copy [WOOKIE_HOME]/widgets/template/widgets/build.xml into your
 new directory. Then edit the value of the "wookie.root.dir" property
 so that it points to the root of your Wookie src folder.
+
+You can, optionally, have multiple widget directories, each of which
+can be deployed individually or as a whole. In order to do this create
+your additional widget directories and then edit your build.xml file
+in your main widgets directory to ensure that they all get built when
+calling the target "generate-all-widgets".
 
 ** Adding some style
 
@@ -446,17 +452,26 @@ property discussed in the next section.
 
 ** Building the real widgets
 
-To build and deploy the Rave in Context widgets run "ant
-generate-widgets". 
+To build and deploy the widgets run "ant generate-widgets", which will
+ask you which widget definitions directory you wish to generate from,
+or you can use "ant generate-all-widgets" to generate all known
+widgets.
 
 You can optionally add
 
 "-Dwidget.include=WIDGET_PATTERN" 
 
-where "WIDGET_PATTERN" is an include pattern that describes which widgets should be generated and deployed. For example, 
+where "WIDGET_PATTERN" is an include pattern that describes which
+widgets should be generated and deployed. For example,
 
 "ant generate-widgets -Dwidget.include=*browse"
 
-will generate all widgets that have a name ending in "browse".
+will generate all widgets in a specified directory that have a name ending in "browse".
 
+You can also specify:
+
+"-Dwidget.definitions.dir=DIRECTORY"
+
+In order to prevent Ant asking you which directory to use (this only
+affects the "generate-widgets" target".
 
