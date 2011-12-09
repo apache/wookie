@@ -200,8 +200,8 @@ var ${widget.shortname}_walkthrough_controller =
             {   
                 //$('#the_actions').attr('value',text); 
                 //$('#actions_form').submit();
-                alert('Actions to copy\r\n\r\n'+text+'\r\n'); // alt that doesn't use php but requires cut n paste
-                }
+                alert('Actions to copy\r\n\r\n'+text+'\r\n'); // alt that doesn't use server side script but requires cut n paste
+            }
             return false;
         });
     }
