@@ -15,21 +15,8 @@
  * limitations under the License.
  */
 
-.ui-content {
-  padding-top: 0px;
-  padding-bottom: 0px;
-}
-
 .content-primary {
   overflow: auto;
-}
- 
-.ui-content {
-  padding: 5px;
-}
-
-.ui-controlgroup {
-  margin: .1em 0 0.5em;
 }
 
 .header_title {
