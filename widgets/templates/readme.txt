@@ -249,7 +249,7 @@ need to generate and deploy it:
 
   * Ensure that Wookie is running locally
   * cd [WOOKIE_HOME]/widgets/template
-  * ant generate-widgets -Dwidget.include=helloWorld
+  * ant generate-all-widgets -Dwidget.include=helloWorld
   * take a look at your new widget in your local instance of Wookie
 
 **** What did we just do?
@@ -296,7 +296,7 @@ appears in the template definition. Take a look in the templates
 
 ***** Building the widget
 
-The command "ant generate-widgets" builds and deploys all your widgets
+The command "ant generate-all-widgets" builds and deploys all your widgets
 to a locally running Wookie server. Once this command has successfully
 executed you can examine your widget in action.
 
@@ -331,7 +331,7 @@ Starting in your widget definition directory:
   * add the following to your css file
     * .content-primary { background: yellow; }  
   * cd ..
-  * ant generate widgets
+  * ant generate-all-widgets
 
 Now take a look at your styled hello world widget.
 
@@ -364,7 +364,7 @@ Starting in the root directory of your widget do the following:
   * Change the contents of "content_primary.html" to:
     * <p>Hello <span id="name">World</span></p>
   * cd ..
-  * ant generate-widgets
+  * ant generate-all-widgets
   * Now take a look at your new widget in Wookie
 
 *** Javascript
@@ -452,14 +452,24 @@ property discussed in the next section.
 
 ** Building the real widgets
 
-To build and deploy the widgets run "ant generate-widgets", which will
+To build and deploy the widgets run "ant generate-all-widgets" which
+will generate all known widgets.
+
+Alternatively you can use "ant generate-widgets" which will
 ask you which widget definitions directory you wish to generate from,
-or you can use "ant generate-all-widgets" to generate all known
-widgets.
 
-You can optionally add
+*** Building selected widgets
 
-"-Dwidget.include=WIDGET_PATTERN" 
+When you have lots of widgets it can be useful to build just one, or a
+set of related widgets. There are two ways to do this, you can provide
+a pattern to filter widgets to be built or you can keep your widgets
+in directories and build one directory at a time.
+
+**** Filtering widgets to be built
+
+Adding the following to your ant command will filter all widgets:
+
+-Dwidget.include=WIDGET_PATTERN
 
 where "WIDGET_PATTERN" is an include pattern that describes which
 widgets should be generated and deployed. For example,
@@ -468,10 +478,11 @@ widgets should be generated and deployed. For example,
 
 will generate all widgets in a specified directory that have a name ending in "browse".
 
-You can also specify:
+*** Building single directories
+
+"ant generate-widgets" will ask you to specify which widget directory
+is to be used. To avoid having to answer this question you can specify
+it in the command line as follows:
 
 "-Dwidget.definitions.dir=DIRECTORY"
-
-In order to prevent Ant asking you which directory to use (this only
-affects the "generate-widgets" target".
 
