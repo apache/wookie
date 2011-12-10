@@ -28,7 +28,7 @@ http://incubator.apache.org/wookie/docs/widgets.html
 -->
 <project basedir="." name="widgets_build_file">
 
-    <property name="wookie.root.dir" location="../wookie/"/>
+    <property name="wookie.root.dir" location="../../../../wookie/"/>
     <property name="default.widget.definitions.dir" location="."/>
     <property name="wookie.template.dir" location="${wookie.root.dir}/widgets/templates"/>
     <property name="template.dir" location="${wookie.template.dir}"/>
