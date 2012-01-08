@@ -7,3 +7,11 @@ FIXME Write some documentation for these new features
 ## New Widget Templating System
 
 ## Running Wookie on a USB Stick
+
+## New proxy policy management
+
+Rather than manage separate "Whitelist" and "Access Request" lists using the web interface, in 0.9.2
+we've introduced a much simpler "policies" file that can be edited in a text editor. Changes to the file
+are updated live in the server. The policies file itself contains more detailed documentation, and can
+be found in src/policies or WEB-INF/classes/policies on a running server. Policies can still be edited
+using the web interface, and a REST API endpoint can be found at /wookie/policies.
