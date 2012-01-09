@@ -21,6 +21,11 @@
  */ 
 var ${widget.shortname}_browse_controller = {
     init:function() {
+        //
+        // If there is no URL for searching, don't show 
+        // the search panel
+        //
+        if(""==="${browse.search.url}") $("#searchPanel").hide();
         ${widget.shortname}_browse_controller.update();
         ${widget.shortname}_browse_controller.search()
     },
