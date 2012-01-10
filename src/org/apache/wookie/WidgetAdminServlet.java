@@ -68,10 +68,18 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 
 	// our list of allowed operations
 	private enum Operation {
-		ADDNEWSERVICE, ADDNEWWHITELISTENTRY, LISTSERVICES, LISTSERVICESFORADDITION, 
-		LISTWIDGETS, REMOVESERVICE, REMOVESINGLEWIDGETTYPE, REMOVEWHITELISTENTRY, REMOVEWIDGET,  
-		REVISETYPES, SETDEFAULTWIDGET, SETWIDGETTYPES, UPLOADWIDGET, VIEWWHITELIST, REGISTERGADGET,
-		LISTAPIKEYS, REVOKEAPIKEY
+	  // Widget related operations
+	  LISTWIDGETS, REMOVEWIDGET, UPLOADWIDGET,
+	   // Gadget operations
+    REGISTERGADGET,
+    // APIKey operations  
+    LISTAPIKEYS, REVOKEAPIKEY,
+	  // Service operations - to be deprecated
+		ADDNEWSERVICE, LISTSERVICES, REMOVESERVICE, LISTSERVICESFORADDITION,
+		// Widget Type operations - to be deprecated
+		REMOVESINGLEWIDGETTYPE, REVISETYPES, SETWIDGETTYPES,
+		// Widget Default operations - to be deprecated
+		SETDEFAULTWIDGET
 	}	
 
 	// Get the logger
@@ -265,6 +273,11 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		doGet(request, response);
 	}
 
+	private void listAPIKeysOperation(HttpServletRequest request){
+		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		request.setAttribute("keys", persistenceManager.findAll(IApiKey.class));
+	}
+
 	private void listOperation(HttpServletRequest request, boolean getDefaults){
 		retrieveWidgets(request);	
 		if(getDefaults){
@@ -277,6 +290,23 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 				}	
 			}
 			request.setAttribute("widget_defaults", defaultHash); //$NON-NLS-1$
+		}
+	}
+
+	private void registerOperation(HttpServletRequest request, Configuration properties){
+		Messages localizedMessages = LocaleHandler.localizeMessages(request);
+		try {
+			W3CWidget widgetModel = GadgetUtils.createWidget(request);
+	        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+			if(persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()) == null){
+				WidgetFactory.addNewWidget(widgetModel);
+				request.setAttribute("message_value", widgetModel.getLocalName("en")+": "+localizedMessages.getString("WidgetAdminServlet.16")); //$NON-NLS-1$ //$NON-NLS-2$
+			} else {
+				request.setAttribute("message_value", widgetModel.getLocalName("en")+": "+localizedMessages.getString("WidgetAdminServlet.17")); //$NON-NLS-1$ //$NON-NLS-2$				
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			request.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.18")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
@@ -323,7 +353,9 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		else{
 			request.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.14")); //$NON-NLS-1$ //$NON-NLS-2$ 
 		}
-	}		
+	}
+
+
 
 	private void retrieveServices(HttpServletRequest request){						
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
@@ -335,14 +367,21 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		request.setAttribute("widgets", persistenceManager.findAll(IWidget.class)); //$NON-NLS-1$
 	}
 
-
-
 	private void reviseTypes(HttpServletRequest request, IWidgetAdminManager manager) {
 		retrieveServices(request);
 		request.setAttribute("hasValidated", Boolean.valueOf(true)); //$NON-NLS-1$
 		request.setAttribute("closeWindow", Boolean.valueOf(false)); //$NON-NLS-1$
 		String dbkey = request.getParameter("dbkey"); //$NON-NLS-1$
 		request.setAttribute("dbkey", Integer.parseInt(dbkey)); //$NON-NLS-1$
+	}  
+
+	private void revokeAPIKeyOperation(HttpServletRequest request){
+		String value = request.getParameter("key");
+		if (WidgetKeyManager.revokeKey(value)){
+			request.setAttribute("message_value", "Key revoked");
+		} else {
+			request.setAttribute("error_value", "Key could not be revoked");
+		}
 	}
 
 	private void setDefaultWidgetOperation(HttpServletRequest request, IWidgetAdminManager manager){
@@ -364,37 +403,6 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		String[] widgetTypes = request.getParameterValues("widgetTypes"); //$NON-NLS-1$
 		manager.setWidgetTypesForWidget(dbKey, widgetTypes, canMax);
 		request.setAttribute("message_value", localizedMessages.getString("WidgetAdminServlet.15")); 		 //$NON-NLS-1$ //$NON-NLS-2$ 
-	}  
-
-	private void registerOperation(HttpServletRequest request, Configuration properties){
-		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		try {
-			W3CWidget widgetModel = GadgetUtils.createWidget(request);
-	        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-			if(persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()) == null){
-				WidgetFactory.addNewWidget(widgetModel);
-				request.setAttribute("message_value", widgetModel.getLocalName("en")+": "+localizedMessages.getString("WidgetAdminServlet.16")); //$NON-NLS-1$ //$NON-NLS-2$
-			} else {
-				request.setAttribute("message_value", widgetModel.getLocalName("en")+": "+localizedMessages.getString("WidgetAdminServlet.17")); //$NON-NLS-1$ //$NON-NLS-2$				
-			}
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			request.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.18")); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-	}
-
-	private void listAPIKeysOperation(HttpServletRequest request){
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		request.setAttribute("keys", persistenceManager.findAll(IApiKey.class));
-	}
-
-	private void revokeAPIKeyOperation(HttpServletRequest request){
-		String value = request.getParameter("key");
-		if (WidgetKeyManager.revokeKey(value)){
-			request.setAttribute("message_value", "Key revoked");
-		} else {
-			request.setAttribute("error_value", "Key could not be revoked");
-		}
 	}
 
 	private void uploadOperation(HttpServletRequest request, Configuration properties, IWidgetAdminManager manager) {
