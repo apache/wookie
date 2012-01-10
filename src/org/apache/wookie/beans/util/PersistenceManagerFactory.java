@@ -132,7 +132,6 @@ public class PersistenceManagerFactory
                 }
                 else
                 {
-                  System.out.println("initializing=false0");
                     initializing = false;
                 }
 
@@ -147,7 +146,6 @@ public class PersistenceManagerFactory
                 }
                 else
                 {
-                  System.out.println("initializing=false1");
                     initializing = false;
                 }
 
@@ -170,7 +168,6 @@ public class PersistenceManagerFactory
                 }
                 else
                 {
-                  System.out.println("initializing=false2");
                     initializing = false;
                 }
                 if (persistenceManager.findByValue(IWidgetService.class, "serviceName", "unsupported").length == 0)
@@ -182,7 +179,6 @@ public class PersistenceManagerFactory
                 }
                 else
                 {
-                  System.out.println("initializing=false3");
                     initializing = false;
                 }
                 
