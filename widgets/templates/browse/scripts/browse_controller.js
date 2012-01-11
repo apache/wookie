@@ -78,14 +78,11 @@ var ${widget.shortname}_browse_controller = {
     },
 
    /**
-    * Populate the results list with data from a given URL. The data is transformed using the "index2html.xsl" stylesheet.
+    * Populate the results list with data from a given URL.
     */
     populate:function(sourceUrl) {
         $('#results').remove();
-        var html = $.XSLTransform({
-            xmlurl:sourceUrl,
-            xslurl:${browse.index.xsl.url}
-        });
+        var html = ${widget.shortname}_browse_controller.transform(sourceUrl);
         $('#content-primary').html(html).trigger("create");
 	$('.result:first').trigger('expand');
 	${widget.shortname}_browse_controller.update();
@@ -98,10 +95,7 @@ var ${widget.shortname}_browse_controller = {
         $(".detail").html("<p>Loading...</p>");
         var sourceUrl = widget.proxify(${browse.get.detail.url});
 	$.mobile.showPageLoadingMsg();
-        var html = $.XSLTransform({
-            xmlurl:sourceUrl,
-            xslurl:${browse.detail.xsl.url}
-        });
+        var html = ${widget.shortname}_browse_controller.transform(sourceUrl);
         $(".detail").html(html);    
 	$('.detail').click(function() {
 	    var event = { widget: "${widget.shortname}", type: "clickItem", itemId: itemId};	    
@@ -129,3 +123,56 @@ $('div.result').live('expand', function(event) {
     var event = { widget: "${widget.shortname}", type: "expandItem", itemId: itemId};	    
     ${widget.shortname}_controller.executeCallbacks(event );
 });
+
+
+/**
+ * load XML data and transform it into HTML
+ */
+${widget.shortname}_browse_controller.transform = function(src){
+ var output = "";
+
+ $.ajax({
+  url: src,
+  dataType: "xml",
+  async: false,
+  success: function(xml){
+    output = ${widget.shortname}_browse_controller.transformXml(xml); 
+  }
+ });
+ 
+ return output;
+}
+
+/**
+ * Transform data into HTML
+ */ 
+${widget.shortname}_browse_controller.transformXml = function(xml){
+    
+    var output = "";
+    var items = "";
+    
+    /**
+     * For each element that matches itemName, create a new ItemTemplate and
+     * replace placeholders in the template with values from the XML using the ItemElements 
+     * and ItemAttrobutes lists
+     */
+    $(xml).find(${browse.item.name}).each(
+       function(){
+         var item = "${browse.item.template}";
+         var elements = ${browse.item.elements}.split(",");
+         for (var i=0;i<elements.length;i++){
+            var element = elements[i]; 
+            item = item.replace("${"+element.toUpperCase()+"}", $(this).find(element).text());
+         }
+         var attributes = ${browse.item.attributes}.split(",");
+         for (var i=0;i<attributes.length;i++){
+            var attribute = attributes[i]; 
+            item = item.replace("${"+attribute.toUpperCase()+"}", $(this).attr(attribute));
+         }
+         items += item;
+       }
+    );
+    
+    output = ${browse.collection.template}.replace("${ITEMS}", items);
+    return output;
+}
