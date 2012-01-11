@@ -162,12 +162,14 @@ ${widget.shortname}_browse_controller.transformXml = function(xml){
          var elements = ${browse.item.elements}.split(",");
          for (var i=0;i<elements.length;i++){
             var element = elements[i]; 
-            item = item.replace("${"+element.toUpperCase()+"}", $(this).find(element).text());
+            var pattern = "\\$\{" + element.toUpperCase() +"\}";
+            item = item.replace(new RegExp(pattern,'g'), $(this).find(element).first().text());
          }
          var attributes = ${browse.item.attributes}.split(",");
          for (var i=0;i<attributes.length;i++){
             var attribute = attributes[i]; 
-            item = item.replace("${"+attribute.toUpperCase()+"}", $(this).attr(attribute));
+            var pattern = '\\$\{'+attribute.toUpperCase()+'\}';
+            item = item.replace(new RegExp(pattern,'g'), $(this).attr(attribute));
          }
          items += item;
        }
