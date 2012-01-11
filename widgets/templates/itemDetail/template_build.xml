@@ -125,6 +125,30 @@
 	
     <echoproperties destfile="${widget.build.dir}/${widget.shortname}.properties" prefix=""/>
   </target>
+	
+    <loadfile property="browse.item.template"
+	      srcFile="item_template.html"
+	      failonerror="false">
+      <filterchain>
+      	<striplinebreaks/>
+      </filterchain>
+    </loadfile>
+
+    <loadfile property="browse.item.template"
+	      srcFile="../common/item_template.html"
+	      failonerror="false">
+      <filterchain>
+      	<striplinebreaks/>
+      </filterchain>
+    </loadfile>
+    
+    <loadfile property="browse.item.template"
+              srcFile="${template.dir}/${template.name}/item_template.html"
+              failonerror="false">
+      <filterchain>
+      	<striplinebreaks/>
+      </filterchain>
+    </loadfile>
 
   <target name="_generate_from_parent_templates">
     <echo message="+------------------------------------------"/>

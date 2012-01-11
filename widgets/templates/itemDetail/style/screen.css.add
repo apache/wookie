@@ -21,6 +21,8 @@
 
 .quote {
   font-style:italic;
+  font-weight: bold;
+  font-size: 120%;
 }
 
 .meta-data {

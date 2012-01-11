@@ -41,10 +41,7 @@ var ${widget.shortname}_detail_controller = {
 	var itemId = Widget.preferences.getItem("itemId");
 	var url = widget.proxify(${itemDetail.get.url});
         $('#detail').remove();
-        var html = $.XSLTransform({
-            xmlurl:url,
-            xslurl:${itemDetail.xsl.url}
-        });	
+        var html = ${widget.shortname}_detail_controller.transform(url);
         $('#content-primary').html(html).trigger("create");
     },
 
@@ -54,6 +51,60 @@ var ${widget.shortname}_detail_controller = {
     get:function(name){
 	if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
 	    return decodeURIComponent(name[1]);
+    },
+    
+    /**
+     * load XML data and transform it into HTML
+     */
+    transform:function(src){
+     var output = "";
+
+     $.ajax({
+      url: src,
+      dataType: "xml",
+      async: false,
+      success: function(xml){
+        output = ${widget.shortname}_detail_controller.transformXml(xml); 
+      }
+     });
+     
+     return output;
+    },
+
+    /**
+     * Transform data into HTML
+     */ 
+    transformXml:function(xml){
+        
+        var output = "";
+        var items = "";
+        
+        /**
+         * For each element that matches itemName, create a new ItemTemplate and
+         * replace placeholders in the template with values from the XML using the ItemElements 
+         * and ItemAttrobutes lists
+         */
+        $(xml).find(${browse.item.name}).each(
+           function(){
+             var item = "${browse.item.template}";
+             var elements = ${browse.item.elements}.split(",");
+             for (var i=0;i<elements.length;i++){
+                var element = elements[i]; 
+                var pattern = "\\$\{" + element.toUpperCase() +"\}";
+                item = item.replace(new RegExp(pattern,'g'), $(this).find(element).first().text());
+             }
+             var attributes = ${browse.item.attributes}.split(",");
+             for (var i=0;i<attributes.length;i++){
+                var attribute = attributes[i]; 
+                var pattern = '\\$\{'+attribute.toUpperCase()+'\}';
+                item = item.replace(new RegExp(pattern,'g'), $(this).attr(attribute));
+             }
+             items += item;
+           }
+        );
+        
+        output = ${browse.collection.template}.replace("${ITEMS}", items);
+        return output;
     }
 
 
