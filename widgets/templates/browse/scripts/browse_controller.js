@@ -147,14 +147,17 @@ $('div.result').live('expand', function(event) {
  */
 ${widget.shortname}_browse_controller.transform = function(src, type){
  var output = "";
-
+ $.support.cors = true; // force cross-site scripting (as of jQuery 1.5)
  $.ajax({
   url: src,
   dataType: "xml",
   async: false,
   success: function(xml){
     output = ${widget.shortname}_browse_controller.transformXml(xml, type); 
-  }
+  }, //end success function
+    error: function(xhr, textStatus, errorThrown) {
+        alert(errorThrown);
+    }
  });
  
  return output;
