@@ -25,7 +25,9 @@ var ${widget.shortname}_browse_controller = {
         // If there is no URL for searching, don't show 
         // the search panel
         //
-        if(""==="${browse.search.url}") $("#searchPanel").hide();
+        var query = "";
+        var searchUrl = ${browse.search.url}; 
+        if(searchUrl === "") $("#searchPanel").hide();
         ${widget.shortname}_browse_controller.update();
         ${widget.shortname}_browse_controller.search()
     },
@@ -94,10 +96,10 @@ var ${widget.shortname}_browse_controller = {
     displaySummary:function(itemId){
         $(".detail").html("<p>Loading...</p>");
         var sourceUrl = widget.proxify(${browse.get.detail.url});
-	$.mobile.showPageLoadingMsg();
+	    $.mobile.showPageLoadingMsg();
         var html = ${widget.shortname}_browse_controller.transform(sourceUrl);
         $(".detail").html(html);    
-	$('.detail').click(function() {
+	    $('.detail').click(function() {
 	    var event = { widget: "${widget.shortname}", type: "clickItem", itemId: itemId};	    
 	    ${widget.shortname}_controller.executeCallbacks(event);
 	});
