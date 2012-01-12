@@ -84,10 +84,11 @@ var ${widget.shortname}_browse_controller = {
     */
     populate:function(sourceUrl) {
         $('#results').remove();
-        var html = ${widget.shortname}_browse_controller.transform(sourceUrl, "list");
+        var html = ${widget.shortname}_browse_controller.transform(sourceUrl, "list");      
         $('#content-primary').html(html).trigger("create");
-	$('.result:first').trigger('expand');
-	${widget.shortname}_browse_controller.update();
+        $('body').trigger("results_updated");
+	    $('.result:first').trigger('expand');
+	    ${widget.shortname}_browse_controller.update();
     },
         
     /**
