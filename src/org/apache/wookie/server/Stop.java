@@ -18,12 +18,30 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import org.apache.log4j.Logger;
+
 public class Stop {
 
+  static final private Logger logger = Logger.getLogger(Stop.class);
+  private static int shutdownPort = 8079;
+  
 	public static void main(String[] args) throws Exception {
-		Socket s = new Socket(InetAddress.getByName("127.0.0.1"), 8079);
+	  for (int i = 0; i < args.length; i++) {
+      String arg = args[i];
+      logger.info("Runtime argument: " + arg);
+      if (arg.startsWith("shutdownport=")) {
+        try {
+          shutdownPort = new Integer(arg.substring(13));
+        } catch (Exception e) {
+          logger.error("Unable to parse shutdown port:" + arg.substring(13));
+        }
+        logger.info("The shutdown port is: "+shutdownPort);
+        break;
+      }
+	  }
+		Socket s = new Socket(InetAddress.getByName("127.0.0.1"), shutdownPort);
 		OutputStream out = s.getOutputStream();
-		System.out.println("*** sending jetty stop request");
+		logger.info("*** sending jetty stop request");
 		out.write(("\r\n").getBytes());
 		out.flush();
 		s.close();

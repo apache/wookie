@@ -31,6 +31,7 @@ import org.mortbay.jetty.webapp.WebAppContext;
 public class Start {
   static final private Logger logger = Logger.getLogger(Start.class);
   private static int port = 8080;
+  private static int shutdownPort = 8079;
 
   public static final String PERSISTENCE_MANAGER_TYPE_PROPERTY_NAME = "wookie.persistence.manager.type";
   public static final String PERSISTENCE_MANAGER_TYPE_JPA = "jpa";
@@ -43,13 +44,16 @@ public class Start {
     boolean initDB = true;
     for (int i = 0; i < args.length; i++) {
       String arg = args[i];
-      System.out.println("Runtime argument: " + arg);
+      logger.info("Runtime argument: " + arg);
       if (arg.startsWith("port=")) {
         port = new Integer(arg.substring(5));
+      } else if (arg.startsWith("shutdownport=")) {
+        shutdownPort = new Integer(arg.substring(13));
+        logger.info("Shutdown port set:to "+shutdownPort);
       } else if (arg.startsWith("initDB=")) {
         initDB = !arg.substring(7).toLowerCase().equals("false");
       } else {
-        System.out.println("argument UNRECOGNISED - ignoring");
+        logger.info("argument UNRECOGNISED - ignoring");
       }
     }
 
@@ -120,7 +124,7 @@ public class Start {
       setDaemon(true);
       setName("StopMonitor");
       try {
-        socket = new ServerSocket(8079, 1, InetAddress.getByName("127.0.0.1"));
+        socket = new ServerSocket(shutdownPort, 1, InetAddress.getByName("127.0.0.1"));
       } catch(Exception e) {
         throw new RuntimeException(e);
       }
