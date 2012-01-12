@@ -1,7 +1,7 @@
 <div class='result' data-role='collapsible' wid='${ID}'>
   <h3>${TITLE}</h3>
   <div class='detail'>
-    <img width=32 height=32 alt='icon' src='${ICON}'/>
+    <img width=32 height=32 alt='icon' src='${ICON}' onerror='this.onerror=null;$(this).hide()'/>
     <p>${DESCRIPTION}</p>
     <p>Author: ${AUTHOR}</p>
   </div>
