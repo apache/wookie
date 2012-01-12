@@ -26,7 +26,7 @@ var ${widget.shortname}_browse_controller = {
         // the search panel
         //
         var query = "";
-        var searchUrl = ${browse.search.url}; 
+        var searchUrl = '${browse.search.url}'; 
         if(searchUrl === "") $("#searchPanel").hide();
         ${widget.shortname}_browse_controller.update();
         ${widget.shortname}_browse_controller.search()
@@ -84,7 +84,7 @@ var ${widget.shortname}_browse_controller = {
     */
     populate:function(sourceUrl) {
         $('#results').remove();
-        var html = ${widget.shortname}_browse_controller.transform(sourceUrl);
+        var html = ${widget.shortname}_browse_controller.transform(sourceUrl, "list");
         $('#content-primary').html(html).trigger("create");
 	$('.result:first').trigger('expand');
 	${widget.shortname}_browse_controller.update();
@@ -94,12 +94,25 @@ var ${widget.shortname}_browse_controller = {
      * Retrieve the details of an item and display them in the detail section.
      */
     displaySummary:function(itemId){
-        $(".detail").html("<p>Loading...</p>");
+    
+        /**
+         * Locate the detail element to update
+         */
+        var detailElement = $(".result[wid='"+itemId+"']").find(".detail");
+        
+        /**
+         * Load the data, showing a loading message while waiting
+         */
+        detailElement.html("<p>Loading...</p>");
         var sourceUrl = widget.proxify(${browse.get.detail.url});
 	    $.mobile.showPageLoadingMsg();
-        var html = ${widget.shortname}_browse_controller.transform(sourceUrl);
-        $(".detail").html(html);    
-	    $('.detail').click(function() {
+        var html = ${widget.shortname}_browse_controller.transform(sourceUrl, "detail");
+        detailElement.html(html);    
+        
+        /**
+         * Add events
+         */ 
+	    detailElement.click(function() {
 	    var event = { widget: "${widget.shortname}", type: "clickItem", itemId: itemId};	    
 	    ${widget.shortname}_controller.executeCallbacks(event);
 	});
@@ -129,8 +142,10 @@ $('div.result').live('expand', function(event) {
 
 /**
  * load XML data and transform it into HTML
+ * @param src the URL to load
+ * @param type the type of data transform requested, either "detail" or "list"
  */
-${widget.shortname}_browse_controller.transform = function(src){
+${widget.shortname}_browse_controller.transform = function(src, type){
  var output = "";
 
  $.ajax({
@@ -138,7 +153,7 @@ ${widget.shortname}_browse_controller.transform = function(src){
   dataType: "xml",
   async: false,
   success: function(xml){
-    output = ${widget.shortname}_browse_controller.transformXml(xml); 
+    output = ${widget.shortname}_browse_controller.transformXml(xml, type); 
   }
  });
  
@@ -148,7 +163,13 @@ ${widget.shortname}_browse_controller.transform = function(src){
 /**
  * Transform data into HTML
  */ 
-${widget.shortname}_browse_controller.transformXml = function(xml){
+${widget.shortname}_browse_controller.transformXml = function(xml, type){
+
+    if (type === "detail"){
+      template = "${browse.item.detail.template}";
+    } else {
+      template = "${browse.item.summary.template}";
+    }
     
     var output = "";
     var items = "";
@@ -160,7 +181,7 @@ ${widget.shortname}_browse_controller.transformXml = function(xml){
      */
     $(xml).find(${browse.item.name}).each(
        function(){
-         var item = "${browse.item.template}";
+         var item = template;
          var elements = ${browse.item.elements}.split(",");
          for (var i=0;i<elements.length;i++){
             var element = elements[i]; 
@@ -177,6 +198,14 @@ ${widget.shortname}_browse_controller.transformXml = function(xml){
        }
     );
     
-    output = ${browse.collection.template}.replace("${ITEMS}", items);
+    /**
+     * If we are returning a list, wrap the result in the collection template, otherwise
+     * just return the item
+     */
+    if (type === "list"){
+       output = ${browse.collection.template}.replace("${ITEMS}", items);
+    } else {
+        output = items;
+    }
     return output;
 }

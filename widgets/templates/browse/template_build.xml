@@ -23,7 +23,7 @@
     <echo message="+------------------------------------------"/>
 
   	
-    <loadfile property="browse.item.template"
+    <loadfile property="browse.item.detail.template"
 	      srcFile="item_template.html"
 	      failonerror="false">
       <filterchain>
@@ -31,7 +31,7 @@
       </filterchain>
     </loadfile>
 
-    <loadfile property="browse.item.template"
+    <loadfile property="browse.item.detail.template"
 	      srcFile="../common/item_template.html"
 	      failonerror="false">
       <filterchain>
@@ -39,7 +39,7 @@
       </filterchain>
     </loadfile>
     
-    <loadfile property="browse.item.template"
+    <loadfile property="browse.item.detail.template"
               srcFile="${template.dir}/${template.name}/item_template.html"
               failonerror="false">
       <filterchain>
