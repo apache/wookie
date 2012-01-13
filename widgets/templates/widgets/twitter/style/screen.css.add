@@ -29,9 +29,21 @@
 	background-image: none;
 }
 
+/*
+ * The time metadata for the tweet
+ */
+.timeago {
+	font-size: 60%;
+    color: #186268;
+}
+
+/*
+ * Override slightly annoying text shadow from JQMobile
+ */
 .tweet {
     font: 100% Georgia, serif;
     color: #085258;
+    text-shadow: none;
 }
 
 .tweet_list {
@@ -52,11 +64,4 @@
 
 .tweet_list .tweet_avatar {
   padding-right: .5em; float: left;
-}
-
-/*
- * Override slightly annoying text shadow from JQMobile
- */
-.tweet_text {
-  text-shadow: none;
 }
