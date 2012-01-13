@@ -47,6 +47,30 @@
       </filterchain>
     </loadfile>
   	
+    <loadfile property="browse.item.summary.template"
+	      srcFile="item_summary_template.html"
+	      failonerror="false">
+      <filterchain>
+      	<striplinebreaks/>
+      </filterchain>
+    </loadfile>
+
+    <loadfile property="browse.item.summary.template"
+	      srcFile="../common/item_summary_template.html"
+	      failonerror="false">
+      <filterchain>
+      	<striplinebreaks/>
+      </filterchain>
+    </loadfile>
+    
+    <loadfile property="browse.item.summary.template"
+              srcFile="${template.dir}/${template.name}/item_summary_template.html"
+              failonerror="false">
+      <filterchain>
+      	<striplinebreaks/>
+      </filterchain>
+    </loadfile>
+  	
     <loadfile property="content.scripts"
 	      srcFile="content_scripts.html"
 	      failonerror="false">
