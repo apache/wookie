@@ -257,7 +257,7 @@ public class W3CWidgetFactory {
 	 * @throws BadManifestException
 	 */
 	private W3CWidget processWidgetPackage(File zipFile, String defaultIdentifier) throws BadWidgetZipFileException, BadManifestException{
-		ZipFile zip;
+	  ZipFile zip;
 		try {
 			zip = new ZipFile(zipFile);
 		} catch (IOException e) {
@@ -302,7 +302,14 @@ public class W3CWidgetFactory {
 				throw e;
 			} catch (Exception e){
 				throw new BadManifestException(e);
+			} finally {	
+			    try {
+            zip.close();
+          } catch (IOException e) {
+            _logger.error("Unable to close wgt file:" + e.getMessage());
+          }
 			}
+			
 		}
 		else{
 			// no manifest file found in zip archive
