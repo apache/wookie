@@ -17,12 +17,31 @@
 
 /*
  * Change created times into friendly strings like "2 minutes ago"
- * using the TimeAgo JQuery plugin. We trigger this on document
+ * using the TimeAgo JQuery plugin. Also "linkify" any @screenname
+ * found in tweets
+ *
+ * We trigger this on document
  * load and whenever the results are updated.
  */
 $(document).ready(function() {
  $('abbr.timeago').timeago();
+ linkify();
  $('body').bind('results_updated', function() {
    $('abbr.timeago').timeago();
+   linkify();
+ });
+
 });
-});
+
+
+/*
+ * Replace @screen_name in tweets with links that update the results with that user's timeline
+ */
+function linkify(){
+  $('.tweet_text').each(function(){
+     var html = $(this).text().replace(/(^|)@(\w+)/gi, function (s) {
+        return '<a href="#" onclick="${widget.shortname}_browse_controller.search(\''+s+'\')">'+s+'</a>';
+     });
+     $(this).html(html);
+  });
+}
