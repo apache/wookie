@@ -233,7 +233,7 @@ defined by your widget. Check the details of the template.
 In this section we will create a simple widget that says hello to the
 world (what else would the first widget be?)
 
-  * cd [WOOKIE_HOME/widgets/template/widget
+  * cd [WOOKIE_HOME/widgets/templates/widgets
   * mkdir helloWorld
   * create a file called "./widget.properties"
   * open widget.properties in your favourite editor and add the following:
@@ -248,7 +248,7 @@ That's it, you have built your first template based widget. Now you
 need to generate and deploy it:
 
   * Ensure that Wookie is running locally
-  * cd [WOOKIE_HOME]/widgets/template
+  * cd [WOOKIE_HOME]/widgets/templates/widgets
   * ant generate-all-widgets -Dwidget.include=helloWorld
   * take a look at your new widget in your local instance of Wookie
 
