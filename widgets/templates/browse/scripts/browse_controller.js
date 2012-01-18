@@ -29,6 +29,11 @@ var ${widget.shortname}_browse_controller = {
         var searchUrl = '${browse.search.url}'; 
         if(searchUrl === "") $("#searchPanel").hide();
         ${widget.shortname}_browse_controller.update();
+        //
+        // If there is a "requiresLogin" attribute, don't
+        // trigger search just yet
+        //
+        if(!${widget.shortname}_browse_controller.requiresLogin)
         ${widget.shortname}_browse_controller.search()
     },
     
@@ -151,7 +156,7 @@ ${widget.shortname}_browse_controller.transform = function(src, type){
  $.support.cors = true; // force cross-site scripting (as of jQuery 1.5)
  $.ajax({
   url: src,
-  dataType: "xml",
+  dataType: ${browse.format},
   async: false,
   success: function(xml){
     output = ${widget.shortname}_browse_controller.transformXml(xml, type); 
@@ -183,7 +188,8 @@ ${widget.shortname}_browse_controller.transformXml = function(xml, type){
      * replace placeholders in the template with values from the XML using the ItemElements 
      * and ItemAttrobutes lists
      */
-    $(xml).find(${browse.item.name}).each(
+    var elements = ${widget.shortname}_browse_controller.find(xml,${browse.item.name});
+    $(elements).each(
        function(){
          var item = template;
          var elements = ${browse.item.elements}.split(",");
@@ -212,4 +218,17 @@ ${widget.shortname}_browse_controller.transformXml = function(xml, type){
         output = items;
     }
     return output;
+}
+
+/**
+ * Obtain collection of objects to operate on, either
+ * XML elements or JSON objects
+ */ 
+${widget.shortname}_browse_controller.find = function(data, name){
+  if (${browse.format}==="xml"){
+    return $(data).find(name);
+  } else {
+    if (!name || name === "") return data;
+    return data[name];
+  }
 }
