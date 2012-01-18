@@ -1,0 +1,10 @@
+<div class='result' data-role='collapsible' wid='${ID}'>
+  <h3>${NAME} <span id='${ID}-released'></span> </h3>
+  <p>${DESCRIPTION}</p>
+  <div class='detail'>
+  </div>
+   <script>
+      if (${RELEASED})
+          $('#${ID}-released').html('<em>Released: ${USERRELEASEDATE}</em>');
+   </script>
+</div>
