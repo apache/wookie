@@ -51,7 +51,7 @@
 	<%if(messages!=null){%>
 	   <p><img src="../shared/images/greentick.gif" width="16" height="16"><font color=green><%=messages%></font></p>
 	<%}%>
-	<div>
+	</div>
 	<p>
 	These policies determine whether the Wookie server-side proxy will allow a request by a widget for a resource from an origin.
 	</p>
@@ -60,7 +60,7 @@
 	Each policy consists of:
 	</p>
 	
-	<p>
+	<div style="font-size:12px;font-family: Verdana,Arial,sans-serif">
 	<ul>
 	 <li>a <em>scope</em> which may be either a wilcard (*) that applies to any widget, or the URI for a specific widget that the policy should
 	only apply to</li>
@@ -68,7 +68,7 @@
 	 a scheme and a host. Note that the host can begin with a wildcard, which indicates the policy can apply to subdomains.</li>
 	 <li>a <em>directive</em> which is one of ALLOW or DENY. 
 	</ul>
-	</p>
+	</div>
 	
 	<p>
 	Where multiple policies apply to a given request, DENY takes precedence over ALLOW.
