@@ -45,7 +45,7 @@ ${widget.shortname}_browse_controller.submitLoginForm = function(){
     // form.
     //
     $.ajax({
-      url: window.widget.proxify('https://issues.apache.org/jira/rest/auth/1/session')+"&username="+ ${widget.shortname}_browse_controller.username + "&password="+${widget.shortname}_browse_controller.password,
+      url: window.widget.proxify('https://issues.apache.org:443/jira/rest/auth/1/session')+"&username="+ ${widget.shortname}_browse_controller.username + "&password="+${widget.shortname}_browse_controller.password,
       dataType: 'json',
       success: function(data){
         $.mobile.hidePageLoadingMsg();
