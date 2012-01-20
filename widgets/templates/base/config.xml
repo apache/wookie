@@ -25,7 +25,7 @@
   <content src="index.html"/>
   <icon src="images/icon.png"/>
   <author>Apache Wookie (Incubating) Community</author>
-  <access origin="*"/>  
+  <access origin="${widget.access.origin}"/>  
   
   <license>
    Copyright [yyyy] [name of copyright owner]
