@@ -119,6 +119,7 @@ var WidgetPreferences = new function WidgetPreferences() {
         // Make a preference object and set its properties
         //
         var pref = {};
+        var oldValue = null;
         pref.dvalue = value;
         pref.key = key;
         pref.readOnly = false;
@@ -132,6 +133,7 @@ var WidgetPreferences = new function WidgetPreferences() {
         // If it does exist, check it isn't read-only
         //
         if (existing) {
+            oldValue = this.getItem(key);
             if (existing["readOnly"] === true) {
                 window.DOMException.code = DOMException.NO_MODIFICATION_ALLOWED_ERR;
                 throw (window.DOMException);
@@ -149,7 +151,7 @@ var WidgetPreferences = new function WidgetPreferences() {
         //
         this.prefs[key] = pref;
         widget.setPreferenceForKey(key, value);
-        
+        this.__raiseEvent(key, value, oldValue);
         //
         // Recalculate the length of the preferences collection
         //
@@ -162,17 +164,28 @@ var WidgetPreferences = new function WidgetPreferences() {
      * @param key the key of the tuple to remove
      */
     this.removeItem = function (key) {
+        this.__removeItem(key, true);
+    };
+    
+    /**
+     * Internal delete function
+     * @param key the key of the tuple to remove
+     * @param fireEvent boolean; true to fire Storage Event on remove
+     */
+    this.__removeItem = function(key, fireEvent){
         var existing = (this.prefs[key]);
         if (existing) {
             if (existing["readOnly"] === true) {
                 window.DOMException.code = DOMException.NO_MODIFICATION_ALLOWED_ERR;
                 throw (window.DOMException);
             } else {
+                var oldValue = this.getItem(key);
                 delete this.prefs[key];
                 widget.setPreferenceForKey(key, null);
+                if (fireEvent) this.__raiseEvent(key, null, oldValue);
                 this.calcLength();
             }
-        }
+        }    
     };
     
     /**
@@ -182,12 +195,43 @@ var WidgetPreferences = new function WidgetPreferences() {
         for (var key in this.prefs) {
             try {
                 if(this.prefs[key]["readOnly"] === false)
-                   this.removeItem(key);
+                   this.__removeItem(key, false);
             } catch (e) {
                 // swallow errors, as this method must never throw them according to spec.
             }
         }
+        this.__raiseEvent(null,null,null);
     };
+    
+    this.__raiseEvent = function(key, value, oldValue){
+        //
+        // Raise custom storage event
+        //  
+        var evt;
+        if(document.createEvent){
+          evt = document.createEvent("Event");
+        } else { // IE before v 9
+          evt = document.createEventObject(window.event);
+        }      
+        var evt = document.createEvent("Event");
+        evt.initEvent("storage", false,false);
+        evt.key = key;
+        evt.newValue = value;
+        evt.oldValue = oldValue;
+        evt.url      = window.location;
+        evt.storageArea = widget.preferences;
+        //
+        // Dispatch to child frames
+        //
+        var frames = window.frames;
+        for (var i=0;i<frames.length;i++){
+            if(document.createEvent){
+               frames[i].dispatchEvent(evt);  
+            } else { // IE before v 9
+               frames[i].fireEvent("storage", evt);
+            }  
+        }   
+    }
 };
 
 /**
