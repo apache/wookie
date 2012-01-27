@@ -28,6 +28,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.log4j.Logger;
 
 /**
  * Policies management class
@@ -44,6 +45,7 @@ import org.apache.commons.lang.ArrayUtils;
  */
 public class Policies {
   
+  static Logger _logger = Logger.getLogger(Policies.class.getName());  
   private  MultiValueMap policies;
   private  PropertiesConfiguration properties;
   private  FileChangedReloadingStrategy reloader = new FileChangedReloadingStrategy();
@@ -94,7 +96,7 @@ public class Policies {
         try {
           addPolicyToCollection(key+" "+entries[i]);
         } catch (Exception e) {
-          // TODO LOG AN ERROR
+          _logger.error("Error loading Policies from file:", e);
         }
       }
     }
@@ -194,8 +196,12 @@ public class Policies {
   private boolean addPolicyToCollection(Policy policy){
     @SuppressWarnings("unchecked")
     Collection<Policy> existingPolicies = (Collection<Policy>) policies.get(policy.getScope());
-    if (existingPolicies == null || !existingPolicies.contains(policy)){  
-      
+    if (existingPolicies == null){
+      policies.put(policy.getScope(), policy);
+      return true;
+    }
+    
+    if(!existingPolicies.contains(policy)){        
       //
       // Add the policy
       //
@@ -203,13 +209,26 @@ public class Policies {
       return true;
       
     } else {
-      
-      //
-      // Duplicate of existing policy, so don't add it
-      //
+      // Update the policy
+      existingPolicies.remove(policy);
+      policies.remove(policy.getScope());
+      for (Policy match: existingPolicies){
+        policies.put(match.getScope(), match);
+      }
+      policies.put(policy.getScope(), policy);      
+      properties.clearProperty(policy.getScope());
+      try {
+        for (Policy match: getPolicies(policy.getScope())){
+          properties.addProperty(match.getScope(), match.getOrigin()+" "+match.getDirective());
+        }
+        properties.save();
+      } catch (ConfigurationException e) {
+        _logger.error("Error synchronizing back to Policies file:", e);
+      }
       return false;
     }
   }
+  
   
   /**
    * Remove a policy

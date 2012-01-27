@@ -108,7 +108,7 @@ public class Policy {
 
     Policy otherPolicy = (Policy)obj;
 
-    if(otherPolicy.getScope().equalsIgnoreCase(getScope()) && (otherPolicy.getDirective().equalsIgnoreCase(getDirective())) && (otherPolicy.getOrigin().equalsIgnoreCase(getOrigin()))){
+    if(otherPolicy.getScope().equalsIgnoreCase(getScope()) && (otherPolicy.getOrigin().equalsIgnoreCase(getOrigin()))){
       return true;
     }
 
