@@ -65,7 +65,7 @@ var WidgetPreferences = new function WidgetPreferences() {
      */
     this.getItem = function (key) {
         if (!this.prefs[key]) {
-            return undefined;
+            return null;
         }
         return this.prefs[key]["dvalue"];
     };
