@@ -82,6 +82,7 @@
             depends="_init_widget_generation"
             description="Generate a widget from a template">
       <echo message="+------------------------------------------"/>
+      <echo message="|  Widget Shortname: ${widget.shortname}"/>
       <echo message="|  Widget: ${widget.name}"/>
       <echo message="|  Template: ${template.name}"/>
       <echo message="+------------------------------------------"/>

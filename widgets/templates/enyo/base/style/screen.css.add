@@ -1,0 +1,33 @@
+.content-primary {
+  overflow: auto;
+}
+
+.header_title {
+  float:right;
+}
+
+.logo {
+  float:left;
+}
+
+.footer .content {
+  font: 70%
+  float:left;
+}
+
+.footer .button {
+    float:right;
+}
+
+.footer .content {
+  font-size:small;
+  float:left;
+}
+
+.hide {
+      display: none;
+}
+
+.bigfont {
+	font-size: x-large;
+};

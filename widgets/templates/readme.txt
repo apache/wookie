@@ -15,16 +15,46 @@ ant-options (this is included on other platforms).
 
 * Templates
 
-The templates directory contains all the Rave in Context
-templates. The base template is the root of all templates. Any edit to
-this template will be reflected in all widgets that are generated
-after the edit.
+The templates directory contains all the wookie templates. There are,
+at the time of writing, two types of template, those that use JQuery
+Mobile and those that use Enyo. Enyo templates have names in the form
+of "enyoTemplteName" and JQueryMobile have no precursor to their name
+(at some point in the future we will probably make the JQuery Mobile
+templates conform to the same nameing standard,
+e.g. "jqmTemplateName".
+
+In all cases the appropriate "base" template of is the root of all
+templates using that framework. Any edit to the template will be
+reflected in all widgets that are generated after the edit (excpet
+where the edited behaviour has been overridden by a child template).
+
+** Status
+
+The Enyo templates currently use Enyo 2.0 which does not yet have any
+UI components. Therefore the Enyo templates are pretty think on the
+ground with respect to styling. You can, of course, style everything
+using CSS but since the Enyo project predicts a release of the UI
+components in "about a month" (from launch in mid Jan 2012) it's
+probably best to wait.
+
+The JQuery Mobile templates have been used to build a number of
+widgets. They are fairly flexible but the current Ant based build
+system presents some limitations and unneccessary
+complexity. Furthermore, JQuery Mobile is designed for use only on
+mobile platforms. This can present some issues when being displayed on
+a desktop machine.
+
+Moving forwards we intend to continue experimenting with both the Enyo
+and JQuery Mobile templates. At this stage both implementations should
+be considered Alpha quality.
 
 ** Define new templates
 
 To create a new template simply create a directory in the templates
 folder with an appropriate template name and copy
-"base/template_build.xml" edit as follows:
+"base/template_build.xml" (for JQuery Mobile template) or
+"enyo/base/template_build.xml" (for an Enyo based template) and edit
+as follows:
 
   * name attribute of the <project ...> element
   * "_generate_from_parent_templates" target (see below)
@@ -209,31 +239,25 @@ You'll need to edit, at least:
 You will also need to add any new new properties and content
 descriptions that are necessary for the widget to work.
 
-* Defining New Widgets
+* Building Widgets from Templates
+Regardless of which framework you use the basic techniques for
+building widgets is the same. Of course, when you start building real
+widgets you will be using techniques specific to the chosen framework,
+but for the purposes of this introduction we will not be addressing
+these details.
 
 ** Building your first template based widget
 
-This section describes how to build your widgets. We start of with a
-very high level view of what to do and then work through and example.
-
-*** Overview
-
-Widgets are defined by creating a sub-directory in the "widgets"
-directory with a suitable "shortname" for the widget.
-
-Copy the "default.widget.propertes" file from the templates directory to
-your widget directory and change its name to "widget.propertes". Now
-edit the properties as appropriate.
-
-Most templates will require content specific to this widget to be
-defined by your widget. Check the details of the template.
+This section describes how to build your widgets. We start off with a
+simple hello world widget and then work through a number of
+customisations.
 
 *** Hello World Widget
 
-In this section we will create a simple widget that says hello to the
+In this example we will create a simple widget that says hello to the
 world (what else would the first widget be?)
 
-  * cd [WOOKIE_HOME/widgets/templates/widgets
+  * cd WOOKIE_HOME/widgets/templates/widgets
   * mkdir helloWorld
   * create a file called "./widget.properties"
   * open widget.properties in your favourite editor and add the following:
@@ -251,6 +275,11 @@ need to generate and deploy it:
   * cd [WOOKIE_HOME]/widgets/templates/widgets
   * ant generate-all-widgets -Dwidget.include=helloWorld
   * take a look at your new widget in your local instance of Wookie
+
+Note while this example creates the widget in the source tree of
+Wookie you should not develop your widgets here under normal
+circumstances. Instead you should define your own directory for
+widgets within your own project directory, see Advanced Topics, below
 
 **** What did we just do?
 
@@ -302,22 +331,6 @@ executed you can examine your widget in action.
 
 The property "widget.include" defines a matcher for the widgets which
 are to be generated.
-
-**** Advanced Topics
-
-***** Your own widgets directories
-
-You can create a widgets directory anywhere you want it. To create
-your own directory for widget definitions simply create the directory
-and copy [WOOKIE_HOME]/widgets/template/widgets/build.xml into your
-new directory. Then edit the value of the "wookie.root.dir" property
-so that it points to the root of your Wookie src folder.
-
-You can, optionally, have multiple widget directories, each of which
-can be deployed individually or as a whole. In order to do this create
-your additional widget directories and then edit your build.xml file
-in your main widgets directory to ensure that they all get built when
-calling the target "generate-all-widgets".
 
 ** Adding some style
 
@@ -427,7 +440,6 @@ ${widget.shortname}_message_controller.send = function(subject, message) {
     // message send code here
 }
 
-
 ** Common Files
 When building a family of related widgets you are likely to provide a
 set of common files that will be reused by multiple widgets. These can
@@ -438,8 +450,22 @@ token replacement, into each widget.
 Because we use token replacement in these files too, it is possible
 for each widget to customise the common files appropriately.
 
-* Building widgets
 
+** Advanced Topics
+*** Your own widgets directories
+You can create a widgets directory anywhere you want it. To create
+your own directory for widget definitions simply create the directory
+and copy [WOOKIE_HOME]/widgets/template/widgets/build.xml into your
+new directory. Then edit the value of the "wookie.root.dir" property
+so that it points to the root of your Wookie src folder.
+
+You can, optionally, have multiple widget directories, each of which
+can be deployed individually or as a whole. In order to do this create
+your additional widget directories and then edit your build.xml file
+in your main widgets directory to ensure that they all get built when
+calling the target "generate-all-widgets".
+
+* Building templatised widgets
 ** Building test widgets
 
 To test changes to the templates run "ant generate-test-widgets". This
