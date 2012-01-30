@@ -31,13 +31,30 @@ import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
+import org.apache.wookie.feature.IFeature;
 import org.apache.wookie.server.LocaleHandler;
 import org.directwebremoting.WebContextFactory;
 
-public class oAuthClient {
+public class oAuthClient implements IFeature {
 
-  public String getName() {
+	public String getName() {
 		return "http://oauth.net/2";
+	}
+	
+	public String[] scripts() {
+		return new String[] {"/wookie/dwr/interface/OAuthConnector.js", "/wookie/shared/js/oauth.js"};
+	}
+
+	public String[] stylesheets() {
+		return null;
+	}
+
+	public boolean flattenOnExport() {
+		return false;
+	}
+
+	public String getFolder() {
+		return null;
 	}
 	
 	public String authenticate(String idKey_RedirectUri) {
@@ -83,9 +100,22 @@ public class oAuthClient {
 		Collection<IParam> oAuthParams = oAuthFeature.getParameters();
 		String clientId = idKey;
 		String authzServer = null;
+		String scope = ""; 
 		for (IParam aParam : oAuthParams) {
-			if ("authzServer".equals(aParam.getParameterName())) {
-				authzServer = aParam.getParameterValue();
+			String paramName = aParam.getParameterName().toLowerCase();
+			String paramValue = aParam.getParameterValue();
+			if ("authzserver".equals(paramName)) {
+				authzServer = paramValue;
+			} else if ("clientid".equals(paramName)) {
+				if (!"auto".equalsIgnoreCase(paramValue)) {
+					clientId = paramValue;
+				}
+			} else if ("scope".equals(aParam.getParameterName())) {
+				scope = paramValue;
+			} else if ("redirecturi".equals(paramName)) {
+				if (paramValue.length() != 0 && !"auto".equalsIgnoreCase(paramValue)) {
+					redirectUri = paramValue;
+				}
 			}
 		}
 		
@@ -94,7 +124,11 @@ public class oAuthClient {
 			persistenceManager.delete(oauthToken);
 		}
 		
-		String url = authzServer + "?client_id=" + clientId + "&response_type=code&redirect_uri=" + redirectUri; 
+		String url = authzServer + "?client_id=" + clientId + "&response_type=token&redirect_uri=" + redirectUri; 
+		
+		if (scope.length() > 0) {
+			url = url + "&scope=" + scope;
+		}
 		
 		return url;
 	}
@@ -112,7 +146,32 @@ public class oAuthClient {
 		}
 		return "invalid";
 	}
+	
+	public void invalidateToken(String idKey) {
+		if(idKey == null) return;
+		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(idKey);
+		if(widgetInstance==null) return;
 		
+		IOAuthToken oauthToken = persistenceManager.findOAuthToken(widgetInstance);
+		if (oauthToken != null) {
+			persistenceManager.delete(oauthToken);
+		}
+	}
+	
+	public String getClientId(String idKey) {
+		if(idKey == null) return "invalid";
+		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(idKey);
+		if(widgetInstance==null) return "invalid";
+		IOAuthToken oauthToken = persistenceManager.findOAuthToken(widgetInstance);
+		if (oauthToken != null) {
+			return oauthToken.getClientId();
+		} else {
+			return "invalid";
+		}
+	}
+	
 	public String updateToken(String idKey_tokenBunch) {
 		int iPos = idKey_tokenBunch.indexOf('#');
 		String idKey = idKey_tokenBunch.substring(0, iPos);
@@ -182,5 +241,4 @@ public class oAuthClient {
 		}
 		return oAuthParamMap;
 	}
-
 }

@@ -32,6 +32,8 @@
       <include method="authenticate"/>
       <include method="updateToken"/>
       <include method="queryToken"/>
+      <include method="invalidateToken"/>
+      <include method="getClientId"/>
     </create>
         
     <convert converter="object" match="org.apache.wookie.ajaxmodel.impl.PreferenceDelegate" javascript="Preference">

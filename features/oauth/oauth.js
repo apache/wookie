@@ -30,21 +30,27 @@ oAuth = new function OAuth() {
 					}, async: false});
 			window.close();
 		}
-		
-		OAuthConnector.queryToken(widget.instanceid_key, {
-			callback: function(token_info) {
-				if (token_info != "invalid") {
-					oAuth.access_token = token_info;
-					oAuth.client_id = widget.instanceid_key;
-					oAuth.status = "A";
-				} else { 
-					oAuth.status = "O";			
-				}									
-			}, async:false});
+		dwr.engine.beginBatch();
+		OAuthConnector.getClientId(widget.instanceid_key, this.setClientId);
+		OAuthConnector.queryToken(widget.instanceid_key, this.setAccessToken);
+		dwr.engine.endBatch({async: false});
+	}
+	
+	this.setClientId = function(returned_client_id) {
+		oAuth.client_id = returned_client_id;
+	}
+	
+	this.setAccessToken = function(token_info) {
+		if (token_info != "invalid") {
+			oAuth.access_token = token_info;
+			oAuth.status = "A";
+		} else { 
+			oAuth.status = "O";			
+		}		
 	}
 	
 	this.proxify = function(url) {
-		returnedUrl = widget.proxyUrl + "?instanceid_key=" + widget.instanceid_key + "&url=" + url;
+		returnedUrl = widget.getProxyUrl() + "?instanceid_key=" + widget.instanceid_key + "&url=" + url;
 		if (oAuth.client_id != null && oAuth.access_token != null) {
 			returnedUrl = returnedUrl + "&client_id=" + oAuth.client_id + "&access_token=" + oAuth.access_token;
 		}
@@ -59,6 +65,12 @@ oAuth = new function OAuth() {
 				}, async: false});
 	}
 	
+	this.invalidateToken = function() {
+		oAuth.status = "O";
+		oAuth.access_token = null;
+		OAuthConnector.invalidateToken(widget.instanceid_key);
+	}
+	
 	this.showStatus = function(container_id) {
 		if (oAuth.status == null || oAuth.status == "O") {
 			document.getElementById(container_id).innerHTML = "Not yet authenticated";
@@ -68,6 +80,7 @@ oAuth = new function OAuth() {
 			document.getElementById(container_id).innerHTML = "Authenticated";
 		}
 	}
+	
 }
 
 oAuth.init();

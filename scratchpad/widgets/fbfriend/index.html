@@ -1,0 +1,56 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta http-equiv="pragma" content="no-cache"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" type="text/css" href="style/screen.css" />
+        <script type="text/javascript" src="scripts/main.js" charset="utf-8"></script>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+		<title>oAuth</title>
+	</head>
+	<body>
+      <script type="text/javascript">
+      $(document).ready(function() {
+    	if (window.oauth.status == "A") {
+    		document.getElementById("button-login").value = "Disconnect";
+    	}
+		window.oauth.showStatus("wookie-footer");
+      });
+      </script>	
+	  <div id="wookie-widget">
+		<div id="wookie-toolbar">Greeting your Facebook friends</div>
+		<div id="wookie-settings">
+	      <p>
+		      <input type="submit" class="wookie-form-button" value="Show friends" onclick="getFirstFriendList('https://graph.facebook.com/me/friends')"/>
+		      <input type="submit" class="wookie-form-button" id="button-login" value="Connect" onclick="logInOut()"/> 
+	      </p>
+	    </div>
+		<div id="wookie-content">
+		</div>
+	    <div id="notices"></div>
+		<div id="wookie-footer"></div>
+	  </div>
+	  
+	  
+	</body>
+<!-- fix forIE cashing - must go here even though its in the wrong place
+<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+</HEAD>
+-->
+</html>
