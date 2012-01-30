@@ -151,11 +151,18 @@ public class Policy {
 
     //
     // Check ports match
-    // Note that where the Policy has no port specified, we treat
-    // this as being "any port"
     //
     int requestedPort = uri.getPort();
-    if (requestedPort == -1) requestedPort = 80;
+    //
+    // If there is no specified port in the request, substitute with default port
+    // based on the scheme
+    //
+    if (requestedPort == -1 && uri.getScheme().equals("http")) requestedPort = 80;
+    if (requestedPort == -1 && uri.getScheme().equals("https")) requestedPort = 443;
+    //
+    // Note that where the Policy has no port specified, we treat
+    // this as being "any port" otherwise the ports must match
+    //
     if( match.getPort() != -1 && requestedPort !=  match.getPort()) return 0;
 
 
