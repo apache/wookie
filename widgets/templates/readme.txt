@@ -265,7 +265,24 @@ You can create a widgets directory anywhere you want it. To create
 your own directory for widget definitions simply create the directory
 and copy [WOOKIE_HOME]/widgets/template/widgets/build.xml into your
 new directory. Then edit the value of the "wookie.root.dir" property
-so that it points to the root of your Wookie src folder.
+so that it points to the root of your Wookie folder.
+
+Each of your widget definitions will then be contained in a sub-folder
+of the directory you created above. That is, you will have a directory
+structure like this:
+
++- widgets
+     |
+     +- build.xml
+     +- widgetDefinition1
+     |     |
+     |     +- widget.properties
+     |     +- ...
+     |
+     +- widgetDefinition2
+           |
+           +- widget.properties
+           +- ...
 
 You can, optionally, have multiple widget directories, each of which
 can be deployed individually or as a whole. In order to do this create
