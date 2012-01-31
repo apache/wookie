@@ -259,7 +259,6 @@ token replacement, into each widget.
 Because we use token replacement in these files too, it is possible
 for each widget to customise the common files appropriately.
 
-
 ** Advanced Topics
 *** Your own widgets directories
 You can create a widgets directory anywhere you want it. To create
@@ -276,8 +275,8 @@ calling the target "generate-all-widgets".
 
 * Building templatised widgets
 
-To build and deploy the widgets run "ant generate-all-widgets" which
-will generate all known widgets.
+To build and deploy the widgets run "ant generate-all-widgets" from
+within your widgets directory which will generate all known widgets.
 
 Alternatively you can use "ant generate-widgets" which will
 ask you which widget definitions directory you wish to generate from,
