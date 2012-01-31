@@ -15,7 +15,11 @@
 package org.apache.wookie.beans;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.wookie.beans.util.IPersistenceManager;
+import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.w3c.ILocalizedElement;
 
 /**
@@ -216,22 +220,21 @@ public interface IWidgetInstance extends IBean, ILocalizedElement
     public static class Utilities
     {
 
-        /**
-         * Get preference with specified key for widget instance.
-         * 
-         * @param key shared data key
-         * @return shared data
-         */
-        public static IPreference getPreference(IWidgetInstance widgetInstance, String key)
-        {
-            for (IPreference preference : widgetInstance.getPreferences())
-            {
-                if (preference.getDkey().equals(key))
-                {
-                    return preference;
-                }
-            }
-            return null;
-        }
+      /**
+       * Get preference with specified key for widget instance.
+       * 
+       * @param key shared data key
+       * @return shared data
+       */
+      public static IPreference getPreference(IWidgetInstance widgetInstance, String key)
+      {
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("widgetInstance", widgetInstance);//$NON-NLS-1$
+        map.put("dkey", key);//$NON-NLS-1$
+        IPreference[] preference = persistenceManager.findByValues(IPreference.class, map);
+        if (preference.length == 1) return preference[0];
+        return null;
+      }
     }
 }

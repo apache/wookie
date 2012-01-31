@@ -54,16 +54,17 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	 * @see org.apache.wookie.ajaxmodel.IWidgetAPI#preferences(java.lang.String)
 	 */
 	public List<IPreference> preferences(String id_key) {
-		ArrayList<IPreference> prefs = new ArrayList<IPreference>();
-		if(id_key == null) return prefs;
-		// check if instance is valid
-		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
-		if(widgetInstance==null) return prefs;
-		for(IPreference preference : widgetInstance.getPreferences()){
-			prefs.add(new PreferenceDelegate(preference));
-		}
-		return prefs;
+	  ArrayList<IPreference> prefs = new ArrayList<IPreference>();
+	  if(id_key == null) return prefs;
+	  // check if instance is valid
+	  IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+	  IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
+	  if(widgetInstance==null) return prefs;
+	  IPreference[] preferences = persistenceManager.findByValue(IPreference.class, "widgetInstance", widgetInstance);
+	  for (IPreference pref: preferences){
+	    prefs.add(new PreferenceDelegate(pref));		  
+	  }
+	  return prefs;
 	}
 
 	/* (non-Javadoc)
