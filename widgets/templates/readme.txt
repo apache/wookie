@@ -13,7 +13,7 @@ To use these templates you need to install Apache Ant. Note, that if
 you install Ant on Ubuntu using apt-get you will also need to install
 ant-options (this is included on other platforms).
 
-* Templates
+* About Templates
 
 The templates directory contains all the wookie templates. There are,
 at the time of writing, two types of template, those that use JQuery
@@ -48,198 +48,7 @@ Moving forwards we intend to continue experimenting with both the Enyo
 and JQuery Mobile templates. At this stage both implementations should
 be considered Alpha quality.
 
-** Define new templates
-
-To create a new template simply create a directory in the templates
-folder with an appropriate template name and copy
-"base/template_build.xml" (for JQuery Mobile template) or
-"enyo/base/template_build.xml" (for an Enyo based template) and edit
-as follows:
-
-  * name attribute of the <project ...> element
-  * "_generate_from_parent_templates" target (see below)
-
-Next you will need to add any resources the template needs.
-
-*** Template Dependencies
-
-Template can have dependencies on other templates. This allows us to
-build up complex templates whilst still ensuring they are easy to maintain.
-
-To define a templates parents simply edit the
-"_generate_from_parent_templates" targtet in the
-"template_build.xml". The "templates/base/template_build.xml" file has
-a commented out example of how to do this.
-
-When generating a widget from a template the parent templates are
-processed first. Any resources that a subsequent template provides
-will override resources provided by the parent templates. That is, the
-most recently produced resource wins.
-
-In general all templates will have the "base" template as a parent
-(see below). The "base" template provides the bare minimum we need for
-a W3C widget.
-
-*** Configuring templates
-
-By using properties we can create templates that can be customised. A 
-template will define any number of properties in "template.properties".
-These properties can then be reused in any of the files by inserting 
-"${property.name}". When the template is used to create a widget these 
-properties will be expanded.
-
-Alternatively properties values can be provided in files. This is 
-useful for properties that are intended to contain lots of information 
-or formatting, such as HTML snippets.
-
-Default values for properties are provided in the templates 
-"deafault.widget.properties" file. This file also serves as documentation.
-
-
-**** Template content
-
-Each template will define some content that needs to be provided by
-the widget definition. This content will be defined in files provided
-by the widget definition (see below). The template must define what
-these files are and must load them in the "_init_template" target of
-the "template_build.xml" file. See the base template for an example of
-how to do this.
-
-Note that when a template has parent templates it will inherit all of
-the customisation points of each parent. Therefore each widget
-definition must provide all the necessary files before it can be
-generated.
-
-You can use tokens in the content that will be replaced when a widget
-is generated. For example, you can write:
-
-<p>Welcome to the ${widget.name}</p>
-
-You can also call methods in javascript provided by any of the
-templates used to create the widget, for example:
-
-<form method="post" 
-      onsubmit="javascript:${widget.shortname}_auth_controller.authenticate(username, password)">
-
-FIXME - bad practice to have JS in HTML file - shoudl be added with load event or JQ/JQM mechanisms. As you point out above
-can use tokens in JS
-
-What tokens are available depends on the templates used, but in
-generally anything that appears in the widget.properties file can be
-used as a token.
-
-*** CSS
-
-**** Default CSS
-
-Each template provides a minimum of CSS styles to allow widgets to be
-consistent in their styling. Your own templates and widgets based on
-these can override these styles as necessary, see below.
-
-**** Media Queries
-
-The root "default.widget.properties" file provides a number of useful
-properties for performing media queries in your CSS and
-Javascript. These properties define many common form factors in
-various orientations. Please check the file for the full list.
-
-To use these in your CSS simply include them as properties. for example:
-
-#+BEGIN_SRC CSS
-@media ${widget.media.screen.wide} {
-/* Styles */
-}
-#+END_SRC
-
-To use them in your javascript you can use the JQuery Mobile media function, for example:
-
-#+BEGINE_SRC Javascript
-if ($.mobile.media("${widget.media.screen.wide}")) {
-  $('#searchPanel').trigger('expand');
-}
-#+END_SRC
-
-**** Custom CSS
-
-Each template can provide complete CSS files which will be copied into
-widgets just like any other resources. In addition templates can add
-to or modify CSS rules defined in parent templates.
-
-To create additive CSS simply add files with names in the form of
-"foo.css.add". The contents of these files will be added to the start
-of a final CSS file called "all.css". 
-
-The base template provides a link to the "all.css" in its "index.html" file. Therefore, if your template
-should extends the base template you do not need to explicitly include "all.css". However, any additional
-CSS files you provide will not be included automatically so you will need to provide a new "index.html" with
-appropriate style references.
-
-Note, there is a feature request to improve the handling of CSS provided by sub-templates or widgets see: 
-https://issues.apache.org/jira/browse/WOOKIE-276
-
-*** Scripts
-
-Each template can provide one or more controller Javascript
-definitions. The controller code is where the UI and the data 
-model are wired together. 
-
-Templates should provide any controller code in files named 
-"PROJECTNAME_controller.js". When a widget is
-generated from a template all its controller javascript files, along
-with those defined in any parents, are concatenated into a single
-"controller.js" file. This allows each template to define Javascript
-controller objects.
-
-It is important that
-each controller object has a unique name. Therefore, we recommend
-that you define your controllers using tokens that will be replaced
-during widget generation. For example, the login template defines an 
-"auth_controller.js" which provides a controller for authorisation 
-activities. This file defines an object as follows:
-
-var ${widget.shortname}_auth_controller = {
-  basic_auth:function(username, password) {
-    ...
-  }
-}
-
-We then need to use the same token replacement approach when this
-object is used. For example, calling the basid_auth function defined 
-above is done with "${widget.shortname}_auth_controller.basic_auth(...)"
-
-You can also provide other JS files by adding them to the scripts 
-directory.
-
-As with CSS the default index.html provided by the base template loads
-the controller.js file. It does not load other JS you might provide in 
-other templates. In order to to ensure these are loaded you need to 
-provide a new index.html with the appropriate <script...> tags.
-
-A feature request has been made to enhance this handling of Javascript,
-see https://issues.apache.org/jira/browse/WOOKIE-277
-
-*** Test widgets
-
-When creating a new template you should also create a new test
-widget. Test widgets are used to demonstrate and test the
-functionality of widget templates.
-
-To create a new test widget simply create a new directory in the
-"testWidgets" directory, using a name of the form "fooTestWidget"
-where "foo" is replaced by the name of the template under test. Then
-copy the "widget.properties" file from the most appropriate existing
-test widget (usually this will be one of the new templates parents). 
-
-You'll need to edit, at least:
-
-  * "template.name"
-  * "widget.shortname"
-  * "widget.name" properties. 
-
-You will also need to add any new new properties and content
-descriptions that are necessary for the widget to work.
-
-* Building Widgets from Templates
+* Creating Widgets from Templates
 Regardless of which framework you use the basic techniques for
 building widgets is the same. Of course, when you start building real
 widgets you will be using techniques specific to the chosen framework,
@@ -466,17 +275,6 @@ in your main widgets directory to ensure that they all get built when
 calling the target "generate-all-widgets".
 
 * Building templatised widgets
-** Building test widgets
-
-To test changes to the templates run "ant generate-test-widgets". This
-will generate and deploy one or more test widgets using the latest
-versions of the templates.
-
-In order to make the build faster in a development process you can
-define which templates are to be built using the "widget.include"
-property discussed in the next section.
-
-** Building the real widgets
 
 To build and deploy the widgets run "ant generate-all-widgets" which
 will generate all known widgets.
@@ -511,4 +309,205 @@ is to be used. To avoid having to answer this question you can specify
 it in the command line as follows:
 
 "-Dwidget.definitions.dir=DIRECTORY"
+
+* Define new templates
+
+To create a new template simply create a directory in the templates
+folder with an appropriate template name and copy
+"base/template_build.xml" (for JQuery Mobile template) or
+"enyo/base/template_build.xml" (for an Enyo based template) and edit
+as follows:
+
+  * name attribute of the <project ...> element
+  * "_generate_from_parent_templates" target (see below)
+
+Next you will need to add any resources the template needs.
+
+*** Template Dependencies
+
+Template can have dependencies on other templates. This allows us to
+build up complex templates whilst still ensuring they are easy to maintain.
+
+To define a templates parents simply edit the
+"_generate_from_parent_templates" targtet in the
+"template_build.xml". The "templates/base/template_build.xml" file has
+a commented out example of how to do this.
+
+When generating a widget from a template the parent templates are
+processed first. Any resources that a subsequent template provides
+will override resources provided by the parent templates. That is, the
+most recently produced resource wins.
+
+In general all templates will have the "base" template as a parent
+(see below). The "base" template provides the bare minimum we need for
+a W3C widget.
+
+*** Configuring templates
+
+By using properties we can create templates that can be customised. A 
+template will define any number of properties in "template.properties".
+These properties can then be reused in any of the files by inserting 
+"${property.name}". When the template is used to create a widget these 
+properties will be expanded.
+
+Alternatively properties values can be provided in files. This is 
+useful for properties that are intended to contain lots of information 
+or formatting, such as HTML snippets.
+
+Default values for properties are provided in the templates 
+"deafault.widget.properties" file. This file also serves as documentation.
+
+
+**** Template content
+
+Each template will define some content that needs to be provided by
+the widget definition. This content will be defined in files provided
+by the widget definition (see below). The template must define what
+these files are and must load them in the "_init_template" target of
+the "template_build.xml" file. See the base template for an example of
+how to do this.
+
+Note that when a template has parent templates it will inherit all of
+the customisation points of each parent. Therefore each widget
+definition must provide all the necessary files before it can be
+generated.
+
+You can use tokens in the content that will be replaced when a widget
+is generated. For example, you can write:
+
+<p>Welcome to the ${widget.name}</p>
+
+You can also call methods in javascript provided by any of the
+templates used to create the widget, for example:
+
+<form method="post" 
+      onsubmit="javascript:${widget.shortname}_auth_controller.authenticate(username, password)">
+
+FIXME - bad practice to have JS in HTML file - shoudl be added with load event or JQ/JQM mechanisms. As you point out above
+can use tokens in JS
+
+What tokens are available depends on the templates used, but in
+generally anything that appears in the widget.properties file can be
+used as a token.
+
+*** CSS
+
+**** Default CSS
+
+Each template provides a minimum of CSS styles to allow widgets to be
+consistent in their styling. Your own templates and widgets based on
+these can override these styles as necessary, see below.
+
+**** Media Queries
+
+The root "default.widget.properties" file provides a number of useful
+properties for performing media queries in your CSS and
+Javascript. These properties define many common form factors in
+various orientations. Please check the file for the full list.
+
+To use these in your CSS simply include them as properties. for example:
+
+#+BEGIN_SRC CSS
+@media ${widget.media.screen.wide} {
+/* Styles */
+}
+#+END_SRC
+
+To use them in your javascript you can use the JQuery Mobile media function, for example:
+
+#+BEGINE_SRC Javascript
+if ($.mobile.media("${widget.media.screen.wide}")) {
+  $('#searchPanel').trigger('expand');
+}
+#+END_SRC
+
+**** Custom CSS
+
+Each template can provide complete CSS files which will be copied into
+widgets just like any other resources. In addition templates can add
+to or modify CSS rules defined in parent templates.
+
+To create additive CSS simply add files with names in the form of
+"foo.css.add". The contents of these files will be added to the start
+of a final CSS file called "all.css". 
+
+The base template provides a link to the "all.css" in its "index.html" file. Therefore, if your template
+should extends the base template you do not need to explicitly include "all.css". However, any additional
+CSS files you provide will not be included automatically so you will need to provide a new "index.html" with
+appropriate style references.
+
+Note, there is a feature request to improve the handling of CSS provided by sub-templates or widgets see: 
+https://issues.apache.org/jira/browse/WOOKIE-276
+
+*** Scripts
+
+Each template can provide one or more controller Javascript
+definitions. The controller code is where the UI and the data 
+model are wired together. 
+
+Templates should provide any controller code in files named 
+"PROJECTNAME_controller.js". When a widget is
+generated from a template all its controller javascript files, along
+with those defined in any parents, are concatenated into a single
+"controller.js" file. This allows each template to define Javascript
+controller objects.
+
+It is important that
+each controller object has a unique name. Therefore, we recommend
+that you define your controllers using tokens that will be replaced
+during widget generation. For example, the login template defines an 
+"auth_controller.js" which provides a controller for authorisation 
+activities. This file defines an object as follows:
+
+var ${widget.shortname}_auth_controller = {
+  basic_auth:function(username, password) {
+    ...
+  }
+}
+
+We then need to use the same token replacement approach when this
+object is used. For example, calling the basid_auth function defined 
+above is done with "${widget.shortname}_auth_controller.basic_auth(...)"
+
+You can also provide other JS files by adding them to the scripts 
+directory.
+
+As with CSS the default index.html provided by the base template loads
+the controller.js file. It does not load other JS you might provide in 
+other templates. In order to to ensure these are loaded you need to 
+provide a new index.html with the appropriate <script...> tags.
+
+A feature request has been made to enhance this handling of Javascript,
+see https://issues.apache.org/jira/browse/WOOKIE-277
+
+*** Test widgets
+
+When creating a new template you should also create a new test
+widget. Test widgets are used to demonstrate and test the
+functionality of widget templates.
+
+To create a new test widget simply create a new directory in the
+"testWidgets" directory, using a name of the form "fooTestWidget"
+where "foo" is replaced by the name of the template under test. Then
+copy the "widget.properties" file from the most appropriate existing
+test widget (usually this will be one of the new templates parents). 
+
+You'll need to edit, at least:
+
+  * "template.name"
+  * "widget.shortname"
+  * "widget.name" properties. 
+
+You will also need to add any new new properties and content
+descriptions that are necessary for the widget to work.
+
+**** Building test widgets
+
+To test changes to the templates run "ant generate-test-widgets". This
+will generate and deploy one or more test widgets using the latest
+versions of the templates.
+
+In order to make the build faster in a development process you can
+define which templates are to be built using the "widget.include"
+property discussed in the next section.
 
