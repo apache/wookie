@@ -39,7 +39,7 @@
       </filterchain>
     </copy>
     
-    <copy todir="${widget.build.dir}">
+    <copy todir="${widget.build.dir}" failonerror="false">
       <fileset dir="../common">
 	<include name="*.html"/>
       </fileset>
