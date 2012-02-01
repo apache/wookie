@@ -166,5 +166,13 @@ public class PoliciesTest {
     assertEquals(1, Policies.getInstance().getPolicies("http://temp.org").length);
     Policies.getInstance().clearPolicies("http://temp.org");
   }
+  
+  @Test
+  public void denyAllDirective() throws ConfigurationException, PolicyFormatException, URISyntaxException{
+    assertTrue(Policies.getInstance().validate("http://zzz.apache.org", "http://incubator.apache.org/wookie/widgets/test"));
+    Policies.getInstance().addPolicy("* * DENY");
+    assertFalse(Policies.getInstance().validate("http://zzz.apache.org", "http://incubator.apache.org/wookie/widgets/test"));
+    Policies.getInstance().removePolicy("* * DENY");
+  }
  
 }

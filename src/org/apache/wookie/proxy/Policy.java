@@ -137,7 +137,13 @@ public class Policy {
     //
     // Wildcard match
     //
-    if (getOrigin().equals("*")) return 1;
+    if (getOrigin().equals("*")){
+      if (getDirective().equalsIgnoreCase("ALLOW")){
+        return 1;
+      } else {
+        return -1;
+      }
+    }
 
     //
     // Get the match origin, and check they match
