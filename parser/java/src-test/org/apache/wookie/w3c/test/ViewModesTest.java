@@ -82,16 +82,16 @@ public class ViewModesTest extends ConformanceTest{
 	@Test
 	public void i18nltr43(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/i18n-ltr/043/i18nltr43.wgt");
-		assertTrue(widget.getViewModes().equals("windowed floating maximized"));
+		assertEquals("maximized windowed floating", widget.getViewModes());
 	}	
 	@Test
 	public void i18nrtl43(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/i18n-rtl/043/i18nrtl43.wgt");
-		assertTrue(widget.getViewModes().equals("windowed floating maximized"));
+		assertEquals("windowed floating maximized", widget.getViewModes());
 	}	
 	@Test
   public void i18nrlo43(){
 	   W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/i18n-rlo/043/i18nrlo43.wgt");
-	   assertTrue(widget.getViewModes().equals("windowed floating"));
+	    assertEquals("windowed floating maximized", widget.getViewModes());
 	} 
 }
