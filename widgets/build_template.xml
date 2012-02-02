@@ -27,7 +27,7 @@ http://incubator.apache.org/wookie/docs/widgets.html
 
 -->
 <project default="build-widget" basedir="." name="Wookie_scratchpad_widgets_build_file">
-    <property name="wookie.root.dir" location="../../wookie"/>
+    <property name="wookie.root.dir" location="../"/>
     <property name="project.build.dir" location="${wookie.root.dir}/build"/>
     <property name="widget.template.dir" value="${wookie.root.dir}/widgets/widget-template"/>
     
