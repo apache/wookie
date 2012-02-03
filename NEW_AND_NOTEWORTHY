@@ -1,12 +1,17 @@
 # New and Noteworthy: 0.9.2
 
-FIXME Write some documentation for these new features
+## New oAuth 2.0 Feature
 
-## oAuth Support
+Wookie widgets can now use oAuth 2.0 to connect to remote services. There is a "Facebook Friend" demo 
+widget in scratchpad/widgets to try out - uncomment include.scratchpad.widgets in your build.properties 
+file to try it out.
 
 ## New Widget Templating System
 
-## Running Wookie on a USB Stick
+A new templating system is available for creating widgets, enabling widgets to have a common look-and-feel
+or to reuse functionality; you can edit  the template and all widgets based on it can be regenerated with 
+the changes. Documentation and examples of both templates and widgets created from them can be found in 
+widgets/templates
 
 ## New proxy policy management
 
