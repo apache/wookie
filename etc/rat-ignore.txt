@@ -107,6 +107,7 @@ widgets/templates/walkthrough/lib/creole.js
 
 # Misc
 
+src-tests/org/apache/wookie/tests/helpers/NanoHTTPD.java
 scratchpad/widgets/youtube/scripts/jquery.tubeplayer.js
 widgets/templates/widgets/twitter/lib/jquery.timeago.js
 scratchpad/widgets/localetest/index.htm
