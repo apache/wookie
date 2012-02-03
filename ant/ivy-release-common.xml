@@ -107,7 +107,7 @@
 	<target name="build-release-war" depends="init-rat,clean-build, compile-core, deploy-webapp, post-deploy-webapp">
 		<echo>Building war release</echo>
 		<delete dir="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}" />
-		<mkdir dir="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/scripts/" />
+		<mkdir dir="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/scripts/migration" />
 		
 		<!-- back the widgetserver.properties file up -->
 		<copy file="${build.dir}/webapp/wookie/WEB-INF/classes/widgetserver.properties"
@@ -167,6 +167,10 @@
 				<include name="*.sql" />
 			</fileset>
 		</copy>
+		<!-- copy migration scripts across -->
+		<copy todir="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/scripts/migration/">
+		    <fileset dir="scripts/migration/"/>
+		  </copy>
 
 		<!-- copy over project readme files-->
 		<copy file="DISCLAIMER" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/DISCLAIMER" overwrite="yes" />
@@ -237,7 +241,7 @@
 		<copy file="README" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/README" overwrite="yes" />
 		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/RELEASE_NOTES" overwrite="yes" />
 		<copy file="NEW_AND_NOTEWORTHY" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/NEW_AND_NOTEWORTHY" overwrite="yes" />
-		<copy file="UPGRADING" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/UPGRADING" overwrite="yes" />
+		<!--<copy file="UPGRADING" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/UPGRADING" overwrite="yes" />-->
 		<copy file="etc/release/standalone/LICENSE" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/LICENSE" overwrite="yes" />		
 		<copy file="etc/release/standalone/NOTICE" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/NOTICE" overwrite="yes" />
 		
