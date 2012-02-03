@@ -1,6 +1,18 @@
 This document details any special actions that need to be taken when upgrading Wookie from a previous version. For
 general information on new features and improvements, see NEW_AND_NOTEWORTHY.
 
+FROM 0.9.1 TO 0.9.2
+===================
+
+A number of changes to the data model were put in place in 0.9.2, meaning that any existing databases must be updated.
+
+Scripts for migrating databases to 0.9.2 can be found in /scripts/migration.
+
+From 0.9.2, proxy policies are handled in a /policies text file rather than in the database; you should add your
+previous policies to the /policies file in the new format. The new file covers both widget-access policies and whitelist
+entries; the latter have a wildcard scope (*). For more information, see NEW_AND_NOTEWORTHY and see the documentation
+included in the default policies file.
+
 FROM 0.9.0 TO 0.9.1
 ===================
 
