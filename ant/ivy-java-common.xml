@@ -182,7 +182,7 @@
 			use="true"
 			windowtitle="${ant.project.name}-${version}"
 			doctitle="&lt;h1&gt;${ant.project.name}-${version}&lt;/h1&gt;">
-    		<bottom><![CDATA[<i>2011 Apache Software Foundation.</i>]]></bottom>
+    		<bottom><![CDATA[<i>2012 Apache Software Foundation.</i>]]></bottom>
     	</javadoc>
     	<jar destfile="${dist.dir}/${ant.project.name}-javadoc.jar">
     		<fileset dir="${dist.dir}/javadoc"/>
