@@ -71,6 +71,11 @@ widgets/freeder/scripts/jquery.jfeed.pack.js
 widgets/sudoku/jquery.js
 widgets/natter/jquery.js
 features/camera/shared/jquery.js
+widgets/templates/walkthrough/lib/jqueryMobile/jquery-1.6.4.min.js
+widgets/templates/walkthrough/lib/jqueryMobile/jquery.mobile-1.0rc1.css
+widgets/templates/walkthrough/lib/jqueryMobile/jquery.mobile-1.0rc1.js
+widgets/templates/walkthrough/lib/jqueryMobile/jquery.mobile-1.0rc1.min.css
+widgets/templates/walkthrough/lib/jqueryMobile/jquery.mobile-1.0rc1.min.js
 
 # Flashcanvas
 
@@ -97,6 +102,10 @@ widgets/bubbles/styles.css
 features/camera/shared/thickbox.css
 features/camera/shared/thickbox.js
 
+# Creole
+widgets/wookiewiki/creole.js
+widgets/templates/walkthrough/lib/creole.js
+
 # Misc
 
 scratchpad/widgets/localetest/index.htm
@@ -104,7 +113,6 @@ scratchpad/widgets/localetest/locales/
 widgets/camera/icon.svg
 widgets/geo/icon.svg
 widgets/simplechat/smileys/Emoticons.plist
-widgets/wookiewiki/creole.js
 features/camera/shared/camcanvas.html
 src/org/apache/wookie/util/UrlEncodedQueryString.java
 tutorials/geoLocation/scripts/geo.js
