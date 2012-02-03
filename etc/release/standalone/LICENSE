@@ -478,6 +478,25 @@ creole.js
  *
  * Copyright (c) 2008-2011, Ryan McGeary (ryanonjavascript -[at]- mcgeary [*dot*] org)
  */
+ 
+ jquery.tubeplayer.js
+/**
+ * jQuery TubePlayer Plugin
+ * 
+ * version: 1.0.4 (12-Nov-2011)
+ * @requires v1.3.2 or later
+ *
+ * @imports SWFObject - http://code.google.com/p/swfobject/
+ *	- Degrades to flash based player if not HTML5/iframe option 
+ *
+ * Author: Nirvana Tikku (@ntikku / ntikku@gmail.com)
+ * Documentation:
+ * 		http://www.tikku.com/jquery-youtube-tubeplayer-plugin
+ * 
+ * Dual licensed under the MIT and GPL licenses:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *   http://www.gnu.org/licenses/gpl.html 
+ */
 
 ===============================================================================	
 The following components are BSD Licensed 
