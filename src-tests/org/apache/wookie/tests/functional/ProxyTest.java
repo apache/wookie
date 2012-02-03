@@ -216,19 +216,8 @@ public class ProxyTest extends AbstractControllerTest {
   @Test
   public void postWithOnlyQueryStringParameters() throws Exception{
     HttpClient client = new HttpClient();
-    List<String> authPrefs =  new ArrayList<String>(2);
-    authPrefs.add(AuthPolicy.DIGEST );
-    authPrefs.add(AuthPolicy.BASIC);
-    client.getParams().setParameter (AuthPolicy.AUTH_SCHEME_PRIORITY, authPrefs);
-    //
-    // send the basic authentication response even before the server gives an unauthorized response
-    //
-    client.getParams().setAuthenticationPreemptive(true);
-    client.getState().setCredentials(
-        new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM),
-        new UsernamePasswordCredentials("java", "java"));
     PostMethod req;
-    req = new PostMethod(PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+PROTECTED_SITE_URL);
+    req = new PostMethod(PROXY_URL+"?instanceid_key="+instance_id_key+"&url="+PROTECTED_SITE_URL+"&username=java&password=java");
     client.executeMethod(req);
     int code = req.getStatusCode();
     req.releaseConnection();
@@ -272,20 +261,11 @@ public class ProxyTest extends AbstractControllerTest {
   @Test
   public void postWithMixedQueryAndParameters() throws Exception{
     HttpClient client = new HttpClient();
-    List<String> authPrefs =  new ArrayList<String>(2);
-    authPrefs.add(AuthPolicy.DIGEST );
-    authPrefs.add(AuthPolicy.BASIC);
-    client.getParams().setParameter (AuthPolicy.AUTH_SCHEME_PRIORITY, authPrefs);
-    //
-    // send the basic authentication response even before the server gives an unauthorized response
-    //
-    client.getParams().setAuthenticationPreemptive(true);
-    client.getState().setCredentials(
-        new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM),
-        new UsernamePasswordCredentials("java", "java"));
     PostMethod req;
     req = new PostMethod(PROXY_URL+"?instanceid_key="+instance_id_key);
     req.addParameter("url", PROTECTED_SITE_URL);
+    req.addParameter("username", "java");
+    req.addParameter("password", "java");
     client.executeMethod(req);
     int code = req.getStatusCode();
     req.releaseConnection();
@@ -333,21 +313,12 @@ public class ProxyTest extends AbstractControllerTest {
   @Test
   public void postWithOnlyParameters() throws Exception{
     HttpClient client = new HttpClient();
-    List<String> authPrefs =  new ArrayList<String>(2);
-    authPrefs.add(AuthPolicy.DIGEST );
-    authPrefs.add(AuthPolicy.BASIC);
-    client.getParams().setParameter (AuthPolicy.AUTH_SCHEME_PRIORITY, authPrefs);
-    //
-    // send the basic authentication response even before the server gives an unauthorized response
-    //
-    client.getParams().setAuthenticationPreemptive(true);
-    client.getState().setCredentials(
-        new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM),
-        new UsernamePasswordCredentials("java", "java"));
     PostMethod req;
     req = new PostMethod(PROXY_URL);
     req.addParameter("url", PROTECTED_SITE_URL);
     req.addParameter("instanceid_key", instance_id_key);
+    req.addParameter("username", "java");
+    req.addParameter("password", "java");
     client.executeMethod(req);
     int code = req.getStatusCode();
     req.releaseConnection();
@@ -375,6 +346,7 @@ public class ProxyTest extends AbstractControllerTest {
    * @throws Exception
    */
   @Test
+  @Ignore // we have disabled this functionality
   public void getProtectedSiteWithBasicAuth() throws Exception{
     HttpClient client = new HttpClient();
     List<String> authPrefs =  new ArrayList<String>(2);
@@ -401,6 +373,7 @@ public class ProxyTest extends AbstractControllerTest {
    * @throws IOException
    */
   @Test
+  @Ignore // we have disabled this functionality
   public void getWithCustomResponseHeaders() throws IOException{
 
     //
@@ -417,6 +390,7 @@ public class ProxyTest extends AbstractControllerTest {
 
     client.executeMethod(req);
     int code = req.getStatusCode();
+
     String header = req.getResponseHeader("CUSTOM-WOOKIE").getValue();
     assertEquals(200,code);
     assertEquals("hhrooar", header);
@@ -429,6 +403,7 @@ public class ProxyTest extends AbstractControllerTest {
     req = new GetMethod(url);
     client.executeMethod(req);
     code = req.getStatusCode();
+    
     header = req.getResponseHeader("CUSTOM-WOOKIE").getValue();
 
     req.releaseConnection();
@@ -443,6 +418,7 @@ public class ProxyTest extends AbstractControllerTest {
    * @throws IOException
    */
   @Test
+  @Ignore // we have disabled this functionality
   public void getWithCookies() throws IOException{
 
     //
