@@ -108,6 +108,7 @@ widgets/templates/walkthrough/lib/creole.js
 
 # Misc
 
+widgets/templates/widgets/twitter/lib/jquery.timeago.js
 scratchpad/widgets/localetest/index.htm
 scratchpad/widgets/localetest/locales/
 widgets/camera/icon.svg
