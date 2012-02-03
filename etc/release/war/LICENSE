@@ -663,8 +663,8 @@ google-collections-1.0-rc2.jar
 ===============================================================================	
 The following components are MIT Licensed 
 ===============================================================================	
-slf4j-api-1.5.3.jar
-slf4j-log4j12-1.5.2.jar
+slf4j-api-1.6.4.jar
+slf4j-log4j12-1.6.4.jar
 	Containing Project URL: http://www.slf4j.org/
 	
  Copyright (c) 2004-2011 QOS.ch
