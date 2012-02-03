@@ -10,11 +10,11 @@ startup.bat
 shutdown.sh
 shutdown.bat
 DISCLAIMER
-KEYS
 NOTICE
 LICENSE
-RUNTIME_LICENSE
+README
 RELEASE_NOTES
+NEW_AND_NOTEWORTHY
 STANDALONE_BUILD_NOTES (this file!)
 
 This installation of wookie is not meant for full deployment purposes, 
