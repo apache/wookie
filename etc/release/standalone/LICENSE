@@ -233,6 +233,11 @@ dwr-2.0.5
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+  
+enyo.js
+enyo.css
+
+/* Enyo v2.0.0 | Copyright 2011-2012 Hewlett-Packard Development Company, L.P. | enyojs.com | enyojs.com/license */
     	
 ===============================================================================	
 The following components are MIT Licensed 

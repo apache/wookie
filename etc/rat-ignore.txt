@@ -106,6 +106,10 @@ features/camera/shared/thickbox.js
 widgets/wookiewiki/creole.js
 widgets/templates/walkthrough/lib/creole.js
 
+#Enyo
+widgets/templates/enyo/base/lib/enyo-2.0b/enyo.css
+widgets/templates/enyo/base/lib/enyo-2.0b/enyo.js
+
 # Misc
 
 src-tests/org/apache/wookie/tests/helpers/NanoHTTPD.java
