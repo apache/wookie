@@ -16,8 +16,3 @@ http://glassfish.java.net/public/CDDLv1.0.html
 This software contains unmodified binary redistributions of software (mail) developed by 
 Sun Microsystems, Inc. (https://glassfish.dev.java.net/javaee5/mail), which is licensed under the CDDL 1.0.
 An original copy of the license can be found at https://glassfish.dev.java.net/public/CDDL+GPL.html
-
-This product includes unmodified, binary redistributions of software (ICU4J) developed by
-the ICU Project (http://site.icu-project.org), which is licensed under the X License.
-An original copy of the license can be found at 
-http://source.icu-project.org/repos/icu/icu4j/tags/release-4-6-1/main/shared/licenses/license.html
