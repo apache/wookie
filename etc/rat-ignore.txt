@@ -125,3 +125,4 @@ src/org/apache/wookie/util/UrlEncodedQueryString.java
 tutorials/geoLocation/scripts/geo.js
 tutorials/geoLocation/scripts/geo_position_js_simulator.js
 scratchpad/widgets/accessibility_controls/scripts/yui-min.js
+etc/rat-ignore.txt
