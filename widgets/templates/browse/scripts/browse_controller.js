@@ -28,7 +28,6 @@ var ${widget.shortname}_browse_controller = {
         var query = "";
         var searchUrl = '${browse.search.url}'; 
         if(searchUrl === "") $("#searchPanel").hide();
-        ${widget.shortname}_browse_controller.update();
         //
         // If there is a "requiresLogin" attribute, don't
         // trigger search just yet
@@ -63,20 +62,6 @@ var ${widget.shortname}_browse_controller = {
 	${widget.shortname}_browse_controller.search(query, sort, order);
     },
 
-    /**
-     * Update the display
-     */
-    update:function() {
-	// expand the search box on screens that are either wide enough (alongside results) or tall enough
-	if ($.mobile.media("${widget.media.screen.tall}")) {
-	    $('#searchPanel').trigger('expand');
-	} else if ($.mobile.media("${widget.media.screen.moderateWidth}") || $.mobile.media("${widget.media.screen.veryWide}")) {
-	    $('#searchPanel').trigger('expand');
-	} else {
-	    $('#searchPanel').trigger('collapse');
-	}
-    },
-
    /**
     * Get the current title for this widget.
     */
@@ -93,7 +78,6 @@ var ${widget.shortname}_browse_controller = {
         $('#content-primary').html(html).trigger("create");
         $('body').trigger("results_updated");
 	    $('.result:first').trigger('expand');
-	    ${widget.shortname}_browse_controller.update();
     },
         
     /**
