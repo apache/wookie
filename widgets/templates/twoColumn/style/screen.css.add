@@ -30,40 +30,41 @@
  @media ${widget.media.screen.moderateWidth} {
     .content-secondary {
 	text-align: left;
-	float: left;
+	float: ${twoColumn.secondary.position};
 	width: 42%;
 	margin-right: 1%;
 	padding-right: 2%;
     }
     .content-primary {
 	width: 55%;
-	float: right;
+	float: ${twoColumn.primary.position};
     }
  }
 
  @media ${widget.media.screen.wide} {
     .content-secondary {
 	text-align: left;
-	float: left;
+	float: ${twoColumn.secondary.position};
 	width: 32%;
 	margin-right: 1%;
 	padding-right: 2%;
     }
     .content-primary {
 	width: 65%;
-	float: right;
+	float: ${twoColumn.primary.position};
     }
  }
  
 @media ${widget.media.screen.veryWide} {
     .content-secondary {
 	text-align: left;
-	float: left;
+	float: ${twoColumn.secondary.position};
 	width: 22%;
 	margin-right: 1%;
 	padding-right: 2%;
     }
     .content-primary {
 	width: 75%;
+	float: ${twoColumn.primary.position};
     }	
 }
