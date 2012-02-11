@@ -15,13 +15,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project basedir="." name="browse_template">
+<project basedir="." name="twoColumn_template">
   <target name="_init_template"
           description="Define any template specifc properties">
     <echo message="+------------------------------------------"/>
     <echo message="|  Initialising template properties"/>
     <echo message="+------------------------------------------"/>
-
 
     <loadfile property="content.scripts"
 	      srcFile="content_scripts.html"
