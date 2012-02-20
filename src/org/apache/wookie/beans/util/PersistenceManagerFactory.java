@@ -22,10 +22,7 @@ import org.apache.wookie.beans.IDescription;
 import org.apache.wookie.beans.IName;
 import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.IWidgetDefault;
 import org.apache.wookie.beans.IWidgetIcon;
-import org.apache.wookie.beans.IWidgetService;
-import org.apache.wookie.beans.IWidgetType;
 import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,9 +116,6 @@ public class PersistenceManagerFactory
                     widgetENStartFile.setUrl(WidgetRuntimeHelper.getWebContextPath() + "/wservices/notsupported/locales/en/index.htm");
                     widgetENStartFile.setLang("en");
                     widget.getStartFiles().add(widgetENStartFile);
-                    IWidgetType widgetType = persistenceManager.newInstance(IWidgetType.class);
-                    widgetType.setWidgetContext("unsupported");
-                    widget.getWidgetTypes().add(widgetType);
                     IWidgetIcon widgetIcon = persistenceManager.newInstance(IWidgetIcon.class);
                     widgetIcon.setSrc(WidgetRuntimeHelper.getWebContextPath() + "/shared/images/defaultwidget.png");
                     widgetIcon.setHeight(80);
@@ -129,53 +123,6 @@ public class PersistenceManagerFactory
                     widgetIcon.setLang("en");
                     widget.getWidgetIcons().add(widgetIcon);
                     persistenceManager.save(widget);
-                }
-                else
-                {
-                    initializing = false;
-                }
-
-                // WidgetDefault
-                if (persistenceManager.findWidgetDefaultByType("unsupported") == null)
-                {
-                    // required: always create if not found
-                    IWidgetDefault widgetDefault = persistenceManager.newInstance(IWidgetDefault.class);
-                    widgetDefault.setWidget(widget);
-                    widgetDefault.setWidgetContext("unsupported");
-                    persistenceManager.save(widgetDefault);
-                }
-                else
-                {
-                    initializing = false;
-                }
-
-                // WidgetService
-                if (initializing && (persistenceManager.findAll(IWidgetService.class).length == 0))
-                {
-                    // optional: create only if initializing
-                    IWidgetService chatWidgetService = persistenceManager.newInstance(IWidgetService.class);
-                    chatWidgetService.setServiceName("chat");
-                    persistenceManager.save(chatWidgetService);
-                    IWidgetService gamesWidgetService = persistenceManager.newInstance(IWidgetService.class);
-                    gamesWidgetService.setServiceName("games");
-                    persistenceManager.save(gamesWidgetService);
-                    IWidgetService votingWidgetService = persistenceManager.newInstance(IWidgetService.class);
-                    votingWidgetService.setServiceName("voting");
-                    persistenceManager.save(votingWidgetService);
-                    IWidgetService weatherWidgetService = persistenceManager.newInstance(IWidgetService.class);
-                    weatherWidgetService.setServiceName("weather");
-                    persistenceManager.save(weatherWidgetService);
-                }
-                else
-                {
-                    initializing = false;
-                }
-                if (persistenceManager.findByValue(IWidgetService.class, "serviceName", "unsupported").length == 0)
-                {
-                    // required: always create if not found
-                    IWidgetService unsupportedWidgetService = persistenceManager.newInstance(IWidgetService.class);
-                    unsupportedWidgetService.setServiceName("unsupported");
-                    persistenceManager.save(unsupportedWidgetService);
                 }
                 else
                 {

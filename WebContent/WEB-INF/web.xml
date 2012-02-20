@@ -165,20 +165,6 @@
 	
 	<servlet>
 		<description></description>
-		<display-name>WidgetServices</display-name>
-		<servlet-name>WidgetServiceController</servlet-name>
-		<servlet-class>
-			org.apache.wookie.controller.WidgetServicesController
-		</servlet-class>
-		<load-on-startup>2</load-on-startup>
-	</servlet>	
-	<servlet-mapping>
-		<servlet-name>WidgetServiceController</servlet-name>
-		<url-pattern>/services/*</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<description></description>
 		<display-name>ApiKeys</display-name>
 		<servlet-name>ApiKeyController</servlet-name>
 		<servlet-class>
@@ -325,10 +311,6 @@
   	<filter-mapping>
     	<filter-name>AuthorizationFilter</filter-name>
  		<servlet-name>ParticipantServlet</servlet-name>
-  	</filter-mapping>
-   	<filter-mapping>
-    	<filter-name>AuthorizationFilter</filter-name>
-		<servlet-name>WidgetServiceServlet</servlet-name>
   	</filter-mapping>
     <filter-mapping>
     	<filter-name>AuthorizationFilter</filter-name>

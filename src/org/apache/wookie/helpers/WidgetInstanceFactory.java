@@ -70,7 +70,7 @@ public class WidgetInstanceFactory{
 	public static IWidgetInstance defaultInstance(String locale){
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidgetInstance instance = persistenceManager.newInstance(IWidgetInstance.class);
-		instance.setWidget(persistenceManager.findWidgetDefaultByType("unsupported")); //$NON-NLS-1$
+		instance.setWidget(persistenceManager.findWidgetByGuid("http://notsupported")); //$NON-NLS-1$
 		instance.setIdKey("0000");
 		instance.setLang(locale);
 		instance.setOpensocialToken("");
@@ -88,17 +88,13 @@ public class WidgetInstanceFactory{
 	 */
 	public IWidgetInstance newInstance(String apiKey, String userId, String sharedDataKey, String serviceType, String widgetId, String lang){
 		try {
-			IWidget widget;
+			IWidget widget = null;
 			IWidgetInstance widgetInstance;
 			// Widget ID or Widget Type?
 	        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 			if (widgetId != null){
 				widget = persistenceManager.findWidgetByGuid(widgetId);
 			} 
-			else {
-				// does this type of widget exist?
-				widget = persistenceManager.findWidgetDefaultByType(serviceType);				
-			}
 			// Unsupported
 			if (widget == null) return null;
 

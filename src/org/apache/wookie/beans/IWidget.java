@@ -92,20 +92,6 @@ public interface IWidget extends ILocalizedBean, IBean
     void setWidth(Integer width);
 
     /**
-     * Get collection of widget types for this widget.
-     * 
-     * @return widget types collection
-     */
-    Collection<IWidgetType> getWidgetTypes();
-    
-    /**
-     * Set collection of widget types for this widget.
-     * 
-     * @param widgetTypes widget types collection
-     */
-    void setWidgetTypes(Collection<IWidgetType> widgetTypes);
-
-    /**
      * Get widget GUID.
      * 
      * @return widget GUID

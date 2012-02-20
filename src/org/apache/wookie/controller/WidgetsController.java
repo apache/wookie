@@ -16,7 +16,6 @@ package org.apache.wookie.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -30,8 +29,6 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.IWidgetDefault;
-import org.apache.wookie.beans.IWidgetService;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.exceptions.InvalidParametersException;
@@ -88,15 +85,7 @@ public class WidgetsController extends Controller{
 		// attempt to get specific widget by id
 		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidget widget = persistenceManager.findById(IWidget.class, resourceId);
-		// support queries by type
-		if (widget == null) {
-			IWidgetService[] services = persistenceManager.findByValue(IWidgetService.class, "serviceName", resourceId);
-		    if (services != null && services.length == 1) {
-			    IWidget[] widgets = persistenceManager.findWidgetsByType(resourceId);
-		        returnXml(WidgetHelper.createXMLWidgetsDocument(widgets, getLocalPath(request), getLocales(request)),response);
-		        return;
-		    }
-		}
+		
 		// return widget result
 		if (widget == null) throw new ResourceNotFoundException();
 		returnXml(WidgetHelper.createXMLWidgetsDocument(widget, getLocalPath(request), getLocales(request)),response);
@@ -121,33 +110,9 @@ public class WidgetsController extends Controller{
 	 */
 	private void index(String resourceId, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		IWidget widget = null;
-		IWidget[] widgets;
-		
-		// If the request has the parameter ?all, return all widgets.
-		// If the request contains a String resource identifier
-		// such as "/chat", return all matching widgets
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		if (request.getParameter("all") != null
-				|| (resourceId != null && !resourceId.equals(""))) {
-			if (resourceId != null && !resourceId.equals("")) {
-				widgets = persistenceManager.findWidgetsByType(resourceId);
-			} else {
-				widgets = persistenceManager.findAll(IWidget.class);
-			}
-			// Otherwise, return default widgets for the defined services. In
-			// future we may want
-			// to move this into the Services controller.
-		} else {
-			ArrayList<IWidget> widgetsarr = new ArrayList<IWidget>();
-			for (IWidgetDefault widgetDefault : persistenceManager.findAll(IWidgetDefault.class)) {
-				widget = widgetDefault.getWidget();
-				if (!widget.getGuid().equals("http://notsupported")) {
-					widgetsarr.add(widget);
-				}
-			}
-			widgets = (IWidget[])widgetsarr.toArray(new IWidget[widgetsarr.size()]);
-		}
+
+    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+    IWidget[] widgets = persistenceManager.findAll(IWidget.class);
 		returnXml(WidgetHelper.createXMLWidgetsDocument(widgets, getLocalPath(request), getLocales(request)),response);
 	}
 

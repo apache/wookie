@@ -62,11 +62,8 @@ import org.apache.wookie.beans.IPreferenceDefault;
 import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.IWidgetDefault;
 import org.apache.wookie.beans.IWidgetIcon;
 import org.apache.wookie.beans.IWidgetInstance;
-import org.apache.wookie.beans.IWidgetService;
-import org.apache.wookie.beans.IWidgetType;
 import org.apache.wookie.beans.jpa.impl.ApiKeyImpl;
 import org.apache.wookie.beans.jpa.impl.AuthorImpl;
 import org.apache.wookie.beans.jpa.impl.DescriptionImpl;
@@ -80,12 +77,9 @@ import org.apache.wookie.beans.jpa.impl.PreferenceDefaultImpl;
 import org.apache.wookie.beans.jpa.impl.PreferenceImpl;
 import org.apache.wookie.beans.jpa.impl.SharedDataImpl;
 import org.apache.wookie.beans.jpa.impl.StartFileImpl;
-import org.apache.wookie.beans.jpa.impl.WidgetDefaultImpl;
 import org.apache.wookie.beans.jpa.impl.WidgetIconImpl;
 import org.apache.wookie.beans.jpa.impl.WidgetImpl;
 import org.apache.wookie.beans.jpa.impl.WidgetInstanceImpl;
-import org.apache.wookie.beans.jpa.impl.WidgetServiceImpl;
-import org.apache.wookie.beans.jpa.impl.WidgetTypeImpl;
 import org.apache.wookie.beans.util.DatabaseUtils;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceCommitException;
@@ -127,11 +121,8 @@ public class JPAPersistenceManager implements IPersistenceManager
         INTERFACE_TO_CLASS_MAP.put(ISharedData.class, SharedDataImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IStartFile.class, StartFileImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IWidget.class, WidgetImpl.class);
-        INTERFACE_TO_CLASS_MAP.put(IWidgetDefault.class, WidgetDefaultImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IWidgetIcon.class, WidgetIconImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IWidgetInstance.class, WidgetInstanceImpl.class);
-        INTERFACE_TO_CLASS_MAP.put(IWidgetService.class, WidgetServiceImpl.class);
-        INTERFACE_TO_CLASS_MAP.put(IWidgetType.class, WidgetTypeImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IOAuthToken.class, OAuthTokenImpl.class);
 
         BEAN_INTERFACE_TO_CLASS_MAP.put(IApiKey.class, ApiKeyImpl.class);
@@ -139,17 +130,13 @@ public class JPAPersistenceManager implements IPersistenceManager
         BEAN_INTERFACE_TO_CLASS_MAP.put(IPreference.class, PreferenceImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(ISharedData.class, SharedDataImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidget.class, WidgetImpl.class);
-        BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetDefault.class, WidgetDefaultImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetInstance.class, WidgetInstanceImpl.class);
-        BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetService.class, WidgetServiceImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IOAuthToken.class, OAuthTokenImpl.class);
 
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IApiKey.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IParticipant.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IWidget.class, Integer.class);
-        BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IWidgetDefault.class, String.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IWidgetInstance.class, Integer.class);
-        BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IWidgetService.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IOAuthToken.class, Integer.class);
         
         DB_TYPE_TO_JPA_DICTIONARY_MAP.put("db2", "db2");
@@ -661,37 +648,6 @@ public class JPAPersistenceManager implements IPersistenceManager
     }
 
     /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IPersistenceManager#findWidgetDefaultByType(java.lang.String)
-     */
-    public IWidget findWidgetDefaultByType(String widgetContext)
-    {
-        // validate entity manager transaction
-        if (entityManager == null)
-        {
-            throw new IllegalStateException("Transaction not initiated or already closed");
-        }        
-
-        // get default widget by type using custom query
-        if (widgetContext != null)
-        {
-            try
-            {
-                Query query = entityManager.createNamedQuery("DEFAULT_WIDGET");
-                query.setParameter("widgetContext", widgetContext);
-                return (IWidget)query.getSingleResult();
-            }
-            catch (NoResultException nre)
-            {
-            }
-            catch (Exception e)
-            {
-                logger.error("Unexpected exception: "+e, e);
-            }
-        }
-        return null;
-    }
-
-    /* (non-Javadoc)
      * @see org.apache.wookie.beans.util.IPersistenceManager#findWidgetInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     public IWidgetInstance findWidgetInstance(String apiKey, String userId, String sharedDataKey, String serviceContext)
@@ -789,40 +745,7 @@ public class JPAPersistenceManager implements IPersistenceManager
         }
         return null;
     }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IPersistenceManager#findWidgetsByType(java.lang.String)
-     */
-    @SuppressWarnings("unchecked")
-    public IWidget[] findWidgetsByType(String widgetContext)
-    {
-        // validate entity manager transaction
-        if (entityManager == null)
-        {
-            throw new IllegalStateException("Transaction not initiated or already closed");
-        }        
-
-        // get widgets by type using custom query
-        if (widgetContext != null)
-        {
-            try
-            {
-                Query query = entityManager.createNamedQuery("WIDGETS");
-                query.setParameter("widgetContext", widgetContext);
-                List<IWidget> widgetsList = query.getResultList();
-                if ((widgetsList != null) && !widgetsList.isEmpty())
-                {
-                    return widgetsList.toArray(new IWidget[widgetsList.size()]);
-                }
-            }
-            catch (Exception e)
-            {
-                logger.error("Unexpected exception: "+e, e);
-            }
-        }
-        return new IWidget[0];
-    }
-
+    
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.util.IPersistenceManager#newInstance(java.lang.Class)
      */

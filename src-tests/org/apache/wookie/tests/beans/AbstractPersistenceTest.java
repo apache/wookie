@@ -25,9 +25,7 @@ import org.apache.wookie.beans.IApiKey;
 import org.apache.wookie.beans.IParticipant;
 import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.IWidgetDefault;
 import org.apache.wookie.beans.IWidgetInstance;
-import org.apache.wookie.beans.IWidgetService;
 import org.apache.wookie.beans.SharedContext;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
@@ -79,20 +77,6 @@ public abstract class AbstractPersistenceTest
         IWidget [] allWidgets = persistenceManager.findAll(IWidget.class);
         assertNotNull(allWidgets);
         assertEquals(1, allWidgets.length);
-        
-        //
-        // test findAll method for IWidgetDefault
-        //
-        IWidgetDefault [] allWidgetDefaults = persistenceManager.findAll(IWidgetDefault.class);
-        assertNotNull(allWidgetDefaults);
-        assertEquals(1, allWidgetDefaults.length);
-        
-        //
-        // test findAll method for IWidgetService
-        //
-        IWidgetService [] widgetServices = persistenceManager.findAll(IWidgetService.class);
-        assertNotNull(widgetServices);
-        assertEquals(5, widgetServices.length);
 
         //
         // test findById  for IWidget
@@ -103,14 +87,6 @@ public abstract class AbstractPersistenceTest
         assertEquals(allWidgets[0], widgetById);
         
         //
-        // test findById  for IWidgetDefault
-        //
-        Object widgetDefaultId = allWidgetDefaults[0].getId();
-        IWidgetDefault widgetDefaultById = persistenceManager.findById(IWidgetDefault.class, widgetDefaultId);
-        assertNotNull(widgetDefaultById);
-        assertEquals(allWidgetDefaults[0], widgetDefaultById);
-
-        //
         // test findByValue method for IWidget
         //
         String widgetGuid = allWidgets[0].getGuid();
@@ -118,15 +94,7 @@ public abstract class AbstractPersistenceTest
         assertNotNull(widgetsByValue);
         assertEquals(1, widgetsByValue.length);
         assertEquals(allWidgets[0], widgetsByValue[0]);
-        
-        //
-        // test findByValue method for IWidgetDefault
-        //
-        IWidgetDefault [] widgetDefaultsByValue = persistenceManager.findByValue(IWidgetDefault.class, "widget", widgetById);
-        assertNotNull(widgetDefaultsByValue);
-        assertEquals(1, widgetDefaultsByValue.length);
-        assertEquals(allWidgetDefaults[0], widgetDefaultsByValue[0]);
-        
+               
         //
         // test findByValues methods for IWidget
         //
@@ -149,14 +117,6 @@ public abstract class AbstractPersistenceTest
         IWidget widgetByGuid = persistenceManager.findWidgetByGuid(widgetGuid);
         assertNotNull(widgetByGuid);
         assertEquals(allWidgets[0], widgetByGuid);
-        String widgetContext = allWidgetDefaults[0].getWidgetContext();
-        IWidget widgetDefaultByType = persistenceManager.findWidgetDefaultByType(widgetContext);
-        assertNotNull(widgetDefaultByType);
-        assertEquals(allWidgets[0], widgetDefaultByType);
-        IWidget [] widgetsByType = persistenceManager.findWidgetsByType(widgetContext);
-        assertNotNull(widgetsByType);
-        assertEquals(1, widgetsByType.length);
-        assertEquals(allWidgets[0], widgetsByType[0]);
         
         //
         // rollback and close persistence manager transaction
@@ -238,14 +198,13 @@ public abstract class AbstractPersistenceTest
         persistenceManager.begin();
         
         //
-        // Get the widget instance created in the previous transaction via its "service context" (category)
+        // Get the widget instance created in the previous transaction
         // 
         apiKeys = persistenceManager.findAll(IApiKey.class);
         apiKey = apiKeys[0].getValue();
         widgets = persistenceManager.findAll(IWidget.class);
         widget = widgets[0];
-        String serviceContext = widget.getWidgetTypes().iterator().next().getWidgetContext();
-        IWidgetInstance widgetInstance0 = persistenceManager.findWidgetInstance(apiKey, "test", "test-shared-data-key", serviceContext);
+        IWidgetInstance widgetInstance0 = persistenceManager.findWidgetInstanceByGuid(apiKey, "test", "test-shared-data-key", widgetGuid);
         assertNotNull(widgetInstance0);
         widgetGuid = widget.getGuid();
         

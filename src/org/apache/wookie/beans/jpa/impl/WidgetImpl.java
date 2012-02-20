@@ -42,7 +42,6 @@ import org.apache.wookie.beans.IPreferenceDefault;
 import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetIcon;
-import org.apache.wookie.beans.IWidgetType;
 import org.apache.wookie.beans.jpa.InverseRelationshipCollection;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 
@@ -80,10 +79,6 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     @Basic
     @Column(name="width")
     private Integer width;
-
-    @OneToMany(mappedBy="widget", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-    @ElementDependent
-    private Collection<WidgetTypeImpl> widgetTypes;
 
     @Basic
     @Column(name="update_location")
@@ -474,33 +469,6 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
             for (IWidgetIcon widgetIcon : widgetIcons)
             {
                 getWidgetIcons().add((WidgetIconImpl)widgetIcon);
-            }
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#getWidgetTypes()
-     */
-    public Collection<IWidgetType> getWidgetTypes()
-    {
-        if (widgetTypes == null)
-        {
-            widgetTypes = new ArrayList<WidgetTypeImpl>();
-        }
-        return new InverseRelationshipCollection<WidgetImpl,WidgetTypeImpl,IWidgetType>(this, widgetTypes);
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#setWidgetTypes(java.util.Collection)
-     */
-    public void setWidgetTypes(Collection<IWidgetType> widgetTypes)
-    {
-        getWidgetTypes().clear();
-        if (widgetTypes != null)
-        {
-            for (IWidgetType widgetType : widgetTypes)
-            {
-                getWidgetTypes().add((WidgetTypeImpl)widgetType);
             }
         }
     }

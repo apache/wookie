@@ -29,10 +29,8 @@ import org.apache.wookie.beans.IPreferenceDefault;
 import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.IWidgetDefault;
 import org.apache.wookie.beans.IWidgetIcon;
 import org.apache.wookie.beans.IWidgetInstance;
-import org.apache.wookie.beans.IWidgetType;
 import org.apache.wookie.beans.SharedContext;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
@@ -110,7 +108,6 @@ public class WidgetFactory {
 	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidget widget = createWidget(persistenceManager, model);
 		createAuthor(persistenceManager, model, widget);
-		createTypes(persistenceManager, widgetTypes, widget);
 		createStartFiles(persistenceManager, model,widget);
 		createNames(persistenceManager, model,widget);
 		createDescriptions(persistenceManager, model,widget);
@@ -147,17 +144,6 @@ public class WidgetFactory {
 	      author.setLang(model.getAuthor().getLang());
 	      widget.setAuthor(author);
 	    }
-	}
-
-	private static void createTypes(IPersistenceManager persistenceManager, String[] widgetTypes, IWidget widget){
-		IWidgetType widgetType;
-		if (widgetTypes!=null){
-			for(int i=0;i<widgetTypes.length;i++){
-				widgetType = persistenceManager.newInstance(IWidgetType.class);
-				widgetType.setWidgetContext(widgetTypes[i]);
-				widget.getWidgetTypes().add(widgetType);
-			}
-		}
 	}
 
 	private static void createStartFiles(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
@@ -283,10 +269,7 @@ public class WidgetFactory {
 
 		if(widget==null) return false;
 		
-		// remove any defaults for this widget
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWidgetDefault[] widgetDefault = persistenceManager.findByValue(IWidgetDefault.class, "widget", widget);
-		if (widgetDefault.length == 1) persistenceManager.delete(widgetDefault[0]);
+    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		
 		// remove any widget instances for this widget
 		IWidgetInstance[] instances = persistenceManager.findByValue(IWidgetInstance.class, "widget", widget);	

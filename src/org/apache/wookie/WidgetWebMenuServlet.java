@@ -37,8 +37,6 @@ import org.apache.wookie.connector.framework.WookieConnectorException;
 import org.apache.wookie.connector.framework.WookieConnectorService;
 import org.apache.wookie.controller.WidgetInstancesController;
 import org.apache.wookie.helpers.WidgetKeyManager;
-import org.apache.wookie.manager.IWidgetAdminManager;
-import org.apache.wookie.manager.impl.WidgetAdminManager;
 import org.apache.wookie.server.LocaleHandler;
 
 /**
@@ -71,11 +69,6 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(true);
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		IWidgetAdminManager manager = (IWidgetAdminManager)session.getAttribute(WidgetAdminManager.class.getName());
-		if(manager == null){
-			manager = new WidgetAdminManager(localizedMessages);
-			session.setAttribute(WidgetAdminManager.class.getName(), manager);
-		}
 		Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
 
 		request.setAttribute("version", properties.getString("widget.version")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -97,7 +90,7 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 					break;
 				}
 				case LISTWIDGETS: {
-					listOperation(request, session, manager);
+					listOperation(request, session);
 					doForward(request, response, fListWidgetsPage);
 					break;
 				}
@@ -123,12 +116,12 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 					break;
 				}
 				case INSTANTIATE: {
-					instantiateOperation(request, manager);
+					instantiateOperation(request);
 					doForward(request, response, fInstantiateWidgetsPage);
 					break;
 				}
 				case REQUESTAPIKEY:{
-					requestApiKeyOperation(request,properties,manager);
+					requestApiKeyOperation(request,properties);
 					doForward(request, response, fMainPage);
 					break;
 				}
@@ -173,7 +166,7 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 		doGet(request, response);
 	}
 
-	private void instantiateOperation(HttpServletRequest request, IWidgetAdminManager manager){
+	private void instantiateOperation(HttpServletRequest request){
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidget[] widgets = persistenceManager.findAll(IWidget.class);
 		request.setAttribute("widgets", widgets); //$NON-NLS-1$
@@ -188,7 +181,7 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 	 * @param session
 	 * @param manager
 	 */
-	private void listOperation(HttpServletRequest request, HttpSession session, IWidgetAdminManager manager){
+	private void listOperation(HttpServletRequest request, HttpSession session){
 		ArrayList<IWidget> widgets = new ArrayList<IWidget>();
     IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		for(IWidget widget : persistenceManager.findAll(IWidget.class)){
@@ -208,7 +201,7 @@ public class WidgetWebMenuServlet extends HttpServlet implements Servlet {
 		request.setAttribute("widgets", widgets.toArray( new IWidget[widgets.size()])); //$NON-NLS-1$
 	}
 
-	private void requestApiKeyOperation(HttpServletRequest request, Configuration properties, IWidgetAdminManager manager){
+	private void requestApiKeyOperation(HttpServletRequest request, Configuration properties){
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		try {
 			String email = request.getParameter("email"); //$NON-NLS-1$

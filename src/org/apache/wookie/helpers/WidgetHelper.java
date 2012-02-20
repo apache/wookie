@@ -23,7 +23,6 @@ import org.apache.wookie.beans.IName;
 import org.apache.wookie.beans.IPreferenceDefault;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetIcon;
-import org.apache.wookie.beans.IWidgetType;
 import org.apache.wookie.util.WidgetFormattingUtils;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.util.LocalizationUtils;
@@ -77,7 +76,6 @@ public class WidgetHelper {
 		out += getName(widget, locales);
 		out += getDescription(widget, locales);
 		out += getIcons(widget, locales, localIconPath);
-		out += getTags(widget);
 		out += getAuthor(widget);
 		out += getLicenses(widget, locales);
 		out += getPreferences(widget);
@@ -169,14 +167,6 @@ public class WidgetHelper {
 		out += ">";
 		if (desc != null) out += StringEscapeUtils.escapeXml(desc.getContent());
 		out += "</description>\n";
-		return out;
-	}
-	
-	private static String getTags(IWidget widget){
-		String out = "";
-		for (IWidgetType type:widget.getWidgetTypes()){
-			out +="\t\t<category>"+type.getWidgetContext()+"</category>\n";
-		}
 		return out;
 	}
 

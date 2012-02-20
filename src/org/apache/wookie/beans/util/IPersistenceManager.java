@@ -151,22 +151,6 @@ public interface IPersistenceManager
     IWidget findWidgetByGuid(String guid);
 
     /**
-     * Custom default widget type IWidget query.
-     *  
-     * @param widgetContext default widget type matching query value
-     * @return retrieved IWidget bean instance or null if not found
-     */
-    IWidget findWidgetDefaultByType(String widgetContext);
-
-    /**
-     * Custom widget type IWidgets query.
-     *  
-     * @param widgetContext widget type matching query value
-     * @return retrieved matching IWidget beans array or empty array if none found
-     */
-    IWidget [] findWidgetsByType(String widgetContext);
-
-    /**
      * Custom service type IWidgetInstance query.
      * 
      * @param apiKey API key matching query value
