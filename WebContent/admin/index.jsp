@@ -152,66 +152,7 @@ if (opensocialEnabled == null) opensocialEnabled = false;
 				<b class="r1"></b>
 				</b>
 				</div>
-		</div>
-		
-		
-		
-		<h3><a href="#"><img height="20" width="20" border="0" src="../shared/images/view_1.gif"/>Service types</a></h3>
-		<div>
-				<div id="nifty">
-				<b class="rtop">
-				<b class="r1"></b>
-				<b class="r2"></b>
-				<b class="r3"></b>
-				<b class="r4"></b>
-				</b>
-				<div class="adminLayerDetail"><a href="WidgetAdminServlet?operation=LISTSERVICES&param=list" class="hypercolour"><img src="../shared/images/view_1.gif" width="16" height="16" border="0">&nbsp;View existing widget services</a></div>
-				<b class="rbottom">
-				<b class="r4"></b>
-				<b class="r3"></b>
-				<b class="r2"></b>
-				<b class="r1"></b>
-				</b>
-				</div>
-				
-				<div id="spacer"></div>
-
-				<div id="nifty">
-				<b class="rtop">
-				<b class="r1"></b>
-				<b class="r2"></b>
-				<b class="r3"></b>
-				<b class="r4"></b>
-				</b>				
-				<div class="adminLayerDetail"><a href="WidgetAdminServlet?operation=LISTSERVICES&param=add" class="hypercolour"><img src="../shared/images/add_1.gif" width="16" height="16" border="0">&nbsp;Add new widget service</a></div>
-				<b class="rbottom">
-				<b class="r4"></b>
-				<b class="r3"></b>
-				<b class="r2"></b>
-				<b class="r1"></b>
-				</b>
-				</div>
-				
-				<div id="spacer"></div>
-				
-				<div id="nifty">
-				<b class="rtop">
-				<b class="r1"></b>
-				<b class="r2"></b>
-				<b class="r3"></b>
-				<b class="r4"></b>
-				</b>
-		    	<div class="adminLayerDetail"><a href="WidgetAdminServlet?operation=LISTSERVICES&param=remove" class="hypercolour"><img src="../shared/images/delete_1.gif" width="16" height="16" border="0">&nbsp;Remove service from system</a></div>
-				<b class="rbottom">
-				<b class="r4"></b>
-				<b class="r3"></b>
-				<b class="r2"></b>
-				<b class="r1"></b>
-				</b>
-				</div>
-				
-				
-	    </div>	
+		</div>	
 				
 	    <h3><a href="#"><img height="20" width="20" border="0" src="../shared/images/view_1.gif"/>Proxy</a></h3>
 	    <div>
