@@ -216,40 +216,6 @@
     </index>
   </table>
 
-  <table name="WidgetDefault">
-    <column name="widgetContext" primaryKey="true" required="true" size="255" type="VARCHAR"/>
-    <column name="jpa_version" type="INTEGER"/>
-    <column name="widgetId" required="true" type="INTEGER"/>
-    <foreign-key foreignTable="Widget" name="FKWidgetDefault1">
-      <reference foreign="id" local="widgetId"/>
-    </foreign-key>
-    <index name="IXWidgetDefault1">
-      <index-column name="widgetId"/>
-    </index>
-  </table>
-
-  <table name="WidgetService">
-    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
-    <column name="jpa_version" type="INTEGER"/>
-    <column name="service_name" required="true" size="255" type="VARCHAR"/>
-    <index name="IXWidgetService1">
-      <index-column name="service_name"/>
-    </index>
-  </table>
-
-  <table name="WidgetType">
-    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
-    <column name="jpa_version" type="INTEGER"/>
-    <column name="widget_context" size="255" type="VARCHAR"/>
-    <column name="widget_id" type="INTEGER"/>
-    <foreign-key foreignTable="Widget" name="FKWidgetType1">
-      <reference foreign="id" local="widget_id"/>
-    </foreign-key>
-    <index name="IXWidgetType1">
-      <index-column name="widget_id"/>
-    </index>
-  </table>
-
   <table name="ApiKey">
     <column name="id" primaryKey="true" required="true" type="INTEGER"/>
     <column name="jpa_version" type="INTEGER"/>
