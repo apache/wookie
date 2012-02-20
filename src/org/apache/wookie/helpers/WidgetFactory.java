@@ -61,20 +61,10 @@ public class WidgetFactory {
 	 * @param grantAccessRequests whether to automatically grant access requests for the widget
 	 * @return the widget
 	 */
-	public static IWidget addNewWidget(W3CWidget model,String[] widgetTypes, File file, boolean grantAccessRequests) {
-		IWidget widget = addNewWidget(model,widgetTypes, grantAccessRequests);
+	public static IWidget addNewWidget(W3CWidget model, File file, boolean grantAccessRequests) {
+		IWidget widget = addNewWidget(model, grantAccessRequests);
 		widget.setPackagePath(file.getPath());
 		return widget;
-	}
-	
-	/**
-	 * Adds a new widget
-	 * @param model the model of the widget to add
-	 * @param grantAccessRequests whether to automatically grant access requests for the widget
-	 * @return the widget
-	 */
-	public static IWidget addNewWidget(W3CWidget model, boolean grantAccessRequests) {
-		return addNewWidget(model,null, grantAccessRequests);
 	}
 
 	/**
@@ -83,28 +73,17 @@ public class WidgetFactory {
 	 * @return the widget
 	 */
 	public static IWidget addNewWidget(W3CWidget model) {
-		return addNewWidget(model,null,false);
+		return addNewWidget(model,false);
 	}
-
-	/**
-	 * Adds a new widget
-	 * @param model the model of the widget to add
-	 * @param widgetTypes the types to allocate the widget to
-	 * @return the widget
-	 */
-	public static IWidget addNewWidget(W3CWidget model,String[] widgetTypes) {
-		return addNewWidget(model,widgetTypes,false);
-	}	
 
 
 	/**
 	 * Constructs a new Widget and persists it and all dependent objects
 	 * @param model the model for the widget
-	 * @param widgetTypes the types to set for the widget
 	 * @param grantAccessRequests whether to grant access requests created for the widget
 	 * @return the widget
 	 */
-	public static IWidget addNewWidget(W3CWidget model, String[] widgetTypes, boolean grantAccessRequests) {
+	public static IWidget addNewWidget(W3CWidget model, boolean grantAccessRequests) {
 	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidget widget = createWidget(persistenceManager, model);
 		createAuthor(persistenceManager, model, widget);
