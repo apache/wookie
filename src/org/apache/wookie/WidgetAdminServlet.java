@@ -65,12 +65,6 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
     REGISTERGADGET,
     // APIKey operations  
     LISTAPIKEYS, REVOKEAPIKEY,
-	  // Service operations - to be deprecated
-		ADDNEWSERVICE, LISTSERVICES, REMOVESERVICE, LISTSERVICESFORADDITION,
-		// Widget Type operations - to be deprecated
-		REMOVESINGLEWIDGETTYPE, REVISETYPES, SETWIDGETTYPES,
-		// Widget Default operations - to be deprecated
-		SETDEFAULTWIDGET
 	}	
 
 	// Get the logger

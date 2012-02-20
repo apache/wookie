@@ -50,8 +50,7 @@ import org.apache.wookie.beans.jpa.InverseRelationshipCollection;
  */
 @Entity(name="WidgetInstance")
 @Table(name="WidgetInstance")
-@NamedQueries({@NamedQuery(name="WIDGET_INSTANCE", query="SELECT wi FROM WidgetInstance wi JOIN wi.widget w JOIN w.widgetTypes wt WHERE wi.apiKey = :apiKey AND wi.userId = :userId AND wi.sharedDataKey = :sharedDataKey AND wt.widgetContext = :widgetContext"),
-               @NamedQuery(name="WIDGET_INSTANCE_GUID", query="SELECT wi FROM WidgetInstance wi JOIN wi.widget w WHERE wi.apiKey = :apiKey AND wi.userId = :userId AND wi.sharedDataKey = :sharedDataKey AND w.guid = :guid"),
+@NamedQueries({@NamedQuery(name="WIDGET_INSTANCE_GUID", query="SELECT wi FROM WidgetInstance wi JOIN wi.widget w WHERE wi.apiKey = :apiKey AND wi.userId = :userId AND wi.sharedDataKey = :sharedDataKey AND w.guid = :guid"),
                @NamedQuery(name="WIDGET_INSTANCE_ID", query="SELECT wi FROM WidgetInstance wi WHERE wi.idKey = :idKey")})
 public class WidgetInstanceImpl implements IWidgetInstance
 {
