@@ -48,7 +48,7 @@ public class MigrationHelper {
    * @return the widget instance, or null if there is no match
    * @throws UnsupportedEncodingException
    */
-  public static IWidgetInstance findLegacyWidgetInstance(String apiKey, String userId, String sharedDataKey, String widgetId, String serviceType) throws UnsupportedEncodingException{
+  public static IWidgetInstance findLegacyWidgetInstance(String apiKey, String userId, String sharedDataKey, String widgetId) throws UnsupportedEncodingException{
     //
     // Get shared data key using legacy method
     //
@@ -57,7 +57,7 @@ public class MigrationHelper {
     //
     // Find widget instance
     //
-    IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(apiKey, userId, legacySharedDataKey, widgetId, serviceType);
+    IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(apiKey, userId, legacySharedDataKey, widgetId);
 
     //
     // Match found, so migrate the instance as well as any sibling instances that use the same shared data key, and any shared data instances

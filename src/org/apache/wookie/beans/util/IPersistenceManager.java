@@ -151,17 +151,6 @@ public interface IPersistenceManager
     IWidget findWidgetByGuid(String guid);
 
     /**
-     * Custom service type IWidgetInstance query.
-     * 
-     * @param apiKey API key matching query value
-     * @param userId user id matching query value
-     * @param sharedDataKey shared data key matching query value
-     * @param serviceContext service type matching query value
-     * @return retrieved IWidgetInstance bean instance or null if not found
-     */
-    IWidgetInstance findWidgetInstance(String apiKey, String userId, String sharedDataKey, String serviceContext);
-
-    /**
      * Custom widget GUID IWidgetInstance query.
      * 
      * @param apiKey API key matching query value

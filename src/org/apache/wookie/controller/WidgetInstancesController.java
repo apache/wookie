@@ -411,21 +411,20 @@ public class WidgetInstancesController extends Controller {
 		  String userId = URLDecoder.decode(request.getParameter("userid"), "UTF-8"); //$NON-NLS-1$
 		  String sharedDataKey = request.getParameter("shareddatakey");	 //$NON-NLS-1$;
 		  String widgetId = request.getParameter("widgetid");
-		  String serviceType = request.getParameter("servicetype");
 
 		  //
 		  // First see if there is a legacy 0.9.0 instance that matches
 		  //
 		  // NOTE: This step will be deprecated in future releases
 		  //
-		  instance = MigrationHelper.findLegacyWidgetInstance(apiKey, userId, sharedDataKey, widgetId, serviceType);
+		  instance = MigrationHelper.findLegacyWidgetInstance(apiKey, userId, sharedDataKey, widgetId);
 
 		  // 
 		  // Otherwise, look for a 0.9.1 or later version
 		  //
 		  if (instance == null){   
 		    String internalSharedDataKey = SharedDataHelper.getInternalSharedDataKey(apiKey, widgetId, sharedDataKey);
-		    instance = findWidgetInstance(apiKey, userId, internalSharedDataKey, widgetId, serviceType);
+		    instance = findWidgetInstance(apiKey, userId, internalSharedDataKey, widgetId);
 		  }
 
 		  if (instance == null) {
@@ -440,27 +439,23 @@ public class WidgetInstancesController extends Controller {
 	}
 
 	/**
-	 * Find a widget instance using instance parameters, either by widget URI (guid) or service type
+	 * Find a widget instance using instance parameters, by widget URI (guid)
 	 * 
 	 * @param apiKey
 	 * @param userId
 	 * @param sharedDataKey
 	 * @param widgetId
-	 * @param serviceType
 	 * @return the widget instance, or null if there is no matching instance
 	 * @throws UnsupportedEncodingException
 	 */
-	public static IWidgetInstance findWidgetInstance(String apiKey, String userId, String sharedDataKey, String widgetId, String serviceType) throws UnsupportedEncodingException{
-	  IWidgetInstance instance;
+	public static IWidgetInstance findWidgetInstance(String apiKey, String userId, String sharedDataKey, String widgetId) throws UnsupportedEncodingException{
+	  IWidgetInstance instance = null;
 	  IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 	  if (widgetId != null){
 	    widgetId = URLDecoder.decode(widgetId, "UTF-8"); //$NON-NLS-1$
 	    _logger.debug("Looking for widget instance with widgetid of " + widgetId);
 	    instance = persistenceManager.findWidgetInstanceByGuid(apiKey, userId, sharedDataKey, widgetId);
-	  } else {
-	    _logger.debug("Looking for widget instance of service type " + serviceType);
-	    instance = persistenceManager.findWidgetInstance(apiKey, userId, sharedDataKey, serviceType);
-	  } 
+	  }
 	  return instance;
 	}
 }

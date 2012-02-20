@@ -648,40 +648,6 @@ public class JPAPersistenceManager implements IPersistenceManager
     }
 
     /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IPersistenceManager#findWidgetInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-     */
-    public IWidgetInstance findWidgetInstance(String apiKey, String userId, String sharedDataKey, String serviceContext)
-    {
-        // validate entity manager transaction
-        if (entityManager == null)
-        {
-            throw new IllegalStateException("Transaction not initiated or already closed");
-        }        
-
-        // get widget instance using custom query
-        if ((apiKey != null) && (userId != null) && (sharedDataKey != null) && (serviceContext != null))
-        {
-            try
-            {
-                Query query = entityManager.createNamedQuery("WIDGET_INSTANCE");
-                query.setParameter("apiKey", apiKey);
-                query.setParameter("userId", userId);
-                query.setParameter("sharedDataKey", sharedDataKey);
-                query.setParameter("widgetContext", serviceContext);
-                return (IWidgetInstance)query.getSingleResult();
-            }
-            catch (NoResultException nre)
-            {
-            }
-            catch (Exception e)
-            {
-                logger.error("Unexpected exception: "+e, e);
-            }
-        }
-        return null;
-    }
-
-    /* (non-Javadoc)
      * @see org.apache.wookie.beans.util.IPersistenceManager#findWidgetInstanceByGuid(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     public IWidgetInstance findWidgetInstanceByGuid(String apiKey, String userId, String sharedDataKey, String widgetGuid)
