@@ -29,7 +29,6 @@ import org.apache.wookie.beans.IPreferenceDefault;
 import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetIcon;
-import org.apache.wookie.beans.IWidgetType;
 import org.apache.wookie.beans.jcr.IPathBean;
 import org.apache.wookie.beans.jcr.IUuidBean;
 import org.apache.wookie.beans.jcr.IdCollection;
@@ -72,9 +71,6 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
 
     @Field(jcrName="wookie:widgetVersion")
     private String version;
-    
-    @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:widgetTypes", elementClassName=WidgetTypeImpl.class)
-    private Collection<WidgetTypeImpl> widgetTypeImpls;
     
     @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:features", elementClassName=FeatureImpl.class)
     private Collection<FeatureImpl> featureImpls;
@@ -679,53 +675,6 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     public void setWidgetIconImpls(Collection<WidgetIconImpl> widgetIconImpls)
     {
         this.widgetIconImpls = widgetIconImpls;
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#getWidgetTypes()
-     */
-    public Collection<IWidgetType> getWidgetTypes()
-    {
-        if (widgetTypeImpls == null)
-        {
-            widgetTypeImpls = new ArrayList<WidgetTypeImpl>();
-        }
-        return new IdCollection<WidgetTypeImpl,IWidgetType>(widgetTypeImpls);
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#setWidgetTypes(java.util.Collection)
-     */
-    public void setWidgetTypes(Collection<IWidgetType> widgetTypes)
-    {
-        getWidgetTypes().clear();
-        if (widgetTypes != null)
-        {
-            for (IWidgetType widgetType : widgetTypes)
-            {
-                getWidgetTypes().add((WidgetTypeImpl)widgetType);
-            }
-        }
-    }
-
-    /**
-     * Get widget type implementations collection.
-     * 
-     * @return widget type implementations collection
-     */
-    public Collection<WidgetTypeImpl> getWidgetTypeImpls()
-    {
-        return widgetTypeImpls;
-    }
-
-    /**
-     * Set widget type implementations collection.
-     * 
-     * @param widgetTypeImpls widget type implementations collection
-     */
-    public void setWidgetTypeImpls(Collection<WidgetTypeImpl> widgetTypeImpls)
-    {
-        this.widgetTypeImpls = widgetTypeImpls;
     }
 
     /* (non-Javadoc)

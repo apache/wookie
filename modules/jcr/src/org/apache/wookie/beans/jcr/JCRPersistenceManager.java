@@ -64,11 +64,8 @@ import org.apache.wookie.beans.IPreferenceDefault;
 import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.IWidgetDefault;
 import org.apache.wookie.beans.IWidgetIcon;
 import org.apache.wookie.beans.IWidgetInstance;
-import org.apache.wookie.beans.IWidgetService;
-import org.apache.wookie.beans.IWidgetType;
 import org.apache.wookie.beans.jcr.impl.ApiKeyImpl;
 import org.apache.wookie.beans.jcr.impl.DescriptionImpl;
 import org.apache.wookie.beans.jcr.impl.FeatureImpl;
@@ -80,12 +77,9 @@ import org.apache.wookie.beans.jcr.impl.PreferenceDefaultImpl;
 import org.apache.wookie.beans.jcr.impl.PreferenceImpl;
 import org.apache.wookie.beans.jcr.impl.SharedDataImpl;
 import org.apache.wookie.beans.jcr.impl.StartFileImpl;
-import org.apache.wookie.beans.jcr.impl.WidgetDefaultImpl;
 import org.apache.wookie.beans.jcr.impl.WidgetIconImpl;
 import org.apache.wookie.beans.jcr.impl.WidgetImpl;
 import org.apache.wookie.beans.jcr.impl.WidgetInstanceImpl;
-import org.apache.wookie.beans.jcr.impl.WidgetServiceImpl;
-import org.apache.wookie.beans.jcr.impl.WidgetTypeImpl;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceCommitException;
 
@@ -127,18 +121,13 @@ public class JCRPersistenceManager implements IPersistenceManager
         INTERFACE_TO_CLASS_MAP.put(ISharedData.class, SharedDataImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IStartFile.class, StartFileImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IWidget.class, WidgetImpl.class);
-        INTERFACE_TO_CLASS_MAP.put(IWidgetDefault.class, WidgetDefaultImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IWidgetIcon.class, WidgetIconImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IWidgetInstance.class, WidgetInstanceImpl.class);
-        INTERFACE_TO_CLASS_MAP.put(IWidgetService.class, WidgetServiceImpl.class);
-        INTERFACE_TO_CLASS_MAP.put(IWidgetType.class, WidgetTypeImpl.class);
 
         BEAN_INTERFACE_TO_CLASS_MAP.put(IApiKey.class, ApiKeyImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IParticipant.class, ParticipantImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidget.class, WidgetImpl.class);
-        BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetDefault.class, WidgetDefaultImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetInstance.class, WidgetInstanceImpl.class);
-        BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetService.class, WidgetServiceImpl.class);
         
         IMPLEMENTATION_FIELD_MAP.put("widget", "widgetImpl");
     }
@@ -816,99 +805,6 @@ public class JCRPersistenceManager implements IPersistenceManager
     }
 
     /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IPersistenceManager#findWidgetDefaultByType(java.lang.String)
-     */
-    public IWidget findWidgetDefaultByType(String widgetContext)
-    {
-        // validate object content manager transaction
-        if (ocm == null)
-        {
-            throw new IllegalStateException("Transaction not initiated or already closed");
-        }
-
-        // get default widget by type
-        if (widgetContext != null)
-        {
-            try
-            {
-                IWidgetDefault [] widgetDefault = findByValue(IWidgetDefault.class, "widgetContext", widgetContext);
-                if (widgetDefault.length == 1)
-                {
-                    return widgetDefault[0].getWidget();
-                }
-            }
-            catch (Exception e)
-            {
-                logger.error("Unexpected exception: "+e, e);
-            }
-        }
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IPersistenceManager#findWidgetInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-     */
-    public IWidgetInstance findWidgetInstance(String apiKey, String userId, String sharedDataKey, String serviceContext)
-    {
-        // validate object content manager transaction
-        if (ocm == null)
-        {
-            throw new IllegalStateException("Transaction not initiated or already closed");
-        }
-
-        // get widget instance
-        if ((apiKey != null) && (userId != null) && (sharedDataKey != null) && (serviceContext != null))
-        {
-            try
-            {
-                // get candidate widget instances
-                Map<String, Object> values = new HashMap<String, Object>();
-                values.put("apiKey", apiKey);
-                values.put("userId", userId);
-                values.put("sharedDataKey", sharedDataKey);
-                IWidgetInstance [] widgetInstances = findByValues(IWidgetInstance.class, values);
-
-                // filter widget instances by widget type/context
-                IWidgetInstance foundWidgetInstance = null;
-                for (IWidgetInstance widgetInstance : widgetInstances)
-                {
-                    // check widget type/context
-                    boolean hasServiceContext = false;
-                    for (IWidgetType widgetType : widgetInstance.getWidget().getWidgetTypes())
-                    {
-                        if (widgetType.getWidgetContext().equals(serviceContext))
-                        {
-                            hasServiceContext = true;
-                            break;
-                        }
-                    }
-                    if (hasServiceContext)
-                    {
-                        // validate search matches only one widget
-                        if (foundWidgetInstance != null)
-                        {
-                            foundWidgetInstance = null;
-                            break;
-                        }
-                        foundWidgetInstance = widgetInstance;
-                    }
-                }
-
-                // return single matching widget instance
-                if (foundWidgetInstance != null)
-                {
-                    return foundWidgetInstance;
-                }
-            }
-            catch (Exception e)
-            {
-                logger.error("Unexpected exception: "+e, e);
-            }
-        }
-        return null;
-    }
-
-    /* (non-Javadoc)
      * @see org.apache.wookie.beans.util.IPersistenceManager#findWidgetInstanceByGuid(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     public IWidgetInstance findWidgetInstanceByGuid(String apiKey, String userId, String sharedDataKey, String widgetGuid)
@@ -977,46 +873,6 @@ public class JCRPersistenceManager implements IPersistenceManager
             }
         }
         return null;
-    }
-
-    public IWidget[] findWidgetsByType(String widgetContext)
-    {
-        // validate object content manager transaction
-        if (ocm == null)
-        {
-            throw new IllegalStateException("Transaction not initiated or already closed");
-        }
-        
-        // get widgets by type
-        if (widgetContext != null)
-        {
-            try
-            {
-                // get candidate widgets
-                IWidget [] widgets = findAll(IWidget.class);
-                
-                // filter widgets by widget type/context
-                Collection<IWidget> foundWidgets = new ArrayList<IWidget>();
-                for (IWidget widget : widgets)
-                {
-                    // check widget type/context
-                    for (IWidgetType widgetType : widget.getWidgetTypes())
-                    {
-                        if (widgetType.getWidgetContext().equals(widgetContext))
-                        {
-                            foundWidgets.add(widget);
-                            break;
-                        }
-                    }
-                }
-                return foundWidgets.toArray(new IWidget[foundWidgets.size()]);
-            }
-            catch (Exception e)
-            {
-                logger.error("Unexpected exception: "+e, e);
-            }
-        }
-        return new IWidget[0];
     }
 
     /* (non-Javadoc)
