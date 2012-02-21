@@ -16,6 +16,8 @@ package org.apache.wookie.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -82,10 +84,13 @@ public class WidgetsController extends Controller{
 			index(resourceId, request, response);
 			return;
 		}
-		// attempt to get specific widget by id
 		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWidget widget = persistenceManager.findById(IWidget.class, resourceId);
-		
+		IWidget widget = persistenceManager.findWidgetByGuid(parseForGuid(request));
+		// attempt to get specific widget by id
+		if (widget == null) {
+		  persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+		  widget = persistenceManager.findById(IWidget.class, resourceId);
+		}
 		// return widget result
 		if (widget == null) throw new ResourceNotFoundException();
 		returnXml(WidgetHelper.createXMLWidgetsDocument(widget, getLocalPath(request), getLocales(request)),response);
@@ -228,6 +233,25 @@ public class WidgetsController extends Controller{
 	  } else {
 	    return false;
 	  }
+	}
+	
+	/**
+	 * Tries to obtain the guid of a widget from the path given
+	 * by stripping out the '/wookie/widgets/' string at the beginning
+	 * @param request
+	 * @return a string guid or null if not found
+	 */
+	private String parseForGuid(HttpServletRequest request){
+	  try {
+	    String path = URLDecoder.decode(request.getRequestURI(), "UTF-8");
+	    // note the context name may not always be /wookie, so we check the context path
+	    if(path != null && path.length() > request.getContextPath().length() + 9){
+	      return path.substring(request.getContextPath().length() + 9, path.length());
+	    }
+	  } catch (UnsupportedEncodingException e) {
+	    throw new RuntimeException("Server must support UTF-8 encoding", e);
+	  }
+	  return null;
 	}
     
 }
