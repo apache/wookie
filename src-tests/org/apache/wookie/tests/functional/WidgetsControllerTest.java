@@ -142,9 +142,9 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
     
     //
-    // We'll use a copy of the unsupported widget widget for testing
+    // Use upload test widget
     //
-    File file = new File("src-tests/testdata/notsupported.wgt");
+    File file = new File("src-tests/testdata/upload-test.wgt");
     assertTrue(file.exists());
     
     //
