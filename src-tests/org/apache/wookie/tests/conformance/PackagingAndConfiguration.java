@@ -1154,7 +1154,7 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 		assertTrue(icons.size() == 2);
 		String icon1 = getLocalIconPath(widget,((Element)icons.get(0)));
 		String icon2 = getLocalIconPath(widget,((Element)icons.get(1)));
-		assertTrue((icon1.equals("icon.png") && (icon2.equals("icon.jpg"))) || (icon2.equals("icon.jpg") && (icon1.equals("icon.png"))));
+		assertTrue((icon1.equals("icon.png") && (icon2.equals("icon.jpg"))) || (icon1.equals("icon.jpg") && (icon2.equals("icon.png"))));
 
 	}
 
