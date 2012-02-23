@@ -211,10 +211,6 @@ public abstract class Controller extends HttpServlet{
 		if (path.startsWith("/")) {
 			path = path.substring(1);
 		}
-		int p = path.indexOf('/');
-		if (p > 0) {
-			path = path.substring(0, p); // name isolated
-		}
 		if (path != null)
 			path = path.trim();
 		return path;
