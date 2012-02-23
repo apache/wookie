@@ -26,4 +26,17 @@ public class InvalidParametersException extends ServletException {
 
 	private static final long serialVersionUID = -8018402642866447622L;
 
+  public InvalidParametersException() {
+    super();
+  }
+	
+  /**
+   * @param message
+   */
+  public InvalidParametersException(String message) {
+    super(message);
+  }
+	
+	
+
 }

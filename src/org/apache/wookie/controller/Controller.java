@@ -122,7 +122,7 @@ public abstract class Controller extends HttpServlet{
 			response.sendError(HttpServletResponse.SC_CONFLICT);// already exists with same name - need error message for this
 		} catch (InvalidParametersException e){
 		  _logger.error(e.getMessage(), e);
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST); 
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage()); 
 		} catch (UnauthorizedAccessException e){
 		  _logger.error(e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
