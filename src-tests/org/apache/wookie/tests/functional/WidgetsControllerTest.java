@@ -28,7 +28,6 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
-import org.jdom.Element;
 import org.junit.Test;
 
 /**
@@ -80,21 +79,6 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	public void getSpecificWidget_nonexisting() throws HttpException, IOException{
 	        HttpClient client = new HttpClient();
 	        GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/9999");
-	        client.executeMethod(get);
-	        int code = get.getStatusCode();
-	        assertEquals(404,code);
-	        get.releaseConnection();
-	}
-	
-	/**
-	 * Tests a GET which does not matche an existing widget id gives us a 404
-	 * @throws IOException 
-	 * @throws HttpException 
-	 */
-	@Test
-	public void getWidgetType_noneexistant() throws HttpException, IOException{
-	        HttpClient client = new HttpClient();
-	        GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/nosuchtype");
 	        client.executeMethod(get);
 	        int code = get.getStatusCode();
 	        assertEquals(404,code);
