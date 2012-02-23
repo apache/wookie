@@ -18,6 +18,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -69,6 +70,39 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	        assertTrue(response.contains("<widget id=\"1\" identifier=\"http://notsupported\""));
 	        get.releaseConnection();
 	}
+	
+	 /**
+   * Test we can GET a widget using its URI as a resource path
+   * @throws IOException 
+   * @throws HttpException 
+   */
+  @Test
+  public void getSpecificWidgetByUri() throws HttpException, IOException{
+          HttpClient client = new HttpClient();
+          GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/"+URLEncoder.encode("http://notsupported","UTF-8"));
+          client.executeMethod(get);
+          int code = get.getStatusCode();
+          assertEquals(200,code);
+          String response = get.getResponseBodyAsString();
+          assertTrue(response.contains("<widget id=\"1\" identifier=\"http://notsupported\""));
+          get.releaseConnection();
+  }
+  /**
+   * Test we can GET a widget using its URI as a resource path
+   * @throws IOException 
+   * @throws HttpException 
+   */
+  @Test
+  public void getSpecificWidgetByUri2() throws HttpException, IOException{
+          HttpClient client = new HttpClient();
+          GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/http://notsupported");
+          client.executeMethod(get);
+          int code = get.getStatusCode();
+          assertEquals(200,code);
+          String response = get.getResponseBodyAsString();
+          assertTrue(response.contains("<widget id=\"1\" identifier=\"http://notsupported\""));
+          get.releaseConnection();
+  }
 	
 	/**
 	 * Test that a request for a non-existing widget ID gets a 404
