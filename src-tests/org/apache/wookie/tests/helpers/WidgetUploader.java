@@ -32,20 +32,16 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.htmlcleaner.HtmlCleaner;
-import org.htmlcleaner.TagNode;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 
 /**
  * Helper class for uploading widgets and gathering any errors generated
- * @author scott
- *
  */
 public class WidgetUploader {
 	
-	public static final String SERVICE_URL = "http://localhost:8080/wookie/admin/WidgetAdminServlet?operation=UPLOADWIDGET";
+	public static final String SERVICE_URL = "http://localhost:8080/wookie/widgets";
 
 	/**
 	 * Upload a widget from a file at a given URL
@@ -82,24 +78,9 @@ public class WidgetUploader {
 		Part[] parts = { new FilePart(file.getName(), file) };
 		post.setRequestEntity(new MultipartRequestEntity(parts, post
 				.getParams()));
-		int status = httpclient.executeMethod(post);
-		if (status != 200 && status != 201){
-			fail("problem with upload");
-		}
 		String response = IOUtils.toString(post.getResponseBodyAsStream());
 		post.releaseConnection();
-		return getError(response);
-	}
-	
-	private static String getError(String response) throws IOException{
-		String error = null;
-		HtmlCleaner cleaner = new HtmlCleaner();
-		TagNode html = cleaner.clean(response);
-		TagNode errortag = html.findElementByAttValue("id", "error", true, true);
-		if (errortag != null){
-			error = errortag.getAttributeByName("title");
-		}
-		return error;
+		return response;
 	}
 	
 	/**

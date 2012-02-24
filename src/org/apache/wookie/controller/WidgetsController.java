@@ -16,18 +16,13 @@ package org.apache.wookie.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.wookie.Messages;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
@@ -35,10 +30,20 @@ import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
+import org.apache.wookie.feature.Features;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetHelper;
+import org.apache.wookie.server.LocaleHandler;
+import org.apache.wookie.util.WidgetFileUtils;
+import org.apache.wookie.util.WidgetJavascriptSyntaxAnalyzer;
 import org.apache.wookie.util.gadgets.GadgetUtils;
+import org.apache.wookie.util.html.StartPageProcessor;
 import org.apache.wookie.w3c.W3CWidget;
+import org.apache.wookie.w3c.W3CWidgetFactory;
+import org.apache.wookie.w3c.exceptions.BadManifestException;
+import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
+import org.apache.wookie.w3c.exceptions.InvalidContentTypeException;
+import org.apache.wookie.w3c.exceptions.InvalidStartFileException;
 
 /**
  * <p>Controller for widget resources.</p>
@@ -122,86 +127,118 @@ public class WidgetsController extends Controller{
 	}
 
 	/**
-	 * Install a new Widget by saving it in the deploy folder
+	 * Install a new Widget by uploading and installing it
 	 * Note: a Widget must have a .wgt extension!
-	 * FIXME: Support POSTing references to OpenSocial gadgets, remote widget files
 	 */
-	@Override
-	protected boolean create(String resourceId, HttpServletRequest request)
-	throws ResourceDuplicationException, InvalidParametersException,
-	UnauthorizedAccessException {
+  /* (non-Javadoc)
+   * @see org.apache.wookie.controller.Controller#create(java.lang.String, javax.servlet.http.HttpServletRequest)
+   */
+  @Override
+  protected boolean create(String resourceId, HttpServletRequest request)
+      throws ResourceDuplicationException, InvalidParametersException,
+      UnauthorizedAccessException {
 
-	  //
-	  // Check for a "url" parameter in the request, indicating this is a remote widget or opensocial gadget xml file 
-	  // FIXME implement this 
-	  //
-	  String url = request.getParameter("url");
-	  if (url != null && url.trim().length() != 0){
-	    return createGadget(request, url);
-	  }
+    //
+    // Check for a "url" parameter in the request, indicating this is a remote widget or opensocial gadget xml file 
+    //
+    String url = request.getParameter("url");
+    if (url != null && url.trim().length() != 0){
+      return createGadget(request, url);
+    }
+    
+    //
+    // Get the path to the upload folder, and the widget install folder
+    //
+    Configuration properties = (Configuration) getServletContext().getAttribute("properties"); //$NON-NLS-1$
+    final String WIDGETFOLDER = getServletContext().getRealPath(properties.getString("widget.widgetfolder"));//$NON-NLS-1$
+    final String UPLOADFOLDER = getServletContext().getRealPath(properties.getString("widget.useruploadfolder"));//$NON-NLS-1$
 
-	  //
-	  // Get the path for the deploy folder
-	  //
-	  Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
-	  final String DEPLOY_FOLDER = getServletContext().getRealPath(properties.getString("widget.deployfolder"));//$NON-NLS-1$
+    //
+    // Get localized messages so we can return errors
+    //
+    Messages localizedMessages = LocaleHandler.localizeMessages(request);
+    
+    //
+    // Try to obtain a zipfile from the request. 
+    //
+    File zipFile;
+    try {
+      zipFile = WidgetFileUtils.upload(UPLOADFOLDER, request);
+    } catch (Exception ex) {
+      throw new InvalidParametersException(localizedMessages.getString("widgets.invalid-config-xml") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ 
+    }
+    
+    //
+    // No file uploaded
+    //
+    if(zipFile == null || !zipFile.exists()){
+      throw new InvalidParametersException(localizedMessages.getString("widgets.no-widget-file-uploaded")); //$NON-NLS-1$
+    }
+    
+    try {
 
-	  //
-	  // Create factory for processing POSTed files
-	  //
-	  FileItemFactory factory = new DiskFileItemFactory();
+        //
+        // Parse and validate the zip as a widget
+        //
+        final String[] locales = properties.getStringArray("widget.locales");
+        W3CWidgetFactory fac = new W3CWidgetFactory();
+        fac.setLocales(locales);
+        fac.setLocalPath(getServletContext().getContextPath() + properties.getString("widget.widgetfolder"));
+        fac.setOutputDirectory(WIDGETFOLDER);
+        fac.setFeatures(Features.getFeatureNames());
+        fac.setStartPageProcessor(new StartPageProcessor());
+        W3CWidget widgetModel = fac.parse(zipFile);
+        new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());
+        
+        //
+        // Check if the widget model corresponds to an existing installed widget
+        //
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        if (persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()) == null) {
+          
+          //
+          // A new widget was created, so return 201
+          //
+          WidgetFactory.addNewWidget(widgetModel, zipFile,false);
+          return true;
+          
+        } else {
+          
+          //
+          // Widget already exists, so update the widget metadata and configuration details
+          // and return 200
+          //
+          WidgetFactory.update(widgetModel,persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()),false, zipFile);
+          return false;
+          
+        }
+        
+        //
+        // Catch specific parsing and validation errors and throw exception with error message
+        //
+    } catch (InvalidStartFileException ex) {
+      _logger.error(ex);
+      throw new InvalidParametersException(
+          localizedMessages.getString("widgets.no-start-file") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$     
+    } catch (BadManifestException ex) {
+      _logger.error(ex);
+      String message = ex.getMessage();
+      if (ex.getMessage() == null || ex.getMessage().equals(""))message = localizedMessages.getString("widgets.invalid-config-xml"); //$NON-NLS-1$
+      if (ex instanceof InvalidContentTypeException)
+        message = localizedMessages.getString("widgets.unsupported-content-type");//$NON-NLS-1$
+      throw new InvalidParametersException(message);
+    } catch (BadWidgetZipFileException ex) {
+      _logger.error(ex);
+      String message = ex.getMessage();
+      if (ex.getMessage() == null || ex.getMessage().equals(""))message = localizedMessages.getString("widgets.bad-zip-file"); //$NON-NLS-1$
+      throw new InvalidParametersException(message);
+    } catch (Exception ex) {
+      _logger.error(ex);
+      throw new InvalidParametersException(
+          localizedMessages.getString("widgets.cant-parse-config-xml") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
 
-	  //
-	  // Create a new file upload handler
-	  //
-	  ServletFileUpload upload = new ServletFileUpload(factory);
-
-	  //
-	  // Create a flag we'll use to check if we got any .wgt files in the POST
-	  //
-	  boolean requestContainedWgtFile = false;
-
-	  //
-	  // Save file in the deploy folder
-	  //
-	  try {
-	    @SuppressWarnings("unchecked")
-	    List <FileItem> items = upload.parseRequest(request);
-
-	    //
-	    // Only save .wgt files and ignore any others in the POST
-	    //
-	    for (FileItem item: items){
-	      if (item.getName()!=null && item.getName().endsWith(".wgt")){
-	        File saveFile = new File(DEPLOY_FOLDER + "/" + item.getName());
-	        item.write(saveFile);
-	        requestContainedWgtFile = true;
-	      }
-	    }
-
-	  } catch (FileUploadException e) {
-	    throw new InvalidParametersException();
-	  } catch (Exception e) {
-	    //
-	    // Catch any other exceptions thrown by the save file operation
-	    // and throw a basic 400 response to the client, though really
-	    // this is more like a 500. At least we can log the details.
-	    // 
-	    _logger.error(e.getMessage(), e);
-	    throw new InvalidParametersException();
-	  }
-
-	  //
-	  // If there are no .wgt files in the POST, throw an exception
-	  // We have to check for this here as other exceptions are caught in 
-	  // the code above, e.g. generic file system errors
-	  //
-	  if (requestContainedWgtFile == false){
-	    throw new InvalidParametersException();
-	  }
-
-	  return true;
-	}
+  }
 	
 	/**
 	 * Register a gadget
