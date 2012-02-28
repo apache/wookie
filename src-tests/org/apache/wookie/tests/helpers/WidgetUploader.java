@@ -78,6 +78,7 @@ public class WidgetUploader {
 		Part[] parts = { new FilePart(file.getName(), file) };
 		post.setRequestEntity(new MultipartRequestEntity(parts, post
 				.getParams()));
+		httpclient.executeMethod(post);
 		String response = IOUtils.toString(post.getResponseBodyAsStream());
 		post.releaseConnection();
 		return response;
