@@ -96,6 +96,9 @@ public class WidgetFactory {
 		createFeatures(persistenceManager, model,widget);
         persistenceManager.save(widget);
 		createAccessRequests(persistenceManager, model, widget, grantAccessRequests);
+		
+    _logger.info("'"+model.getLocalName("en") +"' - " + "Widget was successfully imported into the system");
+    
 		return widget;	       
 	}
 
@@ -245,8 +248,11 @@ public class WidgetFactory {
 	 * @return true if the widget is destroyed successfully
 	 */
 	public static boolean destroy(IWidget widget){
+	  
 
 		if(widget==null) return false;
+		
+		String widgetName = widget.getWidgetTitle("en");
 		
     IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		
@@ -287,6 +293,9 @@ public class WidgetFactory {
         
 		// remove the widget itself
 		persistenceManager.delete(widget);
+		
+    _logger.info("'"+widgetName+"' - " + "Widget was successfully deleted from the system.");
+    
 		return true;
 	} 
 	
@@ -332,6 +341,8 @@ public class WidgetFactory {
 		createFeatures(persistenceManager, model,widget);
         persistenceManager.save(widget);
 		createAccessRequests(persistenceManager, model, widget, grantAccessRequests);
+
+		_logger.info("'"+model.getLocalName("en") +"' - " + "Widget was successfully updated in the system.");
 	}
 
 }
