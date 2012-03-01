@@ -28,12 +28,25 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
+import org.jdom.JDOMException;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 /**
  * Test cases for the Widget REST API
  */
 public class WidgetsControllerTest extends AbstractControllerTest {
+  
+  
+  @AfterClass
+  public static void tearDown() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    setAuthenticationCredentials(client);
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/http%3A%2F%2Fwookie.apache.org%2Fwidgets%2Faccess-test");
+    client.executeMethod(delete);
+    delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/http%3A%2F%2Fuploadtest");
+    client.executeMethod(delete);
+  }
 	
   /**
    * Test GET all widgets
@@ -260,9 +273,10 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	 * @throws HttpException
 	 * @throws IOException
 	 * @throws InterruptedException 
+	 * @throws JDOMException 
 	 */
 	@Test
-	public void checkForDuplicateAccessRequests() throws HttpException, IOException, InterruptedException{
+	public void checkForDuplicateAccessRequests() throws HttpException, IOException, InterruptedException, JDOMException{
 
 	    //
 	    // Add the test widget, and update it a few times
@@ -296,25 +310,17 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	      //
 	      client.executeMethod(post);   
 	      post.releaseConnection(); 
-	      
-	      //
-	      // Wait a few seconds for Wookie to finish updating
-	      //
-	      Thread.sleep(5000);
-	    }
+	    } 
 
 	    //
 	    // Check that we only have one copy of the access request, not two
 	    //
-//	    int policies = 0;
-//	    final String POLICY_ORIGIN = "http://accesstest.incubator.apache.org:80";
-//	    Element[] policyElements = WidgetAccessRequestPolicyControllerTest.getPolicies();
-//	    for (Element policy: policyElements){
-//	      if (policy.getAttribute("origin").getValue().equals(POLICY_ORIGIN)) {
-//	        policies ++;
-//	      }
-//	    }
-//	    assertEquals(1, policies);
+      HttpClient client = new HttpClient();
+      setAuthenticationCredentials(client);
+	    GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID+"/http%3A%2F%2Fwookie.apache.org%2Fwidgets%2Faccess-test");
+	    get.setRequestHeader("accepts","text/xml");
+	    client.executeMethod(get);
+	    assertEquals(1,PoliciesControllerTest.processPolicies(get.getResponseBodyAsStream()).getChildren("policy").size());
 
 	}
 	

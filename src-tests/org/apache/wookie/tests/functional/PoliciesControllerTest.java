@@ -208,7 +208,7 @@ public class PoliciesControllerTest extends AbstractControllerTest {
     assertEquals(200, delete.getStatusCode());
   }
   
-  public Element processPolicies(InputStream in) throws JDOMException, IOException{
+  public static Element processPolicies(InputStream in) throws JDOMException, IOException{
     SAXBuilder builder = new SAXBuilder();
     Document doc = builder.build(in);
     Element policies = doc.getRootElement();
