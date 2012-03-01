@@ -160,6 +160,14 @@ public class PoliciesController extends Controller {
       //
       Policy policy;
       policy = new Policy(resourceId);
+      
+      //
+      // Policy doesn't exist so return 404
+      //
+      if (!Policies.getInstance().exists(policy)){
+        throw new ResourceNotFoundException();
+      }
+      
       Policies.getInstance().removePolicy(policy);
       return true;
       

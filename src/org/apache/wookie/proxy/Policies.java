@@ -319,4 +319,17 @@ public class Policies {
     }
     return allPolicies.toArray(new Policy[allPolicies.size()]);
   }
+  
+  /**
+   * Check whether a policy already exists
+   * @param policy the policy to check
+   * @return true if the policy exists, otherwise false
+   */
+  public boolean exists(Policy policy){
+    @SuppressWarnings("unchecked")
+    Collection<Policy> existingPolicies = (Collection<Policy>) policies.get(policy.getScope());
+    if (existingPolicies == null) return false;
+    if (!existingPolicies.contains(policy)) return false;
+    return true;
+  }
 }

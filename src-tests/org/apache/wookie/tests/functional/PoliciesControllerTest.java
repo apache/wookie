@@ -196,7 +196,7 @@ public class PoliciesControllerTest extends AbstractControllerTest {
     setAuthenticationCredentials(client);
     DeleteMethod delete = new DeleteMethod(TEST_POLICIES_SERVICE_URL_VALID+"/http%3A%2F%2Fno.such.scope%20http%3A%2F%2Fpolicies.test.origin%20ALLOW");
     client.executeMethod(delete);
-    assertEquals(200, delete.getStatusCode());
+    assertEquals(404, delete.getStatusCode());
   }
   
   @Test
