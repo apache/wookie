@@ -19,7 +19,7 @@
   <target name="_init_template"
           description="Define any template specifc properties">
     <echo message="+------------------------------------------"/>
-    <echo message="|  Initialising template properties"/>
+    <echo message="|  Initialising template properties for ${template.name} template"/>
     <echo message="+------------------------------------------"/>
 
   	
@@ -184,6 +184,9 @@
       </filterchain>
     </loadfile>
 
+    <!-- load properties we've set in other templates -->
+    <property file="${widget.build.dir}/${widget.shortname}.properties"/>
+    <!-- write the full property set for this template -->
     <echoproperties destfile="${widget.build.dir}/${widget.shortname}.properties" prefix=""/>
   </target>
 
