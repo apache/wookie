@@ -62,12 +62,6 @@ import org.apache.wookie.w3c.exceptions.InvalidStartFileException;
 public class WidgetsController extends Controller{
 
 	private static final long serialVersionUID = 8759704878105474902L;
-	
-	@Override
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-	}
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
@@ -88,7 +82,6 @@ public class WidgetsController extends Controller{
 			return;
 		}
 		
-		System.out.println("ResourceID:"+resourceId);
 		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidget widget = persistenceManager.findWidgetByGuid(resourceId);
 		// attempt to get specific widget by id
@@ -125,6 +118,34 @@ public class WidgetsController extends Controller{
     IWidget[] widgets = persistenceManager.findAll(IWidget.class);
 		returnXml(WidgetHelper.createXMLWidgetsDocument(widgets, getLocalPath(request), getLocales(request)),response);
 	}
+	
+  /* (non-Javadoc)
+   * @see org.apache.wookie.controller.Controller#remove(java.lang.String, javax.servlet.http.HttpServletRequest)
+   */
+  @Override
+  protected boolean remove(String resourceId, HttpServletRequest request)
+      throws ResourceNotFoundException, UnauthorizedAccessException,
+      InvalidParametersException {
+
+    
+    //
+    // Identify the widget to delete
+    //
+    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+    IWidget widget = persistenceManager.findWidgetByGuid(resourceId);
+    // attempt to get specific widget by id
+    if (widget == null) {
+      persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+      widget = persistenceManager.findById(IWidget.class, resourceId);
+    }
+    
+    if (widget == null) throw new ResourceNotFoundException();
+    
+    //
+    // Delete the widget
+    //
+    return WidgetFactory.destroy(widget);
+  }
 
 	/**
 	 * Install a new Widget by uploading and installing it

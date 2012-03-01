@@ -24,6 +24,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
@@ -195,6 +196,77 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	  int code = post.getStatusCode();
 	  assertEquals(400,code);
 	  post.releaseConnection();     
+	}
+	
+	@Test
+	public void deleteWidgetUnauthorized() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/1");
+	  client.executeMethod(delete);
+	  assertEquals(401, delete.getStatusCode());
+	  
+    //
+    // Check it wasn't deleted
+    //
+    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/1");
+    client.executeMethod(get);
+    assertEquals(200, get.getStatusCode());
+	}
+	
+	@Test
+	public void deleteWidgetNonexisting() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    //
+    // Use admin credentials
+    //
+    client.getState().setCredentials(
+        new AuthScope("localhost", 8080, "wookie"),
+        new UsernamePasswordCredentials("java", "java")
+        );
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/9999");
+    client.executeMethod(delete);
+    assertEquals(404, delete.getStatusCode());
+	}
+	
+	@Test
+	public void deleteWidget() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    //
+    // Use admin credentials
+    //
+    client.getState().setCredentials(
+        new AuthScope("localhost", 8080, "wookie"),
+        new UsernamePasswordCredentials("java", "java")
+        );
+    
+    
+    //
+    // Upload widget we'll test deleting next
+    //
+    File file = new File("src-tests/testdata/delete-test.wgt");
+    assertTrue(file.exists());
+    PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
+    Part[] parts = { new FilePart(file.getName(), file) };
+    post.setRequestEntity(new MultipartRequestEntity(parts, post
+        .getParams()));
+    client.executeMethod(post);   
+    int code = post.getStatusCode();
+    assertEquals(201,code);
+    post.releaseConnection();   
+    
+    //
+    // Delete the widget
+    //
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/http%3A%2F%2Fdeletetest");
+    client.executeMethod(delete);
+    assertEquals(200, delete.getStatusCode());
+    
+    //
+    // Check it was deleted
+    //
+    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/http%3A%2F%2Fdeletetest");
+    client.executeMethod(get);
+    assertEquals(404, get.getStatusCode());
 	}
 	
 	/**
