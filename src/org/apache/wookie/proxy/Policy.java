@@ -17,8 +17,10 @@
 
 package org.apache.wookie.proxy;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.apache.wookie.w3c.util.IRIValidator;
 
@@ -70,8 +72,8 @@ public class Policy {
   /**
    * @param scope the scope to set
    */
-  public void setScope(String scope) {
-    this.scope = scope;
+  public void setScope(String scope) throws PolicyFormatException{
+    this.scope = this.checkScope(scope);
   }
   /**
    * @return the origin
@@ -95,8 +97,13 @@ public class Policy {
   /**
    * @param directive the directive to set
    */
-  public void setDirective(String directive) {
-    this.directive = directive;
+  public void setDirective(String directive) throws PolicyFormatException {
+    directive = directive.trim().toUpperCase();
+    if (directive.equals("ALLOW") || directive.equals("DENY")){
+       this.directive = directive;
+    } else {
+      throw new PolicyFormatException("Unsupported policy directive: "+directive);
+    }
   }
 
   /* (non-Javadoc)
@@ -200,6 +207,27 @@ public class Policy {
         }
     }
     return 0;
+  }
+  
+  private String checkScope(String scope) throws PolicyFormatException{
+    //
+    // Wildcards are a valid scope
+    //
+    if (scope.equals("*")) return scope;
+    
+    try {
+      //
+      // URLs are a valid scope
+      //
+      new URL(scope);
+      return scope;
+    } catch (MalformedURLException e) {
+      //
+      // IRIs are a valid scope
+      //
+      if (!IRIValidator.isValidIRI(scope)) throw new PolicyFormatException("scope is not a valid wildcard, URL or IRI");
+      return scope;
+    }
   }
 
   /**

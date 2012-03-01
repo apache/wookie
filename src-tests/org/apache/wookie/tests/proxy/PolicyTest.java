@@ -41,7 +41,7 @@ public class PolicyTest {
     policy.setOrigin("*");
     policy.setDirective("ALLOW");
   }
-
+  
   @Test
   public void createPolicyFromString() throws PolicyFormatException{
     Policy policy = new Policy("* http://localhost ALLOW");
@@ -50,6 +50,16 @@ public class PolicyTest {
   @Test(expected = PolicyFormatException.class)
   public void createPolicyFromInvalidString() throws PolicyFormatException{
     Policy policy = new Policy("http://localhost ALLOW");
+  }
+  
+  @Test(expected = PolicyFormatException.class)
+  public void createPolicyFromInvalidString2() throws PolicyFormatException{
+    Policy policy = new Policy("* * BANANA");
+  }
+  
+  @Test(expected = PolicyFormatException.class)
+  public void createPolicyFromInvalidString3() throws PolicyFormatException{
+    Policy policy = new Policy("BANANA * ALLOW");
   }
   
   @Test
