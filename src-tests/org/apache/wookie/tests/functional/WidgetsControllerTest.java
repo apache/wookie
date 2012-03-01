@@ -136,10 +136,8 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Use admin credentials
     //
-    client.getState().setCredentials(
-        new AuthScope("localhost", 8080, "wookie"),
-        new UsernamePasswordCredentials("java", "java")
-        );
+    setAuthenticationCredentials(client);
+    
     PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
     
     //
@@ -170,10 +168,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	  //
 	  // Use admin credentials
 	  //
-	  client.getState().setCredentials(
-	      new AuthScope("localhost", 8080, "wookie"),
-	      new UsernamePasswordCredentials("java", "java")
-	  );
+	  setAuthenticationCredentials(client);
 	  PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
 
 	  //
@@ -219,10 +214,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Use admin credentials
     //
-    client.getState().setCredentials(
-        new AuthScope("localhost", 8080, "wookie"),
-        new UsernamePasswordCredentials("java", "java")
-        );
+    setAuthenticationCredentials(client);
     DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/9999");
     client.executeMethod(delete);
     assertEquals(404, delete.getStatusCode());
@@ -234,12 +226,8 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Use admin credentials
     //
-    client.getState().setCredentials(
-        new AuthScope("localhost", 8080, "wookie"),
-        new UsernamePasswordCredentials("java", "java")
-        );
-    
-    
+    setAuthenticationCredentials(client);
+
     //
     // Upload widget we'll test deleting next
     //
@@ -287,10 +275,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	      //
 	      // Use admin credentials
 	      //
-	      client.getState().setCredentials(
-	          new AuthScope("localhost", 8080, "wookie"),
-	          new UsernamePasswordCredentials("java", "java")
-	      );
+	      setAuthenticationCredentials(client);
 	      
 	      PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
 
