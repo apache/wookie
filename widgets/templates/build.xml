@@ -107,7 +107,7 @@
     </target>
 
     <target name="_copy_widget_files"
-	    unless="copyWiodgetFiles">
+	    unless="copyWidgetFiles">
       <echo message="+------------------------------------------"/>
       <echo message="|  Copying widget files: ${widget.shortname}"  />
       <echo message="+------------------------------------------"/>
