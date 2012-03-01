@@ -20,7 +20,7 @@
   <target name="_init_template"
           description="Define any template specifc properties">
     <echo message="+------------------------------------------"/>
-    <echo message="|  Initialising template properties"/>
+    <echo message="|  Initialising template properties for ${template.name}"/>
     <echo message="+------------------------------------------"/>
 
     <loadfile property="content.scripts"
@@ -116,6 +116,11 @@
     </loadfile>
 	
     <echoproperties destfile="${widget.build.dir}/${widget.shortname}.properties" prefix=""/>
+  </target>
+
+  <target name="_prepare_template_files"
+          description="move all template files into the build director">
+    
   </target>
 
   <target name="_generate_from_parent_templates">
