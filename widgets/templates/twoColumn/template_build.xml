@@ -19,7 +19,7 @@
   <target name="_init_template"
           description="Define any template specifc properties">
     <echo message="+------------------------------------------"/>
-    <echo message="|  Initialising template properties"/>
+    <echo message="|  Initialising template properties for ${template.name}"/>
     <echo message="+------------------------------------------"/>
 
     <loadfile property="content.scripts"
@@ -135,6 +135,9 @@
       </filterchain>
     </loadfile>
 
+    <!-- load properties we've set in other templates -->
+    <property file="${widget.build.dir}/${widget.shortname}.properties"/>
+    <!-- write the full property set for this template -->
     <echoproperties destfile="${widget.build.dir}/${widget.shortname}.properties" prefix=""/>
   </target>
 
@@ -145,7 +148,7 @@
     <echo message="+------------------------------------------"/>
 
     <!-- Build from base template -->
-    <ant antfile="../../build.xml"
+    <ant antfile="${wookie.template.dir}/build.xml"
          target="_generate_widget">
       <property name="template.name" value="base"/>
       <property name="copyWidgetFiles" value="false"/>
