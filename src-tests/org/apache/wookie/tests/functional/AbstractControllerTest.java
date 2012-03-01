@@ -30,6 +30,7 @@ public abstract class AbstractControllerTest{
 	protected static final String TEST_SERVER_ORIGIN = "http://"+TEST_SERVER_HOST+":"+TEST_SERVER_PORT;
 	protected static final String TEST_SERVER_LOCATION = TEST_SERVER_ORIGIN+"/wookie/";
 	
+	protected static final String TEST_POLICIES_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"policies";
 	protected static final String TEST_INSTANCES_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"widgetinstances";
 	protected static final String TEST_PROPERTIES_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"properties";
 	protected static final String TEST_PARTICIPANTS_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"participants";
