@@ -26,15 +26,10 @@ window.PENALTY_STATE_RE = /^penalty_(.+)$/;
 window.generator = null;
 
 // game data
-window.gameReset = false;
-window.waveReady = false;
 window.puzzleArray = [];
 window.solutionArray = [];
 window.liveGameArray = [];
 window.playerRecords = [];
-
-// viewer data
-window.viewerId = null;
 
 // status messages on top
 window.messages = [];
@@ -44,84 +39,48 @@ function init() {
   window.generator = new sudoku.SudokuGenerator();
 
   if (window.DEBUG) {
-    jQuery('#debugConsole').css({display: 'block'});
+    $('#debugConsole').css({display: 'block'});
     initClickHandlers();    
   } else {
-    jQuery('#debugConsole').css({display: 'none'});
+    $('#debugConsole').css({display: 'none'});
   }
 
   if (window.wave) {
-
+    //
+    // Start collaborative play
+    //
     wave.setParticipantCallback(function() {
-
-      if (wave.getViewer() != null && window.viewerId == null) {
-        window.viewerId = wave.getViewer().getDisplayName();
-        // init the area heading
         updateMessages();
         updateRankingDisplay();
-      }
-      wave.setStateCallback(waveStateChanged);  
     });
-        
+    wave.setStateCallback(waveStateChanged); 
   }
-}
-
-function appendMessage(msg) {
-  if (messages.length >= MAX_MESSAGES) {
-    messages.pop();    
-  }
-  messages.unshift(msg);
-
-  updateMessages();
-}
-
-function updateMessages() {
-
-  var html = [];
-  html.push('<b>Updates:</b><br><br>');
-  html.push(messages.join('<br>'));
-
-  jQuery('#messages').html(html.join(''));
-}
-
-function debug(msg) {
-  jQuery('#debug').prepend(msg + '<br/>');
 }
 
 function waveStateChanged() {
-  if (!window.wave) {
-    return;
-  }  
-  
-  if (window.gameReset) {
-    var keys = wave.getState().getKeys();
-    var done = true;
-    for (var i = 0; i < keys.length; i++) {
-      var key = keys[i];
-      if (window.CELL_STATE_RE.test(key) || 
-          window.PENALTY_STATE_RE.test(key)) {
-        done = false;
-        break;
-      }
-    }    
-    if (done) {
-      window.gameReset = false;
-      initGame();
-      return;
-    } else {
-      return;
-    }
+  //
+  // Check if the game has reset by comparing the current solution
+  // in the window with the wave state solution
+  //  
+  if (wave.getState().get("SOLUTION") && wave.getState().get("SOLUTION") != JSON.stringify(window.solutionArray) ) {
+    debug("game was reset");
+    window.puzzleArray = JSON.parse(get(PUZZLE_KEY));
+    window.solutionArray = JSON.parse(get(SOLUTION_KEY));
+    window.liveGameArray = window.puzzleArray.concat([]); // clone liveGameArray from puzzleArray  
+    showGame();
+      
+  } else {
+    //
+    // Check for another player's move
+    //
+    updateGameProgress();   
   }
-
-  if (!window.waveReady) {
-    window.waveReady = true;
-    initGame();
-    return;
-  }  
-
-  updateGameProgress();  
 }
 
+//
+// Update game board with events
+// from wave state
+//
 function updateGameProgress() {
   var keys = wave.getState().getKeys();
   for (var i = 0; i < keys.length; ++i) {   
@@ -159,124 +118,46 @@ function updateGameProgress() {
   }
 }
 
-function getPlayerRecord(playerName) {
-  var ret = null;
-
-  for (var i = 0; i < playerRecords.length; i++) {
-    var record = playerRecords[i];
-    if (record.name == playerName) {
-      ret = record;
-      break;
-    }
-  }
-
-  return ret;
-}
-
-function newPlayerRecord(playerName) {
-  playerRecord = {};
-  playerRecord.name = playerName;
-  playerRecord.points = 0;
-  playerRecord.penalty = 0;
-  playerRecords.push(playerRecord);
-  return playerRecord;
-}
-
-function addPoint(playerName) {
-
-  var playerRecord = getPlayerRecord(playerName);
-
-  if (playerRecord == null) {
-    playerRecord = newPlayerRecord(playerName);
-  }  
-
-  playerRecord.points++;
-
-  updateRankingDisplay();
-}
-
-function updateRankingDisplay() {
-  
-  // sort player record by points
-  playerRecords.sort(function(a, b) {
-    return (b.points - b.penalty) - (a.points - a.penalty);
-  });  
-
-  var html = [];
-  html.push('<b>Ranking:</b><br><br>');
-  
-  for (var i = 0; i < playerRecords.length; i++) {
-    var playerRecord = playerRecords[i];
-    var name = playerRecord.name;
-    var total = playerRecord.points - playerRecord.penalty;
-    var rank = i + 1;
-    html.push('<b>' + rank + '. </b>');
-    html.push(name + ' (' + total + ')');
-    html.push('<br/>');
-  }
-
-  jQuery('#rankingDisplay').html(html.join(''));
-}
-
-function initClickHandlers() {
-  
-  jQuery('#clear').click(function() {
-    jQuery('#debug').empty();
-  });
-
-  jQuery('#reset').click(function() {
-    resetAllStates();
-  });
-
-  jQuery('#print').click(function() {
-    printAllStates();
-  });
-
-}
-
-function hasExistingGame() {
-  var ret = false;
-
-  if (get(PUZZLE_KEY) != null) {
-    ret = true;
-  }
-
-  return ret;
-}
-
 function showGame() {
+  $('#splash').hide();
   displaySudoku(window.puzzleArray.join(''));
   updateGameProgress();
-  jQuery('#loading').css('display', 'none');
 }
 
-function initGame() {
-  debug('viewer id: ' + viewerId);
-  
-  if (hasExistingGame()) {
-    debug("has existing game");
-    // there is an existing game, read the data in
-    window.puzzleArray = JSON.parse(get(PUZZLE_KEY));
-    window.solutionArray = JSON.parse(get(SOLUTION_KEY));  
-  } else {
-    debug("generating new game");
-    // you are the first player, you need to generate the game!
+function newGame(){
     var data = generateNewPuzzle();
-    window.puzzleArray = data.puzzle;
-    window.solutionArray = data.solution;
-    set(PUZZLE_KEY, JSON.stringify(window.puzzleArray));
-    set(SOLUTION_KEY, JSON.stringify(window.solutionArray));
-  }
-
-  window.liveGameArray = window.puzzleArray.concat([]); // clone liveGameArray from puzzleArray  
-
-  showGame();
+    
+    if (window.wave){
+        //
+        // Create the game data and send it, but don't change our local state
+        //
+        debug("created new game - submitting delta");
+        var delta = {};
+        delta[PUZZLE_KEY] = JSON.stringify(data.puzzle);
+        delta[SOLUTION_KEY] = JSON.stringify(data.solution);
+        //
+        // Clear keys for each cell
+        //
+        for (var i=0;i<81;i++){
+            delta["cell_"+i] = null;
+        }
+        wave.getState().submitDelta(delta);
+    } else {
+        //
+        // In single player mode, just start the game
+        //
+        window.puzzleArray = data.puzzle;
+        window.solutionArray = data.solution;
+        window.liveGameArray = window.puzzleArray.concat([]); // clone liveGameArray from puzzleArray  
+        showGame();
+    }
 }
 
+//
+// Create the puzzle
+//
 function generateNewPuzzle() {
-  
   var data = {};
-  
   try {
     var generator = new sudoku.SudokuGenerator();
     var puzzleString = generator.generate();
@@ -290,12 +171,7 @@ function generateNewPuzzle() {
   } catch (e) {
     data = generateNewPuzzle();
   }
-
   return data;
-}
-
-function quitGame() {
-  displayActualSolution();
 }
 
 function cleanup() {
@@ -303,22 +179,19 @@ function cleanup() {
   // - hide the sudoku display
   // - remove all previous event listeners on all cells
   // - remove all css class attr on all cells
-  // - hide comment box if it is open
-  // - hide timer & reset timer
-  
-  jQuery('#display').hide();
+
+  $('#display').hide();
   
   for (var i=0;i<81;i++) {
     var cellId = '#cell_' + i;
-    jQuery(cellId).unbind();
-    jQuery(cellId).removeClass('blankCell');
-    jQuery(cellId).removeClass('givenCell');
-    jQuery(cellId).removeClass('solutionCell');  
+    $(cellId).unbind();
+    $(cellId).removeClass('blankCell');
+    $(cellId).removeClass('givenCell');
+    $(cellId).removeClass('solutionCell');  
   }
 }
 
 function isGameOver() { 
-
   if (liveGameArray.length == 0) {
     // the game isn't fully initialized yet
     return false;
@@ -328,15 +201,15 @@ function isGameOver() {
 }
 
 function onGameOver() { 
-
   if (confirm('Game over. New game?')) {
     // now reset the state callback function
     resetAllStates();
+    newGame();
   }
 }
 
 function closeCell(arrayIndex, value, playerName) {
-  var cell = jQuery('#cell_' + arrayIndex);
+  var cell = $('#cell_' + arrayIndex);
   cell.html(value);
   cell.addClass('solutionCell');  
 
@@ -361,23 +234,17 @@ function closeCell(arrayIndex, value, playerName) {
 }
 
 function onRightMove(arrayIndex, value) {  
-  
   // update the local live game array
   window.liveGameArray[arrayIndex] = value;
-
   // report state change to save
   // TODO
-  set('cell_' + arrayIndex, window.viewerId);
-
-  closeCell(arrayIndex, value, window.viewerId);
+  set('cell_' + arrayIndex, getViewer());
+  closeCell(arrayIndex, value, getViewer());
 }
 
 function onWrongMove() {  
-   
-  var key = 'penalty_' + window.viewerId; //.replace(/ /g, '*');
-
+  var key = 'penalty_' + getViewer(); //.replace(/ /g, '*');
   var value = get(key);
-
   if (value == null) {
     value = 0
   }
@@ -399,8 +266,6 @@ function blurOnCell(inputBox) {
     cell.empty();
     cell.bind('click', handleCellInput);  
   }
-  
-  //checkGame();
 }
 
 function getCellValue(arrayIndex) {
@@ -413,19 +278,19 @@ function isInputCorrect(arrayIndex, input) {
 
 function handleCellInput() {
         
-  var arrayIndex = parseInt(jQuery(this).attr('id').replace('cell_', ''));  
+  var arrayIndex = parseInt($(this).attr('id').replace('cell_', ''));  
   
   debug('ans: ' + getCellValue(arrayIndex));
 
-  jQuery(this).unbind('click');
+  $(this).unbind('click');
          
   //clearAnnounce();      
         
-  var cell = jQuery(this);
+  var cell = $(this);
         
   var cellValue = (cell.html() == '')?'':'value=' +cell.html();    
 
-  var inputBox = jQuery('<input maxlength=1 ' + cellValue 
+  var inputBox = $('<input maxlength=1 ' + cellValue 
     + ' type=text id=cellOpenBox>');
         
   cell.html(inputBox);
@@ -473,16 +338,16 @@ function displaySudoku(sudokuStr) {
     
     if (value == 0) {
       // this is a blank cell      
-      jQuery(cellId).click(handleCellInput);            
-      jQuery(cellId).html('');  
+      $(cellId).click(handleCellInput);            
+      $(cellId).html('');  
       
     } else {  
       // this is a given cell
-      jQuery(cellId).html(value);  
+      $(cellId).html(value);  
     }
   }
-  jQuery('#display').fadeIn(500);
-  jQuery('#quit').show();
+  $('#display').fadeIn(500);
+  $('#info').fadeIn(500);
 }
 
 function get(key) {
@@ -494,30 +359,141 @@ function get(key) {
 }
 
 function set(key, value) {
-  var obj = {};
-  obj[key] = value;
   if (window.wave) {
-    wave.getState().submitDelta(obj);
+    wave.getState().submitValue(key,value);
   }  
 }
 
-function rm(key) {
-  var obj = {};
-  obj[key] = null;  
+function getViewer() {
+  var ret = "you";
   if (window.wave) {
-    wave.getState().submitDelta(obj);
-  }  
+    ret = wave.getViewer().getDisplayName();
+  }
+  return ret;
 }
 
-function getViewerId() {
+function resetAllStates() {
+
+  if (window.wave) {
+
+    // reset all game data
+    window.puzzleArray = [];
+    window.solutionArray = [];
+    window.liveGameArray = [];
+    window.playerRecords = [];
+    window.messages = [];
+   
+    // clear info
+    updateMessages();
+    updateRankingDisplay();
+  }    
+
+}
+
+///////////////
+// PLAYERS //
+///////////////
+
+function appendMessage(msg) {
+  if (messages.length >= MAX_MESSAGES) {
+    messages.pop();    
+  }
+  messages.unshift(msg);
+  updateMessages();
+}
+
+function updateMessages() {
+  var html = [];
+  html.push('<b>Updates:</b><br><br>');
+  html.push(messages.join('<br>'));
+
+  $('#messages').html(html.join(''));
+}
+
+function newPlayerRecord(playerName) {
+  playerRecord = {};
+  playerRecord.name = playerName;
+  playerRecord.points = 0;
+  playerRecord.penalty = 0;
+  playerRecords.push(playerRecord);
+  return playerRecord;
+}
+
+function addPoint(playerName) {
+  var playerRecord = getPlayerRecord(playerName);
+  if (playerRecord == null) {
+    playerRecord = newPlayerRecord(playerName);
+  }  
+  playerRecord.points++;
+  updateRankingDisplay();
+}
+
+function updateRankingDisplay() {
+  
+  // sort player record by points
+  playerRecords.sort(function(a, b) {
+    return (b.points - b.penalty) - (a.points - a.penalty);
+  });  
+
+  var html = [];
+  html.push('<b>Ranking:</b><br><br>');
+  
+  for (var i = 0; i < playerRecords.length; i++) {
+    var playerRecord = playerRecords[i];
+    var name = playerRecord.name;
+    var total = playerRecord.points - playerRecord.penalty;
+    var rank = i + 1;
+    html.push('<b>' + rank + '. </b>');
+    html.push(name + ' (' + total + ')');
+    html.push('<br/>');
+  }
+
+  $('#rankingDisplay').html(html.join(''));
+}
+
+function getPlayerRecord(playerName) {
   var ret = null;
 
-  if (window.wave) {
-
-    ret = wave.getViewer().getDisplayName();
+  for (var i = 0; i < playerRecords.length; i++) {
+    var record = playerRecords[i];
+    if (record.name == playerName) {
+      ret = record;
+      break;
+    }
   }
 
   return ret;
+}
+
+///////////////
+// DEBUGGING //
+///////////////
+
+function debug(msg) {
+  $('#debug').prepend(msg + '<br/>');
+}
+
+function initClickHandlers() {
+  
+  $('#clear').click(function() {
+    $('#debug').empty();
+  });
+
+  $('#reset').click(function() {
+    resetAllStates();
+  });
+
+  $('#print').click(function() {
+    printAllStates();
+  });
+  
+  $('#cheat').click(function() {
+    cheat();
+  });
+}
+
+function cheat(){
+  onGameOver();
 }
 
 function printAllStates() {  
@@ -539,42 +515,4 @@ function printAllStates() {
   }
   
   debug(html.join(''));
-}
-
-function resetAllStates() {
-
-  if (window.wave) {
-
-    var obj = {};
-
-    // reset all game data
-    window.puzzleArray = [];
-    window.solutionArray = [];
-    window.liveGameArray = [];
-    window.playerRecords = [];
-    window.messages = [];
-    window.gameReset = true;
-
-    obj[window.PUZZLE_KEY] = null;
-    obj[window.SOLUTION_KEY] = null;
-    
-    var keys = wave.getState().getKeys();
-
-    for (var i = 0; i < keys.length; i++) {
-      var key = keys[i];
-      if (window.CELL_STATE_RE.test(key) || 
-          window.PENALTY_STATE_RE.test(key)) {
-        obj[key] = null;
-      }
-    }
-   
-    debug(JSON.stringify(obj));
-
-    wave.getState().submitDelta(obj);
-
-    // clear info
-    updateMessages();
-    updateRankingDisplay();
-  }    
-
 }

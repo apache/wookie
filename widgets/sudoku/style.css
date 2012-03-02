@@ -17,11 +17,30 @@
 body {
   font: icon;
   font-size: 15pt !important;
+  border: 0px;
+  margin: 0px;
 }
 
 #main {
-  width: 800px;
+  width: 480px;
+  height: 376px;
   text-align: center;
+}
+
+#splash {
+  float:left;
+  width: 376px;
+  height: 376px;
+  text-align: center;
+  background: url('splash.png');
+}
+
+#splash button {
+  margin-top: 200px;
+  font-size: 30px;
+  box-shadow: 0 0 5px rgba(0, 0, 255, 1);
+  -webkit-box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+  
 }
 
 #gameDisplay {
@@ -31,20 +50,22 @@ body {
 #messages {
   height: 100px;
   border: 0px solid red;
-  color: black;
   text-align: left;
 }
 
 #info {
-  width: 300px;
+  width: 100px;
+  height: 100%;
   float: left;
-  margin-left: 20px; 
+  background: #555;
+  color: #EEE;
+  margin-left: 0px;
+  padding-left: 4px;
   font-size: 13px;
 }
 
 #rankingDisplay {
-  border: 0px dotted red;
-  color: black;
+  color: #EEE;
   text-align: left;
   padding: 2px;
 }

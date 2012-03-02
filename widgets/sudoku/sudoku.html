@@ -28,14 +28,16 @@
   <input type=button id=clear value='Clear Debug'/>
   <input type=button id=reset value='Reset All States'/>
   <input type=button id=print value='Print All States'/>  
+  <input type=button id=cheat value='Finish game'/>  
   <br>
   <div id='debug'></div>
 </div>
-<br>
 <div align="left">
 <div id=main>
+  <div id='splash'>
+    <button id='start' onclick="newGame()">Start</button>
+  </div>
   <div id='gameDisplay'>
-      <div id='loading'><br>loading ... </div>
       <div id='display'>
         <table cellspacing="0">
           <tr>
@@ -180,7 +182,7 @@
               <table id="grid8" cellspacing="0">
                 <tr>
                   <td id=cell_57></td>
-                  <td id=cell_58></td>
+                  <td id=cell_58></td> 
                   <td id=cell_59></td>
                 </tr>
                 <tr>
