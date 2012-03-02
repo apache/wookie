@@ -25,6 +25,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
@@ -266,6 +267,101 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/http%3A%2F%2Fdeletetest");
     client.executeMethod(get);
     assertEquals(404, get.getStatusCode());
+	}
+	
+	
+	@Test
+	public void updateWidget() throws HttpException, IOException{
+	  HttpClient client = new HttpClient();
+    //
+    // Use admin credentials
+    //
+    setAuthenticationCredentials(client);
+    
+    PutMethod post = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/http%3A%2F%2Fuploadtest");
+    
+    //
+    // Use upload test widget
+    //
+    File file = new File("src-tests/testdata/upload-test.wgt");
+    assertTrue(file.exists());
+    
+    //
+    // Add test wgt file to POST
+    //
+    Part[] parts = { new FilePart(file.getName(), file) };
+    post.setRequestEntity(new MultipartRequestEntity(parts, post
+        .getParams()));
+    
+    //
+    // POST the file to /widgets and check we get 200 (Updated)
+    //
+    client.executeMethod(post);   
+    int code = post.getStatusCode();
+    assertEquals(200,code);
+    post.releaseConnection();     
+	  
+	}
+	
+	@Test
+	public void updateWidgetUnauthorized() throws HttpException, IOException{
+	   HttpClient client = new HttpClient();
+    
+	   PutMethod post = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/http%3A%2F%2Fuploadtest");
+	    
+	    //
+	    // Use upload test widget
+	    //
+	    File file = new File("src-tests/testdata/upload-test.wgt");
+	    assertTrue(file.exists());
+	    
+	    //
+	    // Add test wgt file to POST
+	    //
+	    Part[] parts = { new FilePart(file.getName(), file) };
+	    post.setRequestEntity(new MultipartRequestEntity(parts, post
+	        .getParams()));
+	    
+	    //
+	    // POST the file to /widgets and check we get 200 (Updated)
+	    //
+	    client.executeMethod(post);   
+	    int code = post.getStatusCode();
+	    assertEquals(401,code);
+	    post.releaseConnection();  
+	}
+	
+	@Test
+	public void updateWidgetNotFound() throws HttpException, IOException{
+	   HttpClient client = new HttpClient();
+	    //
+	    // Use admin credentials
+	    //
+	    setAuthenticationCredentials(client);
+	    
+	    PutMethod post = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/http%3A%2F%2Fnosuchwidget");
+	    
+	    //
+	    // Use upload test widget
+	    //
+	    File file = new File("src-tests/testdata/upload-test.wgt");
+	    assertTrue(file.exists());
+	    
+	    //
+	    // Add test wgt file to POST
+	    //
+	    Part[] parts = { new FilePart(file.getName(), file) };
+	    post.setRequestEntity(new MultipartRequestEntity(parts, post
+	        .getParams()));
+	    
+	    //
+	    // POST the file to /widgets and check we get 200 (Updated)
+	    //
+	    client.executeMethod(post);   
+	    int code = post.getStatusCode();
+	    assertEquals(404,code);
+	    post.releaseConnection();  
+	  
 	}
 	
 	/**

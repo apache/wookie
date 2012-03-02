@@ -61,15 +61,34 @@ import org.apache.wookie.w3c.exceptions.InvalidStartFileException;
  */
 public class WidgetsController extends Controller{
 
-	private static final long serialVersionUID = 8759704878105474902L;
-
-	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-	}
+  private static final long serialVersionUID = 8759704878105474902L;
 	
 	// Implementation
+	
+  /* (non-Javadoc)
+   * @see org.apache.wookie.controller.Controller#update(java.lang.String, javax.servlet.http.HttpServletRequest)
+   */
+  @Override
+  protected void update(String resourceId, HttpServletRequest request)
+      throws ResourceNotFoundException, InvalidParametersException,
+      UnauthorizedAccessException {
+    
+    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+    IWidget widget = persistenceManager.findWidgetByGuid(resourceId);
+    // attempt to get specific widget by id
+    if (widget == null) {
+      persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+      widget = persistenceManager.findById(IWidget.class, resourceId);
+    }
+    // return widget result
+    if (widget == null) throw new ResourceNotFoundException();
+    
+    try {
+      create(resourceId, request);
+    } catch (ResourceDuplicationException e) {
+      e.printStackTrace();
+    }
+  }
 
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.controller.Controller#show(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
