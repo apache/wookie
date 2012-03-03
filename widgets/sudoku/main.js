@@ -35,9 +35,16 @@ window.playerRecords = [];
 window.messages = [];
 window.MAX_MESSAGES = 5;
 
+//
+// Set up the game
+//
 function init() {
   window.generator = new sudoku.SudokuGenerator();
 
+  //
+  // If in DEBUG mode, show the
+  // debug console
+  //
   if (window.DEBUG) {
     $('#debugConsole').css({display: 'block'});
     initClickHandlers();    
@@ -57,17 +64,34 @@ function init() {
   }
 }
 
+//
+// Called whenever we get a state changed event.
+//
+// There are two kinds of events we need to respond to:
+// 1. Another player has moved
+// 2. Another player (or this player) has started a new game
+//
 function waveStateChanged() {
   //
   // Check if the game has reset by comparing the current solution
   // in the window with the wave state solution
   //  
-  if (wave.getState().get("SOLUTION") && wave.getState().get("SOLUTION") != JSON.stringify(window.solutionArray) ) {
+  if (get("SOLUTION") && get("SOLUTION") != JSON.stringify(window.solutionArray) ) {
     debug("game was reset");
+    
+    //
+    // Set new game
+    //
     window.puzzleArray = JSON.parse(get(PUZZLE_KEY));
     window.solutionArray = JSON.parse(get(SOLUTION_KEY));
     window.liveGameArray = window.puzzleArray.concat([]); // clone liveGameArray from puzzleArray  
     showGame();
+    
+    //
+    // Clear game messages
+    //
+    window.messages = [];
+    updateMessages();
       
   } else {
     //
@@ -90,7 +114,7 @@ function updateGameProgress() {
       var arrayIndex = RegExp.$1;
       // only close this cell if it is still opened
       if (window.liveGameArray[arrayIndex] == 0) {
-        var playerName = wave.getState().get(key);
+        var playerName = get(key);
         closeCell(arrayIndex, getCellValue(arrayIndex), playerName);
       }
     } else {
@@ -98,7 +122,7 @@ function updateGameProgress() {
         var playerName = RegExp.$1;
         //playerName = playerName.replace(/\*/g, ' ');
         // handle the penalty count
-        var penalty = wave.getState().get(key);        
+        var penalty = get(key);        
         debug('penalty for ' + playerName + '=' + penalty);
 
         var playerRecord = getPlayerRecord(playerName);
@@ -111,7 +135,7 @@ function updateGameProgress() {
           playerRecord.penalty = penalty;
           var score = playerRecord.points - playerRecord.penalty;    
           updateRankingDisplay();  
-          appendMessage(playerName + '<span style="color: red;"> -1</span>');
+          appendMessage('<div class="playername">'+playerName + '</div><span class="message incorrect"> -1</span>');
         }        
       }
     }
@@ -174,36 +198,22 @@ function generateNewPuzzle() {
   return data;
 }
 
-function cleanup() {
-  
-  // - hide the sudoku display
-  // - remove all previous event listeners on all cells
-  // - remove all css class attr on all cells
-
-  $('#display').hide();
-  
-  for (var i=0;i<81;i++) {
-    var cellId = '#cell_' + i;
-    $(cellId).unbind();
-    $(cellId).removeClass('blankCell');
-    $(cellId).removeClass('givenCell');
-    $(cellId).removeClass('solutionCell');  
-  }
-}
-
-function isGameOver() { 
-  if (liveGameArray.length == 0) {
-    // the game isn't fully initialized yet
-    return false;
-  } else {
-    return window.liveGameArray.join('') == window.solutionArray.join('');
-  }
-}
-
 function onGameOver() { 
   if (confirm('Game over. New game?')) {
-    // now reset the state callback function
-    resetAllStates();
+    //
+    // Reset all the game data
+    //
+    if (window.wave) {
+        // reset all game data
+        window.puzzleArray = [];
+        window.solutionArray = [];
+        window.liveGameArray = [];
+        window.messages = [];
+   
+        // clear info
+        updateMessages();
+        updateRankingDisplay();
+    }  
     newGame();
   }
 }
@@ -224,7 +234,7 @@ function closeCell(arrayIndex, value, playerName) {
   var playerRecord = getPlayerRecord(playerName);
 
   var score = playerRecord.points - playerRecord.penalty;
-  appendMessage(playerName + '<span style="color: green;"> +1</span>');
+  appendMessage('<div class="playername">'+playerName + '</div><div class="message correct"> +1</div>');
 
   if (isGameOver()) {                
     // update game state to be over
@@ -232,6 +242,20 @@ function closeCell(arrayIndex, value, playerName) {
     onGameOver();
   }
 }
+
+
+//
+// Check if game over
+//
+function isGameOver() { 
+  if (liveGameArray.length == 0) {
+    // the game isn't fully initialized yet
+    return false;
+  } else {
+    return window.liveGameArray.join('') == window.solutionArray.join('');
+  }
+}
+
 
 function onRightMove(arrayIndex, value) {  
   // update the local live game array
@@ -327,28 +351,57 @@ function handleCellInput() {
   });          
 }
 
+
+//
+// Show the game board
+//
 function displaySudoku(sudokuStr) {
   
-  cleanup();
+  //
+  // Hide the game display
+  //
+  $('#display').hide();
   
+  //
+  // Remove event listeners on cells
+  // and existing CSS that shows/hides
+  // the scores
+  //
+  for (var i=0;i<81;i++) {
+    var cellId = '#cell_' + i;
+    $(cellId).unbind();
+    $(cellId).removeClass('blankCell');
+    $(cellId).removeClass('givenCell');
+    $(cellId).removeClass('solutionCell');  
+  }
+  
+  //
+  // Set the cell values
+  //
   for (var i=0;i<sudokuStr.length;i++) {
     var value = sudokuStr.charAt(i);
-    
     var cellId = '#cell_' + i;
-    
     if (value == 0) {
       // this is a blank cell      
       $(cellId).click(handleCellInput);            
       $(cellId).html('');  
-      
     } else {  
       // this is a given cell
       $(cellId).html(value);  
     }
   }
+  
+  //
+  // Show the game display
+  // and messages display
+  //
   $('#display').fadeIn(500);
   $('#info').fadeIn(500);
 }
+
+//////////////////////////////
+// Wave convenience methods // 
+//////////////////////////////
 
 function get(key) {
   var ret = null;
@@ -365,29 +418,11 @@ function set(key, value) {
 }
 
 function getViewer() {
-  var ret = "you";
+  var ret = "averylongname";
   if (window.wave) {
     ret = wave.getViewer().getDisplayName();
   }
   return ret;
-}
-
-function resetAllStates() {
-
-  if (window.wave) {
-
-    // reset all game data
-    window.puzzleArray = [];
-    window.solutionArray = [];
-    window.liveGameArray = [];
-    window.playerRecords = [];
-    window.messages = [];
-   
-    // clear info
-    updateMessages();
-    updateRankingDisplay();
-  }    
-
 }
 
 ///////////////
@@ -405,7 +440,7 @@ function appendMessage(msg) {
 function updateMessages() {
   var html = [];
   html.push('<b>Updates:</b><br><br>');
-  html.push(messages.join('<br>'));
+  html.push(messages.join(''));
 
   $('#messages').html(html.join(''));
 }
@@ -443,9 +478,7 @@ function updateRankingDisplay() {
     var name = playerRecord.name;
     var total = playerRecord.points - playerRecord.penalty;
     var rank = i + 1;
-    html.push('<b>' + rank + '. </b>');
-    html.push(name + ' (' + total + ')');
-    html.push('<br/>');
+    html.push('<div class="playername">'+ name + '</div><div class="message">' + total + '</div>');
   }
 
   $('#rankingDisplay').html(html.join(''));
@@ -479,10 +512,6 @@ function initClickHandlers() {
     $('#debug').empty();
   });
 
-  $('#reset').click(function() {
-    resetAllStates();
-  });
-
   $('#print').click(function() {
     printAllStates();
   });
@@ -508,7 +537,7 @@ function printAllStates() {
 
   for (var i = 0; i < keys.length; ++i) {   
     var key = keys[i];
-    var value = wave.getState().get(key);
+    var value = get(key);
 
     html.push(key + ' = ' + value);
     html.push('<br>');
