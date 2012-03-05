@@ -96,6 +96,7 @@ public class WidgetJavascriptSyntaxAnalyzer {
           _logger.warn(message);
         }
       }
+      lineReader.close();
     }
 	}
 	
@@ -123,6 +124,7 @@ public class WidgetJavascriptSyntaxAnalyzer {
           _logger.warn(message);
         }
       }
+      lineReader.close();
     }
   }
 	
@@ -153,6 +155,7 @@ public class WidgetJavascriptSyntaxAnalyzer {
 					_logger.warn(message);
 				}
 			}
+			lineReader.close();
 		}
 	}
 	

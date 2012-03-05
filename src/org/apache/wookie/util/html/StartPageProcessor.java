@@ -50,6 +50,7 @@ public class StartPageProcessor implements IStartPageProcessor {
 		setContentType(engine, content);
 		FileWriter writer = new FileWriter(startFile);
 		engine.process(writer);
+		writer.close();
 	}
 	
 	private void setContentType(IHtmlProcessor engine, IContentEntity content){
