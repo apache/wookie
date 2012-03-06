@@ -14,7 +14,9 @@
 package org.apache.wookie.tests.functional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -22,11 +24,16 @@ import java.io.StringReader;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -50,6 +57,38 @@ public class FolderLocalizationTest extends AbstractControllerTest {
    */
   @BeforeClass
   public static void setup() throws HttpException, IOException {
+    client = new HttpClient();
+    
+    //
+    // Use admin credentials
+    //
+    setAuthenticationCredentials(client);
+    
+    //
+    // Setup POST method
+    //
+    PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
+    
+    //
+    // Get the locale test widget
+    //
+    File file = new File("src-tests/testdata/localetest.wgt");
+    assertTrue(file.exists());
+    
+    //
+    // Add test wgt file to POST
+    //
+    Part[] parts = { new FilePart(file.getName(), file) };
+    post.setRequestEntity(new MultipartRequestEntity(parts, post
+        .getParams()));
+    
+    //
+    // POST the file to /widgets and check we get 201 (Created)
+    //
+    client.executeMethod(post);   
+    int code = post.getStatusCode();
+    assertEquals(201,code);
+    post.releaseConnection(); 
     
     //
     // Set up the client and enable cookies
@@ -61,7 +100,7 @@ public class FolderLocalizationTest extends AbstractControllerTest {
     //
     // Create a widget instance localized to Yorkshire English
     //
-    PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
+    post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
     post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
         + LOCALIZED_WIDGET
         + "&userid=foldertest1&shareddatakey=foldertest1&locale=en-gb-yorks");
@@ -84,6 +123,15 @@ public class FolderLocalizationTest extends AbstractControllerTest {
     
     post.releaseConnection();
   }
+  
+  @AfterClass
+  public static void tearDown() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    setAuthenticationCredentials(client);
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + LOCALIZED_WIDGET);
+    client.executeMethod(delete);
+    delete.releaseConnection();
+  }  
 
   /**
    * Gets the start file url for an instance
