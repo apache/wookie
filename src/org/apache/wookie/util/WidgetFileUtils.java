@@ -132,7 +132,7 @@ public class WidgetFileUtils {
    * @param widgetGuid
    * @return
    */
-  public static boolean removeWidgetResources(String WIDGETFOLDER,
+  public static void removeWidgetResources(String WIDGETFOLDER,
       String widgetGuid) {
     String folder = WidgetPackageUtils.convertIdToFolderName(widgetGuid);
     String serverPath = WIDGETFOLDER + File.separator + folder;
@@ -145,7 +145,6 @@ public class WidgetFileUtils {
     } catch (Exception ex) {
       _logger.error(ex);
     }
-    return true;
   }
 
 }

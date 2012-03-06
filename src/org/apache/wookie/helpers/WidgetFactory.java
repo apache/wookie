@@ -36,6 +36,7 @@ import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.proxy.Policies;
 import org.apache.wookie.proxy.Policy;
+import org.apache.wookie.util.WidgetFileUtils;
 import org.apache.wookie.w3c.IAccessEntity;
 import org.apache.wookie.w3c.IContentEntity;
 import org.apache.wookie.w3c.IDescriptionEntity;
@@ -247,11 +248,12 @@ public class WidgetFactory {
 	 * @param widget the widget to destroy
 	 * @return true if the widget is destroyed successfully
 	 */
-	public static boolean destroy(IWidget widget){
+	public static boolean destroy(IWidget widget, String resourcesPath){
 	  
 
 		if(widget==null) return false;
 		
+		String widgetGuid = widget.getGuid();
 		String widgetName = widget.getWidgetTitle("en");
 		
     IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
@@ -291,8 +293,10 @@ public class WidgetFactory {
       _logger.error("Problem with properties configuration", e);
     }
         
-		// remove the widget itself
+		// remove the widget db entry itself
 		persistenceManager.delete(widget);
+		// now remove the widget file resources
+		WidgetFileUtils.removeWidgetResources(resourcesPath, widgetGuid);
 		
     _logger.info("'"+widgetName+"' - " + "Widget was successfully deleted from the system.");
     

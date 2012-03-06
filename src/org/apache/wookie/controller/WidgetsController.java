@@ -163,7 +163,9 @@ public class WidgetsController extends Controller{
     //
     // Delete the widget
     //
-    return WidgetFactory.destroy(widget);
+    Configuration properties = (Configuration) getServletContext().getAttribute("properties"); //$NON-NLS-1$
+    final String WIDGETFOLDER = getServletContext().getRealPath(properties.getString("widget.widgetfolder"));//$NON-NLS-1$
+    return WidgetFactory.destroy(widget, WIDGETFOLDER);
   }
 
 	/**

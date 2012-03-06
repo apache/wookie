@@ -217,14 +217,8 @@ public class WidgetAdminServlet extends HttpServlet implements Servlet {
 		String widgetId = request.getParameter("widgetId"); //$NON-NLS-1$
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidget widget = persistenceManager.findById(IWidget.class, widgetId);
-		String guid = widget.getGuid();
-		if(WidgetFactory.destroy(widget)){
-			if(WidgetFileUtils.removeWidgetResources(WIDGETFOLDER, guid)){			
-				request.setAttribute("message_value", localizedMessages.getString("WidgetAdminServlet.12"));			 //$NON-NLS-1$ //$NON-NLS-2$ 
-			}
-			else{
-				request.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.13")); //$NON-NLS-1$ //$NON-NLS-2$ 
-			}
+		if(WidgetFactory.destroy(widget, WIDGETFOLDER)){		
+		  request.setAttribute("message_value", localizedMessages.getString("WidgetAdminServlet.12"));			 //$NON-NLS-1$ //$NON-NLS-2$ 
 		}
 		else{
 			request.setAttribute("error_value", localizedMessages.getString("WidgetAdminServlet.14")); //$NON-NLS-1$ //$NON-NLS-2$ 

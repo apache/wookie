@@ -269,16 +269,21 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     assertEquals(404, get.getStatusCode());
 	}
 	
-	
+	/**
+	 * We allow updates to existing widgets via POST as well as PUT 
+	 * (to allow browsers to update using forms)
+	 * @throws HttpException
+	 * @throws IOException
+	 */
 	@Test
-	public void updateWidget() throws HttpException, IOException{
+	public void updateWidgetByPost() throws HttpException, IOException{
 	  HttpClient client = new HttpClient();
     //
     // Use admin credentials
     //
     setAuthenticationCredentials(client);
     
-    PutMethod post = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/http%3A%2F%2Fuploadtest");
+    PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/http%3A%2F%2Fuploadtest");
     
     //
     // Use upload test widget
@@ -302,6 +307,39 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     post.releaseConnection();     
 	  
 	}
+	
+  @Test
+  public void updateWidgetByPut() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    //
+    // Use admin credentials
+    //
+    setAuthenticationCredentials(client);
+    
+    PutMethod put = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/http%3A%2F%2Fuploadtest");
+    
+    //
+    // Use upload test widget
+    //
+    File file = new File("src-tests/testdata/upload-test.wgt");
+    assertTrue(file.exists());
+    
+    //
+    // Add test wgt file to PUT
+    //
+    Part[] parts = { new FilePart(file.getName(), file) };
+    put.setRequestEntity(new MultipartRequestEntity(parts, put
+        .getParams()));
+    
+    //
+    // PUT the file to /widgets and check we get 200 (Updated)
+    //
+    client.executeMethod(put);   
+    int code = put.getStatusCode();
+    assertEquals(200,code);
+    put.releaseConnection();     
+    
+  }	
 	
 	@Test
 	public void updateWidgetUnauthorized() throws HttpException, IOException{
