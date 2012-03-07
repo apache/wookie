@@ -316,36 +316,43 @@ public abstract class Controller extends HttpServlet{
 		return new String[]{locale};
 	}
 	
-	protected static final int XML = 0;
-	protected static final int HTML = 1;
-	protected static final int JSON = 2;
-	protected static final int ATOM = 3;
+  protected static final int XML = 0;
+  protected static final int HTML = 1;
+  protected static final int JSON = 2;
+  protected static final int ATOM = 3;
+  protected static final int WIDGET = 4;
 	
-	/**
-	 * Returns an int value for the content-type of a request; this 
-	 * can be used to create a switch statement that
-	 * returns different representations based on the 
-	 * request content-type. If no content-type is present in the
-	 * request, this method will return HTML (1)
-	 */
-	protected int format(HttpServletRequest request){
-		String type = request.getHeader("Accept");
-		if (type == null){
-			// check for format parameters in the request
-			if (request.getParameter("format")!=null){
-				type = request.getParameter("format");
-			} else {
-				return HTML;
-			}
-		}
-		if (type.contains("xml"))
-			return XML;
-		if (type.contains("json"))
-			return JSON;
-		if (type.contains("atom"))
-			return ATOM;
-		return HTML;
-	}
+  /**
+   * Returns an int value for the Accept header of a request; this can be used
+   * to create a switch statement that returns different representations based
+   * on the requested media type.
+   * 
+   * If there is no Accept header, we also check for a "format" query parameter
+   * to support clients which are unable to set the Accept header.
+   * 
+   * If no media type requirement is present in the request, this method will
+   * return HTML (1).
+   */
+  protected int format(HttpServletRequest request) {
+    String type = request.getHeader("Accept");
+    if (type == null) {
+      // check for format parameters in the request
+      if (request.getParameter("format") != null) {
+        type = request.getParameter("format");
+      } else {
+        return HTML;
+      }
+    }
+    if (type.contains("xml"))
+      return XML;
+    if (type.contains("json"))
+      return JSON;
+    if (type.contains("atom"))
+      return ATOM;
+    if (type.contains("application/widget"))
+      return WIDGET;
+    return HTML;
+  }
 
 	/**
 	 * Get a URL for a resource on the current Wookie server; this is either determined from the request or overridden by properties
