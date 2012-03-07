@@ -95,8 +95,7 @@ public class WidgetHelper {
 		String out = "";
 
 		out += "\t<widget " +
-		"id=\""+widget.getId()
-		+"\" identifier=\"" + widget.getGuid() 
+		"id=\"" + widget.getGuid() 
 		+"\" width=\"" + width
 		+"\" height=\"" + height
 		+ "\" version=\"" + StringEscapeUtils.escapeXml(widget.getVersion())
@@ -150,12 +149,12 @@ public class WidgetHelper {
 			shortName = name.getShortName();
 			longName = name.getName();
 		}
-		String out = "\t\t<title "; 
+		String out = "\t\t<name "; 
 		if (name != null && name.getDir()!=null) out+=" dir=\""+name.getDir()+"\"";
 		if (shortName != null) out +=" short=\""+StringEscapeUtils.escapeXml(shortName) + "\"";
 		out +=">";
 		if(longName != null) out += StringEscapeUtils.escapeXml(longName); 
-		out += "</title>\n";
+		out += "</name>\n";
 		return out;
 	}
 
@@ -192,7 +191,7 @@ public class WidgetHelper {
 					if (icon.getHeight()!=null) out += " height=\""+icon.getHeight()+"\"";
 					if (icon.getWidth()!=null) out += " width=\""+icon.getWidth()+"\"";
 					if (icon.getLang()!=null) out += " xml:lang=\""+icon.getLang()+"\"";
-					out += ">"+urlWidgetIcon.toString() + "</icon>\n";
+					out += " src=\""+urlWidgetIcon.toString() + "\"/>\n";
 				} catch (MalformedURLException e) {
 					// don't export icon field if its not a valid URL
 				}

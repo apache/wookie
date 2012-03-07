@@ -121,7 +121,7 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 		assertEquals("", widget.getChild("author").getText());
 		// feature list must be empty (null)
 		/// Check manually
-		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+": feature list must be empty ");
+		System.out.println("Manual test:"+widget.getAttributeValue("id")+": feature list must be empty ");
 		// icons must be null, 
 		assertEquals(null, widget.getChild("icon"));
 		// start file encoding must be UTF-8, 
@@ -135,14 +135,14 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 		assertEquals("", getWidgetHeight(widget));
 		// widget id must be null, 
 		/// We have to use generated ids - no nulls allowed
-		assertTrue(widget.getAttributeValue("identifier").contains("generated"));
+		assertTrue(widget.getAttributeValue("id").contains("generated"));
 		// widget license must be null, 
 		// widget license file must be null, 
 		// widget license href must be null, 
 		assertEquals(null, widget.getChild("license"));
 		// widget name must be null, 
 		/// We put a default of "unknown" when exporting this when the value is "null"
-		assertEquals("", getWidgetTitle(widget));
+		assertEquals("", getWidgetname(widget));
 		// widget preferences must be null, 
 		assertEquals(null, widget.getChild("license"));
 		// widget short name must be null, 
@@ -231,20 +231,20 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 	@Test
 	public void b1(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RawAIWHoMs/000/b1.wgt");
-		assertEquals("pass:", widget.getAttributeValue("identifier"));
+		assertEquals("pass:", widget.getAttributeValue("id"));
 	}
 	@Test
 	public void rd(){
 		// We can't allow null ids, we use generated IDs where they aren't valid
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RawAIWHoMs/001/rd.wgt");
-		assertTrue(widget.getAttributeValue("identifier").contains("generated"));
+		assertTrue(widget.getAttributeValue("id").contains("generated"));
 	}
 	
 	@Ignore // Note that this test will pass on its own, but not if run in a series including b1, as it will update b1 rather than create a new widget");
 	@Test
 	public void b2(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RawAIWHoMs/002/b2.wgt");
-		assertEquals("pass:", widget.getAttributeValue("identifier")); 
+		assertEquals("pass:", widget.getAttributeValue("id")); 
 	}
 
 	// 11 Version
@@ -351,44 +351,44 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 		assertEquals("index.htm",start);
 	}
 
-	// 15 Title
+	// 15 name
 
 	@Test
 	public void bx(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-LYLMhryBBT/000/bx.wgt");
-		assertEquals("PASS", getWidgetTitle(widget));
+		assertEquals("PASS", getWidgetname(widget));
 	}
 
 	@Test
 	public void by(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-LYLMhryBBT/001/by.wgt");
-		assertEquals("", getWidgetTitle(widget));
+		assertEquals("", getWidgetname(widget));
 	}
 
 	@Test
 	public void bz(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-LYLMhryBBT/002/bz.wgt");
-		assertEquals("PASS", getWidgetTitle(widget));
+		assertEquals("PASS", getWidgetname(widget));
 	}
 
-	// 16 Title
+	// 16 name
 
 	@Test
 	public void ao(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-AYLMhryBnD/000/ao.wgt");
-		assertEquals("PASS", getWidgetTitle(widget));
+		assertEquals("PASS", getWidgetname(widget));
 	}
 
 	@Test
 	public void ap(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-AYLMhryBnD/001/ap.wgt");
-		assertEquals("P A S S", getWidgetTitle(widget));
+		assertEquals("P A S S", getWidgetname(widget));
 	}
 
 	@Test
 	public void aq(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-AYLMhryBnD/002/aq.wgt");
-		assertEquals("PASS", getWidgetTitle(widget));
+		assertEquals("PASS", getWidgetname(widget));
 	}
 
 	@Test
@@ -400,14 +400,14 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 	@Test
 	public void as(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-AYLMhryBnD/004/as.wgt");
-		assertEquals("PASS", getWidgetTitle(widget));
+		assertEquals("PASS", getWidgetname(widget));
 		assertEquals("PASS", getWidgetShortName(widget));
 	}
 
 	@Test
 	public void at(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-AYLMhryBnD/005/at.wgt");
-		assertEquals("PASS", getWidgetTitle(widget));
+		assertEquals("PASS", getWidgetname(widget));
 		assertEquals("PASS", getWidgetShortName(widget));
 	}
 
@@ -420,13 +420,13 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 	@Test
 	public void av(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-AYLMhryBnD/007/av.wgt");
-		assertEquals("", getWidgetTitle(widget));
+		assertEquals("", getWidgetname(widget));
 	}
 
 	@Test
 	public void oa(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-AYLMhryBnD/008/oa.wgt");
-		assertEquals("PASS", getWidgetTitle(widget));
+		assertEquals("PASS", getWidgetname(widget));
 	}
 
 	// 17 Description
@@ -890,14 +890,14 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 	public void e5(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-dPOgiLQKNK/001/e5.wgt");
 		//assertEquals("ISO-8859-1",getStartFileEncoding(widget));
-		System.out.println("Manual test: charset for start file of "+widget.getAttributeValue("identifier")+" must be ISO-8859-1");
+		System.out.println("Manual test: charset for start file of "+widget.getAttributeValue("id")+" must be ISO-8859-1");
 	}
 	@Test
 	// We don't support non-UTF-8 encodings, so this requires a manual test
 	public void e6(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-dPOgiLQKNK/002/e6.wgt");
 		//assertEquals("ISO-8859-1",getStartFileEncoding(widget));
-		System.out.println("Manual test: charset for start file of "+widget.getAttributeValue("identifier")+" must be ISO-8859-1");
+		System.out.println("Manual test: charset for start file of "+widget.getAttributeValue("id")+" must be ISO-8859-1");
 	}
 	@Test
 	public void e7(){
@@ -927,7 +927,7 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 	// We don't support non-UTF-8 encodings, so this requires a manual test
 	public void z1(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-aaaaaaaaaa/000/z1.wgt");
-		System.out.println("Manual test: charset for start file of "+widget.getAttributeValue("identifier")+" must be ISO-8859-1");
+		System.out.println("Manual test: charset for start file of "+widget.getAttributeValue("id")+" must be ISO-8859-1");
 		
 	}
 	
@@ -935,7 +935,7 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 	// We don't support non-UTF-8 encodings, so this requires a manual test
 	public void z2(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-aaaaaaaaaa/001/z2.wgt");
-		System.out.println("Manual test: charset for start file of "+widget.getAttributeValue("identifier")+" must be Windows-1252");
+		System.out.println("Manual test: charset for start file of "+widget.getAttributeValue("id")+" must be Windows-1252");
 		
 	}
 	
@@ -943,26 +943,26 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 	@Test
 	public void e1(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-KNiLPOKdgQ/000/e1.wgt");
-		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature feature:a9bb79c1 must not have any params associated with it.");
+		System.out.println("Manual test:"+widget.getAttributeValue("id")+":the feature feature:a9bb79c1 must not have any params associated with it.");
 	}
 	//37
 	@Test
 	public void df(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-rZdcMBExBX/000/df.wgt");
-		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":To pass, the feature list must remain empty. ");
+		System.out.println("Manual test:"+widget.getAttributeValue("id")+":To pass, the feature list must remain empty. ");
 
 	}
 	@Test
 	@Ignore
 	public void dr(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-rZdcMBExBX/001/dr.wgt");
-		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature list must contain one feature named 'feature:a9bb79c1' whose required value is false.");
+		System.out.println("Manual test:"+widget.getAttributeValue("id")+":the feature list must contain one feature named 'feature:a9bb79c1' whose required value is false.");
 	}
 	
 	@Test
 	public void ha(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-rZdcMBExBX/002/ha.wgt");
-		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":To pass, the feature list must contain two features. Both are named 'feature:a9bb79c1'. One feature must have a parameter named \"test\" whose value is \"pass1\" The other feature must have a parameter named \"test\" whose value is \"pass2\" (the order in which the features appear in the feature list in not relevant).");
+		System.out.println("Manual test:"+widget.getAttributeValue("id")+":To pass, the feature list must contain two features. Both are named 'feature:a9bb79c1'. One feature must have a parameter named \"test\" whose value is \"pass1\" The other feature must have a parameter named \"test\" whose value is \"pass2\" (the order in which the features appear in the feature list in not relevant).");
 	}
 
 	//38
@@ -976,7 +976,7 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 	@Test
 	public void gg(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-ignore-unrequired-feature-with-invalid-name/000/gg.wgt");		
-		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the user agent must not contain any values in the feature list (i.e., the unknown feature is skipped).");
+		System.out.println("Manual test:"+widget.getAttributeValue("id")+":the user agent must not contain any values in the feature list (i.e., the unknown feature is skipped).");
 	}
 	
 	//39
@@ -989,41 +989,41 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 	@Test
 	public void d5(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-luyKMFABLX/000/d5.wgt");
-		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the user agent must not contain any values in the feature list (i.e., the unknown feature is skipped).");
+		System.out.println("Manual test:"+widget.getAttributeValue("id")+":the user agent must not contain any values in the feature list (i.e., the unknown feature is skipped).");
 	}
 	//41
 	@Test
 	public void dt(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-EGkPfzCBOz/000/dt.wgt");
-		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature list must contain one feature named 'feature:a9bb79c1' with no associated parameters. ");
+		System.out.println("Manual test:"+widget.getAttributeValue("id")+":the feature list must contain one feature named 'feature:a9bb79c1' with no associated parameters. ");
 	}
 	@Test
 	public void dg(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-EGkPfzCBOz/001/dg.wgt");
-		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature list must contain one feature named 'feature:a9bb79c1' with one associated parameter whose name is 'PASS' and whose value is 'PASS'. ");
+		System.out.println("Manual test:"+widget.getAttributeValue("id")+":the feature list must contain one feature named 'feature:a9bb79c1' with one associated parameter whose name is 'PASS' and whose value is 'PASS'. ");
 	}	
 	@Test
 	public void v9(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-EGkPfzCBOz/002/v9.wgt");
-		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature list must contain one feature named 'feature:a9bb79c1' with two associated parameters whose name is 'PASS' and whose value are 'value1' and 'value2'.");
+		System.out.println("Manual test:"+widget.getAttributeValue("id")+":the feature list must contain one feature named 'feature:a9bb79c1' with two associated parameters whose name is 'PASS' and whose value are 'value1' and 'value2'.");
 	}
 	//42
 	@Test
 	public void d6(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-xlgUWUVzCY/000/d6.wgt");
-		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":feature 'feature:a9bb79c1' must not have any associated parameters.");
+		System.out.println("Manual test:"+widget.getAttributeValue("id")+":feature 'feature:a9bb79c1' must not have any associated parameters.");
 	}
 
 	// 43 Feature
 	@Test
 	public void e2(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-CEGwkNQcWo/000/e2.wgt");
-		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature feature:a9bb79c1 must not have any associated params. ");
+		System.out.println("Manual test:"+widget.getAttributeValue("id")+":the feature feature:a9bb79c1 must not have any associated params. ");
 	}
 	@Test
 	public void e3(){
 		Element widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-CEGwkNQcWo/001/e3.wgt");
-		System.out.println("Manual test:"+widget.getAttributeValue("identifier")+":the feature feature:a9bb79c1 must not have any associated params. ");
+		System.out.println("Manual test:"+widget.getAttributeValue("id")+":the feature feature:a9bb79c1 must not have any associated params. ");
 	}
 	
 	//44
@@ -1303,21 +1303,21 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 	}
 	
 	private String getLocalIconPath(Element widget, Element iconElem){
-		String id = widget.getAttributeValue("identifier");
+		String id = widget.getAttributeValue("id");
 		id = WidgetPackageUtils.convertIdToFolderName(id);
 		String baseUrl = "http://localhost:8080/wookie/wservices/"+id+"/";	
 		if(iconElem == null) return null;
-		String iconUrl = iconElem.getText();
+		String iconUrl = iconElem.getAttributeValue("src");
 		String icon = StringUtils.difference(baseUrl,iconUrl);
 		return icon;
 	}
 
 	private String getWidgetShortName(Element widget){
-		return widget.getChild("title").getAttributeValue("short");
+		return widget.getChild("name").getAttributeValue("short");
 	}
 
-	private String getWidgetTitle(Element widget){
-		return widget.getChild("title").getText();
+	private String getWidgetname(Element widget){
+		return widget.getChild("name").getText();
 	}
 
 	private String getWidgetWidth(Element widget){

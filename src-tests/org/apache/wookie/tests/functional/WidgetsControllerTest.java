@@ -29,6 +29,11 @@ import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.commons.io.FileUtils;
+import org.apache.wookie.w3c.W3CWidget;
+import org.apache.wookie.w3c.W3CWidgetFactory;
+import org.apache.wookie.w3c.exceptions.BadManifestException;
+import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
 import org.jdom.JDOMException;
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -63,7 +68,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	        int code = get.getStatusCode();
 	        assertEquals(200,code);
 	        String response = get.getResponseBodyAsString();
-	        assertTrue(response.contains("<widget id=\"1\" identifier=\"http://notsupported\""));
+	        assertTrue(response.contains("<widget id=\"http://notsupported\""));
 	        get.releaseConnection();
 	}
 	
@@ -80,7 +85,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	        int code = get.getStatusCode();
 	        assertEquals(200,code);
 	        String response = get.getResponseBodyAsString();
-	        assertTrue(response.contains("<widget id=\"1\" identifier=\"http://notsupported\""));
+	        assertTrue(response.contains("<widget id=\"http://notsupported\""));
 	        get.releaseConnection();
 	}
 	
@@ -97,7 +102,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
           int code = get.getStatusCode();
           assertEquals(200,code);
           String response = get.getResponseBodyAsString();
-          assertTrue(response.contains("<widget id=\"1\" identifier=\"http://notsupported\""));
+          assertTrue(response.contains("<widget id=\"http://notsupported\""));
           get.releaseConnection();
   }
   /**
@@ -113,7 +118,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
           int code = get.getStatusCode();
           assertEquals(200,code);
           String response = get.getResponseBodyAsString();
-          assertTrue(response.contains("<widget id=\"1\" identifier=\"http://notsupported\""));
+          assertTrue(response.contains("<widget id=\"http://notsupported\""));
           get.releaseConnection();
   }
 	
@@ -172,6 +177,34 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     int code = post.getStatusCode();
     assertEquals(201,code);
     post.releaseConnection();  	  
+	}
+	
+	@Test
+	public void downloadWidgetPackage() throws BadWidgetZipFileException, BadManifestException, Exception{
+    HttpClient client = new HttpClient();	
+    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/http://notsupported");
+    get.setRequestHeader("accept", "application/widget");
+    get.setFollowRedirects(true);
+    client.executeMethod(get);
+    
+    assertEquals(200, get.getStatusCode());
+    
+    File file = File.createTempFile("wookie", ".wgt");
+    FileUtils.writeByteArrayToFile(file, get.getResponseBody());
+    
+    System.out.println(get.getStatusCode());
+    
+    
+    File outputFolder = File.createTempFile("temp", Long.toString(System.nanoTime()));
+    outputFolder.delete();
+    outputFolder.mkdir();
+    
+    System.out.println(outputFolder.getPath());
+    
+    W3CWidgetFactory fac = new W3CWidgetFactory();
+    fac.setOutputDirectory(outputFolder.getPath());
+    W3CWidget widget = fac.parse(file);
+    assertEquals("Unsupported widget widget", widget.getLocalName("en"));
 	}
 	
 	@Test

@@ -106,7 +106,7 @@ AbstractControllerTest {
 	 * @return the id of the widget instance that was created
 	 */
 	protected static String instantiateWidget(Element widget){
-		return instantiateWidget(widget.getAttributeValue("identifier"));	
+		return instantiateWidget(widget.getAttributeValue("id"));	
 	}
 
 	/**
