@@ -15,13 +15,17 @@
 package org.apache.wookie.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.io.IOUtils;
 import org.apache.wookie.Messages;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.util.IPersistenceManager;
@@ -90,28 +94,53 @@ public class WidgetsController extends Controller{
     }
   }
 
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.controller.Controller#show(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
-	protected void show(String resourceId, HttpServletRequest request,
-			HttpServletResponse response) throws ResourceNotFoundException, IOException {
-	    // support "all" queries
-		if ((resourceId == null) || resourceId.equals("")){
-			index(resourceId, request, response);
-			return;
-		}
-		
-		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWidget widget = persistenceManager.findWidgetByGuid(resourceId);
-		// attempt to get specific widget by id
-		if (widget == null) {
-		  persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		  widget = persistenceManager.findById(IWidget.class, resourceId);
-		}
-		// return widget result
-		if (widget == null) throw new ResourceNotFoundException();
-		returnXml(WidgetHelper.createXMLWidgetsDocument(widget, getLocalPath(request), getLocales(request)),response);
-	}	
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.wookie.controller.Controller#show(java.lang.String,
+   * javax.servlet.http.HttpServletRequest,
+   * javax.servlet.http.HttpServletResponse)
+   */
+  protected void show(String resourceId, HttpServletRequest request,
+      HttpServletResponse response) throws ResourceNotFoundException,
+      IOException {
+
+    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+    // attempt to get specific widget by URI
+    IWidget widget = persistenceManager.findWidgetByGuid(resourceId);
+    // attempt to get specific widget by id
+    if (widget == null) {
+      persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+      widget = persistenceManager.findById(IWidget.class, resourceId);
+    }
+    // return widget result
+    if (widget == null)
+      throw new ResourceNotFoundException();
+
+    switch (format(request)) {
+    case XML:returnXml(WidgetHelper.createXMLWidgetsDocument(widget,getLocalPath(request), getLocales(request)), response);break;
+    case WIDGET:returnWidget(widget, response);break;
+    default:returnXml(WidgetHelper.createXMLWidgetsDocument(widget,getLocalPath(request), getLocales(request)), response);
+    }
+  }
+
+  /**
+   * Return the specified widget's original .wgt package in the response from a
+   * servlet
+   * 
+   * @param widget
+   *          the widget to return
+   * @param response
+   *          the servlet response
+   * @throws IOException
+   */
+  protected void returnWidget(IWidget widget, HttpServletResponse response)
+      throws IOException {
+    File widgetFile = new File(widget.getPackagePath());
+    InputStream in = new FileInputStream(widgetFile);
+    OutputStream out = response.getOutputStream();
+    IOUtils.copy(in, out);
+  }
 
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.controller.Controller#index(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
