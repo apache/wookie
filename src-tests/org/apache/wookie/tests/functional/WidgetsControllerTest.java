@@ -14,11 +14,11 @@
 
 package org.apache.wookie.tests.functional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLEncoder;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -43,14 +43,18 @@ import org.junit.Test;
  */
 public class WidgetsControllerTest extends AbstractControllerTest {
   
+  private static String WIDGET_ID_ACCESS_TEST = "http://wookie.apache.org/widgets/access-test";
+  private static String WIDGET_ID_DELETE_TEST = "http://deletetest";
+  private static String WIDGET_ID_NOT_SUPPORTED = "http://notsupported";
+  private static String WIDGET_ID_UPLOAD_TEST = "http://uploadtest";
   
   @AfterClass
   public static void tearDown() throws HttpException, IOException{
     HttpClient client = new HttpClient();
     setAuthenticationCredentials(client);
-    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/http%3A%2F%2Fwookie.apache.org%2Fwidgets%2Faccess-test");
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_ACCESS_TEST));
     client.executeMethod(delete);
-    delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/http%3A%2F%2Fuploadtest");
+    delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
     client.executeMethod(delete);
   }
 	
@@ -97,7 +101,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
   @Test
   public void getSpecificWidgetByUri() throws HttpException, IOException{
           HttpClient client = new HttpClient();
-          GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/"+URLEncoder.encode("http://notsupported","UTF-8"));
+          GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_NOT_SUPPORTED));
           client.executeMethod(get);
           int code = get.getStatusCode();
           assertEquals(200,code);
@@ -113,7 +117,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
   @Test
   public void getSpecificWidgetByUri2() throws HttpException, IOException{
           HttpClient client = new HttpClient();
-          GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/http://notsupported");
+          GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_NOT_SUPPORTED);
           client.executeMethod(get);
           int code = get.getStatusCode();
           assertEquals(200,code);
@@ -182,7 +186,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	@Test
 	public void downloadWidgetPackage() throws BadWidgetZipFileException, BadManifestException, Exception{
     HttpClient client = new HttpClient();	
-    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/http://notsupported");
+    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_NOT_SUPPORTED);
     get.setRequestHeader("accept", "application/widget");
     get.setFollowRedirects(true);
     client.executeMethod(get);
@@ -290,14 +294,14 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Delete the widget
     //
-    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/http%3A%2F%2Fdeletetest");
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_DELETE_TEST)); 
     client.executeMethod(delete);
     assertEquals(200, delete.getStatusCode());
     
     //
     // Check it was deleted
     //
-    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/http%3A%2F%2Fdeletetest");
+    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_DELETE_TEST)); 
     client.executeMethod(get);
     assertEquals(404, get.getStatusCode());
 	}
@@ -316,7 +320,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     setAuthenticationCredentials(client);
     
-    PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/http%3A%2F%2Fuploadtest");
+    PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST)); 
     
     //
     // Use upload test widget
@@ -349,7 +353,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     setAuthenticationCredentials(client);
     
-    PutMethod put = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/http%3A%2F%2Fuploadtest");
+    PutMethod put = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
     
     //
     // Use upload test widget
@@ -378,7 +382,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	public void updateWidgetUnauthorized() throws HttpException, IOException{
 	   HttpClient client = new HttpClient();
     
-	   PutMethod post = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/http%3A%2F%2Fuploadtest");
+	   PutMethod post = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
 	    
 	    //
 	    // Use upload test widget
@@ -410,8 +414,8 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	    //
 	    setAuthenticationCredentials(client);
 	    
-	    PutMethod post = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/http%3A%2F%2Fnosuchwidget");
-	    
+	    PutMethod post = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_INVALID));
+	   
 	    //
 	    // Use upload test widget
 	    //
@@ -484,7 +488,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	    //
       HttpClient client = new HttpClient();
       setAuthenticationCredentials(client);
-	    GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID+"/http%3A%2F%2Fwookie.apache.org%2Fwidgets%2Faccess-test");
+	    GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_ACCESS_TEST));
 	    get.setRequestHeader("accepts","text/xml");
 	    client.executeMethod(get);
 	    assertEquals(1,PoliciesControllerTest.processPolicies(get.getResponseBodyAsStream()).getChildren("policy").size());

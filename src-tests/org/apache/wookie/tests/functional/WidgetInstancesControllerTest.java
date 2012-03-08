@@ -14,15 +14,25 @@
 
 package org.apache.wookie.tests.functional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -31,9 +41,53 @@ import org.junit.Test;
  */
 public class WidgetInstancesControllerTest extends AbstractControllerTest {
 
-  private static final String LOCALIZED_WIDGET = "http://www.getwookie.org/widgets/localetest";
-  private static String test_id_key = "";
+  private static String TEST_ID_KEY = "";
 
+  @BeforeClass
+  public static void setup() throws HttpException, IOException {
+    HttpClient client = new HttpClient();
+    
+    //
+    // Use admin credentials
+    //
+    setAuthenticationCredentials(client);
+    
+    //
+    // Setup POST method
+    //
+    PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
+    
+    //
+    // Get the locale test widget
+    //
+    File file = new File("src-tests/testdata/localetest.wgt");
+    assertTrue(file.exists());
+    
+    //
+    // Add test wgt file to POST
+    //
+    Part[] parts = { new FilePart(file.getName(), file) };
+    post.setRequestEntity(new MultipartRequestEntity(parts, post
+        .getParams()));
+    
+    //
+    // POST the file to /widgets and check we get 201 (Created)
+    //
+    client.executeMethod(post);   
+    int code = post.getStatusCode();
+    assertEquals(201,code);
+    post.releaseConnection(); 
+  }
+  
+  @AfterClass
+  public static void tearDown() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    setAuthenticationCredentials(client);
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_LOCALIZED);
+    client.executeMethod(delete);
+    delete.releaseConnection();
+  }
+  
   /**
    * Test we can get an instance localized using the locale parameter
    * 
@@ -45,7 +99,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
     HttpClient client = new HttpClient();
     PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
     post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-        + LOCALIZED_WIDGET
+        + WIDGET_ID_LOCALIZED
         + "&userid=localetest&shareddatakey=localetest&locale=fr");
     client.executeMethod(post);
     int code = post.getStatusCode();
@@ -53,7 +107,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
     assertTrue(post.getResponseBodyAsString().contains("locales/fr/index.htm"));
     assertTrue(post.getResponseBodyAsString().contains(
         "tester les param&#232;tres r&#233;gionaux"));
-    test_id_key = post.getResponseBodyAsString().substring(
+    TEST_ID_KEY = post.getResponseBodyAsString().substring(
         post.getResponseBodyAsString().indexOf("<identifier>") + 12,
         post.getResponseBodyAsString().indexOf("</identifier>"));
     post.releaseConnection();
@@ -72,7 +126,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
     HttpClient client = new HttpClient();
     GetMethod get = new GetMethod(TEST_INSTANCES_SERVICE_URL_VALID);
     get.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-        + LOCALIZED_WIDGET
+        + WIDGET_ID_LOCALIZED
         + "&userid=localetest&shareddatakey=localetest&locale=fr");
     client.executeMethod(get);
     int code = get.getStatusCode();
@@ -92,7 +146,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
   public void getExistingInstanceByIdKey() throws HttpException, IOException {
     HttpClient client = new HttpClient();
     GetMethod get = new GetMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-    get.setQueryString("api_key=" + API_KEY_VALID + "&id_key=" + test_id_key);
+    get.setQueryString("api_key=" + API_KEY_VALID + "&id_key=" + TEST_ID_KEY);
     client.executeMethod(get);
     int code = get.getStatusCode();
     assertEquals(200, code);
@@ -111,7 +165,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
       IOException {
     HttpClient client = new HttpClient();
     GetMethod get = new GetMethod(TEST_INSTANCES_SERVICE_URL_VALID + "/"
-        + test_id_key);
+        + TEST_ID_KEY);
     get.setQueryString("api_key=" + API_KEY_VALID);
     client.executeMethod(get);
     int code = get.getStatusCode();
@@ -132,7 +186,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
     HttpClient client = new HttpClient();
     PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
     post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-        + LOCALIZED_WIDGET
+        + WIDGET_ID_LOCALIZED
         + "&userid=localetest1b&shareddatakey=localetest1b&locale=fr-1694acad");
     client.executeMethod(post);
     int code = post.getStatusCode();
@@ -155,7 +209,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
     HttpClient client = new HttpClient();
     PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
     post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-        + LOCALIZED_WIDGET
+        + WIDGET_ID_LOCALIZED
         + "&userid=localetest2&shareddatakey=localetest2&locale=bu");
     client.executeMethod(post);
     int code = post.getStatusCode();
@@ -181,7 +235,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
     HttpClient client = new HttpClient();
     PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
     post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-        + LOCALIZED_WIDGET + "&userid=localetest3&shareddatakey=localetest3");
+        + WIDGET_ID_LOCALIZED + "&userid=localetest3&shareddatakey=localetest3");
     client.executeMethod(post);
     int code = post.getStatusCode();
     assertEquals(201, code);
@@ -365,6 +419,15 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
     String resp = get.getResponseBodyAsString();
     assertEquals("garfield", resp);
     post.releaseConnection();
+  }
+  
+  @Test
+  public void TestDeleteInstance() throws HttpException, IOException {
+    HttpClient client = new HttpClient();
+    setAuthenticationCredentials(client);
+    DeleteMethod delete = new DeleteMethod(TEST_INSTANCES_SERVICE_URL_VALID + "?api_key=" + API_KEY_VALID + "&id_key=" + TEST_ID_KEY);
+    client.executeMethod(delete);
+    delete.releaseConnection();      
   }
 
 }

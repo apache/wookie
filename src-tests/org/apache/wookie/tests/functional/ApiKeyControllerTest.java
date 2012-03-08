@@ -202,9 +202,10 @@ public class ApiKeyControllerTest extends AbstractControllerTest {
    * 
    * @throws IOException
    * @throws HttpException
+   * @throws JDOMException 
    */
   @Test
-  public void addDuplicateEntry() throws HttpException, IOException {
+  public void addDuplicateEntry() throws HttpException, IOException, JDOMException {
     //
     // Create an API key
     //
@@ -223,6 +224,53 @@ public class ApiKeyControllerTest extends AbstractControllerTest {
     client.executeMethod(post);
     code = post.getStatusCode();
     assertEquals(409, code);
+    
+    String id = null;
+
+    //
+    // Clean up
+    //
+    client = new HttpClient();
+    GetMethod get = new GetMethod(APIKEY_SERVICE_LOCATION_VALID);
+    setAuthenticationCredentials(client);
+    client.executeMethod(get);
+    code = get.getStatusCode();
+    assertEquals(200, code);
+    assertTrue(get.getResponseBodyAsString().contains("DUPLICATION_TEST"));
+
+    //
+    // Get the ID of the key we created
+    //
+    Document doc = new SAXBuilder().build(get.getResponseBodyAsStream());
+    for (Object key : doc.getRootElement().getChildren()) {
+      Element keyElement = (Element) key;
+      if (keyElement.getAttributeValue("value").equals("DUPLICATION_TEST")) {
+        id = keyElement.getAttributeValue("id");
+      }
+    }
+
+    //
+    // Delete the API key
+    //
+    client = new HttpClient();
+    DeleteMethod del = new DeleteMethod(APIKEY_SERVICE_LOCATION_VALID + "/"  + id);
+    setAuthenticationCredentials(client);
+    client.executeMethod(del);
+    code = del.getStatusCode();
+    assertEquals(200, code);
+
+    //
+    // Check that the key was deleted
+    //
+    client = new HttpClient();
+    get = new GetMethod(APIKEY_SERVICE_LOCATION_VALID);
+    get.setRequestHeader("Content-type", "application/json");
+    setAuthenticationCredentials(client);
+    client.executeMethod(get);
+    code = get.getStatusCode();
+    assertEquals(200, code);
+    System.out.println(get.getResponseBodyAsString());
+    assertFalse(get.getResponseBodyAsString().contains("DUPLICATION_TEST"));
   }
 
   /**

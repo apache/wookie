@@ -42,33 +42,41 @@ import org.junit.Test;
  */
 public class PoliciesControllerTest extends AbstractControllerTest {
   
+  private static String POLICY_TEST_SCOPE = "http://policies.test.scope";
+  private static String POLICY_TEST_INVALID_SCOPE = "http://no.such.scope";
+  private static String POLICY_TEST_ORIGIN = "http://policies.test.origin";
+  private static String POLICY_TEST_ORIGIN_2 = "http://policies.test2.origin";
+  
+  private static String POLICY_TEST_VALID = POLICY_TEST_SCOPE + " " + POLICY_TEST_ORIGIN + " " + "ALLOW";
+  private static String POLICY_TEST_VALID_2 = POLICY_TEST_SCOPE + " " + POLICY_TEST_ORIGIN_2 + " " + "ALLOW";
+  private static String POLICY_TEST_INVALID = POLICY_TEST_INVALID_SCOPE + " " + POLICY_TEST_ORIGIN + " " + "ALLOW";
+
+
   @BeforeClass
   public static void setup() throws HttpException, IOException{
     HttpClient client = new HttpClient();
     setAuthenticationCredentials(client);
     PostMethod post = new PostMethod(TEST_POLICIES_SERVICE_URL_VALID);
-    StringRequestEntity entity = new StringRequestEntity("http://policies.test.scope http://policies.test.origin ALLOW", "text/plain", "UTF-8");
+    StringRequestEntity entity = new StringRequestEntity(POLICY_TEST_VALID, "text/plain", "UTF-8");
     post.setRequestEntity(entity);
     client.executeMethod(post);
   }
-  
+
   @AfterClass
   public static void tearDown() throws HttpException, IOException{
     HttpClient client = new HttpClient();
     setAuthenticationCredentials(client);
-    DeleteMethod delete = new DeleteMethod(TEST_POLICIES_SERVICE_URL_VALID+"/http%3A%2F%2Fpolicies.test.scope%20http%3A%2F%2Fpolicies.test2.origin%20ALLOW");
+    DeleteMethod delete = new DeleteMethod(TEST_POLICIES_SERVICE_URL_VALID + "/" + encodeString(POLICY_TEST_VALID_2));
     client.executeMethod(delete);
-    assertEquals(200, delete.getStatusCode()); 
+    assertEquals(200, delete.getStatusCode());
   }
   
   @Test
   public void getPolicies() throws HttpException, IOException{
     HttpClient client = new HttpClient();
-    setAuthenticationCredentials(client);
-    
+    setAuthenticationCredentials(client);    
     GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID);
-    get.setRequestHeader("accepts", "text/xml");
-    
+    get.setRequestHeader("accepts", "text/xml");    
     client.executeMethod(get);
     try {
       Element policies = processPolicies(get.getResponseBodyAsStream());
@@ -81,10 +89,8 @@ public class PoliciesControllerTest extends AbstractControllerTest {
   @Test
   public void getPoliciesUnauthorized() throws HttpException, IOException{
     HttpClient client = new HttpClient();
-    
     GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID);
     get.setRequestHeader("accepts", "text/xml");
-    
     client.executeMethod(get);
     assertEquals(401, get.getStatusCode());
   }
@@ -93,13 +99,11 @@ public class PoliciesControllerTest extends AbstractControllerTest {
   public void getPoliciesWithScope() throws HttpException, IOException{
     HttpClient client = new HttpClient();
     setAuthenticationCredentials(client);
-    
     //
-    // We should have a policy for the Weather widget by default, so lets test with that
+    // We should have a policy setup from above
     //
-    GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID+"/http://policies.test.scope");
+    GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID + "/" + POLICY_TEST_SCOPE);
     get.setRequestHeader("accepts", "text/xml");
-    
     client.executeMethod(get);
     try {
       Element policies = processPolicies(get.getResponseBodyAsStream());
@@ -113,11 +117,9 @@ public class PoliciesControllerTest extends AbstractControllerTest {
   @Test
   public void getPoliciesWithNonexistingScope() throws HttpException, IOException{
     HttpClient client = new HttpClient();
-    setAuthenticationCredentials(client);
-    
-    GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID+"/nosuchscope");
-    get.setRequestHeader("accepts", "text/xml");
-    
+    setAuthenticationCredentials(client);    
+    GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID + "/nosuchscope");
+    get.setRequestHeader("accepts", "text/xml");    
     client.executeMethod(get);
     try {
       Element policies = processPolicies(get.getResponseBodyAsStream());
@@ -157,7 +159,7 @@ public class PoliciesControllerTest extends AbstractControllerTest {
     StringRequestEntity entity = new StringRequestEntity("FAIL * DENY", "text/plain", "UTF-8");
     post.setRequestEntity(entity);
     client.executeMethod(post);
-    assertEquals(400,post.getStatusCode());    
+    assertEquals(400,post.getStatusCode());
   }
   
   @Test
@@ -168,7 +170,7 @@ public class PoliciesControllerTest extends AbstractControllerTest {
     StringRequestEntity entity = new StringRequestEntity("http://dodgyplace.org FAIL DENY", "text/plain", "UTF-8");
     post.setRequestEntity(entity);
     client.executeMethod(post);
-    assertEquals(400,post.getStatusCode());    
+    assertEquals(400,post.getStatusCode());
   }
   
   @Test
@@ -176,7 +178,7 @@ public class PoliciesControllerTest extends AbstractControllerTest {
     HttpClient client = new HttpClient();
     setAuthenticationCredentials(client);
     PostMethod post = new PostMethod(TEST_POLICIES_SERVICE_URL_VALID);
-    StringRequestEntity entity = new StringRequestEntity("http://policies.test.scope http://policies.test2.origin ALLOW", "text/plain", "UTF-8");
+    StringRequestEntity entity = new StringRequestEntity(POLICY_TEST_VALID_2, "text/plain", "UTF-8");
     post.setRequestEntity(entity);
     client.executeMethod(post);
     assertEquals(201,post.getStatusCode());
@@ -185,7 +187,7 @@ public class PoliciesControllerTest extends AbstractControllerTest {
   @Test
   public void deletePolicyUnauthorized() throws HttpException, IOException{
     HttpClient client = new HttpClient();
-    DeleteMethod delete = new DeleteMethod(TEST_POLICIES_SERVICE_URL_VALID+"/http%3A%2F%2Fpolicies.test.scope%20http%3A%2F%2Fpolicies.test.origin%20ALLOW");
+    DeleteMethod delete = new DeleteMethod(TEST_POLICIES_SERVICE_URL_VALID + "/" + encodeString(POLICY_TEST_VALID));
     client.executeMethod(delete);
     assertEquals(401, delete.getStatusCode());   
   }
@@ -194,7 +196,7 @@ public class PoliciesControllerTest extends AbstractControllerTest {
   public void deletePolicyNonexistant() throws HttpException, IOException{
     HttpClient client = new HttpClient();
     setAuthenticationCredentials(client);
-    DeleteMethod delete = new DeleteMethod(TEST_POLICIES_SERVICE_URL_VALID+"/http%3A%2F%2Fno.such.scope%20http%3A%2F%2Fpolicies.test.origin%20ALLOW");
+    DeleteMethod delete = new DeleteMethod(TEST_POLICIES_SERVICE_URL_VALID + "/" + encodeString(POLICY_TEST_INVALID));
     client.executeMethod(delete);
     assertEquals(404, delete.getStatusCode());
   }
@@ -203,7 +205,7 @@ public class PoliciesControllerTest extends AbstractControllerTest {
   public void deletePolicy() throws HttpException, IOException{
     HttpClient client = new HttpClient();
     setAuthenticationCredentials(client);
-    DeleteMethod delete = new DeleteMethod(TEST_POLICIES_SERVICE_URL_VALID+"/http%3A%2F%2Fpolicies.test.scope%20http%3A%2F%2Fpolicies.test.origin%20ALLOW");
+    DeleteMethod delete = new DeleteMethod(TEST_POLICIES_SERVICE_URL_VALID + "/" + encodeString(POLICY_TEST_VALID));
     client.executeMethod(delete);
     assertEquals(200, delete.getStatusCode());
   }
@@ -214,6 +216,5 @@ public class PoliciesControllerTest extends AbstractControllerTest {
     Element policies = doc.getRootElement();
     return policies;
   }
-  
 
 }

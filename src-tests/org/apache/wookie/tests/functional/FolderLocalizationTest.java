@@ -42,7 +42,6 @@ import org.junit.Test;
  */
 public class FolderLocalizationTest extends AbstractControllerTest {
 
-  private static final String LOCALIZED_WIDGET = "http://www.getwookie.org/widgets/localetest";
   private static String WIDGET_START_URL_ROOT;
 
   private static HttpClient client;
@@ -102,7 +101,7 @@ public class FolderLocalizationTest extends AbstractControllerTest {
     //
     post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
     post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-        + LOCALIZED_WIDGET
+        + WIDGET_ID_LOCALIZED
         + "&userid=foldertest1&shareddatakey=foldertest1&locale=en-gb-yorks");
     client.executeMethod(post);
 
@@ -128,7 +127,7 @@ public class FolderLocalizationTest extends AbstractControllerTest {
   public static void tearDown() throws HttpException, IOException{
     HttpClient client = new HttpClient();
     setAuthenticationCredentials(client);
-    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + LOCALIZED_WIDGET);
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_LOCALIZED);
     client.executeMethod(delete);
     delete.releaseConnection();
   }  
@@ -249,7 +248,7 @@ public class FolderLocalizationTest extends AbstractControllerTest {
     //
     PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
     post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-        + LOCALIZED_WIDGET
+        + WIDGET_ID_LOCALIZED
         + "&userid=foldertest1&shareddatakey=foldertest1&locale=fr");
     client.executeMethod(post);
 
@@ -277,7 +276,7 @@ public class FolderLocalizationTest extends AbstractControllerTest {
 
     post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
     post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-        + LOCALIZED_WIDGET
+        + WIDGET_ID_LOCALIZED
         + "&userid=foldertest1&shareddatakey=foldertest1&locale=en");
     client.executeMethod(post);
 
@@ -306,7 +305,7 @@ public class FolderLocalizationTest extends AbstractControllerTest {
     //
     post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
     post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-        + LOCALIZED_WIDGET + "&userid=foldertest1&shareddatakey=foldertest1");
+        + WIDGET_ID_LOCALIZED + "&userid=foldertest1&shareddatakey=foldertest1");
     client.executeMethod(post);
 
     WIDGET_START_URL_ROOT = getStartFile(post.getResponseBodyAsString());

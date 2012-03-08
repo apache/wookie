@@ -16,11 +16,19 @@ package org.apache.wookie.tests.functional;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.wookie.tests.helpers.WidgetUploader;
+import org.jdom.Document;
+import org.jdom.input.SAXBuilder;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -34,7 +42,9 @@ import org.junit.Test;
  * org.apache.wookie.test.conformance.WidgetUpdates
  */
 public class UpdatesControllerTest extends AbstractControllerTest {
-
+  
+  protected static Collection<String> importedWidgetList = new ArrayList<String>();
+  
   protected static final String TEST_UPDATES_URL_VALID = TEST_SERVER_LOCATION
       + "updates";
 
@@ -45,28 +55,66 @@ public class UpdatesControllerTest extends AbstractControllerTest {
    */
   @BeforeClass
   public static void setup() throws IOException {
-    WidgetUploader
-        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition11/001/ta-ac-001.wgt");// ac11
-    WidgetUploader
-        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition13/001/ta-ac-001.wgt");// ac13
-    WidgetUploader
-        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/003/ta-pr-003.wgt");// pr203
-    WidgetUploader
-        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/008/ta-pr-008.wgt");// pr208
-    WidgetUploader
-        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/009/ta-pr-009.wgt");// pr209
-    WidgetUploader
-        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/010/ta-pr-010.wgt");// pr210
-    WidgetUploader
-        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/011/ta-pr-011.wgt");// pr211
-    WidgetUploader
-        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/012/ta-pr-012.wgt");// pr212
-    WidgetUploader
-        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/013/ta-pr-013.wgt");// pr213
-    WidgetUploader
-        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/015/ta-pr-015.wgt");// pr215
-    WidgetUploader
-        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/016/ta-pr-016.wgt");// pr216
+    storeImportedPackageId(
+        WidgetUploader
+        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition11/001/ta-ac-001.wgt")// ac11
+    );
+    storeImportedPackageId(
+        WidgetUploader
+        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition13/001/ta-ac-001.wgt")// ac13
+    );
+    storeImportedPackageId(
+        WidgetUploader
+        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/003/ta-pr-003.wgt")// pr203
+    );
+    storeImportedPackageId(
+        WidgetUploader
+        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/008/ta-pr-008.wgt")// pr208
+    );
+    storeImportedPackageId(
+        WidgetUploader
+        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/009/ta-pr-009.wgt")// pr209
+    );
+    storeImportedPackageId(
+        WidgetUploader
+        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/010/ta-pr-010.wgt")// pr210
+    );
+    storeImportedPackageId(
+        WidgetUploader
+        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/011/ta-pr-011.wgt")// pr211
+    );
+    storeImportedPackageId(
+        WidgetUploader
+        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/012/ta-pr-012.wgt")// pr212
+    );
+    storeImportedPackageId(
+        WidgetUploader
+        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/013/ta-pr-013.wgt")// pr213
+    );
+    storeImportedPackageId(
+        WidgetUploader
+        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/015/ta-pr-015.wgt")// pr215
+    );
+    storeImportedPackageId(
+        WidgetUploader
+        .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/016/ta-pr-016.wgt")// pr216
+    );
+  }
+  
+  @AfterClass
+  public static void tearDown() throws HttpException, IOException{
+    for (String id : importedWidgetList){
+      removeWidget(id);
+    }
+    importedWidgetList.clear();
+  }
+  
+  private static void removeWidget(String identifier) throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    setAuthenticationCredentials(client);
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + identifier);
+    client.executeMethod(delete);
+    delete.releaseConnection();
   }
 
   /**
@@ -100,6 +148,26 @@ public class UpdatesControllerTest extends AbstractControllerTest {
     client.executeMethod(get);
     int code = get.getStatusCode();
     assertEquals(200, code);
+  }
+  
+  private static void storeImportedPackageId(String response){
+    if(response != null){
+      String result = getId(response);
+      importedWidgetList.add(result);
+    }
+  }
+  
+  private static String getId(String response) {
+    SAXBuilder builder = new SAXBuilder();
+    Reader in = new StringReader(response);
+    Document doc;
+    try {
+      doc = builder.build(in);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
+    return doc.getRootElement().getAttributeValue("id");
   }
 
 }

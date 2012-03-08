@@ -183,7 +183,7 @@ public class PropertiesControllerTest extends AbstractControllerTest {
   public void updateProperty() throws HttpException, IOException {
 
     //
-    // Set propstest=cat using POST
+    // Set cat=felix using POST
     //
     HttpClient client = new HttpClient();
     PutMethod put = new PutMethod(TEST_PROPERTIES_SERVICE_URL_VALID);

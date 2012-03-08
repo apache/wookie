@@ -18,16 +18,17 @@ import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.wookie.tests.AbstractWookieTest;
 
 /**
  * Constants used in functional tests. Change these values to test servers
  * at other locations.
  *
  */
-public abstract class AbstractControllerTest{
+public abstract class AbstractControllerTest extends AbstractWookieTest{
 	protected static final int TEST_SERVER_PORT = 8080;
 	protected static final String TEST_SERVER_HOST = "localhost";	
-	protected static final String TEST_SERVER_ORIGIN = "http://"+TEST_SERVER_HOST+":"+TEST_SERVER_PORT;
+	protected static final String TEST_SERVER_ORIGIN = "http://" + TEST_SERVER_HOST + ":" + TEST_SERVER_PORT;
 	protected static final String TEST_SERVER_LOCATION = TEST_SERVER_ORIGIN+"/wookie/";
 	
 	protected static final String TEST_POLICIES_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"policies";
@@ -41,6 +42,7 @@ public abstract class AbstractControllerTest{
 	protected static final String API_KEY_INVALID = "rubbish";
 	protected static final String WIDGET_ID_VALID = "http://www.getwookie.org/widgets/weather";
 	protected static final String WIDGET_ID_INVALID = "http://www.getwookie.org/widgets/nosuchwidget";
+	protected static final String WIDGET_ID_LOCALIZED = "http://www.getwookie.org/widgets/localetest";
 
 	/**
 	 * Set credentials for accessing Wookie admin functions
