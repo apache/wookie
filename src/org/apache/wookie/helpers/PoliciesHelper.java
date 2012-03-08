@@ -70,7 +70,7 @@ public class PoliciesHelper {
           IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
           IWidget widget = persistenceManager.findWidgetByGuid(policy.getScope());
           if (widget != null){
-            policyJson.put("widget-title", WidgetHelper.getEncodedWidgetTitle(widget, null));
+            policyJson.put("widget-title", WidgetAdvertHelper.getEncodedWidgetTitle(widget, null));
           }
         }
         policyJson.put("origin", policy.getOrigin());

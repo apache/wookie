@@ -117,7 +117,7 @@ public class PropertiesController extends Controller {
 	}	
 
 	@Override
-	protected boolean create(String resourceId, HttpServletRequest request)
+	protected boolean create(String resourceId, HttpServletRequest request, HttpServletResponse response)
 			throws ResourceDuplicationException, InvalidParametersException,
 			UnauthorizedAccessException {
 		createOrUpdate(request);
@@ -125,7 +125,7 @@ public class PropertiesController extends Controller {
 	}
 
 	@Override
-	protected void update(String resourceId, HttpServletRequest request)
+	protected void update(String resourceId, HttpServletRequest request, HttpServletResponse response)
 			throws ResourceNotFoundException, InvalidParametersException,UnauthorizedAccessException {
 		createOrUpdate(request);
 	}

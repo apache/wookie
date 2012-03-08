@@ -32,7 +32,7 @@ import org.apache.wookie.w3c.util.LocalizationUtils;
  * @author scott wilson
  *
  */
-public class WidgetHelper {
+public class WidgetAdvertHelper {
 
 	private static final String XMLDECLARATION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 

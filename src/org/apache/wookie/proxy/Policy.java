@@ -46,6 +46,9 @@ public class Policy {
    */
   public Policy(String policy) throws PolicyFormatException{
     String[] elements = policy.split(" ");
+    if (elements.length != 3){
+      elements = policy.split("\\+");
+    }
     if (elements.length == 3){
       setScope(elements[0]);
       setOrigin(elements[1]);

@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
@@ -56,8 +55,8 @@ public class PoliciesController extends Controller {
     // For some reason the main controller resourceId method isn't parsing
     // the resource part correctly
     //
-    resourceId = request.getPathInfo().trim();
-    if (resourceId != null) resourceId = StringUtils.stripStart(resourceId, "/");
+    //resourceId = request.getPathInfo().trim();
+    //if (resourceId != null) resourceId = StringUtils.stripStart(resourceId, "/");
     
     //
     // The resource id is the policy scope. E.g., calling
@@ -103,7 +102,7 @@ public class PoliciesController extends Controller {
    * @see org.apache.wookie.controller.Controller#create(java.lang.String, javax.servlet.http.HttpServletRequest)
    */
   @Override
-  protected boolean create(String resourceId, HttpServletRequest request)
+  protected boolean create(String resourceId, HttpServletRequest request, HttpServletResponse response)
       throws ResourceDuplicationException, InvalidParametersException,
       UnauthorizedAccessException {
     try {
@@ -150,8 +149,8 @@ public class PoliciesController extends Controller {
     // For some reason the main controller resourceId method isn't parsing
     // the resource part correctly
     //
-    resourceId = request.getPathInfo().trim();
-    if (resourceId != null) resourceId = StringUtils.stripStart(resourceId, "/");
+    //resourceId = request.getPathInfo().trim();
+    //if (resourceId != null) resourceId = StringUtils.stripStart(resourceId, "/");
 
     try {
 

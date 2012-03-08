@@ -141,7 +141,7 @@ public class WidgetInstancesController extends Controller {
 	 * @see org.apache.wookie.controller.Controller#update(java.lang.String, javax.servlet.http.HttpServletRequest)
 	 */
 	@Override
-	protected void update(String resourceId, HttpServletRequest request)
+	protected void update(String resourceId, HttpServletRequest request, HttpServletResponse response)
 	throws ResourceNotFoundException, InvalidParametersException,
 	UnauthorizedAccessException {
 	  String requestId = request.getParameter("requestid"); //$NON-NLS-1$
@@ -157,6 +157,17 @@ public class WidgetInstancesController extends Controller {
 	    throw new InvalidParametersException();
 	  }
 
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see org.apache.wookie.controller.Controller#remove(java.lang.String, javax.servlet.http.HttpServletRequest)
+	 */
+	@Override
+	protected boolean remove(String resourceId, HttpServletRequest request) 
+	throws ResourceNotFoundException,UnauthorizedAccessException,InvalidParametersException{
+	  //System.out.println("delete widget instance@" + resourceId);
+	  //TODO: implement this  
+	  return false;
 	}
 
 	/**

@@ -76,7 +76,7 @@ public class ParticipantsController extends Controller {
 	}
 
 	@Override
-	protected boolean create(String resourceId, HttpServletRequest request)
+	protected boolean create(String resourceId, HttpServletRequest request, HttpServletResponse response)
 			throws ResourceDuplicationException, InvalidParametersException,
 			UnauthorizedAccessException {
 		return create(request);

@@ -98,7 +98,7 @@ public class UpdatesController extends Controller {
 	 * TODO Note that this call can take a while to complete so it may be better in future to make the call asynchronous and spawn a background task to complete the update process
 	 */
 	@Override
-	protected boolean create(String resourceId, HttpServletRequest request)
+	protected boolean create(String resourceId, HttpServletRequest request, HttpServletResponse response)
 			throws ResourceDuplicationException, InvalidParametersException,
 			UnauthorizedAccessException {
 			// Check to see if we're requiring updates over HTTPS - if not output a warning
@@ -124,7 +124,7 @@ public class UpdatesController extends Controller {
 	 * A PUT requests a single widget to be updated if there is an update available.
 	 */
 	@Override
-	protected void update(String resourceId, HttpServletRequest request)
+	protected void update(String resourceId, HttpServletRequest request, HttpServletResponse response)
 			throws ResourceNotFoundException, InvalidParametersException,
 			UnauthorizedAccessException {
 			// attempt to get specific widget by id

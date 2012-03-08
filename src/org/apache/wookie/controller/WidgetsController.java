@@ -36,7 +36,8 @@ import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.feature.Features;
 import org.apache.wookie.helpers.WidgetFactory;
-import org.apache.wookie.helpers.WidgetHelper;
+import org.apache.wookie.helpers.WidgetAdvertHelper;
+import org.apache.wookie.helpers.WidgetImportHelper;
 import org.apache.wookie.server.LocaleHandler;
 import org.apache.wookie.util.WidgetFileUtils;
 import org.apache.wookie.util.WidgetJavascriptSyntaxAnalyzer;
@@ -73,7 +74,7 @@ public class WidgetsController extends Controller{
    * @see org.apache.wookie.controller.Controller#update(java.lang.String, javax.servlet.http.HttpServletRequest)
    */
   @Override
-  protected void update(String resourceId, HttpServletRequest request)
+  protected void update(String resourceId, HttpServletRequest request, HttpServletResponse response)
       throws ResourceNotFoundException, InvalidParametersException,
       UnauthorizedAccessException {
     
@@ -88,7 +89,7 @@ public class WidgetsController extends Controller{
     if (widget == null) throw new ResourceNotFoundException();
     
     try {
-      create(resourceId, request);
+      create(resourceId, request, response);
     } catch (ResourceDuplicationException e) {
       e.printStackTrace();
     }
@@ -118,9 +119,9 @@ public class WidgetsController extends Controller{
       throw new ResourceNotFoundException();
 
     switch (format(request)) {
-    case XML:returnXml(WidgetHelper.createXMLWidgetsDocument(widget,getLocalPath(request), getLocales(request)), response);break;
+    case XML:returnXml(WidgetAdvertHelper.createXMLWidgetsDocument(widget,getLocalPath(request), getLocales(request)), response);break;
     case WIDGET:returnWidget(widget, response);break;
-    default:returnXml(WidgetHelper.createXMLWidgetsDocument(widget,getLocalPath(request), getLocales(request)), response);
+    default:returnXml(WidgetAdvertHelper.createXMLWidgetsDocument(widget,getLocalPath(request), getLocales(request)), response);
     }
   }
 
@@ -164,7 +165,7 @@ public class WidgetsController extends Controller{
 
     IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
     IWidget[] widgets = persistenceManager.findAll(IWidget.class);
-		returnXml(WidgetHelper.createXMLWidgetsDocument(widgets, getLocalPath(request), getLocales(request)),response);
+		returnXml(WidgetAdvertHelper.createXMLWidgetsDocument(widgets, getLocalPath(request), getLocales(request)),response);
 	}
 	
   /* (non-Javadoc)
@@ -205,7 +206,7 @@ public class WidgetsController extends Controller{
    * @see org.apache.wookie.controller.Controller#create(java.lang.String, javax.servlet.http.HttpServletRequest)
    */
   @Override
-  protected boolean create(String resourceId, HttpServletRequest request)
+  protected boolean create(String resourceId, HttpServletRequest request, HttpServletResponse response)
       throws ResourceDuplicationException, InvalidParametersException,
       UnauthorizedAccessException {
 
@@ -260,7 +261,7 @@ public class WidgetsController extends Controller{
         fac.setStartPageProcessor(new StartPageProcessor());
         W3CWidget widgetModel = fac.parse(zipFile);
         new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());
-        
+       // File f = new File();
         //
         // Check if the widget model corresponds to an existing installed widget
         //
@@ -271,6 +272,7 @@ public class WidgetsController extends Controller{
           // A new widget was created, so return 201
           //
           WidgetFactory.addNewWidget(widgetModel, zipFile,false);
+          returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml")), response);
           return true;
           
         } else {
@@ -280,6 +282,7 @@ public class WidgetsController extends Controller{
           // and return 200
           //
           WidgetFactory.update(widgetModel,persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()),false, zipFile);
+          returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml")), response);
           return false;
           
         }

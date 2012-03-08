@@ -68,7 +68,7 @@ public class ApiKeyController extends Controller {
    * @see org.apache.wookie.controller.Controller#create(java.lang.String, javax.servlet.http.HttpServletRequest)
    */
   @Override
-  protected boolean create(String resourceId, HttpServletRequest request)
+  protected boolean create(String resourceId, HttpServletRequest request, HttpServletResponse response)
       throws ResourceDuplicationException, InvalidParametersException,
       UnauthorizedAccessException {
     String value = request.getParameter("apikey");

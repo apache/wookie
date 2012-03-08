@@ -14,7 +14,7 @@
 package org.apache.wookie.updates;
 
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.helpers.WidgetHelper;
+import org.apache.wookie.helpers.WidgetAdvertHelper;
 import org.apache.wookie.w3c.updates.UpdateDescriptionDocument;
 import org.jdom.Element;
 
@@ -58,7 +58,7 @@ public class UpdateInformation {
 	public Element toXml(){
 		Element element = this.udd.toXml();
 		element.setAttribute("widget", this.widget.getId().toString());
-		element.setAttribute("widget_title", WidgetHelper.getEncodedWidgetTitle(this.widget, null));
+		element.setAttribute("widget_title", WidgetAdvertHelper.getEncodedWidgetTitle(this.widget, null));
 		return element;
 	}
 	

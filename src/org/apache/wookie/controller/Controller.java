@@ -112,7 +112,7 @@ public abstract class Controller extends HttpServlet{
 			throws ServletException, IOException {
 		String resourceId = getResourceId(request);
 		try {
-			if (create(resourceId, request)){
+			if (create(resourceId, request, response)){
 				response.setStatus(HttpServletResponse.SC_CREATED);
 			} else {
 				response.setStatus(HttpServletResponse.SC_OK);				
@@ -137,7 +137,7 @@ public abstract class Controller extends HttpServlet{
 			throws ServletException, IOException {
 		String resourceId = getResourceId(request);
 		try {
-			update(resourceId,request);
+			update(resourceId,request,response);
 			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (ResourceNotFoundException e) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -175,7 +175,7 @@ public abstract class Controller extends HttpServlet{
 	 @return true if the resource was successfully created
 	 * @throws ResourceDuplicationException
 	 */
-	protected boolean create(String resourceId, HttpServletRequest request) throws ResourceDuplicationException, InvalidParametersException, UnauthorizedAccessException{return false;};
+	protected boolean create(String resourceId, HttpServletRequest request, HttpServletResponse response) throws ResourceDuplicationException, InvalidParametersException, UnauthorizedAccessException{return false;};
 	
 	/**
 	 * Delete a resource
@@ -191,7 +191,7 @@ public abstract class Controller extends HttpServlet{
 	 * @param request
 	 * @throws ResourceNotFoundException
 	 */
-	protected void update(String resourceId, HttpServletRequest request) throws ResourceNotFoundException,InvalidParametersException,UnauthorizedAccessException{};
+	protected void update(String resourceId, HttpServletRequest request, HttpServletResponse response) throws ResourceNotFoundException,InvalidParametersException,UnauthorizedAccessException{};
 	
 	// Utilities
 
@@ -213,6 +213,11 @@ public abstract class Controller extends HttpServlet{
 		}
 		if (path != null)
 			path = path.trim();
+		// TODO:  policy requests have two urls. (this should work for all other cases)
+		// fix for tomcat where one of the forward slashes is missing
+		if(path.contains("http:/") && !path.contains("http://")){
+		  path = path.replace("http:/", "http://");     
+		} 		
 		return path;
 	}
 
