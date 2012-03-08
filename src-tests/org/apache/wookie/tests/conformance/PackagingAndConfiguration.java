@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.apache.wookie.w3c.util.WidgetPackageUtils;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -1196,17 +1198,26 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 	// Utility methods
 	protected Element processWidgetNoErrors(String widgetfname){
 		try {
-			//File file = new File("src-tests/testdata/conformance/"+widgetfname);
-			String error = WidgetUploader.uploadWidget(widgetfname);
-			if (error != null && !error.equals("")){
-				fail("widget failed to upload correctly:"+error);
-			}
-			Element widget = WidgetUploader.getLastWidget();
+		  
+		  //
+		  // Upload the widget, and process the response to get the widget uri
+		  //
+		  SAXBuilder builder = new SAXBuilder();
+		  StringReader reader = new StringReader(WidgetUploader.uploadWidget(widgetfname));
+			Element widget = builder.build(reader).getRootElement();
 			assertNotNull(widget);
-			return widget;
+			widget.getAttribute("id");
+			
+			//
+			// Get and return the widget xml. We don't return the original response
+			// as that is the raw config.xml data - we have to make another call to
+			// get the corrected and normalized metadata to check we have correctly
+			// processed the .wgt package according to the W3C spec.
+			//
+			return builder.build(TEST_WIDGETS_SERVICE_URL_VALID+"/"+widget.getAttribute("id").getValue()).getRootElement().getChild("widget");
+
 		} catch (Exception e) {
-			//e.printStackTrace();
-			fail("couldn't upload widget");
+			fail("couldn't upload widget:"+e.getMessage());
 		}		
 		fail("widget not found after upload");
 		return null;
