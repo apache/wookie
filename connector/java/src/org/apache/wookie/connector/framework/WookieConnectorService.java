@@ -13,6 +13,8 @@
  */
 package org.apache.wookie.connector.framework;
 
+import java.util.HashMap;
+
 
 /**
  * An implementation of the WookieConnectorService for use by Wookie itself.
@@ -64,6 +66,7 @@ public class WookieConnectorService extends AbstractWookieConnectorService {
   private User getSecondTestUser() {
     return new User("testuser2", "Second Test User");
   }
+
   
 
 }

@@ -22,18 +22,32 @@ import java.net.URL;
  * A client side representation of a widget. 
  * 
  * @refactor this duplicates data stored in the Widget bean on the server side.
+ * 
+ * @refactor additional properties
  */
 public class Widget { 
+	
   String identifier;
-  String title;
+  String name;
   String description;
   URL icon;
+  String width;
+  String height;
+  String version;
+  String author;
+  String license;
 
-  public Widget(String identifier, String title, String description, URL icon) {
+  public Widget(String identifier, String name, String description, URL icon,
+		  String width, String height, String version, String author, String license) {
     this.identifier = identifier;
-    this.title = title;
+    this.name = name;
     this.description = description;
     this.icon = icon;
+    this.width = width;
+    this.height = height;
+    this.version = version;
+    this.author = author;
+    this.license = license;
   }
   
   /**
@@ -49,8 +63,8 @@ public class Widget {
    * Get the human readable title of this widget.
    * @return
    */
-  public String getTitle() {
-    return title;
+  public String getName() {
+    return name;
   }
 
   /**
@@ -69,4 +83,47 @@ public class Widget {
   public String getDescription() {
     return description;
   }
+
+public String getWidth() {
+	return width;
+}
+
+public void setWidth(String width) {
+	this.width = width;
+}
+
+public String getHeight() {
+	return height;
+}
+
+public void setHeight(String height) {
+	this.height = height;
+}
+
+public String getVersion() {
+	return version;
+}
+
+public void setVersion(String version) {
+	this.version = version;
+}
+
+public String getAuthor() {
+	return author;
+}
+
+public void setAuthor(String author) {
+	this.author = author;
+}
+
+public String getLicense() {
+	return license;
+}
+
+public void setLicense(String license) {
+	this.license = license;
+}
+  
+  
+  
 }
