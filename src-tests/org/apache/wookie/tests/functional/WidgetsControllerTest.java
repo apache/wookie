@@ -488,7 +488,8 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	    //
       HttpClient client = new HttpClient();
       setAuthenticationCredentials(client);
-	    GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_ACCESS_TEST));
+      // tomcat seems to need the "?format=xml" at the end (works without it for jetty, but tomcat 6.0.32 fails - empty xml response)
+	    GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_ACCESS_TEST)+"?format=xml");
 	    get.setRequestHeader("accepts","text/xml");
 	    client.executeMethod(get);
 	    assertEquals(1,PoliciesControllerTest.processPolicies(get.getResponseBodyAsStream()).getChildren("policy").size());
