@@ -76,7 +76,8 @@ public class PoliciesControllerTest extends AbstractControllerTest {
     HttpClient client = new HttpClient();
     setAuthenticationCredentials(client);    
     GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID);
-    get.setRequestHeader("accepts", "text/xml");    
+    //this needs to be Accept rather than accepts which fails on tomcat
+    get.setRequestHeader("Accept", "text/xml");
     client.executeMethod(get);
     try {
       Element policies = processPolicies(get.getResponseBodyAsStream());
@@ -103,7 +104,8 @@ public class PoliciesControllerTest extends AbstractControllerTest {
     // We should have a policy setup from above
     //
     GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID + "/" + POLICY_TEST_SCOPE);
-    get.setRequestHeader("accepts", "text/xml");
+    //this needs to be Accept rather than accepts which fails on tomcat
+    get.setRequestHeader("Accept", "text/xml");
     client.executeMethod(get);
     try {
       Element policies = processPolicies(get.getResponseBodyAsStream());
@@ -119,7 +121,8 @@ public class PoliciesControllerTest extends AbstractControllerTest {
     HttpClient client = new HttpClient();
     setAuthenticationCredentials(client);    
     GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID + "/nosuchscope");
-    get.setRequestHeader("accepts", "text/xml");    
+    //this needs to be Accept rather than accepts which fails on tomcat   
+    get.setRequestHeader("Accept", "text/xml");
     client.executeMethod(get);
     try {
       Element policies = processPolicies(get.getResponseBodyAsStream());
