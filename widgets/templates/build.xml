@@ -55,6 +55,17 @@
         </dirset>
       </subant>
     </target>
+	
+	<target name="_remove_comments">
+	      <echo message="+------------------------------------------"/>
+	      <echo message="|  Removing comments from files:           |"/>
+	      <echo message="|  in: ${widget.build.dir}/${widget.shortname}"  />
+	      <echo message="+------------------------------------------"/>
+    	<replaceregexp match="&lt;\%[^&gt;]*&gt;" flags="g" replace="" >
+    		  <fileset dir="${widget.build.dir}/${widget.shortname}" >
+    		  </fileset>
+    	</replaceregexp>
+	</target>
 
     <target name="generate-test-widgets"
             description="Generate a single test widget from the template">
@@ -101,9 +112,10 @@
           <propertyref prefix="${widget.shortname}"/>
         </propertyset>
       </antcall>
+        <antcall target="_remove_comments"/>
 
       <antcall target="_copy_widget_files"/>
-
+        <antcall target="_remove_comments"/>
     </target>
 
     <target name="_copy_widget_files"
