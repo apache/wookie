@@ -76,14 +76,36 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
     client.executeMethod(post);   
     int code = post.getStatusCode();
     assertEquals(201,code);
-    post.releaseConnection(); 
+    post.releaseConnection();
   }
   
   @AfterClass
   public static void tearDown() throws HttpException, IOException{
     HttpClient client = new HttpClient();
-    setAuthenticationCredentials(client);
-    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_LOCALIZED);
+    DeleteMethod delete;
+    
+    // now set auth as admin
+    setAuthenticationCredentials(client);    
+    
+    delete = new DeleteMethod(TEST_INSTANCES_SERVICE_URL_VALID);
+    delete.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
+        + WIDGET_ID_VALID + "&userid=test&shareddatakey=test");
+    client.executeMethod(delete);
+    delete.releaseConnection();
+    
+    delete = new DeleteMethod(TEST_INSTANCES_SERVICE_URL_VALID);
+    delete.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
+        + WIDGET_ID_VALID + "&userid=test&shareddatakey=clonetestsrc");
+    client.executeMethod(delete);
+    delete.releaseConnection();    
+    
+    delete = new DeleteMethod(TEST_INSTANCES_SERVICE_URL_VALID);
+    delete.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
+        + WIDGET_ID_VALID + "&userid=test&shareddatakey=clonetestsync");
+    client.executeMethod(delete);
+    delete.releaseConnection();            
+    
+    delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_LOCALIZED);
     client.executeMethod(delete);
     delete.releaseConnection();
   }
@@ -146,7 +168,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
   public void getExistingInstanceByIdKey() throws HttpException, IOException {
     HttpClient client = new HttpClient();
     GetMethod get = new GetMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-    get.setQueryString("api_key=" + API_KEY_VALID + "&id_key=" + TEST_ID_KEY);
+    get.setQueryString("api_key=" + API_KEY_VALID + "&idkey=" + TEST_ID_KEY);
     client.executeMethod(get);
     int code = get.getStatusCode();
     assertEquals(200, code);
@@ -419,15 +441,6 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
     String resp = get.getResponseBodyAsString();
     assertEquals("garfield", resp);
     post.releaseConnection();
-  }
-  
-  @Test
-  public void TestDeleteInstance() throws HttpException, IOException {
-    HttpClient client = new HttpClient();
-    setAuthenticationCredentials(client);
-    DeleteMethod delete = new DeleteMethod(TEST_INSTANCES_SERVICE_URL_VALID + "?api_key=" + API_KEY_VALID + "&id_key=" + TEST_ID_KEY);
-    client.executeMethod(delete);
-    delete.releaseConnection();      
   }
 
 }

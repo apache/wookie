@@ -23,6 +23,7 @@ import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -47,6 +48,17 @@ public class PropertiesControllerTest extends AbstractControllerTest {
     int code = post.getStatusCode();
     assertEquals(201, code);
     post.releaseConnection();
+  }
+  
+  @AfterClass
+  public static void tearDown() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    DeleteMethod delete;
+    delete = new DeleteMethod(TEST_INSTANCES_SERVICE_URL_VALID);
+    delete.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
+        + WIDGET_ID_VALID + "&userid=test&shareddatakey=propstest");
+    client.executeMethod(delete);
+    delete.releaseConnection();
   }
 
   /**

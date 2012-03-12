@@ -102,7 +102,7 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
   public void getParticipant_usingIdKey() throws HttpException, IOException {
     HttpClient client = new HttpClient();
     GetMethod get = new GetMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
-    get.setQueryString("api_key=" + API_KEY_VALID + "&id_key="
+    get.setQueryString("api_key=" + API_KEY_VALID + "&idkey="
         + instance_id_key);
     client.executeMethod(get);
     int code = get.getStatusCode();
