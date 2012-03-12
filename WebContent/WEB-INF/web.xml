@@ -390,7 +390,17 @@
 				<role-name>widgetadmin</role-name>
 			</auth-constraint>
 		</security-constraint>
-		
+		<security-constraint>
+			<web-resource-collection>
+				<web-resource-name>WidgetInstancesController</web-resource-name>
+				<url-pattern>/widgetinstances/*</url-pattern>
+				<http-method>DELETE</http-method>
+			</web-resource-collection>
+			<auth-constraint>
+				<role-name>widgetadmin</role-name>
+			</auth-constraint>
+		</security-constraint>
+
 		<login-config>
 			<auth-method>BASIC</auth-method>
 			<realm-name>Authentication Required</realm-name> 

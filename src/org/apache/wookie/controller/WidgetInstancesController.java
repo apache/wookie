@@ -164,10 +164,8 @@ public class WidgetInstancesController extends Controller {
 	 */
 	@Override
 	protected boolean remove(String resourceId, HttpServletRequest request) 
-	throws ResourceNotFoundException,UnauthorizedAccessException,InvalidParametersException{
-	  //System.out.println("delete widget instance@" + resourceId);
-	  //TODO: implement this  
-	  return false;
+	throws ResourceNotFoundException,UnauthorizedAccessException,InvalidParametersException{	  
+	  return deleteWidgetInstance(resourceId, request);
 	}
 
 	/**
@@ -200,6 +198,27 @@ public class WidgetInstancesController extends Controller {
 	  }
 	}
 	
+	public static boolean deleteWidgetInstance(String resourceId, HttpServletRequest request) throws InvalidParametersException, ResourceNotFoundException {
+	  //TODO - check security and that the key is from valid user for instance
+	  String userId = request.getParameter("userid"); //$NON-NLS-1$
+	  String sharedDataKey =  request.getParameter("shareddatakey");   //$NON-NLS-1$
+	  String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
+	  String serviceType = request.getParameter("servicetype"); //$NON-NLS-1$
+	  String widgetId = request.getParameter("widgetid"); //$NON-NLS-1$
+	  sharedDataKey = SharedDataHelper.getInternalSharedDataKey(apiKey, widgetId, sharedDataKey);
+	  if(userId==null || sharedDataKey==null || (serviceType==null && widgetId==null)){
+	    throw new InvalidParametersException();
+	  }
+	  IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
+	  if(instance==null){
+	    throw new ResourceNotFoundException();
+	  }
+	  else{
+	    WidgetInstanceFactory.destroy(instance);
+	    return true;
+	  }    	  
+	}
+
 	/**
 	 * This is the "legacy" get-or-create method accessed via POST or a tunnel through GET. This will be deprecated in future.
 	 * @param request
@@ -210,10 +229,10 @@ public class WidgetInstancesController extends Controller {
 	public static void doGetOrCreateWidget(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String userId = request.getParameter("userid"); //$NON-NLS-1$
 		String sharedDataKey =  request.getParameter("shareddatakey");	 //$NON-NLS-1$
-        String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
+		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
 		String serviceType = request.getParameter("servicetype"); //$NON-NLS-1$
 		String widgetId = request.getParameter("widgetid"); //$NON-NLS-1$
-        sharedDataKey = SharedDataHelper.getInternalSharedDataKey(apiKey, widgetId, sharedDataKey);
+		sharedDataKey = SharedDataHelper.getInternalSharedDataKey(apiKey, widgetId, sharedDataKey);
 		HttpSession session = request.getSession(true);						
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 					
@@ -400,19 +419,17 @@ public class WidgetInstancesController extends Controller {
 		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 
 		// Try using the id_key parameter
-    String id_key = request.getParameter("id_key"); //$NON-NLS-1$
+    String id_key = request.getParameter("idkey"); //$NON-NLS-1$
 		if (id_key != null & id_key != ""){
 		  instance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		  return instance;
-		} 
-		
+		}
 		// Try using the resource part of the path as an id key e.g. widgetinstances/xyz
 		id_key = getResourceId(request);
 		if (id_key != null & id_key != ""){
 		  instance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		  return instance;
 		}
-
 		//
 		// If all else fails, try using instance parameters
 		//
@@ -422,14 +439,12 @@ public class WidgetInstancesController extends Controller {
 		  String userId = URLDecoder.decode(request.getParameter("userid"), "UTF-8"); //$NON-NLS-1$
 		  String sharedDataKey = request.getParameter("shareddatakey");	 //$NON-NLS-1$;
 		  String widgetId = request.getParameter("widgetid");
-
 		  //
 		  // First see if there is a legacy 0.9.0 instance that matches
 		  //
 		  // NOTE: This step will be deprecated in future releases
 		  //
 		  instance = MigrationHelper.findLegacyWidgetInstance(apiKey, userId, sharedDataKey, widgetId);
-
 		  // 
 		  // Otherwise, look for a 0.9.1 or later version
 		  //
@@ -441,7 +456,6 @@ public class WidgetInstancesController extends Controller {
 		  if (instance == null) {
 		    _logger.debug("No widget instance found for APIkey= "+apiKey+" userId="+userId+" widgetId="+widgetId);
 		  }
-
 		  return instance;
 
 		} catch (UnsupportedEncodingException e) {
