@@ -54,6 +54,7 @@ public class PropertiesControllerTest extends AbstractControllerTest {
   public static void tearDown() throws HttpException, IOException{
     HttpClient client = new HttpClient();
     DeleteMethod delete;
+    setAuthenticationCredentials(client);     
     delete = new DeleteMethod(TEST_INSTANCES_SERVICE_URL_VALID);
     delete.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
         + WIDGET_ID_VALID + "&userid=test&shareddatakey=propstest");
