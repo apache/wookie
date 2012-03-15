@@ -15,33 +15,86 @@ package org.apache.wookie.helpers;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.apache.wookie.w3c.IIconEntity;
 import org.apache.wookie.w3c.W3CWidget;
-
-//TODO improve this so it more than a basic stub
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
+/**
+ * Class used to build a hybrid version of the original config.xml, but with the id attribute updated 
+ * (if the parser did so) and updated icon entries
+ */
 public class WidgetImportHelper {
+  
+  static Logger logger = Logger.getLogger(WidgetImportHelper.class.getName());
   
   private static String ERROR_RESPONSE = "<error>unable to read config.xml</error>";
 
-  public static String createXMLWidgetDocument(W3CWidget widgetModel, File configXml) {
+  public static String createXMLWidgetDocument(W3CWidget widgetModel, File configXml, String localPath, boolean updateOriginal){
     if(configXml.exists()){
-      String xmlContents;
+      String xmlContents = null;
       try {
         xmlContents = FileUtils.readFileToString(configXml, "UTF-8");
-        return updatePaths(widgetModel, xmlContents);
+        if(updateOriginal){
+          return updatePaths(widgetModel, xmlContents, localPath);
+        }
+        else {
+          return xmlContents;
+        }
       } catch (IOException e) {
         return ERROR_RESPONSE;
       }
     }else{
       return ERROR_RESPONSE;
     }
-    
   }
   
-  private static String updatePaths(W3CWidget widgetModel, String configXml){
-    //TODO - some jdom stuff to update the paths to start files & icons
-    return configXml;
+  private static String updatePaths(W3CWidget widgetModel, String configXml, String localPath){
+    String updatedConfigXml = null;
+    try {
+      SAXBuilder builder = new SAXBuilder();
+      StringReader reader = new StringReader(configXml);
+      String id = null;
+      String generatedId = null;
+      Document doc = null;
+      Element tempElement = null;
+      doc = builder.build(reader);
+      Element widget = doc.getRootElement();
+      id = widget.getAttributeValue("id");
+      generatedId = widgetModel.getIdentifier();
+      if(id == null || !id.equals(generatedId)){
+        widget.setAttribute("id",  widgetModel.getIdentifier());
+      }
+      tempElement = widget.getChild("icon", widget.getNamespace());
+      if(tempElement != null){
+        int idx = widget.indexOf(tempElement);
+        //remove original icon entries
+        widget.removeChildren("icon", widget.getNamespace());
+        // get the model icons
+        List<IIconEntity> generatedIcons = widgetModel.getIconsList();
+        for(IIconEntity icon : generatedIcons){
+          String parserSrc = icon.getSrc();
+          icon.setSrc(localPath + parserSrc);
+          widget.addContent(idx++ , icon.toXml());
+          icon.setSrc(parserSrc);
+        }
+      }
+      XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+      updatedConfigXml = outputter.outputString(doc);
+    } catch (JDOMException e) {
+     logger.error("Error parsing config.", e);
+    } catch (IOException e) {
+      logger.error("Problem building parser config.", e);
+    }
+    return updatedConfigXml;
   }
 
 }

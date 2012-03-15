@@ -272,7 +272,7 @@ public class WidgetsController extends Controller{
           // A new widget was created, so return 201
           //
           WidgetFactory.addNewWidget(widgetModel, zipFile,false);
-          returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml")), response);
+          returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getLocalPath(request), true), response);
           return true;
           
         } else {
@@ -282,7 +282,7 @@ public class WidgetsController extends Controller{
           // and return 200
           //
           WidgetFactory.update(widgetModel,persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()),false, zipFile);
-          returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml")), response);
+          returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getLocalPath(request), true), response);
           return false;
           
         }
