@@ -15,6 +15,7 @@
 package org.apache.wookie.tests.functional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -34,7 +35,10 @@ import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
+import org.jdom.Document;
+import org.jdom.Element;
 import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.junit.AfterClass;
 import org.junit.Test;
 
@@ -182,6 +186,49 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     assertEquals(201,code);
     post.releaseConnection();  	  
 	}
+	
+	
+	@Test
+  public void importWidgetWithDefaultIcon() throws HttpException, IOException, JDOMException{
+    HttpClient client = new HttpClient();
+    //
+    // Use admin credentials
+    //
+    setAuthenticationCredentials(client);
+    
+    PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
+    
+    //
+    // Use upload test widget
+    //
+    File file = new File("src-tests/testdata/upload-test-2.wgt");
+    assertTrue(file.exists());
+    
+    //
+    // Add test wgt file to POST
+    //
+    Part[] parts = { new FilePart(file.getName(), file) };
+    post.setRequestEntity(new MultipartRequestEntity(parts, post
+        .getParams()));
+    
+    //
+    // POST the file to /widgets and check we get 201 (Created)
+    //
+    client.executeMethod(post);   
+    int code = post.getStatusCode();
+    assertEquals(201,code);
+    
+    //
+    // Lets take a look at the metadata...
+    //
+    SAXBuilder builder = new SAXBuilder();
+    Document doc = builder.build(post.getResponseBodyAsStream());
+    Element iconElement = doc.getRootElement().getChild("icon");
+    assertNotNull(iconElement);
+    assertEquals("http://localhost:8080/wookie/wservices/uploadtest_2/icon.png", iconElement.getAttributeValue("src"));
+    post.releaseConnection();     
+  }
+  
 	
 	@Test
 	public void downloadWidgetPackage() throws BadWidgetZipFileException, BadManifestException, Exception{
