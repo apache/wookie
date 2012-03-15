@@ -14,11 +14,24 @@
 
 package org.apache.wookie.tests.functional;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.wookie.tests.AbstractWookieTest;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.Namespace;
+import org.jdom.input.SAXBuilder;
+import org.junit.AfterClass;
 
 /**
  * Constants used in functional tests. Change these values to test servers
@@ -43,6 +56,8 @@ public abstract class AbstractControllerTest extends AbstractWookieTest{
 	protected static final String WIDGET_ID_VALID = "http://www.getwookie.org/widgets/weather";
 	protected static final String WIDGET_ID_INVALID = "http://www.getwookie.org/widgets/nosuchwidget";
 	protected static final String WIDGET_ID_LOCALIZED = "http://www.getwookie.org/widgets/localetest";
+	
+  protected static Collection<String> importedWidgetList = new ArrayList<String>();
 
 	/**
 	 * Set credentials for accessing Wookie admin functions
@@ -52,5 +67,49 @@ public abstract class AbstractControllerTest extends AbstractWookieTest{
 		Credentials defaultcreds = new UsernamePasswordCredentials("java", "java");
 		client.getState().setCredentials(new AuthScope(TEST_SERVER_HOST, TEST_SERVER_PORT, AuthScope.ANY_REALM), defaultcreds);
 	}
+	
+  @AfterClass
+  public static void tearDown() throws HttpException, IOException{
+    for (String id : importedWidgetList){
+      removeWidget(id);
+    }
+    importedWidgetList.clear();
+  }
+  
+  private static void removeWidget(String identifier) throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    setAuthenticationCredentials(client);
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + identifier);
+    client.executeMethod(delete);
+    delete.releaseConnection();
+  }
+  
+  protected static String storeImportedPackageId(String response){
+    if(response != null){
+      String result = getId(response);
+      importedWidgetList.add(result);
+      return result;
+    }
+    return null;
+  }
+  
+  private static String getId(String response) {
+    String id = null;
+    SAXBuilder builder = new SAXBuilder();
+    Reader in = new StringReader(response);
+    Document doc;
+    try {
+      doc = builder.build(in);      
+      Element widget = doc.getRootElement();
+      Namespace ns  = widget.getNamespace(); 
+      id = widget.getAttributeValue("id");
+      if(id==null){
+        id = widget.getAttributeValue("id", ns);
+      }  
+    } catch (Exception e) {
+      e.printStackTrace();      
+    }
+    return id;
+  }
 	
 }

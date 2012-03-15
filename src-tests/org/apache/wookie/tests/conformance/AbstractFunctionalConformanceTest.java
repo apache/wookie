@@ -94,7 +94,8 @@ AbstractControllerTest {
 	 * @throws IOException
 	 */
 	protected static String getWidgetUrl(String widgetfname) throws IOException{
-		WidgetUploader.uploadWidget(widgetfname);
+		String result = WidgetUploader.uploadWidget(widgetfname);
+		storeImportedPackageId(result);
 		Element widget = WidgetUploader.getLastWidget();
 		String response = instantiateWidget(widget);
 		return getStartFile(response);

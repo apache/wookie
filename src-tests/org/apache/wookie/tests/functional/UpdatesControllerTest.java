@@ -16,19 +16,11 @@ package org.apache.wookie.tests.functional;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.wookie.tests.helpers.WidgetUploader;
-import org.jdom.Document;
-import org.jdom.input.SAXBuilder;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -42,8 +34,6 @@ import org.junit.Test;
  * org.apache.wookie.test.conformance.WidgetUpdates
  */
 public class UpdatesControllerTest extends AbstractControllerTest {
-  
-  protected static Collection<String> importedWidgetList = new ArrayList<String>();
   
   protected static final String TEST_UPDATES_URL_VALID = TEST_SERVER_LOCATION
       + "updates";
@@ -100,22 +90,6 @@ public class UpdatesControllerTest extends AbstractControllerTest {
         .uploadWidget("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/016/ta-pr-016.wgt")// pr216
     );
   }
-  
-  @AfterClass
-  public static void tearDown() throws HttpException, IOException{
-    for (String id : importedWidgetList){
-      removeWidget(id);
-    }
-    importedWidgetList.clear();
-  }
-  
-  private static void removeWidget(String identifier) throws HttpException, IOException{
-    HttpClient client = new HttpClient();
-    setAuthenticationCredentials(client);
-    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + identifier);
-    client.executeMethod(delete);
-    delete.releaseConnection();
-  }
 
   /**
    * Tests that a request for updates is refused without admin credentials
@@ -133,7 +107,7 @@ public class UpdatesControllerTest extends AbstractControllerTest {
   }
 
   /**
-   * Tests tha a request for updates with admin credentials returns a valid
+   * Tests that a request for updates with admin credentials returns a valid
    * response
    * 
    * @throws IOException
@@ -148,26 +122,6 @@ public class UpdatesControllerTest extends AbstractControllerTest {
     client.executeMethod(get);
     int code = get.getStatusCode();
     assertEquals(200, code);
-  }
-  
-  private static void storeImportedPackageId(String response){
-    if(response != null){
-      String result = getId(response);
-      importedWidgetList.add(result);
-    }
-  }
-  
-  private static String getId(String response) {
-    SAXBuilder builder = new SAXBuilder();
-    Reader in = new StringReader(response);
-    Document doc;
-    try {
-      doc = builder.build(in);
-    } catch (Exception e) {
-      e.printStackTrace();
-      return null;
-    }
-    return doc.getRootElement().getAttributeValue("id");
   }
 
 }

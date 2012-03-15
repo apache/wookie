@@ -19,7 +19,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -1198,24 +1197,23 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 	// Utility methods
 	protected Element processWidgetNoErrors(String widgetfname){
 		try {
-		  
+		  String id = null;
 		  //
 		  // Upload the widget, and process the response to get the widget uri
 		  //
 		  SAXBuilder builder = new SAXBuilder();
-		  StringReader reader = new StringReader(WidgetUploader.uploadWidget(widgetfname));
-			Element widget = builder.build(reader).getRootElement();
-			assertNotNull(widget);
-			widget.getAttribute("id");
-			
-			//
-			// Get and return the widget xml. We don't return the original response
-			// as that is the raw config.xml data - we have to make another call to
-			// get the corrected and normalized metadata to check we have correctly
-			// processed the .wgt package according to the W3C spec.
-			//
-			return builder.build(TEST_WIDGETS_SERVICE_URL_VALID+"/"+widget.getAttribute("id").getValue()).getRootElement().getChild("widget");
-
+		  String result = WidgetUploader.uploadWidget(widgetfname);
+		  System.out.println(result);
+		  id = storeImportedPackageId(result);
+		  // id should not be null as they are generated if not found during the initial parse    
+		  assertNotNull(id);
+		  //
+		  // Get and return the widget xml. We don't return the original response
+		  // as that is the raw config.xml data - we have to make another call to
+		  // get the corrected and normalized metadata to check we have correctly
+		  // processed the .wgt package according to the W3C spec.
+		  //
+		  return builder.build(TEST_WIDGETS_SERVICE_URL_VALID+"/"+id).getRootElement().getChild("widget");
 		} catch (Exception e) {
 			fail("couldn't upload widget:"+e.getMessage());
 		}		
@@ -1300,7 +1298,9 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 
 	private String processWidgetWithErrors(String widgetfname){
 		try {
-			return WidgetUploader.uploadWidget(widgetfname);
+		    String result = WidgetUploader.uploadWidget(widgetfname);
+		    storeImportedPackageId(result);
+		    return result;
 		} catch (Exception e) {
 			fail("couldn't upload widget");
 		}		
