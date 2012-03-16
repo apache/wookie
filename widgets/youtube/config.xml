@@ -1,0 +1,66 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<widget xmlns="http://www.w3.org/ns/widgets"
+ 		id="http://wookie.apache.org/widgets/youtube"
+ 		version="1.0"
+        width="600"
+        height="490"
+        >
+  <name>YouTube</name>
+  <description>Find and play YouTube videos</description>
+  <content src="index.html"/>
+  <icon src="icon.png"/>
+  <author>Apache Wookie (Incubating) Team</author>
+  <feature name="http://wave.google.com" required="false"/>
+  <license>Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+  This distribution includes a number of subcomponents with separate copyright 
+  notices and license terms. Your use of the code for the these subcomponents
+  is subject to the terms and conditions of the following licenses.
+
+  This product includes software (JQuery TubePlayer Plugin) developed by Nirvana 
+  Tikku (http://www.tikku.com/jquery-youtube-tubeplayer-plugin) and licensed under
+  the MIT license. 
+
+  This product includes software (JQuery) developed by the JQUery Project, a member
+  of the Software Freedom Conservancy (http://www.jquery.org/) and licensed under
+  the MIT license. 
+  
+  The "YouTube Videos" badge in the widget logo is used in accordance with the 
+  YouTube API branding guidelines available at 
+  http://code.google.com/apis/youtube/branding.html 
+  and terms of service, available at http://code.google.com/apis/youtube/terms.html
+  
+  </license>
+
+</widget>
+
+
+
