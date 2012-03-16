@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
+<link rel="stylesheet" href="style/all.css" />
+
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
+<!-- Added the timeago JQuery plugin -->
+<script type="text/javascript" src="lib/jquery.timeago.js"></script>
+<script type="text/javascript" src="scripts/controller.js"></script>
+
+
+<title>Twidget</title>
+</head>
+
+<body>
+  <div data-role="page" class="type-home" id="home" data-theme="d">
+    <div class="header" data-role="header" data-position="fixed">
+      
+    </div> 
+
+    <div data-role="content">
+      <div class="content-secondary" id="content-secondary">
+        
+<div id="searchPanel" data-role="collapsible" data-theme="c"
+     data-content-theme="c">
+  <h2>Search</h2>
+
+  <form
+     action="javascript:twitter_browse_controller.submitSearchForm()"
+     method="get">
+	<div data-role="fieldcontain">
+	  <label for="searchString">Search:</label> <input type="text"
+							   name="searchString" id="searchString" value=""
+							   placeholder="Screen name..." />
+	</div>
+
+    <input type="submit" value="Search" />
+  </form>
+
+</div>
+
+      </div>
+
+      <div class="content-primary" id="content-primary">
+        
+<p>This the primary content<p>
+
+      </div>
+    </div>
+
+    <div data-role="footer" class="footer" id="footer" data-position="fixed">
+      
+<div style="float:left;"><img src="images/icon.png" height="24" style="vertical-align:text-bottom;"><strong>Twidget</strong></div>
+<a class="button" href="#help" data-role="button" data-rel="dialog" data-transition="pop" data-icon="info" data-iconpos="notext">Help</a>
+    </div>
+  </div>
+
+
+  <div data-role="dialog" id="help">
+    <div data-role="header">
+      <h4>Help: Twidget</h4>
+    </div>
+    <!-- /header -->
+    
+    <div data-role="content" class="ui-content" id="content-help">
+      <p>Initially this widget displays the most recent tweets in the Twitter timeline.</p> <p>You can either click on their icon, or expand the search form and enter a twitter screen name, to see the most recent tweets from a particular person.</p><p>Alternatively, if you leave the search form blank, this will show the public timeline again.</p></div>
+    <!-- /content -->
+  </div>
+  <!-- /page -->
+
+</body>
+</html>

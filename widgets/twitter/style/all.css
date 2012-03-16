@@ -1,0 +1,223 @@
+
+ /**
+ * Summary information for a results browser
+ */
+
+.detail {
+  clear:both;
+  width: 100%;
+  margin-bottom: 0.6em; 
+}
+
+.thumbnail {
+  float:left;
+  width: 16%;
+}
+
+.meta-data {
+	margin-left: 0.6em;
+	float: left;
+	width: 80%;
+}
+
+.uploader {
+  clear: left;
+  float: left;
+  text-align: left;
+  width: 75%;
+  font-size: 90%;
+}
+
+.rating {
+  float: right;
+  text-align: right;
+  font-size: 80%;
+  width: 25%;
+}
+
+.type {
+  clear: left;
+  float: left;
+  text-align: left;
+  width: 70%;
+}
+
+.license {
+  float: left;
+  text-align: right;
+  width: 30%;
+  font-size: 80%;
+}
+ 
+.description {
+  float:left;
+  width: 100%;
+  font-size: 95%;
+  margin-top: 0.6em;
+}
+
+.update {
+  clear: left;
+  float:left;
+  font-size: 75%;
+  text-align: center;
+}
+
+/*.summary {
+  clear: both;
+}*/
+
+.location {
+  font-size: 80%;
+  float: right;
+}
+
+.clear {
+  clear:both;
+}
+
+.header {
+/* note removed div from markup to get JQM styling */
+  background: white;
+  color: black;
+  text-shadow: none;
+  border: none;
+}
+
+
+ @media only screen and (max-width : 320px), only screen and (min-width : 321px) and (max-width : 640px) {
+    .content-secondary {
+	text-align: left;
+	margin-right: 1%;
+	padding-right: 1%;
+    }
+    .content-primary {
+	margin-right: 1%;
+	padding-right: 1%;
+    }
+ }
+
+ @media only screen and (min-width : 641px) and (max-width : 1024px) {
+    .content-secondary {
+	text-align: left;
+	float: ${twoColumn.secondary.position};
+	width: 42%;
+	margin-right: 1%;
+	padding-right: 2%;
+    }
+    .content-primary {
+	width: 55%;
+	float: ${twoColumn.primary.position};
+    }
+ }
+
+ @media only screen and (min-width : 1025px) and (max-width : 1800px) {
+    .content-secondary {
+	text-align: left;
+	float: ${twoColumn.secondary.position};
+	width: 32%;
+	margin-right: 1%;
+	padding-right: 2%;
+    }
+    .content-primary {
+	width: 65%;
+	float: ${twoColumn.primary.position};
+    }
+ }
+ 
+@media only screen and (min-width : 1801px) {
+    .content-secondary {
+	text-align: left;
+	float: ${twoColumn.secondary.position};
+	width: 22%;
+	margin-right: 1%;
+	padding-right: 2%;
+    }
+    .content-primary {
+	width: 75%;
+	float: ${twoColumn.primary.position};
+    }	
+}
+
+.content-primary {
+  overflow: auto;
+}
+
+.header_title {
+  float:right;
+}
+
+.logo {
+  float:left;
+}
+
+.footer .content {
+  font: 70%
+  float:left;
+}
+
+.footer .button {
+    float:right;
+}
+
+.footer .content {
+  font-size:small;
+  float:left;
+}
+
+.hide {
+      display: none;
+}
+
+
+/*
+ * These are some additional CSS properties we've added just for the Twitter
+ * widget. These will be appended to the stylesheet for the widget.
+ */
+ 
+ 
+
+/*
+ * Override default ui background with a nice turquoise
+ */
+.ui-page {
+	background-color:#008D99; 
+	background-image: none;
+}
+
+/*
+ * The time metadata for the tweet
+ */
+.timeago {
+	font-size: 60%;
+    color: #186268;
+}
+
+/*
+ * Override slightly annoying text shadow from JQMobile
+ */
+.tweet {
+    font: 100% Georgia, serif;
+    color: #085258;
+    text-shadow: none;
+}
+
+.tweet_list {
+    border-radius: 0.5em;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: hidden;
+    background-color: #8ADEE0;
+}
+        
+.tweet_list li {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0.5em;
+    list-style-type: none;
+}
+
+.tweet_list .tweet_avatar {
+  padding-right: .5em; float: left;
+}
