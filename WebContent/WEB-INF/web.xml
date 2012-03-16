@@ -249,36 +249,7 @@
 		<servlet-name>WidgetServiceServlet</servlet-name>
 		<url-pattern>/WidgetServiceServlet</url-pattern>
 	</servlet-mapping>
-	
-	<!-- Admin -->  
-	<servlet>
-		<description></description>
-		<display-name>WidgetAdminServlet</display-name>
-		<servlet-name>WidgetAdminServlet</servlet-name>
-		<servlet-class>
-			org.apache.wookie.WidgetAdminServlet
-		</servlet-class>
-	</servlet>
-	
-	<servlet>
-		<description></description>
-		<display-name>WidgetWebServlet</display-name>
-		<servlet-name>WidgetWebServlet</servlet-name>
-		<servlet-class>
-			org.apache.wookie.WidgetWebMenuServlet
-		</servlet-class>
-		<load-on-startup>2</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>WidgetAdminServlet</servlet-name>
-		<url-pattern>/admin/WidgetAdminServlet</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>WidgetWebServlet</servlet-name>
-		<url-pattern>/webmenu/WidgetWebMenuServlet</url-pattern>
-	</servlet-mapping>
-	
+
 	<servlet-mapping>
 		<servlet-name>dwr-invoker</servlet-name>
 		<url-pattern>/dwr/*</url-pattern>
