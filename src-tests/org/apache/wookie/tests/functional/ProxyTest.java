@@ -28,9 +28,12 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.wookie.tests.helpers.NanoHTTPD;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -71,8 +74,10 @@ public class ProxyTest extends AbstractControllerTest {
    */
   private static final String POLICY_ALLOWED_SITE_URL = "http://newsrss.bbc.co.uk/weather/forecast/9/Next3DaysRSS.xml";
   private static final String POLICY_DISALLOWED_SITE_URL = "http://news.bbc.co.uk";
-  private static final String PROTECTED_SITE_URL = TEST_SERVER_LOCATION+"admin/";
+  private static final String PROTECTED_SITE_URL = "http://localhost:8300";
 
+  private static ProxiedSecureServer secureServer;
+  
   /**
    * Create two instances of a widget for testing
    * @throws IOException 
@@ -96,7 +101,41 @@ public class ProxyTest extends AbstractControllerTest {
     other_instance_id_key = response.substring(response.indexOf("<identifier>")+12, response.indexOf("</identifier>"));
     post.releaseConnection();
 
+    //
+    // Create a secure test server
+    //
+    secureServer = new ProxiedSecureServer(8300);
+    
+    //
+    // Create a policy allowing it
+    //
+    setAuthenticationCredentials(client);
+    post = new PostMethod(TEST_POLICIES_SERVICE_URL_VALID);
+    StringRequestEntity entity = new StringRequestEntity("* http://localhost:8300 ALLOW", "text/plain", "UTF-8");
+    post.setRequestEntity(entity);
+    client.executeMethod(post);
+    post.releaseConnection();
+
   }
+  
+  @AfterClass
+  public static void tearDown() throws HttpException, IOException{
+    //
+    // Shut down the test server
+    //
+    secureServer.stop();
+    
+    //
+    // Remove policy
+    //
+    HttpClient client = new HttpClient();
+    setAuthenticationCredentials(client);
+    DeleteMethod delete = new DeleteMethod(TEST_POLICIES_SERVICE_URL_VALID + "/" + encodeString("* http://localhost:8300 ALLOW"));
+    client.executeMethod(delete);
+    assertEquals(200, delete.getStatusCode());
+  }
+  
+  
 
   /**
    * Check we can access a site allowed under the global whitelist using our widget instance's id key
@@ -470,6 +509,39 @@ public class ProxyTest extends AbstractControllerTest {
     server.stop();
   }
 
+  
+  /**
+   * A subclass of NanoHTTPD for testing access to servers using HTTP Basic Auth
+   */
+  static class ProxiedSecureServer extends NanoHTTPD{
+
+    /* (non-Javadoc)
+     * @see org.apache.wookie.tests.helpers.NanoHTTPD#serve(java.lang.String, java.lang.String, java.util.Properties, java.util.Properties, java.util.Properties)
+     */
+    @Override
+    public Response serve(String uri, String method, Properties header,
+        Properties parms, Properties files) {
+        
+        Response response = new Response();
+        String auth = header.getProperty("authorization");
+        if (auth != null && auth.equals("Basic amF2YTpqYXZh")){
+          response.status = "200";          
+        } else {
+          response.status = "401";
+        }
+        return response;
+    }
+
+    /**
+     * @param port
+     * @throws IOException
+     */
+    public ProxiedSecureServer(int port) throws IOException {
+      super(port);
+    }
+    
+    
+  }
 
   /**
    * A subclass of NanoHTTPD for testing 
