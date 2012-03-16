@@ -73,20 +73,22 @@ public class WidgetImportHelper {
       if(id == null || !id.equals(generatedId)){
         widget.setAttribute("id",  widgetModel.getIdentifier());
       }
+      int idx = 0;
       tempElement = widget.getChild("icon", widget.getNamespace());
       if(tempElement != null){
-        int idx = widget.indexOf(tempElement);
+        idx = widget.indexOf(tempElement);
         //remove original icon entries
         widget.removeChildren("icon", widget.getNamespace());
         // get the model icons
-        List<IIconEntity> generatedIcons = widgetModel.getIconsList();
-        for(IIconEntity icon : generatedIcons){
-          String parserSrc = icon.getSrc();
-          icon.setSrc(localPath + parserSrc);
-          widget.addContent(idx++ , icon.toXml());
-          icon.setSrc(parserSrc);
-        }
       }
+      List<IIconEntity> generatedIcons = widgetModel.getIconsList();
+      for(IIconEntity icon : generatedIcons){
+        String parserSrc = icon.getSrc();
+        icon.setSrc(localPath + parserSrc);
+        widget.addContent(idx++ , icon.toXml());
+        icon.setSrc(parserSrc);
+      }
+
       XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
       updatedConfigXml = outputter.outputString(doc);
     } catch (JDOMException e) {
