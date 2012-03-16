@@ -51,6 +51,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
   private static String WIDGET_ID_DELETE_TEST = "http://deletetest";
   private static String WIDGET_ID_NOT_SUPPORTED = "http://notsupported";
   private static String WIDGET_ID_UPLOAD_TEST = "http://uploadtest";
+  private static String WIDGET_ID_UPLOAD_TEST_2 = "http://uploadtest_2";
   
   @AfterClass
   public static void tearDown() throws HttpException, IOException{
@@ -59,6 +60,8 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_ACCESS_TEST));
     client.executeMethod(delete);
     delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
+    client.executeMethod(delete);
+    delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST_2));
     client.executeMethod(delete);
   }
 	
