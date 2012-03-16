@@ -17,8 +17,8 @@
 <widget xmlns="http://www.w3.org/ns/widgets"
  		id="http://wookie.apache.org/widgets/sharedraw"
  		version="0.1"
-        width="420"
-        height="320"
+        width="400"
+        height="300"
         >
   <feature name="http://wave.google.com" required="true"/>
   <name>ShareDraw</name>

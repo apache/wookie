@@ -37,6 +37,11 @@ function init_canvas () {
       alert('Error: failed to getContext!');
       return;
     }
+    
+    // Fit canvas to window
+    var viewport = getViewport();
+    context.canvas.width  = viewport.width;
+    context.canvas.height = viewport.height;
 
     // Pencil tool instance.
     tool = new tool_pencil();
@@ -94,4 +99,27 @@ function init_canvas () {
     if (func) {
       func(ev);
     }
+  }
+  
+  //
+  // Get the viewport height and width
+  //
+  function getViewport() {
+    var viewport = {};
+    viewport.height = 0;
+    viewport.width = 0;
+    if( typeof( window.innerHeight ) == 'number' ) {
+      //Non-IE
+      viewport.height = window.innerHeight;
+      viewport.width = window.innerWidth;
+    } else if( document.documentElement &&( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
+      //IE 6+ in 'standards compliant mode'
+      viewport.height = document.documentElement.clientHeight;
+      viewport.width = document.documentElement.clientWidth; 
+    } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
+      //IE 4 compatible
+      viewport.height = document.body.clientHeight;
+      viewport.width = document.body.clientWidth;
+    }
+    return viewport;
   }

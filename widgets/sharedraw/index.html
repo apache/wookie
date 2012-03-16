@@ -20,16 +20,15 @@
     <meta charset="utf-8">
     <title>Paint</title>
     <style type="text/css"><!--
-      #container { position: relative; }
-      #imageView { border: 1px solid #000; cursor: crosshair }
+      html,body,div, canvas {margin:0px; padding:0px; overflow:hidden}
+      #imageView { border: none; cursor: crosshair }
     --></style>
 	<!--[if lt IE 9]><script type="text/javascript" src="scripts/flashcanvas.js"></script><![endif]-->
     <script type="text/javascript" src="scripts/sharedraw.js"></script>
     <script type="text/javascript" src="scripts/draw.js"></script>    
   </head>
   <body onload="Controller.init()">
-    <div id="container">
-      <canvas id="imageView" width="400" height="300">
+      <canvas id="imageView" height="300" width="400">
         <p>Unfortunately, your browser is currently unsupported by this widget.  
         We are sorry for the inconvenience. Please use one of the 
         supported browsers listed below:</p>
@@ -38,6 +37,5 @@
           href="http://www.apple.com/safari">Safari</a>, and <a 
           href="http://www.konqueror.org">Konqueror</a>.</p>
       </canvas>
-    </div>
   </body>
 </html>
