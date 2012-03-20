@@ -67,7 +67,7 @@ public class TestWookieConnectorService extends AbstractWookieConnectorService {
     if (instance == null) {
       try {
         new URL("http://localhost:8080/wookie").openStream();
-        instance = new TestWookieConnectorService("http://localhost:8080/wookie", "TEST.", "myshareddata");
+        instance = new TestWookieConnectorService("http://localhost:8080/wookie", "TEST", "myshareddata");
       } catch (ConnectException e) {
         // assume localhost is not running so run against bombax
         instance = new TestWookieConnectorService("http://bombax.oucs.ox.ac.uk:8888/wookie", "TEST", "myshareddata");

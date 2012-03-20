@@ -13,12 +13,18 @@
  */
 package org.apache.wookie.connector.framework;
 
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -28,6 +34,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+//import org.apache.commons.httpclient.HttpClient;
+//import org.apache.commons.httpclient.HttpException;
+//import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -44,9 +53,9 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 	
 	WidgetInstances instances = new WidgetInstances();
 
-	public AbstractWookieConnectorService(String url, String apiKey,
-			String sharedDataKey) throws WookieConnectorException {
-		setConnection(new WookieServerConnection(url, apiKey, sharedDataKey));
+	public AbstractWookieConnectorService(String url, String apiKey, String sharedDataKey) throws WookieConnectorException {
+		WookieServerConnection thisConnection = new WookieServerConnection (url, apiKey, sharedDataKey);
+		setConnection(thisConnection);
 	}
 	
 	
@@ -62,7 +71,7 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 	
 
 	public void setConnection(WookieServerConnection newConn) {
-		logger.debug("Setting wookie connection to " + conn);
+		logger.debug("Setting wookie connection to: " + newConn);
 		this.conn = newConn;
 	}
 	
@@ -85,43 +94,160 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 	}
 
 	public void setPropertyForInstance(WidgetInstance instance,
-										String propertyType, String fName,
-										String fValue) throws WookieConnectorException {
+										boolean is_public, String fName,
+										String fValue) throws WookieConnectorException, IOException {
 		String queryString;
 		try {
-			if (!propertyType.equals("setpublicproperty") && !propertyType.equals("setpersonalproperty")) {
-				logger.error("Incorrect requestId parameter.  Must be either 'setpublicproperty' or 'setprivateproperty'");
-				throw new Exception();
+			queryString = createInstanceParams(instance);
+			//queryString = "id_key=";
+			//queryString += URLEncoder.encode(instance.getIdKey(), "UTF-8");
+			//queryString += "&api_key=";
+			//queryString += (URLEncoder.encode(getConnection().getApiKey(), "UTF-8"));
+			queryString += "&is_public=";
+			if ( is_public ) {
+				queryString += "true";
 			}
-			queryString = new String("?requestid=" + propertyType + "&api_key=");
-			queryString += (URLEncoder.encode(getConnection().getApiKey(),"UTF-8"));
-			queryString += ("&shareddatakey=");
-			queryString += (URLEncoder.encode(getConnection().getSharedDataKey(), "UTF-8"));
-			queryString += ("&userid=");
-			queryString += (URLEncoder.encode(getCurrentUser().getLoginName(), "UTF-8"));
-			queryString += ("&widgetid=");
-			queryString += (URLEncoder.encode(instance.getId(), "UTF-8"));
+			else {
+				queryString += "false";
+			}
 			queryString += ("&propertyname=");
 			queryString += (URLEncoder.encode(fName, "UTF-8"));
 			queryString += ("&propertyvalue=");
 			queryString += (URLEncoder.encode(fValue, "UTF-8"));
+			logger.debug(queryString);
 		}
 		catch (UnsupportedEncodingException e) {
 			throw new WookieConnectorException("Must support UTF-8 encoding", e);
 		}
-		catch (Exception e) {
-			throw new WookieConnectorException("Cannot set property type:" + fName + " using requestId " + propertyType, e);
+		URL url = null;
+		try {
+			url = new URL(conn.getURL() + "/properties");
+			
+			//url = new URL(conn.getURL() + "/WidgetServiceServlet" + queryString);
+			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+			urlConn.setRequestMethod("POST");
+			urlConn.setDoOutput(true);
+			
+			OutputStreamWriter out = new OutputStreamWriter(urlConn.getOutputStream());
+			out.write(queryString);
+			out.close();		
+			if (urlConn.getResponseCode() > 201) {
+				throw new IOException(urlConn.getResponseMessage());
+			}
+		}
+		catch (MalformedURLException e) {
+			throw new RuntimeException( "URL for supplied Wookie Server is malformed", e);
+		}
+	}
+	
+	
+	public String getPropertyForInstance ( WidgetInstance instance, String propertyName ) throws WookieConnectorException, IOException {
+		String queryString = createInstanceParams(instance);
+		try {
+			queryString += "&propertyname=";
+			queryString += URLEncoder.encode(propertyName, "UTF-8");
+		}
+		catch (UnsupportedEncodingException e) {
+			throw new WookieConnectorException ("Must support UTF-8 encoding", e);
 		}
 		URL url = null;
 		try {
-			url = new URL(conn.getURL() + "/WidgetServiceServlet" + queryString);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			if (conn.getResponseCode() > 200) {
-				throw new IOException(conn.getResponseMessage());
+			url = new URL(conn.getURL() + "/properties?" + queryString);
+			HttpURLConnection urlConn = (HttpURLConnection)url.openConnection();
+			InputStream s = urlConn.getInputStream();
+			String property = convertISToString(s);
+			if ( urlConn.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
+				// should mean the property isn't there so just return null
+				// TODO - do we need to throw an exception here?
+				return null;
+			}
+			return property;
+		}
+		catch (FileNotFoundException e) {
+			// catch file not found exception generated if resource is not found and return null
+			return null;
+		}
+		catch (MalformedURLException e) {
+			throw new RuntimeException("URL for supplied Wookie Server is malformed", e);
+		} 
+	}
+	
+	
+	public void updatePropertyForInstance (WidgetInstance instance, boolean is_public, String propertyName, String data ) throws WookieConnectorException, IOException {
+		String putString;
+		try {
+			
+			putString = createInstanceParams(instance);
+			putString += "&is_public=";
+			if ( is_public ) {
+				putString += "true";
+			}
+			else {
+				putString += "false";
+			}
+			putString += "&propertyname=";
+			putString += URLEncoder.encode(propertyName, "UTF-8");
+			putString += ("&propertyvalue=");
+			putString += (URLEncoder.encode(data, "UTF-8"));
+		}
+		catch (UnsupportedEncodingException e) {
+			throw new WookieConnectorException("Must support UTF-8 encoding", e);
+		}
+		URL url = null;
+		try {
+			//url = new URL(conn.getURL() + "/properties?api_key="+URLEncoder.encode(conn.getApiKey(), "UTF-8"));
+			url = new URL(conn.getURL() + "/properties?"+putString);
+			//url = new URL(conn.getURL() + "/WidgetServiceServlet" + queryString);
+			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+			urlConn.setRequestMethod("PUT");
+			urlConn.connect();
+			//urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+			//urlConn.setDoOutput(true);
+			
+			//OutputStreamWriter out = new OutputStreamWriter(urlConn.getOutputStream());
+			//out.write(putString);
+			//out.close();		
+			if (urlConn.getResponseCode() > 201) {
+				throw new IOException(urlConn.getResponseMessage());
+			}
+			
+		}
+		catch (MalformedURLException e) {
+			throw new WookieConnectorException("URL for supplied Wookie Server is malformed", e);
+		}
+	}
+	
+	
+	
+	public void deletePropertyForInstance ( WidgetInstance instance, boolean is_public, String propertyName ) throws WookieConnectorException, IOException {
+		String deleteString = createInstanceParams(instance);
+		try {
+			deleteString += "&is_public=";
+			if ( is_public ) {
+				deleteString += "true";
+			}
+			else {
+				deleteString += "false";
+			}
+			deleteString += "&propertyname=";
+			deleteString += URLEncoder.encode(propertyName, "UTF-8");
+		}
+		catch (UnsupportedEncodingException e) {
+			throw new WookieConnectorException("Must support UTF-8 encoding", e);
+		}
+		try {
+			URL url = new URL(conn.getURL()+"/properties?"+deleteString);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("DELETE");
+			connection.connect();
+			int code = connection.getResponseCode();
+			if (code > 202 ) {
+				throw new IOException (connection.getResponseMessage());
 			}
 		}
-		catch (Exception e) {
-			throw new WookieConnectorException("Unable to set property ", e);
+		catch ( MalformedURLException e ) {
+			throw new WookieConnectorException ("URL for Wookie Server is malfomed", e);
 		}
 	}
 
@@ -129,7 +255,7 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 		URL url;
 		WidgetInstance instance;
 		try {
-			StringBuilder postdata = new StringBuilder("api_key=");
+			StringBuilder postdata = new StringBuilder("requestid=getwidget&api_key=");
 			postdata.append(URLEncoder.encode(getConnection().getApiKey(), "UTF-8"));
 			postdata.append("&shareddatakey=");
 			postdata.append(URLEncoder.encode(getConnection().getSharedDataKey(), "UTF-8"));
@@ -138,20 +264,23 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 			postdata.append("&widgetid=");
 			postdata.append(URLEncoder.encode(guid, "UTF-8"));
 
-			logger.debug("Makeing Wookie REST query using: " + postdata);
-
-			url = new URL(conn.getURL() + "/widgetinstances");
-			URLConnection urlConn = url.openConnection();
+			logger.debug("Making Wookie REST query using: " + postdata);
+            
+			url = new URL(conn.getURL() + "/WidgetServiceServlet?"+postdata);
+			HttpURLConnection urlConn = (HttpURLConnection)url.openConnection();
 			urlConn.setDoOutput(true);
-			OutputStreamWriter wr = new OutputStreamWriter(urlConn.getOutputStream());
-			wr.write(postdata.toString());
-			
-			wr.flush();
+			urlConn.setDoInput(true);
+			InputStream is = urlConn.getInputStream();
 
-			instance = parseInstance(guid, getURLDoc(url));
+			if (urlConn.getResponseCode() > 200) {
+				throw new IOException(urlConn.getResponseMessage());
+			}
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docb = dbf.newDocumentBuilder();
+			Document parsedDoc = docb.parse(is);
+			instance = parseInstance(guid, parsedDoc);
 			instances.put(instance);
 
-			wr.close();
 
 			addParticipant(instance, getCurrentUser());
 			
@@ -189,7 +318,9 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 		String title = getNodeTextContent(rootEl, "title");
 		String height = getNodeTextContent(rootEl, "height");
 		String width = getNodeTextContent(rootEl, "width");
-		WidgetInstance instance = new WidgetInstance(url, widgetId, title, height, width);
+		String idKey = getNodeTextContent(rootEl, "identifier");
+		WidgetInstance instance = new WidgetInstance(url, widgetId, title, height, width, idKey);
+		logger.debug(instance.toString());
 		return instance;
 	}
 
@@ -388,8 +519,10 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 	}
 	
 	
+	
+	
 	private String getNodeTextContent(Element e, String subElementName ) {
-		NodeList nl = e.getElementsByTagName("description");
+		NodeList nl = e.getElementsByTagName(subElementName);
 		if ( nl.getLength() > 0 ) {
 			Node n = nl.item(0);
 			if ( n != null ) {
@@ -399,6 +532,9 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 		return "";
 	}
 
+	
+	
+	
 	/**
 	 * Gets the input stream and parses it to a document
 	 * 
@@ -417,8 +553,39 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docb = dbf.newDocumentBuilder();
 		Document parsedDoc = docb.parse(is);
-		is.close();
 		return parsedDoc;
 	}
-
+	
+	private String createInstanceParams ( WidgetInstance instance ) throws WookieConnectorException {
+		String queryString;
+		try {
+			queryString = new String("api_key=");
+			queryString += (URLEncoder.encode(getConnection().getApiKey(), "UTF-8"));
+			queryString += ("&shareddatakey=");
+			queryString += (URLEncoder.encode(getConnection().getSharedDataKey(), "UTF-8"));
+			queryString += ("&userid=");
+			queryString += (URLEncoder.encode(getCurrentUser().getLoginName(), "UTF-8"));
+			queryString += ("&widgetid=");
+			queryString += (URLEncoder.encode(instance.getId(), "UTF-8"));
+		}
+		catch (UnsupportedEncodingException e) {
+			throw new WookieConnectorException("Must support UTF-8 encoding", e);
+		}
+		return queryString;
+	}
+	
+	private String convertISToString (InputStream is ) throws IOException {
+		StringWriter writer = new StringWriter();
+		
+		char buff[] = new char[1024];
+		
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+		int n;
+		while ((n = reader.read(buff)) != -1 ) {
+			writer.write(buff,0,n);
+		}
+		writer.close();
+		return writer.toString();
+		
+	}
 }

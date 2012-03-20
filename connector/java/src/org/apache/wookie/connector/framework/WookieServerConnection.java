@@ -26,8 +26,6 @@ import org.slf4j.LoggerFactory;
  */
 public class WookieServerConnection implements Serializable {
   private static final long serialVersionUID = 1L;
-  private static final Logger logger = LoggerFactory
-      .getLogger(WookieServerConnection.class);
   private String url;
   private String apiKey = "TEST";
   private String sharedDataKey = "mysharedkey";

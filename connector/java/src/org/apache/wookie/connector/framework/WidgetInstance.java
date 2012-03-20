@@ -23,17 +23,24 @@ public class WidgetInstance {
   String url;
 
   String id;
+  String idKey;
   String title;
   String height;
   String width;
 
   public WidgetInstance(String url, String id, String title, String height,
-      String width) {
+      String width, String idKey) {
     setId(id);
     setUrl(url);
     setTitle(title);
     setHeight(height);
     setWidth(width);
+    setIdKey ( idKey );
+  }
+  
+  
+  public String toString ( ) {
+	  return "id: "+id+"  idKey:"+idKey+"  title: "+title+"  height: "+height+"  width: "+width;
   }
   
   public String getUrl() {
@@ -50,6 +57,16 @@ public class WidgetInstance {
 
   public void setId(String id) {
     this.id = id;
+  }
+  
+  public String getIdKey() {
+	  return idKey;
+  }
+  
+  
+  public void setIdKey ( String idKey )
+  {
+	  this.idKey = idKey;
   }
 
   public String getTitle() {

@@ -45,6 +45,8 @@ public class WookieConnectorService {
     assertNotNull("Test user is null", service.getUser("testuser"));
   }
   
+  
+  
   @Test
   public void getAvailableWidgets() throws WookieConnectorException {
     HashMap<String, Widget> widgets = service.getAvailableWidgets();
@@ -68,7 +70,7 @@ public class WookieConnectorService {
 	User user = new User("test1","test user 1");
     service.addParticipant(instance, user);
     User[] users = service.getUsers(instance);
-    assertTrue("Wrong number of users returned",users.length==2);
+    assertTrue("Wrong number of users returned",users.length>2);
     assertTrue("Wrong user returned", users[0].getLoginName().equals("testuser"));
     assertTrue("Wrong user returned", users[1].getLoginName().equals("test1"));
   }
@@ -84,4 +86,24 @@ public class WookieConnectorService {
     user = users[users.length-1];
     assertTrue("Incorrect thumbnail", user.getThumbnailUrl().equals("http://bar.com/icon.png"));
   }
+  
+  @Test
+  public void properties() throws WookieConnectorException, IOException{
+	    HashMap<String, Widget> widgets = service.getAvailableWidgets();
+	    WidgetInstance instance = service.getOrCreateInstance((Widget)widgets.values().toArray()[0]);
+	    assertNotNull("Retrieved widget instance is null", instance);
+	    service.setPropertyForInstance(instance, true, "test_property2", "test data");
+	    String data = service.getPropertyForInstance(instance, "test_property2");
+	    assertNotNull ( "Data from property is null", data );
+	    service.updatePropertyForInstance(instance, true, "test_property2", "new test data");
+	    data = service.getPropertyForInstance(instance, "test_property2");
+	    assertTrue ("Property data did not update", data.equals("new test data"));
+	    service.deletePropertyForInstance(instance, true, "test_property2");
+	    data = service.getPropertyForInstance(instance, "test_property2");
+	    assertTrue("The property was not deleted", (data == null));
+  }
+  
+  
+ 
+  
 }
