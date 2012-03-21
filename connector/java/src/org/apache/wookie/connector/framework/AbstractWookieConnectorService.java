@@ -251,51 +251,51 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 		}
 	}
 
-	public WidgetInstance getOrCreateInstance(String guid) throws IOException, WookieConnectorException {
-		URL url;
-		WidgetInstance instance;
-		try {
-			StringBuilder postdata = new StringBuilder("requestid=getwidget&api_key=");
-			postdata.append(URLEncoder.encode(getConnection().getApiKey(), "UTF-8"));
-			postdata.append("&shareddatakey=");
-			postdata.append(URLEncoder.encode(getConnection().getSharedDataKey(), "UTF-8"));
-			postdata.append("&userid=");
-			postdata.append(URLEncoder.encode(getCurrentUser().getLoginName(), "UTF-8"));
-			postdata.append("&widgetid=");
-			postdata.append(URLEncoder.encode(guid, "UTF-8"));
+  public WidgetInstance getOrCreateInstance(String guid) throws IOException,
+      WookieConnectorException {
+    URL url;
+    WidgetInstance instance;
+    try {
+      StringBuilder postdata = new StringBuilder("api_key=");
+      postdata.append(URLEncoder.encode(getConnection().getApiKey(), "UTF-8"));
+      postdata.append("&shareddatakey=");
+      postdata.append(URLEncoder.encode(getConnection().getSharedDataKey(), "UTF-8"));
+      postdata.append("&userid=");
+      postdata.append(URLEncoder.encode(getCurrentUser().getLoginName(),"UTF-8"));
+      postdata.append("&widgetid=");
+      postdata.append(URLEncoder.encode(guid, "UTF-8"));
 
-			logger.debug("Making Wookie REST query using: " + postdata);
-            
-			url = new URL(conn.getURL() + "/WidgetServiceServlet?"+postdata);
-			HttpURLConnection urlConn = (HttpURLConnection)url.openConnection();
-			urlConn.setDoOutput(true);
-			urlConn.setDoInput(true);
-			InputStream is = urlConn.getInputStream();
+      logger.debug("Making Wookie REST query using: " + postdata);
 
-			if (urlConn.getResponseCode() > 200) {
-				throw new IOException(urlConn.getResponseMessage());
-			}
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docb = dbf.newDocumentBuilder();
-			Document parsedDoc = docb.parse(is);
-			instance = parseInstance(guid, parsedDoc);
-			instances.put(instance);
+      url = new URL(conn.getURL() + "/widgetinstances?" + postdata);
+      HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+      urlConn.setRequestMethod("POST");
+      urlConn.setDoOutput(true);
+      urlConn.setDoInput(true);
+      InputStream is = urlConn.getInputStream();
 
+      //
+      // From v 0.9.2 onwards, we get 201 for created, 200 for already existing
+      //
+      if (urlConn.getResponseCode() != 200 && urlConn.getResponseCode() != 201) {
+        throw new IOException(urlConn.getResponseMessage());
+      }
+      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+      DocumentBuilder docb = dbf.newDocumentBuilder();
+      Document parsedDoc = docb.parse(is);
+      instance = parseInstance(guid, parsedDoc);
+      instances.put(instance);
 
-			addParticipant(instance, getCurrentUser());
-			
-		}
-		catch (MalformedURLException e) {
-			throw new RuntimeException(
-					"URL for supplied Wookie Server is malformed", e);
-		}
-		catch (ParserConfigurationException e) {
-			throw new RuntimeException("Unable to configure XML parser", e);
-		}
-		catch (SAXException e) {
-			throw new RuntimeException(
-					"Problem parsing XML from Wookie Server", e);
-		}
+      addParticipant(instance, getCurrentUser());
+
+    } catch (MalformedURLException e) {
+      throw new RuntimeException("URL for supplied Wookie Server is malformed",
+          e);
+    } catch (ParserConfigurationException e) {
+      throw new RuntimeException("Unable to configure XML parser", e);
+    } catch (SAXException e) {
+      throw new RuntimeException("Problem parsing XML from Wookie Server", e);
+    }
 
 		return instance;
 	}
@@ -389,63 +389,95 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 	 */
 	public HashMap<String, Widget> getAvailableWidgets() throws WookieConnectorException {
 
-		HashMap<String, Widget> widgets = new HashMap<String, Widget>();
+	  HashMap<String, Widget> widgets = new HashMap<String, Widget>();
 
-		try {
-			URL url = new URL(conn.getURL() + "/widgets?all=true");
+	  try {
+	    URL url = new URL(conn.getURL() + "/widgets?all=true");
 
-			Document widgetsDoc = getURLDoc(url);
+	    Document widgetsDoc = getURLDoc(url);
 
-			Element root = widgetsDoc.getDocumentElement();
-			NodeList widgetList = root.getElementsByTagName("widget");
-			for (int idx = 0; idx < widgetList.getLength(); idx = idx + 1) {
-				Element widgetEl = (Element) widgetList.item(idx);
-				String id = widgetEl.getAttribute("id");
-				String width = widgetEl.getAttribute("width");
-				String height = widgetEl.getAttribute("height");
-				String version = widgetEl.getAttribute("version");
-				if (widgets.containsKey(id)) {
-					break;
-				}
-				String name = getNodeTextContent(widgetEl, "name" );
-				String description = getNodeTextContent(widgetEl, "description" );
-				String license = getNodeTextContent(widgetEl, "license" );
-				String author = getNodeTextContent(widgetEl, "author" );
-				Element iconEl = (Element) widgetEl.getElementsByTagName("icon").item(0);
-				URL iconURL;
-				if (iconEl != null) {
-					iconURL = new URL(iconEl.getAttribute("src"));
-				}
-				else {
-					iconURL = new URL("http://www.oss-watch.ac.uk/images/logo2.gif");
-				}
+	    Element root = widgetsDoc.getDocumentElement();
+	    NodeList widgetList = root.getElementsByTagName("widget");
+	    for (int idx = 0; idx < widgetList.getLength(); idx = idx + 1) {
+	      Element widgetEl = (Element) widgetList.item(idx);
+	      String id = widgetEl.getAttribute("id");
 
-				Widget widget = new Widget(id, name, 
-										description, iconURL,
-										width, height,
-										version, author,
-										license);
-				
-				widgets.put(id, widget);
-			}
-		}
-		catch (ParserConfigurationException e) {
-			throw new WookieConnectorException("Unable to create XML parser", e);
-		}
-		catch (MalformedURLException e) {
-			throw new WookieConnectorException("URL for Wookie is malformed", e);
-		}
-		catch (IOException e) {
-			// return an empty set, or the set received so far in order to allow
-			// the application to proceed. The application should display an
-			// appropriate message in this case.
-			return widgets;
-		}
-		catch (SAXException e) {
-			throw new WookieConnectorException(
-					"Unable to parse the response from Wookie", e);
-		}
-		return widgets;
+	      //
+	      // If there is an "identifier" attribute, this is a 0.9.2 or older
+	      // server
+	      //
+	      if (widgetEl.hasAttribute("identifier")) {
+	        id = widgetEl.getAttribute("identifier");
+	      }
+
+	      //
+	      // Stop here if we've already got this widget
+	      //
+	      if (widgets.containsKey(id)) {
+	        break;
+	      }
+
+	      String width = widgetEl.getAttribute("width");
+	      String height = widgetEl.getAttribute("height");
+	      String version = widgetEl.getAttribute("version");
+
+	      String name = getNodeTextContent(widgetEl, "name");
+
+	      //
+	      // In 0.9.2 and earlier, the widget has a Title rather
+	      // than a Name
+	      //
+	      if (widgetEl.getElementsByTagName("title").getLength() > 0){
+	        name = getNodeTextContent(widgetEl, "title");
+	      }
+
+	      String description = getNodeTextContent(widgetEl, "description");
+	      String license = getNodeTextContent(widgetEl, "license");
+	      String author = getNodeTextContent(widgetEl, "author");
+	      Element iconEl = (Element) widgetEl.getElementsByTagName("icon").item(0);
+	      URL iconURL;
+	      if (iconEl != null) {
+	        if (iconEl.hasAttribute("src")) {
+
+	          //
+	          // From 0.10.0 onwards, icon info is in the "src" attribute
+	          //
+	          iconURL = new URL(iconEl.getAttribute("src"));
+	        } else {
+
+	          //
+	          // For 0.9.2, there is no src attribute
+	          //
+	          iconURL = new URL(iconEl.getTextContent());
+	        }
+
+	      } else {
+	        iconURL = new URL("http://www.oss-watch.ac.uk/images/logo2.gif");
+	      }
+
+	      Widget widget = new Widget(id, name, description, iconURL, width,
+	          height, version, author, license);
+
+	      widgets.put(id, widget);
+	    }
+	  }
+	  catch (ParserConfigurationException e) {
+	    throw new WookieConnectorException("Unable to create XML parser", e);
+	  }
+	  catch (MalformedURLException e) {
+	    throw new WookieConnectorException("URL for Wookie is malformed", e);
+	  }
+	  catch (IOException e) {
+	    // return an empty set, or the set received so far in order to allow
+	    // the application to proceed. The application should display an
+	    // appropriate message in this case.
+	    return widgets;
+	  }
+	  catch (SAXException e) {
+	    throw new WookieConnectorException(
+	        "Unable to parse the response from Wookie", e);
+	  }
+	  return widgets;
 	}
 	
 	
