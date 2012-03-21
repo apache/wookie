@@ -13,6 +13,7 @@
  */
 package org.apache.wookie.tests.connector.framework.impl;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -52,6 +53,30 @@ public class WookieConnectorService {
     HashMap<String, Widget> widgets = service.getAvailableWidgets();
     assertTrue("Not retrieved enough widgets", 10 < widgets.size());
     assertNotNull("Widget value is null", widgets.values().toArray()[0]);
+  }
+  
+  @Test
+  public void getWidgetMetadata() throws WookieConnectorException{
+    Widget widget = service.getAvailableWidgets().get("http://notsupported");
+    assertEquals("Unsupported widget widget", widget.getName());
+    assertEquals("This widget is a placeholder for when no corresponding widget is found for a given type", widget.getDescription());
+    assertEquals("500", widget.getWidth());
+    assertEquals("358", widget.getHeight());
+    assertEquals("Paul Sharples", widget.getAuthor());
+    assertEquals("http://notsupported", widget.getIdentifier());
+  }
+
+  @Test
+  public void getWidgetMetadata2() throws WookieConnectorException{
+    Widget widget = service.getAvailableWidgets().get("http://wookie.apache.org/widgets/simplechat");
+    assertEquals("SimpleChat", widget.getName());
+    assertEquals("Stripped down chat widget with minimal styling", widget.getDescription());
+    assertEquals("255", widget.getWidth());
+    assertEquals("383", widget.getHeight());
+    assertEquals("Apache Wookie (Incubating) Team", widget.getAuthor());
+    assertEquals("http://localhost:8080/wookie/wservices/wookie.apache.org/widgets/simplechat/icon.png", widget.getIcon().toString());
+    assertEquals("http://wookie.apache.org/widgets/simplechat", widget.getIdentifier());
+    assertEquals("Licensed under the Apache 2.0 License (see http://www.apache.org/licenses/LICENSE-2.0). Smileys created by macpoupou and licensed under Creative Commons Attribution License 3.0. See http://ismileys.free.fr/smileys/ for more information.", widget.getLicense());
   }
   
   @Test
