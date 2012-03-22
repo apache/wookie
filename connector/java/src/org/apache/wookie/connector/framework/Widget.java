@@ -60,10 +60,19 @@ public class Widget {
   }
 
   /**
-   * Get the human readable title of this widget.
-   * @return
+   * Get the human readable name of this widget.
+   * @return the widget name
    */
   public String getName() {
+    return name;
+  }
+  
+  /**
+   * Get the human readable title of this widget.
+   * @deprecated Use "getName" instead
+   * @return the widget title
+   */
+  public String getTitle() {
     return name;
   }
 

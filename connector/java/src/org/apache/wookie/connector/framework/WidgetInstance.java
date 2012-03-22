@@ -28,6 +28,24 @@ public class WidgetInstance {
   String height;
   String width;
 
+  /**
+   * @deprecated This constructor is for backwards compatibility only; new implementations should
+   * use the constructor with the ID Key parameter supplied
+   * @param url
+   * @param id
+   * @param title
+   * @param height
+   * @param width
+   */
+  public WidgetInstance(String url, String id, String title, String height,
+      String width) {
+    setId(id);
+    setUrl(url);
+    setTitle(title);
+    setHeight(height);
+    setWidth(width);
+  }
+  
   public WidgetInstance(String url, String id, String title, String height,
       String width, String idKey) {
     setId(id);
