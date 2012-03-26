@@ -24,19 +24,16 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-//import org.apache.commons.httpclient.HttpClient;
-//import org.apache.commons.httpclient.HttpException;
-//import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -44,6 +41,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
 
 public abstract class AbstractWookieConnectorService implements IWookieConnectorService {
 	
@@ -99,10 +97,6 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 		String queryString;
 		try {
 			queryString = createInstanceParams(instance);
-			//queryString = "id_key=";
-			//queryString += URLEncoder.encode(instance.getIdKey(), "UTF-8");
-			//queryString += "&api_key=";
-			//queryString += (URLEncoder.encode(getConnection().getApiKey(), "UTF-8"));
 			queryString += "&is_public=";
 			if ( is_public ) {
 				queryString += "true";
@@ -158,7 +152,6 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 			String property = convertISToString(s);
 			if ( urlConn.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
 				// should mean the property isn't there so just return null
-				// TODO - do we need to throw an exception here?
 				return null;
 			}
 			return property;
@@ -195,19 +188,11 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 		}
 		URL url = null;
 		try {
-			//url = new URL(conn.getURL() + "/properties?api_key="+URLEncoder.encode(conn.getApiKey(), "UTF-8"));
 			url = new URL(conn.getURL() + "/properties?"+putString);
-			//url = new URL(conn.getURL() + "/WidgetServiceServlet" + queryString);
 			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 			urlConn.setRequestMethod("PUT");
 			urlConn.connect();
-			//urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
-			//urlConn.setDoOutput(true);
-			
-			//OutputStreamWriter out = new OutputStreamWriter(urlConn.getOutputStream());
-			//out.write(putString);
-			//out.close();		
+	
 			if (urlConn.getResponseCode() > 201) {
 				throw new IOException(urlConn.getResponseMessage());
 			}
@@ -300,29 +285,7 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 		return instance;
 	}
 
-	/**
-	 * Parse an XML document returned from the Wookie server that describes a
-	 * widget instance.
-	 * 
-	 * @param widgetId
-	 *            the identifier of the widget this document represents
-	 * @param xml
-	 *            description of the instance as returned by the widget server
-	 *            when the widget was instantiated.
-	 * 
-	 * @return the identifier for this instance
-	 */
-	public WidgetInstance parseInstance(String widgetId, Document xml) {
-		Element rootEl = xml.getDocumentElement();
-		String url = getNodeTextContent(rootEl, "url");
-		String title = getNodeTextContent(rootEl, "title");
-		String height = getNodeTextContent(rootEl, "height");
-		String width = getNodeTextContent(rootEl, "width");
-		String idKey = getNodeTextContent(rootEl, "identifier");
-		WidgetInstance instance = new WidgetInstance(url, widgetId, title, height, width, idKey);
-		logger.debug(instance.toString());
-		return instance;
-	}
+
 
 	/**
 	 * @refactor At time of writing the REST API for adding a participant is
@@ -375,6 +338,46 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 			sb.append(postdata);
 			throw new WookieConnectorException(sb.toString(), e);
 		}
+	}
+	
+	
+	
+	/**
+	 * Removes a user as a participant from a particular widget instance
+	 * @param instance
+	 * @param user
+	 * @throws WookieConnectorException
+	 */
+	public void removeParticipantFromWidget ( WidgetInstance instance, User user ) throws WookieConnectorException {
+		StringBuilder queryString = new StringBuilder(createInstanceParams(instance));
+		try {
+			queryString.append("&participant_id=");
+			queryString.append(URLEncoder.encode(user.getLoginName(), "UTF-8"));
+		}
+		catch (UnsupportedEncodingException e) {
+				throw new WookieConnectorException ( "UTF-8 must be supported", e);
+		}
+		URL url = null;
+		try {
+			url = new URL(conn.getURL() + "/participants?"+queryString);
+			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+			urlConn.setRequestMethod("DELETE");
+			urlConn.connect();
+		}
+		catch (MalformedURLException e) {
+			throw new WookieConnectorException( "Participants rest URL is incorrect: " + url, e);
+		}
+		catch (IOException e) {
+			StringBuilder sb = new StringBuilder( "Problem adding a participant. ");
+			sb.append("URL: ");
+			sb.append(url);
+			sb.append(" data: ");
+			sb.append(queryString);
+			throw new WookieConnectorException(sb.toString(), e);
+		}
+			
+	
+
 	}
 	
 
@@ -551,7 +554,245 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 	}
 	
 	
+	// -----------------------------------------------------------------------------------
+	// admin functions requiring basic authentication
 	
+
+	/**
+	 * Gets a list of all the api keys registered in wookie
+	 * @param adminUsername
+	 * @param adminPassword
+	 * @return
+	 * @throws WookieConnectorException
+	 * @throws IOException
+	 */
+	public List<ApiKey> getAPIKeys(String adminUsername, String adminPassword) throws WookieConnectorException, IOException {
+		
+		URL url;
+		ArrayList<ApiKey> keys =  new ArrayList<ApiKey>();
+		try {
+			url = new URL ( conn.getURL() + "/keys" );
+			HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
+			addBasicAuthToConnection (httpConnection, adminUsername, adminPassword );
+			InputStream is = httpConnection.getInputStream();
+			if (httpConnection.getResponseCode() > 200) {
+				throw new IOException(httpConnection.getResponseMessage());
+			}
+			Document doc = parseInputStreamAsDocument ( is );
+			Element rootElement = doc.getDocumentElement();
+			NodeList keyNodes = rootElement.getElementsByTagName("key");
+			for ( int i = 0; i < keyNodes.getLength(); i++ ) {
+				Element keyElement = (Element) keyNodes.item(i);
+				ApiKey key = new ApiKey ( keyElement.getAttribute("id"),
+						keyElement.getAttribute("value"),
+						keyElement.getAttribute("email"));
+				keys.add(key);
+			}
+		}
+		catch ( MalformedURLException e ) {
+			throw new WookieConnectorException ( "Bad url: ", e);
+		} 
+		catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			throw new WookieConnectorException ( "Problem parsing data returned by Wookie: ", e);
+		} 
+		catch (SAXException e) {
+			e.printStackTrace();
+			throw new WookieConnectorException ( "Problem parsing data returned by Wookie: ", e);
+		}
+		return keys;
+	}
+	
+	
+	/**
+	 * Creates a new api key
+	 * @param newKey
+	 * @param adminUsername
+	 * @param adminPassword
+	 * @throws WookieConnectorException
+	 */
+	public void createApiKey ( ApiKey newKey, String adminUsername, String adminPassword ) throws WookieConnectorException {
+		String paramString = "";
+		try{
+			paramString += "apikey=";
+			paramString += URLEncoder.encode(newKey.getKey(), "UTF-8");
+			paramString += "&email=";
+			paramString += URLEncoder.encode(newKey.getEmail(), "UTF-8");
+		}
+		catch (UnsupportedEncodingException e) {
+			throw new WookieConnectorException ( "Must support UTF-8", e );
+		}
+		URL url = null;
+		try {
+			url = new URL ( conn.getURL() + "/keys" );
+			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+			addBasicAuthToConnection(urlConn, adminUsername, adminPassword);
+			urlConn.setDoOutput(true);
+			OutputStreamWriter wr = new OutputStreamWriter(urlConn.getOutputStream());
+			wr.write(paramString);
+			wr.flush();
+			if (urlConn.getResponseCode() > 201) {
+				throw new IOException(urlConn.getResponseMessage());
+			}
+		}
+		catch (MalformedURLException e) {
+			throw new WookieConnectorException( "ApiKeys rest URL is incorrect: " + url, e);
+		}
+		catch (IOException e) {
+			StringBuilder sb = new StringBuilder( "Problem adding an apikey. ");
+			sb.append("URL: ");
+			sb.append(url);
+			sb.append(" data: ");
+			sb.append(paramString);
+			throw new WookieConnectorException(sb.toString(), e);
+		}
+	}
+	
+	
+	/**
+	 * Deletes a specified key
+	 * @param key
+	 * @throws IOException
+	 * @throws WookieConnectorException
+	 */
+	public void removeApiKey ( ApiKey key, String adminUsername, String adminPassword ) throws IOException, WookieConnectorException {
+		URL url = null;
+		try {
+			url = new URL ( conn.getURL() + "/keys/"+key.getId());
+			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+			addBasicAuthToConnection ( urlConn, adminUsername, adminPassword );
+			urlConn.setRequestMethod("DELETE");
+			urlConn.connect();
+			if ( urlConn.getResponseCode() > 201 ) {
+				throw new IOException ( urlConn.getResponseMessage());
+			}
+		}
+		catch ( MalformedURLException e ) {
+			throw new WookieConnectorException ( "ApiKeys rest URL is incorect: " + url, e );
+		}
+	}
+	
+	
+	
+	/**
+	 * Returns a full list of policies
+	 * @param adminUsername
+	 * @param adminPassword
+	 * @param scope - use to define the scope of the search for policies, if empty or null all are returned
+	 * @return
+	 * @throws IOException
+	 * @throws WookieConnectorException
+	 */
+	public List<Policy> getPolicies( String adminUsername, String adminPassword, String scope ) throws IOException, WookieConnectorException {
+		URL url;
+		ArrayList<Policy> policies = new ArrayList<Policy>();
+		try {
+			String urlString = conn.getURL() + "/policies";
+			if ( scope != null && scope != "" ) {
+				urlString += "/" + URLEncoder.encode(scope, "UTF-8" );
+			}
+			url = new URL ( urlString );
+
+			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+			addBasicAuthToConnection ( urlConn, adminUsername, adminPassword );
+			urlConn.setRequestProperty("Accept", "text/xml");
+			if (urlConn.getResponseCode() > 200) {
+				throw new IOException(urlConn.getResponseMessage());
+			}
+			Document doc = parseInputStreamAsDocument ( urlConn.getInputStream() );
+			Element rootElement = doc.getDocumentElement();
+			NodeList policyNodes = rootElement.getElementsByTagName("policy");
+			for ( int i = 0; i < policyNodes.getLength(); i++ ) {
+				Element keyElement = (Element) policyNodes.item(i);
+				Policy policy = new Policy ( keyElement.getAttribute("scope"),
+						keyElement.getAttribute("origin"),
+						keyElement.getAttribute("directive"));
+				policies.add(policy);
+			}
+		}
+		catch ( MalformedURLException e ) {
+			throw new WookieConnectorException ( "Bad url: ", e);
+		} 
+		catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			throw new WookieConnectorException ( "Problem parsing data returned by Wookie: ", e);
+		} 
+		catch (SAXException e) {
+			e.printStackTrace();
+			throw new WookieConnectorException ( "Problem parsing data returned by Wookie: ", e);
+		}
+
+		return policies;
+	}
+	
+	
+	/**
+	 * Create a new policy
+	 * @param newPolicy
+	 * @param adminUsername
+	 * @param adminPassword
+	 * @throws WookieConnectorException
+	 */
+	public void createPolicy ( Policy newPolicy, String adminUsername, String adminPassword ) throws WookieConnectorException {
+		URL url = null;
+		try {
+			url = new URL ( conn.getURL() + "/policies" );
+			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+			addBasicAuthToConnection ( urlConn, adminUsername, adminPassword );
+			urlConn.setDoOutput(true);
+			OutputStreamWriter wr = new OutputStreamWriter(urlConn.getOutputStream());
+			wr.write(newPolicy.toString());
+			wr.flush();
+			if (urlConn.getResponseCode() > 201) {
+				throw new IOException(urlConn.getResponseMessage());
+			}
+		}
+		catch (MalformedURLException e) {
+			throw new WookieConnectorException( "Policies rest URL is incorrect: " + url, e);
+		}
+		catch (IOException e) {
+			StringBuilder sb = new StringBuilder( "Problem adding a policy. ");
+			sb.append("URL: ");
+			sb.append(url);
+			sb.append(" data: ");
+			sb.append(newPolicy.toString());
+			throw new WookieConnectorException(sb.toString(), e);
+		}
+
+	}
+	
+	/**
+	 * Deletes a policy
+	 * @param policy
+	 * @param adminUsername
+	 * @param adminPassword
+	 * @throws WookieConnectorException
+	 * @throws IOException
+	 */
+	public void deletePolicy ( Policy policy, String adminUsername, String adminPassword ) throws WookieConnectorException, IOException {
+		URL url = null;
+		try {
+			url = new URL ( conn.getURL() + "/policies/"+URLEncoder.encode(policy.toString(), "UTF-8"));
+			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+			addBasicAuthToConnection ( urlConn, adminUsername, adminPassword );
+			urlConn.setRequestMethod("DELETE");
+			urlConn.connect();
+			if ( urlConn.getResponseCode() > 201 ) {
+				throw new IOException ( urlConn.getResponseMessage());
+			}
+		}
+		catch ( MalformedURLException e ) {
+			throw new WookieConnectorException ( "Properties rest URL is incorect: " + url, e );
+		} 
+		catch (UnsupportedEncodingException e) {
+			throw new WookieConnectorException ( "Must support UTF-8 encoding", e );
+		}
+	}
+	
+	
+	
+	// -----------------------------------------------------------------------------------
+	// private functions
 	
 	private String getNodeTextContent(Element e, String subElementName ) {
 		NodeList nl = e.getElementsByTagName(subElementName);
@@ -566,27 +807,32 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 
 	
 	
-	
-	/**
-	 * Gets the input stream and parses it to a document
-	 * 
-	 * @param url
-	 * @return Document
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 */
 	private Document getURLDoc(URL url) throws IOException, ParserConfigurationException, SAXException {
+		InputStream is = getURLInputStream ( url );
+		return parseInputStreamAsDocument ( is );
+	}
+	
+	
+	
+	private InputStream getURLInputStream ( URL url ) throws IOException {
 		HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
 		InputStream is = httpConnection.getInputStream();
 		if (httpConnection.getResponseCode() > 200) {
 			throw new IOException(httpConnection.getResponseMessage());
 		}
+		return is;
+	}
+	
+	
+	
+	private Document parseInputStreamAsDocument ( InputStream in ) throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docb = dbf.newDocumentBuilder();
-		Document parsedDoc = docb.parse(is);
+		Document parsedDoc = docb.parse(in);
 		return parsedDoc;
 	}
+	
+	
 	
 	private String createInstanceParams ( WidgetInstance instance ) throws WookieConnectorException {
 		String queryString;
@@ -606,6 +852,8 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 		return queryString;
 	}
 	
+	
+	
 	private String convertISToString (InputStream is ) throws IOException {
 		StringWriter writer = new StringWriter();
 		
@@ -618,6 +866,77 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 		}
 		writer.close();
 		return writer.toString();
-		
+	}
+	
+	
+	/**
+	 * Parse an XML document returned from the Wookie server that describes a
+	 * widget instance.
+	 * 
+	 * @param widgetId
+	 *            the identifier of the widget this document represents
+	 * @param xml
+	 *            description of the instance as returned by the widget server
+	 *            when the widget was instantiated.
+	 * 
+	 * @return the identifier for this instance
+	 */
+	private WidgetInstance parseInstance(String widgetId, Document xml) {
+		Element rootEl = xml.getDocumentElement();
+		String url = getNodeTextContent(rootEl, "url");
+		String title = getNodeTextContent(rootEl, "title");
+		String height = getNodeTextContent(rootEl, "height");
+		String width = getNodeTextContent(rootEl, "width");
+		String idKey = getNodeTextContent(rootEl, "identifier");
+		WidgetInstance instance = new WidgetInstance(url, widgetId, title, height, width, idKey);
+		logger.debug(instance.toString());
+		return instance;
+	}
+	
+	
+	
+	
+	private void addBasicAuthToConnection ( HttpURLConnection urlConnection, String username, String password ){
+		String authString = username + ":" + password;
+		String encodedAuth = encodeBase64String ( authString );
+		urlConnection.setRequestProperty("Authorization", "Basic " + encodedAuth );
+	}
+	
+	
+	
+	
+	private String encodeBase64String ( String input ) {
+		String charMap = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+		String encodedString = "";
+
+		byte[] inputBytes;
+		try {
+			inputBytes = input.getBytes("UTF-8");
+		}
+		catch (Exception ignore ) {
+			inputBytes = input.getBytes();
+		}
+		// pad out so we don't get index out of bounds on input when we index at 3 bytes each time
+		if ( inputBytes.length % 3 != 0 ) {
+			byte[] paddedInput = new byte[inputBytes.length + (inputBytes.length % 3)];
+			System.arraycopy(inputBytes, 0, paddedInput, 0, inputBytes.length);
+			inputBytes = paddedInput;
+		}
+		int encodedStringBoundaryIndex = 0;
+
+		for (int i = 0; i < inputBytes.length; i += 3 ) {
+			int packed = ((inputBytes[i] & 0xff) << 16) + ((inputBytes[i+1] & 0xff) << 8) + (inputBytes[i+2] & 0xff);
+			encodedString = encodedString + charMap.charAt((packed >> 18) & 0x3f) + 
+											charMap.charAt((packed >> 12) & 0x3f) + 
+											charMap.charAt((packed >> 6) & 0x3f) + 
+											charMap.charAt(packed & 0x3f);
+			encodedStringBoundaryIndex += 4;
+			if ( encodedStringBoundaryIndex == 76 ) {
+				// we should do a carriage return and line feed after 76 bytes for some reason
+				encodedString += "\r\n";
+				encodedStringBoundaryIndex = 0;
+			}
+		}
+		return encodedString;
 	}
 }

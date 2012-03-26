@@ -19,7 +19,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
 
+import org.apache.wookie.connector.framework.ApiKey;
+import org.apache.wookie.connector.framework.Policy;
 import org.apache.wookie.connector.framework.User;
 import org.apache.wookie.connector.framework.Widget;
 import org.apache.wookie.connector.framework.WidgetInstance;
@@ -129,6 +133,48 @@ public class WookieConnectorService {
   }
   
   
- 
+  @Test
+  public void apikeys() throws IOException, WookieConnectorException {
+	  String adminPassword = "java";
+	  String adminUsername = "java";
+	  
+	  List<ApiKey> apikeys = service.getAPIKeys(adminUsername, adminPassword);
+	  int apikeysLength = apikeys.size();
+	  assertTrue ( "Unable to get api keys", ( apikeysLength > 0));
+	  ApiKey newKey = new ApiKey ( null, "tester", "test@test.com" );
+	  service.createApiKey(newKey, adminUsername, adminPassword);
+	  
+	  apikeys = service.getAPIKeys(adminUsername, adminPassword);
+	  
+	  boolean foundKey = false;
+	  ListIterator<ApiKey> li = apikeys.listIterator();
+	  while (li.hasNext()) {
+		  ApiKey akey = li.next();
+		  if ( akey.getEmail().equals("test@test.com") && akey.getKey().equals("tester")) {
+			  newKey.setId(akey.getId());
+			  foundKey = true;
+		  }
+	  }
+	  assertTrue ( "New key not created", foundKey );
+	  
+	  service.removeApiKey(newKey, adminUsername, adminPassword);
+	  assertEquals ( service.getAPIKeys(adminUsername, adminPassword).size(), apikeysLength);
+  }
   
+  
+  @Test
+  public void policyTest ( ) throws IOException, WookieConnectorException {
+	  String adminPassword = "java";
+	  String adminUsername = "java";
+	  
+	  List<Policy> policies = service.getPolicies(adminUsername, adminPassword, null);
+	  int policyListSize = policies.size();
+	  assertTrue ( "Unable to get policies", (policyListSize > 0) );
+	  String scope = "http://test.scope/8475374";
+	  Policy policy = new Policy ( scope, "http://nowhere.com", "ALLOW" );
+	  service.createPolicy(policy, adminUsername, adminPassword);
+	  assertTrue ( "New policy not created", service.getPolicies(adminUsername, adminPassword, scope).size() > 0);
+	  service.deletePolicy(policy, adminUsername, adminPassword);
+	  assertEquals ( service.getPolicies(adminUsername, adminPassword, null).size(), policyListSize);
+  }
 }

@@ -15,9 +15,6 @@ package org.apache.wookie.connector.framework;
 
 import java.io.Serializable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * A connection to a Wookie server. This maintains the necessary data for
  * connecting to the server and provides utility methods for making common calls

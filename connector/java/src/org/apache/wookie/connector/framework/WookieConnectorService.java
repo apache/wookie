@@ -13,7 +13,6 @@
  */
 package org.apache.wookie.connector.framework;
 
-import java.util.HashMap;
 
 
 /**
