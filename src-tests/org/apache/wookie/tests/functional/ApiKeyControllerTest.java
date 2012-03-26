@@ -33,6 +33,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.junit.AfterClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -42,6 +43,15 @@ import org.junit.Test;
 public class ApiKeyControllerTest extends AbstractControllerTest {
 
   private static final String APIKEY_SERVICE_LOCATION_VALID = TEST_SERVER_LOCATION  + "keys";
+  
+  
+//  @AfterClass
+//  public static void cleanUp() throws HttpException, IOException{
+//    HttpClient client = new HttpClient();
+//    DeleteMethod del = new DeleteMethod(APIKEY_SERVICE_LOCATION_VALID + "/"  + "DUPLICATION_TEST");
+//    setAuthenticationCredentials(client);
+//    client.executeMethod(del);
+//  }
 
   /**
    * Attempt to get the list of API keys without having authenticated first
@@ -105,6 +115,14 @@ public class ApiKeyControllerTest extends AbstractControllerTest {
     code = get.getStatusCode();
     assertEquals(200, code);
     assertTrue(get.getResponseBodyAsString().contains("TEST_KEY"));
+    
+    //
+    // Remove the key
+    // 
+    client = new HttpClient();
+    DeleteMethod del = new DeleteMethod(APIKEY_SERVICE_LOCATION_VALID + "/"  + "TEST_KEY");
+    setAuthenticationCredentials(client);
+    client.executeMethod(del);
   }
 
   /**
@@ -116,17 +134,27 @@ public class ApiKeyControllerTest extends AbstractControllerTest {
   @Test
   public void removeKey() throws JDOMException, IOException {
     String id = null;
+    HttpClient client = new HttpClient();
 
     //
     // Create a new API key
     //
-    HttpClient client = new HttpClient();
+    PostMethod post = new PostMethod(APIKEY_SERVICE_LOCATION_VALID);
+    setAuthenticationCredentials(client);
+    post.setParameter("apikey", "TEST_KEY_TO_REMOVE");
+    post.setParameter("email", "test@incubator.apache.org");
+    client.executeMethod(post);
+    int code = post.getStatusCode();
+    assertEquals(201, code);
+    
+    
+ 
     GetMethod get = new GetMethod(APIKEY_SERVICE_LOCATION_VALID);
     setAuthenticationCredentials(client);
     client.executeMethod(get);
-    int code = get.getStatusCode();
+    code = get.getStatusCode();
     assertEquals(200, code);
-    assertTrue(get.getResponseBodyAsString().contains("TEST_KEY"));
+    assertTrue(get.getResponseBodyAsString().contains("TEST_KEY_TO_REMOVE"));
 
     //
     // Get the ID of the key we created
@@ -134,7 +162,7 @@ public class ApiKeyControllerTest extends AbstractControllerTest {
     Document doc = new SAXBuilder().build(get.getResponseBodyAsStream());
     for (Object key : doc.getRootElement().getChildren()) {
       Element keyElement = (Element) key;
-      if (keyElement.getAttributeValue("value").equals("TEST_KEY")) {
+      if (keyElement.getAttributeValue("value").equals("TEST_KEY_TO_REMOVE")) {
         id = keyElement.getAttributeValue("id");
       }
     }
@@ -160,7 +188,7 @@ public class ApiKeyControllerTest extends AbstractControllerTest {
     code = get.getStatusCode();
     assertEquals(200, code);
     System.out.println(get.getResponseBodyAsString());
-    assertFalse(get.getResponseBodyAsString().contains("TEST_KEY"));
+    assertFalse(get.getResponseBodyAsString().contains("TEST_KEY_TO_REMOVE"));
 
   }
 

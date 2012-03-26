@@ -1,0 +1,16 @@
+##
+## API Keys File
+##
+## This file is dynamically loaded by Wookie and configures
+## API keys for accessing Wookie. Each application that will
+## request widget instances must have its own API key.
+## 
+## The format of entries is key = contact email address
+##
+##
+## Example:
+##
+## mykey = me@example.org
+##
+
+TEST=test@127.0.0.1

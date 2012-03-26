@@ -216,16 +216,6 @@
     </index>
   </table>
 
-  <table name="ApiKey">
-    <column name="id" primaryKey="true" required="true" type="INTEGER"/>
-    <column name="jpa_version" type="INTEGER"/>
-    <column name="value" required="true" size="255" type="VARCHAR"/>
-    <column name="email" required="true" size="255" type="VARCHAR"/>
-    <index name="IXApiKey1">
-      <index-column name="value"/>
-    </index>
-  </table>
-
   <table name="Feature">
     <column name="id" primaryKey="true" required="true" type="INTEGER"/>
     <column name="jpa_version" type="INTEGER"/>

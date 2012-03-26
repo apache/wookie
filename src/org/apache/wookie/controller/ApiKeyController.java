@@ -18,21 +18,17 @@
 package org.apache.wookie.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.apache.wookie.beans.IApiKey;
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.ApiKeyHelper;
+import org.apache.wookie.server.security.ApiKeys;
 
 /**
  * Admin controller for creating, updating and listing API keys
@@ -59,9 +55,7 @@ public class ApiKeyController extends Controller {
   @Override
   protected void index(HttpServletRequest request, HttpServletResponse response)
       throws UnauthorizedAccessException, IOException {
-    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-    IApiKey[] apiKeys = persistenceManager.findAll(IApiKey.class);
-    returnXml(ApiKeyHelper.createXML(apiKeys),response);
+    returnXml(ApiKeyHelper.createXML(ApiKeys.getInstance().getKeys()),response);
   }
 
   /* (non-Javadoc)
@@ -74,18 +68,13 @@ public class ApiKeyController extends Controller {
     String value = request.getParameter("apikey");
     String email = request.getParameter("email");
     if (value == null || email == null || value.trim().length() ==0 || email.trim().length() == 0) throw new InvalidParametersException();
-    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-    Map<String, Object> values = new HashMap<String, Object>();
-    values.put("value", value);
-    values.put("email", email);
-    if (persistenceManager.findByValues(IApiKey.class, values).length > 0){
-      throw new ResourceDuplicationException();
+    
+    try {
+      ApiKeys.getInstance().addKey(value, email);
+    } catch (Exception e) {
+      throw new ResourceDuplicationException();  
     }
     
-    IApiKey apiKey = persistenceManager.newInstance(IApiKey.class);
-    apiKey.setValue(value);
-    apiKey.setEmail(email);
-    persistenceManager.save(apiKey);
     _logger.info("New API key registered for "+email);
     return true;
   }
@@ -144,12 +133,10 @@ public class ApiKeyController extends Controller {
   protected boolean remove(String resourceId, HttpServletRequest request)
       throws ResourceNotFoundException, UnauthorizedAccessException,
       InvalidParametersException {
-    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-    IApiKey apiKey = persistenceManager.findById(IApiKey.class, resourceId);
-    if (apiKey == null) throw new ResourceNotFoundException();
-    persistenceManager.delete(apiKey);
-    _logger.info("API key deleted for "+apiKey.getEmail());
-    return true;
+    
+      ApiKeys.getInstance().removeKey(resourceId);
+      _logger.info("API key deleted: "+resourceId); 
+      return true;
   }
   
 }

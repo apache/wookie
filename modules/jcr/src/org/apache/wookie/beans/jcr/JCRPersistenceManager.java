@@ -50,7 +50,6 @@ import org.apache.jackrabbit.ocm.mapper.impl.annotation.AnnotationMapperImpl;
 import org.apache.jackrabbit.ocm.query.Filter;
 import org.apache.jackrabbit.ocm.query.Query;
 import org.apache.jackrabbit.ocm.query.QueryManager;
-import org.apache.wookie.beans.IApiKey;
 import org.apache.wookie.beans.IBean;
 import org.apache.wookie.beans.IDescription;
 import org.apache.wookie.beans.IFeature;
@@ -66,7 +65,6 @@ import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetIcon;
 import org.apache.wookie.beans.IWidgetInstance;
-import org.apache.wookie.beans.jcr.impl.ApiKeyImpl;
 import org.apache.wookie.beans.jcr.impl.DescriptionImpl;
 import org.apache.wookie.beans.jcr.impl.FeatureImpl;
 import org.apache.wookie.beans.jcr.impl.LicenseImpl;
@@ -109,7 +107,6 @@ public class JCRPersistenceManager implements IPersistenceManager
     private static final Map<String,String> IMPLEMENTATION_FIELD_MAP = new HashMap<String,String>();
     static
     {
-        INTERFACE_TO_CLASS_MAP.put(IApiKey.class, ApiKeyImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IDescription.class, DescriptionImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IFeature.class, FeatureImpl.class);
         INTERFACE_TO_CLASS_MAP.put(ILicense.class, LicenseImpl.class);
@@ -124,7 +121,6 @@ public class JCRPersistenceManager implements IPersistenceManager
         INTERFACE_TO_CLASS_MAP.put(IWidgetIcon.class, WidgetIconImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IWidgetInstance.class, WidgetInstanceImpl.class);
 
-        BEAN_INTERFACE_TO_CLASS_MAP.put(IApiKey.class, ApiKeyImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IParticipant.class, ParticipantImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidget.class, WidgetImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetInstance.class, WidgetInstanceImpl.class);

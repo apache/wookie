@@ -149,7 +149,3 @@
 
 [wookie:whitelist] > nt:base
 - wookie:fUrl (string) mandatory
-
-[wookie:apiKey] > nt:base
-- wookie:value (string) mandatory
-- wookie:email (string) mandatory

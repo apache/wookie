@@ -20,7 +20,6 @@
 
         <non-jta-data-source>java:comp/env/jdbc/widgetdb</non-jta-data-source>
 
-        <class>org.apache.wookie.beans.jpa.impl.ApiKeyImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.DescriptionImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.FeatureImpl</class>
         <class>org.apache.wookie.beans.jpa.impl.LicenseImpl</class>

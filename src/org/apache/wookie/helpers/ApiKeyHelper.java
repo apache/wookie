@@ -17,7 +17,7 @@
 
 package org.apache.wookie.helpers;
 
-import org.apache.wookie.beans.IApiKey;
+import org.apache.wookie.server.security.ApiKey;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
@@ -32,11 +32,11 @@ public class ApiKeyHelper {
    * @param keys the keys to serialize
    * @return a String containing the XML serialization of the API keys
    */
-  public static String createXML(IApiKey[] keys){
+  public static String createXML(ApiKey[] keys){
     Document document = new Document();
     Element keysElement = new Element("keys");
 
-    for(IApiKey key: keys){
+    for(ApiKey key: keys){
       Element keyElement = new Element("key");
       keyElement.setAttribute("id", String.valueOf(key.getId()));
       keyElement.setAttribute("value", key.getValue());

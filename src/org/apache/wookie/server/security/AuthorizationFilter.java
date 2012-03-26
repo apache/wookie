@@ -29,9 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.apache.wookie.beans.IApiKey;
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
 
 /**
  * Authorization Filter for API Requests
@@ -137,22 +134,12 @@ public class AuthorizationFilter implements Filter {
    * @return true if the API key is registered, false otherwise
    */
   private boolean isRegistered(String apiKey){
-    
-    //
-    // Key not found
-    //
-    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-    IApiKey[] apiKeyBean = persistenceManager.findByValue(IApiKey.class, "value", apiKey);
-    if (apiKeyBean == null || apiKeyBean.length != 1) {
-      _logger.info("Invalid API key supplied: " + apiKey);
-      return false;
-    }
-
-    //
-    // Key valid
-    //
-    return true;
-    
+      if (ApiKeys.getInstance().validate(apiKey)){
+        return true;
+      } else {
+        _logger.info("Invalid API key supplied: " + apiKey);
+        return false;      
+      }
   }
 
 }

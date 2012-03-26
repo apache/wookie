@@ -47,7 +47,6 @@ import org.apache.openjpa.persistence.OpenJPAEntityManagerFactory;
 import org.apache.openjpa.persistence.OpenJPAPersistence;
 import org.apache.openjpa.persistence.QueryResultCache;
 import org.apache.openjpa.persistence.StoreCache;
-import org.apache.wookie.beans.IApiKey;
 import org.apache.wookie.beans.IAuthor;
 import org.apache.wookie.beans.IBean;
 import org.apache.wookie.beans.IDescription;
@@ -64,7 +63,6 @@ import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetIcon;
 import org.apache.wookie.beans.IWidgetInstance;
-import org.apache.wookie.beans.jpa.impl.ApiKeyImpl;
 import org.apache.wookie.beans.jpa.impl.AuthorImpl;
 import org.apache.wookie.beans.jpa.impl.DescriptionImpl;
 import org.apache.wookie.beans.jpa.impl.FeatureImpl;
@@ -108,7 +106,6 @@ public class JPAPersistenceManager implements IPersistenceManager
     private static final Map<String,String> DB_TYPE_TO_JPA_DICTIONARY_MAP = new HashMap<String,String>();
     static
     {
-        INTERFACE_TO_CLASS_MAP.put(IApiKey.class, ApiKeyImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IDescription.class, DescriptionImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IFeature.class, FeatureImpl.class);
         INTERFACE_TO_CLASS_MAP.put(ILicense.class, LicenseImpl.class);
@@ -125,7 +122,6 @@ public class JPAPersistenceManager implements IPersistenceManager
         INTERFACE_TO_CLASS_MAP.put(IWidgetInstance.class, WidgetInstanceImpl.class);
         INTERFACE_TO_CLASS_MAP.put(IOAuthToken.class, OAuthTokenImpl.class);
 
-        BEAN_INTERFACE_TO_CLASS_MAP.put(IApiKey.class, ApiKeyImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IParticipant.class, ParticipantImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IPreference.class, PreferenceImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(ISharedData.class, SharedDataImpl.class);
@@ -133,7 +129,6 @@ public class JPAPersistenceManager implements IPersistenceManager
         BEAN_INTERFACE_TO_CLASS_MAP.put(IWidgetInstance.class, WidgetInstanceImpl.class);
         BEAN_INTERFACE_TO_CLASS_MAP.put(IOAuthToken.class, OAuthTokenImpl.class);
 
-        BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IApiKey.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IParticipant.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IWidget.class, Integer.class);
         BEAN_INTERFACE_TO_ID_FIELD_TYPE_MAP.put(IWidgetInstance.class, Integer.class);

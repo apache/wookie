@@ -17,7 +17,6 @@ package org.apache.wookie.beans.util;
 import java.lang.reflect.Method;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.wookie.beans.IApiKey;
 import org.apache.wookie.beans.IDescription;
 import org.apache.wookie.beans.IName;
 import org.apache.wookie.beans.IStartFile;
@@ -123,20 +122,6 @@ public class PersistenceManagerFactory
                     widgetIcon.setLang("en");
                     widget.getWidgetIcons().add(widgetIcon);
                     persistenceManager.save(widget);
-                }
-                else
-                {
-                    initializing = false;
-                }
-                
-                // ApiKey
-                if (initializing && (persistenceManager.findAll(IApiKey.class).length == 0))
-                {
-                    // optional: create only if initializing
-                    IApiKey apiKey = persistenceManager.newInstance(IApiKey.class);
-                    apiKey.setValue("TEST");
-                    apiKey.setEmail("test@127.0.0.1");
-                    persistenceManager.save(apiKey);
                 }
                 else
                 {

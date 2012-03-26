@@ -21,7 +21,6 @@ import javax.naming.Context;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 
-import org.apache.wookie.beans.IApiKey;
 import org.apache.wookie.beans.IParticipant;
 import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.IWidget;
@@ -135,8 +134,7 @@ public abstract class AbstractPersistenceTest
         // and first existing Widget to use as the basis of a  
         // new Widget Instance
         //
-        IApiKey [] apiKeys = persistenceManager.findAll(IApiKey.class);
-        String apiKey = apiKeys[0].getValue();
+        String apiKey = "TEST";
         IWidget [] widgets = persistenceManager.findAll(IWidget.class);
         IWidget widget = widgets[0];        
         widgetGuid = widget.getGuid();
@@ -200,8 +198,6 @@ public abstract class AbstractPersistenceTest
         //
         // Get the widget instance created in the previous transaction
         // 
-        apiKeys = persistenceManager.findAll(IApiKey.class);
-        apiKey = apiKeys[0].getValue();
         widgets = persistenceManager.findAll(IWidget.class);
         widget = widgets[0];
         IWidgetInstance widgetInstance0 = persistenceManager.findWidgetInstanceByGuid(apiKey, "test", "test-shared-data-key", widgetGuid);
