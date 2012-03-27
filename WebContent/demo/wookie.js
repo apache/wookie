@@ -19,22 +19,44 @@
  
  $(document).ready(getWidgets);
 
+jQuery.expr[':'].Contains = function(a,i,m){
+    return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
+};
+
 //
 // Get the current widgets installed and
 // show in the browse list
 //
 function getWidgets(){
-    Wookie.getWidgets(updateWidgets);
+  var form = $("<form>").attr({"class":"filterform","action":"#"}),
+      input = $("<input>").attr({"class":"filterinput","type":"text"});
+
+  $(form).append(input);
+  $('#widget_header').append(form);
+
+  $(input).change( function () {
+    var filter = $(this).val();
+    if (filter) {
+      $('#widget_list').find("li:not(:Contains(" + filter + "))").slideUp();
+      $('#widget_list').find("li:Contains(" + filter + ")").slideDown();
+    } else {
+      $('#widget_list').find("li").slideDown();
+    }
+  }).keyup( function () {
+    $(this).change();
+  });
+
+  Wookie.getWidgets(updateWidgets);
 }
 
 function updateWidgets(widgets){
     for (var i=0;i<widgets.length;i++){
-        var widgetEntry = $("<div id=\""+widgets[i].id+"\"class=\"widget\"><p><img src=\""+widgets[i].icon+"\">"+widgets[i].name+"</p></div>");
+        var widgetEntry = $("<li id=\""+widgets[i].id+"\"class=\"widget\"><img src=\""+widgets[i].icon+"\">"+widgets[i].name+"</li>");
         var id = widgets[i].id;
         $(widgetEntry).click(function(){
             showWidget($(this).attr("id"));
         });
-        $("#navigation").append(widgetEntry);
+        $("#widget_list").append(widgetEntry);
     }
 }
 
