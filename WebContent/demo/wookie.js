@@ -88,6 +88,7 @@ function updateWidgets(widgets){
 function showWidget(id){
     Wookie.setCurrentUser("alice","alice","http://localhost:8080/wookie/demo/alice.png");
     var widgetInstance = Wookie.getOrCreateInstance(id);
+    $('#preview_info').html('<br/>' + widgetInstance.title + '<br/>' + id);
     $("#preview_alice_widget").html('');
     $("#preview_alice_widget").append("<iframe src='"+widgetInstance.url+"' height='"+widgetInstance.height+"' width='"+widgetInstance.width+"'></iframe>");
     $("#alice_url").html("<a href='" + widgetInstance.url + "' target='_blank'>Full Screen</a>");
