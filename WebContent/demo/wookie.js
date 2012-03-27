@@ -64,6 +64,11 @@ function getWidgets(){
   });
 
   Wookie.getWidgets(updateWidgets);
+
+  var id = $.getUrlVar("id");
+  if(id) {
+      showWidget(id);
+  }  
 }
 
 function updateWidgets(widgets){
