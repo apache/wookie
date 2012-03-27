@@ -43,10 +43,12 @@ function showWidget(id){
     var widgetInstance = Wookie.getOrCreateInstance(id);
     $("#preview_alice_widget").html('');
     $("#preview_alice_widget").append("<iframe src='"+widgetInstance.url+"' height='"+widgetInstance.height+"' width='"+widgetInstance.width+"'></iframe>");
+    $("#alice_url").html("<a href='" + widgetInstance.url + "' target='_blank'>Full Screen</a>");
     Wookie.setPreference(id, "conference-manager","true");
     
     Wookie.setCurrentUser("bob","bob","http://localhost:8080/wookie/demo/bob.png");
     var widgetInstance = Wookie.getOrCreateInstance(id);
     $("#preview_bob_widget").html('');
     $("#preview_bob_widget").append("<iframe src='"+widgetInstance.url+"' height='"+widgetInstance.height+"' width='"+widgetInstance.width+"'></iframe>");
+    $("#bob_url").html("<a href='" + widgetInstance.url + "' target='_blank'>Full Screen</a>");
 }
