@@ -73,7 +73,8 @@ function getWidgets(){
 
 function updateWidgets(widgets){
     for (var i=0;i<widgets.length;i++){
-        var widgetEntry = $("<li id=\""+widgets[i].id+"\"class=\"widget\"><img src=\""+widgets[i].icon+"\">"+widgets[i].name+"</li>");
+        var info = widgets[i].name + "\n" + widgets[i].id;
+        var widgetEntry = $("<li id=\""+widgets[i].id+"\"class=\"widget\"><img src=\""+widgets[i].icon+"\" title='" + info + "'>"+widgets[i].name+"</li>");
         var id = widgets[i].id;
         $(widgetEntry).click(function(){
             showWidget($(this).attr("id"));
