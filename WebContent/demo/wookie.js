@@ -23,13 +23,30 @@ jQuery.expr[':'].Contains = function(a,i,m){
     return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
 };
 
+$.extend({
+  getUrlVars: function(){
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+      hash = hashes[i].split('=');
+      vars.push(hash[0]);
+      vars[hash[0]] = hash[1];
+    }
+    return vars;
+  },
+  getUrlVar: function(name){
+    return $.getUrlVars()[name];
+  }
+});
+
 //
 // Get the current widgets installed and
 // show in the browse list
 //
 function getWidgets(){
   var form = $("<form>").attr({"class":"filterform","action":"#"}),
-      input = $("<input>").attr({"class":"filterinput","type":"text"});
+    input = $("<input>").attr({"id":"filter","class":"filterinput","type":"text"});
 
   $(form).append(input);
   $('#widget_header').append(form);
@@ -58,6 +75,8 @@ function updateWidgets(widgets){
         });
         $("#widget_list").append(widgetEntry);
     }
+    $('#filter').val($.getUrlVar("filter"));
+    $('#filter').change();
 }
 
 function showWidget(id){
