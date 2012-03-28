@@ -22,6 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -33,9 +34,9 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
-import org.junit.AfterClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mortbay.util.ajax.JSON;
 
 /**
  * Functional tests for API key management
@@ -43,15 +44,6 @@ import org.junit.Test;
 public class ApiKeyControllerTest extends AbstractControllerTest {
 
   private static final String APIKEY_SERVICE_LOCATION_VALID = TEST_SERVER_LOCATION  + "keys";
-  
-  
-//  @AfterClass
-//  public static void cleanUp() throws HttpException, IOException{
-//    HttpClient client = new HttpClient();
-//    DeleteMethod del = new DeleteMethod(APIKEY_SERVICE_LOCATION_VALID + "/"  + "DUPLICATION_TEST");
-//    setAuthenticationCredentials(client);
-//    client.executeMethod(del);
-//  }
 
   /**
    * Attempt to get the list of API keys without having authenticated first
@@ -82,6 +74,51 @@ public class ApiKeyControllerTest extends AbstractControllerTest {
     client.executeMethod(get);
     int code = get.getStatusCode();
     assertEquals(200, code);
+  }
+  
+  /**
+   * Get the set of API keys in JSON using default admin credentials
+   * 
+   * @throws IOException
+   * @throws HttpException
+   */
+  @SuppressWarnings("unchecked")
+  @Test
+  public void getKeysJson() throws HttpException, IOException {
+    HttpClient client = new HttpClient();
+    GetMethod get = new GetMethod(APIKEY_SERVICE_LOCATION_VALID);
+    //
+    // Set the accepts header to JSON
+    //
+    get.addRequestHeader("accepts", "application/json");
+    setAuthenticationCredentials(client);
+    client.executeMethod(get);
+    int code = get.getStatusCode();
+    assertEquals(200, code);
+    
+    //
+    // Parse the response and check the values
+    //
+    Object[] keys = (Object[]) JSON.parse(get.getResponseBodyAsStream());
+    assertEquals("TEST", ((Map<String, String>)keys[0]).get("id"));
+    assertEquals("TEST", ((Map<String, String>)keys[0]).get("value"));
+    
+    //
+    // Try again using ?format param overriding the accepts header
+    //
+    get = new GetMethod(APIKEY_SERVICE_LOCATION_VALID+"?format=json");
+    get.addRequestHeader("accepts", "text/xml");
+    setAuthenticationCredentials(client);
+    client.executeMethod(get);
+    code = get.getStatusCode();
+    assertEquals(200, code);
+    
+    //
+    // Parse the response and check the values
+    //
+    keys = (Object[]) JSON.parse(get.getResponseBodyAsStream());
+    assertEquals("TEST", ((Map<String, String>)keys[0]).get("id"));
+    assertEquals("TEST", ((Map<String, String>)keys[0]).get("value"));
   }
 
   /**

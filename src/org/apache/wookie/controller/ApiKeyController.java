@@ -55,7 +55,11 @@ public class ApiKeyController extends Controller {
   @Override
   protected void index(HttpServletRequest request, HttpServletResponse response)
       throws UnauthorizedAccessException, IOException {
-    returnXml(ApiKeyHelper.createXML(ApiKeys.getInstance().getKeys()),response);
+    switch (format(request)) {
+    case XML: returnXml(ApiKeyHelper.toXml(ApiKeys.getInstance().getKeys()),response);break;
+    case JSON: returnJson(ApiKeyHelper.toJson(ApiKeys.getInstance().getKeys()),response);break;
+    default: returnXml(ApiKeyHelper.toXml(ApiKeys.getInstance().getKeys()),response);break;
+    }
   }
 
   /* (non-Javadoc)
