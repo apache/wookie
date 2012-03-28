@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 
 import org.apache.log4j.Logger;
-import org.apache.wookie.helpers.FlashMessage;
+
 /**
  * A class designed to be used for parsing javascript in files and reporting any problems
  * 
@@ -92,7 +92,6 @@ public class WidgetJavascriptSyntaxAnalyzer {
           String message= "\n(Line " + lineReader.getLineNumber() + ") in file " + file;
           message+= "\n\t "+line+"\n";
           message+= "This file contains calls to Widget API methods that are deprecated and likely to be removed in future releases.\n";                             
-          FlashMessage.getInstance().message(formatWebMessage(message));
           _logger.warn(message);
         }
       }
@@ -120,7 +119,6 @@ public class WidgetJavascriptSyntaxAnalyzer {
           String message= "\n(Line " + lineReader.getLineNumber() + ") in file " + file;
           message+= "\n\t "+line+"\n";
           message+= "This file contains calls to Widget API methods that are Wookie-specific extensions to the W3C Widget API, making it less likely the widget will work in other environments\n";                             
-          FlashMessage.getInstance().message(formatWebMessage(message));
           _logger.warn(message);
         }
       }
@@ -151,7 +149,6 @@ public class WidgetJavascriptSyntaxAnalyzer {
 					message+= "\n\t "+line+"\n";
 					message+= "This file contains preference setter syntax which may not behave correctly in Internet Explorer version 8 and below.\n";
 					message+= "See https://cwiki.apache.org/confluence/display/WOOKIE/FAQ#FAQ-ie8prefs for more information.\n";															
-					FlashMessage.getInstance().message(formatWebMessage(message));
 					_logger.warn(message);
 				}
 			}

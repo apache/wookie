@@ -32,7 +32,6 @@ import org.apache.wookie.Messages;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.Features;
-import org.apache.wookie.helpers.FlashMessage;
 import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.util.WgtWatcher;
@@ -190,32 +189,28 @@ public class ContextListener implements ServletContextListener {
 	 						if(persistenceManager.findWidgetByGuid(model.getIdentifier()) == null) {
 	 							WidgetFactory.addNewWidget(model, upload, true);	
 	 							String message = model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19");
-	 							FlashMessage.getInstance().message(message);
+	 							_logger.info(message);
 	 						} else {
 	 							String message = model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.20");
 	 							WidgetFactory.update(model, persistenceManager.findWidgetByGuid(model.getIdentifier()), true, upload);
-	 							FlashMessage.getInstance().message(message);
+	 							_logger.info(message);
 	 						}
 	 						persistenceManager.commit();
 	 					} catch (IOException e) {
                             persistenceManager.rollback();
 	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.1") + " - " + e.getLocalizedMessage();
-	 						FlashMessage.getInstance().error(error);
 	 						_logger.error(error, e);
 	 					} catch (BadWidgetZipFileException e) {
                             persistenceManager.rollback();
 	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.2") + " - " + e.getLocalizedMessage();
-	 						FlashMessage.getInstance().error(error);
 	 						_logger.error(error, e);
 	 					} catch (BadManifestException e) {
                             persistenceManager.rollback();
 	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.3") + " - " + e.getLocalizedMessage();
-	 						FlashMessage.getInstance().error(error);
 	 						_logger.error(error, e);
 	 					} catch (Exception e) {
                             persistenceManager.rollback();
 	 						String error = f.getName()+":"+e.getLocalizedMessage();
-	 						FlashMessage.getInstance().error(error);
 	 						_logger.error(error, e);
 						} finally {
 				            // close thread persistence manager

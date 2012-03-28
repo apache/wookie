@@ -20,7 +20,6 @@ import javax.servlet.ServletContext;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
-import org.apache.wookie.helpers.FlashMessage;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
 
 /**
@@ -55,17 +54,14 @@ public class Diagnostics {
 		if (!folder.exists()){
 			String error = name+" folder does not exist: "+folder.getAbsolutePath(); 
 			_logger.error(error);	
-			FlashMessage.getInstance().error(error);
 		} else {
 			if (!folder.canRead()){
 				String error = name+" folder cannot be read from: "+folder.getAbsolutePath(); 
 				_logger.error(error);	
-				FlashMessage.getInstance().error(error);
 			}
 			if (!folder.canWrite()){
 				String error = name+" folder cannot be written to: "+folder.getAbsolutePath(); 
 				_logger.error(error);	
-				FlashMessage.getInstance().error(error);
 			}
 		}
 	}

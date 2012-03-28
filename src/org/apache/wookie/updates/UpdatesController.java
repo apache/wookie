@@ -32,7 +32,6 @@ import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.feature.Features;
-import org.apache.wookie.helpers.FlashMessage;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.util.html.StartPageProcessor;
 import org.apache.wookie.w3c.W3CWidget;
@@ -171,7 +170,6 @@ public class UpdatesController extends Controller {
 		if (updatedWidget != null){
 			WidgetFactory.update(updatedWidget, widget, false, null);
 			_logger.info("Successfully updated "+widget.getGuid()+" to version "+updatedWidget.getVersion());
-			FlashMessage.getInstance().message("Successfully updated "+widget.getGuid()+" to version "+updatedWidget.getVersion());
 		}
 	}
 	
