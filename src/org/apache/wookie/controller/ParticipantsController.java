@@ -34,8 +34,7 @@ import org.apache.wookie.helpers.ParticipantHelper;
 
 /**
  * Implementation of the REST API for working with Participants. For a description of the methods implemented by this controller see 
- * http://incubator.apache.org/wookie/wookie-rest-api.html 
- * @author Scott Wilson
+ * http://incubator.apache.org/wookie/docs/api.html
  *
  */
 public class ParticipantsController extends Controller {
@@ -72,7 +71,11 @@ public class ParticipantsController extends Controller {
 		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
 		if (instance == null) throw new ResourceNotFoundException();
 		IParticipant[] participants = new SharedContext(instance).getParticipants();
-		returnXml(ParticipantHelper.createXMLParticipantsDocument(participants), response);
+    switch (format(request)) {
+       case XML: returnXml(ParticipantHelper.createXMLParticipantsDocument(participants),response);break;
+       case JSON: returnJson(ParticipantHelper.createJSONParticipantsDocument(participants),response);break;
+       default: returnXml(ParticipantHelper.createXMLParticipantsDocument(participants),response);break;
+    }
 	}
 
 	@Override
