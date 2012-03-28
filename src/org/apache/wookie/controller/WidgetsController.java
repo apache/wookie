@@ -119,9 +119,9 @@ public class WidgetsController extends Controller{
       throw new ResourceNotFoundException();
 
     switch (format(request)) {
-    case XML:returnXml(WidgetAdvertHelper.createXMLWidgetsDocument(widget,getLocalPath(request), getLocales(request)), response);break;
+    case XML:returnXml(WidgetAdvertHelper.createXMLWidgetsDocument(widget,getWookieServerURL(request, "").toString(), getLocales(request)), response);break;
     case WIDGET:returnWidget(widget, response);break;
-    default:returnXml(WidgetAdvertHelper.createXMLWidgetsDocument(widget,getLocalPath(request), getLocales(request)), response);
+    default:returnXml(WidgetAdvertHelper.createXMLWidgetsDocument(widget,getWookieServerURL(request, "").toString(), getLocales(request)), response);
     }
   }
 
@@ -165,7 +165,7 @@ public class WidgetsController extends Controller{
 
     IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
     IWidget[] widgets = persistenceManager.findAll(IWidget.class);
-		returnXml(WidgetAdvertHelper.createXMLWidgetsDocument(widgets, getLocalPath(request), getLocales(request)),response);
+		returnXml(WidgetAdvertHelper.createXMLWidgetsDocument(widgets, getWookieServerURL(request, "").toString(), getLocales(request)),response);
 	}
 	
   /* (non-Javadoc)
@@ -272,7 +272,7 @@ public class WidgetsController extends Controller{
           // A new widget was created, so return 201
           //
           WidgetFactory.addNewWidget(widgetModel, zipFile,false);
-          returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getLocalPath(request), true), response);
+          returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getWookieServerURL(request, "").toString(), true), response);
           return true;
           
         } else {
@@ -282,7 +282,7 @@ public class WidgetsController extends Controller{
           // and return 200
           //
           WidgetFactory.update(widgetModel,persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()),false, zipFile);
-          returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getLocalPath(request), true), response);
+          returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getWookieServerURL(request, "").toString(), true), response);
           return false;
           
         }

@@ -236,23 +236,6 @@ public abstract class Controller extends HttpServlet{
 			return false;
 		}
 	}
-
-	/**
-	 * Get local path for server, for example to prepend
-	 * onto icon URLs
-	 * 
-	 * @param request the request
-	 * @return a string containing the local path
-	 */
-	protected String getLocalPath(HttpServletRequest request){
-		try {
-			URL path = new URL(request.getScheme(), request.getServerName(), request.getServerPort(),"");
-			return path.toString();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
 	
 	/**
 	 * Send XML back to client
