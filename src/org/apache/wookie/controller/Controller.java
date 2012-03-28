@@ -340,14 +340,16 @@ public abstract class Controller extends HttpServlet{
    */
   protected int format(HttpServletRequest request) {
     String type = request.getHeader("Accept");
-    if (type == null) {
-      // check for format parameters in the request
-      if (request.getParameter("format") != null) {
+
+    // check for format parameters in the request
+    if (request.getParameter("format") != null) {
         type = request.getParameter("format");
-      } else {
+    } 
+    
+    if (type == null){
         return HTML;
-      }
     }
+    
     if (type.contains("xml"))
       return XML;
     if (type.contains("json"))
