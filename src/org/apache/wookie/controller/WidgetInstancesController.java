@@ -419,7 +419,16 @@ public class WidgetInstancesController extends Controller {
 		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 
 		// Try using the id_key parameter
-    String id_key = request.getParameter("idkey"); //$NON-NLS-1$
+    String id_key = request.getParameter("id_key"); //$NON-NLS-1$
+    
+    //
+    // If there is no "id_key", check for "idkey" without the underscore as 
+    // a fallback
+    //
+    if (id_key == null){
+      id_key = request.getParameter("idkey");
+    }
+    
 		if (id_key != null & id_key != ""){
 		  instance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 		  return instance;
