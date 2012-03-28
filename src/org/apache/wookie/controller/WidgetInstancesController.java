@@ -119,22 +119,31 @@ public class WidgetInstancesController extends Controller {
 	 */
 	@Override
 	protected void show(String resourceId, HttpServletRequest request, HttpServletResponse response) throws ResourceNotFoundException, UnauthorizedAccessException, IOException {
-	   IWidgetInstance instance = WidgetInstancesController.getLocalizedWidgetInstance(request);
-	   if (instance == null){
-	     throw new ResourceNotFoundException();
-	   } else {
-	     // Check the API key matches
-	     String apiKey = request.getParameter("api_key");
-	     if (!instance.getApiKey().equals(apiKey)) throw new UnauthorizedAccessException();
-	     // Return the response XML
-	     checkProxy(request);
-	     String url = getUrl(request, instance);
-	     String locale = request.getParameter("locale");//$NON-NLS-1$
-	     response.setContentType(CONTENT_TYPE);
-	     response.setStatus(HttpServletResponse.SC_OK);
-	     PrintWriter out = response.getWriter();
-	     out.println(WidgetInstanceHelper.createXMLWidgetInstanceDocument(instance, url, locale));
-	   }
+	  IWidgetInstance instance = WidgetInstancesController.getLocalizedWidgetInstance(request);
+	  if (instance == null){
+	    throw new ResourceNotFoundException();
+	  } else {
+	    //
+	    // Check the API key matches
+	    //
+	    String apiKey = request.getParameter("api_key");
+	    if (!instance.getApiKey().equals(apiKey)) throw new UnauthorizedAccessException();
+
+	    checkProxy(request);
+	    String url = getUrl(request, instance);
+	    String locale = request.getParameter("locale");//$NON-NLS-1$
+	    response.setStatus(HttpServletResponse.SC_OK);
+
+	    //
+	    // Return XML or JSON 
+	    //
+	    switch(format(request)){
+	    case XML: returnXml(WidgetInstanceHelper.createXMLWidgetInstanceDocument(instance, url, locale), response); break;
+	    case JSON: returnJson(WidgetInstanceHelper.toJson(instance, url, locale), response); break;
+	    default: returnXml(WidgetInstanceHelper.createXMLWidgetInstanceDocument(instance, url, locale), response); break;
+	    }
+
+	  }
 	}
 	
 	/* (non-Javadoc)

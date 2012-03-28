@@ -14,15 +14,20 @@
 package org.apache.wookie.helpers;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.log4j.Logger;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A helper to create representations of Widget Instance resources
  */
 public class WidgetInstanceHelper {
 	
+  static Logger logger = Logger.getLogger(WidgetInstanceHelper.class.getName());
+  
 	private static final String XMLDECLARATION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
 	/**
@@ -53,5 +58,26 @@ public class WidgetInstanceHelper {
 		
 		return xml;
 	}
+	
+  public static String toJson(IWidgetInstance instance, String url, String locale) {
+    IWidget widget = instance.getWidget();
+    String width = String.valueOf(IW3CXMLConfiguration.DEFAULT_WIDTH_LARGE);
+    String height = String.valueOf(IW3CXMLConfiguration.DEFAULT_HEIGHT_LARGE);
+    if (widget.getWidth() != null && widget.getWidth() > 0)
+      width = widget.getWidth().toString();
+    if (widget.getHeight() != null && widget.getHeight() > 0)
+      height = widget.getHeight().toString();
+    JSONObject json = new JSONObject();
+    try {
+      json.put("url", url);
+      json.put("identifier", instance.getIdKey());
+      json.put("title", widget.getWidgetTitle(locale));
+      json.put("height", height);
+      json.put("width", width);
+    } catch (JSONException e) {
+      logger.error("Problem rendering instance using JSON",e);
+    }
+    return json.toString();
+  }
 	
 }
