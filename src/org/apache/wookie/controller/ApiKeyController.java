@@ -75,11 +75,11 @@ public class ApiKeyController extends Controller {
     
     try {
       ApiKeys.getInstance().addKey(value, email);
+      _logger.info("New API key registered for "+email);
     } catch (Exception e) {
       throw new ResourceDuplicationException();  
     }
     
-    _logger.info("New API key registered for "+email);
     return true;
   }
 
