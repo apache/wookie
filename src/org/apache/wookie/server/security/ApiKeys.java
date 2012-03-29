@@ -57,6 +57,7 @@ public class ApiKeys {
       keys = new HashMap<String, ApiKey>();
       properties = new PropertiesConfiguration("keys");
       properties.setReloadingStrategy(reloader);
+      properties.setAutoSave(false);
       load();
     } catch (ConfigurationException e) {
       logger.error("Problem initializing the API Keys from configuration", e);
@@ -77,10 +78,15 @@ public class ApiKeys {
    * if the file needs to be reloaded
    */
   private void refresh(){
-    if (reloader.reloadingRequired()){
-      keys.clear();
-      load();
-      reloader.reloadingPerformed();
+    lock.lock();
+    try{
+      if (reloader.reloadingRequired()){
+        keys.clear();
+        load();
+        reloader.reloadingPerformed();
+      }
+    } finally {
+      lock.unlock();
     }
   }
   
@@ -93,13 +99,14 @@ public class ApiKeys {
     try {
       properties.clear();
       properties.load();
-         
+      keys.clear();
       @SuppressWarnings("rawtypes")
       Iterator keys = properties.getKeys();
       while(keys.hasNext()){
         String key = (String)keys.next();
         String email = properties.getString(key);
-        addKeyToCollection(key,email);
+        ApiKey apiKey = new ApiKey(key, email);
+        this.keys.put(apiKey.getValue(), apiKey);
       }
     } catch (ConfigurationException e) {
       logger.error("Error loading API Keys from the keys file", e);
@@ -162,7 +169,9 @@ public class ApiKeys {
       if (addKeyToCollection(key, email)){
         lock.lock();
         try {
+          properties.clearProperty(key);
           properties.addProperty(key, email);
+          properties.save();
         } finally {
           lock.unlock();
         }
@@ -182,6 +191,15 @@ public class ApiKeys {
   public void removeKey(String key) throws ResourceNotFoundException{
     if (keys.containsKey(key)){
       keys.remove(key);
+      lock.lock();
+      try{
+        properties.clearProperty(key);
+        properties.save();
+      } catch (ConfigurationException e) {
+        logger.error("Problem with keys properties configuration", e);
+      } finally {
+        lock.unlock();
+      }
     } else {
       throw new ResourceNotFoundException();
     }
