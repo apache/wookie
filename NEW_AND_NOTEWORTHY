@@ -1,22 +1,32 @@
-# New and Noteworthy: 0.9.2
+# New and Noteworthy: 0.10.0
 
-## New oAuth 2.0 Feature
+## New API key management
 
-Wookie widgets can now use oAuth 2.0 to connect to remote services. There is a "Facebook Friend" demo 
-widget in scratchpad/widgets to try out - uncomment include.scratchpad.widgets in your build.properties 
-file to try it out.
+API Keys are now managed using a text file on the server rather than require database access, allowing
+an admin to more easily add, comment out or remove API keys. For more information see
 
-## New Widget Templating System
+http://incubator.apache.org/wookie/docs/admin.html
 
-A new templating system is available for creating widgets, enabling widgets to have a common look-and-feel
-or to reuse functionality; you can edit  the template and all widgets based on it can be regenerated with 
-the changes. Documentation and examples of both templates and widgets created from them can be found in 
-widgets/templates
+## JSON APIs
 
-## New proxy policy management
+Most of the Wookie APIs now support JSON; to use JSON either send an Accepts header with the JSON mime type
+in the request, or append ?format=json to the request URL.
 
-Rather than manage separate "Whitelist" and "Access Request" lists using the web interface, in 0.9.2
-we've introduced a much simpler "policies" file that can be edited in a text editor. Changes to the file
-are updated live in the server. The policies file itself contains more detailed documentation, and can
-be found in src/policies or WEB-INF/classes/policies on a running server. Policies can still be edited
-using the web interface, and a REST API endpoint can be found at /wookie/policies.
+## Improved upload API
+
+You can now add widgets to a running Wookie installation by simply POSTing the widget to /widgets with
+widgetadmin credentials; unlike in 0.9.2 the installation is performed immediately and feedback provided. 
+The Widget's metadata is also returned in a successful response.
+
+## Download API
+
+As well as uploading .wgt files, you can download as well! If you send a GET request to /widgets/{widget}
+using a Accept type of "application/widget" the original .wgt package is returned.
+
+## No JSP UI; new "demo" application
+
+In 0.10.0 we no longer have an Admin JSP application or any other required user interface. Instead we have
+a very simple JQuery demo application for quickly testing widgets. All the administration features that
+used to be in JSP pages are instead available via REST API or editing configuration files.
+
+## Improved connector framework for Java
