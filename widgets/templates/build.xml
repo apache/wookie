@@ -63,6 +63,7 @@
 	      <echo message="+------------------------------------------"/>
     	<replaceregexp match="&lt;\%[^&gt;]*&gt;" flags="g" replace="" >
     		  <fileset dir="${widget.build.dir}/${widget.shortname}" >
+		    <exclude name="images/*"/>
     		  </fileset>
     	</replaceregexp>
 	</target>
