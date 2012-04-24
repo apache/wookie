@@ -243,7 +243,9 @@
 	<target name="init-war" unless="subproject" depends="test-calling-project-true" >		
 
 		<copy todir="${build.dir}/maven-webapp/${ant.project.name}/WEB-INF/classes">
-			<fileset dir="${project.build.classes.dir}" />
+			<fileset dir="${project.build.classes.dir}">
+				<exclude name="**/*.java" />
+			</fileset>
 		</copy>
 
 		<copy todir="${build.dir}/maven-webapp/${ant.project.name}">
