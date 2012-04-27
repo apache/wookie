@@ -49,13 +49,20 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 	static Logger fLogger = Logger.getLogger(ProxyServlet.class.getName());
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		dealWithRequest(request, response, "post");	
+		dealWithRequest(request, response);	
 	}  
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		dealWithRequest(request, response, "get");			
+		dealWithRequest(request, response);
 	}
 
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		dealWithRequest(request, response);
+	}
+
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		dealWithRequest(request, response);
+	}
 	/**
 	 * Check the validity of a proxy request, and execute it if it checks out  
 	 * @param request
@@ -63,7 +70,7 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 	 * @param httpMethod
 	 * @throws ServletException
 	 */
-	private void dealWithRequest(HttpServletRequest request, HttpServletResponse response, String httpMethod) throws ServletException{
+	private void dealWithRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try {
 			Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties");
 
@@ -116,11 +123,7 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			//
 			// Execute the request and populate the ResponseObject
 			//
-			if(httpMethod.equals("get")){
-			  responseObject = proxyclient.get(bean.getNewUrl().toExternalForm(), request, properties);
-			} else {	
-			  responseObject = proxyclient.post(bean.getNewUrl().toExternalForm(), request, properties);
-			}
+			responseObject = proxyclient.execRequest(bean.getNewUrl().toExternalForm(), request, properties);
 			
 			//
 			// Set Status

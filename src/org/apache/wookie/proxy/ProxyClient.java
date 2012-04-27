@@ -31,9 +31,12 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.DeleteMethod;
+import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
@@ -80,6 +83,36 @@ public class ProxyClient {
 	//	fBase64Auth = base64Auth;
 	//}
 	
+	public ResponseObject execRequest(String url, HttpServletRequest request, Configuration properties) throws Exception {
+		if (fLogger.isDebugEnabled()) {
+			fLogger.debug(request.getMethod() + " from " + url);
+		}
+		HttpMethod method = null;
+		String sMethod = request.getMethod();
+		if ("GET".equals(sMethod)) {
+			method = new GetMethod(url);
+		} else if ("POST".equals(sMethod)) {
+			method = new PostMethod(url);
+		} else if ("PUT".equals(sMethod)) {
+			method = new PutMethod(url);
+		} else if ("DELETE".equals(sMethod)) {
+			method = new DeleteMethod(url);
+		}
+		
+		if (method == null) {
+			return null;
+		} else if (method instanceof EntityEnclosingMethod) {
+			if (this.parameters.length > 0 && method instanceof PostMethod) {
+				((PostMethod) method).addParameters(this.parameters);
+			} else {
+				((EntityEnclosingMethod) method).setRequestEntity(new InputStreamRequestEntity(request.getInputStream()));
+			}
+		}
+		
+		method.setDoAuthentication(true);
+		return executeMethod(method, request, properties);
+	}
+	
 	/**
 	 * Process a proxied GET request
 	 * @param url the URL to GET
@@ -88,6 +121,7 @@ public class ProxyClient {
 	 * @return a ResponseObject from the remote site
 	 * @throws Exception
 	 */
+	@Deprecated
 	public ResponseObject get(String url, HttpServletRequest request, Configuration properties) throws Exception {
     fLogger.debug("GET from " + url); //$NON-NLS-1$
     GetMethod method = new GetMethod(url);
@@ -104,6 +138,7 @@ public class ProxyClient {
 	 * @return a ResponseObject from the remote site
 	 * @throws Exception
 	 */
+	@Deprecated
 	 public ResponseObject post(String url , HttpServletRequest request, Configuration properties) throws Exception {
 	    fLogger.debug("POST to " + url); //$NON-NLS-1$
 	    PostMethod method = new PostMethod(url);
