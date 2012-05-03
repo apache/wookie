@@ -28,8 +28,8 @@ build/
 **/*.properties
 connector/CSharp/CSharp.sln
 WebContent/META-INF/MANIFEST.MF
-etc/eclipse/code_style.xml
-etc/eclipse/code_templates.xml
+etc/eclipse/**
+etc/intellij/**
 etc/release/src-build-include.txt
 
 # Documentation files

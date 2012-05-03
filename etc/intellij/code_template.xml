@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templateSet group="wookie">
+  <template name="gettercomment" value="/**  * @return the $bare_field_name$  */" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="bare_field_name" expression="&quot;bare_field_name&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="settercomment" value="/**  * @param $param$ the $bare_field_name$ to set  */" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="param" expression="&quot;param&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="bare_field_name" expression="&quot;bare_field_name&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="constructorcomment" value="/**  * $tags$  */" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="tags" expression="&quot;tags&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="filecommentc" value="/* &#10; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);&#10; * you may not use this file except in compliance with the License.&#10; * You may obtain a copy of the License at&#10; * &#10; *   http://www.apache.org/licenses/LICENSE-2.0&#10; * &#10; * Unless required by applicable law or agreed to in writing,&#10; * software distributed under the License is distributed on an&#10; * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY&#10; * KIND, either express or implied.  See the License for the&#10; * specific language governing permissions and limitations&#10; * under the License.&#10; */&#10;" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="typecomment" value="/**   *  * $tags$  */" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="tags" expression="&quot;tags&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="fieldcomment" value="/**  *   */" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="methodcomment" value="/**  * $tags$  */" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="tags" expression="&quot;tags&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="overridecomment" value="/* (non-JSDoc)  * $see_to_overridden$  */" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="see_to_overridden" expression="&quot;see_to_overridden&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="delegatecomment" value="/**  * $tags$  * $see_to_target$  */" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="tags" expression="&quot;tags&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="see_to_target" expression="&quot;see_to_target&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="newtype" value="$filecomment$ $package_declaration$  $typecomment$ $type_declaration$" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="filecomment" expression="&quot;filecomment&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="package_declaration" expression="&quot;package_declaration&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="typecomment" expression="&quot;typecomment&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="type_declaration" expression="&quot;type_declaration&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="classbody" value="" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="interfacebody" value="" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="enumbody" value="" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="annotationbody" value="" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="catchblock" value="// $todo$ Auto-generated catch block $exception_var$.printStackTrace();" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="todo" expression="&quot;todo&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="exception_var" expression="&quot;exception_var&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="methodbody" value="// $todo$ Auto-generated function stub $body_statement$" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="todo" expression="&quot;todo&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="body_statement" expression="&quot;body_statement&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="constructorbody" value="$body_statement$ // $todo$ Auto-generated constructor stub" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="body_statement" expression="&quot;body_statement&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="todo" expression="&quot;todo&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="getterbody" value="return $field$;" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="field" expression="&quot;field&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="setterbody" value="$field$ = $param$;" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="field" expression="&quot;field&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="param" expression="&quot;param&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+  <template name="filecomment" value="/**  *   */" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="XML" value="false" />
+      <option name="OTHER" value="false" />
+      <option name="JSP" value="false" />
+      <option name="JAVA_STRING" value="false" />
+      <option name="JAVA_SCRIPT" value="false" />
+      <option name="JAVA_COMMENT" value="false" />
+      <option name="JAVA_CODE" value="true" />
+      <option name="HTML" value="false" />
+      <option name="COMPLETION" value="false" />
+    </context>
+  </template>
+</templateSet>
+
