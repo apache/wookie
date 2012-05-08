@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +59,35 @@ public class WookieConnectorService {
     assertTrue("Not retrieved enough widgets", 10 < widgets.size());
     assertNotNull("Widget value is null", widgets.values().toArray()[0]);
   }
+  
+  
+  @Test
+  public void widgetHandling ( ) throws WookieConnectorException, IOException {
+	  File widgetFile = new File ( "connector/java/src-test/org/apache/wookie/tests/connector/framework/impl/empty.wgt" );
+	  String adminUsername = "java";
+	  String adminPassword = "java";
+	  File saveWidgetFile = File.createTempFile("empty"+Long.toString(System.nanoTime()), "wgt");
+	  Widget uploadedWidget = service.postWidget(widgetFile, adminUsername, adminPassword);
+	  assertNotNull ( "Widget value from postWidget is null", uploadedWidget);
+	  String identifier = uploadedWidget.getIdentifier();
+	  
+	  uploadedWidget = service.updateWidget(widgetFile, identifier, adminUsername, adminPassword);
+	  uploadedWidget = service.getWidget(identifier);
+	  assertNotNull("Widget value from getWidget is null", uploadedWidget);
+	  
+	  service.getWidgetFile(identifier, saveWidgetFile);
+	  assertTrue ( "Widget file has been deleted", saveWidgetFile.exists());
+	  assertTrue ( "Widget file has no data in it", saveWidgetFile.length() > 0 );
+	  
+	  service.deleteWidget(identifier, adminUsername, adminPassword);
+	  
+	  uploadedWidget = service.getWidget(identifier);
+	  assertTrue ( "Widget file has not been deleted", uploadedWidget == null );
+	  
+	  
+  }
+  
+  
   
   @Test
   public void getWidgetMetadata() throws WookieConnectorException{

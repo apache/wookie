@@ -14,11 +14,18 @@
 package org.apache.wookie.connector.framework;
 
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -379,6 +386,7 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 	
 
 	}
+
 	
 
 	/**
@@ -403,65 +411,10 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 	    NodeList widgetList = root.getElementsByTagName("widget");
 	    for (int idx = 0; idx < widgetList.getLength(); idx = idx + 1) {
 	      Element widgetEl = (Element) widgetList.item(idx);
-	      String id = widgetEl.getAttribute("id");
+	      
+	      Widget widget = createWidgetFromElement ( widgetEl );
 
-	      //
-	      // If there is an "identifier" attribute, this is a 0.9.2 or older
-	      // server
-	      //
-	      if (widgetEl.hasAttribute("identifier")) {
-	        id = widgetEl.getAttribute("identifier");
-	      }
-
-	      //
-	      // Stop here if we've already got this widget
-	      //
-	      if (widgets.containsKey(id)) {
-	        break;
-	      }
-
-	      String width = widgetEl.getAttribute("width");
-	      String height = widgetEl.getAttribute("height");
-	      String version = widgetEl.getAttribute("version");
-
-	      String name = getNodeTextContent(widgetEl, "name");
-
-	      //
-	      // In 0.9.2 and earlier, the widget has a Title rather
-	      // than a Name
-	      //
-	      if (widgetEl.getElementsByTagName("title").getLength() > 0){
-	        name = getNodeTextContent(widgetEl, "title");
-	      }
-
-	      String description = getNodeTextContent(widgetEl, "description");
-	      String license = getNodeTextContent(widgetEl, "license");
-	      String author = getNodeTextContent(widgetEl, "author");
-	      Element iconEl = (Element) widgetEl.getElementsByTagName("icon").item(0);
-	      URL iconURL;
-	      if (iconEl != null) {
-	        if (iconEl.hasAttribute("src")) {
-
-	          //
-	          // From 0.10.0 onwards, icon info is in the "src" attribute
-	          //
-	          iconURL = new URL(iconEl.getAttribute("src"));
-	        } else {
-
-	          //
-	          // For 0.9.2, there is no src attribute
-	          //
-	          iconURL = new URL(iconEl.getTextContent());
-	        }
-
-	      } else {
-	        iconURL = new URL("http://www.oss-watch.ac.uk/images/logo2.gif");
-	      }
-
-	      Widget widget = new Widget(id, name, description, iconURL, width,
-	          height, version, author, license);
-
-	      widgets.put(id, widget);
+	      widgets.put(widget.getIdentifier(), widget);
 	    }
 	  }
 	  catch (ParserConfigurationException e) {
@@ -477,10 +430,295 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 	    return widgets;
 	  }
 	  catch (SAXException e) {
-	    throw new WookieConnectorException(
-	        "Unable to parse the response from Wookie", e);
+	    throw new WookieConnectorException( "Unable to parse the response from Wookie", e);
 	  }
 	  return widgets;
+	}
+	
+	
+	/**
+	 * This function is supplied for non browser based clients enabling them to upload a widget file to the wookie server.
+	 * 
+	 * @param widgetFile - a java file pointer to the widget file on the local system
+	 * @param adminUsername - the admin user as defined within the configuration of the wookie server
+	 * @param adminPassword - the admin password as defined within the configuration of the wookie server
+	 * @return - a widget describing the meta-data of the widget uploaded.
+	 * @throws WookieConnectorException
+	 */
+	public Widget postWidget(File widgetFile, String adminUsername, String adminPassword ) throws WookieConnectorException {
+		HttpURLConnection connection = null;
+		DataOutputStream dos = null;
+		String exsistingFileName = widgetFile.getAbsolutePath();
+		String lineEnd = "\r\n";
+		String twoHyphens = "--";
+		String boundary = "*****";
+
+		int bytesRead, bytesAvailable, bufferSize;
+		byte[] buffer;
+		int maxBufferSize = 1 * 1024 * 1024;
+
+		Widget widget = null;
+
+		try {
+
+			FileInputStream fileInputStream = new FileInputStream(new File(exsistingFileName));
+			URL url = new URL(conn.getURL() + "/widgets");
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setDoInput(true);
+			connection.setDoOutput(true);
+			connection.setUseCaches(false);
+			connection.setRequestMethod("POST");
+			connection.setRequestProperty("Connection", "Keep-Alive");
+			connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+			
+			addBasicAuthToConnection ( connection, adminUsername, adminPassword );
+
+			dos = new DataOutputStream(connection.getOutputStream());
+
+			dos.writeBytes(twoHyphens + boundary + lineEnd);
+			dos.writeBytes("Content-Disposition: form-data; name=\"upload\";"
+					+ " filename=\"" + exsistingFileName + "\"" + lineEnd);
+			dos.writeBytes(lineEnd);
+
+			// create a buffer of maximum size
+
+			bytesAvailable = fileInputStream.available();
+			bufferSize = Math.min(bytesAvailable, maxBufferSize);
+			buffer = new byte[bufferSize];
+
+			// read file and write it into form...
+
+			bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+			while (bytesRead > 0) {
+				dos.write(buffer, 0, bufferSize);
+				bytesAvailable = fileInputStream.available();
+				bufferSize = Math.min(bytesAvailable, maxBufferSize);
+				bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+			}
+
+			// send multipart form data necesssary after file data...
+
+			dos.writeBytes(lineEnd);
+			dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+			// close streams
+
+			fileInputStream.close();
+			dos.flush();
+			dos.close();
+
+		} catch (MalformedURLException ex) {
+			throw new WookieConnectorException ( "Bad url to wookie host: ", ex);
+		}
+
+		catch (IOException ioe) {
+			throw new WookieConnectorException ( "From Server: ", ioe );
+		}
+
+		// ------------------ read the SERVER RESPONSE
+
+		try {
+			if ( connection.getResponseCode() != 201 ) {
+				throw new IOException ( "Widget file was not uploaded successfully." );
+			}
+			Document doc = parseInputStreamAsDocument(connection.getInputStream());
+			Element root = doc.getDocumentElement();
+			//NodeList widgetList = root.getElementsByTagName("widget");
+			//Element widgetEl = (Element) widgetList.item(0);
+			widget = createWidgetFromElement ( root );
+
+		} catch (IOException ioex) {
+			throw new WookieConnectorException("From (ServerResponse): ", ioex);
+
+		} catch (ParserConfigurationException e) {
+			throw new WookieConnectorException ( "XML Parser configuration failed: ", e );
+		} catch (SAXException e) {
+			throw new WookieConnectorException ( "XML Parser error: ", e);
+		}
+		return widget;
+
+	}
+	
+	
+	public Widget updateWidget ( File widgetFile, String widgetIdentifier, String adminUsername, String adminPassword ) throws WookieConnectorException {
+		HttpURLConnection connection = null;
+		DataOutputStream dos = null;
+		String exsistingFileName = widgetFile.getAbsolutePath();
+		String lineEnd = "\r\n";
+		String twoHyphens = "--";
+		String boundary = "*****";
+
+		int bytesRead, bytesAvailable, bufferSize;
+		byte[] buffer;
+		int maxBufferSize = 1 * 1024 * 1024;
+		Widget widget = null;
+
+		try {
+
+			FileInputStream fileInputStream = new FileInputStream(new File(exsistingFileName));
+			URL url = new URL(conn.getURL() + "/widgets/"+widgetIdentifier);
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setDoInput(true);
+			connection.setDoOutput(true);
+			connection.setUseCaches(false);
+			connection.setRequestMethod("PUT");
+			connection.setRequestProperty("Connection", "Keep-Alive");
+			connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+			
+			addBasicAuthToConnection ( connection, adminUsername, adminPassword );
+
+			dos = new DataOutputStream(connection.getOutputStream());
+
+			dos.writeBytes(twoHyphens + boundary + lineEnd);
+			dos.writeBytes("Content-Disposition: form-data; name=\"upload\";"
+					+ " filename=\"" + exsistingFileName + "\"" + lineEnd);
+			dos.writeBytes(lineEnd);
+
+			// create a buffer of maximum size
+
+			bytesAvailable = fileInputStream.available();
+			bufferSize = Math.min(bytesAvailable, maxBufferSize);
+			buffer = new byte[bufferSize];
+
+			// read file and write it into form...
+
+			bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+			while (bytesRead > 0) {
+				dos.write(buffer, 0, bufferSize);
+				bytesAvailable = fileInputStream.available();
+				bufferSize = Math.min(bytesAvailable, maxBufferSize);
+				bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+			}
+
+			// send multipart form data necesssary after file data...
+
+			dos.writeBytes(lineEnd);
+			dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+			// close streams
+
+			fileInputStream.close();
+			dos.flush();
+			dos.close();
+			if ( connection.getResponseCode() != 200 ) {
+				throw new IOException ( "Widget file was not updated successfully." );
+			}
+			Document doc = parseInputStreamAsDocument(connection.getInputStream());
+			Element root = doc.getDocumentElement();
+			//NodeList widgetList = root.getElementsByTagName("widget");
+			//Element widgetEl = (Element) widgetList.item(0);
+			widget = createWidgetFromElement ( root );
+
+		}
+		catch (MalformedURLException ex) {
+			throw new WookieConnectorException ( "Bad url to wookie host: ", ex);
+		}
+		catch (IOException ioe) {
+			throw new WookieConnectorException ( "From Server: ", ioe );
+		}
+		catch (ParserConfigurationException e) {
+			throw new WookieConnectorException ( "XML Parser configuration failed: ", e );
+		}
+		catch (SAXException e) {
+			throw new WookieConnectorException ( "XML Parser error: ", e);
+		}
+		return widget;
+	}
+	
+	
+	
+	public void deleteWidget ( String identifier, String adminUsername, String adminPassword ) throws IOException, WookieConnectorException
+	{
+		URL url = null;
+		try {
+			url = new URL ( conn.getURL() + "/widgets/"+identifier);
+			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+			addBasicAuthToConnection ( urlConn, adminUsername, adminPassword );
+			urlConn.setRequestMethod("DELETE");
+			urlConn.connect();
+			if ( urlConn.getResponseCode() > 201 ) {
+				throw new IOException ( urlConn.getResponseMessage());
+			}
+		}
+		catch ( MalformedURLException e ) {
+			throw new WookieConnectorException ( "Delete Widget rest URL is incorect: " + url, e );
+		}
+	}
+	
+	/**
+	 * Gets a single widget xml description for the given widget identifier
+	 * @param identifier
+	 * @return
+	 * @throws WookieConnectorException
+	 * @throws IOException
+	 */
+	public Widget getWidget ( String identifier ) throws WookieConnectorException, IOException {
+		URL url = null;
+		Widget widget = null;
+		try {
+			url = new URL ( conn.getURL() + "/widgets/"+identifier );
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestProperty("Accept", "xml");
+			if ( connection.getResponseCode() == 404 ) {
+				// could not find the widget just return null;
+				return null;
+			}
+			else if( connection.getResponseCode() != 200 ) {
+				throw new IOException( connection.getResponseMessage());
+			}
+			Document doc = parseInputStreamAsDocument ( connection.getInputStream());
+			Element root = doc.getDocumentElement();
+			//NodeList widgetList = root.getElementsByTagName("widget");
+			//Element widgetEl = (Element) widgetList.item(0);
+			widget = createWidgetFromElement ( root );
+		}
+		catch ( MalformedURLException e ) {
+			throw new WookieConnectorException ( "Get Widget rest URL is incorect: " + url, e );
+		} catch (ParserConfigurationException e) {
+		    throw new WookieConnectorException("Unable to create XML parser", e);
+		} catch (SAXException e) {
+		    throw new WookieConnectorException( "Unable to parse the response from Wookie", e);
+		}
+		return widget;
+	}
+	
+	
+	/**
+	 * This gets the data of a widget file for the given widget id
+	 * @param identifier - the unique id of the widget
+	 * @param saveFile - a file or file path to save the file data into.  At the moment the REST api for wookie doesn't return the widget file name
+	 * so this must be supplied by the caller here.
+	 * @throws WookieConnectorException
+	 * @throws IOException
+	 */
+	public void getWidgetFile ( String identifier, File saveFile ) throws WookieConnectorException, IOException {
+		URL url = null;
+		
+		try {
+			url = new URL (conn.getURL() + "/widgets/"+identifier );
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestProperty("Accept", "application/widget");
+			connection.connect();
+			
+			BufferedInputStream in = new BufferedInputStream(connection.getInputStream());
+			
+			if ( !saveFile.exists()) {
+				saveFile.createNewFile();
+			}
+			OutputStream out = new BufferedOutputStream ( new FileOutputStream ( saveFile ) );
+			byte[] buf = new byte[256];
+			int readSize = 0;
+			while ((readSize = in.read(buf)) >= 0 ) {
+				out.write(buf, 0, readSize );
+			}
+			out.flush();
+			out.close();
+		}
+		catch ( FileNotFoundException fnf ) {
+			throw new WookieConnectorException ( "The file "+saveFile.getAbsolutePath()+" could not be created.", fnf );
+		}
 	}
 	
 	
@@ -803,6 +1041,60 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 			}
 		}
 		return "";
+	}
+	
+	private Widget createWidgetFromElement ( Element e ) throws MalformedURLException {
+		String id = e.getAttribute("id");
+
+		//
+		// If there is an "identifier" attribute, this is a 0.9.2 or older
+		// server
+		//
+		if (e.hasAttribute("identifier")) {
+			id = e.getAttribute("identifier");
+		}
+
+		String width = e.getAttribute("width");
+		String height = e.getAttribute("height");
+		String version = e.getAttribute("version");
+
+		String name = getNodeTextContent(e, "name");
+
+		//
+		// In 0.9.2 and earlier, the widget has a Title rather
+		// than a Name
+		//
+		if (e.getElementsByTagName("title").getLength() > 0) {
+			name = getNodeTextContent(e, "title");
+		}
+
+		String description = getNodeTextContent(e, "description");
+		String license = getNodeTextContent(e, "license");
+		String author = getNodeTextContent(e, "author");
+		Element iconEl = (Element) e.getElementsByTagName("icon")
+				.item(0);
+		URL iconURL;
+		if (iconEl != null) {
+			if (iconEl.hasAttribute("src")) {
+
+				//
+				// From 0.10.0 onwards, icon info is in the "src" attribute
+				//
+				iconURL = new URL(iconEl.getAttribute("src"));
+			} else {
+
+				//
+				// For 0.9.2, there is no src attribute
+				//
+				iconURL = new URL(iconEl.getTextContent());
+			}
+
+		} else {
+			iconURL = new URL("http://www.oss-watch.ac.uk/images/logo2.gif");
+		}
+
+		return new Widget(id, name, description, iconURL, width, height,
+				version, author, license);
 	}
 
 	
