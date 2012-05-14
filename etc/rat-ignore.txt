@@ -78,6 +78,7 @@ widgets/templates/walkthrough/lib/jqueryMobile/jquery.mobile-1.0rc1.js
 widgets/templates/walkthrough/lib/jqueryMobile/jquery.mobile-1.0rc1.min.css
 widgets/templates/walkthrough/lib/jqueryMobile/jquery.mobile-1.0rc1.min.js
 scratchpad/widgets/youtube/scripts/jquery.min.js
+widgets/twitter/lib/jquery.timeago.js
 
 # Flashcanvas
 
