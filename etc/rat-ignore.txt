@@ -60,7 +60,7 @@ connector/flash_flex/com/google/code/flexiframe/IFrameExternalCalls.as
 
 # JQuery
 
-WebContent/shared/js/jquery/**
+WebContent/demo/jquery.min.js
 features/jqmobile/shared/jquery.min.js
 features/jqmobile/shared/jquery.mobile.min.css
 features/jqmobile/shared/jquery.mobile.min.js
@@ -69,6 +69,8 @@ scratchpad/widgets/flickr/lib/jquery.min.js
 widgets/freeder/scripts/jquery.jfeed.pack.js
 widgets/sudoku/jquery.js
 widgets/natter/jquery.js
+widgets/youtube/scripts/jquery.min.js
+widgets/youtube/scripts/jquery.tubeplayer.js
 features/camera/shared/jquery.js
 widgets/templates/walkthrough/lib/jqueryMobile/jquery-1.6.4.min.js
 widgets/templates/walkthrough/lib/jqueryMobile/jquery.mobile-1.0rc1.css
