@@ -30,3 +30,11 @@ a very simple JQuery demo application for quickly testing widgets. All the admin
 used to be in JSP pages are instead available via REST API or editing configuration files.
 
 ## Improved connector framework for Java
+
+The Java connector now supports the whole of the Wookie REST API including admin functions, not just creating 
+widget instances.
+
+## OpenAjax Feature
+
+There is a new Feature extension for OpenAjax Hub, enabling inter-widget communication in environments that
+support OpenAjax Managed Hub such as Apache Rave.
