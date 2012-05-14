@@ -4,6 +4,11 @@ See https://issues.apache.org/jira/browse/WOOKIE-* (where * is the number of the
 
 For more detailed information on significant changes, see NEW_AND_NOTEWORTHY
 
+Version 0.10.0
+===============
+
+	* WOOKIE-308 - 99% Conformance with the W3C Widget API Specification
+
 Version 0.9.2
 =============
 
