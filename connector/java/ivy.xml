@@ -15,7 +15,7 @@
   limitations under the License.
 -->
 <ivy-module version="2.0">
-    <info organisation="org.apache.wookie" module="wookie-java-connector" revision="0.10.0-incubating"/>
+    <info organisation="org.apache.wookie" module="wookie-java-connector" revision="0.11.0-incubating-SNAPSHOT"/>
     
     <configurations>
       <conf name="deploy" description="Provide the necessary files and libraries to deploy in a production environment"/>

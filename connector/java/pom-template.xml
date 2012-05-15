@@ -37,8 +37,8 @@
   <inceptionYear>2009</inceptionYear>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/wookie/tags/0.10.0-incubating/connector/java</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/wookie/tags/0.10.0-incubating/connector/java/</developerConnection>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/wookie/trunk/connector/java</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/wookie/trunk/connector/java/</developerConnection>
     <url>http://svn.apache.org/viewvc/incubator/wookie/tags/0.10.0-incubating/connector/java/</url>        
   </scm>
   
