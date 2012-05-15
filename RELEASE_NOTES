@@ -5,58 +5,44 @@ See https://issues.apache.org/jira/browse/WOOKIE-* (where * is the number of the
 For more detailed information on significant changes, see NEW_AND_NOTEWORTHY
 
 Version 0.10.0
-===============
-
-	* WOOKIE-308 - 99% Conformance with the W3C Widget API Specification
-
-Version 0.9.2
-=============
+==============
 
 Bugs Fixed
-===========
+==========
 
-	* WOOKIE-184 - Tutorial for geoLocation
-	* WOOKIE-239 - Files left on server when delete from a widget
-	* WOOKIE-245 - Update W3C Access (WARP) tests
-	* WOOKIE-246 - Licence boilerplate in JQueryMobile template widgets is incorrect 
-	* WOOKIE-272 - ant run takes a long time and -Doffline=true fail
-	* WOOKIE-273 - Duplicate entries in widgetrequest access policies
-	* WOOKIE-280 - WebMenuServlet needlessly created widget instances
-	* WOOKIE-286 - REST API mixes up Content-Type and Accept headers when choosing resource representation
-	* WOOKIE-300 - Full whitelist access granted to any widget built from a template
-	* WOOKIE-302 - Too many open files by Wookie
-	* WOOKIE-304 - New template build file assumes wookie project is in a folder called "wookie"
-	* WOOKIE-305 - Policies allow you to define the same policy twice - once with ALLOW and once with DENY
-	* WOOKIE-306 - Widget Interface: Conflicts when using Clear() and SetItem()
-	* WOOKIE-309 - Proxy policy of "* * DENY" is treated as ALLOW 
+	* WOOKIE-167 - Gallery icons for bondi camera & geolocation are missing
+	* WOOKIE-322 - Policies API only validates the origin, not the scope or directive
+	* WOOKIE-15  - Companion document links
+	* WOOKIE-149 - Sudoku widget not working correctly
 	
 Improvements
 ============
 
-	* WOOKIE-131 - Skinnable widgets
-	* WOOKIE-140 - Example widget - Flickr photos API   
-	* WOOKIE-141 - YouTube video API
-	* WOOKIE-251 - Proxy is losing headers
-	* WOOKIE-255 - Change file names to not include version numbers in features
-	* WOOKIE-260 - W3C Widget conformance: Add call to icon sniifer routine into IconEntity
-	* WOOKIE-281 - Use instance queues by default
-	* WOOKIE-284 - Unable to run two instances of wookie on one machine
-	* WOOKIE-288 - Allow WAR release artifacts to use an embedded database
-	* WOOKIE-291 - Patch to tidy up Browse widget template layout at small screen size
-	* WOOKIE-293 - Update log4j, slf4j and Shindig to latest versions
-	* WOOKIE-295 - Test widgets from templates
-	* WOOKIE-297 - Replace XSL processing in templates 
-	 
+	* WOOKIE-327 - Make widget metadata returned by the REST API more consistent with W3C Widget Config.xml, remove confusing IDs
+	* WOOKIE-263 - Remove deprecated "Services" and related functionality
+	* WOOKIE-320 - Allow GET of Widget to support download of the original .wgt package
+	* WOOKIE-319 - Add DELETE and PUT to /widget API
+	* WOOKIE-318 - Change POST to /widgets to upload, parse and return error messages rather than just drop into /deploy
+	* WOOKIE-324 - POSTing a widget to wookie should return its config.xml metadata
+	* WOOKIE-314 - Filter license headers when concatenating HTML template files
+	* WOOKIE-331 - Move API Keys from the database into a configuration file
+	* WOOKIE-294 - Generalise all templates
+	* WOOKIE-326 - Extend the Java Connector
+	* WOOKIE-317 - Create documentation on how to create/generate wookie release artifacts
+	* WOOKIE-334 - Adding PUT and DELETE to proxify
+	* WOOKIE-330 - Make the Java connector backwards-compatible
+	* WOOKIE-328 - Create "demo widget" capability without requiring rest of the web UI
+    * WOOKIE-19  - Write server admin guide
+    * WOOKIE-321 - Add functional test cases for Policies API
+	* WOOKIE-20	 - Conform to the LC W3C Widget API specification
+	* WOOKIE-333 - Creating IntelliJ code style and code template files
+	
 New Features
 ============
 
-	* WOOKIE-100 - Open ID/OAuth Support
-	* WOOKIE-189 - Packaging of Wookie to run portably from a usb stick
-	* WOOKIE-253 - New sample widget - Walkthrough
-	* WOOKIE-276 - Better management of CSS in templating system
-	* WOOKIE-277 - Better handling of template/widget provided Javascript
-	* WOOKIE-299 - Create a widget browser from the browse template
-	    
+    * WOOKIE-262 - Create non-UI administration client and capabilities
+    * WOOKIE-227 - Implement OpenAjax hub 2.0
+
 Known Issues
 ============	
 
