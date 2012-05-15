@@ -102,8 +102,8 @@ public class ProxyClient {
 		if (method == null) {
 			return null;
 		} else if (method instanceof EntityEnclosingMethod) {
-			if (this.parameters.length > 0 && method instanceof PostMethod && 
-					request.getContentType().toLowerCase().contains("application/x-www-form-urlencoded")) {
+			if (this.parameters.length > 0 && method instanceof PostMethod &&
+				!request.getContentType().toLowerCase().contains("multipart/form-data")) {
 				((PostMethod) method).addParameters(this.parameters);
 			} else {
 				((EntityEnclosingMethod) method).setRequestEntity(new InputStreamRequestEntity(request.getInputStream()));
