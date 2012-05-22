@@ -113,7 +113,7 @@ var ${widget.shortname}_walkthrough_controller =
         button_links.bind('click', function(event) 
         {   
             var href = $(event.target).data('href');
-            var text = event.currentTarget.textContent;
+            var text = $(event.currentTarget).text();
             if (href == '') 
             {
                 var item = "<li>TODO: "+text;
