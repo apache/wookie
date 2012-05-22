@@ -62,7 +62,7 @@ function getWidgets(){
   }).keyup( function () {
     $(this).change();
   });
-
+  Wookie.configureConnection("/wookie", "TEST", "mysharedkey");
   Wookie.getWidgets(updateWidgets);
 
   var id = $.getUrlVar("id");
@@ -86,7 +86,7 @@ function updateWidgets(widgets){
 }
 
 function showWidget(id){
-    Wookie.setCurrentUser("alice","alice","http://localhost:8080/wookie/demo/alice.png");
+    Wookie.setCurrentUser("alice","alice","/wookie/demo/alice.png");
     var widgetInstance = Wookie.getOrCreateInstance(id);
     $('#preview_info').html('<br/>' + widgetInstance.title + '<br/>' + id);
     $("#preview_alice_widget").html('');
@@ -94,7 +94,7 @@ function showWidget(id){
     $("#alice_url").html("<a href='" + widgetInstance.url + "' target='_blank'>Full Screen</a>");
     Wookie.setPreference(id, "conference-manager","true");
     
-    Wookie.setCurrentUser("bob","bob","http://localhost:8080/wookie/demo/bob.png");
+    Wookie.setCurrentUser("bob","bob","/wookie/demo/bob.png");
     var widgetInstance = Wookie.getOrCreateInstance(id);
     $("#preview_bob_widget").html('');
     $("#preview_bob_widget").append("<iframe src='"+widgetInstance.url+"' height='"+widgetInstance.height+"' width='"+widgetInstance.width+"'></iframe>");
