@@ -56,5 +56,13 @@ public interface IWaveAPI{
 	 * @return
 	 */
 	public String getHost(String id_key);
+	
+	/**
+	 * Returns the hosts (owners) of the widget, typically the
+	 * owner of the context in which it has been instantiated
+	 * @param id_key
+	 * @return
+	 */
+	public String getHosts(String id_key);
 
 }

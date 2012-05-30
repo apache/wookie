@@ -81,6 +81,7 @@
  */
  wave = new function Wave(){
  	this.participants = null;
+    this.hosts = null;
  	this.viewer = null;
     this.callback = null;
     this.pcallback = null;
@@ -94,6 +95,8 @@
 		dwr.engine.beginBatch();
 		WaveImpl.getParticipants(Widget.instanceid_key, this.setParticipants);
 		WaveImpl.getViewer(Widget.instanceid_key, this.setViewer);
+        WaveImpl.getHost(Widget.instanceid_key, this.setHost);
+        WaveImpl.getHosts(Widget.instanceid_key, this.setHosts);
         WaveImpl.state(Widget.instanceid_key, this.setState);
 		dwr.engine.endBatch({async:false});		
         dwr.engine.setActiveReverseAjax(true);
@@ -116,6 +119,19 @@
         }
     }
     
+    this.setHosts = function(parts){
+        var json = parts;
+        if (json && json!=null && json!=""){
+            var obj = eval('('+json+')');
+            wave.hosts = obj.Participants;
+            for(participant in wave.hosts){
+                wave.hosts[participant].getDisplayName = function(){return this.participant_display_name}
+                wave.hosts[participant].getThumbnailUrl = function(){return this.participant_thumbnail_url};
+                wave.hosts[participant].getId = function(){return this.participant_id};        
+            }
+        }
+    }
+    
     this.setViewer = function(v){
         if (v && v!=null && v!=""){ 
             var vobj = eval('('+v+')');
@@ -123,6 +139,16 @@
             wave.viewer.getDisplayName = function(){return this.participant_display_name};
             wave.viewer.getThumbnailUrl = function(){return this.participant_thumbnail_url};
             wave.viewer.getId = function(){return this.participant_id};
+        }
+	}
+    
+    this.setHost = function(v){
+        if (v && v!=null && v!=""){ 
+            var vobj = eval('('+v+')');
+            wave.host = vobj.Participant;
+            wave.host.getDisplayName = function(){return this.participant_display_name};
+            wave.host.getThumbnailUrl = function(){return this.participant_thumbnail_url};
+            wave.host.getId = function(){return this.participant_id};
         }
 	}
 
@@ -175,7 +201,11 @@
  	}
     
     this.getHost = function(){
-        return null; // NOT IMPLEMENTED
+        return this.host;
+    }
+    
+    this.getHosts = function(){
+        return this.hosts;
     }
     
     this.getParticipantById = function(id){

@@ -71,8 +71,12 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.feature.wave.IWaveAPI#getHost(java.lang.String)
 	 */
-	public String getHost(String idKey) {
-		// TODO FIXME see WOOKIE-66
+	public String getHost(String id_key) {
+		SharedContext sharedContext = this.getSharedContext(id_key);
+		if (sharedContext != null){
+			IParticipant host = sharedContext.getHost();
+			if (host != null) return ParticipantHelper.createJSONParticipantDocument(host);
+		}
 		return null;
 	}
 
@@ -105,29 +109,41 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 	 * @see org.apache.wookie.feature.wave.IWaveAPI#getParticipants(java.lang.String)
 	 */
 	public String getParticipants(String id_key) {
-		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
-		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
-		if(widgetInstance==null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
-		IParticipant[] participants = new SharedContext(widgetInstance).getParticipants();
-		return ParticipantHelper.createJSONParticipantsDocument(participants);
+		SharedContext sharedContext = this.getSharedContext(id_key);
+		if (sharedContext != null){
+			return ParticipantHelper.createJSONParticipantsDocument(sharedContext.getParticipants());	
+		} else {
+			Messages localizedMessages = LocaleHandler.localizeMessages(WebContextFactory.get().getHttpServletRequest());
+			return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
+		}
 	}
 	
+	
+	
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.feature.wave.IWaveAPI#getHosts(java.lang.String)
+	 */
+	public String getHosts(String id_key) {
+		SharedContext sharedContext = this.getSharedContext(id_key);
+		if (sharedContext != null){
+			return ParticipantHelper.createJSONParticipantsDocument(sharedContext.getHosts());	
+		} else {
+			Messages localizedMessages = LocaleHandler.localizeMessages(WebContextFactory.get().getHttpServletRequest());
+			return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.feature.wave.IWaveAPI#getViewer(java.lang.String)
 	 */
 	public String getViewer(String id_key) {
-		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-		if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
-		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
-		IParticipant participant = new SharedContext(widgetInstance).getViewer(widgetInstance);
-		if (participant != null) return ParticipantHelper.createJSONParticipantDocument(participant); //$NON-NLS-1$
-		return null; // no viewer i.e. widget is anonymous
+		SharedContext sharedContext = this.getSharedContext(id_key);
+		if (sharedContext != null){
+			return ParticipantHelper.createJSONParticipantDocument(sharedContext.getViewer());	
+		} else {
+			Messages localizedMessages = LocaleHandler.localizeMessages(WebContextFactory.get().getHttpServletRequest());
+			return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -145,6 +161,15 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 		  new SharedContext(widgetInstance).updateSharedData(key, map.get(key), false);
 		Notifier.notifySiblings(widgetInstance);
 		return "okay"; //$NON-NLS-1$
+	}
+	
+	private SharedContext getSharedContext(String id_key){
+        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
+		if (widgetInstance != null){
+			return new SharedContext(widgetInstance);
+		}
+		return null;
 	}
 
 }

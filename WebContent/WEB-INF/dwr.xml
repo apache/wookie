@@ -24,7 +24,9 @@
       <include method="state"/>   
       <include method="submitDelta"/> 
       <include method="getParticipants"/>
-      <include method="getViewer"/>      
+      <include method="getViewer"/>   
+      <include method="getHost"/>    
+      <include method="getHosts"/>      
     </create>
 
     <create creator="new" javascript="OAuthConnector" scope="application">
