@@ -23,6 +23,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.DeleteMethod;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -49,6 +50,19 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
     instance_id_key = response.substring(response.indexOf("<identifier>") + 12,
         response.indexOf("</identifier>"));
     post.releaseConnection();
+  }
+  
+  @AfterClass
+  public static void tearDown() throws HttpException, IOException{
+	  HttpClient client = new HttpClient();
+	  DeleteMethod post = new DeleteMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
+	  post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
+			  + WIDGET_ID_VALID
+			  + "&userid=test&shareddatakey=participantstest&participant_id=80");
+	  client.executeMethod(post);
+	  int code = post.getStatusCode();
+	  assertEquals(200, code);
+	  post.releaseConnection();
   }
 
   /**
@@ -293,6 +307,47 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
     int code = post.getStatusCode();
     assertEquals(400, code);
     post.releaseConnection();
+  }
+  
+  /**
+   * Tests adding and then getting a participant who is also the Host
+   * 
+   * @throws HttpException
+   * @throws IOException
+   */
+  @Test
+  public void addHost() throws HttpException, IOException {
+
+    //
+    // Create a new participant
+    //
+    HttpClient client = new HttpClient();
+    PostMethod post = new PostMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
+    post.setQueryString("api_key="
+        + API_KEY_VALID
+        + "&widgetid="
+        + WIDGET_ID_VALID
+        + "&userid=test&shareddatakey=participantstest&participant_id=80&participant_display_name=bob&participant_role=host&participant_thumbnail_url=http://www.test.org");
+    client.executeMethod(post);
+    int code = post.getStatusCode();
+    assertEquals(201, code);
+    post.releaseConnection();
+
+    //
+    // Now lets GET it to make sure it was added OK
+    //
+    client = new HttpClient();
+    GetMethod get = new GetMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
+    get.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
+        + WIDGET_ID_VALID + "&userid=test&shareddatakey=participantstest");
+    client.executeMethod(get);
+    code = get.getStatusCode();
+    assertEquals(200, code);
+    String response = get.getResponseBodyAsString();
+    assertTrue(response
+        .contains("<participant id=\"80\" display_name=\"bob\" thumbnail_url=\"http://www.test.org\" role=\"host\" />"));
+    get.releaseConnection();
+
   }
 
 }

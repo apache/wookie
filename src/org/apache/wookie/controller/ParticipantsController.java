@@ -105,6 +105,7 @@ public class ParticipantsController extends Controller {
 		String participantId = request.getParameter("participant_id"); //$NON-NLS-1$
 		String participantDisplayName = request.getParameter("participant_display_name"); //$NON-NLS-1$
 		String participantThumbnailUrl = request.getParameter("participant_thumbnail_url"); //$NON-NLS-1$
+		String participantRole = request.getParameter("participant_role"); 
 		
 		// Check required params
 		if (participantId == null || participantId.trim().equals("")) {
@@ -112,7 +113,7 @@ public class ParticipantsController extends Controller {
 			throw new InvalidParametersException();
 		}
 
-		if (new SharedContext(instance).addParticipant(participantId, participantDisplayName, participantThumbnailUrl)){
+		if (new SharedContext(instance).addParticipant(participantId, participantDisplayName, participantThumbnailUrl, participantRole)){
 			Notifier.notifyWidgets(session, instance, Notifier.PARTICIPANTS_UPDATED);
 			_logger.debug("added user to widget instance: " + participantId);
 			return true;

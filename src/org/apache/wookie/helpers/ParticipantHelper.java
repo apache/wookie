@@ -102,6 +102,7 @@ public class ParticipantHelper {
 	  element.setAttribute("id", participant.getParticipantId());
 	  element.setAttribute("display_name", participant.getParticipantDisplayName());
 	  element.setAttribute("thumbnail_url", participant.getParticipantThumbnailUrl());
+	  if (participant.getRole() != null) element.setAttribute("role", participant.getRole());
 	  return element;
 	}
 
@@ -116,6 +117,7 @@ public class ParticipantHelper {
     obj.put("participant_id", participant.getParticipantId());
     obj.put("participant_display_name", participant.getParticipantDisplayName());
     obj.put("participant_thumbnail_url", participant.getParticipantThumbnailUrl());
+    if (participant.getRole() != null) obj.put("participant_role", participant.getRole());
     return obj;
 	}
 
