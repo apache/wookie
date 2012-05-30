@@ -317,6 +317,8 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 			postdata.append(URLEncoder.encode(user.getScreenName(), "UTF-8"));
 			postdata.append("&participant_thumbnail_url=");
 			postdata.append(URLEncoder.encode(user.getThumbnailUrl(), "UTF-8"));
+			postdata.append("&participant_role=");
+			postdata.append(URLEncoder.encode(user.getRole(), "UTF-8"));
 		}
 		catch (UnsupportedEncodingException e) {
 			throw new WookieConnectorException("Must support UTF-8 encoding", e);
@@ -766,7 +768,8 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 				String id = participantEl.getAttribute("id");
 				String name = participantEl.getAttribute("display_name");
 				String thumbnail = participantEl.getAttribute("thumbnail_url");
-				User user = new User(id, name, thumbnail);
+				String role = participantEl.getAttribute("role");
+				User user = new User(id, name, thumbnail, role);
 				users[idx] = user;
 			}
 			return users;

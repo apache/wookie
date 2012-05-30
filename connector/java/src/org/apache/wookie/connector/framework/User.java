@@ -21,6 +21,7 @@ public class User {
   private String loginName = "UNKNOWN";
   private String screenName = "UNKNOWN";
   private String thumbnailUrl = "";
+  private String role = null;
   
   /**
    * Create a new user.
@@ -38,11 +39,27 @@ public class User {
    * 
    * @param loginName
    * @param screenName
+   * @param thumbnailUrl
    */
   public User(String loginName, String screenName, String thumbnailUrl) {
     setLoginName(loginName);
     setScreenName(screenName);
     setThumbnailUrl(thumbnailUrl);
+  }
+  
+  /**
+   * Create a new user.
+   * 
+   * @param loginName
+   * @param screenName
+   * @param thumbnailUrl
+   * @param isHost
+   */
+  public User(String loginName, String screenName, String thumbnailUrl, String role) {
+    setLoginName(loginName);
+    setScreenName(screenName);
+    setThumbnailUrl(thumbnailUrl);
+    setRole(role);
   }
 
   /**
@@ -100,5 +117,20 @@ public class User {
    */
   public String getThumbnailUrl() {
     return this.thumbnailUrl;
-  } 
+  }
+
+  /**
+   * @return the role
+   */
+  public String getRole() {
+	  return role;
+  }
+
+  /**
+   * @param role the role to set
+   */
+  public void setRole(String role) {
+	  this.role = role;
+  }
+
 }

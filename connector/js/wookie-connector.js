@@ -168,6 +168,8 @@ var Wookie = {
             postdata = postdata + encodeURI(Wookie.currentUser.loginName);
             postdata = postdata + "&widgetid=";
             postdata = postdata + encodeURI(id);
+            postdata = postdata + "&participant_role=";
+            postdata = postdata + encodeURI(Wookie.currentUser.role);
             postdata = postdata + "&participant_display_name=";
             postdata = postdata + encodeURI(Wookie.currentUser.screenName);
             postdata = postdata + "&participant_id=";
@@ -187,10 +189,11 @@ var Wookie = {
         return Wookie.instances[key];
     },
     
-    setCurrentUser: function(loginName, screenName, thumbnailUrl){
+    setCurrentUser: function(loginName, screenName, thumbnailUrl, role){
         var user = {};
         user.loginName = loginName;
         user.screenName = screenName;
+        user.role = role;
         if (!thumbnailUrl || typeof thumbnailUrl === "undefined") {
             user.thumbnailUrl = "";
         } else {
