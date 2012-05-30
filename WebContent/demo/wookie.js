@@ -86,7 +86,7 @@ function updateWidgets(widgets){
 }
 
 function showWidget(id){
-    Wookie.setCurrentUser("alice","alice","/wookie/demo/alice.png");
+    Wookie.setCurrentUser("alice","alice","/wookie/demo/alice.png", "host");
     var widgetInstance = Wookie.getOrCreateInstance(id);
     $('#preview_info').html('<br/>' + widgetInstance.title + '<br/>' + id);
     $("#preview_alice_widget").html('');
