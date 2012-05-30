@@ -23,6 +23,9 @@ package org.apache.wookie.beans;
  */
 public interface IParticipant extends IBean
 {
+	
+	public static final String HOST_ROLE = "host";
+	
     /**
      * Get widget shared data key.
      * 
@@ -78,4 +81,15 @@ public interface IParticipant extends IBean
      * @param participantThumbnailUrl participant thumbnail URL
      */
     void setParticipantThumbnailUrl(String participantThumbnailUrl);
+    
+    /**
+     * @return get the role of the participant in the current context
+     */
+    String getRole();
+    
+    /**
+     * Set the role of the participant in the current context
+     * @param role
+     */
+    void setRole(String role);
 }

@@ -180,6 +180,7 @@
     <column name="participant_display_name" required="true" size="255" type="VARCHAR"/>
     <column name="participant_thumbnail_url" size="1024" type="VARCHAR"/>
     <column name="sharedDataKey" required="true" size="255" type="VARCHAR"/>
+    <column name="role" size="255" type="VARCHAR"/>
   </table>
 
   <table name="Preference">

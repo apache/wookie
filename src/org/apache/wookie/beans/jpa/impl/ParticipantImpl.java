@@ -25,6 +25,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.apache.openjpa.persistence.Type;
 import org.apache.wookie.beans.IParticipant;
 
 /**
@@ -64,6 +65,11 @@ public class ParticipantImpl implements IParticipant
     @Basic(optional=false)
     @Column(name="sharedDataKey", nullable=false)
     private String sharedDataKey;
+    
+    @Basic
+    @Column(name="role", nullable=false)
+    @Type(String.class)
+    private String role;
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IBean#getId()
@@ -136,4 +142,19 @@ public class ParticipantImpl implements IParticipant
     {
         this.sharedDataKey = sharedDataKey;
     }
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IParticipant#getRole()
+	 */
+	public String getRole() {
+		return role;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IParticipant#setRole(java.lang.String)
+	 */
+	public void setRole(String role) {
+		this.role = role;
+	}
+
 }

@@ -41,6 +41,7 @@ import org.apache.wookie.helpers.SharedDataHelper;
 public class SharedContext {
   
   private String sharedDataKey;
+  private IWidgetInstance widgetInstance;
   
   public SharedContext(String sharedDataKey){
     this.sharedDataKey = sharedDataKey; 
@@ -51,6 +52,7 @@ public class SharedContext {
     // Use the internal shared data key of the instance
     //
     this.sharedDataKey = SharedDataHelper.getInternalSharedDataKey(widgetInstance);
+    this.widgetInstance = widgetInstance;
   }
   
   /**
@@ -190,7 +192,7 @@ public class SharedContext {
     IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
     return persistenceManager.findByValue(IParticipant.class, "sharedDataKey", this.sharedDataKey);
   }
-  
+
   /**
    * Add a participant to a shared context
    * @param participantId the id property of the participant to add
@@ -199,6 +201,17 @@ public class SharedContext {
    * @return true if the participant was successfully added, otherwise false
    */
   public boolean addParticipant(String participantId, String participantDisplayName, String participantThumbnailUrl) {
+	  return addParticipant(participantId, participantDisplayName, participantThumbnailUrl, null);
+  }
+  
+  /**
+   * Add a participant to a shared context
+   * @param participantId the id property of the participant to add
+   * @param participantDisplayName the display name property of the participant to add
+   * @param participantThumbnailUrl the thumbnail url property of the participant to add
+   * @return true if the participant was successfully added, otherwise false
+   */
+  public boolean addParticipant(String participantId, String participantDisplayName, String participantThumbnailUrl, String role) {
 
     //
     // Does participant already exist?
@@ -214,6 +227,7 @@ public class SharedContext {
     participant.setParticipantId(participantId);
     participant.setParticipantDisplayName(participantDisplayName);
     participant.setParticipantThumbnailUrl(participantThumbnailUrl);
+    participant.setRole(role);
     participant.setSharedDataKey(this.sharedDataKey);
     persistenceManager.save(participant);
     return true;
@@ -279,5 +293,40 @@ public class SharedContext {
     IParticipant [] participants = persistenceManager.findByValues(IParticipant.class, map);
     if(participants != null && participants.length == 1) return participants[0];
     return null;
+  }
+  
+  /**
+   * Get the participant associated with the widget instance as the viewer
+   * @param widgetInstance
+   * @return the IParticipant representing the viewer, or null if no match is found
+   */
+  public IParticipant getViewer(){
+    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+    Map<String, Object> map = new HashMap<String, Object>();
+    map.put("sharedDataKey", this.sharedDataKey);//$NON-NLS-1$
+    map.put("participantId", this.widgetInstance.getUserId());//$NON-NLS-1$
+    IParticipant [] participants = persistenceManager.findByValues(IParticipant.class, map);
+    if(participants != null && participants.length == 1) return participants[0];
+    return null;
+  }
+  
+  /**
+   * Get the participant designated as the host of the shared context. Note that
+   * if there are multiple hosts, only the first is returned.
+   * @return a participant designated the host, or null if no participant is host
+   */
+  public IParticipant getHost(){
+	  for (IParticipant participant : this.getParticipants()){
+		  if (participant.getRole().equals(IParticipant.HOST_ROLE)) return participant;
+	  }
+	  return null;
+  }
+  
+  public IParticipant[] getHosts(){
+	    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+	    Map<String, Object> map = new HashMap<String, Object>();
+	    map.put("sharedDataKey", this.sharedDataKey);//$NON-NLS-1$
+	    map.put("role", IParticipant.HOST_ROLE); //$NON-NLS-1$
+	    return persistenceManager.findByValues(IParticipant.class, map);
   }
 }
