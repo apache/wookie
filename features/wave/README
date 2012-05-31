@@ -1,0 +1,80 @@
+# Wave Gadget API Feature
+
+This feature provides widgets with the ability to use a shared context with participants and shared data (state).
+
+The API is based upon the original Google Wave Gadget API, and is largely interoperable with other implementations based on the Wave protocol and related specifications such as Apache Wave.
+
+To use the Wave Gadget API, widgets must be deployed in an environment with a shared context, consisting of a shared data key linking together instances. Also, the plugin or connector should create participants for each user in the shared context.
+
+## The Wave object
+
+Widgets interact with the feature using the `wave` object in the top level browsing context. For example, accessed using `window.wave` or more simply `wave`.
+
+The methods supported for the `wave` object are:
+
+### setStateCallback(callback)	
+
+Uses the passed callback parameter to define a callback function to be run when the gadget's shared state object changes. 
+
+The setStateCallback() callback function is always called once when the state is first received by the widget, and then  subsequently whenever a new state is received by the gadget. 
+
+### setParticipantCallback(callback)	
+Uses the passed callback parameter to define a callback function to be run when there is a change to the participants of  the shared context in which the widget resides. This includes participants getting loaded when the widget first runs, participants joining or leaving the context, or changes to a participant's information, such as a name change. This does not include a participant performing an operation within the context.
+
+### getState()	
+
+Returns the widget's shared state object, which conceptually is a key-value map. Once you have the state object, you can perform operations on it like querying for the value of particular keys. 
+
+### getParticipants()
+
+Returns the participants in the shared context. 
+
+### getViewer()
+
+Returns the current viewer of the widget instance.
+
+### getHost()
+
+Returns the host of the shared context; that is, the user who is designated as the owner or creator of the context in which the widget is placed.
+
+### getHosts()
+
+Returns all participants identified as having the role of host, where multiple hosts are permitted.
+
+## The State Object
+
+### get(key)
+
+Get a single value from the state. For example, `wave.getState().get('count')` returns the value for the count key. Note that both keys and values must be strings.
+
+### submitDelta(delta)	
+
+Updates the state object with delta, which is a map of key-value pairs representing an update. For example, `wave.getState().submitDelta({'count': 5})` sets the value of the count key to '5'. All participants will see the update in the shared state
+
+### submitValue(key, value)
+
+Create or update a single key-value pair in the shared state.
+
+### reset()
+
+Clears all key-value pairs from the shared state.
+
+### toString()
+
+Returns the state information
+
+## The Participant Object
+
+Each participant - including the host and the viewer - has a basic set of user profile information available through the API:
+
+### getDisplayName()
+
+Returns a name to display for the participant.
+
+### getId()
+
+Returns a user id.
+
+### getThumbnailUrl()
+
+Returns a URL for the user's avatar or profile image.
