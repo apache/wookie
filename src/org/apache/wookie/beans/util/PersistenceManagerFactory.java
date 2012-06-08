@@ -17,6 +17,7 @@ package org.apache.wookie.beans.util;
 import java.lang.reflect.Method;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.wookie.beans.IAuthor;
 import org.apache.wookie.beans.IDescription;
 import org.apache.wookie.beans.IName;
 import org.apache.wookie.beans.IStartFile;
@@ -89,9 +90,12 @@ public class PersistenceManagerFactory
                     widget.setHeight(350);
                     widget.setWidth(500);
                     widget.setGuid("http://notsupported");
-                    widget.setWidgetAuthor("Paul Sharples");
-                    widget.setWidgetAuthorEmail("p.sharples@bolton.ac.uk");
-                    widget.setWidgetAuthorHref("http://iec.bolton.ac.uk");
+                    
+                    IAuthor author = persistenceManager.newInstance(IAuthor.class);
+                    author.setAuthor("Paul Sharples");
+                    author.setEmail("p.sharples@bolton.ac.uk");
+                    author.setHref("http://iec.bolton.ac.uk");
+                    widget.setAuthor(author);
                     widget.setVersion("v1.0");
                     IName widgetName = persistenceManager.newInstance(IName.class);
                     widgetName.setName("Unsupported widget widget");

@@ -15,6 +15,7 @@ package org.apache.wookie.util;
 
 import java.util.HashMap;
 
+import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
@@ -44,7 +45,8 @@ org.directwebremoting.extend.PageNormalizer {
 	 * @return the normalized URI of the widget instance
 	 */
 	public String getNormalizedPage(IWidgetInstance instance){
-		return super.normalizePage(instance.getWidget().getUrl())+"?"+instance.getApiKey()+"="+SharedDataHelper.getInternalSharedDataKey(instance);
+		
+		return super.normalizePage(IWidget.Utilities.getUrl(instance.getWidget(), instance.getLang()))+"?"+instance.getApiKey()+"="+SharedDataHelper.getInternalSharedDataKey(instance);
 	}
 
 	/**

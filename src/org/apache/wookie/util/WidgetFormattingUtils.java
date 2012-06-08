@@ -62,14 +62,6 @@ public class WidgetFormattingUtils extends FormattingUtils{
 		return getFormatted(description.getDir(), description.getContent());
 	}
 	/**
-	 * Returns the CSS formatted i18n string for the widget author's name
-	 * @param widget  the Widget
-	 * @return a CSS-formatted i18n string
-	 */
-	public static String getFormattedWidgetAuthor(IWidget widget){
-		return getFormatted(widget.getWidgetAuthor());
-	}
-	/**
 	 * Returns the CSS formatted i18n string for the widget license
 	 * @param license the Widget's License 
 	 * @return a CSS-formatted i18n string
