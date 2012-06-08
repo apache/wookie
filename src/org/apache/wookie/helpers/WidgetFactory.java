@@ -201,8 +201,8 @@ public class WidgetFactory {
 			// now attach all parameters to this feature.
 			for(IParamEntity paramEntity : featureEntity.getParams()){
 	            IParam param = persistenceManager.newInstance(IParam.class);
-				param.setParameterName(paramEntity.getName());
-				param.setParameterValue(paramEntity.getValue());
+				param.setName(paramEntity.getName());
+				param.setValue(paramEntity.getValue());
 	            feature.getParameters().add(param);
 			}
 		}

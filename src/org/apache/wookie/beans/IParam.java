@@ -28,26 +28,26 @@ public interface IParam
      * 
      * @return parameter name
      */
-    String getParameterName();
+    String getName();
     
     /**
      * Set widget feature parameter name.
      * 
      * @return parameterName parameter name
      */
-    void setParameterName(String parameterName);
+    void setName(String name);
     
     /**
      * Get widget feature parameter value.
      * 
      * @return parameter value
      */
-    String getParameterValue();
+    String getValue();
     
     /**
      * Set widget feature parameter value.
      * 
      * @return parameterValue parameter value
      */
-    void setParameterValue(String parameterValue);
+    void setValue(String value);
 }

@@ -102,15 +102,15 @@ public class oAuthClient implements IFeature {
 		String authzServer = null;
 		String scope = ""; 
 		for (IParam aParam : oAuthParams) {
-			String paramName = aParam.getParameterName().toLowerCase();
-			String paramValue = aParam.getParameterValue();
+			String paramName = aParam.getName().toLowerCase();
+			String paramValue = aParam.getValue();
 			if ("authzserver".equals(paramName)) {
 				authzServer = paramValue;
 			} else if ("clientid".equals(paramName)) {
 				if (!"auto".equalsIgnoreCase(paramValue)) {
 					clientId = paramValue;
 				}
-			} else if ("scope".equals(aParam.getParameterName())) {
+			} else if ("scope".equals(aParam.getName())) {
 				scope = paramValue;
 			} else if ("redirecturi".equals(paramName)) {
 				if (paramValue.length() != 0 && !"auto".equalsIgnoreCase(paramValue)) {
@@ -237,7 +237,7 @@ public class oAuthClient implements IFeature {
 		Collection<IParam> oAuthParams = oAuthFeature.getParameters();
 		Map<String, String> oAuthParamMap = new HashMap<String, String>();
 		for (IParam aParam : oAuthParams) {
-			oAuthParamMap.put(aParam.getParameterName(), aParam.getParameterValue());
+			oAuthParamMap.put(aParam.getName(), aParam.getValue());
 		}
 		return oAuthParamMap;
 	}

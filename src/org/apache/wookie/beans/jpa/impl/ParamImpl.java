@@ -74,7 +74,7 @@ public class ParamImpl implements IParam, IInverseRelationship<FeatureImpl>
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IParam#getParameterName()
      */
-    public String getParameterName()
+    public String getName()
     {
         return parameterName;
     }
@@ -82,7 +82,7 @@ public class ParamImpl implements IParam, IInverseRelationship<FeatureImpl>
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IParam#setParameterName(java.lang.String)
      */
-    public void setParameterName(String parameterName)
+    public void setName(String parameterName)
     {
         this.parameterName = parameterName;
     }
@@ -90,7 +90,7 @@ public class ParamImpl implements IParam, IInverseRelationship<FeatureImpl>
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IParam#getParameterValue()
      */
-    public String getParameterValue()
+    public String getValue()
     {
         return parameterValue;
     }
@@ -98,7 +98,7 @@ public class ParamImpl implements IParam, IInverseRelationship<FeatureImpl>
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IParam#setParameterValue(java.lang.String)
      */
-    public void setParameterValue(String parameterValue)
+    public void setValue(String parameterValue)
     {
         this.parameterValue = parameterValue;
     }
