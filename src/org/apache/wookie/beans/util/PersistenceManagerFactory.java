@@ -92,7 +92,7 @@ public class PersistenceManagerFactory
                     widget.setGuid("http://notsupported");
                     
                     IAuthor author = persistenceManager.newInstance(IAuthor.class);
-                    author.setAuthor("Paul Sharples");
+                    author.setAuthorName("Paul Sharples");
                     author.setEmail("p.sharples@bolton.ac.uk");
                     author.setHref("http://iec.bolton.ac.uk");
                     widget.setAuthor(author);
@@ -102,7 +102,7 @@ public class PersistenceManagerFactory
                     widgetName.setShortName("Unsupported");
                     widget.getNames().add(widgetName);
                     IDescription widgetDescription = persistenceManager.newInstance(IDescription.class);
-                    widgetDescription.setContent("This widget is a placeholder for when no corresponding widget is found for a given type");
+                    widgetDescription.setDescription("This widget is a placeholder for when no corresponding widget is found for a given type");
                     widget.getDescriptions().add(widgetDescription);
                     IStartFile widgetStartFile = persistenceManager.newInstance(IStartFile.class);
                     widgetStartFile.setUrl(WidgetRuntimeHelper.getWebContextPath() + "/wservices/notsupported/index.htm");

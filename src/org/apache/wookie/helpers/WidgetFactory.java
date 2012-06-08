@@ -120,7 +120,7 @@ public class WidgetFactory {
 	private static void createAuthor(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
 	   if (model.getAuthor() != null){
 	      IAuthor author = persistenceManager.newInstance(IAuthor.class);
-	      author.setAuthor(model.getAuthor().getAuthorName());
+	      author.setAuthorName(model.getAuthor().getAuthorName());
 	      author.setEmail(model.getAuthor().getEmail());
 	      author.setHref(model.getAuthor().getHref());
 	      author.setDir(model.getAuthor().getDir());
@@ -153,11 +153,11 @@ public class WidgetFactory {
 	private static void createDescriptions(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
 		for (IDescriptionEntity desc:model.getDescriptions()){
 			IDescription widgetDesc = persistenceManager.newInstance(IDescription.class);
-			widgetDesc.setContent(desc.getDescription());
+			widgetDesc.setDescription(desc.getDescription());
 			widgetDesc.setLang(desc.getLang());
 			widgetDesc.setDir(desc.getDir());
             widget.getDescriptions().add(widgetDesc);
-		}
+		} 
 	}
 
 	private static void createIcons(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
@@ -174,7 +174,7 @@ public class WidgetFactory {
 	private static void createLicenses(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
 		for(ILicenseEntity licenseModel: model.getLicensesList()){
             ILicense license = persistenceManager.newInstance(ILicense.class);
-            license.setText(licenseModel.getLicenseText());
+            license.setLicenseText(licenseModel.getLicenseText());
             license.setHref(licenseModel.getHref());
             license.setLang(licenseModel.getLang());
             license.setDir(licenseModel.getDir());

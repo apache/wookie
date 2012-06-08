@@ -88,7 +88,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
         String email = "";
         String href = "";
 		if (widget.getAuthor() != null){
-            if (widget.getAuthor().getAuthor() != null) author = WidgetFormattingUtils.getEncoded(widget.getAuthor().getDir(), widget.getAuthor().getAuthor());
+            if (widget.getAuthor().getAuthorName() != null) author = WidgetFormattingUtils.getEncoded(widget.getAuthor().getDir(), widget.getAuthor().getAuthorName());
 	        if (widget.getAuthor().getEmail() != null) email = widget.getAuthor().getEmail();
 	        if (widget.getAuthor().getHref() != null) href = widget.getAuthor().getHref();
 		}
@@ -101,7 +101,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		
 		String description = "";
 		IDescription idescription = (IDescription)LocalizationUtils.getLocalizedElement(widget.getDescriptions().toArray(new IDescription[widget.getDescriptions().size()]), locales, widget.getDefaultLocale());
-		if (idescription != null && idescription.getContent() != null) description = WidgetFormattingUtils.getEncoded(idescription.getDir(), idescription.getContent());
+		if (idescription != null && idescription.getDescription() != null) description = WidgetFormattingUtils.getEncoded(idescription.getDir(), idescription.getDescription());
 		
 		String version = "";
 		if (widget.getVersion() != null) version = WidgetFormattingUtils.getEncoded(widget.getDir(), widget.getVersion());

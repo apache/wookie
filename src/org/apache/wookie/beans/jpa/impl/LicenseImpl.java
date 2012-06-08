@@ -90,7 +90,7 @@ public class LicenseImpl extends LocalizedBeanImpl implements ILicense, IInverse
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.ILicense#getText()
      */
-    public String getText()
+    public String getLicenseText()
     {
         return text;
     }
@@ -98,7 +98,7 @@ public class LicenseImpl extends LocalizedBeanImpl implements ILicense, IInverse
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.ILicense#setText(java.lang.String)
      */
-    public void setText(String text)
+    public void setLicenseText(String text)
     {
         this.text = text;
     }

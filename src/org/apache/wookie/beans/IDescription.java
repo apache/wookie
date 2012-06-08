@@ -28,12 +28,12 @@ public interface IDescription extends ILocalizedBean
      * 
      * @return content
      */
-    String getContent();
+    String getDescription();
     
     /**
      * Set widget description content.
      * 
      * @param text content
      */
-    void setContent(String text);
+    void setDescription(String text);
 }

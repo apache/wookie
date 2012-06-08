@@ -59,7 +59,7 @@ public class WidgetFormattingUtils extends FormattingUtils{
 	 * @return a CSS-formatted i18n string
 	 */
 	public static String getFormattedWidgetDescription(IDescription description){
-		return getFormatted(description.getDir(), description.getContent());
+		return getFormatted(description.getDir(), description.getDescription());
 	}
 	/**
 	 * Returns the CSS formatted i18n string for the widget license
@@ -67,7 +67,7 @@ public class WidgetFormattingUtils extends FormattingUtils{
 	 * @return a CSS-formatted i18n string
 	 */
 	public static String getFormattedWidgetLicense(ILicense license){
-		return getFormatted(license.getDir(), license.getText());
+		return getFormatted(license.getDir(), license.getLicenseText());
 	}
 
 

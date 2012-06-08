@@ -110,7 +110,7 @@ public class WidgetAdvertHelper {
 	    if (widget.getAuthor().getEmail() != null) out+= " email=\""+widget.getAuthor().getEmail()+"\"";
 	    if (widget.getAuthor().getHref() != null) out+= " href=\""+widget.getAuthor().getHref()+"\"";
 	    out += ">";
-	    if (widget.getAuthor().getAuthor()!=null) out += StringEscapeUtils.escapeXml(widget.getAuthor().getAuthor());	    
+	    if (widget.getAuthor().getAuthorName()!=null) out += StringEscapeUtils.escapeXml(widget.getAuthor().getAuthorName());	    
 	    out += "</author>\n";
 	    return out;
 	  } else {
@@ -127,7 +127,7 @@ public class WidgetAdvertHelper {
 			if (license.getLang()!=null) out+=" xml:lang=\""+license.getLang()+"\"";
 			if (license.getHref()!=null) out+=" href=\""+license.getHref()+"\"";
 			if (license.getDir()!=null) out+=" dir=\""+license.getDir()+"\"";
-			out+=">"+StringEscapeUtils.escapeXml(license.getText())+"</license>\n";
+			out+=">"+StringEscapeUtils.escapeXml(license.getLicenseText())+"</license>\n";
 		}
 		return out;
 	}
@@ -164,7 +164,7 @@ public class WidgetAdvertHelper {
 		String out = "\t\t<description";
 		if (desc!= null && desc.getDir()!=null) out+=" dir=\""+desc.getDir()+"\"";
 		out += ">";
-		if (desc != null) out += StringEscapeUtils.escapeXml(desc.getContent());
+		if (desc != null) out += StringEscapeUtils.escapeXml(desc.getDescription());
 		out += "</description>\n";
 		return out;
 	}

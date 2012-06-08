@@ -29,7 +29,7 @@ import org.apache.wookie.beans.ILocalizedBean;
 @MappedSuperclass
 public abstract class LocalizedBeanImpl implements ILocalizedBean
 { 
-	@Basic
+	@Basic 
     @Column(name="dir")
     private String dir;
 

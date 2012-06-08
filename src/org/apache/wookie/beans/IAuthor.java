@@ -22,7 +22,7 @@ public interface IAuthor extends ILocalizedBean {
 	 * Get the details of the author, e.g. name or names of people and/or organisations
 	 * @return the author details, or null if there are no author details
 	 */
-	public String getAuthor();
+	public String getAuthorName();
 	
 	/**
 	 * Get the email address of the author
@@ -40,7 +40,7 @@ public interface IAuthor extends ILocalizedBean {
 	 * Set the author details
 	 * @param author tha author details to set
 	 */
-	public void setAuthor(String author);
+	public void setAuthorName(String author);
 	
 	/**
 	 * Set the author's email

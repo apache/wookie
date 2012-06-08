@@ -28,14 +28,14 @@ public interface ILicense extends ILocalizedBean
      * 
      * @return license text
      */
-    String getText();
+    String getLicenseText();
     
     /**
      * Set widget license text.
      * 
      * @param text license text
      */
-    void setText(String text);
+    void setLicenseText(String text);
     
     /**
      * Get widget license href URL.

@@ -70,7 +70,7 @@ public class DescriptionImpl extends LocalizedBeanImpl implements IDescription, 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IDescription#getContent()
      */
-    public String getContent()
+    public String getDescription()
     {
         return content;
     }
@@ -78,7 +78,7 @@ public class DescriptionImpl extends LocalizedBeanImpl implements IDescription, 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IDescription#setContent(java.lang.String)
      */
-    public void setContent(String text)
+    public void setDescription(String text)
     {
         this.content = text;
     }

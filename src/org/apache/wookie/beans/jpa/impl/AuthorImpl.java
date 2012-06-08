@@ -67,7 +67,7 @@ public class AuthorImpl extends LocalizedBeanImpl implements IAuthor, IInverseRe
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.beans.IAuthor#getAuthor()
 	 */
-	public String getAuthor() {
+	public String getAuthorName() {
 		return this.author;
 	}
 
@@ -88,7 +88,7 @@ public class AuthorImpl extends LocalizedBeanImpl implements IAuthor, IInverseRe
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.beans.IAuthor#setAuthor(java.lang.String)
 	 */
-	public void setAuthor(String author) {
+	public void setAuthorName(String author) {
 		this.author = author;
 	}
 
