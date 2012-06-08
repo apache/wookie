@@ -213,6 +213,13 @@ public class GadgetAdapter implements W3CWidget {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.w3c.ILocalizedEntity#setDir(java.lang.String)
+	 */
+	public void setDir(String dir) {
+		// TODO Auto-generated method stub
+	}
 
 	public boolean isValid() {
 		// TODO Auto-generated method stub
