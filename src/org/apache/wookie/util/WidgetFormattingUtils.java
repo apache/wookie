@@ -43,7 +43,7 @@ public class WidgetFormattingUtils extends FormattingUtils{
 	 * @return a CSS-formatted i18n string
 	 */
 	public static String getFormattedWidgetShortName(IName name){
-		return getFormatted(name.getDir(), name.getShortName());
+		return getFormatted(name.getDir(), name.getShort());
 	}
 	/**
 	 * Returns the CSS formatted i18n string for the widget version

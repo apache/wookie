@@ -145,7 +145,7 @@ public class WidgetFactory {
 			widgetName.setLang(name.getLang());
 			widgetName.setDir(name.getDir());
 			widgetName.setName(name.getName());
-			widgetName.setShortName(name.getShort());
+			widgetName.setShort(name.getShort());
             widget.getNames().add(widgetName);
 		}
 	}

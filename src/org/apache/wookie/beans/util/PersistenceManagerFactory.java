@@ -99,7 +99,7 @@ public class PersistenceManagerFactory
                     widget.setVersion("v1.0");
                     IName widgetName = persistenceManager.newInstance(IName.class);
                     widgetName.setName("Unsupported widget widget");
-                    widgetName.setShortName("Unsupported");
+                    widgetName.setShort("Unsupported");
                     widget.getNames().add(widgetName);
                     IDescription widgetDescription = persistenceManager.newInstance(IDescription.class);
                     widgetDescription.setDescription("This widget is a placeholder for when no corresponding widget is found for a given type");

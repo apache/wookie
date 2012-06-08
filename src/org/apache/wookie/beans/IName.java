@@ -28,14 +28,14 @@ public interface IName extends ILocalizedBean
      * 
      * @return short name
      */
-    String getShortName();
+    String getShort();
     
     /**
      * Set widget short name.
      * 
      * @param shortName short name
      */
-    void setShortName(String shortName);
+    void setShort(String shortName);
     
     /**
      * Get widget name.

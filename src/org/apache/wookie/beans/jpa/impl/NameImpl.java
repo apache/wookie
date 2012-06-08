@@ -90,7 +90,7 @@ public class NameImpl extends LocalizedBeanImpl implements IName, IInverseRelati
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IName#getShortName()
      */
-    public String getShortName()
+    public String getShort()
     {
         return shortName;
     }
@@ -98,7 +98,7 @@ public class NameImpl extends LocalizedBeanImpl implements IName, IInverseRelati
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IName#setShortName(java.lang.String)
      */
-    public void setShortName(String shortName)
+    public void setShort(String shortName)
     {
         this.shortName = shortName;
     }

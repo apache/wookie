@@ -146,7 +146,7 @@ public class WidgetAdvertHelper {
 		String shortName = null;
 		String longName = null;
 		if (name != null) {
-			shortName = name.getShortName();
+			shortName = name.getShort();
 			longName = name.getName();
 		}
 		String out = "\t\t<name "; 
