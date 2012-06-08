@@ -51,10 +51,16 @@ public abstract class AbstractLocalizedEntity implements ILocalizedEntity {
 		this.lang = lang;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.w3c.ILocalizedEntity#getDir()
+	 */
 	public String getDir() {
 		return dir;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.w3c.ILocalizedEntity#setDir(java.lang.String)
+	 */
 	public void setDir(String dir) {
 		this.dir = dir;
 	}

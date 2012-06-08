@@ -25,6 +25,12 @@ public interface ILocalizedEntity extends IElement, ILocalizedElement {
 	public String getDir();
 	
 	/**
+	 * Set the direction of text, which can be one of "ltr", "rtl", "lro", or "rlo". The default value is "ltr".
+	 * @param dir the direction to set
+	 */
+	public void setDir(String dir);
+	
+	/**
 	 * Checks whether this object has valid localization settings; specifically that the lang property of this
 	 * object is a valid language-tag according to BCP-47 
 	 * @return true if the locale for this object is aeither  valid language tag or null, otherwise false.

@@ -25,9 +25,5 @@ public interface ILicenseEntity extends ILocalizedEntity {
 	public String getHref();
 
 	public void setHref(String href);
-	
-	public String getDir();
-	
-	public void setDir(String dir);
 
 }
