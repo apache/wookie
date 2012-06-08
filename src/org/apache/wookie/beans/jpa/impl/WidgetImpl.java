@@ -397,54 +397,6 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     }
 
     /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#getWidgetAuthor()
-     */
-    public String getWidgetAuthor()
-    {
-        return getOrCreateAuthor().getAuthor();
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#setWidgetAuthor(java.lang.String)
-     */
-    public void setWidgetAuthor(String widgetAuthor)
-    {
-        this.getOrCreateAuthor().setAuthor(widgetAuthor);
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#getWidgetAuthorEmail()
-     */
-    public String getWidgetAuthorEmail()
-    {
-        return getOrCreateAuthor().getEmail();
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#setWidgetAuthorEmail(java.lang.String)
-     */
-    public void setWidgetAuthorEmail(String widgetAuthorEmail)
-    {
-        this.getOrCreateAuthor().setEmail(widgetAuthorEmail);
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#getWidgetAuthorHref()
-     */
-    public String getWidgetAuthorHref()
-    {
-        return getOrCreateAuthor().getHref();
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#setWidgetAuthorHref(java.lang.String)
-     */
-    public void setWidgetAuthorHref(String widgetAuthorHref)
-    {
-        this.getOrCreateAuthor().setHref(widgetAuthorHref);
-    }
-
-    /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getWidgetIcons()
      */
     public Collection<IWidgetIcon> getWidgetIcons()
@@ -488,30 +440,6 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     }
 
     /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#getWidgetDescription()
-     */
-    public String getWidgetDescription()
-    {
-        return Utilities.getWidgetDescription(this, "en");
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#getWidgetShortName()
-     */
-    public String getWidgetShortName()
-    {
-        return Utilities.getWidgetShortName(this, "en");
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#getWidgetTitle()
-     */
-    public String getWidgetTitle()
-    {
-        return Utilities.getWidgetTitle(this, "en");
-    }
-
-    /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getWidgetTitle(java.lang.String)
      */
     public String getWidgetTitle(String locale)
@@ -519,21 +447,6 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
         return Utilities.getWidgetTitle(this, locale);
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#getUrl()
-     */
-    public String getUrl()
-    {
-        return Utilities.getUrl(this, "en");
-    }
-    
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.IWidget#getWidgetIconLocation()
-     */
-    public String getWidgetIconLocation()
-    {
-        return Utilities.getWidgetIconLocation(this, "en");
-    }
 
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.beans.IWidget#getPackagePath()

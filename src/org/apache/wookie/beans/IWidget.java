@@ -118,54 +118,6 @@ public interface IWidget extends ILocalizedBean, IBean
     void setAuthor(IAuthor author);
 
     /**
-     * Get widget author.
-     * 
-     * @return widget author
-     */
-    @Deprecated
-    String getWidgetAuthor();
-    
-    /**
-     * Set widget author.
-     * 
-     * @param widgetAuthor widget author
-     */
-    @Deprecated
-    void setWidgetAuthor(String widgetAuthor);
-
-    /**
-     * Get widget author email address.
-     * 
-     * @return widget author email
-     */
-    @Deprecated
-    String getWidgetAuthorEmail();
-    
-    /**
-     * Set widget author email address.
-     * 
-     * @param widgetAuthorEmail widget author email
-     */
-    @Deprecated
-    void setWidgetAuthorEmail(String widgetAuthorEmail);
-
-    /**
-     * Get widget author web page href URL.
-     * 
-     * @return widget author href
-     */
-    @Deprecated
-    String getWidgetAuthorHref();
-    
-    /**
-     * Set widget author web page href URL.
-     * 
-     * @param widgetAuthorHref widget author href
-     */
-    @Deprecated
-    void setWidgetAuthorHref(String widgetAuthorHref);
-
-    /**
      * Get widget version number.
      * 
      * @return widget version
@@ -278,51 +230,11 @@ public interface IWidget extends ILocalizedBean, IBean
     void setPreferenceDefaults(Collection<IPreferenceDefault> preferenceDefaults);
     
     /**
-     * Get default widget title, (deprecated in favor of locale specifying APIs).
-     * 
-     * @return widget title
-     */
-    @Deprecated
-    String getWidgetTitle();
-    
-    /**
      * Get widget title for locale.
      * 
      * @return widget title
      */
     String getWidgetTitle(String locale);
-    
-    /**
-     * Get default widget description, (deprecated in favor of locale specifying APIs).
-     * 
-     * @return widget description
-     */
-    @Deprecated
-    String getWidgetDescription();
-
-    /**
-     * Get default widget short name, (deprecated in favor of locale specifying APIs).
-     * 
-     * @return widget short name
-     */
-    @Deprecated
-    String getWidgetShortName();
-    
-    /**
-     * Get default start file url, (deprecated in favor of locale specifying APIs).
-     * 
-     * @return start file url
-     */
-    @Deprecated
-    String getUrl();
-    
-    /**
-     * Get default widget icon location, (deprecated in favor of locale specifying APIs).
-     * 
-     * @return widget icon location
-     */
-    @Deprecated
-    String getWidgetIconLocation();
     
     /**
      * Shared implementation utilities.
