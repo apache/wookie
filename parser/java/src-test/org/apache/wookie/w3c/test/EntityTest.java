@@ -100,8 +100,8 @@ public class EntityTest {
 		params.add(param2);
 		assertEquals("name2", param2.getName());
 		assertEquals("value2", param2.getValue());
-		feature.setParams(params);
-		assertEquals(2,feature.getParams().size());
+		feature.setParameters(params);
+		assertEquals(2,feature.getParameters().size());
 	}
 	
 	@Test

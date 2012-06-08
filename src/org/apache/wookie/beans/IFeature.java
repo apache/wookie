@@ -14,7 +14,7 @@
 
 package org.apache.wookie.beans;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * IFeature - a widget feature found in the config.xml.
@@ -30,14 +30,14 @@ public interface IFeature
      * 
      * @return feature name
      */
-    String getFeatureName();
+    String getName();
     
     /**
      * Set widget feature name.
      * 
      * @param featureName feature name
      */
-    void setFeatureName(String featureName);
+    void setName(String featureName);
     
     /**
      * Get widget feature required flag.
@@ -58,12 +58,12 @@ public interface IFeature
      * 
      * @return parameters collection
      */
-    Collection<IParam> getParameters();
+    List<IParam> getParameters();
 
     /**
      * Set collection of widget feature parameters.
      * 
      * @param parameters parameters collection
      */
-    void setParameters(Collection<IParam> parameters);
+    void setParameters(List<IParam> parameters);
 }

@@ -87,7 +87,7 @@ public class oAuthClient implements IFeature {
 		Collection<org.apache.wookie.beans.IFeature> widgetFeatures = widgetInstance.getWidget().getFeatures();
 		org.apache.wookie.beans.IFeature oAuthFeature = null;
 		for (org.apache.wookie.beans.IFeature aFeature : widgetFeatures) {
-			if (getName().equals(aFeature.getFeatureName())) {
+			if (getName().equals(aFeature.getName())) {
 				oAuthFeature = aFeature;
 				break;
 			}
@@ -227,7 +227,7 @@ public class oAuthClient implements IFeature {
 		Collection<org.apache.wookie.beans.IFeature> widgetFeatures = widgetInstance.getWidget().getFeatures();
 		org.apache.wookie.beans.IFeature oAuthFeature = null;
 		for (org.apache.wookie.beans.IFeature aFeature : widgetFeatures) {
-			if (getName().equals(aFeature.getFeatureName())) {
+			if (getName().equals(aFeature.getName())) {
 				oAuthFeature = aFeature;
 				break;
 			}

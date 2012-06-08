@@ -19,11 +19,47 @@ package org.apache.wookie.w3c;
 import java.util.List;
 
 public interface IFeatureEntity extends IElement {
+	
+	/**
+     * Get widget feature name.
+     * 
+     * @return feature name
+     */
+    String getName();
+    
+    /**
+     * Set widget feature name.
+     * 
+     * @param name feature name
+     */
+    void setName(String name);
+    
+    /**
+     * Get widget feature required flag.
+     * 
+     * @return required flag
+     */
+    boolean isRequired();
+    
+    /**
+     * Set widget feature required flag.
+     * 
+     * @param required required flag
+     */
+    void setRequired(boolean required);
 
-	public String getName();
+    /**
+     * Get collection of widget feature parameters.
+     * 
+     * @return parameters collection
+     */
+    List<IParamEntity> getParameters();
 
-	public boolean isRequired();
-
-	public List<IParamEntity> getParams();
+    /**
+     * Set collection of widget feature parameters.
+     * 
+     * @param parameters parameters collection
+     */
+    void setParameters(List<IParamEntity> parameters);
 
 }

@@ -16,6 +16,7 @@ package org.apache.wookie.beans.jpa.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -91,7 +92,7 @@ public class FeatureImpl implements IFeature, IInverseRelationship<WidgetImpl>
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IFeature#getFeatureName()
      */
-    public String getFeatureName()
+    public String getName()
     {
         return featureName;
     }
@@ -99,7 +100,7 @@ public class FeatureImpl implements IFeature, IInverseRelationship<WidgetImpl>
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IFeature#setFeatureName(java.lang.String)
      */
-    public void setFeatureName(String featureName)
+    public void setName(String featureName)
     {
         this.featureName = featureName;
     }
@@ -107,19 +108,21 @@ public class FeatureImpl implements IFeature, IInverseRelationship<WidgetImpl>
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IFeature#getParameters()
      */
-    public Collection<IParam> getParameters()
+    public List<IParam> getParameters()
     {
         if (parameters == null)
         {
             parameters = new ArrayList<ParamImpl>();
         }
-        return new InverseRelationshipCollection<FeatureImpl,ParamImpl,IParam>(this, parameters);
+        ArrayList<IParam> params = new ArrayList<IParam>();
+        params.addAll( new InverseRelationshipCollection<FeatureImpl,ParamImpl,IParam>(this, parameters));
+        return params;
     }
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IFeature#setParameters(java.util.Collection)
      */
-    public void setParameters(Collection<IParam> parameters)
+    public void setParameters(List<IParam> parameters)
     {
         getParameters().clear();
         if (parameters != null)

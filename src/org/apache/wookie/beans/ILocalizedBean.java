@@ -25,7 +25,7 @@ import org.apache.wookie.w3c.ILocalizedElement;
  * @version $Id$
  */
 public interface ILocalizedBean extends ILocalizedElement
-{  
+{ 
     /**
      * Get localized text direction.
      * 

@@ -387,21 +387,21 @@ public class I18n extends ConformanceTest{
 		W3CWidget widget;
 		
 		widget = getWidget("031","lro");
-		assertEquals("םפללחק", widget.getFeatures().get(0).getParams().get(0).getName());
+		assertEquals("םפללחק", widget.getFeatures().get(0).getParameters().get(0).getName());
 		widget = getWidget("032","lro");
-		assertEquals("םפללחק", widget.getFeatures().get(0).getParams().get(0).getValue());
+		assertEquals("םפללחק", widget.getFeatures().get(0).getParameters().get(0).getValue());
 		widget = getWidget("031","ltr");
-		assertEquals("The arrow should point right -->", widget.getFeatures().get(0).getParams().get(0).getName());
+		assertEquals("The arrow should point right -->", widget.getFeatures().get(0).getParameters().get(0).getName());
 		widget = getWidget("032","ltr");
-		assertEquals("The arrow should point right -->", widget.getFeatures().get(0).getParams().get(0).getValue());	
+		assertEquals("The arrow should point right -->", widget.getFeatures().get(0).getParameters().get(0).getValue());	
 		widget = getWidget("031","rtl");
-		assertEquals("The arrow should point right -->", widget.getFeatures().get(0).getParams().get(0).getName());
+		assertEquals("The arrow should point right -->", widget.getFeatures().get(0).getParameters().get(0).getName());
 		widget = getWidget("032","rtl");
-		assertEquals("The arrow should point right -->", widget.getFeatures().get(0).getParams().get(0).getValue());	
+		assertEquals("The arrow should point right -->", widget.getFeatures().get(0).getParameters().get(0).getValue());	
 		widget = getWidget("031","rlo");
-		assertEquals("PASSED", widget.getFeatures().get(0).getParams().get(0).getName());
+		assertEquals("PASSED", widget.getFeatures().get(0).getParameters().get(0).getName());
 		widget = getWidget("032","rlo");
-		assertEquals("PASSED", widget.getFeatures().get(0).getParams().get(0).getValue());	
+		assertEquals("PASSED", widget.getFeatures().get(0).getParameters().get(0).getValue());	
 	}
 	
 	// Utilities

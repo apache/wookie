@@ -993,7 +993,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	@Test
 	public void e1(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-KNiLPOKdgQ/000/e1.wgt");
-		assertEquals(0,getTestFeature(widget).getParams().size());
+		assertEquals(0,getTestFeature(widget).getParameters().size());
 	}
  
 	// ta-rZdcMBExBX
@@ -1018,13 +1018,13 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		IFeatureEntity feature2 = widget.getFeatures().get(1);
 		assertEquals("feature:a9bb79c1", feature1.getName());
 		assertEquals("feature:a9bb79c1", feature2.getName());
-		assertEquals(1,feature1.getParams().size());
-		assertEquals(1,feature2.getParams().size());
-		assertEquals("test",feature1.getParams().get(0).getName());
-		assertEquals("test",feature2.getParams().get(0).getName());
+		assertEquals(1,feature1.getParameters().size());
+		assertEquals(1,feature2.getParameters().size());
+		assertEquals("test",feature1.getParameters().get(0).getName());
+		assertEquals("test",feature2.getParameters().get(0).getName());
 		assertTrue(
-			feature1.getParams().get(0).getValue().equals("pass1") && feature2.getParams().get(0).getValue().equals("pass2")
-		||  feature2.getParams().get(0).getValue().equals("pass1") && feature1.getParams().get(0).getValue().equals("pass2")
+			feature1.getParameters().get(0).getValue().equals("pass1") && feature2.getParameters().get(0).getValue().equals("pass2")
+		||  feature2.getParameters().get(0).getValue().equals("pass1") && feature1.getParameters().get(0).getValue().equals("pass2")
 		);
 	}
 
@@ -1059,15 +1059,15 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	@Test
 	public void dt(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-EGkPfzCBOz/000/dt.wgt");
-		assertEquals(0,getTestFeature(widget).getParams().size());
+		assertEquals(0,getTestFeature(widget).getParameters().size());
 	}
 	@Test
 	public void dg(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-EGkPfzCBOz/001/dg.wgt");
 		assertEquals(1,widget.getFeatures().size());
-		assertEquals(1,widget.getFeatures().get(0).getParams().size());
-		assertEquals("PASS", getTestFeature(widget).getParams().get(0).getName());
-		assertEquals("PASS", getTestFeature(widget).getParams().get(0).getValue());
+		assertEquals(1,widget.getFeatures().get(0).getParameters().size());
+		assertEquals("PASS", getTestFeature(widget).getParameters().get(0).getName());
+		assertEquals("PASS", getTestFeature(widget).getParameters().get(0).getValue());
 	}	
 	@Test
 	public void v9(){
@@ -1075,9 +1075,9 @@ public class PackagingAndConfiguration extends ConformanceTest{
 		assertEquals(1,widget.getFeatures().size());
 		IFeatureEntity feature1 = widget.getFeatures().get(0);
 		assertEquals("feature:a9bb79c1", feature1.getName());
-		assertEquals(2,feature1.getParams().size());
-		IParamEntity param1 = feature1.getParams().get(0);
-		IParamEntity param2 = feature1.getParams().get(1);
+		assertEquals(2,feature1.getParameters().size());
+		IParamEntity param1 = feature1.getParameters().get(0);
+		IParamEntity param2 = feature1.getParameters().get(1);
 		assertEquals("PASS",param1.getName());
 		assertEquals("PASS",param2.getName());
 		assertTrue(
@@ -1089,7 +1089,7 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	@Test
 	public void d6(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-xlgUWUVzCY/000/d6.wgt");
-		assertEquals(0,getTestFeature(widget).getParams().size());
+		assertEquals(0,getTestFeature(widget).getParameters().size());
 	}
 
 	// ta-CEGwkNQcWo
@@ -1097,13 +1097,13 @@ public class PackagingAndConfiguration extends ConformanceTest{
 	public void e2(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-CEGwkNQcWo/000/e2.wgt");
 		assertNotNull(getTestFeature(widget));
-		assertEquals(0,getTestFeature(widget).getParams().size());
+		assertEquals(0,getTestFeature(widget).getParameters().size());
 	}
 	@Test
 	public void e3(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-CEGwkNQcWo/001/e3.wgt");
 		assertNotNull(getTestFeature(widget));
-		assertEquals(0,getTestFeature(widget).getParams().size());
+		assertEquals(0,getTestFeature(widget).getParameters().size());
 	}
 	
 	// ta-bbbbbbbbbb

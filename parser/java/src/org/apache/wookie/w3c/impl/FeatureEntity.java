@@ -80,11 +80,11 @@ public class FeatureEntity implements IFeatureEntity {
 		fRequired = required;
 	}
 	
-	public List<IParamEntity> getParams() {
+	public List<IParamEntity> getParameters() {
 		return fParams;
 	}
 	
-	public void setParams(List<IParamEntity> params) {
+	public void setParameters(List<IParamEntity> params) {
 		fParams = params;
 	}
 	
@@ -140,7 +140,7 @@ public class FeatureEntity implements IFeatureEntity {
 		Element element = new Element(IW3CXMLConfiguration.FEATURE_ELEMENT, IW3CXMLConfiguration.MANIFEST_NAMESPACE);
 		element.setAttribute(IW3CXMLConfiguration.NAME_ATTRIBUTE, getName());
 		element.setAttribute(IW3CXMLConfiguration.REQUIRED_ATTRIBUTE, String.valueOf(isRequired()));
-		for (IParamEntity param: getParams()){
+		for (IParamEntity param: getParameters()){
 			element.addContent(param.toXml());
 		}
 		return element;

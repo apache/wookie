@@ -195,11 +195,11 @@ public class WidgetFactory {
 	private static void createFeatures(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
 		for(IFeatureEntity featureEntity: model.getFeatures()){
             IFeature feature = persistenceManager.newInstance(IFeature.class);
-			feature.setFeatureName(featureEntity.getName());
+			feature.setName(featureEntity.getName());
 			feature.setRequired(featureEntity.isRequired());
             widget.getFeatures().add(feature);
 			// now attach all parameters to this feature.
-			for(IParamEntity paramEntity : featureEntity.getParams()){
+			for(IParamEntity paramEntity : featureEntity.getParameters()){
 	            IParam param = persistenceManager.newInstance(IParam.class);
 				param.setName(paramEntity.getName());
 				param.setValue(paramEntity.getValue());
