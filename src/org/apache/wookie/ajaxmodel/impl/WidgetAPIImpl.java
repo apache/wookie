@@ -60,8 +60,8 @@ public class WidgetAPIImpl implements IWidgetAPI {
 	  IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 	  IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
 	  if(widgetInstance==null) return prefs;
-	  IPreference[] preferences = persistenceManager.findByValue(IPreference.class, "widgetInstance", widgetInstance);
-	  for (IPreference pref: preferences){
+	  
+	  for (IPreference pref: widgetInstance.getPreferences()){
 	    prefs.add(new PreferenceDelegate(pref));		  
 	  }
 	  return prefs;
