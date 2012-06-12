@@ -17,8 +17,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.wookie.w3c.IContentEntity;
-import org.apache.wookie.w3c.IIconEntity;
+import org.apache.wookie.w3c.IContent;
+import org.apache.wookie.w3c.IIcon;
+import org.apache.wookie.w3c.xml.IElement;
 import org.apache.wookie.w3c.W3CWidget;
 import org.jdom.Document;
 import org.jdom.output.XMLOutputter;
@@ -79,7 +80,7 @@ public class WidgetOutputter {
 	 */
 	private Document createWidgetDocument(W3CWidget widget){
 		widget = replacePaths(widget);
-		return new Document(widget.toXml());
+		return new Document(((IElement) widget).toXml());
 	}
 	
 	/**
@@ -98,14 +99,14 @@ public class WidgetOutputter {
 		W3CWidget localWidget = widget;
 		
 		// Replace Content Src attributes
-		for (IContentEntity content:localWidget.getContentList()){
+		for (IContent content:localWidget.getContentList()){
 			String src = content.getSrc();
 			src = src.replace(installedPath, "");
 			content.setSrc(src);
 		}
 		
 		// Replace Icon Src attributes
-		for (IIconEntity icon:localWidget.getIconsList()){
+		for (IIcon icon:localWidget.getIcons()){
 			String src = icon.getSrc();
 			src = src.replace(installedPath, "");
 			icon.setSrc(src);

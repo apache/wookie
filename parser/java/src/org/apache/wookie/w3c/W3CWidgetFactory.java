@@ -93,7 +93,7 @@ public class W3CWidgetFactory {
 		this.outputDirectory = null;
 		this.encodings = new String[]{"UTF-8"};
 		this.startPageProcessor = new IStartPageProcessor(){
-			public void processStartFile(File startFile, W3CWidget model,IContentEntity content)
+			public void processStartFile(File startFile, W3CWidget model,IContent content)
 					throws Exception {
 			}
 			
@@ -276,7 +276,7 @@ public class W3CWidgetFactory {
 				WidgetPackageUtils.unpackZip(zip, unzippedWidgetDirectory);	
 				
 				// Iterate over all start files and update paths
-				for (IContentEntity content: widgetModel.getContentList()){
+				for (IContent content: widgetModel.getContentList()){
 					// now update the js links in the start page
 					File startFile = new File(unzippedWidgetDirectory.getCanonicalPath() + File.separator + content.getSrc());
 					String relativestartUrl = (WidgetPackageUtils.getURLForWidget(localPath, manifestIdentifier, content.getSrc())); 					

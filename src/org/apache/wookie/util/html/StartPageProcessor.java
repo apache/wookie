@@ -20,10 +20,9 @@ import java.io.FileWriter;
 import org.apache.wookie.feature.Features;
 import org.apache.wookie.feature.IFeature;
 import org.apache.wookie.helpers.WidgetRuntimeHelper;
-import org.apache.wookie.w3c.IContentEntity;
-import org.apache.wookie.w3c.IFeatureEntity;
-import org.apache.wookie.w3c.W3CWidget;
+import org.apache.wookie.w3c.IContent;
 import org.apache.wookie.w3c.IStartPageProcessor;
+import org.apache.wookie.w3c.W3CWidget;
 
 /**
  * Processes widget start pages to inject scripts and other assets required for widget runtime operation.
@@ -38,7 +37,7 @@ public class StartPageProcessor implements IStartPageProcessor {
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.util.html.IStartPageProcessor#processStartFile(java.io.File, org.apache.wookie.w3c.IManifestModel)
 	 */
-	public void processStartFile(File startFile, W3CWidget model, IContentEntity content) throws Exception{
+	public void processStartFile(File startFile, W3CWidget model, IContent content) throws Exception{
 		if (startFile == null) throw new Exception("Start file cannot be processed: file is null");
 		if (!startFile.exists()) throw new Exception("Start file cannot be processed:  file does not exist");
 		if (!(startFile.canWrite()&&startFile.canRead())) throw new Exception("Start file cannot be processed: read or write permissions missing");
@@ -53,7 +52,7 @@ public class StartPageProcessor implements IStartPageProcessor {
 		writer.close();
 	}
 	
-	private void setContentType(IHtmlProcessor engine, IContentEntity content){
+	private void setContentType(IHtmlProcessor engine, IContent content){
 		engine.setTypeAndCharset(content.getType(), content.getCharSet());
 	}
 	
@@ -76,7 +75,7 @@ public class StartPageProcessor implements IStartPageProcessor {
 	 * @throws Exception if a feature cannot be found and instantiated for the widget.
 	 */
 	private void addFeatures(IHtmlProcessor engine,W3CWidget model) throws Exception{
-		for (IFeatureEntity feature: model.getFeatures()){
+		for (org.apache.wookie.w3c.IFeature feature: model.getFeatures()){
 			for (IFeature theFeature: Features.getFeatures()){
 			  if (theFeature.getName().equals(feature.getName())){
 		      addScripts(engine, theFeature);

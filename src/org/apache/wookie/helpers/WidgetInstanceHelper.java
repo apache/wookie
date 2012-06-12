@@ -51,7 +51,7 @@ public class WidgetInstanceHelper {
 		xml += "<widgetdata>"; //$NON-NLS-1$
 		xml += "\t<url>"+url+"</url>"; //$NON-NLS-1$ //$NON-NLS-2$
 		xml += "\t<identifier>"+instance.getIdKey()+"</identifier>\n"; //$NON-NLS-1$ //$NON-NLS-2$
-		xml += "\t<title>"+StringEscapeUtils.escapeXml(widget.getWidgetTitle(locale))+"</title>\n"; //$NON-NLS-1$ //$NON-NLS-2$
+		xml += "\t<title>"+StringEscapeUtils.escapeXml(widget.getLocalName(locale))+"</title>\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		xml += "\t<height>"+height+"</height>\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		xml += "\t<width>"+width+"</width>\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		xml += "</widgetdata>"; //$NON-NLS-1$
@@ -71,7 +71,7 @@ public class WidgetInstanceHelper {
     try {
       json.put("url", url);
       json.put("identifier", instance.getIdKey());
-      json.put("title", widget.getWidgetTitle(locale));
+      json.put("title", widget.getLocalName(locale));
       json.put("height", height);
       json.put("width", width);
     } catch (JSONException e) {

@@ -21,12 +21,12 @@ import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 
-import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.w3c.exceptions.InvalidContentTypeException;
 import org.apache.wookie.w3c.updates.UpdateUtils;
+import org.apache.wookie.w3c.W3CWidget;
 import org.junit.Test;
 
 /**

@@ -34,13 +34,13 @@ import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.feature.Features;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.util.html.StartPageProcessor;
-import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.w3c.exceptions.InvalidContentTypeException;
 import org.apache.wookie.w3c.updates.UpdateDescriptionDocument;
 import org.apache.wookie.w3c.updates.UpdateUtils;
+import org.apache.wookie.w3c.W3CWidget;
 
 /**
  * Controller for managing widget updates
@@ -166,10 +166,10 @@ public class UpdatesController extends Controller {
 	 */
 	// FIXME localize messages
 	private void installUpdate(W3CWidgetFactory factory, IWidget widget, boolean onlyUseHttps) throws InvalidContentTypeException, BadWidgetZipFileException, BadManifestException, IOException, Exception{
-		W3CWidget updatedWidget = UpdateUtils.getUpdate(factory, widget.getGuid(), widget.getUpdateLocation(), widget.getVersion(), onlyUseHttps);
+		W3CWidget updatedWidget = UpdateUtils.getUpdate(factory, widget.getIdentifier(), widget.getUpdateLocation(), widget.getVersion(), onlyUseHttps);
 		if (updatedWidget != null){
 			WidgetFactory.update(updatedWidget, widget, false, null);
-			_logger.info("Successfully updated "+widget.getGuid()+" to version "+updatedWidget.getVersion());
+			_logger.info("Successfully updated "+widget.getIdentifier()+" to version "+updatedWidget.getVersion());
 		}
 	}
 	

@@ -17,13 +17,13 @@ package org.apache.wookie.tests;
 import static org.junit.Assert.*;
 
 import org.apache.wookie.Messages;
-import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.jpa.impl.StartFileImpl;
 import org.apache.wookie.beans.jpa.impl.WidgetImpl;
 import org.apache.wookie.beans.jpa.impl.WidgetInstanceImpl;
 import org.apache.wookie.util.opensocial.OpenSocialUtils;
+import org.apache.wookie.w3c.IContent;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -38,11 +38,11 @@ public class OpenSocialUtilsTest{
 	@BeforeClass 
 	public static void setUp(){
 		IWidget widget = new WidgetImpl();
-		widget.setGuid("http://getwookie.org/test");
-		IStartFile startFile = new StartFileImpl();
-        startFile.setUrl("http://getwookie.org/test/index.html");
+		widget.setIdentifier("http://getwookie.org/test");
+		IContent startFile = new StartFileImpl();
+        startFile.setSrc("http://getwookie.org/test/index.html");
         startFile.setLang("en");
-		widget.getStartFiles().add(startFile);
+		widget.getContentList().add(startFile);
 		
 		INSTANCE = new WidgetInstanceImpl();
 		INSTANCE.setWidget(widget);

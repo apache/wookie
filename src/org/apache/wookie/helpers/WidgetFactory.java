@@ -17,19 +17,10 @@ import java.io.File;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
-import org.apache.wookie.beans.IAuthor;
-import org.apache.wookie.beans.IDescription;
-import org.apache.wookie.beans.IFeature;
-import org.apache.wookie.beans.ILicense;
-import org.apache.wookie.beans.IName;
-import org.apache.wookie.beans.IParam;
 import org.apache.wookie.beans.IParticipant;
 import org.apache.wookie.beans.IPreference;
-import org.apache.wookie.beans.IPreferenceDefault;
 import org.apache.wookie.beans.ISharedData;
-import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.IWidgetIcon;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.SharedContext;
 import org.apache.wookie.beans.util.IPersistenceManager;
@@ -37,16 +28,16 @@ import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.proxy.Policies;
 import org.apache.wookie.proxy.Policy;
 import org.apache.wookie.util.WidgetFileUtils;
-import org.apache.wookie.w3c.IAccessEntity;
-import org.apache.wookie.w3c.IContentEntity;
-import org.apache.wookie.w3c.IDescriptionEntity;
-import org.apache.wookie.w3c.IFeatureEntity;
-import org.apache.wookie.w3c.IIconEntity;
-import org.apache.wookie.w3c.ILicenseEntity;
+import org.apache.wookie.w3c.IAccess;
+import org.apache.wookie.w3c.IAuthor;
+import org.apache.wookie.w3c.IContent;
+import org.apache.wookie.w3c.IName;
+import org.apache.wookie.w3c.IFeature;
+import org.apache.wookie.w3c.IDescription;
+import org.apache.wookie.w3c.IParam;
+import org.apache.wookie.w3c.IIcon;
+import org.apache.wookie.w3c.ILicense;
 import org.apache.wookie.w3c.W3CWidget;
-import org.apache.wookie.w3c.INameEntity;
-import org.apache.wookie.w3c.IParamEntity;
-import org.apache.wookie.w3c.IPreferenceEntity;
 
 /**
  * Factory for creating and destroying Widgets
@@ -98,7 +89,7 @@ public class WidgetFactory {
         persistenceManager.save(widget);
 		createAccessRequests(persistenceManager, model, widget, grantAccessRequests);
 		
-    _logger.info("'"+model.getLocalName("en") +"' - " + "Widget was successfully imported into the system");
+    _logger.info("'"+model.getLocalName("en") +"' - " + "Widget was successfully imported into the system as "+widget.getLocalName("en"));
     
 		return widget;	       
 	}
@@ -109,11 +100,11 @@ public class WidgetFactory {
 		widget.setDir(model.getDir());
 		widget.setLang(model.getLang());
 		widget.setDefaultLocale(model.getDefaultLocale());
-		widget.setGuid(model.getIdentifier());
+		widget.setIdentifier(model.getIdentifier());
 		widget.setHeight(model.getHeight());
 		widget.setWidth(model.getWidth());
 		widget.setVersion(model.getVersion());
-		widget.setUpdateLocation(model.getUpdate());
+		widget.setUpdateLocation(model.getUpdateLocation());
 		return widget;
 	}
 	
@@ -130,28 +121,29 @@ public class WidgetFactory {
 	}
 
 	private static void createStartFiles(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
-		for (IContentEntity page:model.getContentList()){
-			IStartFile start = persistenceManager.newInstance(IStartFile.class);
-			start.setCharset(page.getCharSet());
+		for (IContent page:model.getContentList()){
+			IContent start = persistenceManager.newInstance(IContent.class);
+			start.setCharSet(page.getCharSet());
 			start.setLang(page.getLang());
-			start.setUrl(page.getSrc());
-            widget.getStartFiles().add(start);
+			start.setSrc(page.getSrc());
+            widget.getContentList().add(start);
 		}
 	}
 
 	private static void createNames(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
-		for (INameEntity name:model.getNames()){
+		for (IName name:model.getNames()){
 			IName widgetName = persistenceManager.newInstance(IName.class);
 			widgetName.setLang(name.getLang());
 			widgetName.setDir(name.getDir());
 			widgetName.setName(name.getName());
 			widgetName.setShort(name.getShort());
             widget.getNames().add(widgetName);
+            persistenceManager.save(widget);
 		}
 	}
 
 	private static void createDescriptions(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
-		for (IDescriptionEntity desc:model.getDescriptions()){
+		for (IDescription desc:model.getDescriptions()){
 			IDescription widgetDesc = persistenceManager.newInstance(IDescription.class);
 			widgetDesc.setDescription(desc.getDescription());
 			widgetDesc.setLang(desc.getLang());
@@ -161,18 +153,18 @@ public class WidgetFactory {
 	}
 
 	private static void createIcons(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
-		for(IIconEntity icon: model.getIconsList()){
-            IWidgetIcon widgetIcon = persistenceManager.newInstance(IWidgetIcon.class);
+		for(IIcon icon: model.getIcons()){
+            IIcon widgetIcon = persistenceManager.newInstance(IIcon.class);
             widgetIcon.setSrc(icon.getSrc());
             widgetIcon.setHeight(icon.getHeight());
             widgetIcon.setWidth(icon.getWidth());
             widgetIcon.setLang(icon.getLang());
-            widget.getWidgetIcons().add(widgetIcon);
+            widget.getIcons().add(widgetIcon);
 		}
 	}
 
 	private static void createLicenses(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
-		for(ILicenseEntity licenseModel: model.getLicensesList()){
+		for(ILicense licenseModel: model.getLicenses()){
             ILicense license = persistenceManager.newInstance(ILicense.class);
             license.setLicenseText(licenseModel.getLicenseText());
             license.setHref(licenseModel.getHref());
@@ -183,26 +175,26 @@ public class WidgetFactory {
 	}
 
 	private static void createPreferences(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
-		for(IPreferenceEntity prefEntity : model.getPrefences()){
-            IPreferenceDefault preferenceDefault = persistenceManager.newInstance(IPreferenceDefault.class);
-			preferenceDefault.setPreference(prefEntity.getName());
-			preferenceDefault.setValue(prefEntity.getValue());
-			preferenceDefault.setReadOnly(prefEntity.isReadOnly());
-            widget.getPreferenceDefaults().add(preferenceDefault);
+		for(org.apache.wookie.w3c.IPreference pref : model.getPreferences()){
+			org.apache.wookie.w3c.IPreference preferenceDefault = persistenceManager.newInstance(org.apache.wookie.w3c.IPreference.class);
+			preferenceDefault.setName(pref.getName());
+			preferenceDefault.setValue(pref.getValue());
+			preferenceDefault.setReadOnly(pref.isReadOnly());
+            widget.getPreferences().add(preferenceDefault);
 		}
 	}
 
 	private static void createFeatures(IPersistenceManager persistenceManager, W3CWidget model, IWidget widget){
-		for(IFeatureEntity featureEntity: model.getFeatures()){
+		for(IFeature ofeature: model.getFeatures()){
             IFeature feature = persistenceManager.newInstance(IFeature.class);
-			feature.setName(featureEntity.getName());
-			feature.setRequired(featureEntity.isRequired());
+			feature.setName(ofeature.getName());
+			feature.setRequired(ofeature.isRequired());
             widget.getFeatures().add(feature);
 			// now attach all parameters to this feature.
-			for(IParamEntity paramEntity : featureEntity.getParameters()){
+			for(org.apache.wookie.w3c.IParam oparam : ofeature.getParameters()){
 	            IParam param = persistenceManager.newInstance(IParam.class);
-				param.setName(paramEntity.getName());
-				param.setValue(paramEntity.getValue());
+				param.setName(oparam.getName());
+				param.setValue(oparam.getValue());
 	            feature.getParameters().add(param);
 			}
 		}
@@ -220,19 +212,19 @@ public class WidgetFactory {
       //
       // Remove any existing access policies
       //
-      Policies.getInstance().clearPolicies(widget.getGuid());
+      Policies.getInstance().clearPolicies(widget.getIdentifier());
 
       //
       // Create access policies for each access request in the widget model
       //
-      for(IAccessEntity accessEntity:model.getAccessList()){
+      for(IAccess access:model.getAccessList()){
         Policy policy = new Policy();
-        policy.setOrigin(accessEntity.getOrigin());
-        policy.setScope(widget.getGuid());
+        policy.setOrigin(access.getOrigin());
+        policy.setScope(widget.getIdentifier());
         policy.setDirective("DENY");
         if (grantAccessRequests){
           policy.setDirective("ALLOW");
-          _logger.info("access policy granted for "+widget.getWidgetTitle("en")+" to access "+policy.getOrigin());
+          _logger.info("access policy granted for "+widget.getLocalName("en")+" to access "+policy.getOrigin());
         }
         Policies.getInstance().addPolicy(policy);
       }
@@ -253,8 +245,8 @@ public class WidgetFactory {
 
 		if(widget==null) return false;
 		
-		String widgetGuid = widget.getGuid();
-		String widgetName = widget.getWidgetTitle("en");
+		String widgetGuid = widget.getIdentifier();
+		String widgetName = widget.getLocalName("en");
 		
     IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		
@@ -288,7 +280,7 @@ public class WidgetFactory {
 
 		// remove any AccessRequests
     try {
-      Policies.getInstance().clearPolicies(widget.getGuid());
+      Policies.getInstance().clearPolicies(widget.getIdentifier());
     } catch (ConfigurationException e) {
       _logger.error("Problem with properties configuration", e);
     }
@@ -315,20 +307,20 @@ public class WidgetFactory {
 		widget.setDir(model.getDir());
         widget.setLang(model.getLang());
         widget.setDefaultLocale(model.getDefaultLocale());
-		widget.setGuid(model.getIdentifier());
+		widget.setIdentifier(model.getIdentifier());
 		widget.setHeight(model.getHeight());
 		widget.setWidth(model.getWidth());
 		widget.setVersion(model.getVersion());
-		widget.setUpdateLocation(model.getUpdate());
+		widget.setUpdateLocation(model.getUpdateLocation());
 		
 		// Clear old values
-		widget.setStartFiles(null);
+		widget.setContentList(null);
 		widget.setNames(null);
 		widget.setDescriptions(null);
 		widget.setLicenses(null);
 		widget.setFeatures(null);	
-		widget.setWidgetIcons(null);
-		widget.setPreferenceDefaults(null);
+		widget.setIcons(null);
+		widget.setPreferences(null);
 		// We set this here to ensure widgets already imported in to
 		// a 0.9.0 version of wookie get this value set. See WOOKIE-256
 	    if(zipFile != null){

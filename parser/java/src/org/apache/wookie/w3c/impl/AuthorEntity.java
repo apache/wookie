@@ -14,16 +14,17 @@
 
 package org.apache.wookie.w3c.impl;
 
-import org.apache.wookie.w3c.IAuthorEntity;
+import org.apache.wookie.w3c.IAuthor;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.util.IRIValidator;
 import org.apache.wookie.w3c.util.UnicodeUtils;
+import org.apache.wookie.w3c.xml.IElement;
 
 import org.jdom.Element;
 /**
  * The <author> element
  */
-public class AuthorEntity extends AbstractLocalizedEntity implements IAuthorEntity {
+public class AuthorEntity extends AbstractLocalizedEntity implements IAuthor, IElement {
 	
 	private String fAuthorName;
 	private String fHref;

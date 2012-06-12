@@ -17,15 +17,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.wookie.beans.IDescription;
-import org.apache.wookie.beans.ILicense;
-import org.apache.wookie.beans.IName;
-import org.apache.wookie.beans.IPreferenceDefault;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.IWidgetIcon;
 import org.apache.wookie.util.WidgetFormattingUtils;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.util.LocalizationUtils;
+import org.apache.wookie.w3c.*;
+
 
 /**
  * A helper for Widgets
@@ -95,7 +92,7 @@ public class WidgetAdvertHelper {
 		String out = "";
 
 		out += "\t<widget " +
-		"id=\"" + widget.getGuid() 
+		"id=\"" + widget.getIdentifier() 
 		+"\" width=\"" + width
 		+"\" height=\"" + height
 		+ "\" version=\"" + StringEscapeUtils.escapeXml(widget.getVersion())
@@ -134,8 +131,8 @@ public class WidgetAdvertHelper {
 	
 	private static String getPreferences(IWidget widget){
 		String out = "";
-		for (IPreferenceDefault pref : widget.getPreferenceDefaults()) {
-			out += "\t\t<preference name=\"" + pref.getPreference() + "\"  value=\""+pref.getValue()+"\"  readonly=\"" + (pref.isReadOnly()? "true" : "false") + "\"/>";
+		for (org.apache.wookie.w3c.IPreference pref : widget.getPreferences()) {
+			out += "\t\t<preference name=\"" + pref.getName() + "\"  value=\""+pref.getValue()+"\"  readonly=\"" + (pref.isReadOnly()? "true" : "false") + "\"/>";
 		}
 		return out;
 	}
@@ -172,14 +169,14 @@ public class WidgetAdvertHelper {
 	private static String getIcons(IWidget widget, String[] locales, String localIconPath){
 		URL urlWidgetIcon = null;
 		String out = "";
-		IWidgetIcon[] icons;
+		IIcon[] icons;
 		if (locales != null && locales.length != 0){
-			icons = (IWidgetIcon[])LocalizationUtils.processElementsByLocales(widget.getWidgetIcons().toArray(new IWidgetIcon[widget.getWidgetIcons().size()]), locales, widget.getDefaultLocale());
+			icons = (IIcon[])LocalizationUtils.processElementsByLocales(widget.getIcons().toArray(new IIcon[widget.getIcons().size()]), locales, widget.getDefaultLocale());
 		} else {
-			icons = widget.getWidgetIcons().toArray(new IWidgetIcon[widget.getWidgetIcons().size()]);
+			icons = widget.getIcons().toArray(new IIcon[widget.getIcons().size()]);
 		}
 		if (icons!=null){
-			for (IWidgetIcon icon: icons){
+			for (IIcon icon: icons){
 				try {
 					// If local...
 					if (!icon.getSrc().startsWith("http")) {

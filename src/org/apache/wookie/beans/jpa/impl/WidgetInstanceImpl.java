@@ -16,6 +16,7 @@ package org.apache.wookie.beans.jpa.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -33,14 +34,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import org.apache.openjpa.persistence.ElementDependent;
 import org.apache.openjpa.persistence.ExternalValues;
 import org.apache.openjpa.persistence.Type;
 
 import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
-import org.apache.wookie.beans.jpa.InverseRelationshipCollection;
 
 /**
  * WidgetInstanceImpl - JPA IWidgetInstance implementation.
@@ -120,8 +119,8 @@ public class WidgetInstanceImpl implements IWidgetInstance
     @Column(name="lang")
     private String lang;
     
-    @OneToMany(mappedBy="widgetInstance", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-    @ElementDependent
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="widget_instance_id")
     private Collection<PreferenceImpl> preferences;
 
     /* (non-Javadoc)
@@ -215,13 +214,14 @@ public class WidgetInstanceImpl implements IWidgetInstance
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidgetInstance#getPreferences()
      */
-    public Collection<IPreference> getPreferences()
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public Collection<IPreference> getPreferences()
     {
         if (preferences == null)
         {
             preferences = new ArrayList<PreferenceImpl>();
         }
-        return new InverseRelationshipCollection<WidgetInstanceImpl,PreferenceImpl,IPreference>(this, preferences);
+        return (ArrayList<IPreference>)(List)preferences;
     }
 
     /* (non-Javadoc)

@@ -38,11 +38,11 @@ import org.apache.wookie.util.WgtWatcher;
 import org.apache.wookie.util.WidgetFileUtils;
 import org.apache.wookie.util.WidgetJavascriptSyntaxAnalyzer;
 import org.apache.wookie.util.html.StartPageProcessor;
-import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
+import org.apache.wookie.w3c.W3CWidget;
 
 /**
  * ContextListener - does some init work and makes certain things are available 

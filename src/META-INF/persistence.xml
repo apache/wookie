@@ -12,7 +12,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
 
     <persistence-unit name="wookie" transaction-type="RESOURCE_LOCAL">
 

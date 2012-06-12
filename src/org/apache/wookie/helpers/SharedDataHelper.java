@@ -53,7 +53,7 @@ public class SharedDataHelper {
 	 * @return the internal shared data key for the instance
 	 */
 	public static String getInternalSharedDataKey(IWidgetInstance instance, String externalSharedDataKey){
-		String key = externalSharedDataKey + ":" + instance.getApiKey() + ":" + instance.getWidget().getGuid();
+		String key = externalSharedDataKey + ":" + instance.getApiKey() + ":" + instance.getWidget().getIdentifier();
 		return String.valueOf(key.hashCode());
 	}
 	

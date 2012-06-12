@@ -21,14 +21,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
 
-import org.apache.wookie.w3c.INameEntity;
-import org.apache.wookie.w3c.W3CWidget;
+import org.apache.wookie.w3c.IName;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.w3c.impl.IconEntity;
 import org.apache.wookie.w3c.util.WidgetOutputter;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
+import org.apache.wookie.w3c.W3CWidget;
 import org.junit.Test;
 
 /**
@@ -81,7 +81,7 @@ public class WidgetOutputterTest extends ConformanceTest{
   public void outputString5() throws Exception{
     File testWidget = new File("build/widgets/localetest.wgt");
     W3CWidget widget = load(testWidget);
-    widget.getIconsList().add(new IconEntity("icon.png",100,100));
+    widget.getIcons().add(new IconEntity("icon.png",100,100));
     widget.getNames().get(0).setShort("shortName");
     WidgetOutputter outputter = new WidgetOutputter();
     outputter.setWidgetFolder("/widgets");
@@ -111,7 +111,7 @@ public class WidgetOutputterTest extends ConformanceTest{
 	public void loadModifySave() throws Exception{
 		File testWidget = new File("build/widgets/bubbles.wgt");
 		W3CWidget widget = load(testWidget);
-		INameEntity name = widget.getNames().get(0);
+		IName name = widget.getNames().get(0);
 		name.setName("Modified Widget");
 		WidgetOutputter outputter = new WidgetOutputter();
 		outputter.setWidgetFolder("/widgets");
@@ -134,7 +134,7 @@ public class WidgetOutputterTest extends ConformanceTest{
 		fac.setOutputDirectory(output.getAbsolutePath());
 		W3CWidget widget = fac.parse(new URL("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RRZxvvTFHx/001/b6.wgt"));
 		
-		INameEntity name = widget.getNames().get(0);
+		IName name = widget.getNames().get(0);
 		name.setName("Re-Modified Widget");
 		WidgetOutputter outputter = new WidgetOutputter();
 		outputter.setWidgetFolder("/widgets");

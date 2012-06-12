@@ -18,17 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wookie.helpers.WidgetRuntimeHelper;
-import org.apache.wookie.w3c.IAccessEntity;
-import org.apache.wookie.w3c.IAuthorEntity;
-import org.apache.wookie.w3c.IContentEntity;
-import org.apache.wookie.w3c.IDescriptionEntity;
-import org.apache.wookie.w3c.IFeatureEntity;
-import org.apache.wookie.w3c.IIconEntity;
-import org.apache.wookie.w3c.ILicenseEntity;
-import org.apache.wookie.w3c.INameEntity;
-import org.apache.wookie.w3c.IPreferenceEntity;
-import org.apache.wookie.w3c.IW3CXMLConfiguration;
-import org.apache.wookie.w3c.W3CWidget;
+import org.apache.wookie.w3c.*;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.impl.AuthorEntity;
 import org.apache.wookie.w3c.impl.ContentEntity;
@@ -49,11 +39,11 @@ public class GadgetAdapter implements W3CWidget {
 	private String fVersion;
 	private Integer fHeight;
 	private Integer fWidth;
-	private ArrayList<INameEntity> fNamesList;
-	private ArrayList<IDescriptionEntity> fDescriptionsList;
-	private IAuthorEntity fAuthor;
-	private ArrayList<IIconEntity> fIconsList;
-	private ArrayList<IContentEntity> fContentList;
+	private ArrayList<IName> fNamesList;
+	private ArrayList<IDescription> fDescriptionsList;
+	private IAuthor fAuthor;
+	private ArrayList<IIcon> fIconsList;
+	private ArrayList<IContent> fContentList;
 	
 	public GadgetAdapter(JSONObject gadget, String shindig) throws Exception {
 		if (gadget.has("errors")) throw new Exception("Invalid gadget - Shindig error");
@@ -71,7 +61,7 @@ public class GadgetAdapter implements W3CWidget {
 		// it isn't very reliable at generating a usable value, so we construct
 		// a very basic URL instead
 		// FIXME we need to use real locales in these URLs
-		this.fContentList = new ArrayList<IContentEntity>();
+		this.fContentList = new ArrayList<IContent>();
 		String url = (shindig+"/gadgets/ifr?url="+gadget.getString("url")+"&amp;lang=en&amp;country=UK&amp;view=home");
 		ContentEntity content = new ContentEntity(url, "UTF-8",IW3CXMLConfiguration.DEFAULT_MEDIA_TYPE);
 		fContentList.add(content);
@@ -91,7 +81,7 @@ public class GadgetAdapter implements W3CWidget {
 		fAuthor = author;
 
 		// Name
-		this.fNamesList = new ArrayList<INameEntity>();
+		this.fNamesList = new ArrayList<IName>();
 		String title = getValue(gadget, "title", "Untitled Gadget");
 		// Override the title with directory title if present (this is intended for gallery use)
 		title = getValue(gadget, "directory_title", title);
@@ -100,17 +90,17 @@ public class GadgetAdapter implements W3CWidget {
 		this.fNamesList.add(name);
 
 		// Description
-		this.fDescriptionsList = new ArrayList<IDescriptionEntity>();
+		this.fDescriptionsList = new ArrayList<IDescription>();
 		String description = getValue(gadget, "description", "Google Gadget");
 		DescriptionEntity desc = new DescriptionEntity();
 		desc.setDescription(description);
 		this.fDescriptionsList.add(desc);
 		
 		// Icons
-		this.fIconsList = new ArrayList<IIconEntity>();
-		String icon = getValue(gadget,"thumbnail", WidgetRuntimeHelper.DEFAULT_GADGET_ICON);	
-		IconEntity iconEntity = new IconEntity(icon,null,null);
-		this.fIconsList.add(iconEntity);
+		this.fIconsList = new ArrayList<IIcon>();
+		String iconUrl = getValue(gadget,"thumbnail", WidgetRuntimeHelper.DEFAULT_GADGET_ICON);	
+		IconEntity icon = new IconEntity(iconUrl,null,null);
+		this.fIconsList.add(icon);
 	}
 	
 	private static String getValue(JSONObject gadget, String property, String defaultValue) throws JSONException{
@@ -136,43 +126,43 @@ public class GadgetAdapter implements W3CWidget {
 		return fVersion;
 	}
 	
-	public List<IPreferenceEntity> getPrefences(){
-		return new ArrayList<IPreferenceEntity>();
+	public List<IPreference> getPreferences(){
+		return new ArrayList<IPreference>();
 
 	}
 	
-	public List<IFeatureEntity> getFeatures(){
-		return new ArrayList<IFeatureEntity>();
+	public List<IFeature> getFeatures(){
+		return new ArrayList<IFeature>();
 
 	}
 	
-	public List<IAccessEntity> getAccessList(){
-		return new ArrayList<IAccessEntity>();
+	public List<IAccess> getAccessList(){
+		return new ArrayList<IAccess>();
 
 	}
 	
-	public IAuthorEntity getAuthor(){
+	public IAuthor getAuthor(){
 		return fAuthor;
 	}
 
-	public List<IContentEntity> getContentList() {
+	public List<IContent> getContentList() {
 		return fContentList;
 	}
 	
-	public List<IDescriptionEntity> getDescriptions(){
+	public List<IDescription> getDescriptions(){
 		return fDescriptionsList;
 	}
 	
-	public List<INameEntity> getNames() {
+	public List<IName> getNames() {
 		return fNamesList;
 	}
 	
-	public List<IIconEntity> getIconsList() {
+	public List<IIcon> getIcons() {
 		return fIconsList;
 	}
 
-	public List<ILicenseEntity> getLicensesList() {
-		return new ArrayList<ILicenseEntity>();
+	public List<ILicense> getLicenses() {
+		return new ArrayList<ILicense>();
 	}
 
 	public String getIdentifier() {
@@ -195,12 +185,12 @@ public class GadgetAdapter implements W3CWidget {
 	}
 
 	public String getLocalName(String locale) {
-		INameEntity name = (INameEntity)LocalizationUtils.getLocalizedElement(fNamesList.toArray(new INameEntity[fNamesList.size()]), new String[]{locale}, null);
+		IName name = (IName)LocalizationUtils.getLocalizedElement(fNamesList.toArray(new IName[fNamesList.size()]), new String[]{locale}, null);
 		if (name != null) return name.getName();
 		return IW3CXMLConfiguration.UNKNOWN;
 	}
 
-	public String getUpdate() {
+	public String getUpdateLocation() {
 		return null;
 	}
 
@@ -215,7 +205,7 @@ public class GadgetAdapter implements W3CWidget {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.apache.wookie.w3c.ILocalizedEntity#setDir(java.lang.String)
+	 * @see org.apache.wookie.w3c.ILocalized#setDir(java.lang.String)
 	 */
 	public void setDir(String dir) {
 		// TODO Auto-generated method stub

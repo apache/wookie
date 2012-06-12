@@ -17,17 +17,13 @@ package org.apache.wookie.beans.jpa.impl;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import org.apache.wookie.beans.IStartFile;
-import org.apache.wookie.beans.jpa.IInverseRelationship;
+import org.apache.wookie.w3c.IContent;
 
 /**
  * StartFileImpl - JPA IStartFile implementation.
@@ -37,7 +33,7 @@ import org.apache.wookie.beans.jpa.IInverseRelationship;
  */
 @Entity(name="StartFile")
 @Table(name="StartFile")
-public class StartFileImpl implements IStartFile, IInverseRelationship<WidgetImpl>
+public class StartFileImpl implements IContent
 {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -62,23 +58,10 @@ public class StartFileImpl implements IStartFile, IInverseRelationship<WidgetImp
     @Column(name="lang")
     private String lang;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="widget_id", referencedColumnName="id")
-    @SuppressWarnings("unused")
-    private WidgetImpl widget;
-    
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IInverseRelationship#updateInverseRelationship(java.lang.Object)
-     */
-    public void updateInverseRelationship(WidgetImpl owningObject)
-    {
-        widget = owningObject;
-    }
-
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IStartFile#getCharset()
      */
-    public String getCharset()
+    public String getCharSet()
     {
         return charset;
     }
@@ -86,7 +69,7 @@ public class StartFileImpl implements IStartFile, IInverseRelationship<WidgetImp
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IStartFile#setCharset(java.lang.String)
      */
-    public void setCharset(String charset)
+    public void setCharSet(String charset)
     {
         this.charset = charset;
     }
@@ -110,7 +93,7 @@ public class StartFileImpl implements IStartFile, IInverseRelationship<WidgetImp
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IStartFile#getUrl()
      */
-    public String getUrl()
+    public String getSrc()
     {
         return url;
     }
@@ -118,8 +101,48 @@ public class StartFileImpl implements IStartFile, IInverseRelationship<WidgetImp
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IStartFile#setUrl(java.lang.String)
      */
-    public void setUrl(String url)
+    public void setSrc(String url)
     {
         this.url = url;
     }
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.w3c.IDirectional#getDir()
+	 */
+	public String getDir() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.w3c.IDirectional#setDir(java.lang.String)
+	 */
+	public void setDir(String dir) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.w3c.IDirectional#isValid()
+	 */
+	public boolean isValid() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.w3c.IContent#getType()
+	 */
+	public String getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.w3c.IContent#setType(java.lang.String)
+	 */
+	public void setType(String type) {
+		// TODO Auto-generated method stub
+		
+	}
 }

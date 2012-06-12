@@ -17,12 +17,9 @@ package org.apache.wookie.beans.jpa.impl;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -30,7 +27,6 @@ import org.apache.openjpa.persistence.ExternalValues;
 import org.apache.openjpa.persistence.Type;
 
 import org.apache.wookie.beans.IPreference;
-import org.apache.wookie.beans.jpa.IInverseRelationship;
 
 /**
  * PreferenceImpl - JPA IPreference implementation.
@@ -40,7 +36,7 @@ import org.apache.wookie.beans.jpa.IInverseRelationship;
  */
 @Entity(name="Preference")
 @Table(name="Preference")
-public class PreferenceImpl implements IPreference, IInverseRelationship<WidgetInstanceImpl>
+public class PreferenceImpl implements IPreference
 {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -65,19 +61,6 @@ public class PreferenceImpl implements IPreference, IInverseRelationship<WidgetI
     @ExternalValues({"true=t","false=f","null="})
     @Type(String.class)
     private Boolean readOnly;
-
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="widget_instance_id", referencedColumnName="id")
-    @SuppressWarnings("unused")
-    private WidgetInstanceImpl widgetInstance;
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IInverseRelationship#updateInverseRelationship(java.lang.Object)
-     */
-    public void updateInverseRelationship(WidgetInstanceImpl owningObject)
-    {
-        widgetInstance = owningObject;
-    }
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IPreference#getDkey()

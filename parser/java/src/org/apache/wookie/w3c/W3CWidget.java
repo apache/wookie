@@ -22,7 +22,7 @@ import java.util.List;
  * This represents the information model for a W3C widget that has been
  * unpacked using the W3CWidgetFactory.
  */
-public interface W3CWidget extends ILocalizedEntity{
+public interface W3CWidget extends ILocalized, IDirectional {
 
   /**
    * Get the default locale
@@ -33,15 +33,15 @@ public interface W3CWidget extends ILocalizedEntity{
 	/**
 	 * Get the list of access request entities for the widget
 	 */
-	public List<IAccessEntity> getAccessList();
+	public List<IAccess> getAccessList();
 	/**
 	 * Get the list of start pages for the widget
 	 */
-	public List<IContentEntity> getContentList();
+	public List<IContent> getContentList();
 	/**
 	 * Get the list of icons for the widget
 	 */
-	public List<IIconEntity> getIconsList();
+	public List<IIcon> getIcons();
 	/**
 	 * Get the widget identifier (IRI)
 	 */
@@ -49,15 +49,15 @@ public interface W3CWidget extends ILocalizedEntity{
 	/**
 	 * Get the list of Licenses for the widget
 	 */
-	public List<ILicenseEntity> getLicensesList();
+	public List<ILicense> getLicenses();
 	/**
 	 * Get the list of Names for the widget
 	 */
-	public List<INameEntity> getNames();
+	public List<IName> getNames();
 	/**
 	 * Get the list of Descriptions for the widget
 	 */
-	public List<IDescriptionEntity> getDescriptions();
+	public List<IDescription> getDescriptions();
 	/**
 	 * Get the widget height as an Integer. Note this may be Null.
 	 */
@@ -69,16 +69,16 @@ public interface W3CWidget extends ILocalizedEntity{
 	/**
 	 * Get the Author information for the widget
 	 */
-	public IAuthorEntity getAuthor();
+	public IAuthor getAuthor();
 	/**
 	 * Get the list of Preferences defined for the widget
 	 */
-	public List<IPreferenceEntity> getPrefences();
+	public List<IPreference> getPreferences();
 	/**
 	 * Get a list of Features requested by the widget. Note that only valid
 	 * features are included (e.g. ones supported by the platform, or that are defined by the widget as optional)
 	 */
-	public List<IFeatureEntity> getFeatures();
+	public List<IFeature> getFeatures();
 	/**
 	 * Get the version of the widget
 	 */
@@ -96,8 +96,8 @@ public interface W3CWidget extends ILocalizedEntity{
 	 * This is equivalent to:
 	 * 
 	 * <code>
-	 * 	  List<INameEntity> names = widget.getNames();
-	 * 	  INameEntity name = (INameEntity)LocalizationUtils.getLocalizedElement(names.toArray(new INameEntity[fNamesList.size()]), new String[]{"en"});
+	 * 	  List<IName> names = widget.getNames();
+	 * 	  IName name = (IName)LocalizationUtils.getLocalizedElement(names.toArray(new IName[fNamesList.size()]), new String[]{"en"});
 	 * </code>
 	 * 
 	 * @param locale
@@ -108,6 +108,6 @@ public interface W3CWidget extends ILocalizedEntity{
 	/**
 	 * @return the update description document URL for the widget, or null if no valid update URL has been set
 	 */
-	public String getUpdate();
+	public String getUpdateLocation();
 	
 }

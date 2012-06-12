@@ -16,34 +16,24 @@ package org.apache.wookie.beans.jpa.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import org.apache.openjpa.persistence.ElementDependent;
-
-import org.apache.wookie.beans.IAuthor;
-import org.apache.wookie.beans.IDescription;
-import org.apache.wookie.beans.IFeature;
-import org.apache.wookie.beans.ILicense;
-import org.apache.wookie.beans.IName;
-import org.apache.wookie.beans.IPreferenceDefault;
-import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.IWidgetIcon;
-import org.apache.wookie.beans.jpa.InverseRelationshipCollection;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
+import org.apache.wookie.w3c.*;
 
 /**
  * WidgetImpl - JPA IWidget implementation.
@@ -94,48 +84,49 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     @Column(name="widget_version")
     private String version;
 
-    @OneToMany(mappedBy="widget", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-    @ElementDependent
-    private Collection<FeatureImpl> features;
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="widget_id")
+    private List<FeatureImpl> features;
 
-    @OneToMany(mappedBy="widget", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-    @ElementDependent
-    private Collection<WidgetIconImpl> widgetIcons;
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="widget_id")
+    private List<WidgetIconImpl> widgetIcons;
 
-    @OneToMany(mappedBy="widget", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-    @ElementDependent
-    private Collection<LicenseImpl> licenses;
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="widget_id")
+    private List<LicenseImpl> licenses;
 
-    @OneToMany(mappedBy="widget", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-    @ElementDependent
-    private Collection<NameImpl> names;
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="widget_id")
+    private List<NameImpl> names;
     
-    @OneToMany(mappedBy="widget", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-    @ElementDependent
-    private Collection<AuthorImpl> authors;
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="widget_id")
+    private List<AuthorImpl> authors;
 
-    @OneToMany(mappedBy="widget", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-    @ElementDependent
-    private Collection<DescriptionImpl> descriptions;
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="widget_id")
+    private List<DescriptionImpl> descriptions;
 
-    @OneToMany(mappedBy="widget", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-    @ElementDependent
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="widget_id")
     private Collection<StartFileImpl> startFiles;
 
-    @OneToMany(mappedBy="widget", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-    @ElementDependent
-    private Collection<PreferenceDefaultImpl> preferenceDefaults;
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="widget_id")
+    private List<PreferenceDefaultImpl> preferenceDefaults;
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getDescriptions()
      */
-    public Collection<IDescription> getDescriptions()
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<IDescription> getDescriptions()
     {
         if (descriptions == null)
         {
             descriptions = new ArrayList<DescriptionImpl>();
         }
-        return new InverseRelationshipCollection<WidgetImpl,DescriptionImpl,IDescription>(this, descriptions);
+        return (ArrayList<IDescription>)(List)(descriptions);  
     }
 
     /* (non-Javadoc)
@@ -170,13 +161,14 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
 	/* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getFeatures()
      */
-    public Collection<IFeature> getFeatures()
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public List<IFeature> getFeatures()
     {
         if (features == null)
         {
             features = new ArrayList<FeatureImpl>();
         }
-        return new InverseRelationshipCollection<WidgetImpl,FeatureImpl,IFeature>(this, features);
+        return (ArrayList<IFeature>)(List)(features);
     }
 
     /* (non-Javadoc)
@@ -197,7 +189,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getGuid()
      */
-    public String getGuid()
+    public String getIdentifier()
     {
         return guid;
     }
@@ -205,7 +197,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#setGuid(java.lang.String)
      */
-    public void setGuid(String guid)
+    public void setIdentifier(String guid)
     {
         this.guid = guid;
     }
@@ -237,13 +229,14 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getLicenses()
      */
-    public Collection<ILicense> getLicenses()
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public List<ILicense> getLicenses()
     {
         if (licenses == null)
         {
             licenses = new ArrayList<LicenseImpl>();
         }
-        return new InverseRelationshipCollection<WidgetImpl,LicenseImpl,ILicense>(this, licenses);
+        return (ArrayList<ILicense>)(List)(licenses);
     }
 
     /* (non-Javadoc)
@@ -264,13 +257,14 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getNames()
      */
-    public Collection<IName> getNames()
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<IName> getNames()
     {
         if (names == null)
         {
             names = new ArrayList<NameImpl>();
         }
-        return new InverseRelationshipCollection<WidgetImpl,NameImpl,IName>(this, names);
+        return (List<IName>)(List)names;
     }
 
     /* (non-Javadoc)
@@ -297,25 +291,13 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
       return null;
     }
     
-    public Collection<IAuthor> getAuthors(){
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public List<IAuthor> getAuthors(){
       if (authors == null)
       {
         authors = new ArrayList<AuthorImpl>();
       }
-      return new InverseRelationshipCollection<WidgetImpl,AuthorImpl,IAuthor>(this, authors);
-    }
-    
-    /**
-     * Utility method used to support legacy API calls, returns an IAuthor instance - whether pre-existing or newly
-     * created
-     * @return an IAuthor instance
-     */
-    private IAuthor getOrCreateAuthor(){
-      if (getAuthor() == null){
-        IAuthor author = PersistenceManagerFactory.getPersistenceManager().newInstance(IAuthor.class);
-        this.setAuthor(author);
-      }
-      return getAuthor();
+      return (ArrayList<IAuthor>)(List)(authors);
     }
 
     /* (non-Javadoc)
@@ -329,26 +311,27 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getPreferenceDefaults()
      */
-    public Collection<IPreferenceDefault> getPreferenceDefaults()
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public List<IPreference> getPreferences()
     {
         if (preferenceDefaults == null)
         {
             preferenceDefaults = new ArrayList<PreferenceDefaultImpl>();
         }
-        return new InverseRelationshipCollection<WidgetImpl,PreferenceDefaultImpl,IPreferenceDefault>(this, preferenceDefaults);
+        return (ArrayList<IPreference>)(List)(preferenceDefaults);
     }
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#setPreferenceDefaults(java.util.Collection)
      */
-    public void setPreferenceDefaults(Collection<IPreferenceDefault> preferenceDefaults)
+    public void setPreferences(Collection<IPreference> preferenceDefaults)
     {
-        getPreferenceDefaults().clear();
+        getPreferences().clear();
         if (preferenceDefaults != null)
         {
-            for (IPreferenceDefault preferenceDefault : preferenceDefaults)
+            for (IPreference preferenceDefault : preferenceDefaults)
             {
-                getPreferenceDefaults().add((PreferenceDefaultImpl)preferenceDefault);
+                getPreferences().add((PreferenceDefaultImpl)preferenceDefault);
             }
         }
     }
@@ -356,26 +339,27 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getStartFiles()
      */
-    public Collection<IStartFile> getStartFiles()
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<IContent> getContentList()
     {
         if (startFiles == null)
         {
             startFiles = new ArrayList<StartFileImpl>();
         }
-        return new InverseRelationshipCollection<WidgetImpl,StartFileImpl,IStartFile>(this, startFiles);
+        return (ArrayList<IContent>)(List)startFiles;
     }
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#setStartFiles(java.util.Collection)
      */
-    public void setStartFiles(Collection<IStartFile> startFiles)
+    public void setContentList(Collection<IContent> startFiles)
     {
-        getStartFiles().clear();
+        getContentList().clear();
         if (startFiles != null)
         {
-            for (IStartFile startFile : startFiles)
+            for (IContent startFile : startFiles)
             {
-                getStartFiles().add((StartFileImpl)startFile);
+                getContentList().add((IContent)startFile);
             }
         }
     }
@@ -399,26 +383,27 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getWidgetIcons()
      */
-    public Collection<IWidgetIcon> getWidgetIcons()
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public List<IIcon> getIcons()
     {
         if (widgetIcons == null)
         {
             widgetIcons = new ArrayList<WidgetIconImpl>();
         }
-        return new InverseRelationshipCollection<WidgetImpl,WidgetIconImpl,IWidgetIcon>(this, widgetIcons);
+        return (ArrayList<IIcon>)(List)(widgetIcons);
     }
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#setWidgetIcons(java.util.Collection)
      */
-    public void setWidgetIcons(Collection<IWidgetIcon> widgetIcons)
+    public void setIcons(Collection<IIcon> widgetIcons)
     {
-        getWidgetIcons().clear();
+        getIcons().clear();
         if (widgetIcons != null)
         {
-            for (IWidgetIcon widgetIcon : widgetIcons)
+            for (IIcon widgetIcon : widgetIcons)
             {
-                getWidgetIcons().add((WidgetIconImpl)widgetIcon);
+                getIcons().add((WidgetIconImpl)widgetIcon);
             }
         }
     }
@@ -442,7 +427,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getWidgetTitle(java.lang.String)
      */
-    public String getWidgetTitle(String locale)
+    public String getLocalName(String locale)
     {
         return Utilities.getWidgetTitle(this, locale);
     }
@@ -476,6 +461,21 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget
   public void setDefaultLocale(String locale) {
     this.defaultLocale = locale;
   }
-	
+
+/* (non-Javadoc)
+ * @see org.apache.wookie.w3c.W3CWidget#getAccessList()
+ */
+public List<IAccess> getAccessList() {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+/* (non-Javadoc)
+ * @see org.apache.wookie.w3c.W3CWidget#getViewModes()
+ */
+public String getViewModes() {
+	// TODO Auto-generated method stub
+	return null;
+}
 	
 }

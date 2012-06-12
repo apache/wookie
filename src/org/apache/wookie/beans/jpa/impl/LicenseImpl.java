@@ -17,17 +17,13 @@ package org.apache.wookie.beans.jpa.impl;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import org.apache.wookie.beans.ILicense;
-import org.apache.wookie.beans.jpa.IInverseRelationship;
+import org.apache.wookie.w3c.ILicense;
 
 /**
  * LicenseImpl - JPA ILicense implementation.
@@ -37,7 +33,7 @@ import org.apache.wookie.beans.jpa.IInverseRelationship;
  */
 @Entity(name="License")
 @Table(name="License")
-public class LicenseImpl extends LocalizedBeanImpl implements ILicense, IInverseRelationship<WidgetImpl>
+public class LicenseImpl extends LocalizedBeanImpl implements ILicense
 {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -57,19 +53,6 @@ public class LicenseImpl extends LocalizedBeanImpl implements ILicense, IInverse
     @Basic
     @Column(name="text")
     private String text;
-
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="widget_id", referencedColumnName="id")
-    @SuppressWarnings("unused")
-    private WidgetImpl widget;
-    
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IInverseRelationship#updateInverseRelationship(java.lang.Object)
-     */
-    public void updateInverseRelationship(WidgetImpl owningObject)
-    {
-        widget = owningObject;
-    }
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.ILicense#getHref()

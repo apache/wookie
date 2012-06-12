@@ -22,24 +22,19 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import org.apache.openjpa.persistence.ElementDependent;
 import org.apache.openjpa.persistence.ExternalValues;
 import org.apache.openjpa.persistence.Type;
 
-import org.apache.wookie.beans.IFeature;
-import org.apache.wookie.beans.IParam;
-import org.apache.wookie.beans.jpa.IInverseRelationship;
-import org.apache.wookie.beans.jpa.InverseRelationshipCollection;
+import org.apache.wookie.w3c.IFeature;
+import org.apache.wookie.w3c.IParam;
 
 /**
  * FeatureImpl - JPA IFeature implementation.
@@ -49,7 +44,7 @@ import org.apache.wookie.beans.jpa.InverseRelationshipCollection;
  */
 @Entity(name="Feature")
 @Table(name="Feature")
-public class FeatureImpl implements IFeature, IInverseRelationship<WidgetImpl>
+public class FeatureImpl implements IFeature
 {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -71,23 +66,10 @@ public class FeatureImpl implements IFeature, IInverseRelationship<WidgetImpl>
     @ExternalValues({"true=t","false=f","null="})
     @Type(String.class)
     private Boolean required;
-
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="widget_id", referencedColumnName="id")
-    @SuppressWarnings("unused")
-    private WidgetImpl widget;
-
-    @OneToMany(mappedBy="parentFeature", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-    @ElementDependent
+    
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="feature_id")
     private Collection<ParamImpl> parameters;
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IInverseRelationship#updateInverseRelationship(java.lang.Object)
-     */
-    public void updateInverseRelationship(WidgetImpl owningObject)
-    {
-        widget = owningObject;
-    }
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IFeature#getFeatureName()
@@ -108,15 +90,14 @@ public class FeatureImpl implements IFeature, IInverseRelationship<WidgetImpl>
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IFeature#getParameters()
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<IParam> getParameters()
     {
         if (parameters == null)
         {
             parameters = new ArrayList<ParamImpl>();
         }
-        ArrayList<IParam> params = new ArrayList<IParam>();
-        params.addAll( new InverseRelationshipCollection<FeatureImpl,ParamImpl,IParam>(this, parameters));
-        return params;
+        return (ArrayList<IParam>)(List)parameters;
     }
 
     /* (non-Javadoc)

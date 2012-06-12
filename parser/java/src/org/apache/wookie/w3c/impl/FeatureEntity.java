@@ -17,33 +17,34 @@ package org.apache.wookie.w3c.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wookie.w3c.IFeatureEntity;
-import org.apache.wookie.w3c.IParamEntity;
+import org.apache.wookie.w3c.IFeature;
+import org.apache.wookie.w3c.IParam;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.util.IRIValidator;
 import org.apache.wookie.w3c.util.UnicodeUtils;
+import org.apache.wookie.w3c.xml.IElement;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
  * @version $Id: FeatureEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
-public class FeatureEntity implements IFeatureEntity {
+public class FeatureEntity implements IFeature, IElement {
 	
 	private String fName;
 	private boolean fRequired;
-	private List<IParamEntity> fParams;
+	private List<IParam> fParams;
 	private String[] features; // the set of platform-supported features
 	
 	public FeatureEntity(String[] features){
 		fName = "";
 		fRequired = false;
-		fParams = new ArrayList<IParamEntity>();
+		fParams = new ArrayList<IParam>();
 		this.features = features;
 	}
 	
 	public FeatureEntity(String name, boolean required,
-			List<IParamEntity> params) {
+			List<IParam> params) {
 		super();
 		fName = name;
 		fRequired = required;
@@ -54,7 +55,7 @@ public class FeatureEntity implements IFeatureEntity {
 		super();
 		fName = name;
 		fRequired = required;
-		fParams = new ArrayList<IParamEntity>();
+		fParams = new ArrayList<IParam>();
 	}
 	
 	public boolean hasParams(){
@@ -80,11 +81,11 @@ public class FeatureEntity implements IFeatureEntity {
 		fRequired = required;
 	}
 	
-	public List<IParamEntity> getParameters() {
+	public List<IParam> getParameters() {
 		return fParams;
 	}
 	
-	public void setParameters(List<IParamEntity> params) {
+	public void setParameters(List<IParam> params) {
 		fParams = params;
 	}
 	
@@ -128,7 +129,7 @@ public class FeatureEntity implements IFeatureEntity {
 
 			// PARAM optional, can be 0 or many
 			if(tag.equals(IW3CXMLConfiguration.PARAM_ELEMENT)) {	
-				IParamEntity aParam = new ParamEntity();
+				ParamEntity aParam = new ParamEntity();
 				aParam.fromXML(child);
 				if (aParam.getName()!=null && aParam.getValue()!=null) fParams.add(aParam);
 			}
@@ -140,8 +141,8 @@ public class FeatureEntity implements IFeatureEntity {
 		Element element = new Element(IW3CXMLConfiguration.FEATURE_ELEMENT, IW3CXMLConfiguration.MANIFEST_NAMESPACE);
 		element.setAttribute(IW3CXMLConfiguration.NAME_ATTRIBUTE, getName());
 		element.setAttribute(IW3CXMLConfiguration.REQUIRED_ATTRIBUTE, String.valueOf(isRequired()));
-		for (IParamEntity param: getParameters()){
-			element.addContent(param.toXml());
+		for (IParam param: getParameters()){
+			element.addContent(((IElement) param).toXml());
 		}
 		return element;
 	}

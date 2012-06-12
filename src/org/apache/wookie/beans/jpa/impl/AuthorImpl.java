@@ -17,29 +17,25 @@ package org.apache.wookie.beans.jpa.impl;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import org.apache.wookie.beans.IAuthor;
-import org.apache.wookie.beans.jpa.IInverseRelationship;
+import org.apache.wookie.w3c.IAuthor;
 
 /**
  * AuthorImpl - JPA IAuthor implementation.
  */
 @Entity(name="Author")
 @Table(name="Author")
-public class AuthorImpl extends LocalizedBeanImpl implements IAuthor, IInverseRelationship<WidgetImpl>
+public class AuthorImpl extends LocalizedBeanImpl implements IAuthor
 {
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
   @Column(name="id", nullable=false)
-  @SuppressWarnings("unused")
+  @SuppressWarnings("unused") 
   private int id;
 
     @Version
@@ -58,11 +54,6 @@ public class AuthorImpl extends LocalizedBeanImpl implements IAuthor, IInverseRe
     @Basic
     @Column(name="href")
     private String href;
-    
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="widget_id", referencedColumnName="id")
-    @SuppressWarnings("unused")
-    private WidgetImpl widget;
 
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.beans.IAuthor#getAuthor()
@@ -105,11 +96,4 @@ public class AuthorImpl extends LocalizedBeanImpl implements IAuthor, IInverseRe
 	public void setHref(String href) {
 		this.href = href;
 	}
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.jpa.IInverseRelationship#updateInverseRelationship(java.lang.Object)
-     */
-    public void updateInverseRelationship(WidgetImpl owningObject) {
-      widget = owningObject;
-    }
 }

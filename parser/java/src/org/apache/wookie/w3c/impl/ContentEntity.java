@@ -16,12 +16,12 @@ package org.apache.wookie.w3c.impl;
 
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.lang.StringUtils;
-import org.apache.wookie.w3c.IContentEntity;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.InvalidContentTypeException;
 import org.apache.wookie.w3c.util.UnicodeUtils;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
+import org.apache.wookie.w3c.xml.IContentEntity;
 import org.jdom.Element;
 /**
  * @author Paul Sharples

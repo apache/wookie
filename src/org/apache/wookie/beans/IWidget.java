@@ -20,6 +20,7 @@ import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.util.WidgetFormattingUtils;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.util.LocalizationUtils;
+import org.apache.wookie.w3c.*;
 
 /**
  * IWidget - a simple bean to model a widgets attributes.
@@ -28,14 +29,8 @@ import org.apache.wookie.w3c.util.LocalizationUtils;
  * @author <a href="mailto:rwatler@apache.org">Randy Watler</a>
  * @version $Id$
  */
-public interface IWidget extends ILocalizedBean, IBean
+public interface IWidget extends W3CWidget, IBean
 {
-  
-  /**
-   * Get the default locale
-   * @return
-   */
-  String getDefaultLocale();
   
   /**
    * Set the the default locale
@@ -52,23 +47,10 @@ public interface IWidget extends ILocalizedBean, IBean
 	void setPackagePath(String path);
 	
 	/**
-	 * Get widget update location
-	 * @return widget update location as a string
-	 */
-	String getUpdateLocation();
-	
-	/**
 	 * Set the widget update location
 	 * @param location the location to set
 	 */
 	void setUpdateLocation(String location);
-	
-    /**
-     * Get widget height.
-     * 
-     * @return widget height
-     */
-    Integer getHeight();
     
     /**
      * Set widget height.
@@ -76,13 +58,6 @@ public interface IWidget extends ILocalizedBean, IBean
      * @param height widget height
      */
     void setHeight(Integer height);
-
-    /**
-     * Get widget width.
-     * 
-     * @return widget width
-     */
-    Integer getWidth();
     
     /**
      * Set widget width.
@@ -90,39 +65,19 @@ public interface IWidget extends ILocalizedBean, IBean
      * @param width widget width
      */
     void setWidth(Integer width);
-
-    /**
-     * Get widget GUID.
-     * 
-     * @return widget GUID
-     */
-    String getGuid();
     
     /**
      * Set widget GUID.
      * 
      * @param guid widget GUID
      */
-    void setGuid(String guid);
-    
-    /**
-     * Get the widget author
-     * @return widget author
-     */
-    IAuthor getAuthor();
+    void setIdentifier(String guid);
     
     /**
      * Set the widget author
      * @param author the author to set
      */
     void setAuthor(IAuthor author);
-
-    /**
-     * Get widget version number.
-     * 
-     * @return widget version
-     */
-    String getVersion();
     
     /**
      * Set widget version number.
@@ -132,39 +87,18 @@ public interface IWidget extends ILocalizedBean, IBean
     void setVersion(String version);
     
     /**
-     * Get collection of features for this widget.
-     * 
-     * @return features collection
-     */
-    Collection<IFeature> getFeatures();
-    
-    /**
      * Set collection of features for this widget.
      * 
      * @param features features collection
      */
     void setFeatures(Collection<IFeature> features);
-
-    /**
-     * Get collection of widget icons for this widget.
-     * 
-     * @return widget icons collection
-     */
-    Collection<IWidgetIcon> getWidgetIcons();
     
     /**
      * Set collection of widget icons for this widget.
      * 
      * @param widgetIcons widget icons collection
      */
-    void setWidgetIcons(Collection<IWidgetIcon> widgetIcons);
-
-    /**
-     * Get collection of licenses for this widget.
-     * 
-     * @return licenses collection
-     */
-    Collection<ILicense> getLicenses();
+    void setIcons(Collection<IIcon> widgetIcons);
     
     /**
      * Set collection of licenses for this widget.
@@ -172,13 +106,6 @@ public interface IWidget extends ILocalizedBean, IBean
      * @param licenses licenses collection
      */
     void setLicenses(Collection<ILicense> licenses);
-
-    /**
-     * Get collection of names for this widget.
-     * 
-     * @return names collection
-     */
-    Collection<IName> getNames();
     
     /**
      * Set collection of names for this widget.
@@ -188,53 +115,25 @@ public interface IWidget extends ILocalizedBean, IBean
     void setNames(Collection<IName> names);
 
     /**
-     * Get collection of descriptions for this widget.
-     * 
-     * @return descriptions collection
-     */
-    Collection<IDescription> getDescriptions();
-    
-    /**
      * Set collection of descriptions for this widget.
      * 
      * @param descriptions descriptions collection
      */
     void setDescriptions(Collection<IDescription> descriptions);
-
-    /**
-     * Get collection of start files for this widget.
-     * 
-     * @return start files collection
-     */
-    Collection<IStartFile> getStartFiles();
     
     /**
      * Set collection of start files for this widget.
      * 
      * @param startFiles start files collection
      */
-    void setStartFiles(Collection<IStartFile> startFiles);
-
-    /**
-     * Get collection of preference defaults for this widget.
-     * 
-     * @return preference defaults collection
-     */
-    Collection<IPreferenceDefault> getPreferenceDefaults();
+    void setContentList(Collection<IContent> startFiles);
     
     /**
      * Set collection of preference defaults for this widget.
      * 
      * @param preferenceDefaults preference defaults collection
      */
-    void setPreferenceDefaults(Collection<IPreferenceDefault> preferenceDefaults);
-    
-    /**
-     * Get widget title for locale.
-     * 
-     * @return widget title
-     */
-    String getWidgetTitle(String locale);
+    void setPreferences(Collection<org.apache.wookie.w3c.IPreference> preferenceDefaults);
     
     /**
      * Shared implementation utilities.
@@ -305,9 +204,9 @@ public interface IWidget extends ILocalizedBean, IBean
          */
         public static String getUrl(IWidget widget, String locale)
         {
-        	IStartFile[] startFiles = widget.getStartFiles().toArray(new IStartFile[widget.getStartFiles().size()]);
-            IStartFile startFile = (IStartFile)LocalizationUtils.getLocalizedElement(startFiles, new String[]{locale}, widget.getDefaultLocale());
-            return ((startFile != null) ? startFile.getUrl() : null);
+        	IContent[] startFiles = widget.getContentList().toArray(new IContent[widget.getContentList().size()]);
+        	IContent startFile = (IContent)LocalizationUtils.getLocalizedElement(startFiles, new String[]{locale}, widget.getDefaultLocale());
+            return ((startFile != null) ? startFile.getSrc() : null);
         }
 
         
@@ -320,8 +219,8 @@ public interface IWidget extends ILocalizedBean, IBean
          */
         public static String getWidgetIconLocation(IWidget widget, String locale)
         {
-        	IWidgetIcon[] icons = widget.getWidgetIcons().toArray(new IWidgetIcon[widget.getWidgetIcons().size()]);
-            IWidgetIcon icon = (IWidgetIcon)LocalizationUtils.getLocalizedElement(icons, new String[]{locale}, widget.getDefaultLocale());
+        	IIcon[] icons = widget.getIcons().toArray(new IIcon[widget.getIcons().size()]);
+            IIcon icon = (IIcon)LocalizationUtils.getLocalizedElement(icons, new String[]{locale}, widget.getDefaultLocale());
             return ((icon != null) ? icon.getSrc() : WidgetRuntimeHelper.DEFAULT_ICON_PATH);
         }
     }

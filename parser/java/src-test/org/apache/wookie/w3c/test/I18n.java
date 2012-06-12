@@ -18,9 +18,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.apache.wookie.w3c.IContentEntity;
-import org.apache.wookie.w3c.IFeatureEntity;
+
+import org.apache.wookie.w3c.IFeature;
 import org.apache.wookie.w3c.W3CWidget;
+import org.apache.wookie.w3c.xml.IContentEntity;
 import org.junit.Test;
 
 /**
@@ -185,18 +186,18 @@ public class I18n extends ConformanceTest{
 		String[] tests = {"005","018"};
 		for (String id: tests){
 			W3CWidget widget = getWidget(id,dir);
-			assertEquals(dir,widget.getLicensesList().get(0).getDir());
+			assertEquals(dir,widget.getLicenses().get(0).getDir());
 		}
 		W3CWidget widget;
 		// this has inline dir tags. we have to check that we get them correctly and haven't filtered out the span tag.
 		widget = getWidget("009",dir);
-		assertTrue(widget.getLicensesList().get(0).getLicenseText().contains("dir=\""+dir));
+		assertTrue(widget.getLicenses().get(0).getLicenseText().contains("dir=\""+dir));
 		widget = getWidget("013",dir);
-		assertTrue(widget.getLicensesList().get(0).getDir().equals(dir));
+		assertTrue(widget.getLicenses().get(0).getDir().equals(dir));
 
 		// this has mixed inline dir tags. we have to check that we get them correctly and haven't filtered out the span tag.
 		widget = getWidget("038",dir);
-		assertEquals("http://widget.example.org/", widget.getLicensesList().get(0).getHref());
+		assertEquals("http://widget.example.org/", widget.getLicenses().get(0).getHref());
 	}
 	
 	// ta-roCaKRxZhS
@@ -275,32 +276,32 @@ public class I18n extends ConformanceTest{
 		W3CWidget widget;
 
 		widget = getWidget("033","lro");
-		assertEquals("םפללחק", widget.getPrefences().get(0).getName());
+		assertEquals("םפללחק", widget.getPreferences().get(0).getName());
 		widget = getWidget("034","lro");
-		assertEquals("םפללחק", widget.getPrefences().get(0).getValue());
+		assertEquals("םפללחק", widget.getPreferences().get(0).getValue());
 		widget = getWidget("035","lro");
-		assertEquals(true, widget.getPrefences().get(0).isReadOnly());
+		assertEquals(true, widget.getPreferences().get(0).isReadOnly());
 		
 		widget = getWidget("033","ltr");
-		assertEquals("The arrow should point right -->", widget.getPrefences().get(0).getName());
+		assertEquals("The arrow should point right -->", widget.getPreferences().get(0).getName());
 		widget = getWidget("034","ltr");
-		assertEquals("The arrow should point right -->", widget.getPrefences().get(0).getValue());
+		assertEquals("The arrow should point right -->", widget.getPreferences().get(0).getValue());
 		widget = getWidget("035","ltr");
-		assertEquals(true, widget.getPrefences().get(0).isReadOnly());
+		assertEquals(true, widget.getPreferences().get(0).isReadOnly());
 		
 		widget = getWidget("033","rlo");
-		assertEquals("PASSED", widget.getPrefences().get(0).getName());
+		assertEquals("PASSED", widget.getPreferences().get(0).getName());
 		widget = getWidget("034","rlo");
-		assertEquals("PASSED", widget.getPrefences().get(0).getValue());
+		assertEquals("PASSED", widget.getPreferences().get(0).getValue());
 		widget = getWidget("035","rlo");
-		assertEquals(true, widget.getPrefences().get(0).isReadOnly());
+		assertEquals(true, widget.getPreferences().get(0).isReadOnly());
 		
 		widget = getWidget("033","rtl");
-		assertEquals("The arrow should point right -->", widget.getPrefences().get(0).getName());
+		assertEquals("The arrow should point right -->", widget.getPreferences().get(0).getName());
 		widget = getWidget("034","rtl");
-		assertEquals("The arrow should point right -->", widget.getPrefences().get(0).getValue());
+		assertEquals("The arrow should point right -->", widget.getPreferences().get(0).getValue());
 		widget = getWidget("035","rtl");
-		assertEquals(true, widget.getPrefences().get(0).isReadOnly());
+		assertEquals(true, widget.getPreferences().get(0).isReadOnly());
 	}
 	
 	// ta-LQcjNKBLUZ
@@ -365,7 +366,7 @@ public class I18n extends ConformanceTest{
 		String[] tests = {"lro","rlo","rtl","ltr"};
 		for (String dir: tests){
 			W3CWidget widget = getWidget(id,dir);
-			IFeatureEntity feature = widget.getFeatures().get(0);
+			IFeature feature = widget.getFeatures().get(0);
 			assertEquals(pass_value, feature.getName());
 		}	
 	}
@@ -417,7 +418,7 @@ public class I18n extends ConformanceTest{
 		return widget;
 	}
 	private String getLocalIconPath(W3CWidget widget, int index){
-		return getLocalUrl(widget.getIconsList().get(index).getSrc());
+		return getLocalUrl(widget.getIcons().get(index).getSrc());
 	}
 	
 	private String getLocalUrl(String src){

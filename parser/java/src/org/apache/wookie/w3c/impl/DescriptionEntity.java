@@ -14,13 +14,14 @@
 
 package org.apache.wookie.w3c.impl;
 
-import org.apache.wookie.w3c.IDescriptionEntity;
+import org.apache.wookie.w3c.IDescription;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
+import org.apache.wookie.w3c.xml.IElement;
 import org.jdom.Element;
 /**
  * The <description> element
  */
-public class DescriptionEntity extends AbstractLocalizedEntity  implements IDescriptionEntity {
+public class DescriptionEntity extends AbstractLocalizedEntity  implements IDescription, IElement {
 	
 	private String fDescription;
 	

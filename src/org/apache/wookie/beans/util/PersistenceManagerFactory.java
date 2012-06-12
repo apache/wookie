@@ -17,12 +17,12 @@ package org.apache.wookie.beans.util;
 import java.lang.reflect.Method;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.wookie.beans.IAuthor;
-import org.apache.wookie.beans.IDescription;
-import org.apache.wookie.beans.IName;
-import org.apache.wookie.beans.IStartFile;
+import org.apache.wookie.w3c.IAuthor;
+import org.apache.wookie.w3c.IDescription;
+import org.apache.wookie.w3c.IName;
+import org.apache.wookie.w3c.IContent;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.IWidgetIcon;
+import org.apache.wookie.w3c.IIcon;
 import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +89,7 @@ public class PersistenceManagerFactory
                     widget = persistenceManager.newInstance(IWidget.class);
                     widget.setHeight(350);
                     widget.setWidth(500);
-                    widget.setGuid("http://notsupported");
+                    widget.setIdentifier("http://notsupported");
                     
                     IAuthor author = persistenceManager.newInstance(IAuthor.class);
                     author.setAuthorName("Paul Sharples");
@@ -104,27 +104,27 @@ public class PersistenceManagerFactory
                     IDescription widgetDescription = persistenceManager.newInstance(IDescription.class);
                     widgetDescription.setDescription("This widget is a placeholder for when no corresponding widget is found for a given type");
                     widget.getDescriptions().add(widgetDescription);
-                    IStartFile widgetStartFile = persistenceManager.newInstance(IStartFile.class);
-                    widgetStartFile.setUrl(WidgetRuntimeHelper.getWebContextPath() + "/wservices/notsupported/index.htm");
-                    widget.getStartFiles().add(widgetStartFile);
-                    IStartFile widgetBUStartFile = persistenceManager.newInstance(IStartFile.class);
-                    widgetBUStartFile.setUrl(WidgetRuntimeHelper.getWebContextPath() + "/wservices/notsupported/locales/bu/index.htm");
+                    IContent widgetStartFile = persistenceManager.newInstance(IContent.class);
+                    widgetStartFile.setSrc(WidgetRuntimeHelper.getWebContextPath() + "/wservices/notsupported/index.htm");
+                    widget.getContentList().add(widgetStartFile);
+                    IContent widgetBUStartFile = persistenceManager.newInstance(IContent.class);
+                    widgetBUStartFile.setSrc(WidgetRuntimeHelper.getWebContextPath() + "/wservices/notsupported/locales/bu/index.htm");
                     widgetBUStartFile.setLang("bu");
-                    widget.getStartFiles().add(widgetBUStartFile);
-                    IStartFile widgetFRStartFile = persistenceManager.newInstance(IStartFile.class);
-                    widgetFRStartFile.setUrl(WidgetRuntimeHelper.getWebContextPath() + "/wservices/notsupported/locales/fr/index.htm");
+                    widget.getContentList().add(widgetBUStartFile);
+                    IContent widgetFRStartFile = persistenceManager.newInstance(IContent.class);
+                    widgetFRStartFile.setSrc(WidgetRuntimeHelper.getWebContextPath() + "/wservices/notsupported/locales/fr/index.htm");
                     widgetFRStartFile.setLang("fr");
-                    widget.getStartFiles().add(widgetFRStartFile);
-                    IStartFile widgetENStartFile = persistenceManager.newInstance(IStartFile.class);
-                    widgetENStartFile.setUrl(WidgetRuntimeHelper.getWebContextPath() + "/wservices/notsupported/locales/en/index.htm");
+                    widget.getContentList().add(widgetFRStartFile);
+                    IContent widgetENStartFile = persistenceManager.newInstance(IContent.class);
+                    widgetENStartFile.setSrc(WidgetRuntimeHelper.getWebContextPath() + "/wservices/notsupported/locales/en/index.htm");
                     widgetENStartFile.setLang("en");
-                    widget.getStartFiles().add(widgetENStartFile);
-                    IWidgetIcon widgetIcon = persistenceManager.newInstance(IWidgetIcon.class);
+                    widget.getContentList().add(widgetENStartFile);
+                    IIcon widgetIcon = persistenceManager.newInstance(IIcon.class);
                     widgetIcon.setSrc(WidgetRuntimeHelper.getWebContextPath() + "/shared/images/defaultwidget.png");
                     widgetIcon.setHeight(80);
                     widgetIcon.setWidth(80);
                     widgetIcon.setLang("en");
-                    widget.getWidgetIcons().add(widgetIcon);
+                    widget.getIcons().add(widgetIcon);
                     persistenceManager.save(widget);
                 }
                 else

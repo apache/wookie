@@ -19,11 +19,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.w3c.exceptions.InvalidContentTypeException;
+import org.apache.wookie.w3c.W3CWidget;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 

@@ -15,11 +15,11 @@ package org.apache.wookie.w3c.updates;
 
 import java.io.IOException;
 
-import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.w3c.exceptions.InvalidContentTypeException;
+import org.apache.wookie.w3c.W3CWidget;
 
 /**
  * Utility methods for working with updates
@@ -33,7 +33,7 @@ public class UpdateUtils {
 	 * @return an UpdateDescriptionDocument for an update to the widget, or null if there is no update available
 	 */
 	public static UpdateDescriptionDocument checkForUpdate(W3CWidget widget){
-		return checkForUpdate(widget.getUpdate(), widget.getVersion());
+		return checkForUpdate(widget.getUpdateLocation(), widget.getVersion());
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public class UpdateUtils {
 	 */
 	public static W3CWidget getUpdate(W3CWidgetFactory factory, W3CWidget widget){
 		try {
-			return getUpdate(factory,  widget.getIdentifier(), widget.getUpdate(), widget.getVersion(), false);
+			return getUpdate(factory,  widget.getIdentifier(), widget.getUpdateLocation(), widget.getVersion(), false);
 		} catch (Exception e) {
 			return null;
 		}

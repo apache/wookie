@@ -20,7 +20,8 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.apache.wookie.w3c.IIconEntity;
+import org.apache.wookie.w3c.IIcon;
+import org.apache.wookie.w3c.xml.IElement;
 import org.apache.wookie.w3c.W3CWidget;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -81,11 +82,11 @@ public class WidgetImportHelper {
         widget.removeChildren("icon", widget.getNamespace());
         // get the model icons
       }
-      List<IIconEntity> generatedIcons = widgetModel.getIconsList();
-      for(IIconEntity icon : generatedIcons){
+      List<IIcon> generatedIcons = widgetModel.getIcons();
+      for(IIcon icon : generatedIcons){
         String parserSrc = icon.getSrc();
         icon.setSrc(localPath + parserSrc);
-        widget.addContent(idx++ , icon.toXml());
+        widget.addContent(idx++ , ((IElement) icon).toXml());
         icon.setSrc(parserSrc);
       }
 

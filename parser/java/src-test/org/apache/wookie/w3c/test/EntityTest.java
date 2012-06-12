@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wookie.w3c.IParamEntity;
+import org.apache.wookie.w3c.IParam;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.impl.AuthorEntity;
@@ -86,7 +86,7 @@ public class EntityTest {
 		assertEquals(true, feature.isRequired());
 		assertFalse(feature.hasParams());
 		ParamEntity param = new ParamEntity("name","value");
-		List<IParamEntity> params = new ArrayList<IParamEntity>();
+		List<IParam> params = new ArrayList<IParam>();
 		params.add(param);
 		feature = new FeatureEntity("http://test",true,params);
 		assertTrue(feature.hasParams());

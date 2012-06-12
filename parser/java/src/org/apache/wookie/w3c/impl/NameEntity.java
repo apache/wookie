@@ -14,15 +14,16 @@
 
 package org.apache.wookie.w3c.impl;
 
-import org.apache.wookie.w3c.INameEntity;
+import org.apache.wookie.w3c.IName;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.util.UnicodeUtils;
+import org.apache.wookie.w3c.xml.IElement;
 import org.jdom.Element;
 
 /**
  * the <name> element
  */
-public class NameEntity extends AbstractLocalizedEntity implements INameEntity {
+public class NameEntity extends AbstractLocalizedEntity implements IName, IElement {
 
 	private String fName;
 	private String fShort;

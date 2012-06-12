@@ -14,10 +14,12 @@
 package org.apache.wookie.w3c.impl;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.wookie.w3c.ILocalizedEntity;
+import org.apache.wookie.w3c.IDirectional;
+import org.apache.wookie.w3c.ILocalized;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 import org.apache.wookie.w3c.util.UnicodeUtils;
+import org.apache.wookie.w3c.xml.IElement;
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -28,7 +30,7 @@ import org.jdom.Text;
  * utility methods for extracting and processing text that uses language tags
  * and text direction (e.g. RTL)
  */
-public abstract class AbstractLocalizedEntity implements ILocalizedEntity {
+public abstract class AbstractLocalizedEntity implements ILocalized, IDirectional, IElement {
 	
 	/**
 	 * a Language string conforming to BCP47

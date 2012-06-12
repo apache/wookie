@@ -30,7 +30,6 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
 import org.apache.wookie.beans.ISharedData;
-import org.apache.wookie.beans.IStartFile;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.SharedContext;
@@ -46,6 +45,7 @@ import org.apache.wookie.helpers.WidgetInstanceFactory;
 import org.apache.wookie.helpers.WidgetInstanceHelper;
 import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.server.LocaleHandler;
+import org.apache.wookie.w3c.IContent;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 
 /**
@@ -357,23 +357,23 @@ public class WidgetInstancesController extends Controller {
 		//
 		// Locate the startfile for the Widget Instance
 		//
-		IStartFile[] startFiles = instance.getWidget().getStartFiles().toArray(new IStartFile[instance.getWidget().getStartFiles().size()]);
-        IStartFile sf = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, new String[]{instance.getLang()}, instance.getWidget().getDefaultLocale());
+		IContent[] startFiles = instance.getWidget().getContentList().toArray(new IContent[instance.getWidget().getContentList().size()]);
+        IContent sf = (IContent) LocalizationUtils.getLocalizedElement(startFiles, new String[]{instance.getLang()}, instance.getWidget().getDefaultLocale());
     
     //
     // Try default locale if no appropriate localization found
     //
-		if (sf == null) sf = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, null, instance.getWidget().getDefaultLocale());
+		if (sf == null) sf = (IContent) LocalizationUtils.getLocalizedElement(startFiles, null, instance.getWidget().getDefaultLocale());
 		
 		//
 		// No start file found, so throw an exception
 		//
-		if (sf == null) throw new IOException("No start file located for widget "+instance.getWidget().getGuid());
+		if (sf == null) throw new IOException("No start file located for widget "+instance.getWidget().getIdentifier());
 		
 		//
 		// Get a URL for the start file on this Wookie server
 		//
-    String path = sf.getUrl();
+    String path = sf.getSrc();
 		URL urlWidget =  getWookieServerURL(request, path);
 		
 		//

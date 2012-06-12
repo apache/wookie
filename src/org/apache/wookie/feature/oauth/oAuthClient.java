@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.wookie.Messages;
 import org.apache.wookie.beans.IOAuthToken;
-import org.apache.wookie.beans.IParam;
-import org.apache.wookie.beans.IStartFile;
+import org.apache.wookie.w3c.IContent;
+import org.apache.wookie.w3c.IParam;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
@@ -66,12 +66,12 @@ public class oAuthClient implements IFeature {
 		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(idKey);
 		if(widgetInstance==null) return "invalid";
 		
-		Collection<IStartFile> startFiles = widgetInstance.getWidget().getStartFiles();
+		Collection<IContent> startFiles = widgetInstance.getWidget().getContentList();
 		String startFileUrl = null;
-		for(IStartFile startFile : startFiles) {
-			iPos = redirectUri.indexOf(startFile.getUrl());
+		for(IContent startFile : startFiles) {
+			iPos = redirectUri.indexOf(startFile.getSrc());
 			if (iPos > -1) {
-				startFileUrl = startFile.getUrl();
+				startFileUrl = startFile.getSrc();
 				break;
 			}
 		}
@@ -84,9 +84,9 @@ public class oAuthClient implements IFeature {
 		} catch (UnsupportedEncodingException e) {
 		}
 		
-		Collection<org.apache.wookie.beans.IFeature> widgetFeatures = widgetInstance.getWidget().getFeatures();
-		org.apache.wookie.beans.IFeature oAuthFeature = null;
-		for (org.apache.wookie.beans.IFeature aFeature : widgetFeatures) {
+		Collection<org.apache.wookie.w3c.IFeature> widgetFeatures = widgetInstance.getWidget().getFeatures();
+		org.apache.wookie.w3c.IFeature oAuthFeature = null;
+		for (org.apache.wookie.w3c.IFeature aFeature : widgetFeatures) {
 			if (getName().equals(aFeature.getName())) {
 				oAuthFeature = aFeature;
 				break;
@@ -224,9 +224,9 @@ public class oAuthClient implements IFeature {
 		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(idKey);
 		if(widgetInstance==null) return null;
 		
-		Collection<org.apache.wookie.beans.IFeature> widgetFeatures = widgetInstance.getWidget().getFeatures();
-		org.apache.wookie.beans.IFeature oAuthFeature = null;
-		for (org.apache.wookie.beans.IFeature aFeature : widgetFeatures) {
+		Collection<org.apache.wookie.w3c.IFeature> widgetFeatures = widgetInstance.getWidget().getFeatures();
+		org.apache.wookie.w3c.IFeature oAuthFeature = null;
+		for (org.apache.wookie.w3c.IFeature aFeature : widgetFeatures) {
 			if (getName().equals(aFeature.getName())) {
 				oAuthFeature = aFeature;
 				break;

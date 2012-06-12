@@ -108,7 +108,7 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			//
 			if (properties.getBoolean("widget.proxy.usewhitelist") && !isAllowed(bean.getNewUrl().toURI(), instance)){
 				response.sendError(HttpServletResponse.SC_FORBIDDEN,"<error>URL Blocked</error>");
-				fLogger.warn("URL " + bean.getNewUrl().toExternalForm() + " Blocked for scope "+instance.getWidget().getGuid());
+				fLogger.warn("URL " + bean.getNewUrl().toExternalForm() + " Blocked for scope "+instance.getWidget().getIdentifier());
 				return;
 			}	
 
@@ -189,7 +189,7 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 	 */
 	public boolean isAllowed(URI requestedUri, IWidgetInstance instance){
 	  try {
-      return Policies.getInstance().validate(requestedUri, instance.getWidget().getGuid());
+      return Policies.getInstance().validate(requestedUri, instance.getWidget().getIdentifier());
     } catch (ConfigurationException e) {
       fLogger.error("Problem with policies configuration", e);
       return false;

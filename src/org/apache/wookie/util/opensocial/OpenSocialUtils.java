@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 import org.apache.shindig.auth.BlobCrypterSecurityToken;
 import org.apache.shindig.common.crypto.BasicBlobCrypter;
 import org.apache.wookie.Messages;
-import org.apache.wookie.beans.IStartFile;
+import org.apache.wookie.w3c.IContent;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 
@@ -68,7 +68,7 @@ public class OpenSocialUtils {
 		// owner, viewer, app_id, domain, app_url, mod_id, container
 		// NOTE that we're hacking this now to push the id_key through the container value as Shindig won't let us use Strings for mod_id, only Longs
 		// TODO replace hack with a real solution
-		String[] fields = {getOwnerId(instance), getUserId(instance), instance.getWidget().getGuid(), DOMAIN_ID, getUrl(instance), "0", String.valueOf(instance.getIdKey())}; //$NON-NLS-1$
+		String[] fields = {getOwnerId(instance), getUserId(instance), instance.getWidget().getIdentifier(), DOMAIN_ID, getUrl(instance), "0", String.valueOf(instance.getIdKey())}; //$NON-NLS-1$
 		for (int i = 0; i < fields.length; i++) {
 			// escape each field individually, for metachars in URL
 			fields[i] = URLEncoder.encode(fields[i], "UTF-8"); //$NON-NLS-1$
@@ -124,9 +124,9 @@ public class OpenSocialUtils {
 	}
 	
 	private static String getUrl(IWidgetInstance instance){
-    	IStartFile[] startFiles = instance.getWidget().getStartFiles().toArray(new IStartFile[instance.getWidget().getStartFiles().size()]);
-		IStartFile start = (IStartFile) LocalizationUtils.getLocalizedElement(startFiles, new String[]{"en"}, instance.getWidget().getDefaultLocale());
-		return start.getUrl();
+    	IContent[] startFiles = instance.getWidget().getContentList().toArray(new IContent[instance.getWidget().getContentList().size()]);
+		IContent start = (IContent) LocalizationUtils.getLocalizedElement(startFiles, new String[]{"en"}, instance.getWidget().getDefaultLocale());
+		return start.getSrc();
 	}
 
 }

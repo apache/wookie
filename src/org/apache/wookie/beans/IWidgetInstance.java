@@ -15,12 +15,7 @@
 package org.apache.wookie.beans;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
-import org.apache.wookie.w3c.ILocalizedElement;
+import org.apache.wookie.w3c.ILocalized;
 
 /**
  * IWidgetInstance - a simple bean to model an actual widgets instance attributes.
@@ -29,7 +24,7 @@ import org.apache.wookie.w3c.ILocalizedElement;
  * @author <a href="mailto:rwatler@apache.org">Randy Watler</a>
  * @version $Id$
  */
-public interface IWidgetInstance extends IBean, ILocalizedElement
+public interface IWidgetInstance extends IBean, ILocalized
 {
     /**
      * Get owning widget instance.
@@ -228,13 +223,10 @@ public interface IWidgetInstance extends IBean, ILocalizedElement
        */
       public static IPreference getPreference(IWidgetInstance widgetInstance, String key)
       {
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("widgetInstance", widgetInstance);//$NON-NLS-1$
-        map.put("dkey", key);//$NON-NLS-1$
-        IPreference[] preference = persistenceManager.findByValues(IPreference.class, map);
-        if (preference.length == 1) return preference[0];
-        return null;
+    	for (IPreference preference: widgetInstance.getPreferences()){
+    		if (preference.getDkey().equals(key)) return preference;
+    	}
+    	return null;
       }
     }
 }

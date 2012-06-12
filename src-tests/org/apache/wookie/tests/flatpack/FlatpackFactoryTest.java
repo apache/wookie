@@ -25,8 +25,8 @@ import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.feature.Features;
 import org.apache.wookie.flatpack.FlatpackFactory;
-import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
+import org.apache.wookie.w3c.W3CWidget;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -247,8 +247,8 @@ public class FlatpackFactoryTest {
 		//
 		System.out.println(file.getAbsolutePath());
 		W3CWidget fpWidget = fac.parse(file);
-		assertEquals("hiScore", fpWidget.getPrefences().get(0).getName());
-		assertEquals("1000", fpWidget.getPrefences().get(0).getValue());
+		assertEquals("hiScore", fpWidget.getPreferences().get(0).getName());
+		assertEquals("1000", fpWidget.getPreferences().get(0).getValue());
 	}
 	
 	
@@ -296,9 +296,9 @@ public class FlatpackFactoryTest {
 		//
 		System.out.println(file.getAbsolutePath());
 		W3CWidget fpWidget = fac.parse(file);
-		assertEquals("moderator", fpWidget.getPrefences().get(0).getName());
-		assertEquals("true", fpWidget.getPrefences().get(0).getValue());
-		assertEquals(1,fpWidget.getPrefences().size());
+		assertEquals("moderator", fpWidget.getPreferences().get(0).getName());
+		assertEquals("true", fpWidget.getPreferences().get(0).getValue());
+		assertEquals(1,fpWidget.getPreferences().size());
 	}
 
 	/**

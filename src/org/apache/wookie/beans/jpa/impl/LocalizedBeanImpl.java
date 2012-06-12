@@ -18,7 +18,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
-import org.apache.wookie.beans.ILocalizedBean;
+import org.apache.wookie.w3c.IDirectional;
+import org.apache.wookie.w3c.ILocalized;
 
 /**
  * LocalizedBeanImpl - JPA ILocalizedBeanImpl implementation.
@@ -27,8 +28,15 @@ import org.apache.wookie.beans.ILocalizedBean;
  * @version $Id$
  */
 @MappedSuperclass
-public abstract class LocalizedBeanImpl implements ILocalizedBean
+public abstract class LocalizedBeanImpl implements ILocalized, IDirectional 
 { 
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.w3c.IDirectional#isValid()
+	 */
+	public boolean isValid() {
+		return true;
+	}
+
 	@Basic 
     @Column(name="dir")
     private String dir;

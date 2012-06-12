@@ -15,19 +15,20 @@
 package org.apache.wookie.w3c.impl;
 
 import org.apache.commons.compress.archivers.zip.ZipFile;
-import org.apache.wookie.w3c.IIconEntity;
+import org.apache.wookie.w3c.IIcon;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.util.ContentTypeUtils;
 import org.apache.wookie.w3c.util.NumberUtils;
 import org.apache.wookie.w3c.util.UnicodeUtils;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
+import org.apache.wookie.w3c.xml.IElement;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
  * @version $Id: IconEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
-public class IconEntity extends AbstractLocalizedEntity implements IIconEntity{
+public class IconEntity extends AbstractLocalizedEntity implements IIcon, IElement{
 	
 	private String fSrc;
 	private Integer fHeight;

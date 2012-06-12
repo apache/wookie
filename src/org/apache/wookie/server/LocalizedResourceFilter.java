@@ -244,7 +244,7 @@ public class LocalizedResourceFilter implements Filter {
       IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
       IWidgetInstance instance = persistenceManager.findWidgetInstanceByIdKey(idkey);
       if (instance != null) {
-        filterConfig.getServletContext().setAttribute("widget-id", instance.getWidget().getGuid());
+        filterConfig.getServletContext().setAttribute("widget-id", instance.getWidget().getIdentifier());
         filterConfig.getServletContext().setAttribute("widget-instance-locale", instance.getLang());
         filterConfig.getServletContext().setAttribute("widget-default-locale", instance.getWidget().getDefaultLocale());
         return instance.getWidget();

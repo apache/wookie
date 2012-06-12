@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
-import org.apache.wookie.w3c.ILocalizedElement;
+import org.apache.wookie.w3c.ILocalized;
 
 import com.ibm.icu.util.GlobalizationPreferences;
 import com.ibm.icu.util.ULocale;
@@ -42,11 +42,11 @@ public class LocalizationUtils {
    * @param defaultLocale the default locale in case none of the supplied locales provide a match
    * @return an ILocalizedElement, or null if there are no valid entries
    */	
-	public static ILocalizedElement getLocalizedElement(ILocalizedElement[] elements, String[] locales, String defaultLocale){
-	  ILocalizedElement element =  getLocalizedElement(elements, locales);
+	public static ILocalized getLocalizedElement(ILocalized[] elements, String[] locales, String defaultLocale){
+	  ILocalized element =  getLocalizedElement(elements, locales);
 	  // If using the algorithm did not return ANY results, try again using defaultlocale
 	  if (element == null && elements != null){
-	    for(ILocalizedElement elem:elements){
+	    for(ILocalized elem:elements){
 	      if (elem.getLang().equals(defaultLocale)) return elem;
 	    }
 	  }
@@ -60,7 +60,7 @@ public class LocalizationUtils {
 	 * @param locales
 	 * @return an ILocalizedElement, or null if there are no valid entries
 	 */
-	protected static ILocalizedElement getLocalizedElement(ILocalizedElement[] elements,String[] locales){
+	protected static ILocalized getLocalizedElement(ILocalized[] elements,String[] locales){
 		if (elements == null) return null;
 		elements = processElementsByLocales(elements,locales);
 		if (elements.length == 0) return null;
@@ -78,13 +78,13 @@ public class LocalizationUtils {
    * @param defaultLocale the default locale in case none of the supplied locales provide a match
    * @return the sorted and filtered set of elements
    */
-  public static ILocalizedElement[] processElementsByLocales(ILocalizedElement[] elements,String[] locales, String defaultLocale){
+  public static ILocalized[] processElementsByLocales(ILocalized[] elements,String[] locales, String defaultLocale){
     if (elements == null) return null;
-    ILocalizedElement[] filteredElements = processElementsByLocales(elements,locales);
+    ILocalized[] filteredElements = processElementsByLocales(elements,locales);
     if (filteredElements == null || filteredElements.length == 0){
-      for (ILocalizedElement element: elements){
+      for (ILocalized element: elements){
         if(element.getLang().equals(defaultLocale)){
-          return (ILocalizedElement[]) ArrayUtils.removeElement(elements, element);
+          return (ILocalized[]) ArrayUtils.removeElement(elements, element);
         }
       }
     }
@@ -100,7 +100,7 @@ public class LocalizationUtils {
 	 * @param locales
 	 * @return the sorted and filtered set of elements
 	 */
-	protected static ILocalizedElement[] processElementsByLocales(ILocalizedElement[] elements,String[] locales){
+	protected static ILocalized[] processElementsByLocales(ILocalized[] elements,String[] locales){
 		if (elements == null) return null;
 		List<ULocale> localesList = getProcessedLocaleList(locales);
 		Arrays.sort(elements, new LocaleComparator(localesList));
@@ -112,7 +112,7 @@ public class LocalizationUtils {
 	 * any localized elements first, then any unlocalized elements
 	 * @return the sorted list of elements
 	 */
-	public static ILocalizedElement[] processElementsByDefaultLocales(ILocalizedElement[] elements){
+	public static ILocalized[] processElementsByDefaultLocales(ILocalized[] elements){
 		if (elements == null) return null;
 		List<ULocale> localesList = getDefaultLocaleList();
 		Arrays.sort(elements, new LocaleComparator(localesList));
@@ -123,12 +123,12 @@ public class LocalizationUtils {
 	 * Comparator that sorts elements based on priority in the given locale list,
 	 * with the assumption that earlier in the list means a higher priority.
 	 */
-	static class LocaleComparator implements Comparator<ILocalizedElement>{
+	static class LocaleComparator implements Comparator<ILocalized>{
 		private List<ULocale> locales;
 		public LocaleComparator(List<ULocale> locales){
 			this.locales = locales;
 		}
-		public int compare(ILocalizedElement o1, ILocalizedElement o2) {
+		public int compare(ILocalized o1, ILocalized o2) {
 			// check non-localized values for comparison
 			if (o1.getLang()!=null && o2.getLang() == null) return -1;
 			if (o1.getLang()==null && o2.getLang()!= null) return 1;
@@ -158,20 +158,20 @@ public class LocalizationUtils {
 	 * @param locales
 	 * @return a copy of the array of elements only containing the filtered elements
 	 */
-	protected static ILocalizedElement[] filter(ILocalizedElement[] elements, List<ULocale> locales){		
-		for (ILocalizedElement element:elements){
+	protected static ILocalized[] filter(ILocalized[] elements, List<ULocale> locales){		
+		for (ILocalized element:elements){
 			String lang = element.getLang();
 			boolean found = false;
 			for(ULocale locale:locales){
 				if (locale.toLanguageTag().equalsIgnoreCase(lang)) found = true;
 			}
-			if (!found && lang != null) elements = (ILocalizedElement[])ArrayUtils.removeElement(elements, element);
+			if (!found && lang != null) elements = (ILocalized[])ArrayUtils.removeElement(elements, element);
 		}
 		// Strip out non-localized elements only if there are localized elements left
 		if (elements.length > 0){
 			if (elements[0].getLang() != null){
-				for (ILocalizedElement element:elements){
-					if (element.getLang()==null) elements = (ILocalizedElement[])ArrayUtils.removeElement(elements, element);
+				for (ILocalized element:elements){
+					if (element.getLang()==null) elements = (ILocalized[])ArrayUtils.removeElement(elements, element);
 				}
 			}
 		}

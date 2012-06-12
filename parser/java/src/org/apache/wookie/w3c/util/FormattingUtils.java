@@ -13,11 +13,7 @@
  */
 package org.apache.wookie.w3c.util;
 
-import org.apache.wookie.w3c.IAuthorEntity;
-import org.apache.wookie.w3c.IDescriptionEntity;
-import org.apache.wookie.w3c.ILicenseEntity;
-import org.apache.wookie.w3c.INameEntity;
-import org.apache.wookie.w3c.W3CWidget;
+import org.apache.wookie.w3c.*;
 
 /**
  * i18n formatting utilities
@@ -48,7 +44,7 @@ public class FormattingUtils {
 	 * @param name the Widget's Name entity
 	 * @return a CSS-formatted i18n string
 	 */
-	public static String getFormattedWidgetName(INameEntity name){
+	public static String getFormattedWidgetName(IName name){
 		return getFormatted(name.getDir(), name.getName());
 	}
 	/**
@@ -56,7 +52,7 @@ public class FormattingUtils {
 	 * @param name the Widget's Name entity
 	 * @return a CSS-formatted i18n string
 	 */
-	public static String getFormattedWidgetShortName(INameEntity name){
+	public static String getFormattedWidgetShortName(IName name){
 		return getFormatted(name.getDir(), name.getShort());
 	}
 	/**
@@ -72,7 +68,7 @@ public class FormattingUtils {
 	 * @param description the Widget's description entity
 	 * @return a CSS-formatted i18n string
 	 */
-	public static String getFormattedWidgetDescription(IDescriptionEntity description){
+	public static String getFormattedWidgetDescription(IDescription description){
 		return getFormatted(description.getDir(), description.getDescription());
 	}
 	/**
@@ -80,7 +76,7 @@ public class FormattingUtils {
 	 * @param author the Widget's author entity
 	 * @return a CSS-formatted i18n string
 	 */
-	public static String getFormattedWidgetAuthor(IAuthorEntity author){
+	public static String getFormattedWidgetAuthor(IAuthor author){
 		return getFormatted(author.getDir(), author.getAuthorName());
 	}
 	/**
@@ -88,7 +84,7 @@ public class FormattingUtils {
 	 * @param license the Widget's License entity
 	 * @return a CSS-formatted i18n string
 	 */
-	public static String getFormattedWidgetLicense(ILicenseEntity license){
+	public static String getFormattedWidgetLicense(ILicense license){
 		return getFormatted(license.getDir(), license.getLicenseText());
 	}
 

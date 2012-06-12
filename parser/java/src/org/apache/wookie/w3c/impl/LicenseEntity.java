@@ -14,15 +14,16 @@
 
 package org.apache.wookie.w3c.impl;
 
-import org.apache.wookie.w3c.ILicenseEntity;
+import org.apache.wookie.w3c.ILicense;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.util.UnicodeUtils;
+import org.apache.wookie.w3c.xml.IElement;
 
 import org.jdom.Element;
 /**
  * the <license> element
  */
-public class LicenseEntity extends AbstractLocalizedEntity implements ILicenseEntity {
+public class LicenseEntity extends AbstractLocalizedEntity implements ILicense, IElement {
 	
 	private String fLicenseText;
 	private String fHref;

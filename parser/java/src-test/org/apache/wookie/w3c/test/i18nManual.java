@@ -16,11 +16,7 @@ package org.apache.wookie.w3c.test;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.wookie.w3c.IAuthorEntity;
-import org.apache.wookie.w3c.IDescriptionEntity;
-import org.apache.wookie.w3c.ILicenseEntity;
-import org.apache.wookie.w3c.INameEntity;
-import org.apache.wookie.w3c.W3CWidget;
+import org.apache.wookie.w3c.*;
 import org.apache.wookie.w3c.util.FormattingUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -67,7 +63,7 @@ public class i18nManual extends ConformanceTest{
 	@Test
 	public void nameLro(){
 		W3CWidget widget;
-		INameEntity name;
+		IName name;
 
 		widget = getWidget("001","lro");
 		name = widget.getNames().get(0);
@@ -105,7 +101,7 @@ public class i18nManual extends ConformanceTest{
 	public void nameLtr(){
 			String dir ="ltr";
 			W3CWidget widget;
-			INameEntity name;
+			IName name;
 
 			widget = getWidget("001",dir);
 			name = widget.getNames().get(0);
@@ -143,7 +139,7 @@ public class i18nManual extends ConformanceTest{
 	public void nameRlo(){
 		String dir ="rlo";
 		W3CWidget widget;
-		INameEntity name;
+		IName name;
 
 		widget = getWidget("001",dir);
 		name = widget.getNames().get(0);
@@ -180,7 +176,7 @@ public class i18nManual extends ConformanceTest{
 	public void nameRtl(){
 		String dir ="rtl";
 		W3CWidget widget;
-		INameEntity name;
+		IName name;
 
 		widget = getWidget("001",dir);
 		name = widget.getNames().get(0);
@@ -220,7 +216,7 @@ public class i18nManual extends ConformanceTest{
 	public void descriptions(){
 
 		W3CWidget widget;
-		IDescriptionEntity description;
+		IDescription description;
 		String dir;
 		String test;
 		
@@ -319,80 +315,80 @@ public class i18nManual extends ConformanceTest{
 	public void licenses(){
 
 		W3CWidget widget;
-		ILicenseEntity license;
+		ILicense license;
 		String dir;
 		String test;
 		
 		dir="lro";
 		test="005";
 		widget = getWidget(test,dir);
-		license = widget.getLicensesList().get(0);
+		license = widget.getLicenses().get(0);
 		addResult("i18n"+dir+test, FormattingUtils.getFormattedWidgetLicense(license), "םפללחק");
 		test="009";
 		widget = getWidget(test,dir);
-		license = widget.getLicensesList().get(0);
+		license = widget.getLicenses().get(0);
 		addResult("i18n"+dir+test, FormattingUtils.getFormattedWidgetLicense(license), "םפללחק");
 		test="013";
 		widget = getWidget(test,dir);
-		license = widget.getLicensesList().get(0);
+		license = widget.getLicenses().get(0);
 		addResult("i18n"+dir+test, FormattingUtils.getFormattedWidgetLicense(license), "םפללחק");
 		test="018";
 		widget = getWidget(test,dir);
-		license = widget.getLicensesList().get(0);
+		license = widget.getLicenses().get(0);
 		addResult("i18n"+dir+test, FormattingUtils.getFormattedWidgetLicense(license), "םפללחק");
 
 		dir="ltr";
 		test="005";
 		widget = getWidget(test,dir);
-		license = widget.getLicensesList().get(0);
+		license = widget.getLicenses().get(0);
 		addResult("i18n"+dir+test, FormattingUtils.getFormattedWidgetLicense(license), "The arrow should point right -->");
 		test="009";
 		widget = getWidget(test,dir);
-		license = widget.getLicensesList().get(0);
+		license = widget.getLicenses().get(0);
 		addResult("i18n"+dir+test, FormattingUtils.getFormattedWidgetLicense(license), "The arrow should point right -->");
 		test="013";
 		widget = getWidget(test,dir);
-		license = widget.getLicensesList().get(0);
+		license = widget.getLicenses().get(0);
 		addResult("i18n"+dir+test, FormattingUtils.getFormattedWidgetLicense(license), "The arrow should point right -->");
 		test="018";
 		widget = getWidget(test,dir);
-		license = widget.getLicensesList().get(0);
+		license = widget.getLicenses().get(0);
 		addResult("i18n"+dir+test, FormattingUtils.getFormattedWidgetLicense(license), "The arrow should point right -->");
 		
 		dir="rlo";
 		test="005";
 		widget = getWidget(test,dir);
-		license = widget.getLicensesList().get(0);
+		license = widget.getLicenses().get(0);
 		addResult("i18n"+dir+test, FormattingUtils.getFormattedWidgetLicense(license), "PASSED");
 		test="009";
 		widget = getWidget(test,dir);
-		license = widget.getLicensesList().get(0);
+		license = widget.getLicenses().get(0);
 		addResult("i18n"+dir+test, FormattingUtils.getFormattedWidgetLicense(license), "PASSED");
 		test="013";
 		widget = getWidget(test,dir);
-		license = widget.getLicensesList().get(0);
+		license = widget.getLicenses().get(0);
 		addResult("i18n"+dir+test, FormattingUtils.getFormattedWidgetLicense(license), "PASSED");
 		test="018";
 		widget = getWidget(test,dir);
-		license = widget.getLicensesList().get(0);
+		license = widget.getLicenses().get(0);
 		addResult("i18n"+dir+test, FormattingUtils.getFormattedWidgetLicense(license), "PASSED");
 		
 		dir="rtl";
 		test="005";
 		widget = getWidget(test,dir);
-		license = widget.getLicensesList().get(0);
+		license = widget.getLicenses().get(0);
 		addResult("i18n"+dir+test, FormattingUtils.getFormattedWidgetLicense(license), "The arrow should point right -->");
 		test="009";
 		widget = getWidget(test,dir);
-		license = widget.getLicensesList().get(0);
+		license = widget.getLicenses().get(0);
 		addResult("i18n"+dir+test, FormattingUtils.getFormattedWidgetLicense(license), "The arrow should point right -->");
 		test="013";
 		widget = getWidget(test,dir);
-		license = widget.getLicensesList().get(0);
+		license = widget.getLicenses().get(0);
 		addResult("i18n"+dir+test, FormattingUtils.getFormattedWidgetLicense(license), "The arrow should point right -->");
 		test="018";
 		widget = getWidget(test,dir);
-		license = widget.getLicensesList().get(0);
+		license = widget.getLicenses().get(0);
 		addResult("i18n"+dir+test, FormattingUtils.getFormattedWidgetLicense(license), "The arrow should point right -->");
 	}
 		
@@ -404,7 +400,7 @@ public class i18nManual extends ConformanceTest{
 		W3CWidget widget;
 		String dir;
 		String test;
-		IAuthorEntity author;
+		IAuthor author;
 		
 		dir="lro";
 		test="004";
@@ -542,7 +538,7 @@ public class i18nManual extends ConformanceTest{
 		return widget;
 	}
 	protected String getLocalIconPath(W3CWidget widget, int index){
-		return getLocalUrl(widget.getIconsList().get(index).getSrc());
+		return getLocalUrl(widget.getIcons().get(index).getSrc());
 	}
 	
 	protected String getLocalUrl(String src){

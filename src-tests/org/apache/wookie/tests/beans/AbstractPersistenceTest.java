@@ -88,7 +88,7 @@ public abstract class AbstractPersistenceTest
         //
         // test findByValue method for IWidget
         //
-        String widgetGuid = allWidgets[0].getGuid();
+        String widgetGuid = allWidgets[0].getIdentifier();
         IWidget [] widgetsByValue = persistenceManager.findByValue(IWidget.class, "guid", widgetGuid);
         assertNotNull(widgetsByValue);
         assertEquals(1, widgetsByValue.length);
@@ -137,7 +137,7 @@ public abstract class AbstractPersistenceTest
         String apiKey = "TEST";
         IWidget [] widgets = persistenceManager.findAll(IWidget.class);
         IWidget widget = widgets[0];        
-        widgetGuid = widget.getGuid();
+        widgetGuid = widget.getIdentifier();
         
         //
         // check that the Widget Instance does not yet exist
@@ -202,7 +202,7 @@ public abstract class AbstractPersistenceTest
         widget = widgets[0];
         IWidgetInstance widgetInstance0 = persistenceManager.findWidgetInstanceByGuid(apiKey, "test", "test-shared-data-key", widgetGuid);
         assertNotNull(widgetInstance0);
-        widgetGuid = widget.getGuid();
+        widgetGuid = widget.getIdentifier();
         
         //
         // Get the widget instance created in the previous transaction via "widget GUID"

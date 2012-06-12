@@ -20,7 +20,6 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
 import org.apache.wookie.beans.IPreference;
-import org.apache.wookie.beans.IPreferenceDefault;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.util.IPersistenceManager;
@@ -168,8 +167,8 @@ public class WidgetInstanceFactory{
 		setPreference(persistenceManager, widgetInstance, "sharedDataKey", sharedDataKey, true);//$NON-NLS-1$
 
 		// add in widget defaults
-		for (IPreferenceDefault pref: widget.getPreferenceDefaults()){
-			setPreference(persistenceManager, widgetInstance, pref.getPreference(), pref.getValue(),pref.isReadOnly());
+		for (org.apache.wookie.w3c.IPreference pref: widget.getPreferences()){
+			setPreference(persistenceManager, widgetInstance, pref.getName(), pref.getValue(),pref.isReadOnly());
 		}	
 
 		// Save

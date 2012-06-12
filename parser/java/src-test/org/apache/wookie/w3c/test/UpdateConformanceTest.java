@@ -22,11 +22,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.updates.InvalidUDDException;
 import org.apache.wookie.w3c.updates.UpdateDescriptionDocument;
 import org.apache.wookie.w3c.updates.UpdateUtils;
+import org.apache.wookie.w3c.W3CWidget;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -61,7 +61,7 @@ public class UpdateConformanceTest extends ConformanceTest{
 	@Test
 	public void pr001(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/001/ta-pr-001.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdateLocation());
 	}	
 
 	@Test
@@ -74,14 +74,14 @@ public class UpdateConformanceTest extends ConformanceTest{
 	@Test
 	public void pr003(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/003/ta-pr-003.wgt");
-		assertNull(widget.getUpdate());
+		assertNull(widget.getUpdateLocation());
 	}
 	
 	
 	@Test
 	public void pr004(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/004/ta-pr-004.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdateLocation());
 	}	
 	
 	@Ignore
@@ -99,54 +99,54 @@ public class UpdateConformanceTest extends ConformanceTest{
 	@Test
 	public void pr007(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/007/ta-pr-007.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdateLocation());
 	}	
 	
 	// Error in test
 	@Test
 	public void pr008(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/008/ta-pr-008.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdateLocation());
 		assertNotNull(UpdateUtils.checkForUpdate(widget));
 	}	
 	
 	@Test
 	public void pr009(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/009/ta-pr-009.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdateLocation());
 		assertNotNull(UpdateUtils.checkForUpdate(widget));
 	}	
 	
 	@Test
 	public void pr010(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/010/ta-pr-010.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdateLocation());
 		assertNotNull(UpdateUtils.checkForUpdate(widget));
 	}	
 	
 	@Test
 	public void pr011(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/011/ta-pr-011.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdateLocation());
 	}	
 	
 	@Test
 	public void pr012(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/012/ta-pr-012.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdateLocation());
 	}	
 	
 	@Test
 	public void pr013(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/013/ta-pr-013.wgt");
-		assertEquals(null, widget.getUpdate());
+		assertEquals(null, widget.getUpdateLocation());
 		assertNull(UpdateUtils.checkForUpdate(widget));
 	}	
 	
 	@Test
 	public void pr014(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-preparation1/014/ta-pr-014.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdateLocation());
 		assertNotNull(UpdateUtils.checkForUpdate(widget));
 	}	
 	
@@ -157,77 +157,77 @@ public class UpdateConformanceTest extends ConformanceTest{
 	@Test
 	public void ac1(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition1/001/ta-ac-001.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-if-none-match", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-if-none-match", widget.getUpdateLocation());
 	}
 	// Requires runtime testing
 	@Test
 	public void ac2(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition2/001/ta-ac-001.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-if-modified-since", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-if-modified-since", widget.getUpdateLocation());
 	}
 	// Requires runtime testing
 	@Test
 	public void ac3(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition3/001/ta-ac-001.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-accept-language", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-accept-language", widget.getUpdateLocation());
 	}
 	// Requires runtime testing
 	@Test
 	public void ac4(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition4/001/ta-ac-001.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-cache-control=must-revalidate", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-cache-control=must-revalidate", widget.getUpdateLocation());
 		widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition4/002/ta-ac-002.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-cache-control=no-cache", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-cache-control=no-cache", widget.getUpdateLocation());
 		widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition4/003/ta-ac-003.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pragma=no-cache", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pragma=no-cache", widget.getUpdateLocation());
 	}
 	
 	// Requires runtime testing
 	@Test
 	public void ac5(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition5/001/ta-ac-001.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-expires-in=300", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-expires-in=300", widget.getUpdateLocation());
 	}
 	
 	@Test
 	public void ac6() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition6/001/ta-ac-001.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-pass", widget.getUpdateLocation());
 		assertNotNull(UpdateUtils.checkForUpdate(widget));
 	}
 
 	@Test
 	public void ac7() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition7/001/ta-ac-001.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-wrong-ct", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-wrong-ct", widget.getUpdateLocation());
 		assertNull(UpdateUtils.checkForUpdate(widget));
 	}
 	
 	@Test
 	public void ac81() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition8/001/ta-ac-001.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-204", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-204", widget.getUpdateLocation());
 		assertNull(UpdateUtils.checkForUpdate(widget));
 	}
 	
 	@Test
 	public void ac82() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition8/002/ta-ac-002.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-304", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-304", widget.getUpdateLocation());
 		assertNull(UpdateUtils.checkForUpdate(widget));
 	}
 	
 	@Test
 	public void ac83() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition8/003/ta-ac-003.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-udi-204", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-udi-204", widget.getUpdateLocation());
 		assertNull(UpdateUtils.getUpdate(fac, widget));
 	}
 	
 	@Test
 	public void ac9() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition9/001/ta-ac-001.wgt");
-		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-206", widget.getUpdate());
+		assertEquals("http://people.opera.com/harig/wupdres/resources/out.php?udd-206", widget.getUpdateLocation());
 		assertNull(UpdateUtils.checkForUpdate(widget));
 	}
 	
@@ -235,14 +235,14 @@ public class UpdateConformanceTest extends ConformanceTest{
 	public void ac101() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition10/001/ta-ac-001.wgt");
 		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdateLocation());
 	}
 
 	@Test
 	public void ac102() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition10/002/ta-ac-002.wgt");
 		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdateLocation());
 	}
 	
 	@Test
@@ -274,7 +274,7 @@ public class UpdateConformanceTest extends ConformanceTest{
 	public void ac13() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-acquisition13/001/ta-ac-001.wgt");
 		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdateLocation());
 	}
 	
 	/**
@@ -284,20 +284,20 @@ public class UpdateConformanceTest extends ConformanceTest{
 	@Test
 	public void pr1(){
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing1/001/ta-pr-001.wgt");
-		assertNull(widget.getUpdate());
+		assertNull(widget.getUpdateLocation());
 	}	
 	
 	@Test(expected=InvalidUDDException.class)
 	public void pr201() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/001/ta-pr-001.wgt");
 		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdateLocation());
 	}	
 	@Test(expected=InvalidUDDException.class)
 	public void pr202() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/002/ta-pr-002.wgt");
 		@SuppressWarnings("unused")
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdateLocation());
 	}	
 	
 	//TODO Requires runtime testing as the update changes the widget ID
@@ -409,7 +409,7 @@ public class UpdateConformanceTest extends ConformanceTest{
 	@Test
 	public void pr220() throws InvalidUDDException{
 		W3CWidget widget = processWidgetNoErrors("http://dev.w3.org/2006/waf/widgets-updates/test-suite/test-cases/ta-processing2/020/ta-pr-020.wgt");
-		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdate());
+		UpdateDescriptionDocument udd = new UpdateDescriptionDocument(widget.getUpdateLocation());
 		assertEquals("P A S S", udd.getDetails("en"));
 	}
 	

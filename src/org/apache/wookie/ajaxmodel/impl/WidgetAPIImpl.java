@@ -24,8 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
 import org.apache.wookie.ajaxmodel.IWidgetAPI;
-import org.apache.wookie.beans.IDescription;
-import org.apache.wookie.beans.IName;
+import org.apache.wookie.w3c.IDescription;
+import org.apache.wookie.w3c.IName;
 import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
@@ -114,7 +114,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 		
 		// Add in metadata
 
-		map.put("id", String.valueOf(widget.getGuid()));	//$NON-NLS-1$
+		map.put("id", String.valueOf(widget.getIdentifier()));	//$NON-NLS-1$
 		map.put("author", author);	//$NON-NLS-1$
 		map.put("authorEmail", email);//$NON-NLS-1$
 		map.put("authorHref", href);//$NON-NLS-1$

@@ -22,10 +22,10 @@ import org.apache.wookie.feature.IFeature;
 import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.util.html.HtmlCleaner;
 import org.apache.wookie.util.html.IHtmlProcessor;
-import org.apache.wookie.w3c.IContentEntity;
-import org.apache.wookie.w3c.IFeatureEntity;
+import org.apache.wookie.w3c.IContent;
 import org.apache.wookie.w3c.IStartPageProcessor;
 import org.apache.wookie.w3c.W3CWidget;
+
 
 /**
  * <p>
@@ -65,7 +65,7 @@ public class FlatpackProcessor implements IStartPageProcessor {
    * @content the Content element to apply TODO implement
    */
   public void processStartFile(File startFile, W3CWidget model,
-      IContentEntity content) throws Exception {
+      IContent content) throws Exception {
     if (startFile == null)
       throw new Exception("Start file cannot be processed: file is null");
     if (!startFile.exists())
@@ -101,7 +101,7 @@ public class FlatpackProcessor implements IStartPageProcessor {
    */
   private void addFlattenedFeatures(File widgetFolder, IHtmlProcessor engine,
       W3CWidget model) throws Exception {
-    for (IFeatureEntity feature : model.getFeatures()) {
+    for (org.apache.wookie.w3c.IFeature feature : model.getFeatures()) {
       for (IFeature theFeature : Features.getFeatures()) {
         if (theFeature.getName().equals(feature.getName())
             && theFeature.flattenOnExport()) {

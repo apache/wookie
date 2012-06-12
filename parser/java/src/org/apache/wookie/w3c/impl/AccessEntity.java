@@ -19,16 +19,17 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 
-import org.apache.wookie.w3c.IAccessEntity;
+import org.apache.wookie.w3c.IAccess;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.util.IRIValidator;
 import org.apache.wookie.w3c.util.UnicodeUtils;
+import org.apache.wookie.w3c.xml.IElement;
 import org.jdom.Attribute;
 import org.jdom.Element;
 /**
  * The Access element is defined in: http://www.w3.org/TR/widgets-access/
  */
-public class AccessEntity implements IAccessEntity {
+public class AccessEntity implements IAccess, IElement {
 
 	private String fOrigin;
 	private boolean fSubDomains;

@@ -14,16 +14,17 @@
 
 package org.apache.wookie.w3c.impl;
 
-import org.apache.wookie.w3c.IParamEntity;
+import org.apache.wookie.w3c.IParam;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.util.UnicodeUtils;
+import org.apache.wookie.w3c.xml.IElement;
 import org.jdom.Element;
 /**
  * @author Paul Sharples
  * @version $Id: ParamEntity.java,v 1.3 2009-09-02 18:37:31 scottwilson Exp $
  */
-public class ParamEntity implements IParamEntity {
+public class ParamEntity implements IParam, IElement {
 	
 	private String fName;
 	private String fValue;

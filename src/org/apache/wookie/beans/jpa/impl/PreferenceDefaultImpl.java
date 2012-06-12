@@ -17,20 +17,16 @@ package org.apache.wookie.beans.jpa.impl;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.apache.openjpa.persistence.ExternalValues;
 import org.apache.openjpa.persistence.Type;
 
-import org.apache.wookie.beans.IPreferenceDefault;
-import org.apache.wookie.beans.jpa.IInverseRelationship;
+import org.apache.wookie.w3c.IPreference;
 
 /**
  * PreferenceDefaultImpl - JPA IPreferenceDefault implementation.
@@ -40,7 +36,7 @@ import org.apache.wookie.beans.jpa.IInverseRelationship;
  */
 @Entity(name="PreferenceDefault")
 @Table(name="PreferenceDefault")
-public class PreferenceDefaultImpl implements IPreferenceDefault, IInverseRelationship<WidgetImpl>
+public class PreferenceDefaultImpl implements IPreference
 {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -67,23 +63,10 @@ public class PreferenceDefaultImpl implements IPreferenceDefault, IInverseRelati
     @Type(String.class)
     private Boolean readOnly;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="widget_id", referencedColumnName="id")
-    @SuppressWarnings("unused")
-    private WidgetImpl widget;
-    
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IInverseRelationship#updateInverseRelationship(java.lang.Object)
-     */
-    public void updateInverseRelationship(WidgetImpl owningObject)
-    {
-        widget = owningObject;
-    }
-
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IPreferenceDefault#getPreference()
      */
-    public String getPreference()
+    public String getName()
     {
         return preference;
     }
@@ -91,7 +74,7 @@ public class PreferenceDefaultImpl implements IPreferenceDefault, IInverseRelati
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IPreferenceDefault#setPreference(java.lang.String)
      */
-    public void setPreference(String preference)
+    public void setName(String preference)
     {
         this.preference = preference;
     }

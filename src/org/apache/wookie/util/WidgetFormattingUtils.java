@@ -13,10 +13,8 @@
  */
 package org.apache.wookie.util;
 
-import org.apache.wookie.beans.IDescription;
-import org.apache.wookie.beans.ILicense;
-import org.apache.wookie.beans.IName;
 import org.apache.wookie.beans.IWidget;
+import org.apache.wookie.w3c.*;
 import org.apache.wookie.w3c.util.FormattingUtils;
 
 /**

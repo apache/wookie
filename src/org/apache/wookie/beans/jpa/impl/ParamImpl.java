@@ -17,17 +17,13 @@ package org.apache.wookie.beans.jpa.impl;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import org.apache.wookie.beans.IParam;
-import org.apache.wookie.beans.jpa.IInverseRelationship;
+import org.apache.wookie.w3c.IParam;
 
 /**
  * ParamImpl - JPA IParam implementation.
@@ -37,7 +33,7 @@ import org.apache.wookie.beans.jpa.IInverseRelationship;
  */
 @Entity(name="Param")
 @Table(name="Param")
-public class ParamImpl implements IParam, IInverseRelationship<FeatureImpl>
+public class ParamImpl implements IParam
 {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -50,11 +46,6 @@ public class ParamImpl implements IParam, IInverseRelationship<FeatureImpl>
     @SuppressWarnings("unused")
     private int jpaVersion;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="feature_id", referencedColumnName="id")
-    @SuppressWarnings("unused")
-    private FeatureImpl parentFeature;
-
     @Basic(optional=false)
     @Column(name="parameterName", nullable=false)
     private String parameterName;
@@ -62,14 +53,6 @@ public class ParamImpl implements IParam, IInverseRelationship<FeatureImpl>
     @Basic(optional=false)
     @Column(name="parameterValue", nullable=false)
     private String parameterValue;
-
-    /* (non-Javadoc)
-     * @see org.apache.wookie.beans.util.IInverseRelationship#updateInverseRelationship(java.lang.Object)
-     */
-    public void updateInverseRelationship(FeatureImpl owningObject)
-    {
-        parentFeature = owningObject;
-    }
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IParam#getParameterName()

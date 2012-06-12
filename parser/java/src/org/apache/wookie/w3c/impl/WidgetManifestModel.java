@@ -25,24 +25,26 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.wookie.w3c.updates.UpdateDescription;
 import org.apache.wookie.w3c.util.LocalizationUtils;
-import org.apache.wookie.w3c.IAccessEntity;
-import org.apache.wookie.w3c.IAuthorEntity;
-import org.apache.wookie.w3c.IContentEntity;
-import org.apache.wookie.w3c.IDescriptionEntity;
-import org.apache.wookie.w3c.IFeatureEntity;
-import org.apache.wookie.w3c.IIconEntity;
-import org.apache.wookie.w3c.ILicenseEntity;
-import org.apache.wookie.w3c.ILocalizedEntity;
-import org.apache.wookie.w3c.W3CWidget;
-import org.apache.wookie.w3c.INameEntity;
-import org.apache.wookie.w3c.IPreferenceEntity;
+import org.apache.wookie.w3c.IAccess;
+import org.apache.wookie.w3c.IAuthor;
+import org.apache.wookie.w3c.IContent;
+import org.apache.wookie.w3c.IDescription;
+import org.apache.wookie.w3c.IFeature;
+import org.apache.wookie.w3c.IIcon;
+import org.apache.wookie.w3c.ILicense;
+import org.apache.wookie.w3c.ILocalized;
+import org.apache.wookie.w3c.IName;
+import org.apache.wookie.w3c.IPreference;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
+import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.util.IRIValidator;
 import org.apache.wookie.w3c.util.NumberUtils;
 import org.apache.wookie.w3c.util.RandomGUID;
 import org.apache.wookie.w3c.util.UnicodeUtils;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
+import org.apache.wookie.w3c.xml.IContentEntity;
+import org.apache.wookie.w3c.xml.IElement;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
@@ -51,7 +53,7 @@ import org.jdom.input.SAXBuilder;
  * for a widget, including all sub-objects
  * @author Paul Sharples
  */
-public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CWidget {
+public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CWidget, IElement {
 	
 	static Logger fLogger = Logger.getLogger(WidgetManifestModel.class.getName());
 	
@@ -63,15 +65,15 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 	private Integer fWidth;
 	private String fViewModes;
 	private String[] features;
-	private List<INameEntity> fNamesList;
-	private List<IDescriptionEntity> fDescriptionsList;
-	private IAuthorEntity fAuthor;
-	private List<ILicenseEntity> fLicensesList;
-	private List<IIconEntity> fIconsList;
-	private List<IAccessEntity> fAccessList;
-	private List<IContentEntity> fContentList;
-	private List<IFeatureEntity> fFeaturesList;
-	private List<IPreferenceEntity> fPreferencesList;
+	private List<IName> fNamesList;
+	private List<IDescription> fDescriptionsList;
+	private IAuthor fAuthor;
+	private List<ILicense> fLicensesList;
+	private List<IIcon> fIconsList;
+	private List<IAccess> fAccessList;
+	private List<IContent> fContentList;
+	private List<IFeature> fFeaturesList;
+	private List<IPreference> fPreferencesList;
 	private String fUpdate;
 	
 	private String[] supportedEncodings;
@@ -90,14 +92,14 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 		this.zip = zip;
 		this.features = features;
 		this.supportedEncodings = encodings;
-		fNamesList = new ArrayList<INameEntity>();
-		fDescriptionsList = new ArrayList<IDescriptionEntity>();
-		fLicensesList = new ArrayList<ILicenseEntity>();
-		fIconsList = new ArrayList<IIconEntity>();
-		fContentList = new ArrayList<IContentEntity>();
-		fAccessList = new ArrayList<IAccessEntity>();
-		fFeaturesList = new ArrayList<IFeatureEntity>();
-		fPreferencesList = new ArrayList<IPreferenceEntity>();
+		fNamesList = new ArrayList<IName>();
+		fDescriptionsList = new ArrayList<IDescription>();
+		fLicensesList = new ArrayList<ILicense>();
+		fIconsList = new ArrayList<IIcon>();
+		fContentList = new ArrayList<IContent>();
+		fAccessList = new ArrayList<IAccess>();
+		fFeaturesList = new ArrayList<IFeature>();
+		fPreferencesList = new ArrayList<IPreference>();
 		this.defaultIdentifier = defaultIdentifier;
 		SAXBuilder builder = new SAXBuilder();
 		Element root;
@@ -113,7 +115,7 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 			if (iconpath != null) {
 				// don't add it if its a duplicate
 				boolean exists = false;
-				for (IIconEntity icon: fIconsList){
+				for (IIcon icon: fIconsList){
 					if (icon.getSrc().equals(iconpath)) exists = true;
 				}
 				if (!exists){
@@ -130,7 +132,7 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 			if (startpath != null) {
 				// don't add it if its a duplicate
 				boolean exists = false;
-				for (IContentEntity content: fContentList){
+				for (IContent content: fContentList){
 					if (content.getSrc().equals(startpath)) exists = true;
 				}
 				if (!exists){
@@ -160,39 +162,39 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 		return fVersion;
 	}
 	
-	public List<IPreferenceEntity> getPrefences(){
+	public List<IPreference> getPreferences(){
 		return fPreferencesList;
 	}
 	
-	public List<IFeatureEntity> getFeatures(){
+	public List<IFeature> getFeatures(){
 		return fFeaturesList;
 	}
 	
-	public List<IAccessEntity> getAccessList(){
+	public List<IAccess> getAccessList(){
 		return fAccessList;
 	}
 	
-	public IAuthorEntity getAuthor(){
+	public IAuthor getAuthor(){
 		return fAuthor;
 	}
 
-	public List<IContentEntity> getContentList() {
+	public List<IContent> getContentList() {
 		return fContentList;
 	}
 	
-	public List<IDescriptionEntity> getDescriptions(){
+	public List<IDescription> getDescriptions(){
 		return fDescriptionsList;
 	}
 	
-	public List<INameEntity> getNames() {
+	public List<IName> getNames() {
 		return fNamesList;
 	}
 	
-	public List<IIconEntity> getIconsList() {
+	public List<IIcon> getIcons() {
 		return fIconsList;
 	}
 
-	public List<ILicenseEntity> getLicensesList() {
+	public List<ILicense> getLicenses() {
 		return fLicensesList;
 	}
 
@@ -208,7 +210,7 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 		return fWidth;
 	}
 	
-	public String getUpdate(){
+	public String getUpdateLocation(){
 		return fUpdate;
 	}
 	
@@ -222,13 +224,13 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 	}
 
 	public String getLocalName(String locale){
-		INameEntity name = (INameEntity)LocalizationUtils.getLocalizedElement(fNamesList.toArray(new INameEntity[fNamesList.size()]), new String[]{locale}, defaultLocale);
+		NameEntity name = (NameEntity)LocalizationUtils.getLocalizedElement(fNamesList.toArray(new NameEntity[fNamesList.size()]), new String[]{locale}, defaultLocale);
 		if (name != null) return name.getName();
 		return IW3CXMLConfiguration.UNKNOWN;
 	}
 
 	public void updateIconPaths(String path){
-		for(IIconEntity icon : fIconsList){
+		for(IIcon icon : fIconsList){
 			if(!icon.getSrc().startsWith("http:")) icon.setSrc(path + icon.getSrc());
 		}
 	}
@@ -316,7 +318,7 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 
 			// NAME IS OPTIONAL - get the name elements (multiple based on xml:lang)
 			if(tag.equals(IW3CXMLConfiguration.NAME_ELEMENT)) {				
-				INameEntity aName = new NameEntity();
+				NameEntity aName = new NameEntity();
 				aName.fromXML(child);				
 				// add it to our list only if its not a repetition of an
 				// existing name for the locale
@@ -325,7 +327,7 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 			
 			// DESCRIPTION IS OPTIONAL multiple on xml:lang
 			if(tag.equals(IW3CXMLConfiguration.DESCRIPTION_ELEMENT)) {				
-				IDescriptionEntity aDescription = new DescriptionEntity();
+				DescriptionEntity aDescription = new DescriptionEntity();
 				aDescription.fromXML(child);
 				// add it to our list only if its not a repetition of an
 				// existing description for the locale and the language tag is valid
@@ -335,7 +337,7 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 			// AUTHOR IS OPTIONAL - can only be one, ignore subsequent repetitions
 			if(tag.equals(IW3CXMLConfiguration.AUTHOR_ELEMENT) && fAuthor == null) {
 				fAuthor = new AuthorEntity();
-				fAuthor.fromXML(child);
+				((IElement) fAuthor).fromXML(child);
 			}	
 			
 			// UDPATE DESCRIPTION IS OPTONAL - can only be one, ignore subsequent repetitions
@@ -348,7 +350,7 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 		
 			// LICENSE IS OPTIONAL - can be many
 			if(tag.equals(IW3CXMLConfiguration.LICENSE_ELEMENT)) {				
-				ILicenseEntity aLicense = new LicenseEntity();
+				LicenseEntity aLicense = new LicenseEntity();
 				aLicense.fromXML(child);
 				// add it to our list only if its not a repetition of an
 				// existing entry for the locale and the language tag is valid
@@ -357,15 +359,15 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 			
 			// ICON IS OPTIONAL - can be many
 			if(tag.equals(IW3CXMLConfiguration.ICON_ELEMENT)) {						
-				IIconEntity anIcon = new IconEntity();
+				IconEntity anIcon = new IconEntity();
 				anIcon.fromXML(child,locales,zip);
 				if (anIcon.getSrc()!=null) fIconsList.add(anIcon);
 			}
 			
 			// ACCESS IS OPTIONAL  can be many 
 			if(tag.equals(IW3CXMLConfiguration.ACCESS_ELEMENT)) {											
-				IAccessEntity access = new AccessEntity();
-				access.fromXML(child);
+				IAccess access = new AccessEntity();
+				((IElement) access).fromXML(child);
 				if (access.getOrigin()!=null){
 					if (access.getOrigin().equals("*")) {
 						fAccessList.add(0, access);
@@ -387,20 +389,20 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 			
 			// FEATURE IS OPTIONAL - can be many
 			if(tag.equals(IW3CXMLConfiguration.FEATURE_ELEMENT)) {
-				IFeatureEntity feature = new FeatureEntity(this.features);
+				FeatureEntity feature = new FeatureEntity(this.features);
 				feature.fromXML(child);
 				if (feature.getName()!=null) fFeaturesList.add(feature);
 			}
 			
 			// PREFERENCE IS OPTIONAL - can be many
 			if(tag.equals(IW3CXMLConfiguration.PREFERENCE_ELEMENT)) {
-				IPreferenceEntity preference = new PreferenceEntity();
+				PreferenceEntity preference = new PreferenceEntity();
 				preference.fromXML(child);
 				// Skip preferences without names
 				if (preference.getName() != null){
 					// Skip preferences already defined
 					boolean found = false;
-					for (IPreferenceEntity pref:getPrefences()){
+					for (IPreference pref:getPreferences()){
 						if (pref.getName().equals(preference.getName())) found = true;
 					}
 					if (!found) fPreferencesList.add(preference);
@@ -419,9 +421,9 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 	 * @return true if the list contains an entity with matching language
 	 */
 	@SuppressWarnings("unchecked")
-	private boolean isFirstLocalizedEntity(List list, ILocalizedEntity ent){
+	private boolean isFirstLocalizedEntity(List list, ILocalized ent){
 		boolean first = true;
-		for (ILocalizedEntity entity: (ILocalizedEntity[])list.toArray(new ILocalizedEntity[list.size()]))
+		for (ILocalized entity: (ILocalized[])list.toArray(new ILocalized[list.size()]))
 			if (StringUtils.equals(entity.getLang(), ent.getLang())) first = false;
 		return first;
 	}
@@ -458,54 +460,54 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 		
 		
 		// Name
-		for (INameEntity name: getNames()){
-			Element nameElem = name.toXml();
+		for (IName name: getNames()){
+			Element nameElem = ((IElement) name).toXml();
 			widgetElem.addContent(nameElem);
 		}
 		// Description
-		for (IDescriptionEntity description: getDescriptions()){
-			widgetElem.addContent(description.toXml());
+		for (IDescription description: getDescriptions()){
+			widgetElem.addContent(((IElement) description).toXml());
 		}
 		// Author
-		if (getAuthor() != null) widgetElem.addContent(getAuthor().toXml());
+		if (getAuthor() != null) widgetElem.addContent(((IElement) getAuthor()).toXml());
 		
 		// Update
-		if (getUpdate()!= null){
-			widgetElem.addContent(new UpdateDescription(getUpdate()).toXML());
+		if (getUpdateLocation()!= null){
+			widgetElem.addContent(new UpdateDescription(getUpdateLocation()).toXML());
 		}
 		
 		
 		// Licenses
-		for (ILicenseEntity license: getLicensesList()){
-			widgetElem.addContent(license.toXml());
+		for (ILicense license: getLicenses()){
+			widgetElem.addContent(((IElement) license).toXml());
 		}
 		
 		// Icons
-		for (IIconEntity icon:getIconsList()){
-			Element iconElem = icon.toXml();
+		for (IIcon icon:getIcons()){
+			Element iconElem = ((IElement) icon).toXml();
 			widgetElem.addContent(iconElem);				
 		}
 		
 		// Access 
-		for (IAccessEntity access: getAccessList()){
-			Element accessElem = access.toXml();
+		for (IAccess access: getAccessList()){
+			Element accessElem = ((IElement) access).toXml();
 			widgetElem.addContent(accessElem);
 		}
 		
 		// Content
-		for (IContentEntity content: getContentList()){
-			Element contentElem = content.toXml();
+		for (IContent content: getContentList()){
+			Element contentElem = ((IElement) content).toXml();
 			widgetElem.addContent(contentElem);			
 		}
 		
 		// Features
-		for (IFeatureEntity feature: getFeatures()){
-			widgetElem.addContent(feature.toXml());
+		for (IFeature feature: getFeatures()){
+			widgetElem.addContent(((IElement) feature).toXml());
 		}
 			
 		// Preferences
-		for (IPreferenceEntity preference: getPrefences()){
-			widgetElem.addContent(preference.toXml());
+		for (IPreference preference: getPreferences()){
+			widgetElem.addContent(((IElement) preference).toXml());
 		}
 		
 		return widgetElem;

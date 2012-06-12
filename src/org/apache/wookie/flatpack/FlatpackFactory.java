@@ -23,14 +23,12 @@ import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.feature.Features;
 import org.apache.wookie.feature.IFeature;
-import org.apache.wookie.w3c.IFeatureEntity;
-import org.apache.wookie.w3c.IPreferenceEntity;
-import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.impl.PreferenceEntity;
 import org.apache.wookie.w3c.util.RandomGUID;
 import org.apache.wookie.w3c.util.WidgetOutputter;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
+import org.apache.wookie.w3c.W3CWidget;
 
 /**
  * Factory class for creating flatpacks - Widgets re-packaged with Widget
@@ -186,7 +184,7 @@ public class FlatpackFactory {
     WidgetOutputter outputter = new WidgetOutputter();
     outputter.setWidgetFolder(DEFAULT_LOCAL_PATH);
     File configXml = new File(parser.getUnzippedWidgetDirectory(), "config.xml");
-    outputter.outputXML(widget, configXml);
+    outputter.outputXML(widget, configXml); 
 
     //
     // Select a filename using a RandomGUID. Its important that flatpack names
@@ -229,7 +227,7 @@ public class FlatpackFactory {
           pref.getDkey(), widget);
       newPref.setValue(pref.getDvalue());
       newPref.setReadOnly(pref.isReadOnly());
-      widget.getPrefences().add(newPref);
+      widget.getPreferences().add(newPref);
     }
     return widget;
   }
@@ -243,22 +241,22 @@ public class FlatpackFactory {
    * @param widget
    * @return a preference entity for the named preference
    */
-  private IPreferenceEntity getPreference(String name, W3CWidget widget) {
+  private org.apache.wookie.w3c.IPreference getPreference(String name, W3CWidget widget) {
     //
     // Check for an existing PreferenceEntity for the W3CWidget with the given
     // name, if so,
     // return it.
     //
-    for (IPreferenceEntity pref : widget.getPrefences()) {
+    for (org.apache.wookie.w3c.IPreference pref : widget.getPreferences()) {
       if (pref.getName().equals(name))
-        return pref;
+        return (org.apache.wookie.w3c.IPreference) pref;
     }
     //
     // Create a new PreferenceEntity and return it
     //
     PreferenceEntity pref = new PreferenceEntity();
     pref.setName(name);
-    return pref;
+    return (org.apache.wookie.w3c.IPreference) pref;
   }
 
   /**
@@ -294,8 +292,8 @@ public class FlatpackFactory {
    */
   private W3CWidget processFeatures(W3CWidget widget, File folder)
       throws IOException {
-    ArrayList<IFeatureEntity> featuresToRemove = new ArrayList<IFeatureEntity>();
-    for (IFeatureEntity feature : widget.getFeatures()) {
+    ArrayList<org.apache.wookie.w3c.IFeature> featuresToRemove = new ArrayList<org.apache.wookie.w3c.IFeature>();
+    for (org.apache.wookie.w3c.IFeature feature : widget.getFeatures()) {
       for (IFeature theFeature : Features.getFeatures()) {
         if (theFeature.getName().equals(feature.getName())
             && theFeature.flattenOnExport()) {
@@ -304,14 +302,14 @@ public class FlatpackFactory {
           //
           File featureFolder = new File(theFeature.getFolder());
           FileUtils.copyDirectoryToDirectory(featureFolder, folder);
-          featuresToRemove.add(feature);
+          featuresToRemove.add((org.apache.wookie.w3c.IFeature) feature);
         }
       }
     }
     //
     // Remove flattened features from the W3CWidget
     //
-    for (IFeatureEntity feature : featuresToRemove) {
+    for (org.apache.wookie.w3c.IFeature feature : featuresToRemove) {
       widget.getFeatures().remove(feature);
     }
     return widget;
