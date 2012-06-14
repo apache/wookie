@@ -76,7 +76,7 @@
         </dependency>
         <dependency org="net.sourceforge.htmlcleaner" name="htmlcleaner" rev="2.2" conf="deploy->default">
         </dependency>
-        <dependency org="org.directwebremoting" name="dwr" rev="2.0.5" conf="deploy->default">
+        <dependency org="org.directwebremoting" name="dwr" rev="2.0.10" conf="deploy->default">
 		</dependency>
         <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.4" conf="deploy->default">
         </dependency> 
