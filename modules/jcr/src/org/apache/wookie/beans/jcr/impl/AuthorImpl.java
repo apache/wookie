@@ -15,9 +15,8 @@ package org.apache.wookie.beans.jcr.impl;
 
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
-import org.apache.wookie.beans.IAuthor;
+import org.apache.wookie.w3c.IAuthor;
 import org.apache.wookie.beans.jcr.IIdElement;
-import org.apache.wookie.w3c.ILocalizedElement;
 
 /**
  * JCR Implementation of Author bean
@@ -56,7 +55,7 @@ public class AuthorImpl  extends LocalizedBeanImpl implements IAuthor, IIdElemen
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.beans.IAuthor#getAuthor()
 	 */
-	public String getAuthor() {
+	public String getAuthorName() {
 		return this.author;
 	}
 
@@ -77,7 +76,7 @@ public class AuthorImpl  extends LocalizedBeanImpl implements IAuthor, IIdElemen
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.beans.IAuthor#setAuthor(java.lang.String)
 	 */
-	public void setAuthor(String author) {
+	public void setAuthorName(String author) {
 		this.author = author;
 	}
 

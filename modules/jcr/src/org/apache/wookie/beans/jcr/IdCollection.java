@@ -14,9 +14,9 @@
 
 package org.apache.wookie.beans.jcr;
 
-import java.util.AbstractCollection;
-import java.util.Collection;
+import java.util.AbstractList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * IdCollection - collection that manages collection element ids.
@@ -24,21 +24,15 @@ import java.util.Iterator;
  * @author <a href="mailto:rwatler@apache.org">Randy Watler</a>
  * @version $Id$
  */
-public class IdCollection<I extends IIdElement,M> extends AbstractCollection<M>
+public class IdCollection<I extends IIdElement,M> extends AbstractList<M> implements List<M>
 {
-    private Collection<I> managedCollection;
+    private List<I> managedCollection;
     
-    /**
-     * Construct managing collection.
-     * 
-     * @param managedCollection managed collection
-     */
-    public IdCollection(Collection<I> managedCollection)
-    {
-        this.managedCollection = managedCollection;
+    public IdCollection(List<I> managedList){
+    	this.managedCollection = managedList;
     }
     
-    /* (non-Javadoc)
+	/* (non-Javadoc)
      * @see java.util.AbstractCollection#add(java.lang.Object)
      */
     @SuppressWarnings("unchecked")
@@ -118,5 +112,14 @@ public class IdCollection<I extends IIdElement,M> extends AbstractCollection<M>
     public int size()
     {
         return managedCollection.size();
-    }    
+    }
+
+	/* (non-Javadoc)
+	 * @see java.util.AbstractList#get(int)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public M get(int arg0) {
+		return (M) managedCollection.get(arg0);
+	}    
 }

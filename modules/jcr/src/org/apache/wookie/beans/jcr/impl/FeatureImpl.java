@@ -16,12 +16,13 @@ package org.apache.wookie.beans.jcr.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
 
-import org.apache.wookie.beans.IFeature;
-import org.apache.wookie.beans.IParam;
+import org.apache.wookie.w3c.IFeature;
+import org.apache.wookie.w3c.IParam;
 import org.apache.wookie.beans.jcr.IIdElement;
 import org.apache.wookie.beans.jcr.IdCollection;
 
@@ -44,7 +45,7 @@ public class FeatureImpl implements IFeature, IIdElement
     private Boolean required;
     
     @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:parameters", elementClassName=ParamImpl.class)
-    private Collection<ParamImpl> parameterImpls;
+    private List<ParamImpl> parameterImpls;
     
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.jcr.IIdElement#getElementId()
@@ -65,7 +66,7 @@ public class FeatureImpl implements IFeature, IIdElement
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IFeature#getFeatureName()
      */
-    public String getFeatureName()
+    public String getName()
     {
         return featureName;
     }
@@ -73,7 +74,7 @@ public class FeatureImpl implements IFeature, IIdElement
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IFeature#setFeatureName(java.lang.String)
      */
-    public void setFeatureName(String featureName)
+    public void setName(String featureName)
     {
         this.featureName = featureName;
     }
@@ -81,7 +82,7 @@ public class FeatureImpl implements IFeature, IIdElement
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IFeature#getParameters()
      */
-    public Collection<IParam> getParameters()
+    public List<IParam> getParameters()
     {
         if (parameterImpls == null)
         {
@@ -93,14 +94,14 @@ public class FeatureImpl implements IFeature, IIdElement
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IFeature#setParameters(java.util.Collection)
      */
-    public void setParameters(Collection<IParam> parameters)
+    public void setParameters(List<IParam> parameters)
     {
         getParameters().clear();
         if (parameters != null)
         {
             for (IParam parameter : parameters)
             {
-                getParameters().add((ParamImpl)parameter);
+                getParameters().add(parameter);
             }
         }
     }
@@ -120,7 +121,7 @@ public class FeatureImpl implements IFeature, IIdElement
      * 
      * @param parameterImpls parameter implementations collection
      */
-    public void setParameterImpls(Collection<ParamImpl> parameterImpls)
+    public void setParameterImpls(List<ParamImpl> parameterImpls)
     {
         this.parameterImpls = parameterImpls;
     }

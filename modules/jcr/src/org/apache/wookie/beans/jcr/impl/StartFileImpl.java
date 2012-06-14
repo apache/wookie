@@ -17,7 +17,7 @@ package org.apache.wookie.beans.jcr.impl;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
 
-import org.apache.wookie.beans.IStartFile;
+import org.apache.wookie.w3c.IContent;
 import org.apache.wookie.beans.jcr.IIdElement;
 
 /**
@@ -27,7 +27,7 @@ import org.apache.wookie.beans.jcr.IIdElement;
  * @version $Id$
  */
 @Node(jcrType="wookie:startFile", discriminator=false)
-public class StartFileImpl implements IStartFile, IIdElement
+public class StartFileImpl  extends LocalizedBeanImpl implements IContent, IIdElement
 {
     @Field(id=true, jcrName="wookie:elementId")
     private long elementId = -1;
@@ -44,7 +44,7 @@ public class StartFileImpl implements IStartFile, IIdElement
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IStartFile#getCharset()
      */
-    public String getCharset()
+    public String getCharSet()
     {
         return charset;
     }
@@ -52,7 +52,7 @@ public class StartFileImpl implements IStartFile, IIdElement
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IStartFile#setCharset(java.lang.String)
      */
-    public void setCharset(String charset)
+    public void setCharSet(String charset)
     {
         this.charset = charset;
     }
@@ -92,7 +92,7 @@ public class StartFileImpl implements IStartFile, IIdElement
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IStartFile#getUrl()
      */
-    public String getUrl()
+    public String getSrc()
     {
         return url;
     }
@@ -100,8 +100,24 @@ public class StartFileImpl implements IStartFile, IIdElement
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IStartFile#setUrl(java.lang.String)
      */
-    public void setUrl(String url)
+    public void setSrc(String url)
     {
         this.url = url;
     }
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.w3c.IContent#getType()
+	 */
+	public String getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.w3c.IContent#setType(java.lang.String)
+	 */
+	public void setType(String type) {
+		// TODO Auto-generated method stub
+		
+	}
 }

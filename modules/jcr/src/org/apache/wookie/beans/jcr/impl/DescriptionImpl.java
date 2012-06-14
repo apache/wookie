@@ -17,7 +17,7 @@ package org.apache.wookie.beans.jcr.impl;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
 
-import org.apache.wookie.beans.IDescription;
+import org.apache.wookie.w3c.IDescription;
 import org.apache.wookie.beans.jcr.IIdElement;
 
 /**
@@ -38,7 +38,7 @@ public class DescriptionImpl extends LocalizedBeanImpl implements IDescription, 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IDescription#getContent()
      */
-    public String getContent()
+    public String getDescription()
     {
         return content;
     }
@@ -46,7 +46,7 @@ public class DescriptionImpl extends LocalizedBeanImpl implements IDescription, 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IDescription#setContent(java.lang.String)
      */
-    public void setContent(String text)
+    public void setDescription(String text)
     {
         this.content = text;
     }

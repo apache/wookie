@@ -17,7 +17,7 @@ package org.apache.wookie.beans.jcr.impl;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
 
-import org.apache.wookie.beans.IPreferenceDefault;
+import org.apache.wookie.w3c.IPreference;
 import org.apache.wookie.beans.jcr.IIdElement;
 
 /**
@@ -27,7 +27,7 @@ import org.apache.wookie.beans.jcr.IIdElement;
  * @version $Id$
  */
 @Node(jcrType="wookie:preferenceDefault", discriminator=false)
-public class PreferenceDefaultImpl implements IPreferenceDefault, IIdElement
+public class PreferenceDefaultImpl implements IPreference, IIdElement
 {
     @Field(id=true, jcrName="wookie:elementId")
     private long elementId = -1;
@@ -60,7 +60,7 @@ public class PreferenceDefaultImpl implements IPreferenceDefault, IIdElement
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IPreferenceDefault#getPreference()
      */
-    public String getPreference()
+    public String getName()
     {
         return preference;
     }
@@ -68,7 +68,7 @@ public class PreferenceDefaultImpl implements IPreferenceDefault, IIdElement
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IPreferenceDefault#setPreference(java.lang.String)
      */
-    public void setPreference(String preference)
+    public void setName(String preference)
     {
         this.preference = preference;
     }
