@@ -90,7 +90,7 @@ public class ContentTypeUtils {
 	
 	 /**
    * Sniffs the content type for images and other common types
-   * @param inpuStream the inputStream to sniff
+   * @param inputStream the inputStream to sniff
    * @return the content type of the stream if it matches a known signature, otherwise Null
    * @throws IOException 
    */
