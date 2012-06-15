@@ -17,7 +17,7 @@ package org.apache.wookie.beans.jcr.impl;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
 
-import org.apache.wookie.beans.IParam;
+import org.apache.wookie.w3c.IParam;
 import org.apache.wookie.beans.jcr.IIdElement;
 
 /**

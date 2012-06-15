@@ -17,7 +17,7 @@ package org.apache.wookie.beans.jcr.impl;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
 
-import org.apache.wookie.beans.IName;
+import org.apache.wookie.w3c.IName;
 import org.apache.wookie.beans.jcr.IIdElement;
 
 /**
@@ -73,7 +73,7 @@ public class NameImpl extends LocalizedBeanImpl implements IName, IIdElement
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IName#getShortName()
      */
-    public String getShortName()
+    public String getShort()
     {
         return shortName;
     }
@@ -81,7 +81,7 @@ public class NameImpl extends LocalizedBeanImpl implements IName, IIdElement
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IName#setShortName(java.lang.String)
      */
-    public void setShortName(String shortName)
+    public void setShort(String shortName)
     {
         this.shortName = shortName;
     }

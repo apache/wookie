@@ -17,7 +17,8 @@ package org.apache.wookie.beans.jcr.impl;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
 
-import org.apache.wookie.beans.ILocalizedBean;
+import org.apache.wookie.w3c.IDirectional;
+import org.apache.wookie.w3c.ILocalized;
 
 /**
  * LocalizedBeanImpl - JCR OCM ILocalizedBean implementation.
@@ -26,7 +27,7 @@ import org.apache.wookie.beans.ILocalizedBean;
  * @version $Id$
  */
 @Node(isAbstract=true)
-public abstract class LocalizedBeanImpl implements ILocalizedBean
+public abstract class LocalizedBeanImpl implements ILocalized, IDirectional
 {
     @Field(jcrName="wookie:dir")
     private String dir;
@@ -65,4 +66,13 @@ public abstract class LocalizedBeanImpl implements ILocalizedBean
     {
         this.lang = lang;
     }
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.w3c.IDirectional#isValid()
+	 */
+	public boolean isValid() {
+		return true;
+	}
+    
+    
 }

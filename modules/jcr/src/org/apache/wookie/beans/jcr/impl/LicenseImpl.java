@@ -16,7 +16,7 @@ package org.apache.wookie.beans.jcr.impl;
 
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
-import org.apache.wookie.beans.ILicense;
+import org.apache.wookie.w3c.ILicense;
 import org.apache.wookie.beans.jcr.IIdElement;
 
 /**
@@ -72,7 +72,7 @@ public class LicenseImpl extends LocalizedBeanImpl implements ILicense, IIdEleme
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.ILicense#getText()
      */
-    public String getText()
+    public String getLicenseText()
     {
         return text;
     }
@@ -80,7 +80,7 @@ public class LicenseImpl extends LocalizedBeanImpl implements ILicense, IIdEleme
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.ILicense#setText(java.lang.String)
      */
-    public void setText(String text)
+    public void setLicenseText(String text)
     {
         this.text = text;
     }

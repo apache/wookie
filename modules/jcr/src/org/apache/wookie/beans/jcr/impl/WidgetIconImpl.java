@@ -17,7 +17,7 @@ package org.apache.wookie.beans.jcr.impl;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
 
-import org.apache.wookie.beans.IWidgetIcon;
+import org.apache.wookie.w3c.IIcon;
 import org.apache.wookie.beans.jcr.IIdElement;
 
 /**
@@ -27,7 +27,7 @@ import org.apache.wookie.beans.jcr.IIdElement;
  * @version $Id$
  */
 @Node(jcrType="wookie:widgetIcon", discriminator=false)
-public class WidgetIconImpl implements IWidgetIcon, IIdElement
+public class WidgetIconImpl implements IIcon, IIdElement
 {
     @Field(id=true, jcrName="wookie:elementId")
     private long elementId = -1;

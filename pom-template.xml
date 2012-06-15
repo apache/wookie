@@ -36,9 +36,9 @@
   <inceptionYear>2009</inceptionYear>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/wookie/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/wookie/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/incubator/wookie/trunk</url>        
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/wookie/tags/0.11.0-incubating</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/wookie/tags/0.11.0-incubating</developerConnection>
+    <url>http://svn.apache.org/viewvc/incubator/wookie/tags/0.11.0-incubating/</url>
   </scm>
   
   <mailingLists>

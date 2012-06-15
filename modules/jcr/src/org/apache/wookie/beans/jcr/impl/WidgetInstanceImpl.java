@@ -16,6 +16,7 @@ package org.apache.wookie.beans.jcr.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.jackrabbit.ocm.manager.beanconverter.impl.ReferenceBeanConverterImpl;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Bean;
@@ -82,7 +83,7 @@ public class WidgetInstanceImpl implements IWidgetInstance, IPathBean, IUuidBean
     private WidgetImpl widgetImpl;
 
     @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:preferences", elementClassName=PreferenceImpl.class)    
-    private Collection<PreferenceImpl> preferenceImpls;
+    private List<PreferenceImpl> preferenceImpls;
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidgetInstance#getApiKey()
@@ -155,7 +156,7 @@ public class WidgetInstanceImpl implements IWidgetInstance, IPathBean, IUuidBean
     {
         if (path == null)
         {
-            path = nodeRootPath+"/"+JCRPersistenceManager.escapeJCRName(userId)+"/"+JCRPersistenceManager.escapeJCRName(apiKey)+"/"+JCRPersistenceManager.escapeJCRName(sharedDataKey)+"/"+JCRPersistenceManager.escapeJCRName(widgetImpl.getGuid());
+            path = nodeRootPath+"/"+JCRPersistenceManager.escapeJCRName(userId)+"/"+JCRPersistenceManager.escapeJCRName(apiKey)+"/"+JCRPersistenceManager.escapeJCRName(sharedDataKey)+"/"+JCRPersistenceManager.escapeJCRName(widgetImpl.getIdentifier());
         }
         return path;
     }
@@ -254,7 +255,7 @@ public class WidgetInstanceImpl implements IWidgetInstance, IPathBean, IUuidBean
      * 
      * @param preferenceImpls preference implementations collection
      */
-    public void setPreferenceImpls(Collection<PreferenceImpl> preferenceImpls)
+    public void setPreferenceImpls(List<PreferenceImpl> preferenceImpls)
     {
         this.preferenceImpls = preferenceImpls;
     }

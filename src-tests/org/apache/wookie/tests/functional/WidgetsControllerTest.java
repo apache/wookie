@@ -19,7 +19,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -46,13 +49,14 @@ import org.junit.Test;
  * Test cases for the Widget REST API
  */
 public class WidgetsControllerTest extends AbstractControllerTest {
-  
+
   private static String WIDGET_ID_ACCESS_TEST = "http://wookie.apache.org/widgets/access-test";
   private static String WIDGET_ID_DELETE_TEST = "http://deletetest";
   private static String WIDGET_ID_NOT_SUPPORTED = "http://notsupported";
   private static String WIDGET_ID_UPLOAD_TEST = "http://uploadtest";
   private static String WIDGET_ID_UPLOAD_TEST_2 = "http://uploadtest_2";
-  
+  private static String WIDGET_ID_WEATHER = "http://www.getwookie.org/widgets/weather";
+
   @AfterClass
   public static void tearDown() throws HttpException, IOException{
     HttpClient client = new HttpClient();
@@ -64,57 +68,57 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST_2));
     client.executeMethod(delete);
   }
-	
+
   /**
    * Test GET all widgets
    * @throws IOException 
    * @throws HttpException 
    */
-	@Test
-	public void getAllWidgets() throws HttpException, IOException{
-	        HttpClient client = new HttpClient();
-	        GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID);
-	        get.setQueryString("all=true");
-	        client.executeMethod(get);
-	        int code = get.getStatusCode();
-	        assertEquals(200,code);
-	        String response = get.getResponseBodyAsString();
-	        assertTrue(response.contains("<widget id=\"http://notsupported\""));
-	        get.releaseConnection();
-	}
-	
-	/**
-	 * Test we can GET a widget using its internal ID as a resource path
-	 * @throws IOException 
-	 * @throws HttpException 
-	 */
-	@Test
-	public void getSpecificWidget() throws HttpException, IOException{
-	        HttpClient client = new HttpClient();
-	        GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/1");
-	        client.executeMethod(get);
-	        int code = get.getStatusCode();
-	        assertEquals(200,code);
-	        String response = get.getResponseBodyAsString();
-	        assertTrue(response.contains("<widget id=\"http://notsupported\""));
-	        get.releaseConnection();
-	}
-	
-	 /**
+  @Test
+  public void getAllWidgets() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID);
+    get.setQueryString("all=true");
+    client.executeMethod(get);
+    int code = get.getStatusCode();
+    assertEquals(200,code);
+    String response = get.getResponseBodyAsString();
+    assertTrue(response.contains("<widget id=\"http://notsupported\""));
+    get.releaseConnection();
+  }
+
+  /**
+   * Test we can GET a widget using its internal ID as a resource path
+   * @throws IOException 
+   * @throws HttpException 
+   */
+  @Test
+  public void getSpecificWidget() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/1");
+    client.executeMethod(get);
+    int code = get.getStatusCode();
+    assertEquals(200,code);
+    String response = get.getResponseBodyAsString();
+    assertTrue(response.contains("<widget id=\"http://notsupported\""));
+    get.releaseConnection();
+  }
+
+  /**
    * Test we can GET a widget using its URI as a resource path
    * @throws IOException 
    * @throws HttpException 
    */
   @Test
   public void getSpecificWidgetByUri() throws HttpException, IOException{
-          HttpClient client = new HttpClient();
-          GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_NOT_SUPPORTED));
-          client.executeMethod(get);
-          int code = get.getStatusCode();
-          assertEquals(200,code);
-          String response = get.getResponseBodyAsString();
-          assertTrue(response.contains("<widget id=\"http://notsupported\""));
-          get.releaseConnection();
+    HttpClient client = new HttpClient();
+    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_NOT_SUPPORTED));
+    client.executeMethod(get);
+    int code = get.getStatusCode();
+    assertEquals(200,code);
+    String response = get.getResponseBodyAsString();
+    assertTrue(response.contains("<widget id=\"http://notsupported\""));
+    get.releaseConnection();
   }
   /**
    * Test we can GET a widget using its URI as a resource path
@@ -123,64 +127,64 @@ public class WidgetsControllerTest extends AbstractControllerTest {
    */
   @Test
   public void getSpecificWidgetByUri2() throws HttpException, IOException{
-          HttpClient client = new HttpClient();
-          GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_NOT_SUPPORTED);
-          client.executeMethod(get);
-          int code = get.getStatusCode();
-          assertEquals(200,code);
-          String response = get.getResponseBodyAsString();
-          assertTrue(response.contains("<widget id=\"http://notsupported\""));
-          get.releaseConnection();
+    HttpClient client = new HttpClient();
+    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_NOT_SUPPORTED);
+    client.executeMethod(get);
+    int code = get.getStatusCode();
+    assertEquals(200,code);
+    String response = get.getResponseBodyAsString();
+    assertTrue(response.contains("<widget id=\"http://notsupported\""));
+    get.releaseConnection();
   }
-	
-	/**
-	 * Test that a request for a non-existing widget ID gets a 404
-	 * @throws IOException 
-	 * @throws HttpException 
-	 */
-	@Test
-	public void getSpecificWidget_nonexisting() throws HttpException, IOException{
-	        HttpClient client = new HttpClient();
-	        GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/9999");
-	        client.executeMethod(get);
-	        int code = get.getStatusCode();
-	        assertEquals(404,code);
-	        get.releaseConnection();
-	}
-	
-	@Test
-	public void importWidget_unauthorized() throws HttpException, IOException{
+
+  /**
+   * Test that a request for a non-existing widget ID gets a 404
+   * @throws IOException 
+   * @throws HttpException 
+   */
+  @Test
+  public void getSpecificWidget_nonexisting() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/9999");
+    client.executeMethod(get);
+    int code = get.getStatusCode();
+    assertEquals(404,code);
+    get.releaseConnection();
+  }
+
+  @Test
+  public void importWidget_unauthorized() throws HttpException, IOException{
     HttpClient client = new HttpClient();
     PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
     client.executeMethod(post);
     int code = post.getStatusCode();
     assertEquals(401,code);
     post.releaseConnection();	  
-	}
-	
-	@Test
-	public void importWidget() throws HttpException, IOException{
+  }
+
+  @Test
+  public void importWidget() throws HttpException, IOException{
     HttpClient client = new HttpClient();
     //
     // Use admin credentials
     //
     setAuthenticationCredentials(client);
-    
+
     PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
-    
+
     //
     // Use upload test widget
     //
     File file = new File("src-tests/testdata/upload-test.wgt");
     assertTrue(file.exists());
-    
+
     //
     // Add test wgt file to POST
     //
     Part[] parts = { new FilePart(file.getName(), file) };
     post.setRequestEntity(new MultipartRequestEntity(parts, post
         .getParams()));
-    
+
     //
     // POST the file to /widgets and check we get 201 (Created)
     //
@@ -188,32 +192,32 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     int code = post.getStatusCode();
     assertEquals(201,code);
     post.releaseConnection();  	  
-	}
-	
-	
-	@Test
+  }
+
+
+  @Test
   public void importWidgetWithDefaultIcon() throws HttpException, IOException, JDOMException{
     HttpClient client = new HttpClient();
     //
     // Use admin credentials
     //
     setAuthenticationCredentials(client);
-    
+
     PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
-    
+
     //
     // Use upload test widget
     //
     File file = new File("src-tests/testdata/upload-test-2.wgt");
     assertTrue(file.exists());
-    
+
     //
     // Add test wgt file to POST
     //
     Part[] parts = { new FilePart(file.getName(), file) };
     post.setRequestEntity(new MultipartRequestEntity(parts, post
         .getParams()));
-    
+
     //
     // POST the file to /widgets and check we get 201 (Created)
     //
@@ -230,84 +234,84 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     assertEquals("http://localhost:8080/wookie/wservices/uploadtest_2/icon.png", iconElement.getAttributeValue("src"));
     post.releaseConnection();     
   }
-  
-	
-	@Test
-	public void downloadWidgetPackage() throws BadWidgetZipFileException, BadManifestException, Exception{
+
+
+  @Test
+  public void downloadWidgetPackage() throws BadWidgetZipFileException, BadManifestException, Exception{
     HttpClient client = new HttpClient();	
     GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_NOT_SUPPORTED);
     get.setRequestHeader("accept", "application/widget");
     get.setFollowRedirects(true);
     client.executeMethod(get);
-    
+
     assertEquals(200, get.getStatusCode());
-    
+
     File file = File.createTempFile("wookie", ".wgt");
     FileUtils.writeByteArrayToFile(file, get.getResponseBody());
-    
+
     System.out.println(get.getStatusCode());
-    
-    
+
+
     File outputFolder = File.createTempFile("temp", Long.toString(System.nanoTime()));
     outputFolder.delete();
     outputFolder.mkdir();
-    
+
     System.out.println(outputFolder.getPath());
-    
+
     W3CWidgetFactory fac = new W3CWidgetFactory();
     fac.setOutputDirectory(outputFolder.getPath());
     W3CWidget widget = fac.parse(file);
     assertEquals("Unsupported widget widget", widget.getLocalName("en"));
-	}
-	
-	@Test
-	public void importWrongFileType() throws HttpException, IOException{
-	  HttpClient client = new HttpClient();
-	  //
-	  // Use admin credentials
-	  //
-	  setAuthenticationCredentials(client);
-	  PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
+  }
 
-	  //
-	  // We'll use a copy of the unsupported widget widget for testing
-	  //
-	  File file = new File("src-tests/testdata/not_a_widget.zip");
-	  assertTrue(file.exists());
+  @Test
+  public void importWrongFileType() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    //
+    // Use admin credentials
+    //
+    setAuthenticationCredentials(client);
+    PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
 
-	  //
-	  // Add test wgt file to POST
-	  //
-	  Part[] parts = { new FilePart(file.getName(), file) };
-	  post.setRequestEntity(new MultipartRequestEntity(parts, post
-	      .getParams()));
+    //
+    // We'll use a copy of the unsupported widget widget for testing
+    //
+    File file = new File("src-tests/testdata/not_a_widget.zip");
+    assertTrue(file.exists());
 
-	  //
-	  // POST the file to /widgets and check we get a 400
-	  //
-	  client.executeMethod(post);   
-	  int code = post.getStatusCode();
-	  assertEquals(400,code);
-	  post.releaseConnection();     
-	}
-	
-	@Test
-	public void deleteWidgetUnauthorized() throws HttpException, IOException{
+    //
+    // Add test wgt file to POST
+    //
+    Part[] parts = { new FilePart(file.getName(), file) };
+    post.setRequestEntity(new MultipartRequestEntity(parts, post
+        .getParams()));
+
+    //
+    // POST the file to /widgets and check we get a 400
+    //
+    client.executeMethod(post);   
+    int code = post.getStatusCode();
+    assertEquals(400,code);
+    post.releaseConnection();     
+  }
+
+  @Test
+  public void deleteWidgetUnauthorized() throws HttpException, IOException{
     HttpClient client = new HttpClient();
     DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/1");
-	  client.executeMethod(delete);
-	  assertEquals(401, delete.getStatusCode());
-	  
+    client.executeMethod(delete);
+    assertEquals(401, delete.getStatusCode());
+
     //
     // Check it wasn't deleted
     //
     GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/1");
     client.executeMethod(get);
     assertEquals(200, get.getStatusCode());
-	}
-	
-	@Test
-	public void deleteWidgetNonexisting() throws HttpException, IOException{
+  }
+
+  @Test
+  public void deleteWidgetNonexisting() throws HttpException, IOException{
     HttpClient client = new HttpClient();
     //
     // Use admin credentials
@@ -316,10 +320,10 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/9999");
     client.executeMethod(delete);
     assertEquals(404, delete.getStatusCode());
-	}
-	
-	@Test
-	public void deleteWidget() throws HttpException, IOException{
+  }
+
+  @Test
+  public void deleteWidget() throws HttpException, IOException{
     HttpClient client = new HttpClient();
     //
     // Use admin credentials
@@ -339,51 +343,51 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     int code = post.getStatusCode();
     assertEquals(201,code);
     post.releaseConnection();   
-    
+
     //
     // Delete the widget
     //
     DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_DELETE_TEST)); 
     client.executeMethod(delete);
     assertEquals(200, delete.getStatusCode());
-    
+
     //
     // Check it was deleted
     //
     GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_DELETE_TEST)); 
     client.executeMethod(get);
     assertEquals(404, get.getStatusCode());
-	}
-	
-	/**
-	 * We allow updates to existing widgets via POST as well as PUT 
-	 * (to allow browsers to update using forms)
-	 * @throws HttpException
-	 * @throws IOException
-	 */
-	@Test
-	public void updateWidgetByPost() throws HttpException, IOException{
-	  HttpClient client = new HttpClient();
+  }
+
+  /**
+   * We allow updates to existing widgets via POST as well as PUT 
+   * (to allow browsers to update using forms)
+   * @throws HttpException
+   * @throws IOException
+   */
+  @Test
+  public void updateWidgetByPost() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
     //
     // Use admin credentials
     //
     setAuthenticationCredentials(client);
-    
+
     PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST)); 
-    
+
     //
     // Use upload test widget
     //
     File file = new File("src-tests/testdata/upload-test.wgt");
     assertTrue(file.exists());
-    
+
     //
     // Add test wgt file to POST
     //
     Part[] parts = { new FilePart(file.getName(), file) };
     post.setRequestEntity(new MultipartRequestEntity(parts, post
         .getParams()));
-    
+
     //
     // POST the file to /widgets and check we get 200 (Updated)
     //
@@ -391,9 +395,9 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     int code = post.getStatusCode();
     assertEquals(200,code);
     post.releaseConnection();     
-	  
-	}
-	
+
+  }
+
   @Test
   public void updateWidgetByPut() throws HttpException, IOException{
     HttpClient client = new HttpClient();
@@ -401,22 +405,22 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     // Use admin credentials
     //
     setAuthenticationCredentials(client);
-    
+
     PutMethod put = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
-    
+
     //
     // Use upload test widget
     //
     File file = new File("src-tests/testdata/upload-test.wgt");
     assertTrue(file.exists());
-    
+
     //
     // Add test wgt file to PUT
     //
     Part[] parts = { new FilePart(file.getName(), file) };
     put.setRequestEntity(new MultipartRequestEntity(parts, put
         .getParams()));
-    
+
     //
     // PUT the file to /widgets and check we get 200 (Updated)
     //
@@ -424,125 +428,174 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     int code = put.getStatusCode();
     assertEquals(200,code);
     put.releaseConnection();     
-    
+
   }	
-	
-	@Test
-	public void updateWidgetUnauthorized() throws HttpException, IOException{
-	   HttpClient client = new HttpClient();
-    
-	   PutMethod post = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
-	    
-	    //
-	    // Use upload test widget
-	    //
-	    File file = new File("src-tests/testdata/upload-test.wgt");
-	    assertTrue(file.exists());
-	    
-	    //
-	    // Add test wgt file to POST
-	    //
-	    Part[] parts = { new FilePart(file.getName(), file) };
-	    post.setRequestEntity(new MultipartRequestEntity(parts, post
-	        .getParams()));
-	    
-	    //
-	    // POST the file to /widgets and check we get 200 (Updated)
-	    //
-	    client.executeMethod(post);   
-	    int code = post.getStatusCode();
-	    assertEquals(401,code);
-	    post.releaseConnection();  
-	}
-	
-	@Test
-	public void updateWidgetNotFound() throws HttpException, IOException{
-	   HttpClient client = new HttpClient();
-	    //
-	    // Use admin credentials
-	    //
-	    setAuthenticationCredentials(client);
-	    
-	    PutMethod post = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_INVALID));
-	   
-	    //
-	    // Use upload test widget
-	    //
-	    File file = new File("src-tests/testdata/upload-test.wgt");
-	    assertTrue(file.exists());
-	    
-	    //
-	    // Add test wgt file to POST
-	    //
-	    Part[] parts = { new FilePart(file.getName(), file) };
-	    post.setRequestEntity(new MultipartRequestEntity(parts, post
-	        .getParams()));
-	    
-	    //
-	    // POST the file to /widgets and check we get 200 (Updated)
-	    //
-	    client.executeMethod(post);   
-	    int code = post.getStatusCode();
-	    assertEquals(404,code);
-	    post.releaseConnection();  
-	  
-	}
-	
-	/**
-	 * Check that when we update a widget, we don't duplicate access policies. See WOOKIE-273.
-	 * @throws HttpException
-	 * @throws IOException
-	 * @throws InterruptedException 
-	 * @throws JDOMException 
-	 */
-	@Test
-	public void checkForDuplicateAccessRequests() throws HttpException, IOException, InterruptedException, JDOMException{
 
-	    //
-	    // Add the test widget, and update it a few times
-	    //
-	    for (int i=0;i<4;i++){
-	      
-	      HttpClient client = new HttpClient();
-	      //
-	      // Use admin credentials
-	      //
-	      setAuthenticationCredentials(client);
-	      
-	      PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
+  @Test
+  public void updateWidgetUnauthorized() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
 
-	      //
-	      // Add the access test widget. This just has a single access request
-	      // for the origin "http://accesstest.incubator.apache.org"
-	      //
-	      File file = new File("src-tests/testdata/access-test.wgt");
-	      assertTrue(file.exists());
+    PutMethod post = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
 
-	      //
-	      // Add test wgt file to POST
-	      //
-	      Part[] parts = { new FilePart(file.getName(), file) };
-	      post.setRequestEntity(new MultipartRequestEntity(parts, post
-	          .getParams()));
+    //
+    // Use upload test widget
+    //
+    File file = new File("src-tests/testdata/upload-test.wgt");
+    assertTrue(file.exists());
 
-	      //
-	      // POST the file to /widgets 
-	      //
-	      client.executeMethod(post);   
-	      post.releaseConnection(); 
-	    } 
+    //
+    // Add test wgt file to POST
+    //
+    Part[] parts = { new FilePart(file.getName(), file) };
+    post.setRequestEntity(new MultipartRequestEntity(parts, post
+        .getParams()));
 
-	    //
-	    // Check that we only have one copy of the access request, not two
-	    //
+    //
+    // POST the file to /widgets and check we get 200 (Updated)
+    //
+    client.executeMethod(post);   
+    int code = post.getStatusCode();
+    assertEquals(401,code);
+    post.releaseConnection();  
+  }
+
+  @Test
+  public void updateWidgetNotFound() throws HttpException, IOException{
+    HttpClient client = new HttpClient();
+    //
+    // Use admin credentials
+    //
+    setAuthenticationCredentials(client);
+
+    PutMethod post = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_INVALID));
+
+    //
+    // Use upload test widget
+    //
+    File file = new File("src-tests/testdata/upload-test.wgt");
+    assertTrue(file.exists());
+
+    //
+    // Add test wgt file to POST
+    //
+    Part[] parts = { new FilePart(file.getName(), file) };
+    post.setRequestEntity(new MultipartRequestEntity(parts, post
+        .getParams()));
+
+    //
+    // POST the file to /widgets and check we get 200 (Updated)
+    //
+    client.executeMethod(post);   
+    int code = post.getStatusCode();
+    assertEquals(404,code);
+    post.releaseConnection();  
+
+  }
+
+  /**
+   * Check that when we update a widget, we don't duplicate access policies. See WOOKIE-273.
+   * @throws HttpException
+   * @throws IOException
+   * @throws InterruptedException 
+   * @throws JDOMException 
+   */
+  @Test
+  public void checkForDuplicateAccessRequests() throws HttpException, IOException, InterruptedException, JDOMException{
+
+    //
+    // Add the test widget, and update it a few times
+    //
+    for (int i=0;i<4;i++){
+
       HttpClient client = new HttpClient();
+      //
+      // Use admin credentials
+      //
       setAuthenticationCredentials(client);
-	    GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_ACCESS_TEST));
-	    //this needs to be Accept rather than accepts which fails on tomcat
-	    get.setRequestHeader("Accept","text/xml");
-	    client.executeMethod(get);
-	    assertEquals(1,PoliciesControllerTest.processPolicies(get.getResponseBodyAsStream()).getChildren("policy").size());
 
-	}
-	
+      PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
+
+      //
+      // Add the access test widget. This just has a single access request
+      // for the origin "http://accesstest.incubator.apache.org"
+      //
+      File file = new File("src-tests/testdata/access-test.wgt");
+      assertTrue(file.exists());
+
+      //
+      // Add test wgt file to POST
+      //
+      Part[] parts = { new FilePart(file.getName(), file) };
+      post.setRequestEntity(new MultipartRequestEntity(parts, post
+          .getParams()));
+
+      //
+      // POST the file to /widgets 
+      //
+      client.executeMethod(post);   
+      post.releaseConnection(); 
+    } 
+
+    //
+    // Check that we only have one copy of the access request, not two
+    //
+    HttpClient client = new HttpClient();
+    setAuthenticationCredentials(client);
+    GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_ACCESS_TEST));
+    //this needs to be Accept rather than accepts which fails on tomcat
+    get.setRequestHeader("Accept","text/xml");
+    client.executeMethod(get);
+    assertEquals(1,PoliciesControllerTest.processPolicies(get.getResponseBodyAsStream()).getChildren("policy").size());
+
+  }
+
+  /**
+   * Download a widget using the Accept type of ("Accept","application/widget")
+   * Once downloaded make sure that the widget package is correct - run it through the parser
+   * @throws Exception
+   */
+  @Test
+  public void getActualWidget() throws Exception{
+    HttpClient client = new HttpClient();
+    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/"+WIDGET_ID_WEATHER);
+    get.setRequestHeader("Accept","application/widget");
+    client.executeMethod(get);
+    int code = get.getStatusCode();
+    assertEquals(200,code);
+
+    InputStream inputStream = get.getResponseBodyAsStream();
+    File downloadedFile = new File("src-tests" + File.separatorChar + "testdata" + File.separatorChar + "downloadedWeatherWidget.zip");
+    OutputStream out = new FileOutputStream(downloadedFile);
+
+    int read = 0;
+    byte[] bytes = new byte[1024];
+
+    while ((read = inputStream.read(bytes)) != -1) {
+      out.write(bytes, 0, read);
+    }
+    inputStream.close();
+    out.flush();
+    out.close();
+    get.releaseConnection();
+
+    // check the downloaded file
+    W3CWidgetFactory fac = new W3CWidgetFactory();
+    fac.setStartPageProcessor(null);
+    File outputDir = new File("src-tests" + File.separatorChar + "testdata" + File.separatorChar + "widgets");
+    outputDir.mkdirs();
+    fac.setOutputDirectory("src-tests" + File.separatorChar + "testdata" + File.separatorChar + "widgets");
+    W3CWidget widget = fac.parse(downloadedFile);
+    File file = fac.getUnzippedWidgetDirectory();
+    assertEquals("src-tests" + File.separatorChar + "testdata"
+        + File.separatorChar + "widgets" + File.separatorChar
+        + "www.getwookie.org" + File.separatorChar + "widgets"
+        + File.separatorChar + "weather", file.getPath());
+    assertTrue(file.isDirectory());
+    assertEquals(WIDGET_ID_WEATHER, widget.getIdentifier());
+
+    //clean up
+    FileUtils.deleteDirectory(outputDir);
+    FileUtils.deleteQuietly(downloadedFile);
+  }
+
 }

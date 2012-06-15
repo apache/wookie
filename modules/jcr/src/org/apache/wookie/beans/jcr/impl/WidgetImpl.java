@@ -16,19 +16,21 @@ package org.apache.wookie.beans.jcr.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
 
-import org.apache.wookie.beans.IAuthor;
-import org.apache.wookie.beans.IDescription;
-import org.apache.wookie.beans.IFeature;
-import org.apache.wookie.beans.ILicense;
-import org.apache.wookie.beans.IName;
-import org.apache.wookie.beans.IPreferenceDefault;
-import org.apache.wookie.beans.IStartFile;
+import org.apache.wookie.w3c.IAccess;
+import org.apache.wookie.w3c.IAuthor;
+import org.apache.wookie.w3c.IDescription;
+import org.apache.wookie.w3c.IFeature;
+import org.apache.wookie.w3c.ILicense;
+import org.apache.wookie.w3c.IName;
+import org.apache.wookie.w3c.IPreference;
+import org.apache.wookie.w3c.IContent;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.IWidgetIcon;
+import org.apache.wookie.w3c.IIcon;
 import org.apache.wookie.beans.jcr.IPathBean;
 import org.apache.wookie.beans.jcr.IUuidBean;
 import org.apache.wookie.beans.jcr.IdCollection;
@@ -73,28 +75,28 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     private String version;
     
     @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:features", elementClassName=FeatureImpl.class)
-    private Collection<FeatureImpl> featureImpls;
+    private List<FeatureImpl> featureImpls;
     
     @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:widgetIcons", elementClassName=WidgetIconImpl.class)
-    private Collection<WidgetIconImpl> widgetIconImpls;
+    private List<WidgetIconImpl> widgetIconImpls;
     
     @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:licenses", elementClassName=LicenseImpl.class)
-    private Collection<LicenseImpl> licenseImpls;
+    private List<LicenseImpl> licenseImpls;
     
     @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:names", elementClassName=NameImpl.class)
-    private Collection<NameImpl> nameImpls;
+    private List<NameImpl> nameImpls;
     
     @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:authors", elementClassName=NameImpl.class)
-    private Collection<AuthorImpl> authorImpls;
+    private List<AuthorImpl> authorImpls;
     
     @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:descriptions", elementClassName=DescriptionImpl.class)
-    private Collection<DescriptionImpl> descriptionImpls;
+    private List<DescriptionImpl> descriptionImpls;
     
     @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:startFiles", elementClassName=StartFileImpl.class)
-    private Collection<StartFileImpl> startFileImpls;
+    private List<StartFileImpl> startFileImpls;
     
     @org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection(jcrName="wookie:preferenceDefaults", elementClassName=PreferenceDefaultImpl.class)
-    private Collection<PreferenceDefaultImpl> preferenceDefaultImpls;
+    private List<PreferenceDefaultImpl> preferenceDefaultImpls;
     
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getPackagePath()
@@ -113,7 +115,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
 	/* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getDescriptions()
      */
-    public Collection<IDescription> getDescriptions()
+    public List<IDescription> getDescriptions()
     {
         if (descriptionImpls == null)
         {
@@ -166,7 +168,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
      * 
      * @param descriptionImpls description implementations collection
      */
-    public void setDescriptionImpls(Collection<DescriptionImpl> descriptionImpls)
+    public void setDescriptionImpls(List<DescriptionImpl> descriptionImpls)
     {
         this.descriptionImpls = descriptionImpls;
     }
@@ -174,7 +176,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getFeatures()
      */
-    public Collection<IFeature> getFeatures()
+    public List<IFeature> getFeatures()
     {
         if (featureImpls == null)
         {
@@ -213,7 +215,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
      * 
      * @param featureImpls feature implementations collection
      */
-    public void setFeatureImpls(Collection<FeatureImpl> featureImpls)
+    public void setFeatureImpls(List<FeatureImpl> featureImpls)
     {
         this.featureImpls = featureImpls;
     }
@@ -221,7 +223,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getGuid()
      */
-    public String getGuid()
+    public String getIdentifier()
     {
         return guid;
     }
@@ -229,7 +231,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#setGuid(java.lang.String)
      */
-    public void setGuid(String guid)
+    public void setIdentifier(String guid)
     {
         this.guid = guid;
     }
@@ -261,7 +263,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getLicenses()
      */
-    public Collection<ILicense> getLicenses()
+    public List<ILicense> getLicenses()
     {
         if (licenseImpls == null)
         {
@@ -300,7 +302,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
      * 
      * @param licenseImpls license implementations collection
      */
-    public void setLicenseImpls(Collection<LicenseImpl> licenseImpls)
+    public void setLicenseImpls(List<LicenseImpl> licenseImpls)
     {
         this.licenseImpls = licenseImpls;
     }
@@ -308,7 +310,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getNames()
      */
-    public Collection<IName> getNames()
+    public List<IName> getNames()
     {
         if (nameImpls == null)
         {
@@ -347,12 +349,12 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
      * 
      * @param nameImpls name implementations collection
      */
-    public void setNameImpls(Collection<NameImpl> nameImpls)
+    public void setNameImpls(List<NameImpl> nameImpls)
     {
         this.nameImpls = nameImpls;
     }
     
-    public Collection<IAuthor> getAuthors()
+    public List<IAuthor> getAuthors()
     {
         if (authorImpls == null)
         {
@@ -408,7 +410,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     /**
      * Set author implementations collection.
      */
-    public void setAuthorImpls(Collection<AuthorImpl> authorImpls)
+    public void setAuthorImpls(List<AuthorImpl> authorImpls)
     {
         this.authorImpls = authorImpls;
     }
@@ -456,26 +458,26 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getPreferenceDefaults()
      */
-    public Collection<IPreferenceDefault> getPreferenceDefaults()
+    public List<IPreference> getPreferences()
     {
         if (preferenceDefaultImpls == null)
         {
             preferenceDefaultImpls = new ArrayList<PreferenceDefaultImpl>();
         }
-        return new IdCollection<PreferenceDefaultImpl,IPreferenceDefault>(preferenceDefaultImpls);
+        return new IdCollection<PreferenceDefaultImpl,IPreference>(preferenceDefaultImpls);
     }
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#setPreferenceDefaults(java.util.Collection)
      */
-    public void setPreferenceDefaults(Collection<IPreferenceDefault> preferenceDefaults)
+    public void setPreferences(Collection<IPreference> preferenceDefaults)
     {
-        getPreferenceDefaults().clear();
+        getPreferences().clear();
         if (preferenceDefaults != null)
         {
-            for (IPreferenceDefault preferenceDefault : preferenceDefaults)
+            for (IPreference preferenceDefault : preferenceDefaults)
             {
-                getPreferenceDefaults().add((PreferenceDefaultImpl)preferenceDefault);
+                getPreferences().add((PreferenceDefaultImpl)preferenceDefault);
             }
         }
     }
@@ -495,7 +497,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
      * 
      * @param preferenceDefaultImpls preference default implementations collection
      */
-    public void setPreferenceDefaultImpls(Collection<PreferenceDefaultImpl> preferenceDefaultImpls)
+    public void setPreferenceDefaultImpls(List<PreferenceDefaultImpl> preferenceDefaultImpls)
     {
         this.preferenceDefaultImpls = preferenceDefaultImpls;
     }
@@ -503,26 +505,26 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getStartFiles()
      */
-    public Collection<IStartFile> getStartFiles()
+    public List<IContent> getContentList()
     {
         if (startFileImpls == null)
         {
             startFileImpls = new ArrayList<StartFileImpl>();
         }
-        return new IdCollection<StartFileImpl,IStartFile>(startFileImpls);
+        return new IdCollection<StartFileImpl,IContent>(startFileImpls);
     }
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#setStartFiles(java.util.Collection)
      */
-    public void setStartFiles(Collection<IStartFile> startFiles)
+    public void setContentList(Collection<IContent> startFiles)
     {
-        getStartFiles().clear();
+        getContentList().clear();
         if (startFiles != null)
         {
-            for (IStartFile startFile : startFiles)
+            for (IContent startFile : startFiles)
             {
-                getStartFiles().add((StartFileImpl)startFile);
+                getContentList().add((StartFileImpl)startFile);
             }
         }
     }
@@ -542,7 +544,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
      * 
      * @param startFileImpls start file implementations collection
      */
-    public void setStartFileImpls(Collection<StartFileImpl> startFileImpls)
+    public void setStartFileImpls(List<StartFileImpl> startFileImpls)
     {
         this.startFileImpls = startFileImpls;
     }
@@ -583,26 +585,26 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getWidgetIcons()
      */
-    public Collection<IWidgetIcon> getWidgetIcons()
+    public List<IIcon> getIcons()
     {
         if (widgetIconImpls == null)
         {
             widgetIconImpls = new ArrayList<WidgetIconImpl>();
         }
-        return new IdCollection<WidgetIconImpl,IWidgetIcon>(widgetIconImpls);
+        return new IdCollection<WidgetIconImpl,IIcon>(widgetIconImpls);
     }
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#setWidgetIcons(java.util.Collection)
      */
-    public void setWidgetIcons(Collection<IWidgetIcon> widgetIcons)
+    public void setIcons(Collection<IIcon> widgetIcons)
     {
-        getWidgetIcons().clear();
+        getIcons().clear();
         if (widgetIcons != null)
         {
-            for (IWidgetIcon widgetIcon : widgetIcons)
+            for (IIcon widgetIcon : widgetIcons)
             {
-                getWidgetIcons().add((WidgetIconImpl)widgetIcon);
+                getIcons().add((WidgetIconImpl)widgetIcon);
             }
         }
     }
@@ -622,7 +624,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
      * 
      * @param widgetIconImpls widget icon implementations collection
      */
-    public void setWidgetIconImpls(Collection<WidgetIconImpl> widgetIconImpls)
+    public void setWidgetIconImpls(List<WidgetIconImpl> widgetIconImpls)
     {
         this.widgetIconImpls = widgetIconImpls;
     }
@@ -646,7 +648,7 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IWidget#getWidgetTitle(java.lang.String)
      */
-    public String getWidgetTitle(String locale)
+    public String getLocalName(String locale)
     {
         return Utilities.getWidgetTitle(this, locale);
     }
@@ -658,4 +660,18 @@ public class WidgetImpl extends LocalizedBeanImpl implements IWidget, IPathBean,
     public void setDefaultLocale(String locale){
       this.defaultLocale = locale;
     }
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.w3c.W3CWidget#getAccessList()
+	 */
+	public List<IAccess> getAccessList() {
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.w3c.W3CWidget#getViewModes()
+	 */
+	public String getViewModes() {
+		return null;
+	}
 }

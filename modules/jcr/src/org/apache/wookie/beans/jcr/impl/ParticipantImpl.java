@@ -44,6 +44,9 @@ public class ParticipantImpl implements IParticipant, IPathBean
 
     @Field(jcrName="wookie:sharedDataKey")
     private String sharedDataKey;
+    
+    @Field(jcrName="wookie:role")
+    private String role;
 
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IBean#getId()
@@ -155,6 +158,21 @@ public class ParticipantImpl implements IParticipant, IPathBean
     public void setSharedDataKey(String sharedDataKey)
     {
         this.sharedDataKey = sharedDataKey;
-    }    
+    }
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IParticipant#getRole()
+	 */
+	public String getRole() {
+		// TODO Auto-generated method stub
+		return role;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.beans.IParticipant#setRole(java.lang.String)
+	 */
+	public void setRole(String role) {
+		this.role = role;
+	}    
 
 }
