@@ -4,44 +4,25 @@ See https://issues.apache.org/jira/browse/WOOKIE-* (where * is the number of the
 
 For more detailed information on significant changes, see NEW_AND_NOTEWORTHY
 
-Version 0.10.0
+Version 0.11.0
 ==============
 
 Bugs Fixed
 ==========
+* WOOKIE-347 - Demo page does not work in IE9 (due to page being run in quirks mode) 
+* WOOKIE-346 - DWR 2.0.5 no longer available (Updated to 2.0.10)
+* WOOKIE-341 - Walkthrough widget actions show as 'undefined' in IE 
 
-	* WOOKIE-167 - Gallery icons for bondi camera & geolocation are missing
-	* WOOKIE-322 - Policies API only validates the origin, not the scope or directive
-	* WOOKIE-15  - Companion document links
-	* WOOKIE-149 - Sudoku widget not working correctly
-	
 Improvements
 ============
+* WOOKIE-345 - Refactor model APIs to improve consistency and remove duplication 
+* WOOKIE-344 - Remove deprecated non-localized model methods 
+* WOOKIE-343 - Remove remaining references to deprecated model APIs 
+* WOOKIE-342 - Modify LICENSE and NOTICE files to reflect similar entries as ones found in RAVE distro 
 
-	* WOOKIE-327 - Make widget metadata returned by the REST API more consistent with W3C Widget Config.xml, remove confusing IDs
-	* WOOKIE-263 - Remove deprecated "Services" and related functionality
-	* WOOKIE-320 - Allow GET of Widget to support download of the original .wgt package
-	* WOOKIE-319 - Add DELETE and PUT to /widget API
-	* WOOKIE-318 - Change POST to /widgets to upload, parse and return error messages rather than just drop into /deploy
-	* WOOKIE-324 - POSTing a widget to wookie should return its config.xml metadata
-	* WOOKIE-314 - Filter license headers when concatenating HTML template files
-	* WOOKIE-331 - Move API Keys from the database into a configuration file
-	* WOOKIE-294 - Generalise all templates
-	* WOOKIE-326 - Extend the Java Connector
-	* WOOKIE-317 - Create documentation on how to create/generate wookie release artifacts
-	* WOOKIE-334 - Adding PUT and DELETE to proxify
-	* WOOKIE-330 - Make the Java connector backwards-compatible
-	* WOOKIE-328 - Create "demo widget" capability without requiring rest of the web UI
-    * WOOKIE-19  - Write server admin guide
-    * WOOKIE-321 - Add functional test cases for Policies API
-	* WOOKIE-20	 - Conform to the LC W3C Widget API specification
-	* WOOKIE-333 - Creating IntelliJ code style and code template files
-	
 New Features
 ============
-
-    * WOOKIE-262 - Create non-UI administration client and capabilities
-    * WOOKIE-227 - Implement OpenAjax hub 2.0
+* WOOKIE-66 - Implement getHost() method of Wave feature
 
 Known Issues
 ============	
