@@ -9,16 +9,16 @@ Version 0.11.0
 
 Bugs Fixed
 ==========
-* WOOKIE-347 - Demo page does not work in IE9 (due to page being run in quirks mode) 
-* WOOKIE-346 - DWR 2.0.5 no longer available (Updated to 2.0.10)
-* WOOKIE-341 - Walkthrough widget actions show as 'undefined' in IE 
+	* WOOKIE-347 - Demo page does not work in IE9 (due to page being run in quirks mode) 
+	* WOOKIE-346 - DWR 2.0.5 no longer available (Updated to 2.0.10)
+	* WOOKIE-341 - Walkthrough widget actions show as 'undefined' in IE 
 
 Improvements
 ============
-* WOOKIE-345 - Refactor model APIs to improve consistency and remove duplication 
-* WOOKIE-344 - Remove deprecated non-localized model methods 
-* WOOKIE-343 - Remove remaining references to deprecated model APIs 
-* WOOKIE-342 - Modify LICENSE and NOTICE files to reflect similar entries as ones found in RAVE distro 
+	* WOOKIE-345 - Refactor model APIs to improve consistency and remove duplication 
+	* WOOKIE-344 - Remove deprecated non-localized model methods 
+	* WOOKIE-343 - Remove remaining references to deprecated model APIs 
+	* WOOKIE-342 - Modify LICENSE and NOTICE files to reflect similar entries as ones found in RAVE distro 
 
 New Features
 ============
