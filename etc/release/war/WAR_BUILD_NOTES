@@ -27,8 +27,8 @@ In order to deploy Wookie onto your application server, you must...
 (1) Install a suitable database driver for Wookie on your server (if you haven't already)
 (2) Create a user with the group/rolename as "widgetadmin" on your server installation
 	-  and give this user the credentials username=java password=java
-(3) Create a database called 'widgetDB' in your database
-(4) Create a user 'java' with the password 'java' in your database and give this user suitable 
+(3) Create a database called 'widgetdb' in your database
+(4) Create a user 'java' in your database and give this user suitable 
 	permissions on the above database	
 (5) Run one of the sql scripts found under the scripts folder to create the Wookie database structure
 (6) Create/configure a context.xml file under your server for Wookie
@@ -57,19 +57,35 @@ Running Wookie with Tomcat and MySQL manual configuration
 	For example, add the following line to the file /tomcat-root/conf/tomcat-users.xml:
 
 	<role rolename="widgetadmin"/><user username="java" password="java" roles="widgetadmin"/>
+
+    In this example, we are assuming the password 'java', but we encourage
+	you to choose a more secure password. The password you choose here will 
+	need to be the same as in step (5) and (6).
 	
 (4) Create a database in mysql called 'widgetdb'. 
 
-(5) Create a user in mysql 'java' with the password 'java' and give them suitable permisions 
-	on the widgetDB
+	mysql> CREATE DATABASE IF NOT EXISTS widgetdb;
+
+(5) Create a user in mysql 'java' and give them suitable permisions 
+	on the widgetdb. Give this user the same password as you have chosen
+	in step (3).
+	
+	mysql> CREATE USER 'java'@'localhost' IDENTIFIED BY 'java';
+	mysql> GRANT ALL ON widgetdb.* TO 'java'@'localhost';
 
 (6) Copy the file wookie.xml to your tomcat-root/conf/catalina/servername folder	
 	(for example in tomcat 5.5.* & 6.0.* place this file into /tomcat-root/conf/Catalina/localhost)
+	
+	NOTE: If you have set up a password for the db user 'java' which is not 
+	'java' in step (3) you will have to edit this file to update to the correct 
+	password.
 
 (7) Locate the 'mysql-wookie-schema.sql' file found under 'scripts' and run this to populate the 
-	'widgetDB' database you created
+	'widgetdb' database you created
 	- NOTE: the first time you run this script, you may have to remove the drop foreign key statements 
 	found at the top of the script
+	
+	shell>  mysql widgetdb < mysql5-wookie-schema.sql -p
 	
 	i.e. the statements that look similar to these..
 	
