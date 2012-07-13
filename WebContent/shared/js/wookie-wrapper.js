@@ -225,11 +225,17 @@ var WidgetPreferences = new function WidgetPreferences() {
         //
         var frames = window.frames;
         for (var i=0;i<frames.length;i++){
+          try{
             if(document.createEvent){
                frames[i].dispatchEvent(evt);  
             } else { // IE before v 9
                frames[i].fireEvent("storage", evt);
             }  
+          } catch(err) {
+            if (typeof console != "undefined") { 
+                console.warn("error dispatching storage event to child frame; most likely this is due to same-origin restrictions");
+            }
+          }
         }   
     }
 };
