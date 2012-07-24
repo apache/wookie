@@ -211,6 +211,18 @@
 	
 	<servlet>
 		<description></description>
+		<display-name>Widget Validator</display-name>
+		<servlet-name>ValidatorController</servlet-name>
+		<servlet-class>org.apache.wookie.controller.ValidatorController</servlet-class>
+		<load-on-startup>2</load-on-startup>
+		</servlet>
+	<servlet-mapping>
+		<servlet-name>ValidatorController</servlet-name>
+		<url-pattern>/validate/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<description></description>
 		<display-name>ProxyServlet</display-name>
 		<servlet-name>ProxyServlet</servlet-name>
 		<servlet-class>

@@ -28,6 +28,8 @@ import org.apache.log4j.Logger;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
+import org.apache.wookie.exceptions.ServiceUnavailableException;
+import org.apache.wookie.exceptions.SystemUnavailableException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
 
 /**
@@ -126,7 +128,10 @@ public abstract class Controller extends HttpServlet{
 		} catch (UnauthorizedAccessException e){
 		  _logger.error(e.getMessage(), e);
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-		}
+	    } catch (ServiceUnavailableException e){
+	      _logger.error(e.getMessage(), e);
+	      response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+	    }
 	}
 
 	/* (non-Javadoc)
@@ -174,8 +179,9 @@ public abstract class Controller extends HttpServlet{
 	 * @param request
 	 @return true if the resource was successfully created
 	 * @throws ResourceDuplicationException
+	 * @throws SystemUnavailableException 
 	 */
-	protected boolean create(String resourceId, HttpServletRequest request, HttpServletResponse response) throws ResourceDuplicationException, InvalidParametersException, UnauthorizedAccessException{return false;};
+	protected boolean create(String resourceId, HttpServletRequest request, HttpServletResponse response) throws ResourceDuplicationException, InvalidParametersException, UnauthorizedAccessException, ServiceUnavailableException{return false;};
 	
 	/**
 	 * Delete a resource

@@ -39,25 +39,28 @@ import org.junit.AfterClass;
  *
  */
 public abstract class AbstractControllerTest extends AbstractWookieTest{
-	protected static final int TEST_SERVER_PORT = 8080;
-	protected static final String TEST_SERVER_HOST = "localhost";	
-	protected static final String TEST_SERVER_ORIGIN = "http://" + TEST_SERVER_HOST + ":" + TEST_SERVER_PORT;
-	protected static final String TEST_SERVER_LOCATION = TEST_SERVER_ORIGIN+"/wookie/";
-	
-	protected static final String TEST_POLICIES_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"policies";
-	protected static final String TEST_INSTANCES_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"widgetinstances";
-	protected static final String TEST_PROPERTIES_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"properties";
-	protected static final String TEST_PARTICIPANTS_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"participants";
-	protected static final String TEST_WIDGETS_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"widgets";
-	protected static final String TEST_SERVICES_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"services";
-		
-	protected static final String API_KEY_VALID = "TEST";
-	protected static final String API_KEY_INVALID = "rubbish";
-	protected static final String WIDGET_ID_VALID = "http://www.getwookie.org/widgets/weather";
-	protected static final String WIDGET_ID_INVALID = "http://www.getwookie.org/widgets/nosuchwidget";
-	protected static final String WIDGET_ID_LOCALIZED = "http://www.getwookie.org/widgets/localetest";
-	
-  protected static Collection<String> importedWidgetList = new ArrayList<String>();
+    protected static final int TEST_SERVER_PORT = 8080;
+    protected static final String TEST_SERVER_HOST = "localhost";	
+    protected static final String TEST_SERVER_ORIGIN = "http://" + TEST_SERVER_HOST + ":" + TEST_SERVER_PORT;
+    protected static final String TEST_SERVER_LOCATION = TEST_SERVER_ORIGIN+"/wookie/";
+
+    protected static final String TEST_POLICIES_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"policies";
+    protected static final String TEST_INSTANCES_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"widgetinstances";
+    protected static final String TEST_PROPERTIES_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"properties";
+    protected static final String TEST_PARTICIPANTS_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"participants";
+    protected static final String TEST_WIDGETS_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"widgets";
+    protected static final String TEST_SERVICES_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"services";
+    protected static final String TEST_VALIDATOR_SERVICE_URL_VALID = TEST_SERVER_LOCATION+"validate";
+
+    protected static final String API_KEY_VALID = "TEST";
+    protected static final String API_KEY_INVALID = "rubbish";
+    protected static final String WIDGET_ID_VALID = "http://www.getwookie.org/widgets/weather";
+    protected static final String WIDGET_ID_INVALID = "http://www.getwookie.org/widgets/nosuchwidget";
+    protected static final String WIDGET_ID_LOCALIZED = "http://www.getwookie.org/widgets/localetest";
+
+    protected static Collection<String> importedWidgetList = new ArrayList<String>();
+    
+    protected String TEMPUPLOADFOLDER = System.getProperty("java.io.tmpdir");
 
 	/**
 	 * Set credentials for accessing Wookie admin functions

@@ -1,0 +1,3 @@
+The files found here are all harmless and are only used in unit tests to ensure 
+they are removed and not left over after a widget validation has occurred.
+See src-tests/server/security/MaliciousContentUploadTest
