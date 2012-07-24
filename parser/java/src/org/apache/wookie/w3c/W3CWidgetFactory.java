@@ -312,6 +312,11 @@ public class W3CWidgetFactory {
 			
 		}
 		else{
+		    try {
+                zip.close();
+            } catch (IOException e) {
+                _logger.error("Unable to close wgt file (without manifest):" + e.getMessage());
+            }
 			// no manifest file found in zip archive
 			throw new BadWidgetZipFileException(); //$NON-NLS-1$ 
 		}
