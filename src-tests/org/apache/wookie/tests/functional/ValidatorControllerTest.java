@@ -20,6 +20,10 @@ import static org.junit.Assert.assertFalse;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -27,9 +31,20 @@ import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ValidatorControllerTest extends AbstractControllerTest {
+
+  private static boolean shouldValidate = false;
+
+  @BeforeClass 
+  public static void setup() throws ConfigurationException{
+      File file = new File("src/widgetserver.properties");
+      assertTrue(file.exists());
+      Configuration properties = new PropertiesConfiguration("src/widgetserver.properties");
+      shouldValidate = properties.getBoolean("widget.enable.validator");
+  }  
   
   @AfterClass
   public static void tearDown() throws HttpException, IOException{}
@@ -55,7 +70,11 @@ public class ValidatorControllerTest extends AbstractControllerTest {
 
     client.executeMethod(post);   
     int code = post.getStatusCode();
-    assertEquals(200, code);
+    if(shouldValidate){
+        assertEquals(200, code);
+    }else{
+        assertEquals(503, code);
+    }
     //System.out.println(post.getResponseBodyAsString());
     post.releaseConnection();
     // ensure resources have been removed
@@ -84,7 +103,11 @@ public class ValidatorControllerTest extends AbstractControllerTest {
     client.executeMethod(post);   
     int code = post.getStatusCode();
     // should be 400 - bad wgt package
-    assertEquals(400,code);
+    if(shouldValidate){
+        assertEquals(400, code);
+    }else{
+        assertEquals(503, code);
+    }
     //System.out.println(post.getResponseBodyAsString());
     post.releaseConnection();
     // ensure resources have been removed
@@ -113,7 +136,11 @@ public class ValidatorControllerTest extends AbstractControllerTest {
     client.executeMethod(post);   
     int code = post.getStatusCode();
     // should be 400 - bad wgt package
-    assertEquals(400,code);
+    if(shouldValidate){
+        assertEquals(400, code);
+    }else{
+        assertEquals(503, code);
+    }
     //System.out.println(post.getResponseBodyAsString());
     post.releaseConnection();
     // ensure resources have been removed
@@ -142,7 +169,11 @@ public class ValidatorControllerTest extends AbstractControllerTest {
     client.executeMethod(post);   
     int code = post.getStatusCode();
     // should be 400 - bad wgt package
-    assertEquals(400,code);
+    if(shouldValidate){
+        assertEquals(400, code);
+    }else{
+        assertEquals(503, code);
+    }
     //System.out.println(post.getResponseBodyAsString());
     post.releaseConnection();
     // ensure resources have been removed
