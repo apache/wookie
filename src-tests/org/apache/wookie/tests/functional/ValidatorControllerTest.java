@@ -14,16 +14,13 @@
 package org.apache.wookie.tests.functional;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -36,16 +33,11 @@ import org.junit.Test;
 
 public class ValidatorControllerTest extends AbstractControllerTest {
 
-  private static boolean shouldValidate = false;
-
   @BeforeClass 
   public static void setup() throws ConfigurationException{
-      File file = new File("src/widgetserver.properties");
-      assertTrue(file.exists());
-      Configuration properties = new PropertiesConfiguration("src/widgetserver.properties");
-      shouldValidate = properties.getBoolean("widget.enable.validator");
-  }  
-  
+      initValidatorValue();
+  }
+    
   @AfterClass
   public static void tearDown() throws HttpException, IOException{}
 

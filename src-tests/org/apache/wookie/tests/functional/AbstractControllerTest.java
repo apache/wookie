@@ -14,12 +14,18 @@
 
 package org.apache.wookie.tests.functional;
 
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -66,10 +72,20 @@ public abstract class AbstractControllerTest extends AbstractWookieTest{
 	 * Set credentials for accessing Wookie admin functions
 	 * @param client
 	 */
-	protected static void setAuthenticationCredentials(HttpClient client){
-		Credentials defaultcreds = new UsernamePasswordCredentials("java", "java");
-		client.getState().setCredentials(new AuthScope(TEST_SERVER_HOST, TEST_SERVER_PORT, AuthScope.ANY_REALM), defaultcreds);
-	}
+    protected static void setAuthenticationCredentials(HttpClient client){
+        Credentials defaultcreds = new UsernamePasswordCredentials("java", "java");
+        client.getState().setCredentials(new AuthScope(TEST_SERVER_HOST, TEST_SERVER_PORT, AuthScope.ANY_REALM), defaultcreds);
+    }
+
+    protected static boolean shouldValidate = false;
+
+    public static void initValidatorValue() throws ConfigurationException{
+        File file = new File("src/widgetserver.properties");
+        assertTrue(file.exists());
+        Configuration properties = new PropertiesConfiguration("src/widgetserver.properties");
+        shouldValidate = properties.getBoolean("widget.enable.validator");
+    }  
+
 	
   @AfterClass
   public static void tearDown() throws HttpException, IOException{

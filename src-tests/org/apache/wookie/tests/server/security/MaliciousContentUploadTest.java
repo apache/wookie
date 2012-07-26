@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.ConnectException;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -41,7 +42,7 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
     public static void tearDown() throws HttpException, IOException{}
 
     @Test
-    public void testNoExecutableInUploadFolder() throws HttpException, IOException{
+    public void testNoExecutableInUploadFolder() throws HttpException, IOException, ConnectException{
       HttpClient client = new HttpClient();
       
       PostMethod post = new PostMethod(TEST_VALIDATOR_SERVICE_URL_VALID);
@@ -62,7 +63,11 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
       client.executeMethod(post);   
       int code = post.getStatusCode();
       // should be 400 - bad wgt package
-      assertEquals(400, code);
+      if(shouldValidate){
+          assertEquals(400, code);
+      }else{
+          assertEquals(503, code);
+      }
       //System.out.println(post.getResponseBodyAsString());
       post.releaseConnection();
       // ensure no binary.exe in temp folder
@@ -71,7 +76,7 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
     }
     
     @Test
-    public void testNoJspInUploadFolder() throws HttpException, IOException{
+    public void testNoJspInUploadFolder() throws HttpException, IOException, ConnectException{
       HttpClient client = new HttpClient();
       
       PostMethod post = new PostMethod(TEST_VALIDATOR_SERVICE_URL_VALID);
@@ -92,7 +97,11 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
       client.executeMethod(post);   
       int code = post.getStatusCode();
       // should be 400 - bad wgt package
-      assertEquals(400, code);
+      if(shouldValidate){
+          assertEquals(400, code);
+      }else{
+          assertEquals(503, code);
+      }
       //System.out.println(post.getResponseBodyAsString());
       post.releaseConnection();
       // ensure no jsp.jsp in temp folder
@@ -101,7 +110,7 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
     }
     
     @Test
-    public void testNoBatchFileInUploadFolder() throws HttpException, IOException{
+    public void testNoBatchFileInUploadFolder() throws HttpException, IOException, ConnectException{
       HttpClient client = new HttpClient();
       
       PostMethod post = new PostMethod(TEST_VALIDATOR_SERVICE_URL_VALID);
@@ -122,7 +131,11 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
       client.executeMethod(post);   
       int code = post.getStatusCode();
       // should be 400 - bad wgt package
-      assertEquals(400, code);
+      if(shouldValidate){
+          assertEquals(400, code);
+      }else{
+          assertEquals(503, code);
+      }
       //System.out.println(post.getResponseBodyAsString());
       post.releaseConnection();
       // ensure no script.bat in temp folder
@@ -131,7 +144,7 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
     }
     
     @Test
-    public void testNoScriptFileInUploadFolder() throws HttpException, IOException{
+    public void testNoScriptFileInUploadFolder() throws HttpException, IOException, ConnectException{
       HttpClient client = new HttpClient();
       
       PostMethod post = new PostMethod(TEST_VALIDATOR_SERVICE_URL_VALID);
@@ -152,7 +165,11 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
       client.executeMethod(post);   
       int code = post.getStatusCode();
       // should be 400 - bad wgt package
-      assertEquals(400, code);
+      if(shouldValidate){
+          assertEquals(400, code);
+      }else{
+          assertEquals(503, code);
+      }
       //System.out.println(post.getResponseBodyAsString());
       post.releaseConnection();
       // ensure no script.sh in temp folder
@@ -161,7 +178,7 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
     }
 
     @Test
-    public void testUploadMaliciousWidgetNoManifest() throws HttpException, IOException{
+    public void testUploadMaliciousWidgetNoManifest() throws HttpException, IOException, ConnectException{
       HttpClient client = new HttpClient();
       
       PostMethod post = new PostMethod(TEST_VALIDATOR_SERVICE_URL_VALID);
@@ -182,7 +199,11 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
       client.executeMethod(post);   
       int code = post.getStatusCode();
       // should be 400 - bad wgt package
-      assertEquals(400, code);
+      if(shouldValidate){
+          assertEquals(400, code);
+      }else{
+          assertEquals(503, code);
+      }
       //System.out.println(post.getResponseBodyAsString());
       post.releaseConnection();
       // ensure resources are removed
@@ -191,7 +212,7 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
     }
     
     @Test
-    public void testUploadMaliciousWidgetWithManifest() throws HttpException, IOException{
+    public void testUploadMaliciousWidgetWithManifest() throws HttpException, IOException, ConnectException{
       HttpClient client = new HttpClient();
       
       PostMethod post = new PostMethod(TEST_VALIDATOR_SERVICE_URL_VALID);
@@ -212,7 +233,11 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
       client.executeMethod(post);   
       int code = post.getStatusCode();
       // should be 200
-      assertEquals(200, code);
+      if(shouldValidate){
+          assertEquals(200, code);
+      }else{
+          assertEquals(503, code);
+      }
       //System.out.println(post.getResponseBodyAsString());
       post.releaseConnection();
       // ensure resources are removed
