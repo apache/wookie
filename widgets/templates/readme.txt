@@ -68,8 +68,9 @@ world (what else would the first widget be?)
 
   * cd WOOKIE_HOME/widgets/templates/widgets
   * mkdir helloWorld
-  * create a file called "./widget.properties"
-  * open widget.properties in your favourite editor and add the following:
+  * create a file called "./widget.properties
+  * open widget.properties in your favourite editor and add the
+    following lines (not including bullets):
     * template.name=base
     * widget.shortname=HelloWorld
     * widget.name=Hello World
@@ -85,10 +86,10 @@ need to generate and deploy it:
   * ant generate-all-widgets -Dwidget.include=helloWorld
   * take a look at your new widget in your local instance of Wookie
 
-Note while this example creates the widget in the source tree of
-Wookie you should not develop your widgets here under normal
+***Note:*** while this example creates the widget in the source tree
+of Wookie you should not develop your widgets here under normal
 circumstances. Instead you should define your own directory for
-widgets within your own project directory, see Advanced Topics, below
+widgets within your own project directory, see Advanced Topics, below.
 
 **** What did we just do?
 
