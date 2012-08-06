@@ -23,7 +23,7 @@
 
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
     <link rel="stylesheet" href="style/all.css" />
-
+    
     ${content.scripts}
 			
     <title>${widget.name}</title>		
@@ -31,7 +31,7 @@
 
   <body>
     <div data-role="page" class="type-home" id="home"  data-theme="d" >
-      <div class="header" data-role="header" data-position="fixed">
+      <div id="header" class="header" data-role="header" data-position="fixed">
           ${content.header}
       </div> <!-- /header -->
 
@@ -41,7 +41,7 @@
         </div>  <!-- /content-primary -->
       </div> <!-- /content -->
 
-      <div data-role="footer" class="footer" id="footer" data-position="fixed">
+      <div id="footer" data-role="footer" class="footer" id="footer" data-position="fixed">
 		  ${content.footer}
       </div> <!-- /footer -->
     </div> <!-- /page -->		
