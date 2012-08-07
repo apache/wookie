@@ -64,6 +64,7 @@
     	<replaceregexp match="&lt;\%[^&gt;]*&gt;" flags="g" replace="" >
     		  <fileset dir="${widget.build.dir}/${widget.shortname}" >
 		    <exclude name="images/*"/>
+		    <exclude name="assets/*"/>
 		    <exclude name="lib/*"/>
     		  </fileset>
     	</replaceregexp>
@@ -136,6 +137,7 @@
           <exclude name="scripts/*"/>
           <exclude name="style/*"/>
           <exclude name="images/*"/>
+          <exclude name="assets/*"/>
           <exclude name="lib/*"/>
           <exclude name="legal/*"/>
         </fileset>     
@@ -151,6 +153,7 @@
           <exclude name="scripts/*"/>
           <exclude name="style/*"/>
           <exclude name="images/*"/>
+          <exclude name="assets/*"/>
           <exclude name="lib/*"/>
           <exclude name="legal/*"/>
         </fileset>     
@@ -174,6 +177,23 @@
           <include name="**/*.*"/>
         </fileset>     
       </copy>
+
+      <!-- Copy/Create assets -->
+      <copy todir="${widget.build.dir}/${widget.shortname}/assets"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="../common/assets">
+          <include name="**/*.*"/>
+        </fileset>     
+      </copy>
+      <copy todir="${widget.build.dir}/${widget.shortname}/assets"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="./assets">
+          <include name="**/*.*"/>
+        </fileset>     
+      </copy>
+
 
       <!-- Copy/Create the javascript -->
       <copy todir="${widget.build.dir}/${widget.shortname}/scripts"
@@ -345,6 +365,7 @@
           <exclude name="scripts/*"/>
           <exclude name="style/*"/>
           <exclude name="images/*"/>
+          <exclude name="assets/*"/>
           <exclude name="lib/*"/>
           <exclude name="legal/*"/>
         </fileset>     
@@ -358,6 +379,15 @@
             overwrite="true"
             failonerror="false">
         <fileset dir="${template.dir}/${template.name}/images">
+          <include name="**/*.*"/>
+        </fileset>     
+      </copy>
+
+      <!-- Copy/Create assets -->
+      <copy todir="${widget.build.dir}/${widget.shortname}/assets"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="${template.dir}/${template.name}/assets">
           <include name="**/*.*"/>
         </fileset>     
       </copy>
