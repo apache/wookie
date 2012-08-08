@@ -152,7 +152,7 @@
     <echo message="|  Generating from parent templates for ${template.name}"/>
     <echo message="+------------------------------------------"/>
 
-    <ant antfile="../build.xml"
+    <ant antfile="${wookie.template.dir}/build.xml"
 	 target="_generate_widget">
       <property name="template.name" value="twoColumn"/>
       <property name="copyWidgetFiles" value="false"/>
