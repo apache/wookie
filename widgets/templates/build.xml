@@ -25,6 +25,7 @@
     <import file="${wookie.root.dir}/widgets/build.xml"/>
 	
     <target name="build-widget">
+      <delete file="${widget.build.dir}/${widget.shortname}.wgt"/>
       <zip destfile="${widget.build.dir}/${widget.shortname}.wgt"
            basedir="${widget.build.dir}/${widget.shortname}"
            />
@@ -54,6 +55,8 @@
 	  <exclude name="common"/>
         </dirset>
       </subant>
+
+      <delete dir="${widget.build.dir}/${widget.shortname}.tmp"/>
     </target>
 	
 	<target name="_remove_comments">
@@ -101,24 +104,66 @@
       <echo message="|  Template: ${template.name}"/>
       <echo message="+------------------------------------------"/>
     	
+      <!-- Initialise template -->
       <ant antfile="${template.dir}/${template.name}/template_build.xml" 
       	target="_init_template"/>
 
+      <!-- Initialise build parent template files -->
       <ant antfile="${template.dir}/${template.name}/template_build.xml" 
            target="_generate_from_parent_templates"/>
 
+      <!-- Build template files -->
       <antcall target="_process_template" inheritAll="false">
-        <propertyset id="properties-starting-with-foo">
+        <propertyset>
           <propertyref prefix="wookie"/>
           <propertyref prefix="template."/>
           <propertyref prefix="widget."/>
           <propertyref prefix="${widget.shortname}"/>
         </propertyset>
       </antcall>
-        <antcall target="_remove_comments"/>
 
+      <!-- copy widget files -->
       <antcall target="_copy_widget_files"/>
-        <antcall target="_remove_comments"/>
+
+      <!-- token replacement -->
+      <property file="${widget.build.dir}/${widget.shortname}.properties"/>
+      <property file="${template.dir}/default.widget.properties"/>
+      <copy todir="${widget.build.dir}/${widget.shortname}"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="${widget.build.dir}/${widget.shortname}.tmp">
+          <exclude name="widget.properties"/>
+          <exclude name="scripts/**"/>
+          <exclude name="style/**"/>
+          <exclude name="images/**"/>
+          <exclude name="assets/**"/>
+          <exclude name="lib/**"/>
+          <exclude name="legal/**"/>
+        </fileset>     
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+      </copy>
+
+      <copy todir="${widget.build.dir}/${widget.shortname}/scripts"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="${widget.build.dir}/${widget.shortname}.tmp/scripts"/>
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+      </copy>
+
+      <copy todir="${widget.build.dir}/${widget.shortname}/style"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="${widget.build.dir}/${widget.shortname}.tmp/style"/>
+        <filterchain>
+          <expandproperties/>
+        </filterchain>  
+      </copy>
+
+      <antcall target="_remove_comments"/>
     </target>
 
     <target name="_copy_widget_files"
@@ -128,41 +173,43 @@
       <echo message="+------------------------------------------"/>
 
       <!-- Copy/Create root files -->
-
-      <copy todir="${widget.build.dir}/${widget.shortname}"
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying common root files"  />
+      <echo message="+------------------------------------------"/>
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp"
             overwrite="true"
             failonerror="false">
         <fileset dir="../common">
           <exclude name="widget.properties"/>
-          <exclude name="scripts/*"/>
-          <exclude name="style/*"/>
-          <exclude name="images/*"/>
-          <exclude name="assets/*"/>
-          <exclude name="lib/*"/>
-          <exclude name="legal/*"/>
+          <exclude name="scripts/**"/>
+          <exclude name="style/**"/>
+          <exclude name="images/**"/>
+          <exclude name="assets/**"/>
+          <exclude name="lib/**"/>
+          <exclude name="legal/**"/>
         </fileset>     
-        <filterchain>
-          <expandproperties/>
-        </filterchain>
       </copy>
-      <copy todir="${widget.build.dir}/${widget.shortname}"
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying widget provided root files"  />
+      <echo message="+------------------------------------------"/>
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp"
             overwrite="true"
             failonerror="false">
         <fileset dir=".">
           <exclude name="widget.properties"/>
-          <exclude name="scripts/*"/>
-          <exclude name="style/*"/>
-          <exclude name="images/*"/>
-          <exclude name="assets/*"/>
-          <exclude name="lib/*"/>
-          <exclude name="legal/*"/>
+          <exclude name="scripts/**"/>
+          <exclude name="style/**"/>
+          <exclude name="images/**"/>
+          <exclude name="assets/**"/>
+          <exclude name="lib/**"/>
+          <exclude name="legal/**"/>
         </fileset>     
-        <filterchain>
-          <expandproperties/>
-        </filterchain>
       </copy>
 
       <!-- Copy/Create images -->
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying images"  />
+      <echo message="+------------------------------------------"/>
       <copy todir="${widget.build.dir}/${widget.shortname}/images"
             overwrite="true"
             failonerror="false">
@@ -178,7 +225,9 @@
         </fileset>     
       </copy>
 
-      <!-- Copy/Create assets -->
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying widget assets"  />
+      <echo message="+------------------------------------------"/>
       <copy todir="${widget.build.dir}/${widget.shortname}/assets"
             overwrite="true"
             failonerror="false">
@@ -196,34 +245,31 @@
 
 
       <!-- Copy/Create the javascript -->
-      <copy todir="${widget.build.dir}/${widget.shortname}/scripts"
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying widget javascript"  />
+      <echo message="+------------------------------------------"/>
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp/scripts"
             overwrite="true"
             failonerror="false">
         <fileset dir="../common/scripts">
           <exclude name="**/*_controller.js"/>
         </fileset>     
-        <filterchain>
-          <expandproperties/>
-        </filterchain>
       </copy>
-      <copy todir="${widget.build.dir}/${widget.shortname}/scripts"
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp/scripts"
             overwrite="true"
             failonerror="false">
         <fileset dir="./scripts">
           <exclude name="**/*_controller.js"/>
         </fileset>     
-        <filterchain>
-          <expandproperties/>
-        </filterchain>
       </copy>
 
-      <concat destfile="${widget.build.dir}/${widget.shortname}/scripts/controller.js.new"
+      <concat destfile="${widget.build.dir}/${widget.shortname}.tmp/scripts/controller.js.new"
 	      fixlastline="true">
-        <fileset dir="${widget.build.dir}/${widget.shortname}/scripts"
+        <fileset dir="${widget.build.dir}/${widget.shortname}.tmp/scripts"
                  erroronmissingdir="false">
           <include name="controller.js"/>
         </fileset>
-        <fileset dir="${widget.build.dir}/${widget.shortname}/scripts"
+        <fileset dir="${widget.build.dir}/${widget.shortname}.tmp/scripts"
                  erroronmissingdir="false">
           <include name="**/*_controller.js"/>
         </fileset>
@@ -235,62 +281,52 @@
                  erroronmissingdir="false">
           <include name="**/*_controller.js"/>
         </fileset>
-
-        <filterchain>
-          <expandproperties/>
-        </filterchain>
       </concat>
-      <move tofile="${widget.build.dir}/${widget.shortname}/scripts/controller.js" 
-            file="${widget.build.dir}/${widget.shortname}/scripts/controller.js.new"
+      <move tofile="${widget.build.dir}/${widget.shortname}.tmp/scripts/controller.js" 
+            file="${widget.build.dir}/${widget.shortname}.tmp/scripts/controller.js.new"
             failonerror="false"/>
 
 
       <!-- Copy/Create the stylesheets -->
-      <copy todir="${widget.build.dir}/${widget.shortname}/style"
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying widget CSS"  />
+      <echo message="+------------------------------------------"/>
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp/style"
             overwrite="true"
             failonerror="false">
         <fileset dir="../common/style">
           <include name="**/*.css"/>
           <include name="**/*.css.add"/>
-	</fileset>  
-
-        <filterchain>
-          <expandproperties/>
-        </filterchain>  
+	</fileset>    
       </copy>
-      <copy todir="${widget.build.dir}/${widget.shortname}/style"
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp/style"
             overwrite="true"
             failonerror="false">
         <fileset dir="./style">
           <include name="**/*.css"/>
           <include name="**/*.css.add"/>
-        </fileset>    
-
-        <filterchain>
-          <expandproperties/>
-        </filterchain> 
+        </fileset>   
       </copy>
 
-      <concat destfile="${widget.build.dir}/${widget.shortname}/style/all.css.new"
+      <concat destfile="${widget.build.dir}/${widget.shortname}.tmp/style/all.css.new"
       		  fixlastline="true">
-        <fileset dir="${widget.build.dir}/${widget.shortname}/style"
+        <fileset dir="${widget.build.dir}/${widget.shortname}.tmp/style"
                  erroronmissingdir="false">
           <include name="all.css"/>
         </fileset>
-        <fileset dir="${widget.build.dir}/${widget.shortname}/style"
+        <fileset dir="${widget.build.dir}/${widget.shortname}.tmp/style"
                  erroronmissingdir="false">
           <include name="*.css.add"/>
         </fileset>
-
-        <filterchain>
-          <expandproperties/>
-        </filterchain>
       </concat>
-      <move tofile="${widget.build.dir}/${widget.shortname}/style/all.css" 
-            file="${widget.build.dir}/${widget.shortname}/style/all.css.new"
+      <move tofile="${widget.build.dir}/${widget.shortname}.tmp/style/all.css" 
+            file="${widget.build.dir}/${widget.shortname}.tmp/style/all.css.new"
             failonerror="false"/>
       
       <!-- Copy/Create the libraries -->
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying widget libraries"  />
+      <echo message="+------------------------------------------"/>
       <copy todir="${widget.build.dir}/${widget.shortname}/lib"
             overwrite="true"
             failonerror="false">
@@ -307,6 +343,9 @@
       </copy>
 
       <!-- Copy/Create the legal -->
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying widget legal"  />
+      <echo message="+------------------------------------------"/>
       <copy todir="${widget.build.dir}/${widget.shortname}/legal"
             overwrite="true"
             failonerror="false">
@@ -357,7 +396,7 @@
       </copy>
 
       <!-- Copy/Create root files -->
-      <copy todir="${widget.build.dir}/${widget.shortname}"
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp"
             overwrite="true"
             failonerror="false">
         <fileset dir="${template.dir}/${template.name}">
@@ -369,9 +408,6 @@
           <exclude name="lib/*"/>
           <exclude name="legal/*"/>
         </fileset>     
-        <filterchain>
-          <expandproperties/>
-        </filterchain>
       </copy>
 
       <!-- Copy/Create images -->
@@ -393,19 +429,16 @@
       </copy>
 
       <!-- Copy/Create the javascript -->
-      <copy todir="${widget.build.dir}/${widget.shortname}/scripts"
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp/scripts"
             overwrite="true"
             failonerror="false">
         <fileset dir="${template.dir}/${template.name}/scripts">
           <include name="**/*.js"/>
           <exclude name="**/*_controller.js"/>
         </fileset>     
-        <filterchain>
-          <expandproperties/>
-        </filterchain>
       </copy>
 
-      <concat destfile="${widget.build.dir}/${widget.shortname}/scripts/controller.js.new">
+      <concat destfile="${widget.build.dir}/${widget.shortname}.tmp/scripts/controller.js.new">
         <fileset dir="${template.dir}/${template.name}/scripts"
                  erroronmissingdir="false">
           <include name="**/*_controller.js"/>
@@ -419,27 +452,20 @@
            *  Javascript from template: ${template.name}
            */ 
         </header>
-        <filterchain>
-          <expandproperties/>
-        </filterchain>
       </concat>
-      <move tofile="${widget.build.dir}/${widget.shortname}/scripts/controller.js" 
-            file="${widget.build.dir}/${widget.shortname}/scripts/controller.js.new"
+      <move tofile="${widget.build.dir}/${widget.shortname}.tmp/scripts/controller.js" 
+            file="${widget.build.dir}/${widget.shortname}.tmp/scripts/controller.js.new"
             failonerror="false"/>
 
       <!-- Copy/Create the stylesheets -->
-      <copy todir="${widget.build.dir}/${widget.shortname}/style"
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp/style"
             overwrite="true"
             failonerror="false">
         <fileset dir="${template.dir}/${template.name}/style">
           <include name="**/*.css"/>
         </fileset>     
-
-        <filterchain>
-          <expandproperties/>
-        </filterchain>
       </copy>
-      <concat destfile="${widget.build.dir}/${widget.shortname}/style/all.css.new">
+      <concat destfile="${widget.build.dir}/${widget.shortname}.tmp/style/all.css.new">
         <fileset dir="${template.dir}/${template.name}/style"
                  erroronmissingdir="false">
           <include name="*.css.add"/>
@@ -448,13 +474,9 @@
                  erroronmissingdir="false">
           <include name="all.css"/>
         </fileset>
-
-        <filterchain>
-          <expandproperties/>
-        </filterchain>
       </concat>
-      <move tofile="${widget.build.dir}/${widget.shortname}/style/all.css" 
-            file="${widget.build.dir}/${widget.shortname}/style/all.css.new"
+      <move tofile="${widget.build.dir}/${widget.shortname}.tmp/style/all.css" 
+            file="${widget.build.dir}/${widget.shortname}.tmp/style/all.css.new"
             failonerror="false"/>
       
       <!-- Copy/Create the libraries -->
@@ -495,7 +517,7 @@
 
       <mkdir dir="${widget.build.dir}"/>
 
-      <!-- Copy/Clean up old widget -->
+      <!-- Clean up old widget files -->
       <delete dir="${widget.build.dir}/${widget.shortname}"/>
     </target>
 
