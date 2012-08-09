@@ -24,32 +24,12 @@
  */ 
 var ${widget.shortname}_scanning_controller = {
     scanning: true, // indicates if we are currently scanning
-    delay: 1000, // time in milliseconds between focus change
+    delay: ${scanning.delay}, // time in milliseconds between focus change
     interval: null, // The interval object controlling the scan
     scanElements: null, // The elements to scan over
     currentElementIdx: 0, // The index of the currently scanning element
 
     init:function() {
-	$('#button1').click(function() {
-	    alert("Button 1 clicked");
-	});
-	$('#button2').click(function() {
-	    alert("Button 2 clicked");
-	});
-	$('#button3').click(function() {
-	    alert("Button 3 clicked");
-	});
-	$('#button4').click(function() {
-	    alert("Button 4 clicked");
-	});
-	$('#button5').click(function() {
-	    alert("Button 5 clicked");
-	});
-	$('#button6').click(function() {
-	    alert("Button 6 clicked");
-	});
-
-	${widget.shortname}_scanning_controller.scanElements = $('.scan');
 	${widget.shortname}_scanning_controller.startScanning();
     },
 
