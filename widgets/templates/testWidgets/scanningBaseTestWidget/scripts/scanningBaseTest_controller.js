@@ -43,7 +43,7 @@ var ${widget.shortname}_scanningBaseTest_controller = {
 	    alert("Button 6 clicked");
 	});
 
-	${widget.shortname}_scanning_controller.scanElements = $('.scan');
+	${widget.shortname}_scanning_controller.scanElements = $('[data-scanOrder]');
     },
 };
 
