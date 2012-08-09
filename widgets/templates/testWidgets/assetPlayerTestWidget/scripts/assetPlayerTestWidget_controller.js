@@ -3,10 +3,10 @@ var ${widget.shortname}_images_controller = {
 	// FIXME: album should be created by reading a directory
 	var assets = [];
 	assets[0] = {
-	    "src":"images/Places/Scottish Highlands.bmp"
+	    "src":"images/032.jpg"
 	};
 	assets[1] = {
-	    "src":"images/Places/Tower Bridge.bmp"
+	    "src":"images/042.jpg"
 	};
 	${widget.shortname}_asset_controller.setCollection(assets);
 	${widget.shortname}_scanning_controller.scanElements = $('[data-scanOrder]');
