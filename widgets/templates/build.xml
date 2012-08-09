@@ -149,7 +149,9 @@
       <copy todir="${widget.build.dir}/${widget.shortname}/scripts"
             overwrite="true"
             failonerror="false">
-        <fileset dir="${widget.build.dir}/${widget.shortname}.tmp/scripts"/>
+        <fileset dir="${widget.build.dir}/${widget.shortname}.tmp/scripts">
+	  <exclude name="**/*_controller.js"/>
+	</fileset>
         <filterchain>
           <expandproperties/>
         </filterchain>
@@ -435,7 +437,6 @@
             failonerror="false">
         <fileset dir="${template.dir}/${template.name}/scripts">
           <include name="**/*.js"/>
-          <exclude name="**/*_controller.js"/>
         </fileset>     
       </copy>
 
