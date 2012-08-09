@@ -440,25 +440,6 @@
         </fileset>     
       </copy>
 
-      <concat destfile="${widget.build.dir}/${widget.shortname}.tmp/scripts/controller.js.new">
-        <fileset dir="${template.dir}/${template.name}/scripts"
-                 erroronmissingdir="false">
-          <include name="**/*_controller.js"/>
-        </fileset>
-        <fileset dir="${widget.build.dir}/${widget.shortname}/scripts"
-                 erroronmissingdir="false">
-          <include name="controller.js"/>
-        </fileset>
-        <header filtering="yes" trimleading="yes">
-          /*
-           *  Javascript from template: ${template.name}
-           */ 
-        </header>
-      </concat>
-      <move tofile="${widget.build.dir}/${widget.shortname}.tmp/scripts/controller.js" 
-            file="${widget.build.dir}/${widget.shortname}.tmp/scripts/controller.js.new"
-            failonerror="false"/>
-
       <!-- Copy/Create the stylesheets -->
       <copy todir="${widget.build.dir}/${widget.shortname}.tmp/style"
             overwrite="true"
@@ -467,20 +448,7 @@
           <include name="**/*.css"/>
         </fileset>     
       </copy>
-      <concat destfile="${widget.build.dir}/${widget.shortname}.tmp/style/all.css.new">
-        <fileset dir="${template.dir}/${template.name}/style"
-                 erroronmissingdir="false">
-          <include name="*.css.add"/>
-        </fileset>
-        <fileset dir="${widget.build.dir}/${widget.shortname}/style"
-                 erroronmissingdir="false">
-          <include name="all.css"/>
-        </fileset>
-      </concat>
-      <move tofile="${widget.build.dir}/${widget.shortname}.tmp/style/all.css" 
-            file="${widget.build.dir}/${widget.shortname}.tmp/style/all.css.new"
-            failonerror="false"/>
-      
+
       <!-- Copy/Create the libraries -->
       <copy todir="${widget.build.dir}/${widget.shortname}/lib"
             overwrite="true"
