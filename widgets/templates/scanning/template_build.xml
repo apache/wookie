@@ -128,8 +128,7 @@
 
   <target name="_generate_from_parent_templates">
     <echo message="+------------------------------------------"/>
-    <echo message="|  There are no parent templates for ${template.name}"/>
-    <!-- <echo message="|  Generating from parent templates for ${template.name}"/>  -->
+    <echo message="|  Generating from parent templates for ${template.name}"/>
     <echo message="+------------------------------------------"/>
 
     <ant antfile="${wookie.template.dir}/build.xml"
