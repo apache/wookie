@@ -34,3 +34,4 @@ setting the following variables in ${widget.shortname}_scanning_controller:
 
 These can also be set in the widget.properties file using:
 
+    scanning.delay=1500
