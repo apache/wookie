@@ -45,8 +45,6 @@
       <echo message="|  in: ${basedir}                          |"/>
       <echo message="|                                          |"/>
       <echo message="+------------------------------------------+"/>
-
-
  
       <subant target="_generate_and_deploy_widget"
               genericantfile="${basedir}/build.xml"
@@ -60,19 +58,19 @@
       <delete dir="${widget.build.dir}/${widget.shortname}.tmp"/>
     </target>
 	
-	<target name="_remove_comments">
-	      <echo message="+------------------------------------------"/>
-	      <echo message="|  Removing comments from files:           |"/>
-	      <echo message="|  in: ${widget.build.dir}/${widget.shortname}"  />
-	      <echo message="+------------------------------------------"/>
-    	<replaceregexp match="&lt;\%[^&gt;]*&gt;" flags="g" replace="" >
-    		  <fileset dir="${widget.build.dir}/${widget.shortname}" >
-		    <exclude name="images/*"/>
-		    <exclude name="assets/*"/>
-		    <exclude name="lib/*"/>
-    		  </fileset>
-    	</replaceregexp>
-	</target>
+    <target name="_remove_comments">
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Removing comments from files:           |"/>
+      <echo message="|  in: ${widget.build.dir}/${widget.shortname}"  />
+      <echo message="+------------------------------------------"/>
+      <replaceregexp match="&lt;\%[^&gt;]*&gt;" flags="g" replace="" >
+	<fileset dir="${widget.build.dir}/${widget.shortname}" >
+	  <exclude name="images/*"/>
+	  <exclude name="assets/*"/>
+	  <exclude name="lib/*"/>
+	</fileset>
+      </replaceregexp>
+    </target>
 
     <target name="generate-test-widgets"
             description="Generate a single test widget from the template">
@@ -80,7 +78,9 @@
       <property name="widget.include" value="*TestWidget"/>
 
       <!-- This target is intended to be used to test any changes to the 
-      template before all widgets are regenerated -->
+      template before all widgets are regenerated. At this point we need
+      to manually veriify that the widgets are built and behave as expected.
+      FIXME: it would be really nice to have some autoated tests here. -->
       <echo message="+------------------------------------------+"/>
       <echo message="|                                          |"/>
       <echo message="|  Generating test widgets                 |"/>
@@ -299,6 +299,8 @@
             failonerror="false">
         <fileset dir="../common/style">
           <include name="**/*.css"/>
+          <include name="**/*.add.css"/>
+	  <!-- deprecated: don't use .css.add extensions -->
           <include name="**/*.css.add"/>
 	</fileset>    
       </copy>
@@ -307,7 +309,10 @@
             failonerror="false">
         <fileset dir="./style">
           <include name="**/*.css"/>
+          <include name="**/*.add.css"/>
+	  <!-- deprecated: don't use .css.add extensions -->
           <include name="**/*.css.add"/>
+
         </fileset>   
       </copy>
 
@@ -319,7 +324,9 @@
         </fileset>
         <fileset dir="${widget.build.dir}/${widget.shortname}.tmp/style"
                  erroronmissingdir="false">
-          <include name="*.css.add"/>
+          <include name="*.add.css"/>
+	  <!-- deprecated: don't use .css.add extensions -->
+          <include name="**/*.css.add"/>
         </fileset>
       </concat>
       <move tofile="${widget.build.dir}/${widget.shortname}.tmp/style/all.css" 
@@ -444,9 +451,7 @@
       <copy todir="${widget.build.dir}/${widget.shortname}.tmp/style"
             overwrite="true"
             failonerror="false">
-        <fileset dir="${template.dir}/${template.name}/style">
-          <include name="**/*.css"/>
-        </fileset>     
+        <fileset dir="${template.dir}/${template.name}/style"/>
       </copy>
 
       <!-- Copy/Create the libraries -->

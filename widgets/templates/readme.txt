@@ -150,7 +150,7 @@ styling to the Hello World widget.
 Starting in your widget definition directory:
 
   * mkdir style
-  * create file "style/helloworld.css.add"
+  * create file "style/helloworld.add.css"
   * add the following to your css file
     * .content-primary { background: yellow; }  
   * cd ..
@@ -453,7 +453,7 @@ widgets just like any other resources. In addition templates can add
 to or modify CSS rules defined in parent templates.
 
 To create additive CSS simply add files with names in the form of
-"foo.css.add". The contents of these files will be added to the start
+"foo.add.css". The contents of these files will be added to the start
 of a final CSS file called "all.css". 
 
 The base template provides a link to the "all.css" in its "index.html" file. Therefore, if your template
