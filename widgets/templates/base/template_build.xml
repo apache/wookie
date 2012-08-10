@@ -114,6 +114,9 @@
           <expandproperties/>
         </filterchain>
     </loadfile>
+
+    <!-- load properties we've set in other templates -->
+    <property file="${widget.build.dir}/${widget.shortname}.properties"/>
 	
     <echoproperties destfile="${widget.build.dir}/${widget.shortname}.properties" prefix=""/>
   </target>
