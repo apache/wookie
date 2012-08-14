@@ -27,6 +27,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
+import org.apache.wookie.w3c.exceptions.InsecuredWidgetContentException;
 import org.apache.wookie.w3c.exceptions.InvalidContentTypeException;
 import org.apache.wookie.w3c.exceptions.InvalidStartFileException;
 import org.apache.wookie.w3c.impl.WidgetManifestModel;
@@ -72,7 +73,9 @@ public class W3CWidgetFactory {
 	private File unzippedWidgetDirectory;
 	private File outputDirectory;
 	private IStartPageProcessor startPageProcessor;
-	private String[] locales;
+	private IDigitalSignatureProcessor digitalSignatureParser;
+
+  private String[] locales;
 	private String localPath;
 	private String[] features;
 	private String[] encodings;
@@ -121,6 +124,10 @@ public class W3CWidgetFactory {
 	public void setStartPageProcessor(final IStartPageProcessor startPageProcessor) {
 		this.startPageProcessor = startPageProcessor;
 	}
+	
+    public void setDigitalSignatureParser(IDigitalSignatureProcessor digitalSignatureParser) {
+        this.digitalSignatureParser = digitalSignatureParser;
+    }
 
 	/**
 	 * Set the supported locales to be used when parsing widgets
@@ -256,7 +263,8 @@ public class W3CWidgetFactory {
 	 * @throws BadWidgetZipFileException
 	 * @throws BadManifestException
 	 */
-	private W3CWidget processWidgetPackage(File zipFile, String defaultIdentifier) throws BadWidgetZipFileException, BadManifestException{
+	private W3CWidget processWidgetPackage(File zipFile, String defaultIdentifier) throws BadWidgetZipFileException,
+			BadManifestException, InsecuredWidgetContentException {
 	  ZipFile zip;
 		try {
 			zip = new ZipFile(zipFile);
@@ -273,8 +281,13 @@ public class W3CWidgetFactory {
 				// create the folder structure to unzip the zip into
 				unzippedWidgetDirectory = WidgetPackageUtils.createUnpackedWidgetFolder(outputDirectory, manifestIdentifier);
 				// now unzip it into that folder
-				WidgetPackageUtils.unpackZip(zip, unzippedWidgetDirectory);	
-				
+        WidgetPackageUtils.unpackZip(zip, unzippedWidgetDirectory);
+        // checks for validity of widget using digital signatures
+        if (digitalSignatureParser != null) {
+          digitalSignatureParser
+              .processDigitalSignatures(unzippedWidgetDirectory
+                  .getAbsolutePath());
+        }
 				// Iterate over all start files and update paths
 				for (IContent content: widgetModel.getContentList()){
 					// now update the js links in the start page
@@ -283,7 +296,7 @@ public class W3CWidgetFactory {
 					content.setSrc(relativestartUrl);
 					if(startFile.exists() && startPageProcessor != null){		
 						startPageProcessor.processStartFile(startFile, widgetModel, content);
-					}	
+					}
 				}
 				if (widgetModel.getContentList().isEmpty()){
 					throw new InvalidStartFileException("Widget has no start page");
@@ -292,11 +305,14 @@ public class W3CWidgetFactory {
 				// get the path to the root of the unzipped folder
 				String thelocalPath = WidgetPackageUtils.getURLForWidget(localPath, manifestIdentifier, "");
 				// now pass this to the model which will prepend the path to local resources (not web icons)
-				widgetModel.updateIconPaths(thelocalPath);				
+				widgetModel.updateIconPaths(thelocalPath);
 				
 				// check to see if this widget already exists in the DB - using the ID (guid) key from the manifest
 				return widgetModel;
-			} catch (InvalidStartFileException e) {
+
+			}catch(InsecuredWidgetContentException ex){
+				throw ex;
+			}catch (InvalidStartFileException e) {
 				throw e;
 			} catch (BadManifestException e) {
 				throw e;

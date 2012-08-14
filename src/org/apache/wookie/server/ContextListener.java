@@ -16,6 +16,8 @@ package org.apache.wookie.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyStore;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -23,27 +25,28 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.Features;
-import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.helpers.WidgetFactory;
+import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.util.NewWidgetBroadcaster;
 import org.apache.wookie.util.WgtWatcher;
 import org.apache.wookie.util.WidgetFileUtils;
 import org.apache.wookie.util.WidgetJavascriptSyntaxAnalyzer;
+import org.apache.wookie.util.digitalsignature.DigitalSignatureProcessor;
 import org.apache.wookie.util.html.StartPageProcessor;
+import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
-import org.apache.wookie.w3c.W3CWidget;
 
 /**
  * ContextListener - does some init work and makes certain things are available 
@@ -68,7 +71,7 @@ public class ContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent event) {
 		try {
 			ServletContext context = event.getServletContext();
-			WidgetRuntimeHelper.setWebContextPath(context.getContextPath());			
+			WidgetRuntimeHelper.setWebContextPath(context.getContextPath());
 			/* 
 			 *  load the widgetserver.properties and local.widget.properties file
 			 *  and put it into this context as an attribute 'properties' available to all resources
@@ -157,7 +160,7 @@ public class ContextListener implements ServletContextListener {
 	 * @param context the current servlet context
 	 * @param configuration the configuration properties
 	 */
-	private void startWatcher(ServletContext context, final Configuration configuration, final Messages localizedMessages){
+	private void startWatcher(final ServletContext context, final Configuration configuration, final Messages localizedMessages){
 	 	/*
 	 	 * Start watching for widget deployment
 	 	 */
@@ -167,6 +170,14 @@ public class ContextListener implements ServletContextListener {
 		final String localWidgetFolderPath = configuration.getString("widget.widgetfolder");
 		final String[] locales = configuration.getStringArray("widget.locales");
 		final String contextPath = context.getContextPath();
+		// Digital signature settings
+	    final boolean VERIFYSIGNATURE = configuration.getBoolean("widget.deployment.verifysignature");//$NON-NLS-1$
+		final boolean REJECTINVALID= configuration.getBoolean("widget.deployment.rejectinvalidsignatures");
+		final boolean REJECTUNTRUSTED= configuration.getBoolean("widget.deployment.rejectuntrustedsignatures");
+		final String PASSWORD = configuration.getString("widget.deployment.trustedkeystore.password");
+	    final String KEYSTORE = configuration.getString("widget.deployment.trustedkeystore");//$NON-NLS-1$
+
+
 		Thread thr = new Thread(){
 	 		public void run() {
 	 			int interval = 5000;
@@ -185,6 +196,16 @@ public class ContextListener implements ServletContextListener {
 	 						fac.setOutputDirectory(WIDGETFOLDER);
 	 						fac.setFeatures(Features.getFeatureNames());
 	 						fac.setStartPageProcessor(new StartPageProcessor());
+              if (VERIFYSIGNATURE) {
+                InputStream stream = context
+                    .getResourceAsStream("/WEB-INF/classes/" + KEYSTORE);
+                KeyStore keyStore = KeyStore.getInstance("JKS");
+                keyStore.load(stream, PASSWORD.toCharArray());
+                stream.close();
+                fac.setDigitalSignatureParser(new DigitalSignatureProcessor(
+                    keyStore, REJECTINVALID, REJECTUNTRUSTED));
+              }
+
 	 						W3CWidget model = fac.parse(upload);
 	 						WidgetJavascriptSyntaxAnalyzer jsa = new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());
 	 						if(persistenceManager.findWidgetByGuid(model.getIdentifier()) == null) {

@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.KeyStore;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +43,7 @@ import org.apache.wookie.server.LocaleHandler;
 import org.apache.wookie.util.NewWidgetBroadcaster;
 import org.apache.wookie.util.WidgetFileUtils;
 import org.apache.wookie.util.WidgetJavascriptSyntaxAnalyzer;
+import org.apache.wookie.util.digitalsignature.DigitalSignatureProcessor;
 import org.apache.wookie.util.gadgets.GadgetUtils;
 import org.apache.wookie.util.html.StartPageProcessor;
 import org.apache.wookie.w3c.W3CWidget;
@@ -225,7 +227,12 @@ public class WidgetsController extends Controller{
     Configuration properties = (Configuration) getServletContext().getAttribute("properties"); //$NON-NLS-1$
     final String WIDGETFOLDER = getServletContext().getRealPath(properties.getString("widget.widgetfolder"));//$NON-NLS-1$
     final String UPLOADFOLDER = getServletContext().getRealPath(properties.getString("widget.useruploadfolder"));//$NON-NLS-1$
-
+	// Digital signature settings
+    final boolean VERIFYSIGNATURE = properties.getBoolean("widget.deployment.verifysignature");//$NON-NLS-1$
+    final boolean REJECTINVALID= properties.getBoolean("widget.deployment.rejectinvalidsignatures");
+    final boolean REJECTUNTRUSTED= properties.getBoolean("widget.deployment.rejectuntrustedsignatures");
+    final String PASSWORD = properties.getString("widget.deployment.trustedkeystore.password");
+    final String KEYSTORE = properties.getString("widget.deployment.trustedkeystore");//$NON-NLS-1$
     //
     // Get localized messages so we can return errors
     //
@@ -260,7 +267,16 @@ public class WidgetsController extends Controller{
         fac.setOutputDirectory(WIDGETFOLDER);
         fac.setFeatures(Features.getFeatureNames());
         fac.setStartPageProcessor(new StartPageProcessor());
-        W3CWidget widgetModel = fac.parse(zipFile);
+        if (VERIFYSIGNATURE) {
+        InputStream stream = getServletContext().getResourceAsStream(
+            "/WEB-INF/classes/" + KEYSTORE);
+        KeyStore keyStore = KeyStore.getInstance("JKS");
+        keyStore.load(stream, PASSWORD.toCharArray());
+        stream.close();
+        fac.setDigitalSignatureParser(new DigitalSignatureProcessor(keyStore,
+            REJECTINVALID, REJECTUNTRUSTED));
+      }
+       W3CWidget widgetModel = fac.parse(zipFile);
         new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());
        // File f = new File();
         //
