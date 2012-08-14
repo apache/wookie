@@ -34,6 +34,7 @@ import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.Features;
 import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.helpers.WidgetFactory;
+import org.apache.wookie.util.NewWidgetBroadcaster;
 import org.apache.wookie.util.WgtWatcher;
 import org.apache.wookie.util.WidgetFileUtils;
 import org.apache.wookie.util.WidgetJavascriptSyntaxAnalyzer;
@@ -156,7 +157,7 @@ public class ContextListener implements ServletContextListener {
 	 * @param context the current servlet context
 	 * @param configuration the configuration properties
 	 */
-	private void startWatcher(ServletContext context, Configuration configuration, final Messages localizedMessages){
+	private void startWatcher(ServletContext context, final Configuration configuration, final Messages localizedMessages){
 	 	/*
 	 	 * Start watching for widget deployment
 	 	 */
@@ -187,7 +188,7 @@ public class ContextListener implements ServletContextListener {
 	 						W3CWidget model = fac.parse(upload);
 	 						WidgetJavascriptSyntaxAnalyzer jsa = new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());
 	 						if(persistenceManager.findWidgetByGuid(model.getIdentifier()) == null) {
-	 							WidgetFactory.addNewWidget(model, upload, true);	
+	 							WidgetFactory.addNewWidget(model, upload, true);
 	 							String message = model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19");
 	 							_logger.info(message);
 	 						} else {
@@ -196,6 +197,7 @@ public class ContextListener implements ServletContextListener {
 	 							_logger.info(message);
 	 						}
 	 						persistenceManager.commit();
+	 						NewWidgetBroadcaster.broadcast(configuration, model.getIdentifier());
 	 					} catch (IOException e) {
                             persistenceManager.rollback();
 	 						String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.1") + " - " + e.getLocalizedMessage();

@@ -39,6 +39,7 @@ import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetAdvertHelper;
 import org.apache.wookie.helpers.WidgetImportHelper;
 import org.apache.wookie.server.LocaleHandler;
+import org.apache.wookie.util.NewWidgetBroadcaster;
 import org.apache.wookie.util.WidgetFileUtils;
 import org.apache.wookie.util.WidgetJavascriptSyntaxAnalyzer;
 import org.apache.wookie.util.gadgets.GadgetUtils;
@@ -272,6 +273,7 @@ public class WidgetsController extends Controller{
           // A new widget was created, so return 201
           //
           WidgetFactory.addNewWidget(widgetModel, zipFile,false);
+          NewWidgetBroadcaster.broadcast(properties, widgetModel.getIdentifier());
           returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getWookieServerURL(request, "").toString(), true), response);
           return true;
           
