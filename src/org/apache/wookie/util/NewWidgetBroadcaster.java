@@ -26,7 +26,12 @@ public class NewWidgetBroadcaster {
     static Logger logger = Logger.getLogger(NewWidgetBroadcaster.class.getName());
 
     static public void broadcast(Configuration properties, String widgetId){
-        boolean enabled = properties.getBoolean("widget.import.broadcast");//$NON-NLS-1$
+        boolean enabled;
+		try {
+			enabled = properties.getBoolean("widget.import.broadcast");
+		} catch (Exception e) {
+			enabled = false;
+		}
         if(enabled){
             String url = properties.getString("widget.import.broadcast.url");//$NON-NLS-1$
             if(url == null || widgetId == null || widgetId.equals("http://notsupported")){//$NON-NLS-1$
