@@ -15,6 +15,7 @@
 package org.apache.wookie.server;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -197,17 +198,25 @@ public class ContextListener implements ServletContextListener {
                             fac.setFeatures(Features.getFeatureNames());
                             fac.setStartPageProcessor(new StartPageProcessor());
                             if (VERIFYSIGNATURE) {
-                                InputStream stream = context
-                                .getResourceAsStream("/WEB-INF/classes/" + KEYSTORE);
-                                if(stream != null){
-                                    KeyStore keyStore = KeyStore.getInstance("JKS");
+                                KeyStore keyStore = KeyStore.getInstance("JKS");
+                                InputStream stream = context.getResourceAsStream("/WEB-INF/classes/" + KEYSTORE);
+                                if (stream == null) {
+                                    stream = context.getResourceAsStream("/WEB-INF/classes/" + "generated-" + KEYSTORE);
+                                }
+                                if (stream == null) {
+                                    FileOutputStream fos = new FileOutputStream(context
+                                            .getRealPath("/WEB-INF/classes/") + "generated-" + KEYSTORE);
+                                    keyStore.load(null, PASSWORD.toCharArray());
+                                    keyStore.store(fos, PASSWORD.toCharArray());
+                                    fos.close();
+                                    fac.setDigitalSignatureParser(new DigitalSignatureProcessor(keyStore,
+                                            REJECTINVALID, REJECTUNTRUSTED));
+                                    _logger.info(localizedMessages.getString("WidgetHotDeploy.4"));
+                                } else {
                                     keyStore.load(stream, PASSWORD.toCharArray());
                                     stream.close();
-                                    fac.setDigitalSignatureParser(new DigitalSignatureProcessor(
-                                            keyStore, REJECTINVALID, REJECTUNTRUSTED));
-                                }else{
-                                    _logger.error(localizedMessages.getString("WidgetHotDeploy.4") + 
-                                            " (/WEB-INF/classes/" + KEYSTORE+") " + localizedMessages.getString("WidgetHotDeploy.5"));
+                                    fac.setDigitalSignatureParser(new DigitalSignatureProcessor(keyStore,
+                                            REJECTINVALID, REJECTUNTRUSTED));
                                 }
                             }
 
