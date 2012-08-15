@@ -338,7 +338,7 @@ public class DigitalSignatureProcessor implements IDigitalSignatureProcessor {
     for (int i = 0; i < signature.getSignedInfo().getSignedContentLength() - 1; i++) {
       String[] filName = signature.getSignedInfo()
           .getReferencedContentAfterTransformsItem(i).getSourceURI()
-          .split(File.separator);
+          .split("/");
       signedFiles.add(filName[filName.length - 1]);
     }
 
