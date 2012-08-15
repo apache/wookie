@@ -268,66 +268,70 @@ public class WidgetsController extends Controller{
         fac.setFeatures(Features.getFeatureNames());
         fac.setStartPageProcessor(new StartPageProcessor());
         if (VERIFYSIGNATURE) {
-        InputStream stream = getServletContext().getResourceAsStream(
-            "/WEB-INF/classes/" + KEYSTORE);
-        KeyStore keyStore = KeyStore.getInstance("JKS");
-        keyStore.load(stream, PASSWORD.toCharArray());
-        stream.close();
-        fac.setDigitalSignatureParser(new DigitalSignatureProcessor(keyStore,
-            REJECTINVALID, REJECTUNTRUSTED));
-      }
-       W3CWidget widgetModel = fac.parse(zipFile);
+            InputStream stream = getServletContext().getResourceAsStream(
+                    "/WEB-INF/classes/" + KEYSTORE);
+            if(stream != null){
+                KeyStore keyStore = KeyStore.getInstance("JKS");
+                keyStore.load(stream, PASSWORD.toCharArray());
+                stream.close();
+                fac.setDigitalSignatureParser(new DigitalSignatureProcessor(keyStore,
+                        REJECTINVALID, REJECTUNTRUSTED));
+            }else{
+                _logger.error(localizedMessages.getString("WidgetHotDeploy.4") + 
+                        " (/WEB-INF/classes/" + KEYSTORE+") " + localizedMessages.getString("WidgetHotDeploy.5"));
+            }
+        }
+        W3CWidget widgetModel = fac.parse(zipFile);
         new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());
-       // File f = new File();
         //
         // Check if the widget model corresponds to an existing installed widget
         //
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
         if (persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()) == null) {
-          
-          //
-          // A new widget was created, so return 201
-          //
-          WidgetFactory.addNewWidget(widgetModel, zipFile,false);
-          NewWidgetBroadcaster.broadcast(properties, widgetModel.getIdentifier());
-          returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getWookieServerURL(request, "").toString(), true), response);
-          return true;
-          
+
+            //
+            // A new widget was created, so return 201
+            //
+            WidgetFactory.addNewWidget(widgetModel, zipFile,false);
+            NewWidgetBroadcaster.broadcast(properties, widgetModel.getIdentifier());
+            returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getWookieServerURL(request, "").toString(), true), response);
+            return true;
+
         } else {
-          
-          //
-          // Widget already exists, so update the widget metadata and configuration details
-          // and return 200
-          //
-          WidgetFactory.update(widgetModel,persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()),false, zipFile);
-          returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getWookieServerURL(request, "").toString(), true), response);
-          return false;
-          
+
+            //
+            // Widget already exists, so update the widget metadata and configuration details
+            // and return 200
+            //
+            WidgetFactory.update(widgetModel,persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()),false, zipFile);
+            returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getWookieServerURL(request, "").toString(), true), response);
+            return false;
+
         }
-        
+
         //
         // Catch specific parsing and validation errors and throw exception with error message
         //
     } catch (InvalidStartFileException ex) {
-      _logger.error(ex);
-      throw new InvalidParametersException(
-          localizedMessages.getString("widgets.no-start-file") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$     
+        _logger.error(ex);
+        throw new InvalidParametersException(
+                localizedMessages.getString("widgets.no-start-file") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$     
     } catch (BadManifestException ex) {
-      _logger.error(ex);
-      String message = ex.getMessage();
-      if (ex.getMessage() == null || ex.getMessage().equals(""))message = localizedMessages.getString("widgets.invalid-config-xml"); //$NON-NLS-1$
-      if (ex instanceof InvalidContentTypeException)
-        message = localizedMessages.getString("widgets.unsupported-content-type");//$NON-NLS-1$
-      throw new InvalidParametersException(message);
+        _logger.error(ex);
+        String message = ex.getMessage();
+        if (ex.getMessage() == null || ex.getMessage().equals(""))message = localizedMessages.getString("widgets.invalid-config-xml"); //$NON-NLS-1$
+        if (ex instanceof InvalidContentTypeException)
+            message = localizedMessages.getString("widgets.unsupported-content-type");//$NON-NLS-1$
+        throw new InvalidParametersException(message);
     } catch (BadWidgetZipFileException ex) {
-      _logger.error(ex);
-      String message = ex.getMessage();
-      if (ex.getMessage() == null || ex.getMessage().equals(""))message = localizedMessages.getString("widgets.bad-zip-file"); //$NON-NLS-1$
-      throw new InvalidParametersException(message);
+        _logger.error(ex);
+        String message = ex.getMessage();
+        if (ex.getMessage() == null || ex.getMessage().equals(""))message = localizedMessages.getString("widgets.bad-zip-file"); //$NON-NLS-1$
+        throw new InvalidParametersException(message);
     } catch (Exception ex) {
-      _logger.error(ex);
-      throw new InvalidParametersException(
-          localizedMessages.getString("widgets.cant-parse-config-xml") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        _logger.error(ex);
+        throw new InvalidParametersException(
+                localizedMessages.getString("widgets.cant-parse-config-xml") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
   }
