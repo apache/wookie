@@ -199,6 +199,8 @@ public class ContextListener implements ServletContextListener {
                             fac.setStartPageProcessor(new StartPageProcessor());
                             if (VERIFYSIGNATURE) {
                                 KeyStore keyStore = KeyStore.getInstance("JKS");
+                                String digSigSchema = context
+                                        .getRealPath("/WEB-INF/classes/org/apache/wookie/util/digitalsignature/xmldsig-core-schema.xsd");
                                 InputStream stream = context.getResourceAsStream("/WEB-INF/classes/" + KEYSTORE);
                                 if (stream == null) {
                                     stream = context.getResourceAsStream("/WEB-INF/classes/" + "generated-" + KEYSTORE);
@@ -210,13 +212,13 @@ public class ContextListener implements ServletContextListener {
                                     keyStore.store(fos, PASSWORD.toCharArray());
                                     fos.close();
                                     fac.setDigitalSignatureParser(new DigitalSignatureProcessor(keyStore,
-                                            REJECTINVALID, REJECTUNTRUSTED));
+                                            digSigSchema, REJECTINVALID, REJECTUNTRUSTED));
                                     _logger.info(localizedMessages.getString("WidgetHotDeploy.4"));
                                 } else {
                                     keyStore.load(stream, PASSWORD.toCharArray());
                                     stream.close();
                                     fac.setDigitalSignatureParser(new DigitalSignatureProcessor(keyStore,
-                                            REJECTINVALID, REJECTUNTRUSTED));
+                                            digSigSchema, REJECTINVALID, REJECTUNTRUSTED));
                                 }
                             }
 

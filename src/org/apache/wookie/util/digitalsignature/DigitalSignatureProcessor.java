@@ -64,10 +64,12 @@ public class DigitalSignatureProcessor implements IDigitalSignatureProcessor {
   // certificate located in the trusted keystore.
   private boolean rejectUntrusted;
   private HashSet<String> filesList = new HashSet<String>();
+  private String signatureSchemaFile;
 
-  public DigitalSignatureProcessor(KeyStore keyStore, boolean rejectInvalid,
+  public DigitalSignatureProcessor(KeyStore keyStore, String schemaPath, boolean rejectInvalid,
       boolean rejectUntrusted) {
     this.keystore = keyStore;
+    this.signatureSchemaFile = schemaPath;
     this.rejectInvalid = rejectInvalid;
     this.rejectUntrusted = rejectUntrusted;
     // to make it default to reject invalid signatures if signatures with
@@ -176,8 +178,6 @@ public class DigitalSignatureProcessor implements IDigitalSignatureProcessor {
       throws Exception {
     boolean schemaValidate = true;
     boolean isValid = false;
-    final String signatureSchemaFile = "src/org/apache/wookie/util/digitalsignature/xmldsig-core"
-        + "-schema.xsd";
 
     if (schemaValidate) {
       _logger.debug("Doing schema validation.");
