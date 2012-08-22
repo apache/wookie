@@ -18,7 +18,7 @@
 %>
 
 /**
- * The @widget.shortname@_controller object
+ * The ${widget.shortname}_controller object
  * This is used to wire up the view and model with actions
  */ 
 var ${widget.shortname}_controller = {

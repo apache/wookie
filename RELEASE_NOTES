@@ -4,25 +4,22 @@ See https://issues.apache.org/jira/browse/WOOKIE-* (where * is the number of the
 
 For more detailed information on significant changes, see NEW_AND_NOTEWORTHY
 
-Version 0.11.0
+Version 0.12.0
 ==============
 
 Bugs Fixed
 ==========
-	* WOOKIE-347 - Demo page does not work in IE9 (due to page being run in quirks mode) 
-	* WOOKIE-346 - DWR 2.0.5 no longer available (Updated to 2.0.10)
-	* WOOKIE-341 - Walkthrough widget actions show as 'undefined' in IE 
+	* WOOKIE-359 - Widget.preferences.setItem don´t work if widget contains an iframe with a remote src
 
 Improvements
-============
-	* WOOKIE-345 - Refactor model APIs to improve consistency and remove duplication 
-	* WOOKIE-344 - Remove deprecated non-localized model methods 
-	* WOOKIE-343 - Remove remaining references to deprecated model APIs 
-	* WOOKIE-342 - Modify LICENSE and NOTICE files to reflect similar entries as ones found in RAVE distro 
+============ 
+	* WOOKIE-325 - Add a "validate package" feature to the Wookie rest API
+	* WOOKIE-357 - Improved documentation to get started with the released war
 
 New Features
 ============
-* WOOKIE-66 - Implement getHost() method of Wave feature
+	* WOOKIE-139 Implement the W3C XML Digital Signatures for Widgets specification in Wookie 
+	* WOOKIE-362 Allow Wookie to broadcast update status once a new widget is imported 
 
 Known Issues
 ============	

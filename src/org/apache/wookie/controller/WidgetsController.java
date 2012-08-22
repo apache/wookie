@@ -16,9 +16,11 @@ package org.apache.wookie.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.KeyStore;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -39,8 +41,10 @@ import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetAdvertHelper;
 import org.apache.wookie.helpers.WidgetImportHelper;
 import org.apache.wookie.server.LocaleHandler;
+import org.apache.wookie.util.NewWidgetBroadcaster;
 import org.apache.wookie.util.WidgetFileUtils;
 import org.apache.wookie.util.WidgetJavascriptSyntaxAnalyzer;
+import org.apache.wookie.util.digitalsignature.DigitalSignatureProcessor;
 import org.apache.wookie.util.gadgets.GadgetUtils;
 import org.apache.wookie.util.html.StartPageProcessor;
 import org.apache.wookie.w3c.W3CWidget;
@@ -224,7 +228,12 @@ public class WidgetsController extends Controller{
     Configuration properties = (Configuration) getServletContext().getAttribute("properties"); //$NON-NLS-1$
     final String WIDGETFOLDER = getServletContext().getRealPath(properties.getString("widget.widgetfolder"));//$NON-NLS-1$
     final String UPLOADFOLDER = getServletContext().getRealPath(properties.getString("widget.useruploadfolder"));//$NON-NLS-1$
-
+	// Digital signature settings
+    final boolean VERIFYSIGNATURE = properties.getBoolean("widget.deployment.verifysignature");//$NON-NLS-1$
+    final boolean REJECTINVALID= properties.getBoolean("widget.deployment.rejectinvalidsignatures");
+    final boolean REJECTUNTRUSTED= properties.getBoolean("widget.deployment.rejectuntrustedsignatures");
+    final String PASSWORD = properties.getString("widget.deployment.trustedkeystore.password");
+    final String KEYSTORE = properties.getString("widget.deployment.trustedkeystore");//$NON-NLS-1$
     //
     // Get localized messages so we can return errors
     //
@@ -259,57 +268,82 @@ public class WidgetsController extends Controller{
         fac.setOutputDirectory(WIDGETFOLDER);
         fac.setFeatures(Features.getFeatureNames());
         fac.setStartPageProcessor(new StartPageProcessor());
+        if (VERIFYSIGNATURE) {
+            KeyStore keyStore = KeyStore.getInstance("JKS");
+            String digSigSchema = getServletContext()
+            .getRealPath("/WEB-INF/classes/org/apache/wookie/util/digitalsignature/xmldsig-core-schema.xsd");
+
+            InputStream stream = getServletContext().getResourceAsStream("/WEB-INF/classes/" + KEYSTORE);
+            if (stream == null) {
+                stream = getServletContext().getResourceAsStream("/WEB-INF/classes/" + "generated-" + KEYSTORE);
+            }
+            if (stream == null) {
+                FileOutputStream fos = new FileOutputStream(getServletContext()
+                        .getRealPath("/WEB-INF/classes/") + "generated-" + KEYSTORE);
+                keyStore.load(null, PASSWORD.toCharArray());
+                keyStore.store(fos, PASSWORD.toCharArray());
+                fos.close();
+                fac.setDigitalSignatureParser(new DigitalSignatureProcessor(keyStore,
+                        digSigSchema, REJECTINVALID, REJECTUNTRUSTED));
+                _logger.info(localizedMessages.getString("WidgetHotDeploy.4"));
+            } else {
+                keyStore.load(stream, PASSWORD.toCharArray());
+                stream.close();
+                fac.setDigitalSignatureParser(new DigitalSignatureProcessor(keyStore,
+                        digSigSchema, REJECTINVALID, REJECTUNTRUSTED));
+            }
+        }
         W3CWidget widgetModel = fac.parse(zipFile);
         new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());
-       // File f = new File();
         //
         // Check if the widget model corresponds to an existing installed widget
         //
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
         if (persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()) == null) {
-          
-          //
-          // A new widget was created, so return 201
-          //
-          WidgetFactory.addNewWidget(widgetModel, zipFile,false);
-          returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getWookieServerURL(request, "").toString(), true), response);
-          return true;
-          
+
+            //
+            // A new widget was created, so return 201
+            //
+            WidgetFactory.addNewWidget(widgetModel, zipFile,false);
+            NewWidgetBroadcaster.broadcast(properties, widgetModel.getIdentifier());
+            returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getWookieServerURL(request, "").toString(), true), response);
+            return true;
+
         } else {
-          
-          //
-          // Widget already exists, so update the widget metadata and configuration details
-          // and return 200
-          //
-          WidgetFactory.update(widgetModel,persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()),false, zipFile);
-          returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getWookieServerURL(request, "").toString(), true), response);
-          return false;
-          
+
+            //
+            // Widget already exists, so update the widget metadata and configuration details
+            // and return 200
+            //
+            WidgetFactory.update(widgetModel,persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()),false, zipFile);
+            returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getWookieServerURL(request, "").toString(), true), response);
+            return false;
+
         }
-        
+
         //
         // Catch specific parsing and validation errors and throw exception with error message
         //
     } catch (InvalidStartFileException ex) {
-      _logger.error(ex);
-      throw new InvalidParametersException(
-          localizedMessages.getString("widgets.no-start-file") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$     
+        _logger.error(ex);
+        throw new InvalidParametersException(
+                localizedMessages.getString("widgets.no-start-file") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$     
     } catch (BadManifestException ex) {
-      _logger.error(ex);
-      String message = ex.getMessage();
-      if (ex.getMessage() == null || ex.getMessage().equals(""))message = localizedMessages.getString("widgets.invalid-config-xml"); //$NON-NLS-1$
-      if (ex instanceof InvalidContentTypeException)
-        message = localizedMessages.getString("widgets.unsupported-content-type");//$NON-NLS-1$
-      throw new InvalidParametersException(message);
+        _logger.error(ex);
+        String message = ex.getMessage();
+        if (ex.getMessage() == null || ex.getMessage().equals(""))message = localizedMessages.getString("widgets.invalid-config-xml"); //$NON-NLS-1$
+        if (ex instanceof InvalidContentTypeException)
+            message = localizedMessages.getString("widgets.unsupported-content-type");//$NON-NLS-1$
+        throw new InvalidParametersException(message);
     } catch (BadWidgetZipFileException ex) {
-      _logger.error(ex);
-      String message = ex.getMessage();
-      if (ex.getMessage() == null || ex.getMessage().equals(""))message = localizedMessages.getString("widgets.bad-zip-file"); //$NON-NLS-1$
-      throw new InvalidParametersException(message);
+        _logger.error(ex);
+        String message = ex.getMessage();
+        if (ex.getMessage() == null || ex.getMessage().equals(""))message = localizedMessages.getString("widgets.bad-zip-file"); //$NON-NLS-1$
+        throw new InvalidParametersException(message);
     } catch (Exception ex) {
-      _logger.error(ex);
-      throw new InvalidParametersException(
-          localizedMessages.getString("widgets.cant-parse-config-xml") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        _logger.error(ex);
+        throw new InvalidParametersException(
+                localizedMessages.getString("widgets.cant-parse-config-xml") + "\n" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
   }

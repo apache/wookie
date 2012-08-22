@@ -68,8 +68,9 @@ world (what else would the first widget be?)
 
   * cd WOOKIE_HOME/widgets/templates/widgets
   * mkdir helloWorld
-  * create a file called "./widget.properties"
-  * open widget.properties in your favourite editor and add the following:
+  * create a file called "./widget.properties
+  * open widget.properties in your favourite editor and add the
+    following lines (not including bullets):
     * template.name=base
     * widget.shortname=HelloWorld
     * widget.name=Hello World
@@ -85,10 +86,10 @@ need to generate and deploy it:
   * ant generate-all-widgets -Dwidget.include=helloWorld
   * take a look at your new widget in your local instance of Wookie
 
-Note while this example creates the widget in the source tree of
-Wookie you should not develop your widgets here under normal
+***Note:*** while this example creates the widget in the source tree
+of Wookie you should not develop your widgets here under normal
 circumstances. Instead you should define your own directory for
-widgets within your own project directory, see Advanced Topics, below
+widgets within your own project directory, see Advanced Topics, below.
 
 **** What did we just do?
 
@@ -149,7 +150,7 @@ styling to the Hello World widget.
 Starting in your widget definition directory:
 
   * mkdir style
-  * create file "style/helloworld.css.add"
+  * create file "style/helloworld.add.css"
   * add the following to your css file
     * .content-primary { background: yellow; }  
   * cd ..
@@ -452,7 +453,7 @@ widgets just like any other resources. In addition templates can add
 to or modify CSS rules defined in parent templates.
 
 To create additive CSS simply add files with names in the form of
-"foo.css.add". The contents of these files will be added to the start
+"foo.add.css". The contents of these files will be added to the start
 of a final CSS file called "all.css". 
 
 The base template provides a link to the "all.css" in its "index.html" file. Therefore, if your template

@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xmlns:ivy="antlib:org.apache.ivy.ant" default="compile-core" basedir="." name="wookie-digsig-client">
+	<description>
+      Ivy based build system for Apache Wookie W3C Widget Digital Signature Client.
+    </description>
+
+	<property file="local.build.properties" />
+	<property file="build.properties" />
+
+	<import file="../../ant/ivy-java-common.xml" />
+
+	<ivy:cachefileset setid="signer-path" conf="deploy" />
+	<ivy:cachepath pathid="signer.classpath" conf="deploy" />
+	<property name="signer-main-class" value="org.apache.wookie.digsig.client.SignCoordinator" />
+
+	<target name="publish-local" depends="build-client"/>
+	
+	<target name="build-client" depends="compile-client">
+		<delete dir="${build.dir}"/>
+		<mkdir dir="${build.dir}"/>
+		<jar destfile="${build.dir}/signer.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="${signer-main-class}"/>
+				<attribute name="Class-Path" value="."/>
+				<attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+				<attribute name="Implementation-Title" value="${ant.project.name}"/>
+				<attribute name="Implementation-Version" value="${version}"/>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Build-Date" value="${TODAY}"/>
+			</manifest>
+			<fileset dir="bin"/>
+			<fileset dir="resources">
+				<include name="logo.png" />
+			</fileset>
+			<zipgroupfileset refid="signer-path"/>
+		</jar>
+	</target>
+	
+	<target name="compile-client">
+    	<javac 
+			srcdir="src"  
+			destdir="bin"  
+			classpathref="signer.classpath"/>
+	</target>
+</project>
