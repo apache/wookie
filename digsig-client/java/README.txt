@@ -10,8 +10,10 @@ for more info. (Thanks to Pushpalanka Jayawardhana)
 
 Guide to the Swing based client application
 ===========================================
-Run "SignCoordinator" (as a standalone java app) and a swing based application should 
-appear.  What follows is a brief explanation of the fields in the application.
+Run "SignCoordinator" (as a standalone java app) or you can also run the top 
+level ant task 'build-signer' to generate an executable jar package. 
+A swing based application should appear. 
+What follows is a brief explanation of the fields in the application.
 
 Author/Distributor
 ------------------	
