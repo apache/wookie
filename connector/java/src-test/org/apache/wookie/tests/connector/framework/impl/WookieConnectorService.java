@@ -129,9 +129,12 @@ public class WookieConnectorService {
 	User user = new User("test1","test user 1");
     service.addParticipant(instance, user);
     User[] users = service.getUsers(instance);
-    assertTrue("Wrong number of users returned",users.length>2);
+    assertTrue("Wrong number of users returned",users.length>1);
     assertTrue("Wrong user returned", users[0].getLoginName().equals("testuser"));
     assertTrue("Wrong user returned", users[1].getLoginName().equals("test1"));
+    service.removeParticipantFromWidget(instance, user);
+    users = service.getUsers(instance);
+    assertTrue("Wrong number of users returned",users.length==1);
   }
   
   @Test
@@ -144,6 +147,21 @@ public class WookieConnectorService {
     User[] users = service.getUsers(instance);
     user = users[users.length-1];
     assertTrue("Incorrect thumbnail", user.getThumbnailUrl().equals("http://bar.com/icon.png"));
+    service.removeParticipantFromWidget(instance, user);
+  }
+  
+  @Test
+  public void addParticipantWithRole() throws WookieConnectorException, IOException{
+    HashMap<String, Widget> widgets = service.getAvailableWidgets();
+    WidgetInstance instance = service.getOrCreateInstance((Widget)widgets.values().toArray()[0]);
+    assertNotNull("Retrieved widget instance is null", instance);    
+    User user = new User("roletestuser","role test user","http://bar.com/icon.png","OWNER");
+    service.addParticipant(instance, user);
+    User[] users = service.getUsers(instance);
+    user = users[users.length-1];
+    assertTrue("Incorrect user", user.getLoginName().equals("roletestuser"));
+    assertTrue("Incorrect role", user.getRole().equals("OWNER"));
+    service.removeParticipantFromWidget(instance, user);
   }
   
   @Test
