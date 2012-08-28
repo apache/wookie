@@ -315,10 +315,20 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 			postdata.append(URLEncoder.encode(user.getLoginName(), "UTF-8"));
 			postdata.append("&participant_display_name=");
 			postdata.append(URLEncoder.encode(user.getScreenName(), "UTF-8"));
+			
+			String thumbnail = "";
+			if (user.getThumbnailUrl() != null && user.getThumbnailUrl().trim().length() > 0){
+				thumbnail = URLEncoder.encode(user.getThumbnailUrl(), "UTF-8");
+			}
 			postdata.append("&participant_thumbnail_url=");
-			postdata.append(URLEncoder.encode(user.getThumbnailUrl(), "UTF-8"));
+			postdata.append(thumbnail);
+			
+			String role = "";
+			if (user.getRole() != null && user.getRole().trim().length() > 0){
+				role = URLEncoder.encode(user.getRole(), "UTF-8");
+			}
 			postdata.append("&participant_role=");
-			postdata.append(URLEncoder.encode(user.getRole(), "UTF-8"));
+			postdata.append(role);
 		}
 		catch (UnsupportedEncodingException e) {
 			throw new WookieConnectorException("Must support UTF-8 encoding", e);
@@ -370,14 +380,16 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 		try {
 			url = new URL(conn.getURL() + "/participants?"+queryString);
 			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+			urlConn.setDoOutput(true);
 			urlConn.setRequestMethod("DELETE");
 			urlConn.connect();
+			urlConn.getResponseCode();
 		}
 		catch (MalformedURLException e) {
 			throw new WookieConnectorException( "Participants rest URL is incorrect: " + url, e);
 		}
 		catch (IOException e) {
-			StringBuilder sb = new StringBuilder( "Problem adding a participant. ");
+			StringBuilder sb = new StringBuilder( "Problem removing a participant. ");
 			sb.append("URL: ");
 			sb.append(url);
 			sb.append(" data: ");
