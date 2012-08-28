@@ -60,6 +60,11 @@ public abstract class Controller extends HttpServlet{
 	 */
 	protected final String ATOM_CONTENT_TYPE = "application/atom+xml;charset=\"UTF-8\"";
 	
+	/**
+	 * Content type for W3C Widget output
+	 */
+	protected final String WIDGET_CONTENT_TYPE = "application/widget";
+	
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */

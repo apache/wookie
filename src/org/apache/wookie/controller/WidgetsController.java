@@ -144,6 +144,8 @@ public class WidgetsController extends Controller{
     File widgetFile = new File(widget.getPackagePath());
     InputStream in = new FileInputStream(widgetFile);
     OutputStream out = response.getOutputStream();
+    response.setContentType(WIDGET_CONTENT_TYPE);
+    response.setHeader("Content-Disposition", "attachment;filename="+widgetFile.getName());
     IOUtils.copy(in, out);
   }
 
