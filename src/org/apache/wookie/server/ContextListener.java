@@ -34,6 +34,7 @@ import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.Features;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetRuntimeHelper;
+import org.apache.wookie.updates.AutomaticUpdater;
 import org.apache.wookie.util.NewWidgetBroadcaster;
 import org.apache.wookie.util.W3CWidgetFactoryUtils;
 import org.apache.wookie.util.WgtWatcher;
@@ -144,6 +145,14 @@ public class ContextListener implements ServletContextListener {
             } else {
                 _logger.info(localizedMessages.getString("WidgetHotDeploy.0"));
             }
+            
+            /*
+             * Schedule automatic updates
+             */
+            if (configuration.getBoolean("widget.updates.enabled", false)){
+            	new AutomaticUpdater(context, configuration.getBoolean("widget.updates.requirehttps", true), configuration.getString("widget.updates.frequency", "daily"));
+            }
+            
         } 
         catch (ConfigurationException ex) {
             _logger.error("ConfigurationException thrown: "+ ex.toString());
