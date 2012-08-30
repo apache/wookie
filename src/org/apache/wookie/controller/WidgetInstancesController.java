@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -375,17 +376,35 @@ public class WidgetInstancesController extends Controller {
 		//
     String path = sf.getSrc();
 		URL urlWidget =  getWookieServerURL(request, path);
-		
+
+		//
+		// If locked domains are enabled, create a host prefix using a UUID generated from the
+		// widget instance
+		//
+		URL proxyUrl = urlWidgetProxyServer;
+		Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
+		if (properties.getBoolean("widget.instance.lockeddomain.enabled",false)){ //$NON-NLS-1$
+			//
+			// Generate a UUID from the instance ID key as the subdomain for the instance
+			//
+			String prefix =  UUID.nameUUIDFromBytes(instance.getIdKey().getBytes()).toString()+"-locked";
+			urlWidget = new URL(urlWidget.getProtocol(), prefix+"."+urlWidget.getHost(), urlWidget.getPort(), path); //$NON-NLS-1$
+			//
+			// Prepend the subdomain to the proxy URL also
+			//
+			proxyUrl = new URL(urlWidgetProxyServer.getProtocol(), prefix + "." + urlWidgetProxyServer.getHost(),urlWidgetProxyServer.getPort(), urlWidgetProxyServer.getPath());
+		}
+
 		//
 		// Append querystring parameters for the URL: id key, proxy URL, and social token
 		//
 		if (urlWidget.getQuery() != null){
 			url+= urlWidget + "&amp;idkey=" + instance.getIdKey()  //$NON-NLS-1$
-					+ "&amp;proxy=" + urlWidgetProxyServer.toExternalForm()  //$NON-NLS-1$
+					+ "&amp;proxy=" + proxyUrl.toExternalForm()  //$NON-NLS-1$
 					+ "&amp;st=" + instance.getOpensocialToken(); //$NON-NLS-1$
 		} else {
 			url+= urlWidget + "?idkey=" + instance.getIdKey()  //$NON-NLS-1$
-					+ "&amp;proxy=" + urlWidgetProxyServer.toExternalForm()  //$NON-NLS-1$
+					+ "&amp;proxy=" + proxyUrl.toExternalForm()  //$NON-NLS-1$
 					+ "&amp;st=" + instance.getOpensocialToken(); //$NON-NLS-1$
 		}
 		return url;
