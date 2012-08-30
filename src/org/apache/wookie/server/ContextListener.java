@@ -15,10 +15,7 @@
 package org.apache.wookie.server;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.security.KeyStore;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -38,11 +35,10 @@ import org.apache.wookie.feature.Features;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.util.NewWidgetBroadcaster;
+import org.apache.wookie.util.W3CWidgetFactoryUtils;
 import org.apache.wookie.util.WgtWatcher;
 import org.apache.wookie.util.WidgetFileUtils;
 import org.apache.wookie.util.WidgetJavascriptSyntaxAnalyzer;
-import org.apache.wookie.util.digitalsignature.DigitalSignatureProcessor;
-import org.apache.wookie.util.html.StartPageProcessor;
 import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
@@ -167,17 +163,6 @@ public class ContextListener implements ServletContextListener {
          */
         final File deploy = new File(WidgetPackageUtils.convertPathToPlatform(context.getRealPath(configuration.getString("widget.deployfolder"))));
         final String UPLOADFOLDER = context.getRealPath(configuration.getString("widget.useruploadfolder"));
-        final String WIDGETFOLDER = context.getRealPath(configuration.getString("widget.widgetfolder"));
-        final String localWidgetFolderPath = configuration.getString("widget.widgetfolder");
-        final String[] locales = configuration.getStringArray("widget.locales");
-        final String contextPath = context.getContextPath();
-        // Digital signature settings
-        final boolean VERIFYSIGNATURE = configuration.getBoolean("widget.deployment.verifysignature");//$NON-NLS-1$
-        final boolean REJECTINVALID= configuration.getBoolean("widget.deployment.rejectinvalidsignatures");
-        final boolean REJECTUNTRUSTED= configuration.getBoolean("widget.deployment.rejectuntrustedsignatures");
-        final String PASSWORD = configuration.getString("widget.deployment.trustedkeystore.password");
-        final String KEYSTORE = configuration.getString("widget.deployment.trustedkeystore");//$NON-NLS-1$
-
 
         Thread thr = new Thread(){
             public void run() {
@@ -191,36 +176,7 @@ public class ContextListener implements ServletContextListener {
                         try{
                             persistenceManager.begin();
                             File upload = WidgetFileUtils.dealWithDroppedFile(UPLOADFOLDER, f);
-                            W3CWidgetFactory fac = new W3CWidgetFactory();
-                            fac.setLocales(locales);
-                            fac.setLocalPath(contextPath+localWidgetFolderPath);
-                            fac.setOutputDirectory(WIDGETFOLDER);
-                            fac.setFeatures(Features.getFeatureNames());
-                            fac.setStartPageProcessor(new StartPageProcessor());
-                            if (VERIFYSIGNATURE) {
-                                KeyStore keyStore = KeyStore.getInstance("JKS");
-                                String digSigSchema = context
-                                        .getRealPath("/WEB-INF/classes/org/apache/wookie/util/digitalsignature/xmldsig-core-schema.xsd");
-                                InputStream stream = context.getResourceAsStream("/WEB-INF/classes/" + KEYSTORE);
-                                if (stream == null) {
-                                    stream = context.getResourceAsStream("/WEB-INF/classes/" + "generated-" + KEYSTORE);
-                                }
-                                if (stream == null) {
-                                    FileOutputStream fos = new FileOutputStream(context
-                                            .getRealPath("/WEB-INF/classes/") + "generated-" + KEYSTORE);
-                                    keyStore.load(null, PASSWORD.toCharArray());
-                                    keyStore.store(fos, PASSWORD.toCharArray());
-                                    fos.close();
-                                    fac.setDigitalSignatureParser(new DigitalSignatureProcessor(keyStore,
-                                            digSigSchema, REJECTINVALID, REJECTUNTRUSTED));
-                                    _logger.info(localizedMessages.getString("WidgetHotDeploy.4"));
-                                } else {
-                                    keyStore.load(stream, PASSWORD.toCharArray());
-                                    stream.close();
-                                    fac.setDigitalSignatureParser(new DigitalSignatureProcessor(keyStore,
-                                            digSigSchema, REJECTINVALID, REJECTUNTRUSTED));
-                                }
-                            }
+                            W3CWidgetFactory fac = W3CWidgetFactoryUtils.createW3CWidgetFactory(context, configuration, localizedMessages);
 
                             W3CWidget model = fac.parse(upload);
                             WidgetJavascriptSyntaxAnalyzer jsa = new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());

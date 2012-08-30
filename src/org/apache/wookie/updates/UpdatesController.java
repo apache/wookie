@@ -17,11 +17,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.util.IPersistenceManager;
@@ -31,9 +29,8 @@ import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
-import org.apache.wookie.feature.Features;
 import org.apache.wookie.helpers.WidgetFactory;
-import org.apache.wookie.util.html.StartPageProcessor;
+import org.apache.wookie.util.W3CWidgetFactoryUtils;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
 import org.apache.wookie.w3c.exceptions.BadWidgetZipFileException;
@@ -106,16 +103,17 @@ public class UpdatesController extends Controller {
 			// Get all installed widgets
 			IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 			IWidget[] widgets = persistenceManager.findAll(IWidget.class);
-			// Create a W3CWidget factory for the current context
-			W3CWidgetFactory factory  = getFactory(request.getSession().getServletContext());
-			// Iterate over the widgets and attempt to install updates
-			for (IWidget widget: widgets){
-				try {
+
+			try {
+				// Create a W3CWidget factory for the current context
+				W3CWidgetFactory factory = W3CWidgetFactoryUtils.createW3CWidgetFactory(getServletContext());
+				// Iterate over the widgets and attempt to install updates
+				for (IWidget widget: widgets){
 					installUpdate(factory, widget, onlyUseHttps);
-				} catch (Exception e) {
-					_logger.warn(e.getMessage(), e);
 				}
-			}	
+			} catch (Exception e) {
+				_logger.warn(e.getMessage(), e);
+			}
 			return true;
 	}
 
@@ -132,7 +130,7 @@ public class UpdatesController extends Controller {
 			if (widget == null) throw new ResourceNotFoundException();
 			// FIXME localize error messages
 			try {
-				W3CWidgetFactory factory  = getFactory(request.getSession().getServletContext());
+				W3CWidgetFactory factory = W3CWidgetFactoryUtils.createW3CWidgetFactory(getServletContext());
 				installUpdate(factory, widget, false);
 			} catch (IOException e) {
 				_logger.warn("Problem updating "+resourceId+": widget couldn't be downloaded");
@@ -171,30 +169,6 @@ public class UpdatesController extends Controller {
 			WidgetFactory.update(updatedWidget, widget, false, null);
 			_logger.info("Successfully updated "+widget.getIdentifier()+" to version "+updatedWidget.getVersion());
 		}
-	}
-	
-	/**
-	 * Obtain a W3CWidgetFactory configured for this servlet context
-	 * @param context
-	 * @return the factory
-	 * @throws IOException
-	 */
-	private W3CWidgetFactory getFactory(ServletContext context){
-		Configuration properties = (Configuration) context.getAttribute("properties"); //$NON-NLS-1$
-		W3CWidgetFactory factory = new W3CWidgetFactory();
-		final String[] locales = properties.getStringArray("widget.locales");
-		factory.setLocales(locales);
-		factory.setLocalPath(context.getContextPath()+properties.getString("widget.widgetfolder"));
-		final String WIDGETFOLDER = context.getRealPath(properties.getString("widget.widgetfolder"));//$NON-NLS-1$
-		try {
-			factory.setOutputDirectory(WIDGETFOLDER);
-		} catch (IOException e) {
-			_logger.error(e);
-		}
-		// Configure the widget factory with the installed feature set
-		factory.setFeatures(Features.getFeatureNames());
-		factory.setStartPageProcessor(new StartPageProcessor());
-		return factory;
 	}
 	
 	/**

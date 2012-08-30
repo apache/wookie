@@ -16,11 +16,9 @@ package org.apache.wookie.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.KeyStore;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -36,17 +34,15 @@ import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
-import org.apache.wookie.feature.Features;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetAdvertHelper;
 import org.apache.wookie.helpers.WidgetImportHelper;
 import org.apache.wookie.server.LocaleHandler;
 import org.apache.wookie.util.NewWidgetBroadcaster;
+import org.apache.wookie.util.W3CWidgetFactoryUtils;
 import org.apache.wookie.util.WidgetFileUtils;
 import org.apache.wookie.util.WidgetJavascriptSyntaxAnalyzer;
-import org.apache.wookie.util.digitalsignature.DigitalSignatureProcessor;
 import org.apache.wookie.util.gadgets.GadgetUtils;
-import org.apache.wookie.util.html.StartPageProcessor;
 import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
@@ -228,14 +224,8 @@ public class WidgetsController extends Controller{
     // Get the path to the upload folder, and the widget install folder
     //
     Configuration properties = (Configuration) getServletContext().getAttribute("properties"); //$NON-NLS-1$
-    final String WIDGETFOLDER = getServletContext().getRealPath(properties.getString("widget.widgetfolder"));//$NON-NLS-1$
     final String UPLOADFOLDER = getServletContext().getRealPath(properties.getString("widget.useruploadfolder"));//$NON-NLS-1$
-	// Digital signature settings
-    final boolean VERIFYSIGNATURE = properties.getBoolean("widget.deployment.verifysignature");//$NON-NLS-1$
-    final boolean REJECTINVALID= properties.getBoolean("widget.deployment.rejectinvalidsignatures");
-    final boolean REJECTUNTRUSTED= properties.getBoolean("widget.deployment.rejectuntrustedsignatures");
-    final String PASSWORD = properties.getString("widget.deployment.trustedkeystore.password");
-    final String KEYSTORE = properties.getString("widget.deployment.trustedkeystore");//$NON-NLS-1$
+    
     //
     // Get localized messages so we can return errors
     //
@@ -263,40 +253,10 @@ public class WidgetsController extends Controller{
         //
         // Parse and validate the zip as a widget
         //
-        final String[] locales = properties.getStringArray("widget.locales");
-        W3CWidgetFactory fac = new W3CWidgetFactory();
-        fac.setLocales(locales);
-        fac.setLocalPath(getServletContext().getContextPath() + properties.getString("widget.widgetfolder"));
-        fac.setOutputDirectory(WIDGETFOLDER);
-        fac.setFeatures(Features.getFeatureNames());
-        fac.setStartPageProcessor(new StartPageProcessor());
-        if (VERIFYSIGNATURE) {
-            KeyStore keyStore = KeyStore.getInstance("JKS");
-            String digSigSchema = getServletContext()
-            .getRealPath("/WEB-INF/classes/org/apache/wookie/util/digitalsignature/xmldsig-core-schema.xsd");
-
-            InputStream stream = getServletContext().getResourceAsStream("/WEB-INF/classes/" + KEYSTORE);
-            if (stream == null) {
-                stream = getServletContext().getResourceAsStream("/WEB-INF/classes/" + "generated-" + KEYSTORE);
-            }
-            if (stream == null) {
-                FileOutputStream fos = new FileOutputStream(getServletContext()
-                        .getRealPath("/WEB-INF/classes/") + "generated-" + KEYSTORE);
-                keyStore.load(null, PASSWORD.toCharArray());
-                keyStore.store(fos, PASSWORD.toCharArray());
-                fos.close();
-                fac.setDigitalSignatureParser(new DigitalSignatureProcessor(keyStore,
-                        digSigSchema, REJECTINVALID, REJECTUNTRUSTED));
-                _logger.info(localizedMessages.getString("WidgetHotDeploy.4"));
-            } else {
-                keyStore.load(stream, PASSWORD.toCharArray());
-                stream.close();
-                fac.setDigitalSignatureParser(new DigitalSignatureProcessor(keyStore,
-                        digSigSchema, REJECTINVALID, REJECTUNTRUSTED));
-            }
-        }
+        W3CWidgetFactory fac = W3CWidgetFactoryUtils.createW3CWidgetFactory(getServletContext(), properties, localizedMessages);        
         W3CWidget widgetModel = fac.parse(zipFile);
         new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());
+        
         //
         // Check if the widget model corresponds to an existing installed widget
         //
