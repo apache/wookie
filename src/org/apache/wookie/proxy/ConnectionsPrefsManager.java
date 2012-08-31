@@ -24,9 +24,6 @@ import org.apache.log4j.Logger;
 
 /**
  * Read in & process the proxy settings from the properties file 
- * @author Paul Sharples
- * @version $Id: ConnectionsPrefsManager.java,v 1.2 2009-07-28 16:05:23 scottwilson Exp $
- *
  */
 public class ConnectionsPrefsManager {
 	
@@ -38,11 +35,11 @@ public class ConnectionsPrefsManager {
 	private static String fHostname = null;
 		
 	private static void init(Configuration properties){
-		fHostname = properties.getString("widget.proxy.hostname");				
+		fHostname = properties.getString("system.proxy.hostname");				
 		if(fHostname != null) {
 			fIsProxySet = (fHostname.length() > 0 ? true : false);
 		}
-		fUseNTLMAuthentication = properties.getBoolean("widget.proxy.usentlmauthentication");
+		fUseNTLMAuthentication = properties.getBoolean("system.proxy.usentlmauthentication",false);
 		fParsedFile = true;
 	}
 
@@ -53,15 +50,11 @@ public class ConnectionsPrefsManager {
 	public static void setProxySettings(HttpClient client, Configuration properties) {
 		if(!fParsedFile) init(properties); // just do this once - will have to reboot for changes to take effect
 		if(isProxyServerSet()){
-			int port;
-    		try{
-    			port = properties.getInt("widget.proxy.port");
-    		} 
-    		catch(Exception ex){
-    			port=8080; // default for now if not specified
-    		}
-    		String username =  properties.getString("widget.proxy.username");
-    		String password =  properties.getString("widget.proxy.password");
+    		int port = properties.getInt("system.proxy.port",8080); //$NON-NLS-1$
+    		String username =  properties.getString("system.proxy.username"); //$NON-NLS-1$
+    		String password =  properties.getString("system.proxy.password"); //$NON-NLS-1$
+    		
+			fLogger.info("setting proxy conf:"+fHostname+":"+port);
     		
     		HostConfiguration hConf= client.getHostConfiguration();
     		hConf.setProxy(fHostname, port);
