@@ -43,7 +43,7 @@ var NoteViewer =
     },
 
     parseNote: function(id, node)
-    {
+    {   // TODO factor this so DRY - appears in 2 files
         var note = this.model.find('note[id="'+id.slice(1)+'"]').first();
         var text = (note.length != 0) ? note.text() : "Cannot find a note with an id of '"+id+"'";
         var creole = new Parse.Simple.Creole( {

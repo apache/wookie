@@ -129,7 +129,7 @@
     <echo message="+------------------------------------------"/>
 
     <!-- Build from base template -->
-    <ant antfile="../../build.xml"
+    <ant antfile="${wookie.template.dir}/build.xml"
          target="_generate_widget">
       <property name="template.name" value="base"/>
       <property name="copyWidgetFiles" value="false"/>

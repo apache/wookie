@@ -17,13 +17,26 @@
 
 var ${widget.shortname}_walkthrough_controller = 
 {
+    parseQueryString: function()
+    {
+        var nvpair = {};
+        var qs = window.location.search.replace('?', '');
+        var pairs = qs.split('&');
+        $.each(pairs, function(i, v)
+        {
+            var pair = v.split('=');
+            nvpair[pair[0]] = pair[1];
+        });
+        return nvpair;
+    },
+
     initPage: function()
     {
-        var question_file = "xml/questions.xml";
+        var question_file = this.parseQueryString().questions || "xml/questions.xml";
         var self = this;
         if (self.model === undefined)
         {
-            $.get(question_file, function(xml){ // load XML - need error handling
+            $.get(question_file, function(xml){ // load XML - FIXME need error handling
                 self.model = $( xml ); 
                 self.setHeaderFooter();
                 var page = window.location.hash; // might be F5 on a URI with hash
@@ -68,14 +81,15 @@ var ${widget.shortname}_walkthrough_controller =
         //$("#question_body").find( ":jqmData(role=button)" )button();
         //answers.listview('refresh');
 
-        options.dataUrl = urlObj.href;          // not page id
+        options.dataUrl = urlObj.href;          // not current page id
         options.allowSamePageTransition = true; // so hash get's updated in browser
+        options.changeHash = true;              // Needed so back works in IE from 1st page change
         $.mobile.changePage(page, options);     // As per JQM example - doesn't recusive bomb   
 	},
    
     isNote: function(href)
     {   
-        return (href.slice(0, 7).toLowerCase() != 'http://'.toLowerCase());
+        return href != '#' && (href.slice(0, 7).toLowerCase() != 'http://'.toLowerCase());
     },
       
     showQuestionText: function (question)
@@ -86,9 +100,11 @@ var ${widget.shortname}_walkthrough_controller =
         // create question with link to add actions
         question.find("body").contents().each( function() {
             var that = $(this);
-            if (this.nodeType == 3) // text
+            if (this.nodeType == 8) // comment
+                ; // nothing
+            else if (this.nodeType == 3) // text
                 qhtml += that.text();
-            else 
+            else // todo_item
             {
                 var type = that.attr('type');
                 if (type == 'TODO')
@@ -168,6 +184,21 @@ var ${widget.shortname}_walkthrough_controller =
         });
     },
 
+    parseNote: function(id, node)
+    {   // TODO factor this so DRY - appears in 2 files
+        var note = this.model.find('note[id="'+id.slice(1)+'"]').first();
+        var text = (note.length != 0) ? note.text() : "Cannot find a note with an id of '"+id+"'";
+        var creole = new Parse.Simple.Creole( {
+            forIE: document.all,
+            interwiki: {
+                WikiCreole: 'http://www.wikicreole.org/wiki/',
+                Wikipedia: 'http://en.wikipedia.org/wiki/'
+            },
+            linkFormat: ''
+            } );
+        creole.parse(node, text);
+    },
+    
     setupSave: function()
     {
         var self = this;
@@ -177,34 +208,37 @@ var ${widget.shortname}_walkthrough_controller =
         {   
             var todo = $("#todo_list");
             var items = todo.find('li');
-            var text = '';
+            var actions = [];
             items.each( function(i, el)
             {
-                var that = $(this);
-                text += '' + (i+1) + '. '+ that.text();
-                text = text.replace(/\[X\]?/g, '');
-                var href = that.find("a").first().attr('href');
-                if (href != undefined && !self.isNote(href))
-                    text += ' - ' + href;
-                if (self.isNote(href))
+                var jqthis = $(this);
+                var action = {};
+                
+                action.text = jqthis.text().replace(/\[X\]?/g, ''); // lose those close links
+                var href = jqthis.find("a").first().attr('href');
+                if (href != undefined && href != '#' && !self.isNote(href))
+                    action.href = href;
+                else if (self.isNote(href))
                 {
                     var id = $.mobile.path.parseUrl( href ).hash;
-                    var note = self.model.find('note[id="'+id.slice(1)+'"]').first();
-                    var notetext = (note.length != 0) ? note.text() : "Cannot find a note with an id of '"+id+"'";
-                    text += "\r\n" + notetext; 
+                    //var note = self.model.find('note[id="'+id.slice(1)+'"]').first();
+                    //var notetext = (note.length != 0) ? note.text() : "Cannot find a note with an id of '"+id+"'";
+                    var noteNode = $("<div/>");
+                    self.parseNote(id, noteNode[0]);
+                    action.notetext = noteNode.html(); 
                 }
-                text += "\r\n\r\n";
+                actions.push(action); 
                 i++;
             });
-            if (text != '')
-            {   
-                //$('#the_actions').attr('value',text); 
-                //$('#actions_form').submit();
-                alert('Actions to copy\r\n\r\n'+text+'\r\n'); // alt that doesn't use server side script but requires cut n paste
+            if (actions.length)
+			{
+                self.actions = actions;                            // so actions.html can access them
+                window.open("actions.html", "actions", "", false); // Use this so target page can use 'opener' to access this conext 
+                                                                   // alternative is HTML5 session data with window.name hack fallback
             }
             return false;
         });
-    }
+   }
 };
 
 $("#home").live('pagebeforecreate',function(event)

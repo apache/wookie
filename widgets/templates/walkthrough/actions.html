@@ -20,6 +20,13 @@
         <meta http-equiv="pragma" content="no-cache"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1"> 
+
+        <link rel="stylesheet" href="lib/jquery.mobile-1.1.1/jquery.mobile-1.1.1.min.css" />
+        <link rel="stylesheet" href="style/all.css" />
+
+        <script type="text/javascript" src="lib/jquery.mobile-1.1.1/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="lib/jquery.mobile-1.1.1/jquery.mobile-1.1.1.min.js"></script>
+
         <title>Actions list</title>
 
         <!-- everything in this file so can be saved as a single file -->
@@ -29,8 +36,9 @@
 
         <script type="text/javascript">
         //<![CDATA[
-        window.onload = function(e){  
-            var actions = opener.Controller.actions;
+        window.onload = function(e){ 
+			var controller = opener.${widget.shortname}_walkthrough_controller;
+            var actions = controller.actions;
             var html='';
             for (var i = 0; i < actions.length; ++i)
             {
