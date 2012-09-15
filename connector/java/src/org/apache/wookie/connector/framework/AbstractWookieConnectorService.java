@@ -41,6 +41,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -449,6 +450,46 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 	  return widgets;
 	}
 	
+    public String normalizeFileName(URL urlPath){
+        String filename;
+        String[] parts = urlPath.getFile().split("/");
+        if(parts[parts.length-1].length() < 1){
+           filename = "unknown.wgt";
+        }else{
+            filename = parts[parts.length-1];
+        }
+        if(filename.indexOf('.') == -1){
+           filename = filename + ".wgt"; 
+        }
+        else{
+            if(!filename.endsWith(".wgt")){
+                String[] split = filename.split("\\.");
+                filename = split[0] + ".wgt";
+            }
+        }
+        return filename;
+    }
+	
+	public Widget postWidget(String widgetStrUrl, String adminUsername, String adminPassword ) throws WookieConnectorException {
+	    Widget publishedWidget = null;
+	    try {
+            URL widgetUrl = new URL(widgetStrUrl);
+            String tempUploadFolder = System.getProperty("java.io.tmpdir");
+            String filename = normalizeFileName(widgetUrl);
+            File tempWgtFile = new File(tempUploadFolder, filename);
+            FileUtils.copyURLToFile(widgetUrl, tempWgtFile, 10000, 10000); // 10 second timeouts
+            publishedWidget = postWidget(tempWgtFile, adminUsername, adminPassword);
+            // cleanup temp file
+            if(tempWgtFile.exists()){
+                tempWgtFile.delete();
+            }
+        } catch (MalformedURLException e) {
+            throw new WookieConnectorException("Malformed url error.", e);
+        } catch (IOException e) {
+            throw new WookieConnectorException("I/O error. Problem downloading widget from given URL", e);
+        }
+        return publishedWidget;
+	}
 	
 	/**
 	 * This function is supplied for non browser based clients enabling them to upload a widget file to the wookie server.
@@ -533,7 +574,7 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 		// ------------------ read the SERVER RESPONSE
 
 		try {
-			if ( connection.getResponseCode() != 201 ) {
+			if ( connection.getResponseCode() != 201 && connection.getResponseCode() != 200) {
 				throw new IOException ( "Widget file was not uploaded successfully." );
 			}
 			Document doc = parseInputStreamAsDocument(connection.getInputStream());
