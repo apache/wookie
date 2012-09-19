@@ -266,7 +266,7 @@ public class WidgetsController extends Controller{
             //
             // A new widget was created, so return 201
             //
-            WidgetFactory.addNewWidget(widgetModel, zipFile,false);
+            WidgetFactory.addNewWidget(widgetModel, zipFile, true);
             NewWidgetBroadcaster.broadcast(properties, widgetModel.getIdentifier());
             returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getWookieServerURL(request, "").toString(), true), response);
             return true;
@@ -277,7 +277,7 @@ public class WidgetsController extends Controller{
             // Widget already exists, so update the widget metadata and configuration details
             // and return 200
             //
-            WidgetFactory.update(widgetModel,persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()),false, zipFile);
+            WidgetFactory.update(widgetModel,persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()), true, zipFile);
             returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getWookieServerURL(request, "").toString(), true), response);
             return false;
 
