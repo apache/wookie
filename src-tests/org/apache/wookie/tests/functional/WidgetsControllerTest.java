@@ -54,6 +54,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
   private static String WIDGET_ID_DELETE_TEST = "http://deletetest";
   private static String WIDGET_ID_NOT_SUPPORTED = "http://notsupported";
   private static String WIDGET_ID_UPLOAD_TEST = "http://uploadtest";
+  private static String WIDGET_ID_UPLOAD_POLICIES_TEST = "http://uploadtest/policies";
   private static String WIDGET_ID_UPLOAD_TEST_2 = "http://uploadtest_2";
   private static String WIDGET_ID_WEATHER = "http://www.getwookie.org/widgets/weather";
 
@@ -66,6 +67,8 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
     client.executeMethod(delete);
     delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST_2));
+    client.executeMethod(delete);
+    delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_POLICIES_TEST));
     client.executeMethod(delete);
   }
 
@@ -192,6 +195,63 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     int code = post.getStatusCode();
     assertEquals(201,code);
     post.releaseConnection();  	  
+  }
+  
+  /**
+   * Test that we can import widgets using POST that contain
+   * access requests. See WOOKIE-379.
+   * 
+   * @throws HttpException
+   * @throws IOException
+   * @throws JDOMException 
+   */
+  @Test
+  public void importWidgetWithAccessPolicies() throws HttpException, IOException, JDOMException{
+	  
+    HttpClient client = new HttpClient();
+    //
+    // Use admin credentials
+    //
+    setAuthenticationCredentials(client);
+
+    PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
+
+    //
+    // Use upload test widget
+    //
+    File file = new File("src-tests/testdata/upload-policies-test.wgt");
+    assertTrue(file.exists());
+
+    //
+    // Add test wgt file to POST
+    //
+    Part[] parts = { new FilePart(file.getName(), file) };
+    post.setRequestEntity(new MultipartRequestEntity(parts, post
+        .getParams()));
+
+    //
+    // POST the file to /widgets and check we get 201 (Created)
+    //
+    client.executeMethod(post);   
+    int code = post.getStatusCode();
+    assertEquals(201,code);
+    post.releaseConnection();  	
+    
+    //
+    // Check the policy was created
+    //
+    GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID + "/" + WIDGET_ID_UPLOAD_POLICIES_TEST);
+    get.setRequestHeader("Accept", "text/xml");
+    client.executeMethod(get);
+          
+    SAXBuilder builder = new SAXBuilder();
+    Document doc = builder.build(get.getResponseBodyAsStream());
+    Element policies = doc.getRootElement();
+    assertEquals(1, policies.getChildren("policy").size());
+    Element policy = policies.getChild("policy");
+    assertEquals(WIDGET_ID_UPLOAD_POLICIES_TEST, policy.getAttributeValue("scope"));
+    assertEquals("*", policy.getAttributeValue("origin"));
+    assertEquals("ALLOW", policy.getAttributeValue("directive"));
   }
 
 
