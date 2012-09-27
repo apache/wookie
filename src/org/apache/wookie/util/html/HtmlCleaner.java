@@ -57,6 +57,13 @@ public class HtmlCleaner implements IHtmlProcessor{
 		properties.setOmitXmlDeclaration(true);
 		properties.setUseCdataForScriptAndStyle(true);
 		properties.setUseEmptyElementTags(false);	
+		//
+		// Ensure we handle special HTML entities like copyright etc
+		// See WOOKIE-380
+		//
+		properties.setTranslateSpecialEntities(true);
+		properties.setTransSpecialEntitiesToNCR(true);
+		
 	}
 	
 	/* (non-Javadoc)
