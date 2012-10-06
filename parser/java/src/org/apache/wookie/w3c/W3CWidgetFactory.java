@@ -242,8 +242,10 @@ public class W3CWidgetFactory {
 		HttpClient client = new HttpClient();
 		GetMethod method = new GetMethod(url.toString());
 		client.executeMethod(method);
-		String type = method.getResponseHeader("Content-Type").getValue();
-		if (!ignoreContentType && !type.startsWith(WIDGET_CONTENT_TYPE)) throw new InvalidContentTypeException("Problem downloading widget: expected a content type of "+WIDGET_CONTENT_TYPE+" but received:"+type);
+		if (!ignoreContentType){
+			String type = method.getResponseHeader("Content-Type").getValue();
+			if (!type.startsWith(WIDGET_CONTENT_TYPE)) throw new InvalidContentTypeException("Problem downloading widget: expected a content type of "+WIDGET_CONTENT_TYPE+" but received:"+type);
+		}
 		File file = File.createTempFile("wookie", null);
 		FileUtils.writeByteArrayToFile(file, IOUtils.toByteArray(method.getResponseBodyAsStream()));
 		method.releaseConnection();
