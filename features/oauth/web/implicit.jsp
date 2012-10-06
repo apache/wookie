@@ -23,26 +23,52 @@
 		// get access token + timeout in fragment
 		var accessToken = getHashParam('access_token');
 		var expires = getHashParam('expires_in');
-				
-		// send token to parent window
-		window.opener.oAuth.initAccessToken(accessToken, expires);
+		var error = getHashParam('error');
 
 		// hide waiting frame
 		document.getElementById('block-busy').style.display = 'none';
-		document.getElementById('block-info').style.display = 'block';
 		
-		// close this window
-		window.close();
+		// send token to parent window
+		var errorDetail = null;
+		if (error == null) {
+			window.opener.oAuth.initAccessToken(accessToken, expires);
+			document.getElementById('block-info').style.display = 'block';
+			// close this window
+			window.close();
+		} else {
+			if (error == 'access_denied')
+				errorDetail = 'The resource owner or authorization server denied the request.';
+			else if (error == 'invalid_scope')
+				errorDetail = 'The requested scope is invalid, unknown, or malformed.';
+			else if (error == 'invalid_request')
+				errorDetail = 'The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed.';
+			else if (error == 'unauthorized_client')
+				errorDetail = 'The client is not authorized to request an authorization code using this method.';
+			else if (error == 'unsupported_response_type')
+				errorDetail = 'The authorization server does not support obtaining an authorization code using this method.';
+			else
+				errorDetail = 'No detail information';
+			document.getElementById('b-err-code').innerHTML = error;
+			document.getElementById('b-err-msg').innerHTML = errorDetail;
+			document.getElementById('block-error').style.display = 'block';
+		}
 	}
 </script>
 </head>
 <body onload="javascript:processToken();">    
-    <div id="block-busy" style="visibility: hidden;">
+    <div id="block-busy" style="display: none;">
     	<img alt="Processing ..." src="<%= request.getContextPath() %>/features/oauth/web/imgs/wait.gif"/>
     </div>
 
-	<div id="block-info" style="visibility: hidden;">
+	<div id="block-info" style="display: none;">
 		Please close this window.
+	</div>
+
+	<div id="block-error" style="display: none;">
+		Error code: <span id="b-err-code"></span><br/>
+		Error description: <br/>
+		<span id="b-err-msg"></span><br/>
+		<button type="button" onclick="javascript:window.close();">Close</button>
 	</div>
 </body>
 </html>
