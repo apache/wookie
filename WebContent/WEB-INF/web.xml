@@ -256,7 +256,16 @@
 			org.apache.wookie.WidgetServiceServlet
 		</servlet-class>
 		<load-on-startup>2</load-on-startup>
-	</servlet>	
+	</servlet>
+
+	<servlet>
+		<description>
+		</description>
+		<display-name>TokenHandler</display-name>
+		<servlet-name>TokenHandler</servlet-name>
+		<servlet-class>org.apache.wookie.feature.oauth.TokenHandler</servlet-class>
+	</servlet>
+	
 	<servlet-mapping>
 		<servlet-name>WidgetServiceServlet</servlet-name>
 		<url-pattern>/WidgetServiceServlet</url-pattern>
@@ -265,6 +274,11 @@
 	<servlet-mapping>
 		<servlet-name>dwr-invoker</servlet-name>
 		<url-pattern>/dwr/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>TokenHandler</servlet-name>
+		<url-pattern>/features/oauth/implicit</url-pattern>
 	</servlet-mapping>
 
 	<welcome-file-list>

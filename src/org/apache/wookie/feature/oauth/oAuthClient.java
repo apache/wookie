@@ -21,12 +21,12 @@ import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.wookie.Messages;
 import org.apache.wookie.beans.IOAuthToken;
-import org.apache.wookie.w3c.IContent;
 import org.apache.wookie.w3c.IParam;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.util.IPersistenceManager;
@@ -57,82 +57,6 @@ public class oAuthClient implements IFeature {
 		return null;
 	}
 	
-	public String authenticate(String idKey_RedirectUri) {
-		int iPos = idKey_RedirectUri.indexOf('#');
-		String idKey = idKey_RedirectUri.substring(0, iPos);
-		String redirectUri = idKey_RedirectUri.substring(iPos + 1);
-		if(idKey == null) return "invalid";		
-		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(idKey);
-		if(widgetInstance==null) return "invalid";
-		
-		Collection<IContent> startFiles = widgetInstance.getWidget().getContentList();
-		String startFileUrl = null;
-		for(IContent startFile : startFiles) {
-			iPos = redirectUri.indexOf(startFile.getSrc());
-			if (iPos > -1) {
-				startFileUrl = startFile.getSrc();
-				break;
-			}
-		}
-		if (startFileUrl != null) {
-			redirectUri = redirectUri.substring(0, iPos + startFileUrl.length()) + "?idkey=" + idKey;
-		}
-		
-		try {
-			redirectUri = URLEncoder.encode(redirectUri, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-		}
-		
-		Collection<org.apache.wookie.w3c.IFeature> widgetFeatures = widgetInstance.getWidget().getFeatures();
-		org.apache.wookie.w3c.IFeature oAuthFeature = null;
-		for (org.apache.wookie.w3c.IFeature aFeature : widgetFeatures) {
-			if (getName().equals(aFeature.getName())) {
-				oAuthFeature = aFeature;
-				break;
-			}
-		}
-		
-		if (oAuthFeature == null) {
-			return "";
-		}
-		
-		Collection<IParam> oAuthParams = oAuthFeature.getParameters();
-		String clientId = idKey;
-		String authzServer = null;
-		String scope = ""; 
-		for (IParam aParam : oAuthParams) {
-			String paramName = aParam.getName().toLowerCase();
-			String paramValue = aParam.getValue();
-			if ("authzserver".equals(paramName)) {
-				authzServer = paramValue;
-			} else if ("clientid".equals(paramName)) {
-				if (!"auto".equalsIgnoreCase(paramValue)) {
-					clientId = paramValue;
-				}
-			} else if ("scope".equals(aParam.getName())) {
-				scope = paramValue;
-			} else if ("redirecturi".equals(paramName)) {
-				if (paramValue.length() != 0 && !"auto".equalsIgnoreCase(paramValue)) {
-					redirectUri = paramValue;
-				}
-			}
-		}
-		
-		IOAuthToken oauthToken = persistenceManager.findOAuthToken(widgetInstance);
-		if (oauthToken != null) {
-			persistenceManager.delete(oauthToken);
-		}
-		
-		String url = authzServer + "?client_id=" + clientId + "&response_type=token&redirect_uri=" + redirectUri; 
-		
-		if (scope.length() > 0) {
-			url = url + "&scope=" + scope;
-		}
-		
-		return url;
-	}
-	
 	public String queryToken(String idKey) {
 		if(idKey == null) return "invalid";
 		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
@@ -158,60 +82,28 @@ public class oAuthClient implements IFeature {
 			persistenceManager.delete(oauthToken);
 		}
 	}
-	
-	public String getClientId(String idKey) {
-		if(idKey == null) return "invalid";
-		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(idKey);
-		if(widgetInstance==null) return "invalid";
-		IOAuthToken oauthToken = persistenceManager.findOAuthToken(widgetInstance);
-		if (oauthToken != null) {
-			return oauthToken.getClientId();
-		} else {
-			return "invalid";
-		}
-	}
-	
+
 	public String updateToken(String idKey_tokenBunch) {
-		int iPos = idKey_tokenBunch.indexOf('#');
-		String idKey = idKey_tokenBunch.substring(0, iPos);
-		String tokenBunch = idKey_tokenBunch.substring(iPos + 1);
-		
-		Map<String,String> oAuthTokenBunch = new HashMap<String, String>();
-		iPos = 0;
-		int iEqual, iOffset = 0;
-		String fragment = tokenBunch;
-		do {
-			iPos = tokenBunch.indexOf('&', iOffset);
-			if (iPos < 0) {
-				iPos = tokenBunch.length();
-			}
-			
-			fragment = tokenBunch.substring(iOffset, iPos);
-			iOffset = iOffset + iPos + 1;
-			iEqual = fragment.indexOf('=');
-			if (iEqual < 0) continue;
-			oAuthTokenBunch.put(fragment.substring(0, iEqual), fragment.substring(iEqual + 1));
-		} while (iOffset < tokenBunch.length());
+		Map<String,String> params = parseParams(idKey_tokenBunch);		
+		String idKey = params.get("id_key");
 		
 		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(idKey);
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);		
-
 		if(widgetInstance==null) {
 			return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
 		}
 
-		Map<String, String> oAuthParams = queryOAuthParams(idKey);
+		Map<String, String> oAuthParams = queryXMLParams(idKey);
 		if (oAuthParams == null) {
 			return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$			
 		}
 		
 		IOAuthToken oauthToken = persistenceManager.findOAuthToken(widgetInstance);
 		if (oauthToken == null) oauthToken = persistenceManager.newInstance(IOAuthToken.class);
-		oauthToken.setAccessToken(oAuthTokenBunch.get("access_token"));
-		oauthToken.setExpires(System.currentTimeMillis() + 1000 * Integer.parseInt(oAuthTokenBunch.get("expires_in")));
+		oauthToken.setAccessToken(params.get("access_token"));
+		oauthToken.setExpires(System.currentTimeMillis() + 1000 * Integer.parseInt(params.get("expires_in")));
 		oauthToken.setClientId(oAuthParams.get("clientId"));
 		oauthToken.setAuthzUrl(oAuthParams.get("authzServer"));
 		oauthToken.setWidgetInstance(widgetInstance);
@@ -219,7 +111,7 @@ public class oAuthClient implements IFeature {
 		return oauthToken.getAccessToken();
 	}
 	
-	private Map<String, String> queryOAuthParams(String idKey) {
+	public Map<String, String> queryXMLParams(String idKey) {
 		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(idKey);
 		if(widgetInstance==null) return null;
@@ -240,5 +132,52 @@ public class oAuthClient implements IFeature {
 			oAuthParamMap.put(aParam.getName(), aParam.getValue());
 		}
 		return oAuthParamMap;
+	}
+	
+	public  Map<String, String> queryOAuthParams(Map<String, String> info) {
+		if (info.get("id_key") == null || info.get("url") == null) return null;
+		Map<String, String>oAuthParamMap = queryXMLParams(info.get("id_key"));
+		if (oAuthParamMap == null) return null;
+		String url = info.get("url");
+		int iPos = url.indexOf("/wservices/");
+		if (iPos < 0) return null;
+		url = url.substring(0, iPos);
+		if (!oAuthParamMap.containsKey("profile")) 
+			oAuthParamMap.put("profile", "implicit");
+		try {
+			url = URLEncoder.encode(url, "UTF8");
+			
+			if ("implicit".equals(oAuthParamMap.get("profile"))) 
+				url += "%2Ffeatures%2Foauth%2Fimplicit";
+			else 
+				url += "%2Ffeatures%2Foauth%2Fother";
+		} catch (UnsupportedEncodingException e) {
+			if ("implicit".equals(oAuthParamMap.get("profile")))
+				url += "/features/oauth/implicit";
+			else 
+				url += "/features/oauth/other";
+		}
+		oAuthParamMap.put("redirectUri", url);
+		
+		if (!oAuthParamMap.containsKey("persist"))
+			oAuthParamMap.put("persist", "true");
+		if (!oAuthParamMap.containsKey("popupWidth"))
+			oAuthParamMap.put("popupWidth", "400px");
+		if (!oAuthParamMap.containsKey("popupHeight"))
+			oAuthParamMap.put("popupHeight", "500px");		
+		return oAuthParamMap;
+	}
+	
+	private Map<String, String> parseParams(String paramString) {
+		StringTokenizer st = new StringTokenizer(paramString, "&");
+		Map<String, String> result = new HashMap<String, String>();
+		while (st.hasMoreTokens()) { 
+			String paramPair = st.nextToken();
+			int iPos = paramPair.indexOf('=');
+			if (iPos > 0) {
+				result.put(paramPair.substring(0, iPos), paramPair.substring(iPos + 1));
+			}
+		}
+		return result;
 	}
 }

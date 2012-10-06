@@ -31,11 +31,10 @@
 
     <create creator="new" javascript="OAuthConnector" scope="application">
       <param name="class" value="org.apache.wookie.feature.oauth.oAuthClient"/>  
-      <include method="authenticate"/>
       <include method="updateToken"/>
       <include method="queryToken"/>
       <include method="invalidateToken"/>
-      <include method="getClientId"/>
+      <include method="queryOAuthParams"/>
     </create>
         
     <convert converter="object" match="org.apache.wookie.ajaxmodel.impl.PreferenceDelegate" javascript="Preference">
