@@ -63,6 +63,8 @@ public class HtmlCleaner implements IHtmlProcessor{
 		//
 		properties.setTranslateSpecialEntities(true);
 		properties.setTransSpecialEntitiesToNCR(true);
+		properties.setAdvancedXmlEscape(true);
+		properties.setRecognizeUnicodeChars(false);
 		
 	}
 	
