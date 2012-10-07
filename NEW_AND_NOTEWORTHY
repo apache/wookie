@@ -1,27 +1,20 @@
-# New and Noteworthy: 0.12.0
+# New and Noteworthy: 0.13.0
 
-## W3C XML Digital Signatures for Widgets specification implemented
+## Single "deploy" location
 
-W3C XML Digital Signatures for Widgets specifies how both authors and distributors of widgets can 
-digitally sign a Widget package.  This means that an organisation can choose to automatically install  
-and update widgets that carry recognised signatures - for example from a reputable online widget store 
-(distributor) or from an approved widget author rather than require administrative intervention to approve 
-them.
- 
-See http://dev.w3.org/2006/waf/widgets-digsig/ for more information on the specification.
+There is no longer separate "wservices" and "deploy" folders; instead, widgets are unpacked directly into the deploy folder.
 
-Thanks to Pushpalanka Jayawardhana for this new feature 
+## Locked domains
 
-## Wookie can broadcast a widget import message 
+For added security, each widget instance can be viewed from a unique origin (using subdomains), preventing cross-widget communication and scripting attacks.
+Locked domains are disabled by default; configuration instructions can be found in widgetserver.properties.
 
-Using Wookies property file, you can set a flag and URL endpoint to allow Wookie
-to POST a message to indicate that it has imported a new widget.  This is useful  
-in situations where a container application also wants to import these widgets.
- 
-## W3C package Validator REST service
+## Improved OAuth Support
 
-Wookie can be configured to validate W3C Widget packages.  This is different behaviour
-from importing a package into Wookie, as in this case (if enabled) anyone can validate
-a package.  The package is not imported into Wookie and its resources are all removed after
-parsing.  This service provide a way for users to check if a package is valid or not and
-exposes the W3C Parser module as a service.
+...
+
+## Widget Automatic Updates
+
+Wookie now supports automatic updating of widgets, implementing the Widget Updates spec, allowing widgets to be updated as new versions are released. Update
+checks can be configured to run hourly, daily or weekly. By default automatic updates are disabled; Configuration instructions can be found in 
+widgetserver.properties. 
