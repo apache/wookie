@@ -56,7 +56,8 @@ public class UpdatesController extends Controller {
 	/**
 	 * A GET request with no path arguments will return the list of all updates available for
 	 * all widgets. 
-	 * TODO Note that this call can take a while to complete so it may be better in future to make the call asynchronous, or to schedule update checks and then cache the results
+	 * TODO Note that this call can take a while to complete so it may be better in future to make the call asynchronous, 
+	 * or to schedule update checks and then cache the results. Or even to remove this method altogether.
 	 */
 	@Override
 	protected void index(HttpServletRequest request,
@@ -90,30 +91,20 @@ public class UpdatesController extends Controller {
 	}
 
 	/**
-	 * A POST  requests all updates available to be installed.
-	 * TODO Note that this call can take a while to complete so it may be better in future to make the call asynchronous and spawn a background task to complete the update process
+	 * A POST requests all updates available to be installed. This is not performed synchronously,
+	 * instead a single-use updater is created, which will check for and install updates in a new thread.
 	 */
 	@Override
 	protected boolean create(String resourceId, HttpServletRequest request, HttpServletResponse response)
 			throws ResourceDuplicationException, InvalidParametersException,
 			UnauthorizedAccessException {
+			
 			// Check to see if we're requiring updates over HTTPS - if not output a warning
 			boolean onlyUseHttps = Boolean.parseBoolean(request.getParameter("use-https"));
 			if (!onlyUseHttps) _logger.warn("checking for updates using non-secure method");
-			// Get all installed widgets
-			IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-			IWidget[] widgets = persistenceManager.findAll(IWidget.class);
-
-			try {
-				// Create a W3CWidget factory for the current context
-				W3CWidgetFactory factory = W3CWidgetFactoryUtils.createW3CWidgetFactory(getServletContext());
-				// Iterate over the widgets and attempt to install updates
-				for (IWidget widget: widgets){
-					installUpdate(factory, widget, onlyUseHttps);
-				}
-			} catch (Exception e) {
-				_logger.warn(e.getMessage(), e);
-			}
+			
+			new AutomaticUpdater(getServletContext(), onlyUseHttps);
+			
 			return true;
 	}
 
@@ -128,10 +119,15 @@ public class UpdatesController extends Controller {
 			IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 			IWidget widget = persistenceManager.findById(IWidget.class, resourceId);
 			if (widget == null) throw new ResourceNotFoundException();
+			
+			// Check to see if we're requiring updates over HTTPS - if not output a warning
+			boolean onlyUseHttps = Boolean.parseBoolean(request.getParameter("use-https"));
+			if (!onlyUseHttps) _logger.warn("checking for updates using non-secure method");
+			
 			// FIXME localize error messages
 			try {
 				W3CWidgetFactory factory = W3CWidgetFactoryUtils.createW3CWidgetFactory(getServletContext());
-				installUpdate(factory, widget, false);
+				installUpdate(factory, widget, onlyUseHttps);
 			} catch (IOException e) {
 				_logger.warn("Problem updating "+resourceId+": widget couldn't be downloaded");
 				throw new InvalidParametersException();
