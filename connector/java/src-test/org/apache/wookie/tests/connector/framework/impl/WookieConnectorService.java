@@ -108,7 +108,7 @@ public class WookieConnectorService {
     assertEquals("255", widget.getWidth());
     assertEquals("383", widget.getHeight());
     assertEquals("Apache Wookie (Incubating) Team", widget.getAuthor());
-    assertEquals("http://localhost:8080/wookie/wservices/wookie.apache.org/widgets/simplechat/icon.png", widget.getIcon().toString());
+    assertEquals("http://localhost:8080/wookie/deploy/wookie.apache.org/widgets/simplechat/icon.png", widget.getIcon().toString());
     assertEquals("http://wookie.apache.org/widgets/simplechat", widget.getIdentifier());
     assertEquals("Licensed under the Apache 2.0 License (see http://www.apache.org/licenses/LICENSE-2.0). Smileys created by macpoupou and licensed under Creative Commons Attribution License 3.0. See http://ismileys.free.fr/smileys/ for more information.", widget.getLicense());
   }

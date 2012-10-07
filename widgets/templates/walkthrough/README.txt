@@ -71,7 +71,7 @@ questions=URL in the querystring part of the URL used to invoke the widget. The
 URL can be relative for questions included in the widget or absolute for 
 questions located anywhere.
 
-e.g. http://wookie.server/wookie/wservices/wookie.apache.org/widgets/walkabout/
+e.g. http://wookie.server/wookie/deploy/wookie.apache.org/widgets/walkabout/
 index.html?questions=xml/more_questions.xml
 
 # Using the widget

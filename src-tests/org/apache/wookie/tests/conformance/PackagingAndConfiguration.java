@@ -1283,7 +1283,7 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 		String start = getStartFile(response);
 
 		// split off the end file name
-		// http://localhost:8080/wookie/wservices/ + uid + / + name + ?idkey=...
+		// http://localhost:8080/wookie/deploy/ + uid + / + name + ?idkey=...
 		URL url;
 		try {
 			url = new URL(start);
@@ -1316,7 +1316,7 @@ public class PackagingAndConfiguration extends AbstractFunctionalConformanceTest
 	private String getLocalIconPath(Element widget, Element iconElem){
 		String id = widget.getAttributeValue("id");
 		id = WidgetPackageUtils.convertIdToFolderName(id);
-		String baseUrl = "http://localhost:8080/wookie/wservices/"+id+"/";	
+		String baseUrl = "http://localhost:8080/wookie/deploy/"+id+"/";	
 		if(iconElem == null) return null;
 		String iconUrl = iconElem.getAttributeValue("src");
 		String icon = StringUtils.difference(baseUrl,iconUrl);

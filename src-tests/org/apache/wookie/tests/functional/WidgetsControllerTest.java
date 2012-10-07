@@ -291,7 +291,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     Document doc = builder.build(post.getResponseBodyAsStream());
     Element iconElement = doc.getRootElement().getChild("icon", doc.getRootElement().getNamespace());
     assertNotNull(iconElement);
-    assertEquals("http://localhost:8080/wookie/wservices/uploadtest_2/icon.png", iconElement.getAttributeValue("src"));
+    assertEquals("http://localhost:8080/wookie/deploy/uploadtest_2/icon.png", iconElement.getAttributeValue("src"));
     post.releaseConnection();     
   }
 
