@@ -10,6 +10,17 @@
 	    return (RegExp('[#&]' + paramName + '=' + '(.+?)(&|$)').exec(location.hash) || [,null])[1];
 	}	
 	
+	//	errorCode: 
+	//		* success
+	//			p1: access_token, p2: expires time
+	//		* other
+	//			p1: error description
+	function closeWindow(errorCode, p1, p2) {
+		window.opener.oAuth.finishAuthProcess(errorCode, p1, p2);
+		// close this window
+		window.close();		
+	}
+	
 	function processToken() {
 		if (typeof window.opener.oAuth == 'undefined') {
 			alert('invalid function call')
@@ -24,17 +35,18 @@
 		var accessToken = getHashParam('access_token');
 		var expires = getHashParam('expires_in');
 		var error = getHashParam('error');
-
+		var errorDetail = null;
+		
 		// hide waiting frame
 		document.getElementById('block-busy').style.display = 'none';
 		
 		// send token to parent window
-		var errorDetail = null;
 		if (error == null) {
 			window.opener.oAuth.initAccessToken(accessToken, expires);
 			document.getElementById('block-info').style.display = 'block';
+			
 			// close this window
-			window.close();
+			closeWindow('success', accessToken, expires);
 		} else {
 			if (error == 'access_denied')
 				errorDetail = 'The resource owner or authorization server denied the request.';
@@ -52,6 +64,7 @@
 			document.getElementById('b-err-msg').innerHTML = errorDetail;
 			document.getElementById('block-error').style.display = 'block';
 		}
+		
 	}
 </script>
 </head>
@@ -68,7 +81,8 @@
 		Error code: <span id="b-err-code"></span><br/>
 		Error description: <br/>
 		<span id="b-err-msg"></span><br/>
-		<button type="button" onclick="javascript:window.close();">Close</button>
+		<button type="button" id="close-on-error" onclick="javascript:closeWindow(document.getElementById('b-err-code').innerHTML, document.getElementById('b-err-msg').innerHTML);">Close</button>
 	</div>
 </body>
 </html>
+

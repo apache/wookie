@@ -16,6 +16,7 @@ oAuth = new function OAuth() {
 	this.access_token = null;
 	this.status = null; // null: init, O: not being authenticated, F: authentication failed, A: authenticated
 	this.oauthParams = new Object();
+	this.authCallback = null;
 	
 	this.init = function() {
 		var info = new Object();
@@ -32,6 +33,24 @@ oAuth = new function OAuth() {
 						oAuth.setAccessToken(accessToken);
 					}, async: false});
 		}
+	}
+
+	// errorCode: 
+	//	* success
+	//		p1: access_token, p2: expires time
+	//	* other
+	//		p1: error description	
+	this.finishAuthProcess = function(error_code, p1, p2) {
+		var jResult = new Object();
+		if (error_code == 'success') {
+			oAuth.initAccessToken(p1, p2);
+			jResult['error'] = 'success'; 
+		} else {
+			jResult['error'] = error_code;
+			jResult['desc'] = p1;
+		}
+		if (oAuth.authCallback != null)
+			oAuth.authCallback(jResult);
 	}
 	
 	this.initAccessToken = function(access_token, expires) {
@@ -65,7 +84,7 @@ oAuth = new function OAuth() {
 		return returnedUrl;
 	}
 	
-	this.authenticate = function() {
+	this.authenticate = function(fCallback) {
 		// check if persist
 		if (oAuth.oauthParams['persist'] != 'false') {
 			OAuthConnector.queryToken(widget.instanceid_key, 
@@ -90,7 +109,9 @@ oAuth = new function OAuth() {
 		if (typeof oAuth.oauthParams['scope'] != 'undefined') {
 			url += '&scope=' + oAuth.oauthParams['scope']; 
 		}
-			
+		
+		this.authCallback = fCallback;
+		
 		window.open(url, 'Authorization request', 
 				'width=' + oAuth.oauthParams['popupWidth'] + ', height=' + oAuth.oauthParams['popupHeight']);
 	}
@@ -115,3 +136,4 @@ oAuth = new function OAuth() {
 
 oAuth.init();
 window.oauth = oAuth;
+
