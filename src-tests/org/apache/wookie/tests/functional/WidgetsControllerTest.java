@@ -608,6 +608,66 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     assertEquals(1,PoliciesControllerTest.processPolicies(get.getResponseBodyAsStream()).getChildren("policy").size());
 
   }
+  
+  @Test
+  public void workingWithUnidentifiedWidgets() throws HttpException, IOException, JDOMException{
+      HttpClient client = new HttpClient();
+      //
+      // Use admin credentials
+      //
+      setAuthenticationCredentials(client);
+
+      PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
+
+      //
+      // Add the access test widget. This just has a single access request
+      // for the origin "http://accesstest.incubator.apache.org"
+      //
+      File file = new File("src-tests/testdata/upload-test-noid.wgt");
+      assertTrue(file.exists());
+
+      //
+      // Add test wgt file to POST
+      //
+      Part[] parts = { new FilePart(file.getName(), file) };
+      post.setRequestEntity(new MultipartRequestEntity(parts, post
+          .getParams()));
+
+      //
+      // POST the file to /widgets 
+      //
+      client.executeMethod(post);   
+      SAXBuilder builder = new SAXBuilder();
+      Document doc = builder.build(post.getResponseBodyAsStream());
+      String id = doc.getRootElement().getAttributeValue("id");
+      post.releaseConnection(); 
+      
+      //
+      // Now we'll update it
+      //
+      PutMethod put = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + id));
+
+      //
+      // Add test wgt file to PUT
+      //
+      Part[] updateparts = { new FilePart(file.getName(), file) };
+      put.setRequestEntity(new MultipartRequestEntity(updateparts, put
+          .getParams()));
+
+      //
+      // PUT the file to /widgets and check we get 200 (Updated)
+      //
+      client.executeMethod(put);   
+      int code = put.getStatusCode();
+      assertEquals(200,code);
+      put.releaseConnection();    
+      
+      //
+      // DELETE the widget
+      //
+      DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + id));
+      client.executeMethod(delete);
+  }
 
   /**
    * Download a widget using the Accept type of ("Accept","application/widget")
