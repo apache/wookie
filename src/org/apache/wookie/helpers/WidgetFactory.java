@@ -307,7 +307,12 @@ public class WidgetFactory {
 		widget.setDir(model.getDir());
         widget.setLang(model.getLang());
         widget.setDefaultLocale(model.getDefaultLocale());
-		widget.setIdentifier(model.getIdentifier());
+		
+        //
+        // Don't override the identifier - see WOOKIE-383
+        //
+        //widget.setIdentifier(model.getIdentifier());
+        
 		widget.setHeight(model.getHeight());
 		widget.setWidth(model.getWidth());
 		widget.setVersion(model.getVersion());

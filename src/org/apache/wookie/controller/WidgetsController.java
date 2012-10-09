@@ -255,13 +255,23 @@ public class WidgetsController extends Controller{
         //
         W3CWidgetFactory fac = W3CWidgetFactoryUtils.createW3CWidgetFactory(getServletContext(), properties, localizedMessages);        
         W3CWidget widgetModel = fac.parse(zipFile);
+        
+        String widgetId = widgetModel.getIdentifier();
+        
+        //
+        // If we have a generated ID and resourceId, use the resourceId to override the generated widget identifier. This is a fix for WOOKIE-383
+        //
+        if (widgetModel.getIdentifier().startsWith("http://incubator.apache.org/wookie/generated/") && resourceId != null){
+        	widgetId = resourceId;
+        }
+                
         new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());
         
         //
         // Check if the widget model corresponds to an existing installed widget
         //
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        if (persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()) == null) {
+        if (persistenceManager.findWidgetByGuid(widgetId) == null) {
 
             //
             // A new widget was created, so return 201
@@ -277,7 +287,7 @@ public class WidgetsController extends Controller{
             // Widget already exists, so update the widget metadata and configuration details
             // and return 200
             //
-            WidgetFactory.update(widgetModel,persistenceManager.findWidgetByGuid(widgetModel.getIdentifier()), true, zipFile);
+            WidgetFactory.update(widgetModel,persistenceManager.findWidgetByGuid(widgetId), true, zipFile);
             returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getWookieServerURL(request, "").toString(), true), response);
             return false;
 
