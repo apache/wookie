@@ -17,6 +17,7 @@ oAuth = new function OAuth() {
 	this.status = null; // null: init, O: not being authenticated, F: authentication failed, A: authenticated
 	this.oauthParams = new Object();
 	this.authCallback = null;
+	this.popup = null;
 	
 	this.init = function() {
 		var info = new Object();
@@ -43,33 +44,35 @@ oAuth = new function OAuth() {
 	this.finishAuthProcess = function(error_code, p1, p2) {
 		var jResult = new Object();
 		if (error_code == 'success') {
-			oAuth.initAccessToken(p1, p2);
-			jResult['error'] = 'success'; 
+			// set access token to member variables
+			oAuth.setAccessToken(p1);
+			// update to db if persist type
+			if (oAuth.oauthParams['persist'] != 'false') {
+				OAuthConnector.updateToken(
+						'id_key=' + widget.instanceid_key + '&access_token=' + p1 + '&expires_in=' + p2, 
+						{callback: function(result) {
+							return;
+						}, async: false});
+			}
+			jResult['error'] = 'success';
+			if (oAuth.popup != null) oAuth.popup.close();
 		} else {
 			jResult['error'] = error_code;
 			jResult['desc'] = p1;
-		}
-		if (oAuth.authCallback != null)
-			oAuth.authCallback(jResult);
-	}
-	
-	this.initAccessToken = function(access_token, expires) {
-		// update to db if persist type
-		if (oAuth.oauthParams['persist'] != 'false') {
-			OAuthConnector.updateToken(
-					'id_key=' + widget.instanceid_key + '&access_token=' + access_token + '&expires_in=' + expires, 
-					{callback: function(result) {
-						return;
-					}, async: false});
+			if (oAuth.authCallback != null && oAuth.popup != null)
+				oAuth.popup.close();
 		}
 		
-		// set access token to member variables
-		oAuth.setAccessToken(access_token);
+		if (oAuth.authCallback != null) {
+			window.setTimeout(function() { 
+				oAuth.authCallback(jResult);
+			}, 5);
+		}
 	}
 	
-	this.setAccessToken = function(token_info) {
-		if (token_info != 'invalid') {
-			oAuth.access_token = token_info;
+	this.setAccessToken = function(token) {
+		if (token != 'invalid') {
+			oAuth.access_token = token;
 			oAuth.status = 'A';
 		} else { 
 			oAuth.status = 'O';			
@@ -97,22 +100,28 @@ oAuth = new function OAuth() {
 		
 		// check oauth profile
 		if (typeof oAuth.oauthParams['profile'] != 'undefined') {
-			if (oAuth.oauthParams['profile'] != 'implicit') {
+			if (oAuth.oauthParams['profile'] != 'implicit' && oAuth.oauthParams['profile'] != 'authorization code') {
 				alert(oAuth.oauthParams['profile'] + ' is not supported in this version');
 				return;
 			}
 		}
 		// show popup window
-		var url = oAuth.oauthParams['authzServer'] + 
-			'?response_type=token&client_id=' + oAuth.oauthParams['clientId'] + 
+		var url = oAuth.oauthParams['authzServer'];
+		if (oAuth.oauthParams['profile'] == 'implicit') {
+			url += '?response_type=token&client_id=' + oAuth.oauthParams['clientId'] + 
 			'&redirect_uri=' + oAuth.oauthParams['redirectUri'];
+		} else if (oAuth.oauthParams['profile'] == 'authorization code') {
+			url += '?response_type=code&client_id=' + oAuth.oauthParams['clientId'] + 
+			'&redirect_uri=' + oAuth.oauthParams['redirectUri'];			
+		}
+
 		if (typeof oAuth.oauthParams['scope'] != 'undefined') {
 			url += '&scope=' + oAuth.oauthParams['scope']; 
 		}
 		
 		this.authCallback = fCallback;
 		
-		window.open(url, 'Authorization request', 
+		oAuth.popup = window.open(url, 'Authorization request', 
 				'width=' + oAuth.oauthParams['popupWidth'] + ', height=' + oAuth.oauthParams['popupHeight']);
 	}
 	
@@ -130,8 +139,7 @@ oAuth = new function OAuth() {
 		} else if (oAuth.status == 'A') {
 			document.getElementById(container_id).innerHTML = 'Authenticated';
 		}
-	}
-	
+	}	
 }
 
 oAuth.init();

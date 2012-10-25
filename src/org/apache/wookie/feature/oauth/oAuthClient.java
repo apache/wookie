@@ -23,17 +23,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.wookie.Messages;
 import org.apache.wookie.beans.IOAuthToken;
 import org.apache.wookie.w3c.IParam;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.IFeature;
-import org.apache.wookie.server.LocaleHandler;
-import org.directwebremoting.WebContextFactory;
 
 public class oAuthClient implements IFeature {
 
@@ -89,26 +84,29 @@ public class oAuthClient implements IFeature {
 		
 		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(idKey);
-		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-		Messages localizedMessages = LocaleHandler.localizeMessages(request);		
-		if(widgetInstance==null) {
-			return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
+
+		if (widgetInstance==null) {
+			return "invalid";
 		}
 
 		Map<String, String> oAuthParams = queryXMLParams(idKey);
 		if (oAuthParams == null) {
-			return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$			
+			return "invalid";			
 		}
 		
 		IOAuthToken oauthToken = persistenceManager.findOAuthToken(widgetInstance);
 		if (oauthToken == null) oauthToken = persistenceManager.newInstance(IOAuthToken.class);
-		oauthToken.setAccessToken(params.get("access_token"));
-		oauthToken.setExpires(System.currentTimeMillis() + 1000 * Integer.parseInt(params.get("expires_in")));
-		oauthToken.setClientId(oAuthParams.get("clientId"));
-		oauthToken.setAuthzUrl(oAuthParams.get("authzServer"));
-		oauthToken.setWidgetInstance(widgetInstance);
-		persistenceManager.save(oauthToken);
-		return oauthToken.getAccessToken();
+		try {
+			oauthToken.setAccessToken(params.get("access_token"));
+			oauthToken.setExpires(System.currentTimeMillis() + 1000 * Integer.parseInt(params.get("expires_in")));
+			oauthToken.setClientId(oAuthParams.get("clientId"));
+			oauthToken.setAuthzUrl(oAuthParams.get("authzServer"));
+			oauthToken.setWidgetInstance(widgetInstance);
+			persistenceManager.save(oauthToken);
+			return oauthToken.getAccessToken();
+		} catch (Exception ex) {
+			return "invalid";
+		}
 	}
 	
 	public Map<String, String> queryXMLParams(String idKey) {
@@ -149,11 +147,15 @@ public class oAuthClient implements IFeature {
 			
 			if ("implicit".equals(oAuthParamMap.get("profile"))) 
 				url += "%2Ffeatures%2Foauth%2Fimplicit";
+			else if ("authorization code".equals(oAuthParamMap.get("profile")))
+				url += "%2Ffeatures%2Foauth%2Fauthz-code";
 			else 
 				url += "%2Ffeatures%2Foauth%2Fother";
 		} catch (UnsupportedEncodingException e) {
 			if ("implicit".equals(oAuthParamMap.get("profile")))
 				url += "/features/oauth/implicit";
+			else if ("authorization code".equals(oAuthParamMap.get("profile")))
+				url += "/features/oauth/authz-code";
 			else 
 				url += "/features/oauth/other";
 		}
@@ -181,3 +183,4 @@ public class oAuthClient implements IFeature {
 		return result;
 	}
 }
+
