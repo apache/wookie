@@ -19,7 +19,7 @@
  
 //
 // Wookie JavaScript Connector 
-// @version 0.10
+// @version 0.13
 //
 //
 // Example usage:
@@ -206,7 +206,7 @@ var Wookie = {
         Wookie.connection = {};
         
         if (!url || typeof url === "undefined") {
-            Wookie.connection.url = "http://localhost:8080/wookie";
+            Wookie.connection.url = "/wookie";
         } else {
             Wookie.connection.url = url;
         }
