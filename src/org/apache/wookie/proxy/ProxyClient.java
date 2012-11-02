@@ -245,8 +245,9 @@ public class ProxyClient {
 	    // Excecute request and return response
 	    //
 	    int statusCode = client.executeMethod(method);
-	    responseObject.status = statusCode;
-	    responseObject.body = IOUtils.toByteArray(method.getResponseBodyAsStream());
+	    InputStream bodyStream = method.getResponseBodyAsStream();
+            responseObject.status = statusCode;
+	    if (bodyStream != null) responseObject.body = IOUtils.toByteArray(bodyStream);
 	    responseObject.headers = method.getResponseHeaders();
 	    return responseObject;
 	  } 
