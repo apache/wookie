@@ -16,6 +16,7 @@
  */
 package org.apache.wookie.feature.oauth;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collection;
@@ -23,21 +24,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.commons.configuration.CompositeConfiguration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.wookie.beans.IOAuthToken;
 import org.apache.wookie.w3c.IParam;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.IFeature;
+import org.apache.wookie.helpers.WidgetRuntimeHelper;
 
 public class oAuthClient implements IFeature {
-
+	private static String widgetContextFolder = null;
+	
 	public String getName() {
 		return "http://oauth.net/2";
 	}
 	
 	public String[] scripts() {
-		return new String[] {"/wookie/dwr/interface/OAuthConnector.js", "/wookie/shared/js/oauth.js"};
+		return new String[] {
+				WidgetRuntimeHelper.getWebContextPath() + "/dwr/interface/OAuthConnector.js", 
+				WidgetRuntimeHelper.getWebContextPath() + "/shared/js/oauth.js"};
 	}
 
 	public String[] stylesheets() {
@@ -50,6 +58,25 @@ public class oAuthClient implements IFeature {
 
 	public String getFolder() {
 		return null;
+	}
+	
+	public oAuthClient() {
+		if (oAuthClient.widgetContextFolder != null) return;
+		try {
+	        File localPropsFile = new File(System.getProperty("user.dir") + File.separator + "local.widgetserver.properties");
+	        PropertiesConfiguration localConfiguration = new PropertiesConfiguration(localPropsFile);
+	        CompositeConfiguration configuration = new CompositeConfiguration();
+	        configuration.addConfiguration(localConfiguration);
+	        configuration.addConfiguration(new PropertiesConfiguration("widgetserver.properties"));
+	        String widgetFolder = configuration.getString("widget.widgetfolder");
+	        if (widgetFolder != null) {
+	        	widgetFolder = widgetFolder.replace(File.separatorChar, '/');
+	        	if (!widgetFolder.endsWith("/")) widgetFolder += "/";
+	        }
+	        oAuthClient.widgetContextFolder = widgetFolder;
+		} catch (ConfigurationException ex) {
+
+		}		
 	}
 	
 	public String queryToken(String idKey) {
@@ -137,8 +164,9 @@ public class oAuthClient implements IFeature {
 		Map<String, String>oAuthParamMap = queryXMLParams(info.get("id_key"));
 		if (oAuthParamMap == null) return null;
 		String url = info.get("url");
-		int iPos = url.indexOf("/wservices/");
-		if (iPos < 0) return null;
+		if (widgetContextFolder == null) return oAuthParamMap;
+		int iPos = url.indexOf(widgetContextFolder, url.indexOf(WidgetRuntimeHelper.getWebContextPath()));
+		if (iPos < 0) return oAuthParamMap;
 		url = url.substring(0, iPos);
 		if (!oAuthParamMap.containsKey("profile")) 
 			oAuthParamMap.put("profile", "implicit");
@@ -181,6 +209,7 @@ public class oAuthClient implements IFeature {
 			}
 		}
 		return result;
-	}
+	}	
 }
+
 
