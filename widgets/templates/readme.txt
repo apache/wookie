@@ -299,6 +299,8 @@ ensure that they all get built when calling the target
 "generate-all-widgets". There is an exmple in the build.xml file you
 created above.
 
+*** Deploying to alternative locations
+By default 
 * Building templatised widgets
 
 To build and deploy the widgets run "ant generate-all-widgets" from
