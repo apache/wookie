@@ -26,7 +26,8 @@ the Wookie directory. It is useful for managing widgets in your own projects.
 
     <!-- Edit the value of wookie.root.dir so that it points to your Wookie install -->
     <property name="wookie.root.dir" location="../../../"/>
-  
+
+    <property name="widget.deploy.dir" location="${project.build.dir}/webapp/wookie/deploy"/>  
     <property name="default.widget.definitions.dir" location="."/>
     <property name="wookie.template.dir" location="${wookie.root.dir}/widgets/templates"/>
     <property name="template.dir" location="${wookie.template.dir}"/>		
