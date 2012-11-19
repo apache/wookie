@@ -30,6 +30,7 @@ var ${widget.shortname}_scanning_controller = {
     currentElementIdx: 0, // The index of the currently scanning element
 
     init:function() {
+        ${widget.shortname}_scanning_controller.scanElements = $('[data-scanOrder]');
 	${widget.shortname}_scanning_controller.startScanning();
     },
 
