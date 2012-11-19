@@ -24,6 +24,7 @@ var ${widget.shortname}_asset_controller = {
     auto: false, // indicates if we are auto playing assets
     staticDuration: 5000, // interval between auto play of static assets (e.g. photo's)
     interval: null, // the interval object that controls the auto player
+    collection: null, // the collection of assets to play
 
     init:function() { 
 	// register button events
@@ -53,13 +54,13 @@ var ${widget.shortname}_asset_controller = {
     },
     
     setCollection:function(album){
-	sessionStorage.setItem('collection', JSON.stringify(album));
+	${widget.shortname}_asset_controller.collection = album;
         // FIXME: cache images for faster slideshow. e.g. http://www.anthonymclin.com/code/7-miscellaneous/98-on-demand-image-loading-with-jquery
 	${widget.shortname}_asset_controller.displayAsset(0);
     },
 
     getCollection:function() {
-	return JSON.parse(sessionStorage.getItem('collection'));
+	return 	${widget.shortname}_asset_controller.collection;
     },
     
     displayAsset:function(idx) {
