@@ -23,8 +23,8 @@ import org.apache.log4j.Logger;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
 
 /**
- * Runs some basic diagnostic tests, and raises warnings if there are potential issues both
- * in the log and also through flash messages on the Admin page.
+ * Runs some basic diagnostic tests, and raises warnings if there are potential issues 
+ * in the log.
  */
 public class Diagnostics {
 	
@@ -53,16 +53,21 @@ public class Diagnostics {
 	public static void checkFolder(String name, File folder){
 		if (!folder.exists()){
 			String error = name+" folder does not exist: "+folder.getAbsolutePath(); 
+			try {
+				folder.mkdirs();
+				error += " - new folder created"; 
+			} catch (Exception e) {
+				error += " - and couldn't be created"; 
+			}
+			_logger.error(error);
+		}
+		if (!folder.canRead()){
+			String error = name+" folder cannot be read from: "+folder.getAbsolutePath(); 
 			_logger.error(error);	
-		} else {
-			if (!folder.canRead()){
-				String error = name+" folder cannot be read from: "+folder.getAbsolutePath(); 
-				_logger.error(error);	
-			}
-			if (!folder.canWrite()){
-				String error = name+" folder cannot be written to: "+folder.getAbsolutePath(); 
-				_logger.error(error);	
-			}
+		}
+		if (!folder.canWrite()){
+			String error = name+" folder cannot be written to: "+folder.getAbsolutePath(); 
+			_logger.error(error);	
 		}
 	}
 
