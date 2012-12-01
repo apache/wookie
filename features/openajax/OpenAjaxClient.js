@@ -19,13 +19,75 @@
 // "hub.subscribe(topic, callback)"
 //
 
-window.hub = new OpenAjax.hub.IframeHubClient({
-    HubClient: {
-      onSecurityAlert: function(){}
-    }
-});
+window.hub = {};
 
-// Connect to the ManagedHub
-window.hub.connect( 
-    function(hub, success, error){}
-);
+window.hub.isConnected = false;
+window.hub.subscriptions = [];
+window.hub.publishings = [];
+
+window.hub.connect = function(){
+    if(typeof window.hub.oahub === 'undefined'){
+        window.hub.oahub = new OpenAjax.hub.IframeHubClient({
+            HubClient: {
+              onSecurityAlert: function(){
+                  console.log("OpenAjax Security Error!");
+                  }
+            }
+        });	
+        
+        // Connect to the ManagedHub with callback function for asynchronous communication
+        window.hub.oahub.connect(window.hub.onConnect);
+    }
+};
+
+window.hub.onConnect = function(hub, success, error){
+    if (success){
+        window.hub.isConnected = true;
+        window.hub.loadpending();
+    } else {
+        console.log(error);
+        setTimeout(window.hub.connect, 1000);
+    }
+};
+
+window.hub.subscribe = function(topic, callback){
+  //
+  // If the hub isn't connected yet, queue the action
+  //
+  if (window.hub.isConnected){
+    window.hub.oahub.subscribe(topic, callback);
+  } else {
+    window.hub.subscriptions.push({"topic":topic, "callback":callback});
+  }
+};
+
+window.hub.publish = function(topic, message){
+  //
+  // If the hub isn't connected yet, queue the action
+  //
+  if (window.hub.isConnected){
+    window.hub.oahub.publish(topic,message);
+  } else {
+    window.hub.publishings.push({"topic":topic, "message":message});
+  }
+};
+
+//
+// Perform any pub/sub actions that were queued while the hub was being loaded
+//
+hub.loadpending = function(){
+  for (var i=0;i<window.hub.subscriptions.length;i++){
+    window.hub.oahub.subscribe(window.hub.subscriptions[i].topic, window.hub.subscriptions[i].callback);
+  }
+  window.hub.subscriptions = [];
+  
+  for (var j=0;j<window.hub.publishings.length;j++){
+    window.hub.oahub.publish(window.hub.publishings[j].topic, window.hub.publishings[j].message);
+  }
+  window.hub.publishings = [];
+};
+
+window.hub.connect();
+
+
+
