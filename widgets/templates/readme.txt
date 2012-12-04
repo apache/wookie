@@ -300,7 +300,22 @@ ensure that they all get built when calling the target
 created above.
 
 *** Deploying to alternative locations
-By default 
+You can change the location widgets are deployed to by setting the
+property "widget.deploy.dir" in the command line or in the widgets
+build.xml file.
+*** Deploying in compressed or expanded form
+By default widgets are deployed in compressed ".wgt" files
+only. However, if you want to deploy in uncompressed (expanded) format
+you can do so by setting the propery "widget.deploy.expanded" in the
+command line or in the widgets build.xml file.
+
+To supress deployment in compressed form it is not quite so easy. You
+must first override the widgets_build.xml file (see "Your own widgets
+directories" above). In this file you will need to comment out the following line:
+
+    <property name="widget.deploy.compressed" value="true"/>
+
+
 * Building templatised widgets
 
 To build and deploy the widgets run "ant generate-all-widgets" from

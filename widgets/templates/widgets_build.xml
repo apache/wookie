@@ -17,7 +17,6 @@
 -->
 
 <!--
-
 This is a template file for widget build directories that exist outside of
 the Wookie directory. It is useful for managing widgets in your own projects.
 
@@ -26,7 +25,12 @@ the Wookie directory. It is useful for managing widgets in your own projects.
 
     <!-- Edit the value of wookie.root.dir so that it points to your Wookie install -->
     <property name="wookie.root.dir" location="../../../"/>
+    <!-- Uncomment this line if you want to deploy widgets in expanded form -->
+    <!--  <property name="widget.deploy.expanded" value="true"/>  -->
+    <!-- Comment this line if you do not want to deploy widgets in compressed form -->
+    <property name="widget.deploy.compressed" value="true"/>
 
+    <property name="project.build.dir" location="build"/>
     <property name="widget.deploy.dir" location="${project.build.dir}/webapp/wookie/deploy"/>  
     <property name="default.widget.definitions.dir" location="."/>
     <property name="wookie.template.dir" location="${wookie.root.dir}/widgets/templates"/>

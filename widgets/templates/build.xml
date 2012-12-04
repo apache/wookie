@@ -474,12 +474,12 @@
     </target>
 
     <target name="_generate_and_deploy_widget"
-            description="Generates a widget from its template and then deploys to a live server"
+            description="Generates a widget from its template and then deploys it in compressed form (e.g. .wgt file)"
             depends="_generate_widget">
       <!-- Deploy the widget -->
-      <antcall target="deploy-widget">
-        <param name="widget.shortname" value="${widget.shortname}"/>
-      </antcall>
+
+      <antcall target="deploy-widget" inheritAll="true"/>
+      <antcall target="deploy-expanded-widget" inheritAll="true"/>
     </target>
 
     <target name="_init_widget_generation">
