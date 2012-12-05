@@ -81,6 +81,31 @@
         </filterchain>
     </loadfile>
 
+    <!-- load tile content-->
+    <loadfile property="content.tile"
+              srcFile="content_tile.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <loadfile property="content.tile"
+              srcFile="../common/content_tile.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <loadfile property="content.tile"
+              srcFile="${template.dir}/${template.name}/content_tile.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
     <!-- load content from widget definition -->
     <loadfile property="content.primary"
               srcFile="content_primary.html"

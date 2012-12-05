@@ -36,6 +36,13 @@ var ${widget.shortname}_controller = {
      * Update the display
      */
     update:function() { 
+        // Is the viewport large enough for the full view?
+        var viewport = ${widget.shortname}_controller.getViewport();
+        if (viewport.height <= ${widget.tile.max.height}  || viewport.width <= ${widget.tile.max.width}) {
+            $.mobile.changePage($('#tile'));
+        } else {
+            $.mobile.changePage($('#home'));
+        }
     },
 
    /**

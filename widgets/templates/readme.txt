@@ -250,6 +250,24 @@ ${widget.shortname}_message_controller.send = function(subject, message) {
     // message send code here
 }
 
+** Tiled Templates
+The Base Template provides functionality that allows it to provide a
+separate view that is used when the viewport is below a certain
+size. This view can provide reduced information and is designed for
+use in views that have multiple widgets on display at the same time.
+
+By default the maximum height and widget for a tiled viewport is 310
+pixels. That is, if the viewport is 311 or more pixels in both width
+and height it will display the content defined in the #home div of the
+page definition. If the viewport is 310 or less pixels in either
+height or width then the content in the #tile div will be displayed.
+
+To customise the tile content your widget should provide a
+content_tile.html file.
+
+To customise the maximum viewport size for the tile view set the
+properties "widget.tile.max.height" and "widget.tile.max.width" (both
+default to 310).
 ** Common Files
 When building a family of related widgets you are likely to provide a
 set of common files that will be reused by multiple widgets. These can
@@ -314,7 +332,6 @@ must first override the widgets_build.xml file (see "Your own widgets
 directories" above). In this file you will need to comment out the following line:
 
     <property name="widget.deploy.compressed" value="true"/>
-
 
 * Building templatised widgets
 
