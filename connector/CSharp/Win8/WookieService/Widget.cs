@@ -25,53 +25,29 @@ namespace WookieService
         private String desc;
         private String guid;
 
-        public Widget(String guid, String title, String desc, String icon)
+        public Widget(String guid, String title, String desc, String icon, String path, String contentFile)
         {
-            this.setGuid(guid);
-            this.setTitle(title);
-            this.setDescription(desc);
-            this.setIcon(icon);
+            this.Guid = guid;
+            this.Title = title;
+            this.Description = desc;
+            this.Icon = icon;
+            this.Path = path;
+            this.ContentFile = contentFile;
         }
 
-        public void setGuid(String guid) 
-        {
-            this.guid = guid;
-        }
+        public String Guid { get; set; }
+        public String Title { get; set; }
+        public String Description { get; set; }
+        public String Icon { get; set; }
+        public String Path { get; set; } // the path to the widget files
+        public String ContentFile { get; set; } // the filename for the content file
 
-        public String getGuid() 
+        public String Source 
         {
-            return this.guid;
+            get
+            {
+                return "ms-appx-web:///widget/" + this.Path + "/" + this.ContentFile;
+            }
         }
-
-        public void setTitle(String title)
-        {
-            this.title = title;
-        }
-
-        public String getTitle()
-        {
-            return this.title;
-        }
-
-        public void setDescription(String desc)
-        {
-            this.desc = desc;
-        }
-
-        public String getDescription()
-        {
-            return this.desc;
-        }
-
-        public void setIcon(String icon)
-        {
-            this.icon = icon;
-        }
-
-        public String getIcon()
-        {
-            return this.icon;
-        }
-
     }
 }
