@@ -22,6 +22,7 @@
     <property name="widget.build.dir" location="./build"/>
     <property name="widget.defintions.dir" location="widgets"/>
     <property name="wookie.template.dir" location="${wookie.root.dir}/widgets/templates"/>
+    <property name="widget.deploy.compressed" value="true"/>
 
     <import file="${wookie.root.dir}/widgets/build.xml"/>
 	
