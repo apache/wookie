@@ -23,7 +23,7 @@
   <name>${widget.name}</name>
   <description>${widget.description}</description>
   <content src="index.html"/>
-  <icon src="images/icon.png"/>
+  <icon src="${widget.icon.src}"/>
   <author>Apache Wookie (Incubating) Community</author>
   <access origin="${widget.access.origin}"/>  
   
