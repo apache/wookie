@@ -91,6 +91,8 @@ function showWidget(id){
     $('#preview_info').html('<br/>' + widgetInstance.title + '<br/>' + id);
     $("#preview_alice_widget").html('');
     $("#preview_alice_widget").append("<iframe src='"+widgetInstance.url+"' height='"+widgetInstance.height+"' width='"+widgetInstance.width+"'></iframe>");
+    $("#preview_alice_tile").html('');
+    $("#preview_alice_tile").append("<iframe src='"+widgetInstance.url+"' height='150' width='310'></iframe>");
     $("#alice_url").html("<a href='" + widgetInstance.url + "' target='_blank'>Full Screen</a>");
     Wookie.setPreference(id, "conference-manager","true");
     
@@ -98,5 +100,7 @@ function showWidget(id){
     var widgetInstance = Wookie.getOrCreateInstance(id);
     $("#preview_bob_widget").html('');
     $("#preview_bob_widget").append("<iframe src='"+widgetInstance.url+"' height='"+widgetInstance.height+"' width='"+widgetInstance.width+"'></iframe>");
+    $("#preview_bob_tile").html('');
+    $("#preview_bob_tile").append("<iframe src='"+widgetInstance.url+"' height='150' width='310'></iframe>");
     $("#bob_url").html("<a href='" + widgetInstance.url + "' target='_blank'>Full Screen</a>");
 }

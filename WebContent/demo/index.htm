@@ -77,8 +77,9 @@
             </p>
             <!-- Preview area -->
             <hr/>
+            <h3>Previewing: <span id="preview_info">None</h3>
             <div id="preview">
-                <p>Previewing: <span id="preview_info">None</p>
+                <h3>Requested Size</h3>
                 <div id="preview_alice" class="preview">
                     <h1><img src="http://localhost:8080/wookie/demo/alice.png"> Alice</h1>
                     <div id="preview_alice_widget">Select a widget on the left</div>
@@ -90,8 +91,17 @@
 		    <span id="bob_url"/>
                 </div>
             </div>
-            <p></p>
-		</div>
+            <hr/>               
+            <div id="tilePreview">
+              <h3>Tiled version</h3>
+                <div id="tile_preview_alice" class="preview">
+                    <div id="preview_alice_tile">Select a widget on the left</div>
+                </div>
+                <div id="tile_preview_bob" class="preview">
+                    <div id="preview_bob_tile">Select a widget on the left</div>
+                </div>
+            </div>
+        </div>
         
         <div id="footer">
             <div class="copyright">
