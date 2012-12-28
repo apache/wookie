@@ -219,6 +219,7 @@
             failonerror="false">
         <fileset dir="../common/images">
           <include name="**/*.*"/>
+          <exclude name="**/Thumbs.db"/>
         </fileset>     
       </copy>
       <copy todir="${widget.build.dir}/${widget.shortname}/images"
@@ -226,6 +227,7 @@
             failonerror="false">
         <fileset dir="./images">
           <include name="**/*.*"/>
+          <exclude name="**/Thumbs.db"/>
         </fileset>     
       </copy>
 
@@ -427,6 +429,7 @@
             failonerror="false">
         <fileset dir="${template.dir}/${template.name}/images">
           <include name="**/*.*"/>
+          <exclude name="**/Thumbs.db"/>
         </fileset>     
       </copy>
 
