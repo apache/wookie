@@ -53,8 +53,17 @@ var ${widget.shortname}_asset_controller = {
 	});
     },
     
+    // Set the collection to an array. The "album" should be wither an array or an
+    // object with an assets property which is the required array.
+    //
+    // The array will contain, at least, a src property which contains the src to
+    // use for the HTML image.
     setCollection:function(album){
-	${widget.shortname}_asset_controller.collection = album;
+        if (album.assets) {
+	    ${widget.shortname}_asset_controller.collection = album.assets;
+        } else {
+	    ${widget.shortname}_asset_controller.collection = album;
+        }
         // FIXME: cache images for faster slideshow. e.g. http://www.anthonymclin.com/code/7-miscellaneous/98-on-demand-image-loading-with-jquery
 	${widget.shortname}_asset_controller.displayAsset(0);
     },
