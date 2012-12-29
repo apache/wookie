@@ -23,7 +23,7 @@
  * widget.
  */ 
 var ${widget.shortname}_scanning_controller = {
-    scanning: true, // indicates if we are currently scanning
+    scanning: ${scanning.start}, // indicates if we are currently scanning
     delay: ${scanning.delay}, // time in milliseconds between focus change
     interval: null, // The interval object controlling the scan
     scanElements: null, // The elements to scan over
@@ -31,7 +31,9 @@ var ${widget.shortname}_scanning_controller = {
 
     init:function() {
         ${widget.shortname}_scanning_controller.scanElements = $('[data-scanOrder]');
-	${widget.shortname}_scanning_controller.startScanning();
+        if (${widget.shortname}_scanning_controller.scanning) {
+	    ${widget.shortname}_scanning_controller.startScanning();
+        };
     },
 
     /**

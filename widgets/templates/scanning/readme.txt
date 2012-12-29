@@ -27,6 +27,19 @@ http://james.padolsey.com/javascript/sorting-elements-with-jquery/
 Configuration
 =============
 
+Scan Autostart
+--------------
+
+By default scanning will auto start. This can be changed by setting
+the scanning.start property:
+
+scanning.start=false
+
+
+
+Scan Delay
+----------
+
 You can also change various aspects of the scanning functionality by
 setting the following variables in ${widget.shortname}_scanning_controller:
 
