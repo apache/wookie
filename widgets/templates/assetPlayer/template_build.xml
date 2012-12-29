@@ -112,6 +112,30 @@
       </filterchain>
     </loadfile>
 
+    <loadfile property="content.albums"
+	      srcFile="content_albums.html"
+	      failonerror="false">
+      <filterchain>
+	<expandproperties/>
+      </filterchain>
+    </loadfile>
+
+    <loadfile property="content.albums"
+	      srcFile="../common/content_albums.html"
+	      failonerror="false">
+      <filterchain>
+	<expandproperties/>
+      </filterchain>
+    </loadfile>
+    
+    <loadfile property="content.albums"
+              srcFile="${template.dir}/${template.name}/content_albums.html"
+              failonerror="false">
+      <filterchain>
+	<expandproperties/>
+      </filterchain>
+    </loadfile>
+
     <loadfile property="content.footer"
               srcFile="content_footer.html"
               failonerror="false">

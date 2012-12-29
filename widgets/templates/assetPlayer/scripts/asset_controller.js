@@ -24,7 +24,8 @@ var ${widget.shortname}_asset_controller = {
     auto: false, // indicates if we are auto playing assets
     staticDuration: 5000, // interval between auto play of static assets (e.g. photo's)
     interval: null, // the interval object that controls the auto player
-    collection: null, // the collection of assets to play
+    albums: null, // the albums of colelctions that can be played
+    collection: null, // the collection of assets currently playing
 
     init:function() { 
 	// register button events
@@ -36,8 +37,8 @@ var ${widget.shortname}_asset_controller = {
 	    ${widget.shortname}_asset_controller.prevAsset();
 	});
 
-	$('#gotoAlbum').click(function() {
-	    alert("gotoAlbum not implemented yet");
+	$('#selectAlbum').click(function() {
+            $.mobile.changePage($("#home"));
 	});
 
 	$('#playPause').click(function() {
@@ -52,19 +53,58 @@ var ${widget.shortname}_asset_controller = {
 	    }
 	});
     },
+
+    initAlbums:function() { 
+        var list = $("#albumList");
+        var albums = ${widget.shortname}_asset_controller.albums;
+        if (albums) {
+            list.empty();
+            $.each(
+                albums,
+                function( intIndex, album ){
+                    list.append(${widget.shortname}_asset_controller.getAlbumCover(album));
+                    $("#" + album.title).click(function() {
+                        ${widget.shortname}_asset_controller.showAlbum(album);
+                    });
+                }
+            );
+        } else {
+            list.append("Loading Albums...");
+        }
+    },
+
+    getAlbumCover:function(album) {
+      var html = "<li id='" + album.title + "'>";
+      html = html + "<img src='" + album.preview + "' width='120' height='120'/> ";
+      html = html + album.title;
+      html = html + "</a></li>";
+      return $(html);
+    },
+
+    showAlbum:function(album) {
+	${widget.shortname}_asset_controller.setCollection(album);
+        $.mobile.changePage("#picture");
+    },
+
+    setAlbums:function(albums) {
+	${widget.shortname}_asset_controller.albums = albums;
+        ${widget.shortname}_asset_controller.initAlbums();
+    },
+
     
-    // Set the collection to an array. The "album" should be wither an array or an
+    // Set the collection, that is the collection being shown at this time
+    // to an array of assets. The "collection" should be either an array or an
     // object with an assets property which is the required array.
     //
     // The array will contain, at least, a src property which contains the src to
     // use for the HTML image.
-    setCollection:function(album){
-        if (album.assets) {
-	    ${widget.shortname}_asset_controller.collection = album.assets;
+    setCollection:function(collection){
+        if (collection.assets) {
+	    ${widget.shortname}_asset_controller.collection = collection.assets;
         } else {
-	    ${widget.shortname}_asset_controller.collection = album;
+	    ${widget.shortname}_asset_controller.collection = collection;
         }
-        // FIXME: cache images for faster slideshow. e.g. http://www.anthonymclin.com/code/7-miscellaneous/98-on-demand-image-loading-with-jquery
+        // TODO: cache images for faster slideshow. e.g. http://www.anthonymclin.com/code/7-miscellaneous/98-on-demand-image-loading-with-jquery
 	${widget.shortname}_asset_controller.displayAsset(0);
     },
 
@@ -73,24 +113,24 @@ var ${widget.shortname}_asset_controller = {
     },
     
     displayAsset:function(idx) {
-	var album = ${widget.shortname}_asset_controller.getCollection();
-	$('#asset').attr("src", album[idx].src);
+	var collection = ${widget.shortname}_asset_controller.getCollection();
+	$('#asset').attr("src", collection[idx].src);
     },
 
     nextAsset:function() {
-	var album = ${widget.shortname}_asset_controller.getCollection();
+	var collection = ${widget.shortname}_asset_controller.getCollection();
 	${widget.shortname}_asset_controller.idx += 1;
-        if (${widget.shortname}_asset_controller.idx >= album.length) { 
+        if (${widget.shortname}_asset_controller.idx >= collection.length) { 
 	    ${widget.shortname}_asset_controller.idx = 0;
 	};
 	${widget.shortname}_asset_controller.displayAsset(${widget.shortname}_asset_controller.idx);
     },
 
     prevAsset:function() {
-	var album = ${widget.shortname}_asset_controller.getCollection();
+	var collection = ${widget.shortname}_asset_controller.getCollection();
 	${widget.shortname}_asset_controller.idx -= 1;
         if (${widget.shortname}_asset_controller.idx <0) { 
-	    ${widget.shortname}_asset_controller.idx = album.length - 1;
+	    ${widget.shortname}_asset_controller.idx = collection.length - 1;
 	};
 	${widget.shortname}_asset_controller.displayAsset(${widget.shortname}_asset_controller.idx);
     },
@@ -108,6 +148,10 @@ var ${widget.shortname}_asset_controller = {
     }
 };
 
-$('#home').live('pageshow',function(event) { 
+$('#picture').live('pageinit',function(event) { 
   ${widget.shortname}_asset_controller.init(); 
+});
+
+$('#home').live('pageinit',function(event) { 
+  ${widget.shortname}_asset_controller.initAlbums(); 
 });

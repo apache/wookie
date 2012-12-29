@@ -10,63 +10,25 @@ By defaul the template expects to find an <img...> tag with the ID
 "asset". This can be changed to an audio or video tag in the widgets
 that build on this template (see content_primary.html).
 
-** Functions
+** Features
 
-  - play a collection of assets in a rolling "slideshow"
+  - present multiple albums of assets
+  - play an album of assets in a rolling "slideshow"
   - move to the next asset
-  - move back tot he previous asset
+  - move back to the previous asset
   - scanning of buttons controlling the player (via the scanning template)
 
 ** Use
 
 By default the asset player assumes all assets are images it is
 therefore easiest to display images using this widget. To do this all
-you need to do is set the collection that should be displayed. This is
-done by calling the setCollection(assets) method, where assets is
-either an array or an object with an "assets" property which is the
-required array.  This array will contain, at least, a "src"
-property which contains the src to use for the HTML image.
+you need to do is set the albums that should be displayed. This is
+done by calling the setAlbums(albums) method, where albums is a an
+object that describes the albums of assets that should be presented to
+the user.
 
-For example:
+See the assetPlayerTestWidget for a working example.
 
-var ${widget.shortname}_images_controller = { 
-    init:function() { 
-        var assets = {
-            "assets": [
-                {
-	            "src":"images/places/032.jpg"
-	        },
-                {
-	            "src":"images/places/042.jpg"
-	        },
-                {
-	            "src":"images/places/eden project.jpg"
-	        },
-                {
-	            "src":"images/places/edenProject.jpg"
-	        },
-
-            ]
-        };
-/*
-	var assets = [];
-	assets[0] = {
-	    "src":"images/places/032.jpg"
-	};
-	assets[1] = {
-	    "src":"images/places/042.jpg"
-	};
-*/
-
-	${widget.shortname}_asset_controller.setCollection(assets);
-	${widget.shortname}_scanning_controller.scanElements = $('[data-scanOrder]');
-    },
-
-};
-
-$('#home').live('pageshow',function(event) { 
-  ${widget.shortname}_images_controller.init(); 
-});
 
 *** Assets other than images
 
@@ -86,3 +48,13 @@ something like:
 FIXME: Note that a future version of the player is likely to automaically
 create the relevant HTML tag for a chosen asset type.
 
+
+** Configuration
+*** Parent Templates
+
+This template builds upon the following templates and therefore is
+configurable in any way those templates are:
+
+  * scanning
+  * twoColumn
+  * base
