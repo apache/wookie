@@ -570,3 +570,13 @@ In order to make the build faster in a development process you can
 define which templates are to be built using the "widget.include"
 property discussed in the next section.
 
+* Widget API
+The base template provides a shim implementation of the widget API
+used in Wookie (window.widget.*). This shim is only loaded if an api
+object has not been injected by the host enviroment, a happens when
+the widget is deployed by Wookie.
+
+If you want to build a custom version of the widget for a given
+platform you can provide your own implementation of the widget API by
+injecting your own window.widget object at runtime or by providing
+your own implementation in widget_api.js at build time.
