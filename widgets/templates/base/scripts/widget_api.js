@@ -32,6 +32,22 @@ if (!window.widget){
         proxify:function(url) {
             return url;
         }
+
+        openURL:function(url){
+            window.widget.views.openUrl(url);
+        };
+
     };
+}
+
+if (!window.widget.views){
+    window.widget.views = {
+        openUrl: function (url, navigateCallback, opt_viewTarget) {
+            window.open(url, opt_viewTarget);      
+            if (navigateCallback) {
+                navigateCallback(window);
+            };
+        }    
+    }
 }
 

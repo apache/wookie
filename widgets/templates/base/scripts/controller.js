@@ -120,7 +120,7 @@ var ${widget.shortname}_controller = {
     }
 };
 
-$('#home').live('pageshow',function(event) {
+$('#home').live('pageinit',function(event) {
    ${widget.shortname}_controller.init(); 
 });
 
