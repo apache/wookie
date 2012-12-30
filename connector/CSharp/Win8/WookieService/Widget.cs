@@ -42,6 +42,9 @@ namespace WookieService
         public String Path { get; set; } // the path to the widget files
         public String ContentFile { get; set; } // the filename for the content file
 
+        /// <summary>
+        /// Get the source location of this widget. This can be used as a URI to retrieve the widget.
+        /// </summary>
         public String Source 
         {
             get
