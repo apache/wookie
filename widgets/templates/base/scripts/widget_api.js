@@ -31,11 +31,11 @@ if (!window.widget){
          */
         proxify:function(url) {
             return url;
-        }
+        },
 
         openURL:function(url){
             window.widget.views.openUrl(url);
-        };
+        }
 
     };
 }
