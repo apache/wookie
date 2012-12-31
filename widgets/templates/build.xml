@@ -18,7 +18,7 @@
 
     <property name="wookie.root.dir" location="../../"/>
     <property name="project.build.dir" location="${wookie.root.dir}/build"/>
-    <property name="template.dir" location="."/>
+    <property name="t-emplate.dir" location="."/>
     <property name="widget.build.dir" location="./build"/>
     <property name="widget.defintions.dir" location="widgets"/>
     <property name="wookie.template.dir" location="${wookie.root.dir}/widgets/templates"/>
@@ -37,15 +37,18 @@
     <target name="generate-widgets"
             description="Generate all the required widgets from the templates">
 
+      <delete dir="${widget.build.dir}"/>
+
       <property name="widget.include" value="*"/>
 
-      <echo message="+------------------------------------------+"/>
-      <echo message="|                                          |"/>
-      <echo message="|  Generating widgets                      |"/>
-      <echo message="|  include: ${widget.include}              |"/>
-      <echo message="|  in: ${basedir}                          |"/>
-      <echo message="|                                          |"/>
-      <echo message="+------------------------------------------+"/>
+      <echo message="+-----------------------------------------------+"/>
+      <echo message="|                                               |"/>
+      <echo message="|  Generating widgets                           |"/>
+      <echo message="|  include: ${widget.include}                   |"/>
+      <echo message="|  basedir: ${basedir}                          |"/>
+      <echo message="|  widget defs dir: ${widget.definitions.dir}   |"/>
+      <echo message="|                                               |"/>
+      <echo message="+-----------------------------------------------+"/>
  
       <subant target="_generate_and_deploy_widget"
               genericantfile="${basedir}/build.xml"
@@ -55,8 +58,6 @@
 	  <exclude name="common"/>
         </dirset>
       </subant>
-
-      <delete dir="${widget.build.dir}/${widget.shortname}.tmp"/>
     </target>
 	
     <target name="_remove_comments">
