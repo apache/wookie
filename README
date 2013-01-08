@@ -64,19 +64,19 @@ also contains information about any known issues.
 Questions? Need Help?
 =====================
 If you have questions about Wookie, please check the FAQ 
-(see http://incubator.apache.org/wookie/docs/faq.html) to see if someone has already 
+(see http://wookie.apache.org/docs/faq.html) to see if someone has already 
 posted an answer to your question. Failing that, you can post a message to either the 
 wookie-dev or wookie-user mailing list; to subscribe to a mailing list, send an email 
-with the subject "subscribe" to "wookie-dev-subscribe@incubator.apache.org" or 
-"wookie-user-subscribe@incubator.apache.org"
+with the subject "subscribe" to "dev-subscribe@wookie.apache.org" or 
+"user-subscribe@wookie.apache.org"
 
 More information on Wookie
 ===========================
 We welcome contributions, and encourage you to get involved in the Wookie
 community. If you'd like to learn more about how you can contribute, please
-see: http://incubator.apache.org/wookie
+see: http://wookie.apache.org
 
 Thank you for using Wookie
 
 The Apache Wookie Team
-http://incubator.apache.org/wookie
+http://wookie.apache.org
