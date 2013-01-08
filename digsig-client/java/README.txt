@@ -2,8 +2,7 @@
 Client Widget Signer Guide
 ===========================
 
-This is the client digital signature widget signing package developed as part
-of Apache Wookie (incubating).
+This is the client digital signature widget signing package developed as part of Apache Wookie .
 See http://dev.w3.org/2006/waf/widgets-digsig/ 
 and https://issues.apache.org/jira/browse/WOOKIE-139
 for more info. (Thanks to Pushpalanka Jayawardhana)

@@ -1,7 +1,7 @@
 Wookie W3C Widget Parser
 ========================
 
-This is the standalone parser package for W3C Widgets developed as part of Apache Wookie (incubating).
+This is the standalone parser package for W3C Widgets developed as part of Apache Wookie.
 
 Usage
 =====
