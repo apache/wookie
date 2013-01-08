@@ -1,4 +1,4 @@
 This is a Python implementation of the Wookie Connector Framework. 
 
-For more information see: http://incubator.apache.org/wookie/embedding-wookie-widgets-in-other-applications.html 
+For more information see: http://wookie.apache.org/docs/embedding.html
  

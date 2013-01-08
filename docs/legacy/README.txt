@@ -1,1 +1,1 @@
-This folder contains outdated documentation for archive purposes. Please refer to the current documentation at http://incubator.apache.org/wookie/
+This folder contains outdated documentation for archive purposes. Please refer to the current documentation at http://wookie.apache.org/
