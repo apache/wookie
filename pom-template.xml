@@ -32,22 +32,22 @@
       <distribution>repo</distribution>
     </license>
   </licenses>  
-  <url>http://incubator.apache.org/wookie/</url>
+  <url>http://wookie.apache.org/</url>
   <inceptionYear>2009</inceptionYear>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/wookie/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/wookie/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/incubator/wookie/trunk/</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/wookie/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/wookie/trunk</developerConnection>
+    <url>http://svn.apache.org/viewvc/wookie/trunk/</url>
   </scm>
   
   <mailingLists>
 	<mailingList>
 		<name>Wookie Developer List</name>
-		<subscribe>wookie-dev-subscribe@incubator.apache.org</subscribe>
-		<unsubscribe>wookie-dev-unsubscribe@incubator.apache.org</unsubscribe>
-		<post>mailto:wookie-dev@incubator.apache.org</post>
-		<archive>http://mail-archives.apache.org/mod_mbox/incubator-wookie-dev/</archive>
+		<subscribe>dev-subscribe@wookie.apache.org</subscribe>
+		<unsubscribe>dev-unsubscribe@wookie.apache.org</unsubscribe>
+		<post>mailto:dev@wookie.apache.org</post>
+		<archive>http://mail-archives.apache.org/mod_mbox/wookie-dev/</archive>
 	</mailingList>
   </mailingLists>
 
@@ -56,6 +56,18 @@
   </issueManagement>
 
   <developers>
+    <developer>
+      <id>mfranklin</id>
+      <name>Matt Franklin</name>
+      <email>mfranklin@mitre.org</email>
+      <timezone>-5</timezone>
+      <organization>The MITRE Corporation</organization>
+      <organizationUrl>http://www.mitre.org</organizationUrl>
+      <roles>
+        <role>committer</role>
+        <role>PMC member</role>
+      </roles>
+    </developer>
 	<developer>
 		<id>ate</id>
 		<name>Ate Douma</name>
@@ -64,9 +76,7 @@
 		<organization>Hippo</organization>
 		<organizationUrl>http://www.onehippo.com</organizationUrl>
 		<roles>
-			<role>mentor</role>
-			<role>IPMC member</role>
-			<role>PPMC member</role>
+			<role>PMC member</role>
 		</roles>
 	</developer>
 	<developer>
@@ -77,9 +87,8 @@
 		<organization>Opendirective</organization>
 		<organizationUrl>http://www.opendirective.com</organizationUrl>
 		<roles>
-			<role>mentor</role>
-			<role>IPMC member</role>
-			<role>PPMC member</role>
+			<role>committer</role>
+			<role>PMC member</role>
 		</roles>
 	</developer>	
 	<developer>
@@ -92,7 +101,7 @@
 		<roles>
 			<role>committer</role>
 			<role>release manager</role>
-			<role>PPMC member</role>
+			<role>PMC member</role>
 		</roles>
 	</developer>
 	<developer>
@@ -104,7 +113,37 @@
 		<organizationUrl>http://www.bolton.ac.uk</organizationUrl>
 		<roles>
 			<role>committer</role>
-			<role>PPMC member</role>
+			<role>PMC member</role>
+		</roles>
+	</developer>
+	<developer>
+		<id>raido</id>
+		<name>Raido Kuli</name>
+		<email>raido@apache.org</email>
+		<timezone>0</timezone>
+		<roles>
+			<role>committer</role>
+			<role>PMC member</role>
+		</roles>
+	</developer>
+	<developer>
+		<id>hmt</id>
+		<name>Hoang Minh Tien</name>
+		<email>hmt@apache.org</email>
+		<timezone>0</timezone>
+		<roles>
+			<role>committer</role>
+			<role>PMC member</role>
+		</roles>
+	</developer>
+	<developer>
+		<id>krispopat</id>
+		<name>Kris Popat</name>
+		<email>krispopat@apache.org</email>
+		<timezone>0</timezone>
+		<roles>
+			<role>committer</role>
+			<role>PMC member</role>
 		</roles>
 	</developer>
   </developers>     
