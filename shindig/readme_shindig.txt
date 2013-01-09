@@ -53,4 +53,4 @@ Click "demo" and you should see "Hello, world!" for the gadget.
 That's all folks
 ===============
   
-Problems - email wookie-dev@incubator.apache.org
+Problems - email dev@wookie.apache.org

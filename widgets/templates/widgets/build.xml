@@ -22,8 +22,7 @@ This is a template file for widget build directories that exist outside of
 the Wookie directory. It is useful for managing widgets in your own projects.
 
 For instructions on how to build and manage your own widgets see 
-http://incubator.apache.org/wookie/docs/widgets.html
-
+http://wookie.apache.org/docs/widgets
 
 -->
 <project basedir="." name="widgets_build_file">

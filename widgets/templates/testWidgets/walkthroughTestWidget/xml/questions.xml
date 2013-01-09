@@ -39,7 +39,7 @@
      &lt;/ol&gt;
      &lt;ul&gt;
         &lt;li&gt;<todo_item type="TODO" >Action 1</todo_item>.&lt;/li&gt;
-        &lt;li&gt;<todo_item type="TOREAD" href="http://incubator.apache.org/wookie/">Website</todo_item>.&lt;/li&gt;
+        &lt;li&gt;<todo_item type="TOREAD" href="http://wookie.apache.org/">Website</todo_item>.&lt;/li&gt;
 		&lt;li&gt;<todo_item type="TOREAD" href="Note1">Note</todo_item>.&lt;/li&gt;
      &lt;/ul&gt;
 	</body>
@@ -59,6 +59,6 @@
 
 <note id='Note1'>
     == A note title
-    Notes formated in creole markup which [[http://incubator.apache.org/wookie/|can include links]]
+    Notes formated in creole markup which [[http://wookie.apache.org/|can include links]]
     </note>
 </question_set>
