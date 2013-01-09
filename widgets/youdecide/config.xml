@@ -24,6 +24,6 @@
         <access network="true"/>
         <author>Scott Wilson</author>
         <feature name="http://wave.google.com" required="true"/>
-    	<feature name="http://incubator.apache.org/wookie/ext" required="true"/>
+        <feature name="http://wookie.apache.org/ext" required="true"/>
         <preference name="moderator" value="false"/>
 </widget>

@@ -23,7 +23,7 @@
 		Many of these are now deprecated as standards have matured.
 		For more information, see org.apache.wookie.feature.ext.IWookieExntesionAPI.java
 	 -->
-	<name>http://incubator.apache.org/wookie/ext</name>
+	<name>http://wookie.apache.org/ext</name>
 	<script src="dwr/interface/WookieImpl.js"/>
 	<script src="wookie.js"/>
 </feature>

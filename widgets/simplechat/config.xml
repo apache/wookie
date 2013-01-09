@@ -22,6 +22,6 @@
 	<author>Apache Wookie (Incubating) Team</author>
 	<license>Licensed under the Apache 2.0 License (see http://www.apache.org/licenses/LICENSE-2.0). Smileys created by macpoupou and licensed under Creative Commons Attribution License 3.0. See http://ismileys.free.fr/smileys/ for more information. </license>
     <feature name="http://wave.google.com" required="true"/>
-    <feature name="http://incubator.apache.org/wookie/ext" required="true"/>
+    <feature name="http://wookie.apache.org/ext" required="true"/>
     <preference name="moderator" value="false"/>
 </widget>

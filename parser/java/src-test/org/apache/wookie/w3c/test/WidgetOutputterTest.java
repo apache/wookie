@@ -166,7 +166,7 @@ public class WidgetOutputterTest extends ConformanceTest{
 		// Load the widget
 		W3CWidgetFactory fac = new W3CWidgetFactory();
 		fac.setLocalPath(outputPath);
-		fac.setFeatures(new String[]{"feature:a9bb79c1","http://wave.google.com", "http://incubator.apache.org/wookie/ext"});
+		fac.setFeatures(new String[]{"feature:a9bb79c1","http://wave.google.com", "http://wookie.apache.org/ext"});
 		fac.setEncodings(new String[]{"UTF-8", "ISO-8859-1","Windows-1252"});
 		if (download.exists()) download.delete();
 		if (output.exists()) output.delete();
