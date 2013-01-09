@@ -24,6 +24,8 @@
 	<property name="wookie.widgets.dir" location="."/>
 	<property name="widget.template.dir" value="${wookie.widgets.dir}/widget-template"/>
     <property name="widget.build.dir" value="${project.build.dir}/widgets"/>
+	
+	<property name="widget.deploy.compressed" value="true" />
 
 	<target name="_get-widget-name" unless="widget.shortname">
 		<input message="What is the short name of the widget you wish to work with?" 
