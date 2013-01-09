@@ -158,7 +158,6 @@
         	<metainf dir="${calculated-generic-path}etc/release/maven/subprojects">
         		<include name="LICENSE"/>
         		<include name="NOTICE"/>
-        		<include name="DISCLAIMER"/>
         	</metainf>
         	<manifest>
 				<attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
@@ -189,7 +188,6 @@
     		<metainf dir="${calculated-generic-path}etc/release/maven/subprojects">
 				<include name="LICENSE"/>
 				<include name="NOTICE"/>
-				<include name="DISCLAIMER"/>
 			</metainf>    
         	<manifest>				
 				<attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
@@ -213,7 +211,6 @@
 			<metainf dir="${calculated-generic-path}etc/release/maven/subprojects">
 				<include name="LICENSE"/>
 				<include name="NOTICE"/>
-				<include name="DISCLAIMER"/>
 			</metainf>    
         	<manifest>
 				<attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
@@ -312,7 +309,6 @@
 				<exclude name="WEB-INF/lib/" />
 			</fileset>
 			<metainf dir=".">
-				<include name="DISCLAIMER"/>
 			</metainf>
 			<metainf dir="etc/release/maven/war/">
 				<include name="LICENSE"/>

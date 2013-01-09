@@ -141,7 +141,6 @@
 				<exclude name="WEB-INF/lib/" />
 			</fileset>
 			<metainf dir=".">
-				<include name="DISCLAIMER"/>
 				<include name="UPGRADING"/>				
 			</metainf> 
 			<metainf dir="etc/release/war/">
@@ -156,8 +155,7 @@
 			overwrite="true" />	
 		<delete file="${build.dir}/widgetserver.properties" />
 		
-		<!--
-		<delete file="${build.dir}/webapp/wookie/DISCLAIMER" />		
+		<!--		
 		<delete file="${build.dir}/webapp/wookie/LICENSE" />
 		-->
 
@@ -173,7 +171,6 @@
 		  </copy>
 
 		<!-- copy over project readme files-->
-		<copy file="DISCLAIMER" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/DISCLAIMER" overwrite="yes" />
 		<copy file="README" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/README" overwrite="yes" />
 		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/RELEASE_NOTES" overwrite="yes" />
 		<copy file="NEW_AND_NOTEWORTHY" tofile="${wookie.release.dir}/${version}/binary/war/${wookie.war.folder.name}/NEW_AND_NOTEWORTHY" overwrite="yes" />
@@ -237,7 +234,6 @@
 		</copy>
 
 		<copy file="./etc/jetty-realm.properties" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/etc/jetty-realm.properties" />
-		<copy file="DISCLAIMER" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/DISCLAIMER" overwrite="yes" />
 		<copy file="README" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/README" overwrite="yes" />
 		<copy file="RELEASE_NOTES" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/RELEASE_NOTES" overwrite="yes" />
 		<copy file="NEW_AND_NOTEWORTHY" tofile="${wookie.release.dir}/${version}/binary/standalone/${wookie.standalone.folder.name}/NEW_AND_NOTEWORTHY" overwrite="yes" />
