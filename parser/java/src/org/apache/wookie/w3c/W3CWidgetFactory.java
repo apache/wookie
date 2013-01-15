@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -243,7 +244,9 @@ public class W3CWidgetFactory {
 		GetMethod method = new GetMethod(url.toString());
 		client.executeMethod(method);
 		if (!ignoreContentType){
-			String type = method.getResponseHeader("Content-Type").getValue();
+		    Header header = method.getResponseHeader("Content-Type");
+		    if (header == null) throw new InvalidContentTypeException("Problem downloading widget: expected a content type of "+WIDGET_CONTENT_TYPE+" but received no content type description.");
+			String type = header.getValue();
 			if (!type.startsWith(WIDGET_CONTENT_TYPE)) throw new InvalidContentTypeException("Problem downloading widget: expected a content type of "+WIDGET_CONTENT_TYPE+" but received:"+type);
 		}
 		File file = File.createTempFile("wookie", null);
