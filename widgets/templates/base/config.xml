@@ -15,7 +15,7 @@
   limitations under the License.
 %>
 <widget xmlns="http://www.w3.org/ns/widgets"
- 		id="http://wookie.apache.org/widgets/${widget.shortname}"
+ 		id="${widget.id}"
  		version="0.1"
         width="320"
         height="480"

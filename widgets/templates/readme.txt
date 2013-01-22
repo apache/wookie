@@ -67,6 +67,7 @@ In this example we will create a simple widget that says hello to the
 world (what else would the first widget be?)
 
   * cd WOOKIE_HOME/widgets/templates/widgets
+    * NB if you want to build your widgets elsewhere then see the advanced topic section below.
   * mkdir helloWorld
   * create a file called "./widget.properties
   * open widget.properties in your favourite editor and add the
@@ -75,6 +76,7 @@ world (what else would the first widget be?)
     * widget.shortname=HelloWorld
     * widget.name=Hello World
     * widget.description=A very friendly widget to demonstrate how easy it is to build a widget from templates.
+    * widget.id=http://www.apache.org/widgets/HelloWorld
   * Create a file called "content_primary.html" and the following content
     * <p>Hello World!</p>
 
