@@ -32,7 +32,7 @@
     </loadfile>
 
     <loadfile property="content.styles"
-	      srcFile="../common/content_style.html"
+	      srcFile="../common/content_styles.html"
 	      failonerror="false">
       <filterchain>
 	<expandproperties/>
