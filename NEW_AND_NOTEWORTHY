@@ -11,7 +11,7 @@ Locked domains are disabled by default; configuration instructions can be found 
 
 ## Improved OAuth Support
 
-...
+Improved integration of oAuth authorization into workflow. Fixed oAuth feature problems with Google APIs. 
 
 ## Widget Automatic Updates
 
