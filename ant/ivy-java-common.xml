@@ -294,7 +294,7 @@
 		<antcall target="post-deploy-webapp-widgets-extra"/>
 		<!-- copy them into the maven webapp -->
 		<copy todir="${build.dir}/maven-webapp/wookie/deploy">
-			<fileset dir="${build.dir}/widgets"/>
+			<fileset dir="${build.dir}/webapp/wookie/deploy"/>
 		</copy>
 		
 		<!-- build war file -->
@@ -308,8 +308,7 @@
 				<exclude name="WEB-INF/classes/" />
 				<exclude name="WEB-INF/lib/" />
 			</fileset>
-			<metainf dir=".">
-			</metainf>
+			
 			<metainf dir="etc/release/maven/war/">
 				<include name="LICENSE"/>
 				<include name="NOTICE"/>
