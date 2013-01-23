@@ -1,20 +1,5 @@
-# New and Noteworthy: 0.13.0
+# New and Noteworthy: 0.14.0
 
-## Single "deploy" location
+## TODO -title
 
-There is no longer separate "wservices" and "deploy" folders; instead, widgets are unpacked directly into the deploy folder.
-
-## Locked domains
-
-For added security, each widget instance can be viewed from a unique origin (using subdomains), preventing cross-widget communication and scripting attacks.
-Locked domains are disabled by default; configuration instructions can be found in widgetserver.properties.
-
-## Improved OAuth Support
-
-Improved integration of oAuth authorization into workflow. Fixed oAuth feature problems with Google APIs. 
-
-## Widget Automatic Updates
-
-Wookie now supports automatic updating of widgets, implementing the Widget Updates spec, allowing widgets to be updated as new versions are released. Update
-checks can be configured to run hourly, daily or weekly. By default automatic updates are disabled; Configuration instructions can be found in 
-widgetserver.properties. 
+TODO

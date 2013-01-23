@@ -15,7 +15,7 @@
   limitations under the License.
 -->
 <ivy-module version="2.0">
-    <info organisation="org.apache.wookie" module="wookie" revision="0.13.0"/>
+    <info organisation="org.apache.wookie" module="wookie" revision="0.14.0-SNAPSHOT"/>
     
     <configurations>
       <conf name="deploy" description="Provide the necessary files and libraries to deploy in a production environment"/>
@@ -40,9 +40,9 @@
 	</publications>	
 	    
     <dependencies>
-        <dependency org="org.apache.wookie" name="wookie-java-connector" rev="0.13.0" conf="deploy->default">
+        <dependency org="org.apache.wookie" name="wookie-java-connector" rev="0.14.0-SNAPSHOT" conf="deploy->default">
         </dependency>
-        <dependency org="org.apache.wookie" name="wookie-parser" rev="0.13.0" conf="deploy->default">
+        <dependency org="org.apache.wookie" name="wookie-parser" rev="0.14.0-SNAPSHOT" conf="deploy->default">
         </dependency>
         
         <!--  Uncomment to include JCR persistence manager -->
@@ -59,7 +59,7 @@
         <dependency org="commons-collections" name="commons-collections" rev="3.2" conf="deploy->default">
         </dependency>
         <dependency org="org.apache.commons" name="commons-compress" rev="1.0" conf="deploy->default">
-		</dependency>
+        </dependency>
         <dependency org="commons-configuration" name="commons-configuration" rev="1.7" conf="deploy->default">
         </dependency>
         <dependency org="commons-fileupload" name="commons-fileupload" rev="1.2.1" conf="deploy->default">
