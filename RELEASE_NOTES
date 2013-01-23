@@ -4,40 +4,51 @@ See https://issues.apache.org/jira/browse/WOOKIE-* (where * is the number of the
 
 For more detailed information on significant changes, see NEW_AND_NOTEWORTHY
 
-Version 0.12.0
+Version 0.13.0
 ==============
 
 Bugs Fixed
 ==========
-	* WOOKIE-359 - Widget.preferences.setItem don´t work if widget contains an iframe with a remote src
+    * WOOKIE-364 - Wookie delegates proxy settings to widgets
+    * WOOKIE-365 - Widget packages downloaded with incorrect content-type and file name
+    * WOOKIE-367 - Patch to provide question file missing from last walkthrough patch
+    * WOOKIE-379 - POSTing a new Widget results in incorrect access policy
+    * WOOKIE-380 - HTML entities are scrambled by Wookie
+    * WOOKIE-381 - oAuth feature does not work for Google APIs
+    * WOOKIE-383 - Redeploying widget without id in config.xml creates new widget 
+    * WOOKIE-384 - persist parameter of oAuth feature not user-isolated
+    * WOOKIE-391 - Changing the default widget.widgetfolder in widgetserver.properties can cause folder not found issues
 
 Improvements
-============ 
-	* WOOKIE-325 - Add a "validate package" feature to the Wookie rest API
-	* WOOKIE-357 - Improved documentation to get started with the released war
+============
+    * WOOKIE-173 - Improve delete behaviour for widget instances
+    * WOOKIE-232 - Change default install location for widgets to "/widgets" instead of "/wservices"
+    * WOOKIE-378 - User server relative paths in wookie/demo
+    * WOOKIE-385 - Improve integration of oAuth authorization into workflow
 
 New Features
 ============
-	* WOOKIE-139 Implement the W3C XML Digital Signatures for Widgets specification in Wookie 
-	* WOOKIE-362 Allow Wookie to broadcast update status once a new widget is imported 
+    * WOOKIE-103 - Implement W3C Widget Updates spec to enable automatic updating of widgets 
+    * WOOKIE-133 - Implement inter-widget messaging 
+    * WOOKIE-310 - Provide optional "Locked Domains" configuration to provide unique origins for each widget instance
 
 Known Issues
-============	
+============
 
-	* WOOKIE-222 - There is a known issue when using Tomcat 7.* with Wookie. Sometimes when a widget is actually 
-	loaded, a browser alert box sometimes appears informing the user of a "Session Error". 
-					 
+    * WOOKIE-222 - There is a known issue when using Tomcat 7.* with Wookie. Sometimes when a widget is actually 
+    loaded, a browser alert box sometimes appears informing the user of a "Session Error". 
+
     This is caused by the DWR library used by Wookie for Comet-based widgets handling HTTP-only cookies incorrectly; 
     Tomcat 7 uses HTTP-only cookies as the default setting to prevent cross-site scripting (XSS) attacks.
-					 
+
     A workaround is to add the following to the WEB-INF/web.xml file
-					 
+
     <init-param>
         <param-name>crossDomainSessionSecurity</param-name>
         <param-value>false</param-value>
     </init-param>
-					
+
     Note that XSS prevention will still be in place in Tomcat 7; this just disables the additional mechanism
     implemented in DWR that conflicts with it.
  
-    This is an issue for DWR 2.* with Tomcat 7.* (or earlier versions of Tomcat where useHttpOnly="true" is set.)				
+    This is an issue for DWR 2.* with Tomcat 7.* (or earlier versions of Tomcat where useHttpOnly="true" is set.)
