@@ -17,6 +17,7 @@
 
 package org.apache.wookie.util;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -76,7 +77,7 @@ public class W3CWidgetFactoryUtils {
             }
             if (stream == null) {
                 FileOutputStream fos = new FileOutputStream(context
-                        .getRealPath("/WEB-INF/classes/") + "generated-" + KEYSTORE);
+                        .getRealPath("/WEB-INF/classes") + File.separatorChar + "generated-" + KEYSTORE);
                 keyStore.load(null, PASSWORD.toCharArray());
                 keyStore.store(fos, PASSWORD.toCharArray());
                 fos.close();
