@@ -16,7 +16,7 @@
 -->
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
 	<info organisation="org.apache.wookie" module="wookie-digsig-client"
-		revision="0.14.0-SNAPSHOT" />
+		revision="0.13.1" />
 	<configurations>
 		<conf name="deploy" description="Provide the necessary files and libraries to deploy" />
 	</configurations>

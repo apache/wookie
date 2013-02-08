@@ -31,9 +31,9 @@
   <inceptionYear>2009</inceptionYear>
     
   <scm>
-	<connection>scm:svn:http://svn.apache.org/repos/asf/wookie/trunk/parser</connection>
-	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/wookie/trunk/parser/</developerConnection>
-	<url>http://svn.apache.org/viewvc/wookie/trunk/parser/</url>
+	<connection>scm:svn:http://svn.apache.org/repos/asf/wookie/tags/0.13.1/parser</connection>
+	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/wookie/tags/0.13.1/parser/</developerConnection>
+	<url>http://svn.apache.org/viewvc/wookie/tags/0.13.1/parser/</url>
   </scm>
   
   <mailingLists>

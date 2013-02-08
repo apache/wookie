@@ -1,11 +1,7 @@
 This document details any special actions that need to be taken when upgrading Wookie from a previous version. For
 general information on new features and improvements, see NEW_AND_NOTEWORTHY.
 
-FROM 0.13.0 TO 0.14.0 
-=====================
-TODO
-
-FROM 0.11.0 TO 0.13.0 (Version 0.12.0 was not released)
+FROM 0.11.0 TO 0.13.1 (Version 0.12.0 was not released)
 =====================
 No major changes to the core or database schema. The W3CParser module has been updated so it is possible
 you may need to clear your ivy cache on your local machine.
