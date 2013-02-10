@@ -74,7 +74,7 @@
         </dependency>
         <dependency org="dom4j" name="dom4j" rev="1.6.1" conf="deploy->default">
         </dependency>
-        <dependency org="net.sourceforge.htmlcleaner" name="htmlcleaner" rev="2.2" conf="deploy->default">
+        <dependency org="net.sourceforge.htmlcleaner" name="htmlcleaner" rev="2.2.1" conf="deploy->default">
         </dependency>
         <dependency org="org.directwebremoting" name="dwr" rev="2.0.10" conf="deploy->default">
 		</dependency>
