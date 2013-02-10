@@ -8,9 +8,8 @@ consensus must follow before moving on to the next stage
 (committerInvite.txt). 
 
 ------------------------------------------------------------
-To: wookie-private@incubator.apache.org
-cc: private@incubator.apache.org
-Subject: [RESULT] [Vote] new PPMC member: Joe Bloggs
+To: private@wookie.apache.org
+Subject: [RESULT] [Vote] new PMC member: XXXX YYYY
 
 The vote has now closed. The results are:
 
@@ -23,8 +22,7 @@ Binding Votes:
 
 [If three binding +1 and no binding -1]
 
-The vote passes, we now need lazy consensus approval from the IPMC. This email
-calls for that consensus.
+The vote passes.
 
 Consensus period ends 72 hours from now, i.e. XYZ UTC on YYYY-MM-DD
 http://www.timeanddate.com/counters/customcounter.html?year=YYYY&month=MM&day=DD&hour=0&min=0&sec=0&p0=0

@@ -4,17 +4,14 @@ from the vote for a new committer.
 Don't send this until there has been 72 hours for a lazy consensus
 on private@incubator.apache.org.
 
-Don't forget we need to forward this mail to 
-private@incubator.apache.org
-
 ------------------------------------------------------------
 To: JoeBloggs@foo.net
-Cc: wookie-private@incubator.apache.org
+Cc: private@wookie.apache.org
 Subject: invitation to become Wookie committer: Joe Bloggs #####
 
-Hello #####, the Apache Wookie Podling Project Management Committee
+Hello #####, the Apache Wookie Project Management Committee
 would like to invite you to become a Wookie committer and member
-of the PPMC. We value your contributions and are aware that
+of the PMC. We value your contributions and are aware that
 you are committed to the project.
 
 Being a committer enables you to more easily make changes and so
@@ -31,10 +28,10 @@ contributing as you do now.
 
 This personal email is also providing a chance for you to decline
 in private. Either way, please let us know in reply only to the
-wookie-private@incubator.apache.org list. If you agree, then we will announce
-on the wookie-dev@ list after the account is established.
+wookie-private@incubator.apache.org list. If you agree, then we 
+will announce on the dev@ list after the account is established.
 
 Yours,
-The Apache Wookie PPMC
+The Apache Wookie PMC
 
 ------------------------------------------------------------------------
