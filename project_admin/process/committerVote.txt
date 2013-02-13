@@ -2,7 +2,6 @@ Summary
 =======
 
 1) templates/committerVote.txt
-1a) request lazy consensus from IPMC
 2) templates/committerInvite.txt
 
 after they accept, then do:
@@ -27,7 +26,7 @@ Start a separate Vote thread for each new person. This makes it much
 easier to review the mail archives.
 
 In most cases, we will be inviting people to go straight from developer
-to PPMC member. However, there may be extraordinary cases where we want
+to PMC member. However, there may be extraordinary cases where we want
 limited work-related commit access. This will be resolved during the vote
 discussion. http://forrest.apache.org/guidelines.html#elect (yes, I know
 this is not the Wookie project, we need to create our own guidelines)
@@ -42,7 +41,7 @@ becomes obvious that we should invite them. This encourages them and keeps
 them enthusiastic. If we leave it too long, then we risk them becoming
 disillusioned.
 
-On the PPMC list we can each say exactly what we feel about each person,
+On the PMC list we can each say exactly what we feel about each person,
 with no holds barred. Keep the discussion concise. The praise part can
 be done later in public.
 
@@ -56,14 +55,14 @@ i.e. at least 3 +1 votes and no vetoes.
 Any veto must be accompanied by reasoning and be prepared to defend it.
 Other members can attempt to encourage them to change.
 
-New PPMC members can be either quiet or active as they choose. If we find
+New PMC members can be either quiet or active as they choose. If we find
 that certain people lapse and don't ever contribute, then we can take steps
 to retire them.
 
 After a positive result, we give them a chance to decline in private.
-They can post a reply to the PPMC mailing list.
+They can post a reply to the PMC mailing list.
 
-After we reach a decision on the PPMC list, and after the steps above,
+After we reach a decision on the PMC list, and after the steps above,
 we will announce it on the dev list. We can then each follow up with
 our praise in public.
 
