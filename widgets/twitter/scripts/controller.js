@@ -29,7 +29,7 @@ var twitter_browse_controller = {
         // If there is no URL for searching, don't show 
         // the search panel
         //
-        var query = "";
+        query = "TheASF";// this is the default account to show
         var searchUrl = '"http://api.twitter.com/1/statuses/user_timeline.xml?screen_name=" + query + "&include_entities=true"'; 
         if(searchUrl === "") $("#searchPanel").hide();
         //
@@ -44,14 +44,15 @@ var twitter_browse_controller = {
      * Search the remote service and sort results if possible.
      */
     search:function(query, sort, order) {
-	if (sort === undefined) {
-	    sort = "updated";
-	}
-    	if (query === undefined || query == "") {
-	    var url = widget.proxify("http://api.twitter.com/1/statuses/public_timeline.xml");
-    	} else {
-    	    var url = widget.proxify("http://api.twitter.com/1/statuses/user_timeline.xml?screen_name=" + query + "&include_entities=true");
-    	}
+        if (sort === undefined) {
+            sort = "updated";
+        }
+        
+    	if (!query || query === undefined || query == "") {
+            query = "TheASF";
+        }
+        
+        var url = widget.proxify("http://api.twitter.com/1/statuses/user_timeline.xml?screen_name=" + query + "&include_entities=true");
     	twitter_browse_controller.populate(url);
     },
 	
