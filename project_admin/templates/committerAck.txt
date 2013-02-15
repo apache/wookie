@@ -1,0 +1,20 @@
+This is the email to send to the Board to acknowlege a new committer
+invite.
+
+Once an ACK is received, there is a 72 hour consensus period before 
+sending the invite.
+------------------------------------------------------------
+
+Subject: 
+
+The Wookie PMC has VOTEd to invite XXXX YYYY ([apache id || no current apache id]) to the PMC and to become a committer.
+
+The vote result is available here:
+
+https://mail-search.apache.org/pmc/private-arch/wookie-private/...
+
+Could an Apache Board member please ACKnowledge this PMC addition?
+
+Thanks
+
+- Scott

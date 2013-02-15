@@ -2,9 +2,8 @@ This is the email to end a vote for a new PPMC member.
 We do this on the Wookie Private mailing list as that 
 is where the vote is held.
 
-Remember that a 72 hour period for lazy 
-consensus must follow before moving on to the next stage
-(committerInvite.txt). 
+Next, send a message to the Board to Acknowlege (commiterAck.txt)
+the result of the vote.
 
 ------------------------------------------------------------
 To: private@wookie.apache.org
