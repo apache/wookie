@@ -1,8 +1,8 @@
-This is the email to end a vote for a new PPMC member.
+This is the email to end a vote for a new PMC member.
 We do this on the Wookie Private mailing list as that 
 is where the vote is held.
 
-Next, send a message to the Board to Acknowlege (commiterAck.txt)
+Next, send a message to the Board to Acknowlege (pmcMemberAck.txt)
 the result of the vote.
 
 ------------------------------------------------------------
@@ -21,8 +21,5 @@ Binding Votes:
 [If three binding +1 and no binding -1]
 
 The vote passes.
-
-Consensus period ends 72 hours from now, i.e. XYZ UTC on YYYY-MM-DD
-http://www.timeanddate.com/counters/customcounter.html?year=YYYY&month=MM&day=DD&hour=0&min=0&sec=0&p0=0
 
 ------------------------------------------------------------

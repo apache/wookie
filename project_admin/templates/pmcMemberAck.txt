@@ -1,4 +1,4 @@
-This is the email to send to the Board to acknowlege a new committer
+This is the email to send to the Board to acknowlege a new PMC member
 invite.
 
 Once an ACK is received, there is a 72 hour consensus period before 
