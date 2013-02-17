@@ -161,5 +161,7 @@
         <exclude module="jmxtools"/>
         <exclude module="xom"/>
         <exclude module="commons-jxpath"/>
+        <exclude module="maven-cobertura-plugin"/>
+        <exclude module="maven-findbugs-plugin"/>
     </dependencies>
 </ivy-module>
