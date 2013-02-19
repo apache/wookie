@@ -1,0 +1,222 @@
+<?xml version="1.0"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project basedir="." name="settings_template">
+
+  <target name="_init_template"
+          description="Define any template specifc properties">
+    <echo message="+------------------------------------------"/>
+    <echo message="|  Initialising template properties for ${template.name}"/>
+    <echo message="+------------------------------------------"/>
+
+    <loadfile property="settings.primary"
+	      srcFile="settings_primary.html"
+	      failonerror="false">
+      <filterchain>
+	<expandproperties/>
+      </filterchain>
+    </loadfile>
+
+    <loadfile property="settings.primary"
+	      srcFile="../common/settings_primary.html"
+	      failonerror="false">
+      <filterchain>
+	<expandproperties/>
+      </filterchain>
+    </loadfile>
+	
+    <loadfile property="settings.primary"
+              srcFile="${template.dir}/${template.name}/settings_primary.html"
+              failonerror="false">
+      <filterchain>
+	<expandproperties/>
+      </filterchain>
+    </loadfile>
+
+    <loadfile property="content.styles"
+	      srcFile="content_styles.html"
+	      failonerror="false">
+      <filterchain>
+	<expandproperties/>
+      </filterchain>
+    </loadfile>
+
+    <loadfile property="content.styles"
+	      srcFile="../common/content_style.html"
+	      failonerror="false">
+      <filterchain>
+	<expandproperties/>
+      </filterchain>
+    </loadfile>
+	
+    <loadfile property="content.styles"
+              srcFile="${template.dir}/${template.name}/content_styles.html"
+              failonerror="false">
+      <filterchain>
+	<expandproperties/>
+      </filterchain>
+    </loadfile>
+	
+    <loadfile property="content.scripts"
+	      srcFile="content_scripts.html"
+	      failonerror="false">
+      <filterchain>
+	<expandproperties/>
+      </filterchain>
+    </loadfile>
+
+    <loadfile property="content.scripts"
+	      srcFile="../common/content_scripts.html"
+	      failonerror="false">
+      <filterchain>
+	<expandproperties/>
+      </filterchain>
+    </loadfile>
+	
+    <loadfile property="content.scripts"
+              srcFile="${template.dir}/${template.name}/content_scripts.html"
+              failonerror="false">
+      <filterchain>
+	<expandproperties/>
+      </filterchain>
+    </loadfile>
+
+
+    <!-- Load the content header -->
+    <loadfile property="content.header"
+              srcFile="content_header.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <loadfile property="content.header"
+	      srcFile="../common/content_header.html"
+	      failonerror="false">
+      <filterchain>
+	<expandproperties/>
+      </filterchain>
+    </loadfile>
+	
+    <loadfile property="content.header"
+              srcFile="${template.dir}/${template.name}/content_header.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <!-- load tile content-->
+    <loadfile property="content.tile"
+              srcFile="content_tile.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <loadfile property="content.tile"
+              srcFile="../common/content_tile.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <loadfile property="content.tile"
+              srcFile="${template.dir}/${template.name}/content_tile.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <!-- load content from widget definition -->
+    <loadfile property="content.primary"
+              srcFile="content_primary.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <loadfile property="content.primary"
+              srcFile="../common/content_primary.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <!-- load content from template definition -->
+    <loadfile property="content.primary"
+              srcFile="${template.dir}/${template.name}/content_primary.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <loadfile property="content.footer"
+              srcFile="content_footer.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <loadfile property="content.footer"
+              srcFile="../common/content_footer.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+	
+    <loadfile property="content.footer"
+              srcFile="${template.dir}/${template.name}/content_footer.html"
+              failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+    </loadfile>
+
+    <!-- load properties we've set in other templates -->
+    <property file="${widget.build.dir}/${widget.shortname}.properties"/>
+	
+    <echoproperties destfile="${widget.build.dir}/${widget.shortname}.properties" prefix=""/>
+  </target>
+
+  <target name="_prepare_template_files"
+          description="move all template files into the build director">
+    
+  </target>
+
+  <target name="_generate_from_parent_templates">
+    <echo message="+------------------------------------------"/>
+    <echo message="|  There are no parent templates for ${template.name}"/>
+    <!-- <echo message="|  Generating from parent templates for ${template.name}"/>  -->
+    <echo message="+------------------------------------------"/>
+
+    <ant antfile="${wookie.template.dir}/build.xml"
+	 target="_generate_widget">
+      <property name="template.name" value="base"/>
+      <property name="copyWidgetFiles" value="false"/>
+    </ant>
+  </target>
+</project>
