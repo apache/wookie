@@ -235,6 +235,12 @@
 
     <ant antfile="${wookie.template.dir}/build.xml"
 	 target="_generate_widget">
+      <property name="template.name" value="settings"/>
+      <property name="copyWidgetFiles" value="false"/>
+    </ant>
+
+    <ant antfile="${wookie.template.dir}/build.xml"
+	 target="_generate_widget">
       <property name="template.name" value="scanning"/>
       <property name="copyWidgetFiles" value="false"/>
     </ant>
