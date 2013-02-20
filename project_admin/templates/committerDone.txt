@@ -11,16 +11,14 @@ Please follow the instructions to set up your SSH,
 svn password, svn configuration, mail forwarding, etc.
 http://www.apache.org/dev/#committers
 
-Please subscribe to the Wookie Podling Project Management 
-Committee mailing list private-wookie@incubator.apcahe.org.
-
-You should also join the general@incubator@apache.org list.
+Please subscribe to the Wookie Project Management 
+Committee mailing list private@wookie.apcahe.org.
 
 You have commit access to specific sections of the
 ASF repository, as follows:
 
   Wookie has various resources at:
-  https://svn.apache.org/repos/asf/incubator/wookie
+  https://svn.apache.org/repos/asf/wookie
 
   The general "committers" at:
   https://svn.apache.org/repos/private/committers
@@ -32,8 +30,6 @@ If you have any questions during this phase, then please
 see the following resources:
 
 Apache developer's pages: http://www.apache.org/dev/
-Apache Incubator site: http://incubator.apache.org/
-Incubator Committers Guide: http://incubator.apache.org/guides/committer.html
 
 Naturally, if you don't understand anything be sure to 
 ask us on the Wookie dev mailing list. Documentation is 

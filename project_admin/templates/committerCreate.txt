@@ -22,7 +22,7 @@ after their account is created.
 
 ------------------------ snip ------------------------------
 To: root@apache.org
-Cc: wookie-private@incubator.apache.org, ###JoeBloggs@foo.net
+Cc: private@wookie.apache.org, ###JoeBloggs@foo.net
 Subject: account request: ###Joe Bloggs
 
 Full name:                ...
@@ -33,6 +33,6 @@ Requested UNIX groups: wookie
 
 The receipt of the ICLA was recorded yesterday.
 
-The vote was conducted on the wookie-private@incubator list
+The vote was conducted on the private@wookie list
 around YYYY-MM-DD ###
 Message-Id: ###
