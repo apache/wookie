@@ -3,10 +3,12 @@ Summary
 
 1) templates/committerVote.txt
 2) templates/committerVoteResult.txt
-3) templates/committerAck.txt
+3) templates/pmcMemberAck.txt
 4) templates/committerInvite.txt
 
-after they accept, then do:
+(after they accept...)
+
+If adding an existing ASF committer, jump straight to 8b, otherwise:
 
 5) templates/committerAccept.txt ... the normal process for dev-to-pmc
 6) wait until we see that receipt of CLA is recorded
@@ -16,6 +18,7 @@ after they accept, then do:
 9) template/committerDone.txt
 10) chair send email to board@ asking for acknowledgement of new PMC member
    email-member-ack.txt
+[ ^^ not sure if we do this now? ]
 11) template/committerAnnounce.txt
 12) add them to the wookie-developers group in Jira.
 

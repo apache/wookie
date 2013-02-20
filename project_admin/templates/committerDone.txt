@@ -1,8 +1,10 @@
-After the committer account is established.
+After the committer account is established. For an existing ASF committer added to the PMC, omit the first two paragraphs.
 
 ------------------------------------------------------------
-To: wookie-private@incubator.apache.org, ###JoeBloggs@foo.net
-Subject: account request: ###Joe Bloggs
+To: private@wookie.apache.org, ###JoeBloggs@foo.net
+Subject: New PMC Member: ###Joe Bloggs
+
+Welcome to the Apache Wookie PMC!
 
 ####, as you know, the ASF Infrastructure has set up your
 committer account as the username '####'.
@@ -37,4 +39,3 @@ maintained by volunteers and hence can be out-of-date and
 incomplete.
 
 One of us will announce you to the dev list soon.
-
