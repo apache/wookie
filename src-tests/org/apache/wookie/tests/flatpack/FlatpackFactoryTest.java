@@ -97,7 +97,7 @@ public class FlatpackFactoryTest {
 		// upload a new widget to test with
 	  //
 		W3CWidgetFactory fac = getFactory();
-		File testWidget = new File("build/widgets/bubbles.wgt");
+		File testWidget = new File("build/webapp/wookie/upload/bubbles.wgt");
 		fac.parse(testWidget);
 		download = fac.getUnzippedWidgetDirectory(); //download is where we unzipped the widget
 		
@@ -132,7 +132,7 @@ public class FlatpackFactoryTest {
 		// upload a new widget to test with
 	  //
 		W3CWidgetFactory fac = getFactory();
-		File testWidget = new File("build/widgets/bubbles.wgt");
+		File testWidget = new File("build/webapp/wookie/upload/bubbles.wgt");
 		fac.parse(testWidget);
 		download = fac.getUnzippedWidgetDirectory(); //download is where we unzipped the widget
 		
@@ -172,7 +172,7 @@ public class FlatpackFactoryTest {
     //
     W3CWidgetFactory fac = getFactory();
     fac.setFeatures(Features.getFeatureNames());
-    File testWidget = new File("build/widgets/freeder.wgt");
+    File testWidget = new File("build/webapp/wookie/upload/freeder.wgt");
     fac.parse(testWidget);
     
     //
@@ -217,7 +217,7 @@ public class FlatpackFactoryTest {
 		// upload a new widget to test with
 	  //
 		W3CWidgetFactory fac = getFactory();
-		File testWidget = new File("build/widgets/bubbles.wgt");
+		File testWidget = new File("build/webapp/wookie/upload/bubbles.wgt");
 		fac.parse(testWidget);
 		download = fac.getUnzippedWidgetDirectory(); //download is where we unzipped the widget
 		
@@ -266,7 +266,7 @@ public class FlatpackFactoryTest {
 	  //
 		W3CWidgetFactory fac = getFactory();
 		fac.setFeatures(Features.getFeatureNames());
-		File testWidget = new File("build/widgets/simplechat.wgt");
+		File testWidget = new File("build/webapp/wookie/upload/simplechat.wgt");
 		fac.parse(testWidget);
 		download = fac.getUnzippedWidgetDirectory(); //download is where we unzipped the widget
 		
