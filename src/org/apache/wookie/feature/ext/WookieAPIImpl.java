@@ -63,7 +63,7 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
     //
     IPreference preference = widgetInstance.getPreference(key);
     if (preference == null) return localizedMessages.getString("WidgetAPIImpl.1");
-    return preference.getDvalue();
+    return preference.getValue();
   }
 
   /*

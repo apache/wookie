@@ -227,8 +227,8 @@ public class FlatpackFactoryTest {
 		IWidgetInstance instance = new WidgetInstanceMock();
 		ArrayList<IPreference> prefs = new ArrayList<IPreference>();
 		IPreference pref = new PreferenceMock();
-		pref.setDkey("hiScore");
-		pref.setDvalue("1000");
+		pref.setName("hiScore");
+		pref.setValue("1000");
 		pref.setReadOnly(false);
 		prefs.add(pref);
 		instance.setPreferences(prefs);
@@ -276,8 +276,8 @@ public class FlatpackFactoryTest {
 		IWidgetInstance instance = new WidgetInstanceMock();
 		ArrayList<IPreference> prefs = new ArrayList<IPreference>();
 		IPreference pref = new PreferenceMock();
-		pref.setDkey("moderator");
-		pref.setDvalue("true");
+		pref.setName("moderator");
+		pref.setValue("true");
 		pref.setReadOnly(false);
 		prefs.add(pref);
 		instance.setPreferences(prefs);

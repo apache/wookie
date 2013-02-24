@@ -163,8 +163,8 @@ public abstract class AbstractPersistenceTest
         widgetInstance.setShown(true);
         widgetInstance.setUserId("test");
         IPreference widgetInstancePreference = persistenceManager.newInstance(IPreference.class);
-        widgetInstancePreference.setDkey("sharedDataKey");
-        widgetInstancePreference.setDvalue("test-shared-data-key");
+        widgetInstancePreference.setName("sharedDataKey");
+        widgetInstancePreference.setValue("test-shared-data-key");
         widgetInstancePreference.setReadOnly(true);
         widgetInstance.getPreferences().add(widgetInstancePreference);
         //

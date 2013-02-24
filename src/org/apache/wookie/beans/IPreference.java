@@ -21,47 +21,7 @@ package org.apache.wookie.beans;
  * @author <a href="mailto:rwatler@apache.org">Randy Watler</a>
  * @version $Id$
  */
-public interface IPreference extends IBean
+public interface IPreference extends IBean, org.apache.wookie.w3c.IPreference
 {
-    /**
-     * Get widget instance preference value key.
-     * 
-     * @return value key
-     */
-    String getDkey();
-    
-    /**
-     * Set widget instance preference value key.
-     * 
-     * @param dkey value key
-     */
-    void setDkey(String dkey);
-    
-    /**
-     * Get widget instance preference value.
-     * 
-     * @return value
-     */
-    String getDvalue();
-    
-    /**
-     * Set widget instance preference value.
-     * 
-     * @param dvalue value
-     */
-    void setDvalue(String dvalue);
-    
-    /**
-     * Get widget instance preference read only flag.
-     * 
-     * @return read only flag
-     */
-    boolean isReadOnly();
-    
-    /**
-     * Set widget instance preference read only flag.
-     * 
-     * @param readOnly read only flag
-     */
-    void setReadOnly(boolean readOnly);
+
 }

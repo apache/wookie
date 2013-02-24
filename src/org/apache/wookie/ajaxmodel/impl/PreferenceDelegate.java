@@ -37,22 +37,22 @@ public class PreferenceDelegate implements IPreference {
 	 * @param pref
 	 */
 	public PreferenceDelegate(IPreference pref){
-		this.dkey = pref.getDkey();
-		this.dvalue = pref.getDvalue();
+		this.dkey = pref.getName();
+		this.dvalue = pref.getValue();
 		this.readOnly = pref.isReadOnly();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.beans.IPreference#getDkey()
 	 */
-	public String getDkey() {
+	public String getName() {
 		return dkey;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.beans.IPreference#getDvalue()
 	 */
-	public String getDvalue() {
+	public String getValue() {
 		return dvalue;
 	}
 
@@ -66,14 +66,14 @@ public class PreferenceDelegate implements IPreference {
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.beans.IPreference#setDkey(java.lang.String)
 	 */
-	public void setDkey(String dkey) {
+	public void setName(String dkey) {
 		this.dkey = dkey;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.beans.IPreference#setDvalue(java.lang.String)
 	 */
-	public void setDvalue(String dvalue) {
+	public void setValue(String dvalue) {
 		this.dvalue = dvalue;
 	}
 

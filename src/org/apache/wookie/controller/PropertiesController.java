@@ -88,7 +88,7 @@ public class PropertiesController extends Controller {
 		// Note that preferences and shared data keys may be the same!
 		// We let the shared data values override.
 		IPreference pref = instance.getPreference(name);
-		if (pref != null) value = pref.getDvalue();
+		if (pref != null) value = pref.getValue();
 		ISharedData data = new SharedContext(instance).getSharedData(name);
 		if (data != null) value = data.getDvalue();
 		if (value == null) throw new ResourceNotFoundException();
@@ -169,15 +169,15 @@ public class PropertiesController extends Controller {
                 widgetInstance.getPreferences().remove(preference);
             }
             else{    
-                preference.setDvalue(value);
+                preference.setValue(value);
             }
             found=true;
         }
         if(!found){  
         	if (value != null){
                 preference = persistenceManager.newInstance(IPreference.class);
-        		preference.setDkey(name);
-        		preference.setDvalue(value);
+        		preference.setName(name);
+        		preference.setValue(value);
         		widgetInstance.getPreferences().add(preference);
         	}
         }  

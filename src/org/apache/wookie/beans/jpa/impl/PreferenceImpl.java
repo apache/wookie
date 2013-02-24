@@ -65,7 +65,7 @@ public class PreferenceImpl implements IPreference
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IPreference#getDkey()
      */
-    public String getDkey()
+    public String getName()
     {
         return dkey;
     }
@@ -73,7 +73,7 @@ public class PreferenceImpl implements IPreference
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IPreference#setDkey(java.lang.String)
      */
-    public void setDkey(String dkey)
+    public void setName(String dkey)
     {
         this.dkey = dkey;
     }
@@ -81,7 +81,7 @@ public class PreferenceImpl implements IPreference
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IPreference#getDvalue()
      */
-    public String getDvalue()
+    public String getValue()
     {
         return dvalue;
     }
@@ -89,7 +89,7 @@ public class PreferenceImpl implements IPreference
     /* (non-Javadoc)
      * @see org.apache.wookie.beans.IPreference#setDvalue(java.lang.String)
      */
-    public void setDvalue(String dvalue)
+    public void setValue(String dvalue)
     {
         this.dvalue = dvalue;
     }

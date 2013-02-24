@@ -35,7 +35,7 @@ public class PreferenceMock implements IPreference {
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.beans.IPreference#getDkey()
 	 */
-	public String getDkey() {
+	public String getName() {
 
 		return key;
 	}
@@ -43,21 +43,21 @@ public class PreferenceMock implements IPreference {
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.beans.IPreference#setDkey(java.lang.String)
 	 */
-	public void setDkey(String dkey) {
+	public void setName(String dkey) {
 		key = dkey;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.beans.IPreference#getDvalue()
 	 */
-	public String getDvalue() {
+	public String getValue() {
 		return value;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.beans.IPreference#setDvalue(java.lang.String)
 	 */
-	public void setDvalue(String dvalue) {
+	public void setValue(String dvalue) {
 		value = dvalue;
 	}
 

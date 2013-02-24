@@ -224,8 +224,8 @@ public class FlatpackFactory {
     //
     for (IPreference pref : instance.getPreferences()) {
       PreferenceEntity newPref = (PreferenceEntity) getPreference(
-          pref.getDkey(), widget);
-      newPref.setValue(pref.getDvalue());
+          pref.getName(), widget);
+      newPref.setValue(pref.getValue());
       newPref.setReadOnly(pref.isReadOnly());
       widget.getPreferences().add(newPref);
     }

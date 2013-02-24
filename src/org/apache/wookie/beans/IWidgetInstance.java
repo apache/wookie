@@ -224,7 +224,7 @@ public interface IWidgetInstance extends IBean, ILocalized
       public static IPreference getPreference(IWidgetInstance widgetInstance, String key)
       {
     	for (IPreference preference: widgetInstance.getPreferences()){
-    		if (preference.getDkey().equals(key)) return preference;
+    		if (preference.getName().equals(key)) return preference;
     	}
     	return null;
       }

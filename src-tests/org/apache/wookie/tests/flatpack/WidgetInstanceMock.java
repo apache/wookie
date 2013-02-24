@@ -253,7 +253,7 @@ public class WidgetInstanceMock implements IWidgetInstance {
 	 */
 	public IPreference getPreference(String key) {
 		for (IPreference pref: this.preferences){
-			if (pref.getDkey().equals(key)){
+			if (pref.getName().equals(key)){
 				return pref;
 			}
 		}

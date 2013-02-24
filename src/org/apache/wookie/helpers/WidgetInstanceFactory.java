@@ -186,8 +186,8 @@ public class WidgetInstanceFactory{
 	 */
 	private void setPreference(IPersistenceManager persistenceManager, IWidgetInstance widgetInstance, String key, String value, boolean readOnly){
 		IPreference pref = persistenceManager.newInstance(IPreference.class);
-		pref.setDkey(key);				
-		pref.setDvalue(value);
+		pref.setName(key);				
+		pref.setValue(value);
 		pref.setReadOnly(readOnly);
 		widgetInstance.getPreferences().add(pref);
 	}
