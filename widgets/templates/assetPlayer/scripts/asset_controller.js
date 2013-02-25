@@ -75,7 +75,7 @@ var ${widget.shortname}_asset_controller = {
 
     getAlbumCover:function(album) {
       var html = "<li id='" + album.title + "'>";
-      html = html + "<img src='" + album.preview + "' width='120' height='120'/> ";
+      html = html + "<img class='icon' src='" + album.preview + "' width='120' height='120'/> ";
       html = html + album.title;
       html = html + "</a></li>";
       return $(html);
