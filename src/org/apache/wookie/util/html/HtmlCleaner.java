@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.DoctypeToken;
+import org.htmlcleaner.SimpleHtmlSerializer;
 import org.htmlcleaner.TagNode;
 
 /**
@@ -65,6 +66,11 @@ public class HtmlCleaner implements IHtmlProcessor{
 		properties.setTransSpecialEntitiesToNCR(true);
 		properties.setAdvancedXmlEscape(true);
 		properties.setRecognizeUnicodeChars(false);
+		
+		//
+		// Ensure we don't escape scripts within event handlers
+		//
+		properties.setAllowHtmlInsideAttributes(true);
 		
 	}
 	
@@ -138,9 +144,8 @@ public class HtmlCleaner implements IHtmlProcessor{
 	public void process(Writer writer) throws IOException{
 		if (reader == null) throw new IOException("No file has been specified to process");
 		if (writer == null) throw new IOException("No writer provided");
-		replaceUserScripts();
-		HtmlSerializer ser = new HtmlSerializer(properties);	
-		ser.writeXml(htmlNode, writer, "UTF-8");
+		replaceUserScripts();	
+		new SimpleHtmlSerializer(properties).write(htmlNode, writer, "UTF-8");
 	}
 	
 
@@ -162,7 +167,7 @@ public class HtmlCleaner implements IHtmlProcessor{
 	 */
 	@SuppressWarnings("unchecked")
 	private void getUserScripts(){
-		List<TagNode> children = headNode.getChildren();		
+		List<TagNode> children = headNode.getChildTagList();		
 		for(TagNode child : children){						
 			if(child.getName().equals(SCRIPT_TAG)){				
 				scriptList.add(child);	

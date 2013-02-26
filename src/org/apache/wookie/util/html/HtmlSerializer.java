@@ -30,6 +30,7 @@ import org.htmlcleaner.XmlSerializer;
  * event handler attributes such as "onClick". In other respects it is identical 
  * to SimpleXmlSerializer.
  */
+@Deprecated
 public class HtmlSerializer extends XmlSerializer {
 	
 	/**
