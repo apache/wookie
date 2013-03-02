@@ -386,7 +386,7 @@
 
       <ant antfile="${template.dir}/${template.name}/template_build.xml" 
            target="_init_template"/>
-    	
+    
       <property file="${widget.build.dir}/${widget.shortname}.properties"/>
       <property file="${template.dir}/default.widget.properties"/>
 
@@ -491,6 +491,8 @@
     <target name="_init_widget_generation">
       <!-- Read widget defined properties -->
       <property file="widget.properties"/>
+      <!-- Read common properties -->
+      <property file="../common/widget.properties"/>	
       <!-- Read template default properties -->
       <property file="${template.dir}/${template.name}/default.widget.properties"/>
       <!-- Read master default properties -->

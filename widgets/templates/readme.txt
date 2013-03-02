@@ -101,9 +101,11 @@ This section describes in some detail what you did above.
 
 Widgets are defined by a set of properties. The first set of
 properties are used by all widgets and are defined in
-"widget.properties". You created a widget directory and defined these
-properties by copying the default properties provided by the template
-system.
+"widget.properties" the next are defined in 
+"../common/widget.properties" the last are the "default.widget.properties" 
+provided by the template. You created a widget directory and defined 
+the "widget.properties" file by copying the default properties 
+provided by the template system.
 
 Most of these properties should be self explanatory, with the
 exception of the "template.name". This is the name of the template
