@@ -71,6 +71,29 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_POLICIES_TEST));
     client.executeMethod(delete);
   }
+  
+    /*
+     * Utility method for creating a temp directory
+     * @return a new temp directory
+     * @throws IOException
+     */
+	public static File createTempDirectory() throws IOException {
+		final File temp;
+
+		temp = File.createTempFile("temp", Long.toString(System.nanoTime()));
+
+		if (!(temp.delete())) {
+			throw new IOException("Could not delete temp file: "
+					+ temp.getAbsolutePath());
+		}
+
+		if (!(temp.mkdir())) {
+			throw new IOException("Could not create temp directory: "
+					+ temp.getAbsolutePath());
+		}
+
+		return (temp);
+	}
 
   /**
    * Test GET all widgets
@@ -194,7 +217,13 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     client.executeMethod(post);   
     int code = post.getStatusCode();
     assertEquals(201,code);
-    post.releaseConnection();  	  
+    post.releaseConnection();  
+    
+    //
+    // Cleanup
+    //
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
+    client.executeMethod(delete);
   }
   
   /**
@@ -252,6 +281,12 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     assertEquals(WIDGET_ID_UPLOAD_POLICIES_TEST, policy.getAttributeValue("scope"));
     assertEquals("*", policy.getAttributeValue("origin"));
     assertEquals("ALLOW", policy.getAttributeValue("directive"));
+    
+    //
+    // Cleanup
+    //
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_POLICIES_TEST));
+    client.executeMethod(delete);
   }
 
 
@@ -354,6 +389,128 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     assertEquals(400,code);
     post.releaseConnection();     
   }
+  
+  /**
+   * Test to ensure that, given two widgets with identical filenames, the second uploaded file
+   * does not overwrite the first when it comes to downloading the widget. See WOOKIE-402
+   * 
+   * @throws BadWidgetZipFileException
+   * @throws BadManifestException
+   * @throws Exception
+   */
+  @Test
+  public void importWidgetSameFilename() throws BadWidgetZipFileException, BadManifestException, Exception{
+	  
+	    HttpClient client = new HttpClient();
+	    //
+	    // Use admin credentials
+	    //
+	    setAuthenticationCredentials(client);
+
+	    PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
+
+	    //
+	    // Use upload test widget
+	    //
+	    File uploadFile = new File("src-tests/testdata/upload-test.wgt");
+	    assertTrue(uploadFile.exists());
+
+	    //
+	    // Add test wgt file to POST
+	    //
+	    Part[] parts = { new FilePart(uploadFile.getName(), uploadFile) };
+	    post.setRequestEntity(new MultipartRequestEntity(parts, post
+	        .getParams()));
+
+	    //
+	    // POST the file to /widgets and check we get 201 (Created)
+	    //
+	    client.executeMethod(post);   
+	    int code = post.getStatusCode();
+	    assertEquals(201,code);
+	    post.releaseConnection();  	  
+	    
+	    //
+	    // Now, upload a new widget, with the same filename
+	    // We'll use the WARP widget
+	    //
+	    uploadFile = new File("src-tests/testdata/upload-policies-test.wgt");
+	    assertTrue(uploadFile.exists());
+	    File tempFolder = createTempDirectory();
+	    File newFile  = new File(tempFolder+File.separator+"upload-test.wgt");
+	    FileUtils.copyFile(uploadFile, newFile);  
+	    assertTrue(newFile.exists());
+	    
+	    System.out.println(newFile.getPath());
+	    
+	    //
+	    // Add test wgt file to POST
+	    //
+	    post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
+	    Part[] newParts = { new FilePart(newFile.getName(), newFile) };
+	    post.setRequestEntity(new MultipartRequestEntity(newParts, post
+	        .getParams()));
+
+	    //
+	    // POST the file to /widgets and check we get 201 (Created)
+	    //
+	    client.executeMethod(post);   
+	    code = post.getStatusCode();
+	    assertEquals(201,code);
+	    post.releaseConnection(); 
+	    
+	    //
+	    // Now lets try to download the first test widget; this should not
+	    // have been overwritten by the second one we uploaded, even though we
+	    // gave it the same file name
+	    //
+	    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/"+"http://uploadtest");
+	    get.setRequestHeader("Accept","application/widget");
+	    client.executeMethod(get);
+	    code = get.getStatusCode();
+	    assertEquals(200,code);
+
+	    InputStream inputStream = get.getResponseBodyAsStream();
+	    tempFolder = createTempDirectory();
+	    File downloadedFile = new File(tempFolder + File.separator + "downloadedTestWidget.zip");
+	    OutputStream out = new FileOutputStream(downloadedFile);
+
+	    int read = 0;
+	    byte[] bytes = new byte[1024];
+
+	    while ((read = inputStream.read(bytes)) != -1) {
+	      out.write(bytes, 0, read);
+	    }
+	    inputStream.close();
+	    out.flush();
+	    out.close();
+	    get.releaseConnection();
+
+	    //
+	    // check the downloaded file
+	    //
+	    W3CWidgetFactory fac = new W3CWidgetFactory();
+	    fac.setStartPageProcessor(null);
+	    File outputDir = new File("src-tests" + File.separatorChar + "testdata" + File.separatorChar + "widgets");
+	    outputDir.mkdirs();
+	    fac.setOutputDirectory("src-tests" + File.separatorChar + "testdata" + File.separatorChar + "widgets");
+	    W3CWidget widget = fac.parse(downloadedFile);
+	    
+	    //
+	    // Cleanup
+	    //
+	    FileUtils.deleteQuietly(downloadedFile);
+	    FileUtils.deleteQuietly(tempFolder);
+	    FileUtils.deleteQuietly(newFile);
+	    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
+	    client.executeMethod(delete);
+	    delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_POLICIES_TEST));
+	    client.executeMethod(delete);
+	    
+	    assertEquals("http://uploadtest", widget.getIdentifier());
+	    
+	    
+  }
 
   @Test
   public void deleteWidgetUnauthorized() throws HttpException, IOException{
@@ -432,9 +589,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     // Use admin credentials
     //
     setAuthenticationCredentials(client);
-
-    PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST)); 
-
+    
     //
     // Use upload test widget
     //
@@ -444,15 +599,42 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Add test wgt file to POST
     //
+    PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST)); 
     Part[] parts = { new FilePart(file.getName(), file) };
     post.setRequestEntity(new MultipartRequestEntity(parts, post
+        .getParams()));
+
+    //
+    // POST the file to /widgets and check we get 201 (Created)
+    //
+    client.executeMethod(post);   
+    int code = post.getStatusCode();
+    assertEquals(201,code);
+    post.releaseConnection();  
+    
+    //
+    // Now lets try updating
+    //
+    post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST)); 
+
+    //
+    // Use upload test widget
+    //
+    file = new File("src-tests/testdata/upload-test.wgt");
+    assertTrue(file.exists());
+
+    //
+    // Add test wgt file to POST
+    //
+    Part[] newParts = { new FilePart(file.getName(), file) };
+    post.setRequestEntity(new MultipartRequestEntity(newParts, post
         .getParams()));
 
     //
     // POST the file to /widgets and check we get 200 (Updated)
     //
     client.executeMethod(post);   
-    int code = post.getStatusCode();
+    code = post.getStatusCode();
     assertEquals(200,code);
     post.releaseConnection();     
 
