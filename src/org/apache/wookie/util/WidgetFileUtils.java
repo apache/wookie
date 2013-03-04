@@ -15,6 +15,9 @@ package org.apache.wookie.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -98,32 +101,90 @@ public class WidgetFileUtils {
   private static File write(FileItem item, String path) throws Exception {
     File file = new File(WidgetPackageUtils.convertPathToPlatform(item
         .getName()));
-    String archiveFileName = file.getName();
-    File uFile = new File(path + File.separator + archiveFileName);
+    
+    File uFile = getTargetLocation(file, path);
     item.write(uFile);
+    
     _logger.debug("Upload completed successfully" + "[" //$NON-NLS-1$ //$NON-NLS-2$
-        + archiveFileName + "]-" //$NON-NLS-1$
+        + file.getName() + "]-" //$NON-NLS-1$
         + (item.isInMemory() ? "M" : "D")); //$NON-NLS-1$ //$NON-NLS-2$
 
     return uFile;
   }
+  
+	/**
+	 * Identify the target location for an uploaded or dropped file
+	 * 
+	 * @param file
+	 *            the uploaded or dropped file
+	 * @param path
+	 *            the path to the directory where the file should be created
+	 * @return a File object representing the place where a file should be
+	 *         written
+	 */
+	private static File getTargetLocation(File file, String path) {
 
-  /**
-   * Moves a file to the specified path
-   * 
-   * @param uploadPath
-   * @param file
-   * @return
-   * @throws IOException
-   */
-  public static File dealWithDroppedFile(String uploadPath, File file)
-      throws IOException {
-    String serverPath = WidgetPackageUtils.convertPathToPlatform(uploadPath);
-    File uFile = new File(serverPath + File.separator + file.getName());
-    FileUtils.copyFile(file, uFile);
-    file.delete();
-    return uFile;
-  }
+		//
+		// We'll use the current system time to prefix files that
+		// overwrite existing files
+		//
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SZ");
+		
+		//
+		// Create candidate target
+		//
+		File uFile = new File(path + File.separator + file.getName());
+
+		//
+		// Don't overwrite other uploads, instead use a prefix; this
+		// starts out as the current system time, then we attach a
+		// count if we have multiple uploads during the same milli;
+		// although this is extremely unlikely to ever happen.
+		//
+		int count = 0;
+		String prefixAppend = "";
+		while (uFile.exists()) {
+			String prefix = df.format(new Date()) + prefixAppend;
+			file = new File(WidgetPackageUtils.convertPathToPlatform(prefix
+					+ "-" + file.getName()));
+			uFile = new File(path + File.separator + file.getName());
+			count ++;
+			prefixAppend = "-"+String.valueOf(count)+"-";
+		}
+		
+		return uFile;
+	}
+
+	/**
+	 * Moves a file to the specified path
+	 * 
+	 * @param uploadPath
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	public static File dealWithDroppedFile(String uploadPath, File file)
+			throws IOException {
+		//
+		// Identify the location to move the file to
+		//
+		File uFile = getTargetLocation(file, uploadPath);
+
+		//
+		// Copy the file over to its new location
+		//
+		FileUtils.copyFile(file, uFile);
+
+		//
+		// Delete the file from the location it was originally dropped into
+		//
+		file.delete();
+
+		//
+		// Return the copied file
+		//
+		return uFile;
+	}
 
   /**
    * Delete a widget and its resources
