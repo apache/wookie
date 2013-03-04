@@ -162,10 +162,6 @@ public class WidgetInstanceFactory{
 			}
 		}
 
-		// add in the sharedDataKey as a preference so that a widget can know
-		// what sharedData event to listen to later
-		setPreference(persistenceManager, widgetInstance, "sharedDataKey", sharedDataKey, true);//$NON-NLS-1$
-
 		// add in widget defaults
 		for (org.apache.wookie.w3c.IPreference pref: widget.getPreferences()){
 			setPreference(persistenceManager, widgetInstance, pref.getName(), pref.getValue(),pref.isReadOnly());
