@@ -128,14 +128,15 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			//
 			// Set Status
 			//
-	    response.setStatus(responseObject.status);
+	        response.setStatus(responseObject.status);
 	     
 			//
-			// Set Headers
-			//
-			for (Header header:responseObject.headers){
-			  response.setHeader(header.getName(), header.getValue());
-			}
+	        // Set Headers
+	        //
+	        for (Header header:responseObject.headers){
+	            if(!header.getName().startsWith("Transfer-Encoding")) // We don't want to add chunked data header - see WOOKIE-403
+	                response.setHeader(header.getName(), header.getValue());
+	        }
 			
 			//
 			// Set Body
