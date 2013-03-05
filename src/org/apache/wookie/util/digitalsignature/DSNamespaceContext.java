@@ -32,6 +32,7 @@ public class DSNamespaceContext implements NamespaceContext {
 
   public DSNamespaceContext() {
     namespaceMap.put("ds", "http://www.w3.org/2000/09/xmldsig#");
+    namespaceMap.put("dsp", "http://www.w3.org/2009/xmldsig-properties");
   }
 
   public String getNamespaceURI(String arg0) {

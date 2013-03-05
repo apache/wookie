@@ -28,8 +28,15 @@
 
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
     xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+    xmlns:dsp="http://www.w3.org/2009/xmldsig-properties"
     targetNamespace="http://www.w3.org/2000/09/xmldsig#"
     version="0.1" elementFormDefault="qualified">
+    
+   <import namespace="http://www.w3.org/2009/xmldsig11#"
+   schemaLocation="xmldsig11-schema.xsd" /> 
+
+  <import namespace="http://www.w3.org/2009/xmldsig-properties"
+   schemaLocation="xmldsig-properties-schema.xsd" />
 
   <!-- Basic Types Defined for Signatures -->
 
@@ -270,8 +277,9 @@
   <element name="SignatureProperty" type="ds:SignaturePropertyType"/>
   <complexType name="SignaturePropertyType" mixed="true">
     <choice maxOccurs="unbounded">
-      <any namespace="##other" processContents="lax"/>
-      <!-- (1,1) elements from (1,unbounded) namespaces -->
+    	<element ref="dsp:Role" maxOccurs="1"/>
+    	<element ref="dsp:Identifier" maxOccurs="1"/>
+    	<element ref="dsp:Profile" maxOccurs="1"/>
     </choice>
     <attribute name="Target" type="anyURI" use="required"/>
     <attribute name="Id" type="ID" use="optional"/>
