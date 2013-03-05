@@ -40,6 +40,7 @@ import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.utils.Constants;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * verify widgets using digital signatures
@@ -237,6 +238,54 @@ public class DigitalSignatureProcessor implements IDigitalSignatureProcessor {
     XPath xpath = xpf.newXPath();
     xpath.setNamespaceContext(new DSNamespaceContext());
 
+    //
+    // Verify signature properties
+    //
+    String pattern = "//ds:Signature[1]/ds:Object[1]/ds:SignatureProperties[1]/ds:SignatureProperty/dsp:Profile";
+    Element profileElement = (Element) xpath.evaluate(pattern, doc, XPathConstants.NODE);
+    pattern = "//ds:Signature[1]/ds:Object[1]/ds:SignatureProperties[1]/ds:SignatureProperty/dsp:Role";
+    Element roleElement = (Element) xpath.evaluate(pattern, doc, XPathConstants.NODE);
+    pattern = "//ds:Signature[1]/ds:Object[1]/ds:SignatureProperties[1]/ds:SignatureProperty/dsp:Identifier";
+    Element identifierElement = (Element) xpath.evaluate(pattern, doc, XPathConstants.NODE);
+    
+    //
+    // Reject if there are more than one set of signature properties
+    //
+    pattern = "//ds:SignatureProperties";
+    NodeList nodes = (NodeList)xpath.evaluate(pattern, doc, XPathConstants.NODESET);
+    if (nodes.getLength() != 1){
+    	_logger.debug("Incorrect number of signature properties elements");
+    	return false;    	
+    }
+    
+    //
+    // Reject if required properties are missing
+    //
+    if (profileElement == null || roleElement == null || identifierElement == null){
+    	_logger.debug("Signature is missing a required property element");
+    	return false;
+    }
+    
+    //
+    // Reject if incorrect URI for Role 
+    //
+    String uri = roleElement.getAttribute("URI");
+    if (role.equals("") && !uri.equals("http://www.w3.org/ns/widgets-digsig#role-distributor")){
+    	_logger.debug("Role does not match Role URI");
+    	return false;
+    }
+    if (role.equals("author") && !uri.equals("http://www.w3.org/ns/widgets-digsig#role-author")){
+    	_logger.debug("Role does not match Role URI");
+    	return false;
+    }
+    
+    //
+    // Reject if incorrect URI for Profile
+    //
+    if (!profileElement.getAttribute("URI").equals("http://www.w3.org/ns/widgets-digsig#profile")){
+    	_logger.debug("Profile URI is incorrect");
+    	return false;
+    }
     String expression = "//ds:Signature[1]";
     Element sigElement = (Element) xpath.evaluate(expression, doc,
         XPathConstants.NODE);
