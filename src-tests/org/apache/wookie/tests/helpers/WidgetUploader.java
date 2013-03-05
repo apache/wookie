@@ -43,13 +43,14 @@ public class WidgetUploader {
 	
 	public static final String SERVICE_URL = "http://localhost:8080/wookie/widgets";
 
+	
 	/**
-	 * Upload a widget from a file at a given URL
+	 * Download a widget from a given URL to file
 	 * @param url
 	 * @return
 	 * @throws IOException
 	 */
-	public static String uploadWidget(String url) throws IOException{
+	public static File downloadWidget(String url) throws IOException{
 		HttpClient httpclient = new HttpClient();
 		GetMethod get = new GetMethod(url);
 		int status = httpclient.executeMethod(get);
@@ -59,7 +60,17 @@ public class WidgetUploader {
 		File file = File.createTempFile("w3c", ".wgt");
 		FileUtils.writeByteArrayToFile(file, IOUtils.toByteArray(get.getResponseBodyAsStream()));
 		get.releaseConnection();
-		return uploadWidget(file);		
+		return file;		
+	}
+	
+	/**
+	 * Upload a widget from a file at a given URL
+	 * @param url
+	 * @return
+	 * @throws IOException
+	 */
+	public static String uploadWidget(String url) throws IOException{
+		return uploadWidget(downloadWidget(url));		
 	}
 	
 	/**
