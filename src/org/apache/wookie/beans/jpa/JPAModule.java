@@ -96,6 +96,21 @@ public class JPAModule implements IModule{
     dataSource.setMaxIdle(80);
     dataSource.setInitialSize(5);
     dataSource.setMaxOpenPreparedStatements(0);
+    
+    
+    //
+    // Configure database connection to validate stale connections.
+    // The validation query to use is database specific
+    //
+    String validationQuery = "SELECT 1";
+    if (dbType.equals("derby")) validationQuery = "VALUES 1";
+    if (dbType.equals("oracle")) validationQuery = "SELECT 1 FROM DUAL";
+    if (dbType.equals("postgresql")) validationQuery = "select version();";
+    if (dbType.equals("hsqldb")) validationQuery = "select 1 from INFORMATION_SCHEMA.SYSTEM_USERS";
+    if (dbType.equals("db2")) validationQuery = "select 1 from sysibm.sysdummy1";
+    if (dbType.equals("mssql")) validationQuery = "sql select 1";
+    dataSource.setTestOnBorrow(true);
+    dataSource.setValidationQuery(validationQuery);
 
     // Set up connection pool
     GenericObjectPool pool = new GenericObjectPool();
