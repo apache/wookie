@@ -4,33 +4,9 @@ See https://issues.apache.org/jira/browse/WOOKIE-* (where * is the number of the
 
 For more detailed information on significant changes, see NEW_AND_NOTEWORTHY
 
-Version 0.13.1
-==============
-
-Bugs Fixed
-==========
-    * WOOKIE-364 - Wookie delegates proxy settings to widgets
-    * WOOKIE-365 - Widget packages downloaded with incorrect content-type and file name
-    * WOOKIE-367 - Patch to provide question file missing from last walkthrough patch
-    * WOOKIE-379 - POSTing a new Widget results in incorrect access policy
-    * WOOKIE-380 - HTML entities are scrambled by Wookie
-    * WOOKIE-381 - oAuth feature does not work for Google APIs
-    * WOOKIE-383 - Redeploying widget without id in config.xml creates new widget 
-    * WOOKIE-384 - persist parameter of oAuth feature not user-isolated
-    * WOOKIE-391 - Changing the default widget.widgetfolder in widgetserver.properties can cause folder not found issues
-
-Improvements
+Version 0.14
 ============
-    * WOOKIE-173 - Improve delete behaviour for widget instances
-    * WOOKIE-232 - Change default install location for widgets to "/widgets" instead of "/wservices"
-    * WOOKIE-378 - User server relative paths in wookie/demo
-    * WOOKIE-385 - Improve integration of oAuth authorization into workflow
 
-New Features
-============
-    * WOOKIE-103 - Implement W3C Widget Updates spec to enable automatic updating of widgets 
-    * WOOKIE-133 - Implement inter-widget messaging 
-    * WOOKIE-310 - Provide optional "Locked Domains" configuration to provide unique origins for each widget instance
 
 Known Issues
 ============
