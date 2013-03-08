@@ -19,8 +19,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.net.URL;
 
+import org.apache.wookie.tests.helpers.WidgetUploader;
 import org.apache.wookie.w3c.IName;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
@@ -38,7 +38,7 @@ public class WidgetOutputterTest extends ConformanceTest{
 	
 	@Test
 	public void outputString() throws Exception{
-		File testWidget = new File("build/widgets/bubbles.wgt");
+		File testWidget = new File("parser/java/src-test/resources/bubbles.wgt");
 		W3CWidget widget = load(testWidget);
 		WidgetOutputter outputter = new WidgetOutputter();
 		outputter.setWidgetFolder("/widgets");
@@ -48,7 +48,7 @@ public class WidgetOutputterTest extends ConformanceTest{
 	}
 	@Test
 	public void outputString2() throws Exception{
-		File testWidget = new File("build/widgets/natter.wgt");
+		File testWidget = new File("parser/java/src-test/resources/natter.wgt");
 		W3CWidget widget = load(testWidget);
 		WidgetOutputter outputter = new WidgetOutputter();
 		outputter.setWidgetFolder("/widgets");
@@ -59,7 +59,7 @@ public class WidgetOutputterTest extends ConformanceTest{
 	}
 	@Test
 	public void outputString3() throws Exception{
-		File testWidget = new File("build/widgets/weather.wgt");
+		File testWidget = new File("parser/java/src-test/resources/weather.wgt");
 		W3CWidget widget = load(testWidget);
 		WidgetOutputter outputter = new WidgetOutputter();
 		outputter.setWidgetFolder("/widgets");
@@ -69,7 +69,7 @@ public class WidgetOutputterTest extends ConformanceTest{
 	}
 	@Test
 	public void outputString4() throws Exception{
-		File testWidget = new File("build/widgets/localetest.wgt");
+		File testWidget = new File("parser/java/src-test/resources/localetest.wgt");
 		W3CWidget widget = load(testWidget);
 		WidgetOutputter outputter = new WidgetOutputter();
 		outputter.setWidgetFolder("/widgets");
@@ -79,7 +79,7 @@ public class WidgetOutputterTest extends ConformanceTest{
 	}
  @Test
   public void outputString5() throws Exception{
-    File testWidget = new File("build/widgets/localetest.wgt");
+    File testWidget = new File("parser/java/src-test/resources/localetest.wgt");
     W3CWidget widget = load(testWidget);
     widget.getIcons().add(new IconEntity("icon.png",100,100));
     widget.getNames().get(0).setShort("shortName");
@@ -95,7 +95,7 @@ public class WidgetOutputterTest extends ConformanceTest{
 	
 	@Test
 	public void outputStream() throws Exception{
-		File testWidget = new File("build/widgets/geo.wgt");
+		File testWidget = new File("parser/java/src-test/resources/geo.wgt");
 		W3CWidget widget = load(testWidget);
 		WidgetOutputter outputter = new WidgetOutputter();
 		outputter.setWidgetFolder("/widgets");
@@ -109,7 +109,7 @@ public class WidgetOutputterTest extends ConformanceTest{
 	
 	@Test 
 	public void loadModifySave() throws Exception{
-		File testWidget = new File("build/widgets/bubbles.wgt");
+		File testWidget = new File("parser/java/src-test/resources/bubbles.wgt");
 		W3CWidget widget = load(testWidget);
 		IName name = widget.getNames().get(0);
 		name.setName("Modified Widget");
@@ -132,7 +132,8 @@ public class WidgetOutputterTest extends ConformanceTest{
 		if (output.exists()) output.delete();
 		output.mkdir();
 		fac.setOutputDirectory(output.getAbsolutePath());
-		W3CWidget widget = fac.parse(new URL("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RRZxvvTFHx/001/b6.wgt"));
+		File widgetFile = WidgetUploader.downloadWidget("http://dev.w3.org/2006/waf/widgets/test-suite/test-cases/ta-RRZxvvTFHx/001/b6.wgt");
+		W3CWidget widget = fac.parse(widgetFile);
 		
 		IName name = widget.getNames().get(0);
 		name.setName("Re-Modified Widget");
