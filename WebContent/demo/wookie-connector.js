@@ -19,7 +19,7 @@
  
 //
 // Wookie JavaScript Connector 
-// @version 0.13
+// @version 0.14
 //
 //
 // Example usage:
