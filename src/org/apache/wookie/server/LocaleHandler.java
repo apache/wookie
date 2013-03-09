@@ -77,7 +77,7 @@ public class LocaleHandler {
 	private void getLocalesFromConfig(Configuration configuration) {  	
     	List<Locale> localeList = new ArrayList<Locale>();    	
     	List<String> localeStringList = configuration.getList("widget.locales");    	
-    	if ((localeStringList != null) && (localeStringList.size() > 0)) {    		    		    		
+    	if ((localeStringList != null) && (localeStringList.size() > 0) && (!localeStringList.get(0).equals("*"))) {    		    		    		
     		for (final String language : localeStringList) {
     			localeList.add(new Locale(language));
     		}
@@ -92,16 +92,6 @@ public class LocaleHandler {
     
 	public List<Locale> getLocales() {
 		return fLocales;
-	}
-
-	public Locale getDefaultLocale() {
-		return fDefaultLocale;
-	}
-	
-	public void showLocales(){
-		for(Locale locale : fLocales){
-			_logger.debug("locale found:"+locale.toString());
-		}
 	}
 	
 	private void initResourceBundles() {
