@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 echo "Run Signatures"
-export WOOKIE_VERSION="0.13.1"
+export WOOKIE_VERSION="0.14"
 export ROOT_FOLDER=$WOOKIE_VERSION
 export SOURCE_FOLDER="$WOOKIE_VERSION/source/"
 export SRC_BUILD_TAR="apache-wookie-$WOOKIE_VERSION-src.tar.gz"
