@@ -104,6 +104,76 @@ public class WidgetPackageUtils {
 		return locale;
 	}
 	
+    /*
+     * Utility method for creating a temp directory
+     * @return a new temp directory
+     * @throws IOException
+     */
+	public static File createTempDirectory() throws IOException {
+		final File temp;
+
+		temp = File.createTempFile("temp", Long.toString(System.nanoTime()));
+
+		if (!(temp.delete())) {
+			throw new IOException("Could not delete temp file: "
+					+ temp.getAbsolutePath());
+		}
+
+		if (!(temp.mkdir())) {
+			throw new IOException("Could not create temp directory: "
+					+ temp.getAbsolutePath());
+		}
+
+		return (temp);
+	}
+
+	
+	/**
+	 * Given a zipfile, iterate over the contents of the "locales" folder within the
+	 * archive, should it exist, and return the names of all the subdirectories, 
+	 * assumed to be localized content folders.
+	 * 
+	 * Note that this method does not validate the directory names as being valid
+	 * language tags.
+	 * @param zipFile
+	 * @return an array of locale names
+	 * @throws IOException
+	 */
+	public static String[] getLocalesFromZipFile(ZipFile zipFile) throws IOException{
+		File temp = createTempDirectory();
+		unpackZip(zipFile, temp);
+		return getLocalesFromPackage(temp);
+	}
+	
+	
+	/**
+	 * Give a directory, assumed to be the root of a widget package, iterate over
+	 * the contents of the "locales" folder, should it exist, and return the names
+	 * of all the subdirectories, assumed to be localized content folders.
+	 * 
+	 * Note that this method does not validate the directory names as being valid
+	 * language tags.
+	 * @param file
+	 * @return an array of locale names
+	 */
+	public static String[] getLocalesFromPackage(File file){
+		ArrayList<String> locales = new ArrayList<String>();
+		
+		if (file.exists()){
+			File localesFolder = new File(file + File.separator + "locales");
+			if (localesFolder.exists() && localesFolder.isDirectory()){
+				for (String localeName : localesFolder.list()){
+					File localeFolder = new File(localesFolder + File.separator + localeName);
+					if (localeFolder.isDirectory()){
+						locales.add(localeName);
+					}
+				}
+			}
+		}
+		
+		return (String[])locales.toArray(new String[locales.size()]);
+	}
+	
 	/**
 	 * Return the set of valid default files for each locale in the zip
 	 * @param zip

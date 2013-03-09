@@ -17,6 +17,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
 import org.junit.Test;
 
@@ -76,5 +80,21 @@ public class WidgetPackageUtilsTest {
 	public void getLanguageTagForPath2(){
 		String locale = WidgetPackageUtils.languageTagForPath("locales/");
 		assertNull(locale);
+	}
+	
+	/**
+	 * Tests that we can extract the names of locale folders from a widget
+	 * @throws IOException
+	 */
+	@Test
+	public void getLocalesForPackage() throws IOException{
+		File widget = new File("parser/java/src-test/resources/localetest.wgt");
+		assert widget.exists();
+		ZipFile zipFile = new ZipFile(widget);
+		String[] localesFromZip = WidgetPackageUtils.getLocalesFromZipFile(zipFile);		
+		assertEquals(3, localesFromZip.length);
+		assertEquals("en", localesFromZip[0]);
+		assertEquals("en-gb-yorks", localesFromZip[1]);
+		assertEquals("fr", localesFromZip[2]);
 	}
 }

@@ -269,8 +269,8 @@ public class W3CWidgetFactory {
 	 * @throws BadManifestException
 	 */
 	private W3CWidget processWidgetPackage(File zipFile, String defaultIdentifier) throws BadWidgetZipFileException,
-			BadManifestException, InsecuredWidgetContentException {
-	  ZipFile zip;
+	BadManifestException, InsecuredWidgetContentException {
+		ZipFile zip;
 		try {
 			zip = new ZipFile(zipFile);
 		} catch (IOException e) {
@@ -278,6 +278,15 @@ public class W3CWidgetFactory {
 		}
 		if (WidgetPackageUtils.hasManifest(zip)){
 			try {
+				
+				//
+				// If locales is set to "*" then look in the package and process all locales found
+				//
+				
+				if (locales.length == 1 && locales[0].equals("*")){
+					locales = WidgetPackageUtils.getLocalesFromZipFile(zip);
+				}
+				
 				// build the model
 				WidgetManifestModel widgetModel = new WidgetManifestModel(WidgetPackageUtils.extractManifest(zip), locales, features, encodings, zip, defaultIdentifier);															
 
@@ -286,13 +295,13 @@ public class W3CWidgetFactory {
 				// create the folder structure to unzip the zip into
 				unzippedWidgetDirectory = WidgetPackageUtils.createUnpackedWidgetFolder(outputDirectory, manifestIdentifier);
 				// now unzip it into that folder
-        WidgetPackageUtils.unpackZip(zip, unzippedWidgetDirectory);
-        // checks for validity of widget using digital signatures
-        if (digitalSignatureParser != null) {
-          digitalSignatureParser
-              .processDigitalSignatures(unzippedWidgetDirectory
-                  .getAbsolutePath());
-        }
+				WidgetPackageUtils.unpackZip(zip, unzippedWidgetDirectory);
+				// checks for validity of widget using digital signatures
+				if (digitalSignatureParser != null) {
+					digitalSignatureParser
+					.processDigitalSignatures(unzippedWidgetDirectory
+							.getAbsolutePath());
+				}
 				// Iterate over all start files and update paths
 				for (IContent content: widgetModel.getContentList()){
 					// now update the js links in the start page
@@ -306,12 +315,12 @@ public class W3CWidgetFactory {
 				if (widgetModel.getContentList().isEmpty()){
 					throw new InvalidStartFileException("Widget has no start page");
 				}
-				
+
 				// get the path to the root of the unzipped folder
 				String thelocalPath = WidgetPackageUtils.getURLForWidget(localPath, manifestIdentifier, "");
 				// now pass this to the model which will prepend the path to local resources (not web icons)
 				widgetModel.updateIconPaths(thelocalPath);
-				
+
 				// check to see if this widget already exists in the DB - using the ID (guid) key from the manifest
 				return widgetModel;
 
@@ -324,20 +333,20 @@ public class W3CWidgetFactory {
 			} catch (Exception e){
 				throw new BadManifestException(e);
 			} finally {	
-			    try {
-            zip.close();
-          } catch (IOException e) {
-            _logger.error("Unable to close wgt file:" + e.getMessage());
-          }
+				try {
+					zip.close();
+				} catch (IOException e) {
+					_logger.error("Unable to close wgt file:" + e.getMessage());
+				}
 			}
-			
+
 		}
 		else{
-		    try {
-                zip.close();
-            } catch (IOException e) {
-                _logger.error("Unable to close wgt file (without manifest):" + e.getMessage());
-            }
+			try {
+				zip.close();
+			} catch (IOException e) {
+				_logger.error("Unable to close wgt file (without manifest):" + e.getMessage());
+			}
 			// no manifest file found in zip archive
 			throw new BadWidgetZipFileException(); //$NON-NLS-1$ 
 		}
