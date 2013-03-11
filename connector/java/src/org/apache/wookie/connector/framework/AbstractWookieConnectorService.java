@@ -257,6 +257,14 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
       postdata.append(URLEncoder.encode(getCurrentUser().getLoginName(),"UTF-8"));
       postdata.append("&widgetid=");
       postdata.append(URLEncoder.encode(guid, "UTF-8"));
+      
+      //
+      // If the user has a preferred locale, add as a parameter to the request
+      //
+      if (getCurrentUser().getLocale()!= null){
+    	  postdata.append("&locale=");
+    	  postdata.append(URLEncoder.encode(getCurrentUser().getLocale(), "UTF-8"));
+      }
 
       logger.debug("Making Wookie REST query using: " + postdata);
 

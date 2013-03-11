@@ -23,6 +23,11 @@ public class User {
   private String thumbnailUrl = "";
   private String role = null;
   
+  /*
+   * The preferred locale of the user, as a BCP-47 language tag
+   */
+  private String locale = null;
+  
   /**
    * Create a new user.
    * 
@@ -60,6 +65,22 @@ public class User {
     setScreenName(screenName);
     setThumbnailUrl(thumbnailUrl);
     setRole(role);
+  }
+  
+  /**
+   * Create a new user.
+   * 
+   * @param loginName
+   * @param screenName
+   * @param thumbnailUrl
+   * @param isHost
+   */
+  public User(String loginName, String screenName, String thumbnailUrl, String role, String locale) {
+    setLoginName(loginName);
+    setScreenName(screenName);
+    setThumbnailUrl(thumbnailUrl);
+    setRole(role);
+    setLocale(locale);
   }
 
   /**
@@ -132,5 +153,21 @@ public class User {
   public void setRole(String role) {
 	  this.role = role;
   }
+
+  /**
+   * @return the locale
+   */
+  public String getLocale() {
+	  return locale;
+  }
+
+  /**
+   * @param locale the locale to set
+   */
+  public void setLocale(String locale) {
+	  this.locale = locale;
+  }
+  
+  
 
 }

@@ -71,4 +71,13 @@ public class UserTest {
     assertEquals("Thumbnail URL not correctly set", "", user.getThumbnailUrl());
   }
   
+  @Test
+  public void testLocale(){
+	  user.setLocale("en");
+	  assertEquals("Locale not currectly set", "en", user.getLocale());
+	  
+	  User localizedUser = new User("bob", "bob", null, null, "fr");
+	  assertEquals("Locale not currectly set", "fr", localizedUser.getLocale());	  
+  }
+  
 }

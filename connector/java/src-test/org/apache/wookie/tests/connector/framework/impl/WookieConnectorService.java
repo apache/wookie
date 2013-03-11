@@ -87,6 +87,36 @@ public class WookieConnectorService {
 	  
   }
   
+  @Test
+  public void upload() throws WookieConnectorException{
+	  File widgetFile = new File ( "connector/java/src-test/org/apache/wookie/tests/connector/framework/impl/localetest.wgt" );
+	  String adminUsername = "java";
+	  String adminPassword = "java";
+	  Widget uploadedWidget = service.postWidget(widgetFile, adminUsername, adminPassword);
+	  assertNotNull ( "Widget value from postWidget is null", uploadedWidget);
+	  String identifier = uploadedWidget.getIdentifier();
+	  assertEquals("http://www.getwookie.org/widgets/localetest", identifier);
+	  assertEquals("255", uploadedWidget.getWidth());
+	  assertEquals("383", uploadedWidget.getHeight());
+  }
+  
+  @Test
+  public void localization() throws IOException, WookieConnectorException{	  
+	  WidgetInstance instance;
+	 
+	  service.getCurrentUser().setLocale("fr");
+	  instance = service.getOrCreateInstance("http://www.getwookie.org/widgets/localetest");
+	  assertEquals("Widget instance has wrong locale", "tester les paramètres régionaux", instance.getTitle());
+	  assertTrue("Widget instance has incorrect locale URL", instance.getUrl().contains("locales/fr"));
+	  
+	  assertEquals("255", instance.getWidth());
+	  assertEquals("383", instance.getHeight());
+	  
+	  service.getCurrentUser().setLocale("en");
+	  instance = service.getOrCreateInstance("http://www.getwookie.org/widgets/localetest");
+	  assertEquals("Widget instance has wrong locale", "locale test", instance.getTitle());
+	  assertTrue("Widget instance has incorrect locale URL", instance.getUrl().contains("locales/en"));  
+  }
   
   
   @Test
@@ -115,6 +145,14 @@ public class WookieConnectorService {
   
   @Test
   public void getOrCreateInstance() throws WookieConnectorException, IOException {
+    HashMap<String, Widget> widgets = service.getAvailableWidgets();
+    WidgetInstance instance = service.getOrCreateInstance((Widget)widgets.values().toArray()[0]);
+    assertNotNull("Retrieved widget instance is null", instance);
+  }
+  
+  @Test
+  public void getOrCreateLocalizedInstance() throws WookieConnectorException, IOException {
+	service.getCurrentUser().setLocale("fr");
     HashMap<String, Widget> widgets = service.getAvailableWidgets();
     WidgetInstance instance = service.getOrCreateInstance((Widget)widgets.values().toArray()[0]);
     assertNotNull("Retrieved widget instance is null", instance);
