@@ -1,1 +1,22 @@
 # New and Noteworthy: 0.14
+
+## Stability in production
+
+This is primarily a bug fix release that improves on stability in
+production environments where widgets are often updated in situ.
+
+## Improved Localization
+
+A number of bug fixes to the localization feature ensures Wookie is
+useful in a broader set of geographic regions.
+
+## Multiple Parent templates
+
+Improvements to the widget templating system allow templates to have
+multiple parents which each of which can add specfic enhancements.
+
+## Settings Template
+
+A new settings template allows a configuration file defined settings
+page to be added to any existing widget built from templates with
+minimal effort.

@@ -7,6 +7,58 @@ For more detailed information on significant changes, see NEW_AND_NOTEWORTHY
 Version 0.14
 ============
 
+BUGS FIXED
+==========
+
+WOOKIE-403  
+ProxyServlet doesn't work well on chunked data 
+ 
+WOOKIE-406  
+Widget redeploying fails on Windows
+ 
+WOOKIE-404  
+Server crashed after long wait, while reloading widget
+ 
+WOOKIE-405  
+Widget localization does not work 
+ 
+WOOKIE-387  
+deploying flatpack to another wookie results in an error
+ 
+WOOKIE-382  
+Flatpack function returns wrong widget package
+ 
+WOOKIE-402  
+Package files are overwritten by updates 
+
+WOOKIE-399  
+Twitter widget: public timeline no longer works 
+ 
+WOOKIE-290  
+Widget templates not allowing content to be overwritten properly
+ 
+WOOKIE-386  
+HTML Hex-encoded unicode entities are incorrectly encoded in start files
+ 
+WOOKIE-44  
+Default widget returns js "error" when loaded into a browser 
+ 
+IMPROVEMENTS
+============
+
+WOOKIE-360  
+Process all start files, not just specified locales 
+ 
+WOOKIE-397  
+Improvements to assetPlayer Template
+
+WOOKIE-366  
+Update to the Walkthrough template and test widget 
+
+NEW FEATURES
+============
+
+None
 
 Known Issues
 ============
