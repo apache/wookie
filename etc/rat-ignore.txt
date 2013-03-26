@@ -48,6 +48,11 @@ docs/legacy/readme_coppercore.txt
 # needs checking if relevant licenses are included
 # at top level
 
+# Digital Signatures
+
+src/org/apache/wookie/util/digitalsignature/xmldsig-core-schema.xsd
+src/org/apache/wookie/util/digitalsignature/xmldsig-properties-schema.xsd
+
 # S5
 
 widgets/widget-template/s5/lib/s5/ui/default/**
@@ -65,6 +70,21 @@ features/jqmobile/shared/jquery.min.js
 features/jqmobile/shared/jquery.mobile.min.css
 features/jqmobile/shared/jquery.mobile.min.js
 scratchpad/widgets/flickr/lib/jquery.min.js
+widgets/templates/assetPlayer/lib/jquery-1.8.2.js
+widgets/templates/assetPlayer/lib/jquery.mobile-1.2.0.js
+widgets/templates/assetPlayer/style/jquery.mobile-1.2.0.css
+widgets/templates/base/lib/jquery-1.8.2.js
+widgets/templates/base/lib/jquery.mobile-1.2.0.js
+widgets/templates/walkthrough/lib/jquery.mobile-1.1.1/jquery-1.7.1.min.js
+widgets/templates/walkthrough/lib/jquery.mobile-1.1.1/jquery.mobile-1.1.1.css
+widgets/templates/walkthrough/lib/jquery.mobile-1.1.1/jquery.mobile-1.1.1.js
+widgets/templates/walkthrough/lib/jquery.mobile-1.1.1/jquery.mobile-1.1.1.min.css
+widgets/templates/walkthrough/lib/jquery.mobile-1.1.1/jquery.mobile-1.1.1.min.js
+widgets/templates/walkthrough/lib/jquery.mobile-1.1.1/jquery.mobile.structure-1.1.1.css
+widgets/templates/walkthrough/lib/jquery.mobile-1.1.1/jquery.mobile.structure-1.1.1.min.css
+templates/walkthrough/lib/jquery.mobile-1.1.1/jquery.mobile.theme-1.1.1.css
+widgets/templates/walkthrough/lib/jquery.mobile-1.1.1/jquery.mobile.theme-1.1.1.min.css
+
 # see widgets/freeder/legal/jquery.jfeed.pack.js.license.txt
 widgets/freeder/scripts/jquery.jfeed.pack.js
 widgets/sudoku/jquery.js
