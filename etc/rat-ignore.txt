@@ -84,6 +84,7 @@ widgets/templates/walkthrough/lib/jquery.mobile-1.1.1/jquery.mobile.structure-1.
 widgets/templates/walkthrough/lib/jquery.mobile-1.1.1/jquery.mobile.structure-1.1.1.min.css
 templates/walkthrough/lib/jquery.mobile-1.1.1/jquery.mobile.theme-1.1.1.css
 widgets/templates/walkthrough/lib/jquery.mobile-1.1.1/jquery.mobile.theme-1.1.1.min.css
+widgets/templates/walkthrough/lib/jquery.mobile-1.1.1/jquery.mobile.theme-1.1.1.css
 
 # see widgets/freeder/legal/jquery.jfeed.pack.js.license.txt
 widgets/freeder/scripts/jquery.jfeed.pack.js
