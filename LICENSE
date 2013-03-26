@@ -688,6 +688,8 @@ The following components come under the W3C Software License
 ===============================================================================
 
 xmldsig-core-schema.xsd
+xmldsig-properties-schema.xsd
+xmldsig11-schema.xsd
     Containing project URL: http://www.w3.org/Consortium/Legal/copyright-software-19980720
 
 Copyright © 1994-2002 World Wide Web Consortium, (Massachusetts Institute of Technology, 
