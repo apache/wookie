@@ -31,6 +31,7 @@ WebContent/META-INF/MANIFEST.MF
 etc/eclipse/**
 etc/intellij/**
 etc/release/src-build-include.txt
+etc/rat-ignore.txt
 
 # Documentation files
 
@@ -50,7 +51,7 @@ docs/legacy/readme_coppercore.txt
 
 # Digital Signatures
 
-src/org/apache/wookie/util/digitalsignature/xmldsig-core-schema.xsd
+src/org/apache/wookie/util/digitalsignature/xmldsig-core-schema.xsdLIC
 src/org/apache/wookie/util/digitalsignature/xmldsig-properties-schema.xsd
 
 # S5
@@ -149,4 +150,4 @@ src/org/apache/wookie/util/UrlEncodedQueryString.java
 tutorials/geoLocation/scripts/geo.js
 tutorials/geoLocation/scripts/geo_position_js_simulator.js
 scratchpad/widgets/accessibility_controls/scripts/yui-min.js
-etc/rat-ignore.txt
+
