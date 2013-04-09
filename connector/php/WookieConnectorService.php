@@ -286,6 +286,7 @@ class WookieConnectorService implements WookieConnectorServiceInterface {
 				'participant_id' => $this->getUser()->getLoginName(),
 				'participant_display_name' => $User->getScreenName(),
 				'participant_thumbnail_url' => $User->getThumbnailUrl(),
+				'participant_role' => '' // TODO fix actual roles - (API change) Uncomment this to use wookie 0.13.1 onwards
 			);
 
 			if(!$this->checkURL($Url)) {
