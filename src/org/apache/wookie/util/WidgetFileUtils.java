@@ -128,7 +128,7 @@ public class WidgetFileUtils {
 		// We'll use the current system time to prefix files that
 		// overwrite existing files
 		//
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH.mm.SZ");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH.mm.ss");
 		
 		//
 		// Create candidate target
