@@ -47,12 +47,17 @@ function init() {
 
 ///// Send a new message
 
-function sendMessage() {
-    if (isActive){
+function sendMessage(event) {
+  event.preventDefault(); 
+  try { 
+      if (isActive){
         var text = dwr.util.getValue("text");
         dwr.util.setValue("text", "");
         post(username, text, thumbnail);
     }
+  } catch (err) {; 
+    return false; 
+  }
 }
 
 function post(user,text,url){

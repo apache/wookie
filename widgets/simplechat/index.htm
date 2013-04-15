@@ -27,11 +27,13 @@
   <link rel="stylesheet" href="chat.css" type="text/css"/>   
 </head>
 <body onload="init()">	
-    <div id="chatlog"></div>	
+    <div id="chatlog"></div>
+    <form name="chatform" onsubmit="return sendMessage(event);">
     <div id="input">
         <label for="text">Chat:</label>
-        <input id="text" onkeypress="dwr.util.onReturn(event, sendMessage)"/>
+        <input name="text" id="text"/>
     </div>
+    </form>
 </body>
 <!-- fix forIE cashing - must go here even though its in the wrong place
 <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
