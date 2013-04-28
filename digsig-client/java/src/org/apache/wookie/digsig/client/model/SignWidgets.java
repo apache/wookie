@@ -13,33 +13,24 @@
  */
 package org.apache.wookie.digsig.client.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.Random;
-
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.signature.ObjectContainer;
-import org.apache.xml.security.signature.SignatureProperties;
-import org.apache.xml.security.signature.SignatureProperty;
-import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.signature.*;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.w3c.dom.Element;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.Random;
 
 /** @author Pushpalanka */
 
@@ -125,6 +116,7 @@ public class SignWidgets {
 				//get the private key from keystore
 				KeyStore ks = KeyStore.getInstance(keyStoreType);
 				FileInputStream fis = new FileInputStream(keyStoreFile);
+                try{
 				ks.load(fis, keyStorePass.toCharArray());
 				PrivateKey privateKey = (PrivateKey) ks.getKey(privateKeyAlias,
 						privateKeyPass.toCharArray());
@@ -140,7 +132,7 @@ public class SignWidgets {
 				XMLSignature sig = new XMLSignature(doc, BaseURI,
 						XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA256,
 						Transforms.TRANSFORM_C14N11_OMIT_COMMENTS);
-				
+
 				sig.setId(role);
 
 				doc.appendChild(sig.getElement());
@@ -201,10 +193,8 @@ public class SignWidgets {
 						{
 								X509Certificate cert = (X509Certificate) ks
 										.getCertificate(certificateAlias);
-								if(cert.equals(null)){
-										throw new NullPointerException();
-								}
-								sig.addKeyInfo(cert);
+
+                                sig.addKeyInfo(cert);
 								sig.addKeyInfo(cert.getPublicKey());
 
 								System.out.println("Start signing");
@@ -214,10 +204,19 @@ public class SignWidgets {
 
 						FileOutputStream f = new FileOutputStream(signatureFile);
 
-						XMLUtils.outputDOM(doc, f);
-						f.close();
+						try{
+                            XMLUtils.outputDOM(doc, f);
+                        }
+						finally{
+                            f.close();
+                        }
 						System.out.println("Wrote signature to " + BaseURI);
 				}
+                }
+                finally{
+                    fis.close();
+                }
+
 		}
 
 		/**
@@ -263,14 +262,18 @@ public class SignWidgets {
 				File sourceOfFiles = new File(pathToWidget);
 				ZipArchiveOutputStream out = new ZipArchiveOutputStream(new File(
 						sourceOfFiles.getAbsolutePath() + File.separator + name + ".wgt"));
-				out.setEncoding("UTF-8");
-				for(File aFile : sourceOfFiles.listFiles()){
+                try{
+                    out.setEncoding("UTF-8");
+				    for(File aFile : sourceOfFiles.listFiles()){
 						if(!aFile.getName().endsWith(".wgt")){
 								pack(aFile, out, "");
 						}
 				}
-				out.flush();
-				out.close();
+                }
+                finally{
+				    out.flush();
+				    out.close();
+                }
 		}
 
 		/**
@@ -301,10 +304,16 @@ public class SignWidgets {
 								byte[] buf = new byte[1024];
 								int len;
 								FileInputStream in = new FileInputStream(file);
-								while((len = in.read(buf)) > 0){
+                                try{
+								    while((len = in.read(buf)) > 0){
 										out.write(buf, 0, len);
 								}
+                                }finally{
+                                      in.close();
+                                }
 								out.closeArchiveEntry();
+                                out.close();
+
 						}
 				}
 		}
