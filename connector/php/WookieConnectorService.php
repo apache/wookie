@@ -173,6 +173,74 @@ class WookieConnectorService implements WookieConnectorServiceInterface {
 		return new HTTP_Response($response, $http_response_header);
 	}
 
+	/**
+	 * 
+	 * @param String $widgetFile - full path on disk where the widget is located
+	 * @param unknown $adminUsername - wookie admin username
+	 * @param unknown $adminPassword - wookie admin password
+	 * @return HTTP_Response - new HTTP_Response instance
+	 */
+	public function postWidget($widgetFile, $adminUsername, $adminPassword){
+		$file = basename($widgetFile); //actual filename without the path
+		$fileContents = file_get_contents($widgetFile);
+		//Boundary definition
+		$boundary = substr(md5(rand(0,32000)), 0, 20);
+		$data = "--".$boundary . "\r\n";		
+		$data .= "Content-Disposition: form-data; name=\"upload\"; filename=\"" . $file . "\"\r\n";
+		$data .= "Content-Type: application/octet-stream; charset=ISO-8859-1\r\n";
+		$data .= "Content-Transfer-Encoding: binary\r\n\r\n";
+		$data .= $fileContents."\r\n";
+		$data .= "--".$boundary. "--" . "\r\n";
+		//Construct params
+		$params = array('http' => array(
+				'method' => 'POST',
+				'header' => "Authorization: Basic " . base64_encode("$adminUsername:$adminPassword") . "\r\n" .
+							//"Connection: Keep-Alive" . "\r\n" .
+							"Content-Type: multipart/form-data;boundary=".$boundary ."\r\n",
+				'content' => $data,
+				'timeout' => 30
+		));
+		$this->setHttpStreamContext($params);
+		$requestUrl = $this->getConnection()->getURL().'widgets';
+		$response = @file_get_contents($requestUrl, false, $this->getHttpStreamContext());
+		//revert back to default value for other requests
+		$this->setHttpStreamContext(array('http' => array('timeout' => 15)));
+		return new HTTP_Response($response, $http_response_header);
+	}
+	
+	/**
+	 * 
+	 * @param String $requestUrl - a string url of where the widget is online
+	 * @param unknown $adminUsername - wookie admin username
+	 * @param unknown $adminPassword - wookie admin password
+	 * @throws WookieConnectorException
+	 * @return string - *should be the xml representation of the widget* - but for now a raw dump of the response by wookie
+	 */
+	public function postWidgetByUrl($requestUrl, $adminUsername, $adminPassword){
+		if(!isset($adminUsername) || !isset($adminUsername)){
+			throw new WookieConnectorException("Wookie admin username and password missing.");
+		}
+		$response = $this->do_request($requestUrl, null, 'GET');
+		if($response->getStatusCode() == 200) {
+			$filename = uniqid(rand(), true) . '.wgt';
+			$handle = fopen(sys_get_temp_dir()  . $filename, "w");
+			fwrite($handle, $response->getResponseText());
+			$widgetResponse = $this->postWidget(sys_get_temp_dir() . $filename, $adminUsername, $adminPassword);
+			fclose($handle);
+			unlink(sys_get_temp_dir() . $filename);
+			if($response->getStatusCode() == 200 || $response->getStatusCode() == 201){
+				//todo - this wont load for some reason
+				//return simplexml_load_file($widgetResponse->getResponseText());
+				return $widgetResponse->getResponseText();
+			}
+			else{
+				throw new WookieConnectorException("Problem uploading the widget to " . $this->getConnection()->getURL().'widgets');
+			}
+		}
+		else{
+			throw new WookieConnectorException("Problem downloading the original widget from " . $requestUrl);
+		}
+	}
 
 	/**
 	 * Get or create an instance of a widget.
