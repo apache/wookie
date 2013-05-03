@@ -229,9 +229,7 @@ class WookieConnectorService implements WookieConnectorServiceInterface {
 			fclose($handle);
 			unlink(sys_get_temp_dir() . $filename);
 			if($response->getStatusCode() == 200 || $response->getStatusCode() == 201){
-				//todo - this wont load for some reason
-				//return simplexml_load_file($widgetResponse->getResponseText());
-				return $widgetResponse->getResponseText();
+				return simplexml_load_string($widgetResponse->getResponseText());
 			}
 			else{
 				throw new WookieConnectorException("Problem uploading the widget to " . $this->getConnection()->getURL().'widgets');
