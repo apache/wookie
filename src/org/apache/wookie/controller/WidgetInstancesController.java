@@ -136,12 +136,25 @@ public class WidgetInstancesController extends Controller {
 	    response.setStatus(HttpServletResponse.SC_OK);
 
 	    //
+	    // Use default sizes where none provided?
+	    //
+	    boolean useDefaultSizes = true;
+	    Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
+	    if (properties.containsKey("widget.use_default_sizes")){
+	    	try {
+				useDefaultSizes = properties.getBoolean("widget.use_default_sizes");
+			} catch (Exception e) {
+				useDefaultSizes = true;
+			}
+	    }
+	    
+	    //
 	    // Return XML or JSON 
 	    //
 	    switch(format(request)){
-	    case XML: returnXml(WidgetInstanceHelper.createXMLWidgetInstanceDocument(instance, url, locale), response); break;
-	    case JSON: returnJson(WidgetInstanceHelper.toJson(instance, url, locale), response); break;
-	    default: returnXml(WidgetInstanceHelper.createXMLWidgetInstanceDocument(instance, url, locale), response); break;
+	    case XML: returnXml(WidgetInstanceHelper.createXMLWidgetInstanceDocument(instance, url, locale, useDefaultSizes), response); break;
+	    case JSON: returnJson(WidgetInstanceHelper.toJson(instance, url, locale, useDefaultSizes), response); break;
+	    default: returnXml(WidgetInstanceHelper.createXMLWidgetInstanceDocument(instance, url, locale, useDefaultSizes), response); break;
 	    }
 
 	  }
@@ -271,10 +284,23 @@ public class WidgetInstancesController extends Controller {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);	
 		}
 		
+	    //
+	    // Use default sizes where none provided?
+	    //
+	    boolean useDefaultSizes = true;
+	    Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
+	    if (properties.containsKey("widget.use_default_sizes")){
+	    	try {
+				useDefaultSizes = properties.getBoolean("widget.use_default_sizes");
+			} catch (Exception e) {
+				useDefaultSizes = true;
+			}
+	    }
+		
 		String url = getUrl(request, instance);
 		response.setContentType(CONTENT_TYPE);
 		PrintWriter out = response.getWriter();
-		out.println(WidgetInstanceHelper.createXMLWidgetInstanceDocument(instance, url, locale));
+		out.println(WidgetInstanceHelper.createXMLWidgetInstanceDocument(instance, url, locale, useDefaultSizes));
 	}  
 	
 	/**

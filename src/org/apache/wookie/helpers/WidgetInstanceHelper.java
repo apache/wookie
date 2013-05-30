@@ -37,14 +37,21 @@ public class WidgetInstanceHelper {
 	 * @param locale the locale of the widget instance
 	 * @return an XML representation of the Widget Instance as a String
 	 */
-	public static String createXMLWidgetInstanceDocument(IWidgetInstance instance, String url, String locale){
+	public static String createXMLWidgetInstanceDocument(IWidgetInstance instance, String url, String locale, boolean useDefaultSizes){
 		String xml = XMLDECLARATION;
 		IWidget widget = instance.getWidget();
 		
+
+		
+		String width = null;
+		String height = null;
+		
 		// Return a default width and height where the original value is either not provided
 		// or of an invalid range (<0)
-		String width = String.valueOf(IW3CXMLConfiguration.DEFAULT_WIDTH_LARGE);
-		String height = String.valueOf(IW3CXMLConfiguration.DEFAULT_HEIGHT_LARGE);
+		if (useDefaultSizes){
+			width = String.valueOf(IW3CXMLConfiguration.DEFAULT_WIDTH_LARGE);
+			height = String.valueOf(IW3CXMLConfiguration.DEFAULT_HEIGHT_LARGE);
+		}
 		if (widget.getWidth()!=null && widget.getWidth()>0) width = widget.getWidth().toString();
 		if (widget.getHeight()!=null && widget.getHeight()>0) height = widget.getHeight().toString();
 				
@@ -52,17 +59,23 @@ public class WidgetInstanceHelper {
 		xml += "\t<url>"+url+"</url>"; //$NON-NLS-1$ //$NON-NLS-2$
 		xml += "\t<identifier>"+instance.getIdKey()+"</identifier>\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		xml += "\t<title>"+StringEscapeUtils.escapeXml(widget.getLocalName(locale))+"</title>\n"; //$NON-NLS-1$ //$NON-NLS-2$
-		xml += "\t<height>"+height+"</height>\n"; //$NON-NLS-1$ //$NON-NLS-2$
-		xml += "\t<width>"+width+"</width>\n"; //$NON-NLS-1$ //$NON-NLS-2$
+		if (height != null) xml += "\t<height>"+height+"</height>\n"; //$NON-NLS-1$ //$NON-NLS-2$
+		if (width != null) xml += "\t<width>"+width+"</width>\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		xml += "</widgetdata>"; //$NON-NLS-1$
 		
 		return xml;
 	}
 	
-  public static String toJson(IWidgetInstance instance, String url, String locale) {
+  public static String toJson(IWidgetInstance instance, String url, String locale, boolean useDefaultSizes) {
     IWidget widget = instance.getWidget();
-    String width = String.valueOf(IW3CXMLConfiguration.DEFAULT_WIDTH_LARGE);
-    String height = String.valueOf(IW3CXMLConfiguration.DEFAULT_HEIGHT_LARGE);
+    
+    String width = null;
+    String height = null;
+    
+    if (useDefaultSizes){
+    	width = String.valueOf(IW3CXMLConfiguration.DEFAULT_WIDTH_LARGE);
+    	height = String.valueOf(IW3CXMLConfiguration.DEFAULT_HEIGHT_LARGE);
+    }
     if (widget.getWidth() != null && widget.getWidth() > 0)
       width = widget.getWidth().toString();
     if (widget.getHeight() != null && widget.getHeight() > 0)
@@ -72,8 +85,8 @@ public class WidgetInstanceHelper {
       json.put("url", url);
       json.put("identifier", instance.getIdKey());
       json.put("title", widget.getLocalName(locale));
-      json.put("height", height);
-      json.put("width", width);
+      if (height != null) json.put("height", height);
+      if (width != null) json.put("width", width);
     } catch (JSONException e) {
       logger.error("Problem rendering instance using JSON",e);
     }
