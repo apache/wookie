@@ -51,7 +51,7 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
           //
           // Use upload test widget
           //
-          File file = new File("src-tests/testdata/security-tests/binary.exe");
+          File file = new File("src/test/resources/security-tests/binary.exe");
           assertTrue(file.exists());
           
           //
@@ -89,7 +89,7 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
           //
           // Use upload test widget
           //
-          File file = new File("src-tests/testdata/security-tests/jsp.jsp");
+          File file = new File("src/test/resources/security-tests/jsp.jsp");
           assertTrue(file.exists());
           
           //
@@ -127,7 +127,7 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
           //
           // Use upload test widget
           //
-          File file = new File("src-tests/testdata/security-tests/script.bat");
+          File file = new File("src/test/resources/security-tests/script.bat");
           assertTrue(file.exists());
           
           //
@@ -166,7 +166,7 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
           //
           // Use upload test widget
           //
-          File file = new File("src-tests/testdata/security-tests/script.sh");
+          File file = new File("src/test/resources/security-tests/script.sh");
           assertTrue(file.exists());
           
           //
@@ -204,7 +204,7 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
           //
           // Use upload test widget
           //
-          File file = new File("src-tests/testdata/security-tests/widget-with-malicious-code-no-manifest.wgt");
+          File file = new File("src/test/resources/security-tests/widget-with-malicious-code-no-manifest.wgt");
           assertTrue(file.exists());
           
           //
@@ -242,7 +242,7 @@ public class MaliciousContentUploadTest extends AbstractControllerTest {
           //
           // Use upload test widget
           //
-          File file = new File("src-tests/testdata/security-tests/widget-with-malicious-code-with-manifest.wgt");
+          File file = new File("src/test/resources/security-tests/widget-with-malicious-code-with-manifest.wgt");
           assertTrue(file.exists());
           
           //

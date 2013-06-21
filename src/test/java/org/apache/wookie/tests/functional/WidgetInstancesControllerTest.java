@@ -60,7 +60,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
     //
     // Get the locale test widget
     //
-    File file = new File("src-tests/testdata/localetest.wgt");
+    File file = new File("src/test/resources/localetest.wgt");
     assertTrue(file.exists());
     
     //

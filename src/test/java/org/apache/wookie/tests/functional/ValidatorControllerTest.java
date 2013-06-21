@@ -52,7 +52,7 @@ public class ValidatorControllerTest extends AbstractControllerTest {
         //
         // Use upload test widget
         //
-        File file = new File("src-tests/testdata/upload-test-2.wgt");
+        File file = new File("src/test/resources/upload-test-2.wgt");
         assertTrue(file.exists());
         
         //
@@ -88,7 +88,7 @@ public class ValidatorControllerTest extends AbstractControllerTest {
         
         PostMethod post = new PostMethod(TEST_VALIDATOR_SERVICE_URL_VALID);
         
-        File file = new File("src-tests/testdata/missing-start-page.wgt");
+        File file = new File("src/test/resources/missing-start-page.wgt");
         assertTrue(file.exists());
         
         //
@@ -125,7 +125,7 @@ public class ValidatorControllerTest extends AbstractControllerTest {
         
         PostMethod post = new PostMethod(TEST_VALIDATOR_SERVICE_URL_VALID);
         
-        File file = new File("src-tests/testdata/missing-config.wgt");
+        File file = new File("src/test/resources/missing-config.wgt");
         assertTrue(file.exists());
         
         //
@@ -162,7 +162,7 @@ public class ValidatorControllerTest extends AbstractControllerTest {
         
         PostMethod post = new PostMethod(TEST_VALIDATOR_SERVICE_URL_VALID);
         
-        File file = new File("src-tests/testdata/invalid-xml.wgt");
+        File file = new File("src/test/resources/invalid-xml.wgt");
         assertTrue(file.exists());
         
         //

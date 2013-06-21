@@ -201,7 +201,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Use upload test widget
     //
-    File file = new File("src-tests/testdata/upload-test.wgt");
+    File file = new File("src/test/resources/testdata/upload-test.wgt");
     assertTrue(file.exists());
 
     //
@@ -248,7 +248,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Use upload test widget
     //
-    File file = new File("src-tests/testdata/upload-policies-test.wgt");
+    File file = new File("src/test/resources/upload-policies-test.wgt");
     assertTrue(file.exists());
 
     //
@@ -303,7 +303,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Use upload test widget
     //
-    File file = new File("src-tests/testdata/upload-test-2.wgt");
+    File file = new File("src/test/resources/upload-test-2.wgt");
     assertTrue(file.exists());
 
     //
@@ -371,7 +371,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // We'll use a copy of the unsupported widget widget for testing
     //
-    File file = new File("src-tests/testdata/not_a_widget.zip");
+    File file = new File("src/test/resources/not_a_widget.zip");
     assertTrue(file.exists());
 
     //
@@ -412,7 +412,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	    //
 	    // Use upload test widget
 	    //
-	    File uploadFile = new File("src-tests/testdata/upload-test.wgt");
+	    File uploadFile = new File("src/test/resources/upload-test.wgt");
 	    assertTrue(uploadFile.exists());
 
 	    //
@@ -434,7 +434,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	    // Now, upload a new widget, with the same filename
 	    // We'll use the WARP widget
 	    //
-	    uploadFile = new File("src-tests/testdata/upload-policies-test.wgt");
+	    uploadFile = new File("src/test/resources/upload-policies-test.wgt");
 	    assertTrue(uploadFile.exists());
 	    File tempFolder = createTempDirectory();
 	    File newFile  = new File(tempFolder+File.separator+"upload-test.wgt");
@@ -491,9 +491,9 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	    //
 	    W3CWidgetFactory fac = new W3CWidgetFactory();
 	    fac.setStartPageProcessor(null);
-	    File outputDir = new File("src-tests" + File.separatorChar + "testdata" + File.separatorChar + "widgets");
+	    File outputDir = new File("src/test" + File.separatorChar + "resources" + File.separatorChar + "widgets");
 	    outputDir.mkdirs();
-	    fac.setOutputDirectory("src-tests" + File.separatorChar + "testdata" + File.separatorChar + "widgets");
+	    fac.setOutputDirectory("src/test" + File.separatorChar + "resources" + File.separatorChar + "widgets");
 	    W3CWidget widget = fac.parse(downloadedFile);
 	    
 	    //
@@ -550,7 +550,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Upload widget we'll test deleting next
     //
-    File file = new File("src-tests/testdata/delete-test.wgt");
+    File file = new File("src/test/resources/delete-test.wgt");
     assertTrue(file.exists());
     PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID);
     Part[] parts = { new FilePart(file.getName(), file) };
@@ -593,7 +593,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Use upload test widget
     //
-    File file = new File("src-tests/testdata/upload-test.wgt");
+    File file = new File("src/test/resources/upload-test.wgt");
     assertTrue(file.exists());
 
     //
@@ -620,7 +620,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Use upload test widget
     //
-    file = new File("src-tests/testdata/upload-test.wgt");
+    file = new File("src/test/resources/upload-test.wgt");
     assertTrue(file.exists());
 
     //
@@ -653,7 +653,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Use upload test widget
     //
-    File file = new File("src-tests/testdata/upload-test.wgt");
+    File file = new File("src/test/resources/upload-test.wgt");
     assertTrue(file.exists());
 
     //
@@ -682,7 +682,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Use upload test widget
     //
-    File file = new File("src-tests/testdata/upload-test.wgt");
+    File file = new File("src/test/resources/upload-test.wgt");
     assertTrue(file.exists());
 
     //
@@ -714,7 +714,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Use upload test widget
     //
-    File file = new File("src-tests/testdata/upload-test.wgt");
+    File file = new File("src/test/resources/upload-test.wgt");
     assertTrue(file.exists());
 
     //
@@ -761,7 +761,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
       // Add the access test widget. This just has a single access request
       // for the origin "http://accesstest.incubator.apache.org"
       //
-      File file = new File("src-tests/testdata/access-test.wgt");
+      File file = new File("src/test/resources/access-test.wgt");
       assertTrue(file.exists());
 
       //
@@ -805,7 +805,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
       // Add the access test widget. This just has a single access request
       // for the origin "http://accesstest.incubator.apache.org"
       //
-      File file = new File("src-tests/testdata/upload-test-noid.wgt");
+      File file = new File("src/test/resources/upload-test-noid.wgt");
       assertTrue(file.exists());
 
       //
@@ -866,7 +866,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     assertEquals(200,code);
 
     InputStream inputStream = get.getResponseBodyAsStream();
-    File downloadedFile = new File("src-tests" + File.separatorChar + "testdata" + File.separatorChar + "downloadedWeatherWidget.zip");
+    File downloadedFile = new File("src"+ File.separatorChar + "test" + File.separatorChar + "resources" + File.separatorChar + "downloadedWeatherWidget.zip");
     OutputStream out = new FileOutputStream(downloadedFile);
 
     int read = 0;
@@ -883,12 +883,12 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     // check the downloaded file
     W3CWidgetFactory fac = new W3CWidgetFactory();
     fac.setStartPageProcessor(null);
-    File outputDir = new File("src-tests" + File.separatorChar + "testdata" + File.separatorChar + "widgets");
+    File outputDir = new File("src"+File.separatorChar+"test" + File.separatorChar + "resources" + File.separatorChar + "widgets");
     outputDir.mkdirs();
-    fac.setOutputDirectory("src-tests" + File.separatorChar + "testdata" + File.separatorChar + "widgets");
+    fac.setOutputDirectory("src" + File.separatorChar + "test" + File.separatorChar + "resources" + File.separatorChar + "widgets");
     W3CWidget widget = fac.parse(downloadedFile);
     File file = fac.getUnzippedWidgetDirectory();
-    assertEquals("src-tests" + File.separatorChar + "testdata"
+    assertEquals("src"  + File.separatorChar + "test" + File.separatorChar + "testdata"
         + File.separatorChar + "widgets" + File.separatorChar
         + "www.getwookie.org" + File.separatorChar + "widgets"
         + File.separatorChar + "weather", file.getPath());
