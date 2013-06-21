@@ -27,7 +27,7 @@ build/
 .settings/
 **/*.properties
 connector/CSharp/CSharp.sln
-WebContent/META-INF/MANIFEST.MF
+src/main/webapp/META-INF/MANIFEST.MF
 etc/eclipse/**
 etc/intellij/**
 etc/release/src-build-include.txt
@@ -66,7 +66,7 @@ connector/flash_flex/com/google/code/flexiframe/IFrameExternalCalls.as
 
 # JQuery
 
-WebContent/demo/jquery.min.js
+src/main/webapp/demo/jquery.min.js
 features/jqmobile/shared/jquery.min.js
 features/jqmobile/shared/jquery.mobile.min.css
 features/jqmobile/shared/jquery.mobile.min.js
