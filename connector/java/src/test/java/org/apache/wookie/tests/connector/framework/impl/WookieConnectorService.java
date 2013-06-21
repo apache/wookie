@@ -63,7 +63,7 @@ public class WookieConnectorService {
   
   @Test
   public void widgetHandling ( ) throws WookieConnectorException, IOException {
-	  File widgetFile = new File ( "connector/java/src-test/org/apache/wookie/tests/connector/framework/impl/empty.wgt" );
+	  File widgetFile = new File ( "connector/java/src/test/java/org/apache/wookie/tests/connector/framework/impl/empty.wgt" );
 	  String adminUsername = "java";
 	  String adminPassword = "java";
 	  File saveWidgetFile = File.createTempFile("empty"+Long.toString(System.nanoTime()), "wgt");
@@ -89,7 +89,7 @@ public class WookieConnectorService {
   
   @Test
   public void upload() throws WookieConnectorException{
-	  File widgetFile = new File ( "connector/java/src-test/org/apache/wookie/tests/connector/framework/impl/localetest.wgt" );
+	  File widgetFile = new File ( "connector/java/src/test/java/org/apache/wookie/tests/connector/framework/impl/localetest.wgt" );
 	  String adminUsername = "java";
 	  String adminPassword = "java";
 	  Widget uploadedWidget = service.postWidget(widgetFile, adminUsername, adminPassword);
