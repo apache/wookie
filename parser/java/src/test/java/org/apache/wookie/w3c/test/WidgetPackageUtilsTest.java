@@ -88,7 +88,7 @@ public class WidgetPackageUtilsTest {
 	 */
 	@Test
 	public void getLocalesForPackage() throws IOException{
-		File widget = new File("parser/java/src-test/resources/localetest.wgt");
+		File widget = new File("parser/java/src/test/resources/localetest.wgt");
 		assert widget.exists();
 		ZipFile zipFile = new ZipFile(widget);
 		String[] localesFromZip = WidgetPackageUtils.getLocalesFromZipFile(zipFile);		
