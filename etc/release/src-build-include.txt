@@ -3,7 +3,6 @@
 @FOLDERNAME@connector/CSharp/
 @FOLDERNAME@connector/flash_flex/
 @FOLDERNAME@connector/java/src/
-@FOLDERNAME@connector/java/src-test/
 @FOLDERNAME@connector/java/build.properties
 @FOLDERNAME@connector/java/build.xml
 @FOLDERNAME@connector/java/ivy.xml
@@ -15,8 +14,6 @@
 @FOLDERNAME@connector/ruby/
 @FOLDERNAME@connector/README.txt
 @FOLDERNAME@digsig-client/java/src/
-@FOLDERNAME@digsig-client/java/src-tests/
-@FOLDERNAME@digsig-client/java/resources/
 @FOLDERNAME@digsig-client/java/build.properties
 @FOLDERNAME@digsig-client/java/build.xml
 @FOLDERNAME@digsig-client/java/ivy.xml
@@ -27,7 +24,6 @@
 @FOLDERNAME@licenses/
 @FOLDERNAME@modules/
 @FOLDERNAME@parser/java/src/
-@FOLDERNAME@parser/java/src-test/
 @FOLDERNAME@parser/java/ant/
 @FOLDERNAME@parser/java/build.properties
 @FOLDERNAME@parser/java/build.xml
@@ -41,9 +37,7 @@
 @FOLDERNAME@scripts/
 @FOLDERNAME@shindig/
 @FOLDERNAME@src/
-@FOLDERNAME@src-tests/
 @FOLDERNAME@tutorials/
-@FOLDERNAME@WebContent/
 @FOLDERNAME@widgets/
 @FOLDERNAME@.classpath
 @FOLDERNAME@.project
