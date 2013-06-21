@@ -28,7 +28,7 @@ import org.junit.Test;
 
 public class W3CWidgetFactoryTest {
 	
-	final static File wgt = new File("parser/java/test.wgt");
+	final static File wgt = new File("parser/java/src/test/resources/test.wgt");
 	final static String widgetGuid = "http://www.getwookie.org/widgets/test";
 	final static File testfolder = new File("parser/java/test");	
 	final static File testfolderreadonly = new File("parser/java/testr");	
