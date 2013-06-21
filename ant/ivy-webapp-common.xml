@@ -17,7 +17,7 @@
 -->
 <project xmlns:ivy="antlib:org.apache.ivy.ant">
 
-	<property name="project.webapp.dir" location="WebContent" />
+	<property name="project.webapp.dir" location="src/main/webapp" />
 
 	<import file="ivy-java-common.xml" />
 	

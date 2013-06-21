@@ -23,8 +23,8 @@
 
 	<property name="project.lib.dir" location="${project.webapp.dir}/WEB-INF/lib" />
 
-	<property name="project.core.src.dir" location="src" />
-	<property name="project.test.src.dir" location="src-tests" />
+	<property name="project.core.src.dir" location="src/main/java" />
+	<property name="project.test.src.dir" location="src/test/java" />
 
 	<property name="project.build.classes.dir" location="${project.build.dir}/classes" />
 	<property name="project.build.classes.test.dir" location="${project.build.dir}/classes-test" />
