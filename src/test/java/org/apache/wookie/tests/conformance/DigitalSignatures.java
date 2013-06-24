@@ -41,7 +41,7 @@ public class DigitalSignatures{
 	public static void setup() throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException{
 		KeyStore keyStore = KeyStore.getInstance("JKS");
 		keyStore.load(null, null);
-		File schema = new File("src/org/apache/wookie/util/digitalsignature/xmldsig-core-schema.xsd");
+		File schema = new File("src/main/java/org/apache/wookie/util/digitalsignature/xmldsig-core-schema.xsd");
 		proc = new DigitalSignatureProcessor(keyStore, schema.getPath(), true, false);
 		fac = new W3CWidgetFactory();
 		fac.setDigitalSignatureParser(proc);
