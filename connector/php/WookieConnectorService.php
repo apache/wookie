@@ -509,7 +509,7 @@ class WookieConnectorService implements WookieConnectorServiceInterface {
 
 			if($xmlObj instanceof SimpleXMLElement) {
 				foreach($xmlObj->children() as $widget) {
-				 $id = (string) $widget->attributes()->identifier;
+				 $id = (string) $widget->attributes()->id;
 				 $title = (string) $widget->title;
 				 $description = (string) $widget->description;
 				 $iconURL = (string) $widget->attributes()->icon;
