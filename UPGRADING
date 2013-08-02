@@ -1,6 +1,10 @@
 This document details any special actions that need to be taken when upgrading Wookie from a previous version. For
 general information on new features and improvements, see NEW_AND_NOTEWORTHY.
 
+FROM 0.14.0 TO 0.15.0
+=====================
+No major changes to the core or database schema. 
+
 FROM 0.13.1 TO 0.14.0
 =====================
 No major changes to the core or database schema. 

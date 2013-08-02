@@ -1,22 +1,24 @@
-# New and Noteworthy: 0.14
+# New and Noteworthy: 0.15.0
 
 ## Stability in production
 
-This is primarily a bug fix release that improves on stability in
-production environments where widgets are often updated in situ.
+This is primarily a bug fix release with a few minor improvements.
 
-## Improved Localization
+## Improvements in the php connector
 
-A number of bug fixes to the localization feature ensures Wookie is
-useful in a broader set of geographic regions.
+A number of bug fixes and improvements have been made to the php connector 
+framework, including a new way to post new widgets to wookie via the connector.
+(similar to how the java connector already does the same)
 
-## Multiple Parent templates
+## Fixes to the simple chat widget for mobile users
 
-Improvements to the widget templating system allow templates to have
-multiple parents which each of which can add specfic enhancements.
+Improvements to the simple chat widget for mobile users.
+SimpleChat did not use a viewport tag, so scaled poorly on mobile. 
+Also, the input field did not work when using a virtual keyboard on Opera Mobile. 
 
-## Settings Template
+## Widget instances have a more configurable method for setting height and width
 
-A new settings template allows a configuration file defined settings
-page to be added to any existing widget built from templates with
-minimal effort.
+When widget instances were requested, the API automatically filled in a default 
+height and width value for the instance in cases where no size is specified in 
+the widget itself. This is now configurable from within the widgetserver.properties 
+file.
