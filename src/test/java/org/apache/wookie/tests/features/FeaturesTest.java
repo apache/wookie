@@ -36,7 +36,7 @@ public class FeaturesTest {
   /**
    * The location of the test data folder
    */
-  private static final String testDataFolder = "src/test/org/apache/wookie/tests/features/";
+  private static final String testDataFolder = "src/test/java/org/apache/wookie/tests/features/";
   
   /**
    * Base path for feature resources
