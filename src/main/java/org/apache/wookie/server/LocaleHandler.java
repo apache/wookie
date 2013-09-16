@@ -47,7 +47,7 @@ public class LocaleHandler {
     
     private static Map<Locale, Messages> resourceBundles = null;
     
-    private static final String BUNDLE_NAME = "org.apache.wookie.messages";
+    private static final String BUNDLE_NAME = Messages.class.getName();
     
     private LocaleHandler() {}
 
