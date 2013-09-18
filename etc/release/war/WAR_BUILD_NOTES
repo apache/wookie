@@ -98,3 +98,27 @@ Running Wookie with Tomcat and MySQL manual configuration
 (9) Start your server
 
 (10) Open your browser and goto 'http://YOURSERVERADDRESS:8080/wookie' (i.e. http://localhost:8080/wookie)
+
+Running Wookie with Websphere Application Server 7
+==================================================
+
+WAS 7 comes pre-installed with a number of important dependencies used by Wookie, so in order to get
+Wookie working correctly you need to change the class loader of the Wookie WAR to PARENT_LAST and remove
+the following jars from WEB-INF/lib:
+
+- openjpa-all
+- xml-apis
+
+You may also need to comment out the following line from persistence.properties:
+
+openjpa.Log=log4j
+
+This file can be found in WEB-INF/classes/org/apache/wookie/beans/jpa
+
+Depending on the database used, there may also be issues with case-sensitivity of table names; see issue 
+WOOKIE-419 for more information.
+
+If you have any problems issues deploying Wookie on Websphere, there is a ticket on our tracker for
+any related issues: 
+
+https://issues.apache.org/jira/browse/WOOKIE-417
