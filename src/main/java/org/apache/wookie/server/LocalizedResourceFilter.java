@@ -16,6 +16,7 @@ package org.apache.wookie.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.String;
 import java.net.URL;
 import java.util.List;
 
@@ -183,7 +184,7 @@ public class LocalizedResourceFilter implements Filter {
     for (ULocale locale : locales) {
       String path = basePath.replace(resource, "locales/" + locale.toLanguageTag().toLowerCase() + "/" + resource);
       String filePath = filterConfig.getServletContext().getRealPath(path);
-      if (new File(filePath).exists())
+      if (filePath != null && new File(filePath).exists())
         return context + path;
     }
 
@@ -194,7 +195,7 @@ public class LocalizedResourceFilter implements Filter {
     if (defaultLocale != null) {
       String path = basePath.replace(resource, "locales/" + defaultLocale.toLowerCase() + "/" + resource);
       String filePath = filterConfig.getServletContext().getRealPath(path);
-      if (new File(filePath).exists())
+      if (filePath != null && new File(filePath).exists())
         return context + path;
     }
 
@@ -202,7 +203,8 @@ public class LocalizedResourceFilter implements Filter {
     // All attempts to locate a localized copy have failed, so we must try to
     // find a non-localized version instead
     //
-    if (new File(filterConfig.getServletContext().getRealPath(basePath)).exists())
+      String filePath = filterConfig.getServletContext().getRealPath(basePath);
+      if (filePath != null && new File(filePath).exists())
       return context + basePath;
 
     //
