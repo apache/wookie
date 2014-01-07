@@ -201,7 +201,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Use upload test widget
     //
-    File file = new File("src/test/resources/testdata/upload-test.wgt");
+    File file = new File("src/test/resources/upload-test.wgt");
     assertTrue(file.exists());
 
     //
@@ -888,7 +888,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     fac.setOutputDirectory("src" + File.separatorChar + "test" + File.separatorChar + "resources" + File.separatorChar + "widgets");
     W3CWidget widget = fac.parse(downloadedFile);
     File file = fac.getUnzippedWidgetDirectory();
-    assertEquals("src"  + File.separatorChar + "test" + File.separatorChar + "testdata"
+    assertEquals("src"  + File.separatorChar + "test" + File.separatorChar + "resources"
         + File.separatorChar + "widgets" + File.separatorChar
         + "www.getwookie.org" + File.separatorChar + "widgets"
         + File.separatorChar + "weather", file.getPath());
