@@ -10,8 +10,8 @@ Initial Setup
 	(Be sure to choose a JDK and not a JRE version)
 	
 2) Make sure that your PATH includes %JAVA_HOME%\bin (windows) or 
-   $JAVA_HOME$/bin (unix). Optionally, you may also wish to add an environment variable
-   named %JAVA_HOME% and point that to the %JAVA_HOME%\bin folder of the java JDK install.
+        $JAVA_HOME$/bin (unix). Optionally, you may also wish to add an environment variable
+        named %JAVA_HOME% and point that to the %JAVA_HOME%\bin folder of the java JDK install.
  
 3) Install Apache Ant
 	See http://archive.apache.org/dist/ant/binaries/
@@ -20,20 +20,34 @@ Initial Setup
 	%ANT_HOME%\bin folder.) NOTE: There is a known issue when using Ant version 1.8.x to build and run
 	Wookie; you should instead use version 1.7.1. To check which version of ant you are using, type 
 	ant -version. See the RELEASE_NOTES for more information.
+
+4) Install Apache Maven
+	See http://maven.apache.org/run-maven/index.html
 	
-4) Build using default ant target (Optional - skip to 5 if you want to compile & run together)
+5) Check out and build the Wookie Master Project
+	This is only needed when building the project from source, and contains all the basic information
+        about the project. Check it out from subversion using 
+        "svn co http://svn.apache.org/repos/asf/wookie/wookie-master-pom/trunk/"
+        Navigate to the checked-out project folder at the command line and type "mvn install".
+
+5) Build using Maven
 	Navigate to the top level of the source distribution in a command prompt/console window.
-	Type "ant", to start the build process. The first time you run this command all dependencies will 
-	be downloaded so you must be online and it will take some time. Subsequent builds will be much faster.
+	Type "mvn -DskipTests=true clean install", to start the build process. The first time you run this command all 
+        dependencies will be downloaded so you must be online and it will take some time. Subsequent builds will be 
+        much faster.
 	
-5) Run Wookie 
+5) Run Wookie using Cargo 
 	The quickest way to run Wookie is in "standalone" mode; in this mode Wookie uses a local database and 
-	embedded server. This is a good way to experiment with Wookie in development. Navigate to the root folder 
-	of the source distribution in a command prompt/console window. Once there type "ant run".
+	Apache Tomcat. This is a good way to experiment with Wookie in development. Navigate to the wookie-server folder 
+	of the source distribution in a command prompt/console window. Once there type "mvn cargo:run".
 	
 	Once the server is running go to 'http://localhost:8080/wookie' in your favourite browser.
 
-6) Additional Information
+6) Build and deploy widgets
+	The project comes with some default widgets; you can deploy these to the server by navigating to the 
+        wookie-widgets folder in the command prompt/console window and typing "ant deploy-all".  
+
+7) Additional Information
 	Note that by default, Wookie will clean the database each time it is run, this ensures that your development 
 	environment starts in a consistent state. However, any modifications you have made to the database during 
 	previous runs will be lost. To run the development server without cleaning the database you need to set initDB=false. 
