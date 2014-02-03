@@ -20,7 +20,7 @@
 	<property file="local.build.properties"/>
     <property file="build.properties"/>
 	<property name="project.build.dir" location="./build"/>
-	<property name="widget.deploy.dir" location="../wookie-server/src/main/webapp/deploy"/>
+	<property name="widget.deploy.dir" location="../wookie-server/target/tomcat6x/webapps/wookie/deploy"/>
 	<property name="wookie.widgets.dir" location="${wookie.root.dir}/wookie-widgets/"/>
 	<property name="widget.template.dir" value="${wookie.widgets.dir}/widget-template"/>
     <property name="widget.build.dir" value="${wookie.widgets.dir}/build/widgets"/>
