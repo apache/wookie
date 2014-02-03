@@ -1,0 +1,507 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apche License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project default="build-widget" basedir="." name="widget_templates_build_file">
+
+    <property name="wookie.root.dir" location="../../"/>
+    <property name="project.build.dir" location="${wookie.root.dir}/build"/>
+    <property name="t-emplate.dir" location="."/>
+    <property name="widget.build.dir" location="./build"/>
+    <property name="widget.defintions.dir" location="wookie-widgets"/>
+    <property name="wookie.template.dir" location="${wookie.root.dir}/wookie-widgets/templates"/>
+    <property name="template.dir" location="${wookie.root.dir}/wookie-widgets/templates"/>
+    <property name="widget.deploy.compressed" value="true"/>
+
+    <import file="${wookie.root.dir}/wookie-widgets/build.xml"/>
+	
+    <target name="build-widget">
+      <delete file="${widget.build.dir}/${widget.shortname}.wgt"/>
+      <zip destfile="${widget.build.dir}/${widget.shortname}.wgt"
+           basedir="${widget.build.dir}/${widget.shortname}"
+           />
+      <echo>Widget package created at ${widget.build.dir}/${widget.shortname}.wgt</echo>
+    </target>
+
+    <target name="generate-widgets"
+            description="Generate all the required widgets from the templates">
+
+      <delete dir="${widget.build.dir}"/>
+
+      <property name="widget.include" value="*"/>
+
+      <echo message="+-----------------------------------------------+"/>
+      <echo message="|                                               |"/>
+      <echo message="|  Generating widgets                           |"/>
+      <echo message="|  include: ${widget.include}                   |"/>
+      <echo message="|  basedir: ${basedir}                          |"/>
+      <echo message="|  widget defs dir: ${widget.definitions.dir}   |"/>
+      <echo message="|                                               |"/>
+      <echo message="+-----------------------------------------------+"/>
+ 
+      <subant target="_generate_and_deploy_widget"
+              genericantfile="${basedir}/build.xml"
+              inheritall="true">
+        <dirset dir="${widget.definitions.dir}">
+          <include name="${widget.include}"/>
+	  <exclude name="common"/>
+        </dirset>
+      </subant>
+    </target>
+	
+    <target name="_remove_comments">
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Removing comments from files:           |"/>
+      <echo message="|  in: ${widget.build.dir}/${widget.shortname}"  />
+      <echo message="+------------------------------------------"/>
+      <replaceregexp match="&lt;\%[^&gt;]*&gt;" flags="g" replace="" >
+	<fileset dir="${widget.build.dir}/${widget.shortname}" >
+	  <exclude name="images/**"/>
+	  <exclude name="assets/**"/>
+	  <exclude name="lib/*"/>
+	</fileset>
+      </replaceregexp>
+    </target>
+
+    <target name="generate-test-widgets"
+            description="Generate a single test widget from the template">
+
+      <property name="widget.include" value="*TestWidget"/>
+
+      <!-- This target is intended to be used to test any changes to the 
+      template before all widgets are regenerated. At this point we need
+      to manually veriify that the widgets are built and behave as expected.
+      FIXME: it would be really nice to have some autoated tests here. -->
+      <echo message="+------------------------------------------+"/>
+      <echo message="|                                          |"/>
+      <echo message="|  Generating test widgets                 |"/>
+      <echo message="|                                          |"/>
+      <echo message="+------------------------------------------+"/>
+
+      <subant target="_generate_and_deploy_widget"
+              genericantfile="${basedir}/build.xml"
+              inheritall="true">
+        <dirset dir="testWidgets">
+          <include name="${widget.include}"/>
+        </dirset>
+      </subant>
+    </target>
+
+    <target name="_generate_widget"
+            depends="_init_widget_generation"
+            description="Generate a widget from a template">
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Widget Shortname: ${widget.shortname}"/>
+      <echo message="|  Widget: ${widget.name}"/>
+      <echo message="|  Template: ${template.name}"/>
+      <echo message="+------------------------------------------"/>
+    	
+      <!-- Initialise template -->
+      <ant antfile="${template.dir}/${template.name}/template_build.xml" 
+      	target="_init_template"/>
+
+      <!-- Initialise build parent template files -->
+      <ant antfile="${template.dir}/${template.name}/template_build.xml" 
+           target="_generate_from_parent_templates"/>
+
+      <!-- Build template files -->
+      <antcall target="_process_template" inheritAll="false">
+        <propertyset>
+          <propertyref prefix="wookie"/>
+          <propertyref prefix="template."/>
+          <propertyref prefix="widget."/>
+          <propertyref prefix="${widget.shortname}"/>
+        </propertyset>
+      </antcall>
+
+      <!-- copy widget files -->
+      <antcall target="_copy_widget_files"/>
+
+      <!-- token replacement -->
+      <property file="${widget.build.dir}/${widget.shortname}.properties"/>
+      <property file="${template.dir}/default.widget.properties"/>
+      <copy todir="${widget.build.dir}/${widget.shortname}"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="${widget.build.dir}/${widget.shortname}.tmp">
+          <exclude name="widget.properties"/>
+          <exclude name="scripts/**"/>
+          <exclude name="style/**"/>
+          <exclude name="images/**"/>
+          <exclude name="assets/**"/>
+          <exclude name="lib/**"/>
+          <exclude name="legal/**"/>
+        </fileset>     
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+      </copy>
+
+      <copy todir="${widget.build.dir}/${widget.shortname}/scripts"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="${widget.build.dir}/${widget.shortname}.tmp/scripts">
+	  <exclude name="**/*_controller.js"/>
+	</fileset>
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+      </copy>
+
+      <copy todir="${widget.build.dir}/${widget.shortname}/style"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="${widget.build.dir}/${widget.shortname}.tmp/style"/>
+        <filterchain>
+          <expandproperties/>
+        </filterchain>  
+      </copy>
+
+      <antcall target="_remove_comments"/>
+    </target>
+
+    <target name="_copy_widget_files"
+	    unless="copyWidgetFiles">
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying widget files: ${widget.shortname}"  />
+      <echo message="+------------------------------------------"/>
+
+      <!-- Copy/Create root files -->
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying common root files"  />
+      <echo message="+------------------------------------------"/>
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="../common">
+          <exclude name="widget.properties"/>
+          <exclude name="scripts/**"/>
+          <exclude name="style/**"/>
+          <exclude name="images/**"/>
+          <exclude name="assets/**"/>
+          <exclude name="lib/**"/>
+          <exclude name="legal/**"/>
+        </fileset>     
+      </copy>
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying widget provided root files"  />
+      <echo message="+------------------------------------------"/>
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir=".">
+          <exclude name="widget.properties"/>
+          <exclude name="scripts/**"/>
+          <exclude name="style/**"/>
+          <exclude name="images/**"/>
+          <exclude name="assets/**"/>
+          <exclude name="lib/**"/>
+          <exclude name="legal/**"/>
+        </fileset>     
+      </copy>
+
+      <!-- Copy/Create images -->
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying images"  />
+      <echo message="+------------------------------------------"/>
+      <copy todir="${widget.build.dir}/${widget.shortname}/images"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="../common/images">
+          <include name="**/*.*"/>
+          <exclude name="**/Thumbs.db"/>
+        </fileset>     
+      </copy>
+      <copy todir="${widget.build.dir}/${widget.shortname}/images"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="./images">
+          <include name="**/*.*"/>
+          <exclude name="**/Thumbs.db"/>
+        </fileset>     
+      </copy>
+
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying widget assets"  />
+      <echo message="+------------------------------------------"/>
+      <copy todir="${widget.build.dir}/${widget.shortname}/assets"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="../common/assets">
+          <include name="**/*.*"/>
+        </fileset>     
+      </copy>
+      <copy todir="${widget.build.dir}/${widget.shortname}/assets"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="./assets">
+          <include name="**/*.*"/>
+        </fileset>     
+      </copy>
+
+
+      <!-- Copy/Create the javascript -->
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying widget javascript"  />
+      <echo message="+------------------------------------------"/>
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp/scripts"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="../common/scripts">
+          <exclude name="**/*_controller.js"/>
+        </fileset>     
+      </copy>
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp/scripts"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="./scripts">
+          <exclude name="**/*_controller.js"/>
+        </fileset>     
+      </copy>
+
+      <concat destfile="${widget.build.dir}/${widget.shortname}.tmp/scripts/controller.js.new"
+	      fixlastline="true">
+        <fileset dir="${widget.build.dir}/${widget.shortname}.tmp/scripts"
+                 erroronmissingdir="false">
+          <include name="controller.js"/>
+        </fileset>
+        <fileset dir="${widget.build.dir}/${widget.shortname}.tmp/scripts"
+                 erroronmissingdir="false">
+          <include name="**/*_controller.js"/>
+        </fileset>
+        <fileset dir="../common/scripts"
+                 erroronmissingdir="false">
+          <include name="**/*_controller.js"/>
+        </fileset>     
+        <fileset dir="./scripts"
+                 erroronmissingdir="false">
+          <include name="**/*_controller.js"/>
+        </fileset>
+      </concat>
+      <move tofile="${widget.build.dir}/${widget.shortname}.tmp/scripts/controller.js" 
+            file="${widget.build.dir}/${widget.shortname}.tmp/scripts/controller.js.new"
+            failonerror="false"/>
+
+
+      <!-- Copy/Create the stylesheets -->
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying widget CSS"  />
+      <echo message="+------------------------------------------"/>
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp/style"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="../common/style">
+          <include name="**/*.css"/>
+          <include name="**/*.add.css"/>
+	  <!-- deprecated: don't use .css.add extensions -->
+          <include name="**/*.css.add"/>
+	</fileset>    
+      </copy>
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp/style"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="./style">
+          <include name="**/*.css"/>
+          <include name="**/*.add.css"/>
+	  <!-- deprecated: don't use .css.add extensions -->
+          <include name="**/*.css.add"/>
+
+        </fileset>   
+      </copy>
+
+      <concat destfile="${widget.build.dir}/${widget.shortname}.tmp/style/all.css.new"
+      		  fixlastline="true">
+        <fileset dir="${widget.build.dir}/${widget.shortname}.tmp/style"
+                 erroronmissingdir="false">
+          <include name="all.css"/>
+        </fileset>
+        <fileset dir="${widget.build.dir}/${widget.shortname}.tmp/style"
+                 erroronmissingdir="false">
+          <include name="**/*.add.css"/>
+	  <!-- deprecated: don't use .css.add extensions -->
+          <include name="**/*.css.add"/>
+        </fileset>
+      </concat>
+      <move tofile="${widget.build.dir}/${widget.shortname}.tmp/style/all.css" 
+            file="${widget.build.dir}/${widget.shortname}.tmp/style/all.css.new"
+            failonerror="false"/>
+      
+      <!-- Copy/Create the libraries -->
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying widget libraries"  />
+      <echo message="+------------------------------------------"/>
+      <copy todir="${widget.build.dir}/${widget.shortname}/lib"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="../common/lib">
+          <include name="**/*.*"/>
+        </fileset>     
+      </copy>
+      <copy todir="${widget.build.dir}/${widget.shortname}/lib"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="./lib">
+          <include name="**/*.*"/>
+        </fileset>     
+      </copy>
+
+      <!-- Copy/Create the legal -->
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Copying widget legal"  />
+      <echo message="+------------------------------------------"/>
+      <copy todir="${widget.build.dir}/${widget.shortname}/legal"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="../common/legal">
+          <include name="**/*.*"/>
+        </fileset>     
+      </copy>
+      <copy todir="${widget.build.dir}/${widget.shortname}/legal"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="./legal">
+          <include name="**/*.*"/>
+        </fileset>     
+      </copy>
+    </target>
+
+    <target name="_process_template">
+      <echo message="+------------------------------------------"/>
+      <echo message="|  Processing template: ${template.name}"/>
+      <echo message="+------------------------------------------"/>
+
+      <mkdir dir="${widget.build.dir}/${widget.shortname}"/>
+
+      <ant antfile="${template.dir}/${template.name}/template_build.xml" 
+           target="_init_template"/>
+    
+      <property file="${widget.build.dir}/${widget.shortname}.properties"/>
+      <property file="${template.dir}/default.widget.properties"/>
+
+      <!-- Copy/Create the build.xml file -->
+      <copy file="${template.dir}/${template.name}/build.xml"
+            todir="${widget.build.dir}/${widget.shortname}"
+            overwrite="true"
+            failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+      </copy>
+
+      <!-- Copy/Create the config.xml file -->
+      <copy file="${template.dir}/${template.name}/config.xml"
+            todir="${widget.build.dir}/${widget.shortname}"
+            overwrite="true"
+            failonerror="false">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+      </copy>
+
+      <!-- Copy/Create root files -->
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="${template.dir}/${template.name}">
+          <exclude name="widget.properties"/>
+          <exclude name="scripts/*"/>
+          <exclude name="style/*"/>
+          <exclude name="images/*"/>
+          <exclude name="assets/*"/>
+          <exclude name="lib/*"/>
+          <exclude name="legal/*"/>
+        </fileset>     
+      </copy>
+
+      <!-- Copy/Create images -->
+      <copy todir="${widget.build.dir}/${widget.shortname}/images"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="${template.dir}/${template.name}/images">
+          <include name="**/*.*"/>
+          <exclude name="**/Thumbs.db"/>
+        </fileset>     
+      </copy>
+
+      <!-- Copy/Create assets -->
+      <copy todir="${widget.build.dir}/${widget.shortname}/assets"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="${template.dir}/${template.name}/assets">
+          <include name="**/*.*"/>
+        </fileset>     
+      </copy>
+
+      <!-- Copy/Create the javascript -->
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp/scripts"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="${template.dir}/${template.name}/scripts">
+          <include name="**/*.js"/>
+        </fileset>     
+      </copy>
+
+      <!-- Copy/Create the stylesheets -->
+      <copy todir="${widget.build.dir}/${widget.shortname}.tmp/style/${template.name}"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="${template.dir}/${template.name}/style"/>
+      </copy>
+
+      <!-- Copy/Create the libraries -->
+      <copy todir="${widget.build.dir}/${widget.shortname}/lib"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="${template.dir}/${template.name}/lib">
+          <include name="**/*.*"/>
+        </fileset>     
+      </copy>
+
+      <!-- Copy/Create the legal -->
+      <copy todir="${widget.build.dir}/${widget.shortname}/legal"
+            overwrite="true"
+            failonerror="false">
+        <fileset dir="${template.dir}/${template.name}/legal">
+          <include name="**/*.*"/>
+        </fileset>     
+      </copy>
+    </target>
+
+    <target name="_generate_and_deploy_widget"
+            description="Generates a widget from its template and then deploys it in compressed form (e.g. .wgt file)"
+            depends="_generate_widget">
+      <!-- Deploy the widget -->
+
+      <antcall target="deploy-widget" inheritAll="true"/>
+      <antcall target="deploy-expanded-widget" inheritAll="true"/>
+    </target>
+
+    <target name="_init_widget_generation">
+      <!-- Read widget defined properties -->
+      <property file="widget.properties"/>
+      <!-- Read common properties -->
+      <property file="../common/widget.properties"/>	
+      <!-- Read template default properties -->
+      <property file="${template.dir}/${template.name}/default.widget.properties"/>
+      <!-- Read master default properties -->
+      <property file="${template.dir}/default.widget.properties"/>
+
+      <mkdir dir="${widget.build.dir}"/>
+
+      <!-- Clean up old widget files -->
+      <delete dir="${widget.build.dir}/${widget.shortname}"/>
+    </target>
+
+</project>
