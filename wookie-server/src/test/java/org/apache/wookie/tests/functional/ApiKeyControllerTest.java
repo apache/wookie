@@ -90,7 +90,7 @@ public class ApiKeyControllerTest extends AbstractControllerTest {
     //
     // Set the accepts header to JSON
     //
-    get.addRequestHeader("accepts", "application/json");
+    get.addRequestHeader("Accept", "application/json");
     setAuthenticationCredentials(client);
     client.executeMethod(get);
     int code = get.getStatusCode();
@@ -107,7 +107,7 @@ public class ApiKeyControllerTest extends AbstractControllerTest {
     // Try again using ?format param overriding the accepts header
     //
     get = new GetMethod(APIKEY_SERVICE_LOCATION_VALID+"?format=json");
-    get.addRequestHeader("accepts", "text/xml");
+    get.addRequestHeader("Accept", "text/xml");
     setAuthenticationCredentials(client);
     client.executeMethod(get);
     code = get.getStatusCode();
