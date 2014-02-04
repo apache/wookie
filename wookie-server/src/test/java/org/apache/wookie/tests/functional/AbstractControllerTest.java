@@ -80,9 +80,9 @@ public abstract class AbstractControllerTest extends AbstractWookieTest{
     protected static boolean shouldValidate = false;
 
     public static void initValidatorValue() throws ConfigurationException{
-        File file = new File("src/widgetserver.properties");
+        File file = new File("src/main/resources/widgetserver.properties");
         assertTrue(file.exists());
-        Configuration properties = new PropertiesConfiguration("src/widgetserver.properties");
+        Configuration properties = new PropertiesConfiguration("src/main/resources/widgetserver.properties");
         shouldValidate = properties.getBoolean("widget.enable.validator");
     }  
 
