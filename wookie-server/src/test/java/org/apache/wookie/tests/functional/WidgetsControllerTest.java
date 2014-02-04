@@ -62,13 +62,13 @@ public class WidgetsControllerTest extends AbstractControllerTest {
   public static void tearDown() throws HttpException, IOException{
     HttpClient client = new HttpClient();
     setAuthenticationCredentials(client);
-    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_ACCESS_TEST);
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_ACCESS_TEST));
     client.executeMethod(delete);
-    delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_UPLOAD_TEST);
+    delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
     client.executeMethod(delete);
-    delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_UPLOAD_TEST_2);
+    delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST_2));
     client.executeMethod(delete);
-    delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_UPLOAD_POLICIES_TEST);
+    delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_POLICIES_TEST));
     client.executeMethod(delete);
   }
   
@@ -138,7 +138,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
   @Test
   public void getSpecificWidgetByUri() throws HttpException, IOException{
     HttpClient client = new HttpClient();
-    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_NOT_SUPPORTED);
+    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_NOT_SUPPORTED));
     client.executeMethod(get);
     int code = get.getStatusCode();
     assertEquals(200,code);
@@ -222,7 +222,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Cleanup
     //
-    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_UPLOAD_TEST);
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
     client.executeMethod(delete);
   }
   
@@ -285,7 +285,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Cleanup
     //
-    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_UPLOAD_POLICIES_TEST);
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_POLICIES_TEST));
     client.executeMethod(delete);
   }
 
@@ -502,9 +502,9 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	    FileUtils.deleteQuietly(downloadedFile);
 	    FileUtils.deleteQuietly(tempFolder);
 	    FileUtils.deleteQuietly(newFile);
-	    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_UPLOAD_TEST);
+	    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
 	    client.executeMethod(delete);
-	    delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_UPLOAD_POLICIES_TEST);
+	    delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_POLICIES_TEST));
 	    client.executeMethod(delete);
 	    
 	    assertEquals("http://uploadtest", widget.getIdentifier());
@@ -564,14 +564,14 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Delete the widget
     //
-    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_DELETE_TEST); 
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_DELETE_TEST)); 
     client.executeMethod(delete);
     assertEquals(200, delete.getStatusCode());
 
     //
     // Check it was deleted
     //
-    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_DELETE_TEST); 
+    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_DELETE_TEST)); 
     client.executeMethod(get);
     assertEquals(404, get.getStatusCode());
   }
@@ -599,7 +599,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Add test wgt file to POST
     //
-    PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_UPLOAD_TEST); 
+    PostMethod post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST)); 
     Part[] parts = { new FilePart(file.getName(), file) };
     post.setRequestEntity(new MultipartRequestEntity(parts, post
         .getParams()));
@@ -615,7 +615,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     // Now lets try updating
     //
-    post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_UPLOAD_TEST); 
+    post = new PostMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST)); 
 
     //
     // Use upload test widget
@@ -648,7 +648,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     setAuthenticationCredentials(client);
 
-    PutMethod put = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_UPLOAD_TEST);
+    PutMethod put = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
 
     //
     // Use upload test widget
@@ -677,7 +677,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
   public void updateWidgetUnauthorized() throws HttpException, IOException{
     HttpClient client = new HttpClient();
 
-    PutMethod post = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_UPLOAD_TEST);
+    PutMethod post = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
 
     //
     // Use upload test widget
@@ -709,7 +709,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     setAuthenticationCredentials(client);
 
-    PutMethod post = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_INVALID);
+    PutMethod post = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_INVALID));
 
     //
     // Use upload test widget
@@ -783,7 +783,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
     //
     HttpClient client = new HttpClient();
     setAuthenticationCredentials(client);
-    GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID + "/" + WIDGET_ID_ACCESS_TEST);
+    GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_ACCESS_TEST));
     //this needs to be Accept rather than accepts which fails on tomcat
     get.setRequestHeader("Accept","text/xml");
     client.executeMethod(get);
@@ -827,7 +827,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
       //
       // Now we'll update it
       //
-      PutMethod put = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + id);
+      PutMethod put = new PutMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + id));
 
       //
       // Add test wgt file to PUT
@@ -847,7 +847,7 @@ public class WidgetsControllerTest extends AbstractControllerTest {
       //
       // DELETE the widget
       //
-      DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + id);
+      DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + id));
       client.executeMethod(delete);
   }
 
