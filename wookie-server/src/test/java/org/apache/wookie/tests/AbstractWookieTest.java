@@ -20,7 +20,7 @@ public abstract class AbstractWookieTest {
   
   // Use the boolean variable below to turn 
   // on/off url encoding in all the tests
-  private static boolean useEncoding = true;
+  private static boolean useEncoding = false;
   // an easier way to change the encoding for 
   // all of the tests
   private static String encodingType = "UTF-8";
