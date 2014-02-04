@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="connector/java/src/main/java"/>
-	<classpathentry kind="src" path="parser/java/src/test/java"/>
-	<classpathentry kind="src" path="connector/java/src/test/java"/>
-	<classpathentry kind="src" path="parser/java/src/main/java"/>
-	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/test/java"/>
-	<classpathentry kind="src" path="digsig-client/java/src/main/java"/>
-	<classpathentry kind="src" path="digsig-client/java/src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=wookie-project&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
