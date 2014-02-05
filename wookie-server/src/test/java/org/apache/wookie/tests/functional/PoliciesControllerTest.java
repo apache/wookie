@@ -91,7 +91,7 @@ public class PoliciesControllerTest extends AbstractControllerTest {
   public void getPoliciesUnauthorized() throws HttpException, IOException{
     HttpClient client = new HttpClient();
     GetMethod get = new GetMethod(TEST_POLICIES_SERVICE_URL_VALID);
-    get.setRequestHeader("accepts", "text/xml");
+    get.setRequestHeader("Accept", "text/xml");
     client.executeMethod(get);
     assertEquals(401, get.getStatusCode());
   }
