@@ -306,7 +306,7 @@
                     <deployables>
                         <deployable>
                             <groupId>org.apache.wookie</groupId>
-                            <artifactId>wookie</artifactId>
+                            <artifactId>wookie-server</artifactId>
                             <type>war</type>
                             <properties>
                                 <context>/wookie</context>
