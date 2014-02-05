@@ -23,7 +23,6 @@ import org.apache.wookie.w3c.IName;
 import org.apache.wookie.w3c.IContent;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.w3c.IIcon;
-import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,22 +104,41 @@ public class PersistenceManagerFactory
                     widgetDescription.setDescription("This widget is a placeholder for when no corresponding widget is found for a given type");
                     widget.getDescriptions().add(widgetDescription);
                     IContent widgetStartFile = persistenceManager.newInstance(IContent.class);
-                    widgetStartFile.setSrc(WidgetRuntimeHelper.getWebContextPath() + "/deploy/notsupported/index.htm");
+                    
+                    //
+                    // I've had to remove this code as it created a reverse dependency on the runtime helper in wookie-server.
+                    // However, we need to reinstate this functionality of not hard-coding the context path.
+                    //
+                    //widgetStartFile.setSrc(WidgetRuntimeHelper.getWebContextPath() + "/deploy/notsupported/index.htm");
+                    //widget.getContentList().add(widgetStartFile);
+                    //IContent widgetBUStartFile = persistenceManager.newInstance(IContent.class);
+                    //widgetBUStartFile.setSrc(WidgetRuntimeHelper.getWebContextPath() + "/deploy/notsupported/locales/bu/index.htm");
+                    //widgetBUStartFile.setLang("bu");
+                    //widget.getContentList().add(widgetBUStartFile);
+                    //IContent widgetFRStartFile = persistenceManager.newInstance(IContent.class);
+                    //widgetFRStartFile.setSrc(WidgetRuntimeHelper.getWebContextPath() + "/deploy/notsupported/locales/fr/index.htm");
+                    //widgetFRStartFile.setLang("fr");
+                    //widget.getContentList().add(widgetFRStartFile);
+                    //IContent widgetENStartFile = persistenceManager.newInstance(IContent.class);
+                    //widgetENStartFile.setSrc(WidgetRuntimeHelper.getWebContextPath() + "/deploy/notsupported/locales/en/index.htm");
+                    
+                    
+                    widgetStartFile.setSrc("/wookie/deploy/notsupported/index.htm");
                     widget.getContentList().add(widgetStartFile);
                     IContent widgetBUStartFile = persistenceManager.newInstance(IContent.class);
-                    widgetBUStartFile.setSrc(WidgetRuntimeHelper.getWebContextPath() + "/deploy/notsupported/locales/bu/index.htm");
+                    widgetBUStartFile.setSrc("/wookie/deploy/notsupported/locales/bu/index.htm");
                     widgetBUStartFile.setLang("bu");
                     widget.getContentList().add(widgetBUStartFile);
                     IContent widgetFRStartFile = persistenceManager.newInstance(IContent.class);
-                    widgetFRStartFile.setSrc(WidgetRuntimeHelper.getWebContextPath() + "/deploy/notsupported/locales/fr/index.htm");
+                    widgetFRStartFile.setSrc("/wookie/deploy/notsupported/locales/fr/index.htm");
                     widgetFRStartFile.setLang("fr");
                     widget.getContentList().add(widgetFRStartFile);
                     IContent widgetENStartFile = persistenceManager.newInstance(IContent.class);
-                    widgetENStartFile.setSrc(WidgetRuntimeHelper.getWebContextPath() + "/deploy/notsupported/locales/en/index.htm");
+                    widgetENStartFile.setSrc("/wookie/deploy/notsupported/locales/en/index.htm");
                     widgetENStartFile.setLang("en");
                     widget.getContentList().add(widgetENStartFile);
                     IIcon widgetIcon = persistenceManager.newInstance(IIcon.class);
-                    widgetIcon.setSrc(WidgetRuntimeHelper.getWebContextPath() + "/shared/images/defaultwidget.png");
+                    widgetIcon.setSrc("/wookie/shared/images/defaultwidget.png");
                     widgetIcon.setHeight(80);
                     widgetIcon.setWidth(80);
                     widgetIcon.setLang("en");

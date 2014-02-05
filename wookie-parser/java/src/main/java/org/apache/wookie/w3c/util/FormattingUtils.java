@@ -109,7 +109,7 @@ public class FormattingUtils {
 	 * @param value the value to modify
 	 * @return a CSS i18n string
 	 */
-	protected static String getFormatted(String dir, String value){
+	public static String getFormatted(String dir, String value){
 		
 		// If the string has no embedded spans with dir attributes, and no set dir, just return the string
 		if ((dir == null || dir.equals("ltr") )&& !value.contains("dir=")) return value;
