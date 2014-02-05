@@ -16,9 +16,9 @@ package org.apache.wookie.beans;
 
 import java.util.Collection;
 
-import org.apache.wookie.helpers.WidgetRuntimeHelper;
-import org.apache.wookie.util.WidgetFormattingUtils;
+//import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.w3c.IW3CXMLConfiguration;
+import org.apache.wookie.w3c.util.FormattingUtils;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 import org.apache.wookie.w3c.*;
 
@@ -156,7 +156,7 @@ public interface IWidget extends W3CWidget, IBean
         {
         	IName[] names = widget.getNames().toArray(new IName[widget.getNames().size()]);
             IName name = (IName)LocalizationUtils.getLocalizedElement(names, new String[]{locale}, widget.getDefaultLocale());
-            return ((name != null) ? WidgetFormattingUtils.getFormattedWidgetName(name) : IW3CXMLConfiguration.UNKNOWN);
+            return ((name != null) ? FormattingUtils.getFormatted(name.getDir(),name.getName()) : IW3CXMLConfiguration.UNKNOWN);
         }
         
         /**
@@ -174,7 +174,7 @@ public interface IWidget extends W3CWidget, IBean
         {
         	IDescription[] descriptions = widget.getDescriptions().toArray(new IDescription[widget.getDescriptions().size()]);
             IDescription description = (IDescription)LocalizationUtils.getLocalizedElement(descriptions, new String[]{locale}, widget.getDefaultLocale());
-            return ((description != null) ? WidgetFormattingUtils.getFormattedWidgetDescription(description) : null);
+            return ((description != null) ? FormattingUtils.getFormatted(description.getDir(), description.getDescription()) : null);
         }
 
         /**
@@ -192,7 +192,7 @@ public interface IWidget extends W3CWidget, IBean
         {
         	IName[] names = widget.getNames().toArray(new IName[widget.getNames().size()]);
             IName name = (IName)LocalizationUtils.getLocalizedElement(names, new String[]{locale}, widget.getDefaultLocale());
-            return ((name != null) ? WidgetFormattingUtils.getFormattedWidgetShortName(name) : IW3CXMLConfiguration.UNKNOWN);
+            return ((name != null) ? FormattingUtils.getFormatted(name.getDir(), name.getShort()) : IW3CXMLConfiguration.UNKNOWN);
         }
 
         /**
@@ -221,7 +221,12 @@ public interface IWidget extends W3CWidget, IBean
         {
         	IIcon[] icons = widget.getIcons().toArray(new IIcon[widget.getIcons().size()]);
             IIcon icon = (IIcon)LocalizationUtils.getLocalizedElement(icons, new String[]{locale}, widget.getDefaultLocale());
-            return ((icon != null) ? icon.getSrc() : WidgetRuntimeHelper.DEFAULT_ICON_PATH);
+            return ((icon != null) ? icon.getSrc() : "/wookie/shared/images/cog.gif");
+            //
+            // TODO This should be looked up dynamically within wookie-server when refactoring is completed
+            // The code below was only removed to make wookie-jpa not depend on wookie-server
+            //
+            //return ((icon != null) ? icon.getSrc() : WidgetRuntimeHelper.DEFAULT_ICON_PATH);
         }
     }
 }
