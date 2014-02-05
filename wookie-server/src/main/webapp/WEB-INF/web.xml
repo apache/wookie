@@ -22,14 +22,6 @@
 	
 	<display-name>Wookie Widget Server</display-name>
 	
-	<resource-ref>
-        <description>The JPA database connection.</description>
-        <res-ref-name>jdbc/widgetdb</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-        <res-sharing-scope>Shareable</res-sharing-scope>
-    </resource-ref>
-	
 	<listener>
 		<listener-class>
 			org.apache.wookie.server.ContextListener
