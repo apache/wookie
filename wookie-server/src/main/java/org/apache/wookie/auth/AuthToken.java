@@ -17,7 +17,9 @@
 
 package org.apache.wookie.auth;
 
+import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.server.security.ApiKey;
+import org.apache.wookie.server.security.ApiKeys;
 
 /**
  * An AuthToken used to pass contextual information about an instance of a
@@ -38,6 +40,27 @@ public class AuthToken {
 	private static final long CLOCK_SKEW_ALLOWANCE = 180; // allow three minutes for clock skew
 	private Long expiresAt;
 	private int tokenTTL;
+	
+	public AuthToken(){
+	}
+	
+	/**
+	 * Utility method for instantiating an authToken from a widget instance
+	 * Used for transition to new SPI model; marked as deprecated so we know to remove it
+	 * @param widgetInstance
+	 */
+	@Deprecated
+	public AuthToken(IWidgetInstance widgetInstance){
+		for (ApiKey apiKey : ApiKeys.getInstance().getKeys()){
+			if (apiKey.getValue().equals(widgetInstance.getApiKey())){
+				this.apiKey = apiKey;
+			}
+		}
+		this.viewerId = widgetInstance.getUserId();
+		this.widgetId = widgetInstance.getWidget().getIdentifier();
+		this.contextId = widgetInstance.getSharedDataKey();
+		this.lang = widgetInstance.getLang();
+	}
 
 	/**
 	 * @return The time in seconds since epoc that this token expires or
@@ -185,5 +208,21 @@ public class AuthToken {
 	protected int getMaxTokenTTL() {
 		return this.tokenTTL;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		String token = "<token>";
+		token += "<apikey>"+apiKey.getValue()+"</apikey>";
+		token += "<widget>"+widgetId + "</widget>";
+		token += "<viewer>"+viewerId + "</viewer>";
+		token += "<context>" + contextId + "</context>";
+		token += "</token>";
+		return token;
+	}
+	
+	
 
 }
