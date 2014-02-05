@@ -82,7 +82,7 @@ public class WidgetUploader {
 	public static String uploadWidget(File file) throws IOException{
 		HttpClient httpclient = new HttpClient();
 		httpclient.getState().setCredentials(
-				 new AuthScope("localhost", 8080, "wookie"),
+				 new AuthScope("localhost", 8080, AuthScope.ANY_REALM),
 				 new UsernamePasswordCredentials("java", "java")
 				 );
 		PostMethod post = new PostMethod(SERVICE_URL);
