@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.apache.wookie.services.PreferencesService;
-import org.apache.wookie.w3c.IPreference;
+import org.apache.wookie.beans.IPreference;
 
 /**
  * A very basic preferences model backed only by a hashmap in memory. All data
