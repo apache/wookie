@@ -28,8 +28,6 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.io.IOUtils;
 import org.apache.wookie.Messages;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
@@ -38,6 +36,7 @@ import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetAdvertHelper;
 import org.apache.wookie.helpers.WidgetImportHelper;
 import org.apache.wookie.server.LocaleHandler;
+import org.apache.wookie.services.WidgetMetadataService;
 import org.apache.wookie.util.NewWidgetBroadcaster;
 import org.apache.wookie.util.W3CWidgetFactoryUtils;
 import org.apache.wookie.util.WidgetFileUtils;
@@ -78,13 +77,8 @@ public class WidgetsController extends Controller{
       throws ResourceNotFoundException, InvalidParametersException,
       UnauthorizedAccessException {
     
-    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-    IWidget widget = persistenceManager.findWidgetByGuid(resourceId);
-    // attempt to get specific widget by id
-    if (widget == null) {
-      persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-      widget = persistenceManager.findById(IWidget.class, resourceId);
-    }
+	IWidget widget = WidgetMetadataService.Factory.getInstance().getWidget(resourceId);
+    
     // return widget result
     if (widget == null) throw new ResourceNotFoundException();
     
@@ -106,14 +100,8 @@ public class WidgetsController extends Controller{
       HttpServletResponse response) throws ResourceNotFoundException,
       IOException {
 
-    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-    // attempt to get specific widget by URI
-    IWidget widget = persistenceManager.findWidgetByGuid(resourceId);
-    // attempt to get specific widget by id
-    if (widget == null) {
-      persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-      widget = persistenceManager.findById(IWidget.class, resourceId);
-    }
+	IWidget widget = WidgetMetadataService.Factory.getInstance().getWidget(resourceId);
+
     // return widget result
     if (widget == null)
       throw new ResourceNotFoundException();
@@ -164,9 +152,8 @@ public class WidgetsController extends Controller{
 	 */
 	private void index(String resourceId, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-
-    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-    IWidget[] widgets = persistenceManager.findAll(IWidget.class);
+		
+        IWidget[] widgets = WidgetMetadataService.Factory.getInstance().getAllWidgets();
 		returnXml(WidgetAdvertHelper.createXMLWidgetsDocument(widgets, getWookieServerURL(request, "").toString(), getLocales(request)),response);
 	}
 	
@@ -182,14 +169,7 @@ public class WidgetsController extends Controller{
     //
     // Identify the widget to delete
     //
-    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-    IWidget widget = persistenceManager.findWidgetByGuid(resourceId);
-    // attempt to get specific widget by id
-    if (widget == null) {
-      persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-      widget = persistenceManager.findById(IWidget.class, resourceId);
-    }
-    
+    IWidget widget = WidgetMetadataService.Factory.getInstance().getWidget(resourceId);
     if (widget == null) throw new ResourceNotFoundException();
     
     //
@@ -269,9 +249,8 @@ public class WidgetsController extends Controller{
         
         //
         // Check if the widget model corresponds to an existing installed widget
-        //
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        if (persistenceManager.findWidgetByGuid(widgetId) == null) {
+        //        
+        if (WidgetMetadataService.Factory.getInstance().getWidget(widgetId) == null) {
 
             //
             // A new widget was created, so return 201
@@ -287,7 +266,8 @@ public class WidgetsController extends Controller{
             // Widget already exists, so update the widget metadata and configuration details
             // and return 200
             //
-            WidgetFactory.update(widgetModel,persistenceManager.findWidgetByGuid(widgetId), true, zipFile);
+        	IWidget widget = WidgetMetadataService.Factory.getInstance().getWidget(widgetId);
+            WidgetFactory.update(widgetModel,widget, true, zipFile);
             returnXml(WidgetImportHelper.createXMLWidgetDocument(widgetModel, new File(fac.getUnzippedWidgetDirectory(), "config.xml"), getWookieServerURL(request, "").toString(), true), response);
             return false;
 
@@ -342,9 +322,8 @@ public class WidgetsController extends Controller{
 
 	  //
 	  // If the gadget is not already registered, add it
-	  //
-	  IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-	  if(persistenceManager.findWidgetByGuid(widget.getIdentifier()) == null){
+	  //	  
+	  if(WidgetMetadataService.Factory.getInstance().getWidget(widget.getIdentifier()) == null){
 	    WidgetFactory.addNewWidget(widget);
 	    return true;
 	  } else {

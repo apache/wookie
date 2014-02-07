@@ -24,6 +24,7 @@ import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
+import org.apache.wookie.services.WidgetMetadataService;
 import org.apache.wookie.util.HashGenerator;
 import org.apache.wookie.util.opensocial.OpenSocialUtils;
 import org.apache.wookie.w3c.util.LocalizationUtils;
@@ -69,7 +70,7 @@ public class WidgetInstanceFactory{
 	public static IWidgetInstance defaultInstance(String locale){
         IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 		IWidgetInstance instance = persistenceManager.newInstance(IWidgetInstance.class);
-		instance.setWidget(persistenceManager.findWidgetByGuid("http://notsupported")); //$NON-NLS-1$
+		instance.setWidget(WidgetMetadataService.Factory.getInstance().getWidget("http://notsupported")); //$NON-NLS-1$
 		instance.setIdKey("0000");
 		instance.setLang(locale);
 		instance.setOpensocialToken("");
@@ -92,7 +93,7 @@ public class WidgetInstanceFactory{
 			// Widget ID or Widget Type?
 	        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 			if (widgetId != null){
-				widget = persistenceManager.findWidgetByGuid(widgetId);
+				widget = WidgetMetadataService.Factory.getInstance().getWidget(widgetId);
 			} 
 			// Unsupported
 			if (widget == null) return null;
