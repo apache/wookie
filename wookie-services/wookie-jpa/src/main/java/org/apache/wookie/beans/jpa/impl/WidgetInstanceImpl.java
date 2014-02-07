@@ -22,12 +22,10 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -40,6 +38,7 @@ import org.apache.openjpa.persistence.Type;
 import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.services.WidgetMetadataService;
 
 /**
  * WidgetInstanceImpl - JPA IWidgetInstance implementation.
@@ -49,7 +48,7 @@ import org.apache.wookie.beans.IWidgetInstance;
  */
 @Entity(name="WidgetInstance")
 @Table(name="WidgetInstance")
-@NamedQueries({@NamedQuery(name="WIDGET_INSTANCE_GUID", query="SELECT wi FROM WidgetInstance wi JOIN wi.widget w WHERE wi.apiKey = :apiKey AND wi.userId = :userId AND wi.sharedDataKey = :sharedDataKey AND w.guid = :guid"),
+@NamedQueries({@NamedQuery(name="WIDGET_INSTANCE_GUID", query="SELECT wi FROM WidgetInstance wi WHERE wi.apiKey = :apiKey AND wi.userId = :userId AND wi.sharedDataKey = :sharedDataKey AND wi.widgetId = :guid"),
                @NamedQuery(name="WIDGET_INSTANCE_ID", query="SELECT wi FROM WidgetInstance wi WHERE wi.idKey = :idKey")})
 public class WidgetInstanceImpl implements IWidgetInstance
 {
@@ -86,10 +85,10 @@ public class WidgetInstanceImpl implements IWidgetInstance
     @Basic(optional=false)
     @Column(name="opensocialToken", nullable=false)
     private String opensocialToken;
-
-    @ManyToOne(fetch=FetchType.LAZY, optional=false)
-    @JoinColumn(name="widget_id", referencedColumnName="id", nullable=false)
-    private WidgetImpl widget;
+    
+    @Basic
+    @Column(name="widget_id")
+    private String widgetId;
 
     @Basic
     @Column(name="updated")
@@ -276,7 +275,7 @@ public class WidgetInstanceImpl implements IWidgetInstance
      */
     public IWidget getWidget()
     {
-        return widget;
+    	return WidgetMetadataService.Factory.getInstance().getWidget(this.widgetId);
     }
 
     /* (non-Javadoc)
@@ -284,7 +283,7 @@ public class WidgetInstanceImpl implements IWidgetInstance
      */
     public void setWidget(IWidget widget)
     {
-        this.widget = (WidgetImpl)widget;
+    	this.widgetId = widget.getIdentifier();
     }
 
     /* (non-Javadoc)
