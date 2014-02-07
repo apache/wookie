@@ -19,7 +19,8 @@ package org.apache.wookie.services;
 import java.util.Collection;
 import java.util.ServiceLoader;
 
-import org.apache.wookie.w3c.IPreference;
+import org.apache.wookie.beans.IPreference;
+import org.apache.wookie.services.impl.DefaultPreferencesService;
 
 /**
  * The PreferencesService is the SPI for plugins that implement a preferences service; this service
@@ -55,16 +56,24 @@ public interface PreferencesService {
 		private static PreferencesService provider;
 		
 	    public static PreferencesService getInstance() {
+	    	//
+	    	// Use the service loader to load an implementation if one is available
+	    	//
 	    	if (provider == null){
 	    		ServiceLoader<PreferencesService> ldr = ServiceLoader.load(PreferencesService.class);
 	    		for (PreferencesService service : ldr) {
 	    			// We are only expecting one
 	    			provider = service;
 	    		}
-	    	}if (provider != null){
-	    		return provider;
 	    	}
-	    	throw new Error ("No Preferences Service Provider registered");
+	    	//
+	    	// If no service provider is found, use the default
+	    	//
+	    	if (provider == null){
+	    		provider = new DefaultPreferencesService();
+	    	}
+	    	
+	    	return provider;
 	    }
 	}
 }
