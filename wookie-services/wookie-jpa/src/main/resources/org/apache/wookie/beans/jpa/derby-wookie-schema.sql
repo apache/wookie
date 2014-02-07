@@ -287,7 +287,7 @@ CREATE TABLE WidgetInstance
     nonce VARCHAR(255),
     idKey VARCHAR(255) NOT NULL,
     opensocialToken LONG VARCHAR NOT NULL,
-    widget_id INTEGER NOT NULL,
+    widget_id VARCHAR(255) NOT NULL,
     updated CHAR(1),
     shown CHAR(1),
     hidden CHAR(1),
@@ -436,9 +436,6 @@ ALTER TABLE Description
 
 ALTER TABLE StartFile
     ADD CONSTRAINT FKStartFile1 FOREIGN KEY (widget_id) REFERENCES Widget (id);
-
-ALTER TABLE WidgetInstance
-    ADD CONSTRAINT FKWidgetInstance1 FOREIGN KEY (widget_id) REFERENCES Widget (id);
 
 ALTER TABLE PreferenceDefault
     ADD CONSTRAINT FKPreferenceDefault1 FOREIGN KEY (widget_id) REFERENCES Widget (id);
