@@ -24,9 +24,7 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.wookie.w3c.updates.UpdateDescription;
-import org.apache.wookie.w3c.util.LocalizationUtils;
 import org.apache.wookie.w3c.IAccess;
-import org.apache.wookie.w3c.IAuthor;
 import org.apache.wookie.w3c.IContent;
 import org.apache.wookie.w3c.IDescription;
 import org.apache.wookie.w3c.IFeature;
@@ -53,29 +51,12 @@ import org.jdom.input.SAXBuilder;
  * for a widget, including all sub-objects
  * @author Paul Sharples
  */
-public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CWidget, IElement {
+public class WidgetManifestModel extends WidgetEntity implements W3CWidget, IElement {
 	
 	static Logger fLogger = Logger.getLogger(WidgetManifestModel.class.getName());
 	
-	private String defaultLocale;
 	private String defaultIdentifier;
-	private String fIdentifier;
-	private String fVersion;
-	private Integer fHeight;
-	private Integer fWidth;
-	private String fViewModes;
 	private String[] features;
-	private List<IName> fNamesList;
-	private List<IDescription> fDescriptionsList;
-	private IAuthor fAuthor;
-	private List<ILicense> fLicensesList;
-	private List<IIcon> fIconsList;
-	private List<IAccess> fAccessList;
-	private List<IContent> fContentList;
-	private List<IFeature> fFeaturesList;
-	private List<IPreference> fPreferencesList;
-	private String fUpdate;
-	
 	private String[] supportedEncodings;
 	
 	private ZipFile zip;
@@ -150,70 +131,6 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 		}
 	}
 	
-	public String getDefaultLocale(){
-	  return defaultLocale;
-	}
-
-	public String getViewModes() {
-		return fViewModes;
-	}
-	
-	public String getVersion() {
-		return fVersion;
-	}
-	
-	public List<IPreference> getPreferences(){
-		return fPreferencesList;
-	}
-	
-	public List<IFeature> getFeatures(){
-		return fFeaturesList;
-	}
-	
-	public List<IAccess> getAccessList(){
-		return fAccessList;
-	}
-	
-	public IAuthor getAuthor(){
-		return fAuthor;
-	}
-
-	public List<IContent> getContentList() {
-		return fContentList;
-	}
-	
-	public List<IDescription> getDescriptions(){
-		return fDescriptionsList;
-	}
-	
-	public List<IName> getNames() {
-		return fNamesList;
-	}
-	
-	public List<IIcon> getIcons() {
-		return fIconsList;
-	}
-
-	public List<ILicense> getLicenses() {
-		return fLicensesList;
-	}
-
-	public String getIdentifier() {
-		return fIdentifier;
-	}
-
-	public Integer getHeight() {
-		return fHeight;
-	}
-
-	public Integer getWidth() {
-		return fWidth;
-	}
-	
-	public String getUpdateLocation(){
-		return fUpdate;
-	}
-	
 	public void fromXML(Element element){
 		fLogger.warn("WidgetManifestModel.fromXML() called with no locales");
 		try {
@@ -221,12 +138,6 @@ public class WidgetManifestModel extends AbstractLocalizedEntity implements W3CW
 		} catch (BadManifestException e) {
 			fLogger.error("WidgetManifestModel.fromXML() called with no locales and Bad Manifest",e);
 		}
-	}
-
-	public String getLocalName(String locale){
-		NameEntity name = (NameEntity)LocalizationUtils.getLocalizedElement(fNamesList.toArray(new NameEntity[fNamesList.size()]), new String[]{locale}, defaultLocale);
-		if (name != null) return name.getName();
-		return IW3CXMLConfiguration.UNKNOWN;
 	}
 
 	public void updateIconPaths(String path){
