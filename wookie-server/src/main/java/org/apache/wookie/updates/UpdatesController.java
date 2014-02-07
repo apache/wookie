@@ -22,14 +22,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.controller.Controller;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.WidgetFactory;
+import org.apache.wookie.services.WidgetMetadataService;
 import org.apache.wookie.util.W3CWidgetFactoryUtils;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
@@ -80,10 +79,9 @@ public class UpdatesController extends Controller {
 	protected void show(String resourceId, HttpServletRequest request,
 			HttpServletResponse response) throws ResourceNotFoundException,
 			UnauthorizedAccessException, IOException {
-		// attempt to get specific widget by id; note that this is the internal
-		// widget integer ID and not the widget URI
-		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWidget widget = persistenceManager.findById(IWidget.class, resourceId);
+
+		IWidget widget = WidgetMetadataService.Factory.getInstance().getWidget(resourceId);		
+		
 		if (widget == null) throw new ResourceNotFoundException();
 		// redirect to the UDD
 		if (widget.getUpdateLocation() ==  null) throw new ResourceNotFoundException();
@@ -116,8 +114,7 @@ public class UpdatesController extends Controller {
 			throws ResourceNotFoundException, InvalidParametersException,
 			UnauthorizedAccessException {
 			// attempt to get specific widget by id
-			IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-			IWidget widget = persistenceManager.findById(IWidget.class, resourceId);
+			IWidget widget = WidgetMetadataService.Factory.getInstance().getWidget(resourceId);
 			if (widget == null) throw new ResourceNotFoundException();
 			
 			// Check to see if we're requiring updates over HTTPS - if not output a warning
@@ -176,8 +173,7 @@ public class UpdatesController extends Controller {
 	public List<UpdateInformation> getAllUpdates(){
 		ArrayList<UpdateInformation> updates = new ArrayList<UpdateInformation>();
 		// Get all installed widgets
-		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWidget[] widgets = persistenceManager.findAll(IWidget.class);
+		IWidget[] widgets = WidgetMetadataService.Factory.getInstance().getAllWidgets();
 		for (IWidget widget: widgets){
 			// Check for a valid update document; if there is one, create a new UpdateInformation object and add to list
 			UpdateDescriptionDocument udd = UpdateUtils.checkForUpdate(widget.getUpdateLocation(), widget.getVersion());

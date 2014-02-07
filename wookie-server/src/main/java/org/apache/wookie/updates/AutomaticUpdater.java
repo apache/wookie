@@ -25,9 +25,8 @@ import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.helpers.WidgetFactory;
+import org.apache.wookie.services.WidgetMetadataService;
 import org.apache.wookie.util.W3CWidgetFactoryUtils;
 import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
@@ -94,15 +93,9 @@ public class AutomaticUpdater {
 				if (!onlyUseHttps) logger.warn("checking for updates using non-secure method");
 				
 				//
-				// Start transaction
-				//
-				IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-				persistenceManager.begin();
-				
-				//
 				// Get all installed widgets
 				//
-				IWidget[] widgets = persistenceManager.findAll(IWidget.class);
+				IWidget[] widgets = WidgetMetadataService.Factory.getInstance().getAllWidgets();
 
 				//
 				// Create a W3CWidget factory for the current context
@@ -115,7 +108,7 @@ public class AutomaticUpdater {
 				for (IWidget widget: widgets){
 					try {						
 						W3CWidget updatedWidget = UpdateUtils.getUpdate(factory, widget.getIdentifier(), widget.getUpdateLocation(), widget.getVersion(), onlyUseHttps);
-						if (updatedWidget != null && persistenceManager.findById(IWidget.class, widget.getId()) != null){
+						if (updatedWidget != null && WidgetMetadataService.Factory.getInstance().getWidget(widget.getIdentifier()) != null){
 							WidgetFactory.update(updatedWidget, widget, false, null);
 							logger.info("Successfully updated "+widget.getIdentifier()+" to version "+updatedWidget.getVersion());
 						}
@@ -125,21 +118,12 @@ public class AutomaticUpdater {
 					}
 				}
 				
-				//
-				// Commit any changes
-				//
-				persistenceManager.commit();
-				
 			} catch (Exception e) {
 				//
 				// Log errors, as otherwise the thread will terminate silently
 				//
 				logger.error("Problem with automatic update", e);
 			} finally {
-				//
-                // close thread persistence manager
-				//
-                PersistenceManagerFactory.closePersistenceManager();	
 			}
 		}
 	};

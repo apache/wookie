@@ -34,6 +34,7 @@ import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.Features;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetRuntimeHelper;
+import org.apache.wookie.services.WidgetMetadataService;
 import org.apache.wookie.updates.AutomaticUpdater;
 import org.apache.wookie.util.NewWidgetBroadcaster;
 import org.apache.wookie.util.W3CWidgetFactoryUtils;
@@ -180,45 +181,35 @@ public class ContextListener implements ServletContextListener {
                 watcher.setWatchDir(deploy);
                 watcher.setListener(new WgtWatcher.FileChangeListener(){
                     public void fileModified(File f) {
-                        // get persistence manager for this thread
-                        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
                         try{
-                            persistenceManager.begin();
                             File upload = WidgetFileUtils.dealWithDroppedFile(UPLOADFOLDER, f);
                             W3CWidgetFactory fac = W3CWidgetFactoryUtils.createW3CWidgetFactory(context, configuration, localizedMessages);
 
                             W3CWidget model = fac.parse(upload);
                             WidgetJavascriptSyntaxAnalyzer jsa = new WidgetJavascriptSyntaxAnalyzer(fac.getUnzippedWidgetDirectory());
-                            if(persistenceManager.findWidgetByGuid(model.getIdentifier()) == null) {
+                            if(WidgetMetadataService.Factory.getInstance().getWidget(model.getIdentifier()) == null) {
                                 WidgetFactory.addNewWidget(model, upload, true);
                                 String message = model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.19");
                                 _logger.info(message);
                             } else {
                                 String message = model.getLocalName("en") +"' - " + localizedMessages.getString("WidgetAdminServlet.20");
-                                WidgetFactory.update(model, persistenceManager.findWidgetByGuid(model.getIdentifier()), true, upload);
+                                WidgetFactory.update(model, WidgetMetadataService.Factory.getInstance().getWidget(model.getIdentifier()), true, upload);
                                 _logger.info(message);
                             }
-                            persistenceManager.commit();
                             NewWidgetBroadcaster.broadcast(configuration, model.getIdentifier());
                         } catch (IOException e) {
-                            persistenceManager.rollback();
                             String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.1") + " - " + e.getLocalizedMessage();
                             _logger.error(error, e);
                         } catch (BadWidgetZipFileException e) {
-                            persistenceManager.rollback();
                             String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.2") + " - " + e.getLocalizedMessage();
                             _logger.error(error, e);
                         } catch (BadManifestException e) {
-                            persistenceManager.rollback();
                             String error = f.getName()+":"+localizedMessages.getString("WidgetHotDeploy.3") + " - " + e.getLocalizedMessage();
                             _logger.error(error, e);
                         } catch (Exception e) {
-                            persistenceManager.rollback();
                             String error = f.getName()+":"+e.getLocalizedMessage();
                             _logger.error(error, e);
-                        } finally {
-                            // close thread persistence manager
-                            PersistenceManagerFactory.closePersistenceManager();						    
+                        } finally {					    
                         }
                     }
                     public void fileRemoved(File f) {
@@ -243,6 +234,6 @@ public class ContextListener implements ServletContextListener {
         /*
          * Terminate persistence manager factory
          */
-        PersistenceManagerFactory.terminate();	    
+        PersistenceManagerFactory.terminate();	  
     }
 }

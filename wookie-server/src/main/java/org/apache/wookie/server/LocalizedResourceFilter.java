@@ -34,6 +34,7 @@ import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
+import org.apache.wookie.services.WidgetMetadataService;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
 
@@ -258,8 +259,7 @@ public class LocalizedResourceFilter implements Filter {
     //
     String guid = (String) filterConfig.getServletContext().getAttribute("widget-id");
     if (guid != null) {
-      IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-      return persistenceManager.findWidgetByGuid(guid);
+    	return WidgetMetadataService.Factory.getInstance().getWidget(guid);
     }
     
     //
