@@ -129,6 +129,19 @@ public class ApiKeys {
   }
   
   /**
+   * Checks if a key exists and returns it
+   * @param key
+   * @return the API key object if the key exists, otherwise null
+   */
+  public ApiKey getApiKey(String key){
+    refresh();
+    if (keys.containsKey(key)){
+      return keys.get(key);
+    }
+    return null;
+  }
+  
+  /**
    * Get an array of all the currently installed keys
    * @return an array of ApiKey objects
    */
