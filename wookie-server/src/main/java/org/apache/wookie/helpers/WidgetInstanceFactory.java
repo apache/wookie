@@ -19,13 +19,15 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
+import org.apache.wookie.auth.AuthToken;
+import org.apache.wookie.auth.AuthTokenUtils;
 import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
+import org.apache.wookie.server.security.ApiKeys;
 import org.apache.wookie.services.WidgetMetadataService;
-import org.apache.wookie.util.HashGenerator;
 import org.apache.wookie.util.opensocial.OpenSocialUtils;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 import org.apache.wookie.w3c.util.RandomGUID;
@@ -101,20 +103,25 @@ public class WidgetInstanceFactory{
 			// generate a nonce
 			RandomGUID r = new RandomGUID();
 			String nonce = "nonce-" + r.toString();				 //$NON-NLS-1$
-
-			// now use SHA hash on the nonce				
-			String hashKey = HashGenerator.getInstance().encrypt(nonce);	
-
-			// get rid of any chars that might upset a url...
-			hashKey = hashKey.replaceAll("=", ".eq."); //$NON-NLS-1$ //$NON-NLS-2$
-			hashKey = hashKey.replaceAll("\\?", ".qu."); //$NON-NLS-1$ //$NON-NLS-2$
-			hashKey = hashKey.replaceAll("&", ".am."); //$NON-NLS-1$ //$NON-NLS-2$
-			hashKey = hashKey.replaceAll("\\+", ".pl."); //$NON-NLS-1$ //$NON-NLS-2$
-            hashKey = hashKey.replaceAll("/", ".sl."); //$NON-NLS-1$ //$NON-NLS-2$
+            
+			//
+			// Create an Auth token and encrypt it as the id key
+			//
+            AuthToken authToken = new AuthToken();
+            authToken.setApiKey(ApiKeys.getInstance().getApiKey(apiKey));
+            authToken.setContextId(sharedDataKey);
+            if (LocalizationUtils.isValidLanguageTag(lang)){
+            	authToken.setLang(lang);
+            } else {
+            	authToken.setLang("en");
+            }
+            authToken.setViewerId(userId);
+            authToken.setWidgetId(widgetId);
+            String encryptedAuthToken = AuthTokenUtils.encryptAuthToken(authToken);
 
 			Configuration properties = (Configuration) session.getServletContext().getAttribute("opensocial"); //$NON-NLS-1$
 			
-			widgetInstance = addNewWidgetInstance(persistenceManager, apiKey, userId, sharedDataKey, widget, nonce, hashKey, properties, lang);
+			widgetInstance = addNewWidgetInstance(persistenceManager, apiKey, userId, sharedDataKey, widget, nonce, encryptedAuthToken, properties, lang);
 			return widgetInstance;
 		} catch (Exception ex) {
 			return null;
