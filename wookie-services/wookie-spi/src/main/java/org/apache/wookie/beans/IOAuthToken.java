@@ -33,7 +33,4 @@ public interface IOAuthToken extends IBean {
 
   public boolean isExpires();
 
-  public IWidgetInstance getWidgetInstance();
-
-  public void setWidgetInstance(IWidgetInstance widgetInstance);
 }
