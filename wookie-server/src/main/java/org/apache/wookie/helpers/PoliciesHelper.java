@@ -18,9 +18,8 @@
 package org.apache.wookie.helpers;
 
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.proxy.Policy;
+import org.apache.wookie.services.WidgetMetadataService;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
@@ -66,9 +65,8 @@ public class PoliciesHelper {
       for(Policy policy: policies){
         JSONObject policyJson = new JSONObject();
         policyJson.put("scope", policy.getScope());
-        if (!policy.getScope().equals("*")){
-          IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-          IWidget widget = persistenceManager.findWidgetByGuid(policy.getScope());
+        if (!policy.getScope().equals("*")){        	
+          IWidget widget = WidgetMetadataService.Factory.getInstance().getWidget(policy.getScope());
           if (widget != null){
             policyJson.put("widget-title", WidgetAdvertHelper.getEncodedWidgetTitle(widget, null));
           }
