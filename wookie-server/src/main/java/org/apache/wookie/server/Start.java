@@ -21,8 +21,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import org.apache.log4j.Logger;
-import org.apache.wookie.beans.util.IModule;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.security.HashUserRealm;
 import org.mortbay.jetty.security.UserRealm;
@@ -37,11 +35,9 @@ public class Start {
   public static final String PERSISTENCE_MANAGER_TYPE_JPA = "jpa";
   public static final String PERSISTENCE_MANAGER_TYPE_JCR = "jcr";
 
-  private static String persistenceManagerType;
   private static Server server;
 
   public static void main(String[] args) throws Exception {
-    boolean initDB = true;
     for (int i = 0; i < args.length; i++) {
       String arg = args[i];
       logger.info("Runtime argument: " + arg);
@@ -50,22 +46,9 @@ public class Start {
       } else if (arg.startsWith("shutdownport=")) {
         shutdownPort = new Integer(arg.substring(13));
         logger.info("Shutdown port set:to "+shutdownPort);
-      } else if (arg.startsWith("initDB=")) {
-        initDB = !arg.substring(7).toLowerCase().equals("false");
       } else {
         logger.info("argument UNRECOGNISED - ignoring");
       }
-    }
-
-    // load configuration from environment
-    persistenceManagerType = getSystemProperty(PERSISTENCE_MANAGER_TYPE_PROPERTY_NAME, PERSISTENCE_MANAGER_TYPE_JPA);
-
-     // Configure system properties specific to the persistence implementation
-    IModule module = getModule();
-    module.configure();
-    
-    if (initDB) {
-      System.setProperty(PersistenceManagerFactory.PERSISTENCE_MANAGER_INITIALIZE_STORE_PROPERTY_NAME, "true");
     }
 
     // configure and start server
@@ -102,9 +85,6 @@ public class Start {
         "org.mortbay.jetty.plus.webapp.Configuration",
         "org.mortbay.jetty.webapp.JettyWebXmlConfiguration",
     "org.mortbay.jetty.webapp.TagLibConfiguration"});
-
-    IModule module = getModule();
-    module.setup();
 
     // configure embedded jetty web application handler
     server.addHandler(context);
@@ -159,24 +139,5 @@ public class Start {
   {
     String value = System.getProperty(name);
     return (((value != null) && (value.length() > 0) && !value.startsWith("$")) ? value : defaultValue);
-  }
-
-  /**
-   * Get persistence module. 
-   * TODO use a more reliable and extensible approach than fixed class names
-   * @return a persistence module
-   */
-  private static IModule getModule(){
-    IModule module = null;
-    try {
-      if (persistenceManagerType.equals(PERSISTENCE_MANAGER_TYPE_JCR)){
-        module = (IModule) Class.forName("org.apache.wookie.beans.jcr.JCRModule").newInstance();
-      } else {
-        module = (IModule) Class.forName("org.apache.wookie.beans.jpa.JPAModule").newInstance();
-      }
-    } catch (Exception e) {
-      logger.error("Could not load persistence module", e);
-    }
-    return module;
   }
 }

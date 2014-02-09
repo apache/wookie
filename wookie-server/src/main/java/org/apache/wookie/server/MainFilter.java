@@ -23,10 +23,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceCommitException;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
-
 /**
  * Filter to set DB transactions
  */
@@ -47,8 +43,6 @@ public class MainFilter implements Filter {
 	    // attempts or guarantee sequential operation order. 
 	    boolean retryChainInvocation = false;
 	    do {
-	        // get persistence manager for this thread
-	        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
 	        try {
 	            // reset response and pause on retry to help ensure success
 	            if (retryChainInvocation) {
@@ -58,34 +52,19 @@ public class MainFilter implements Filter {
 	                } catch (InterruptedException ie) {
 	                }
 	            }
-	            // start and commit transaction around servlet invocation
-	            persistenceManager.begin();
 	            chain.doFilter(request, response);
-	            persistenceManager.commit();
 	            // terminate retry attempts on success
 	            retryChainInvocation = false;
 	        } catch (ServletException se) {
 	            // rollback transaction on exception
-	            persistenceManager.rollback();
 	            throw se;
 	        } catch (IOException ioe) {
 	            // rollback transaction on exception
-	            persistenceManager.rollback();
 	            throw ioe;
-	        } catch (PersistenceCommitException pce) {
-                // rollback and retry on commit exception if response not committed	            
-	            persistenceManager.rollback();
-	            retryChainInvocation = (!retryChainInvocation && !response.isCommitted());
-	            if (!retryChainInvocation) {
-	                throw new RuntimeException("Persistence commit exception caught for transaction: "+pce, pce);	                
-	            }
 	        } catch (Throwable t) {
 	            // rollback transaction on exception
-	            persistenceManager.rollback();
 	            throw new RuntimeException("Exception caught for transaction: "+t, t);
 	        } finally {
-	            // close thread persistence manager
-	            PersistenceManagerFactory.closePersistenceManager();
 	        }
 	    } while (retryChainInvocation);
 	}

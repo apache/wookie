@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import org.apache.wookie.auth.AuthToken;
 import org.apache.wookie.auth.AuthTokenUtils;
 import org.apache.wookie.beans.SharedContext;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.queues.beans.IQueuedBean;
 /**
  * Implementation of the shareddata Queue consumer
@@ -53,7 +52,6 @@ public class SharedDataQueueConsumer extends AbstractQueueConsumer {
     		logger.error("("+queueIdentifer+ " to " +bean.getValue() + ")(Error setting SharedData: "+ ex, ex);
     	}
     	finally{
-    		PersistenceManagerFactory.closePersistenceManager();
     	}
     	//logger.info("("+queueIdentifer+")CONSUME END SharedDataQueueConsumer" + bean.getKey()+ "' TO '" + bean.getValue()+"'");      	 
     }

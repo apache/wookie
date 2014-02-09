@@ -29,7 +29,6 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.Features;
 import org.apache.wookie.helpers.WidgetFactory;
 import org.apache.wookie.helpers.WidgetRuntimeHelper;
@@ -103,11 +102,6 @@ public class ContextListener implements ServletContextListener {
                     }
                 }
             }
-
-            /*
-             * Initialize persistence manager factory now, not on first request
-             */
-            PersistenceManagerFactory.initialize(configuration);
 
             /*
              * Initialise the locale handler
@@ -230,9 +224,5 @@ public class ContextListener implements ServletContextListener {
     }
 
     public void contextDestroyed(ServletContextEvent event){
-        /*
-         * Terminate persistence manager factory
-         */
-        PersistenceManagerFactory.terminate();	  
     }
 }

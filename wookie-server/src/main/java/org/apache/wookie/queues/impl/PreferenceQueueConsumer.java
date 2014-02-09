@@ -18,7 +18,6 @@ import java.util.concurrent.BlockingQueue;
 import org.apache.log4j.Logger;
 import org.apache.wookie.auth.AuthToken;
 import org.apache.wookie.auth.AuthTokenUtils;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.controller.PropertiesController;
 import org.apache.wookie.queues.beans.IQueuedBean;
 /**
@@ -51,7 +50,6 @@ public class PreferenceQueueConsumer extends AbstractQueueConsumer {
     		logger.error("("+queueIdentifer+ " to " +bean.getValue() + ")(Error setting preference: "+ ex, ex);
     	}
     	finally{
-    		PersistenceManagerFactory.closePersistenceManager();
     	}
     	//logger.info("("+queueIdentifer+")CONSUME END PreferenceQueueConsumer" + bean.getKey()+ "' TO '" + bean.getValue()+"'");  
     }
