@@ -29,7 +29,6 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
-import org.apache.wookie.beans.util.IPersistenceManager;
 import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.Features;
 import org.apache.wookie.helpers.WidgetFactory;
