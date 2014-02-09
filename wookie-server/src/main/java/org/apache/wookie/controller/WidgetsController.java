@@ -41,7 +41,6 @@ import org.apache.wookie.util.NewWidgetBroadcaster;
 import org.apache.wookie.util.W3CWidgetFactoryUtils;
 import org.apache.wookie.util.WidgetFileUtils;
 import org.apache.wookie.util.WidgetJavascriptSyntaxAnalyzer;
-import org.apache.wookie.util.gadgets.GadgetUtils;
 import org.apache.wookie.w3c.W3CWidget;
 import org.apache.wookie.w3c.W3CWidgetFactory;
 import org.apache.wookie.w3c.exceptions.BadManifestException;
@@ -191,14 +190,6 @@ public class WidgetsController extends Controller{
   protected boolean create(String resourceId, HttpServletRequest request, HttpServletResponse response)
       throws ResourceDuplicationException, InvalidParametersException,
       UnauthorizedAccessException {
-
-    //
-    // Check for a "url" parameter in the request, indicating this is a remote widget or opensocial gadget xml file 
-    //
-    String url = request.getParameter("url");
-    if (url != null && url.trim().length() != 0){
-      return createGadget(request, url);
-    }
     
     //
     // Get the path to the upload folder, and the widget install folder
@@ -299,36 +290,5 @@ public class WidgetsController extends Controller{
     }
 
   }
-	
-	/**
-	 * Register a gadget
-	 * @param request
-	 * @param gadgetUrl
-	 * @return true if the gadget is added; false if it was already registered
-	 * @throws InvalidParametersException 
-	 * @throws Exception
-	 */
-	public boolean createGadget(HttpServletRequest request, String gadgetUrl) throws InvalidParametersException{
-
-	  //
-	  // Create a new widget from the gadget URL
-	  //
-	  W3CWidget widget;
-	  try {
-	    widget = GadgetUtils.createWidget(request);
-	  } catch (Exception e) {
-	    throw new InvalidParametersException();
-	  }
-
-	  //
-	  // If the gadget is not already registered, add it
-	  //	  
-	  if(WidgetMetadataService.Factory.getInstance().getWidget(widget.getIdentifier()) == null){
-	    WidgetFactory.addNewWidget(widget);
-	    return true;
-	  } else {
-	    return false;
-	  }
-	}
     
 }
