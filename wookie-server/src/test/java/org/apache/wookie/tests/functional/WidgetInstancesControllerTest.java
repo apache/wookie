@@ -125,7 +125,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
         + "&userid=localetest&shareddatakey=localetest&locale=fr");
     client.executeMethod(post);
     int code = post.getStatusCode();
-    assertEquals(201, code);
+    assertEquals(200, code);
     assertTrue(post.getResponseBodyAsString().contains("locales/fr/index.htm"));
     assertTrue(post.getResponseBodyAsString().contains(
         "tester les param&#232;tres r&#233;gionaux"));
@@ -172,8 +172,10 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
     client.executeMethod(get);
     int code = get.getStatusCode();
     assertEquals(200, code);
-    assertTrue(get.getResponseBodyAsString().contains("locales/en/index.htm"));
-    assertTrue(get.getResponseBodyAsString().contains("locale test"));
+    System.out.println(get.getResponseBodyAsString());
+    assertTrue(get.getResponseBodyAsString().contains("locales/fr/index.htm"));
+    assertTrue(get.getResponseBodyAsString().contains(
+        "tester les param&#232;tres r&#233;gionaux"));
   }
 
   /**
@@ -192,8 +194,9 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
     client.executeMethod(get);
     int code = get.getStatusCode();
     assertEquals(200, code);
-    assertTrue(get.getResponseBodyAsString().contains("locales/en/index.htm"));
-    assertTrue(get.getResponseBodyAsString().contains("locale test"));
+    assertTrue(get.getResponseBodyAsString().contains("locales/fr/index.htm"));
+    assertTrue(get.getResponseBodyAsString().contains(
+        "tester les param&#232;tres r&#233;gionaux"));
   }
 
   /**
@@ -212,7 +215,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
         + "&userid=localetest1b&shareddatakey=localetest1b&locale=fr-1694acad");
     client.executeMethod(post);
     int code = post.getStatusCode();
-    assertEquals(201, code);
+    assertEquals(200, code);
     assertTrue(post.getResponseBodyAsString().contains("locales/fr/index.htm"));
     assertFalse(post.getResponseBodyAsString().contains("locale test"));
     assertTrue(post.getResponseBodyAsString().contains(
@@ -235,7 +238,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
         + "&userid=localetest2&shareddatakey=localetest2&locale=bu");
     client.executeMethod(post);
     int code = post.getStatusCode();
-    assertEquals(201, code);
+    assertEquals(200, code);
     assertFalse(post.getResponseBodyAsString().contains("locales/fr/index.htm"));
     assertFalse(post.getResponseBodyAsString().contains("locales/en/index.htm"));
     assertTrue(post.getResponseBodyAsString().contains("index.htm"));
@@ -260,7 +263,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
         + WIDGET_ID_LOCALIZED + "&userid=localetest3&shareddatakey=localetest3");
     client.executeMethod(post);
     int code = post.getStatusCode();
-    assertEquals(201, code);
+    assertEquals(200, code);
     assertTrue(post.getResponseBodyAsString().contains("locales/en/index.htm"));
     assertTrue(post.getResponseBodyAsString().contains("locale test"));
     assertFalse(post.getResponseBodyAsString().contains(
@@ -283,7 +286,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
         + WIDGET_ID_VALID + "&userid=test&shareddatakey=test");
     client.executeMethod(post);
     int code = post.getStatusCode();
-    assertEquals(201, code);
+    assertEquals(200, code);
     post.releaseConnection();
   }
 
@@ -382,7 +385,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
         + WIDGET_ID_VALID + "&userid=test&shareddatakey=clonetestsrc");
     client.executeMethod(post);
     int code = post.getStatusCode();
-    assertEquals(201, code);
+    assertEquals(200, code);
     post.releaseConnection();
 
     //
@@ -424,7 +427,7 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
         + WIDGET_ID_VALID + "&userid=test&shareddatakey=clonetestsync");
     client.executeMethod(post);
     code = post.getStatusCode();
-    assertEquals(201, code);
+    assertEquals(200, code);
     post.releaseConnection();
 
     //
