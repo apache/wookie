@@ -128,6 +128,7 @@ public class DefaultSharedContextService implements SharedContextService {
 		HashMap<String, ISharedData> sharedData = getSharedContextFromTree(apiKey,contextId, widgetId).getSharedData();
 		boolean existing = true;
 		if (!sharedData.containsKey(key)) existing = false;
+		if (append && existing) value = sharedData.get(key).getDvalue() + value;
 		sharedData.put(key, new DefaultSharedDataImpl(key,value));
 		return existing;
 	}
