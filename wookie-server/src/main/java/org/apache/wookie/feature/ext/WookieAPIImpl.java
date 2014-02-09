@@ -137,7 +137,6 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
 	  Messages localizedMessages = LocaleHandler.localizeMessages(request);
 	  try {
 		  AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
-		  Notifier.callSiblings(authToken,"window.onHide()");//$NON-NLS-1$
 		  //TODO
 		  //if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2");
 		  new SharedContext(authToken).updateSharedData(key, value, true);
