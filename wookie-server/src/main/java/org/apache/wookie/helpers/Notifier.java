@@ -20,7 +20,7 @@ import java.util.Iterator;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
-import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.auth.AuthToken;
 import org.apache.wookie.util.SiblingPageNormalizer;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
@@ -45,10 +45,10 @@ public class Notifier {
 	 * @param instance the widget instance whose siblings should be invoked
 	 * @param method the method to invoke on sibling widget instances
 	 */
-	public static void notifyWidgets(HttpSession session, IWidgetInstance instance, String method){
+	public static void notifyWidgets(HttpSession session, AuthToken authToken, String method){
 		ServletContext ctx = session.getServletContext();
 		ServerContext sctx = ServerContextFactory.get(ctx);
-		String currentPage = new SiblingPageNormalizer().getNormalizedPage(instance);
+		String currentPage = new SiblingPageNormalizer().getNormalizedPage(authToken);
 		Collection<?> pages = sctx.getScriptSessionsByPage(currentPage);
 		call(pages,method);
 	}	
@@ -58,19 +58,18 @@ public class Notifier {
 	 * current script session. Only use this method within a DWR thread.
 	 * @param widgetInstance the instance that is the source of the update
 	 */
-	public static void notifySiblings(IWidgetInstance widgetInstance){
-		String sharedDataKey = SharedDataHelper.getInternalSharedDataKey(widgetInstance);
-		String script = "Widget.onSharedUpdate(\""+sharedDataKey+"\");"; //$NON-NLS-1$ //$NON-NLS-2$
-		callSiblings(widgetInstance,script);
+	public static void notifySiblings(AuthToken authToken){
+		String script = "Widget.onSharedUpdate(\""+authToken.getContextId()+"\");"; //$NON-NLS-1$ //$NON-NLS-2$
+		callSiblings(authToken,script);
 	}
 	
 	/**
 	 * Calls a script in sibling widget instances within the scope of the current DWR thread
 	 * @param call the JS method to call on the widget start file
 	 */
-	public static void callSiblings(IWidgetInstance instance, String call){
+	public static void callSiblings(AuthToken authToken, String call){
 		WebContext wctx = WebContextFactory.get();
-		String currentPage = new SiblingPageNormalizer().getNormalizedPage(instance);
+		String currentPage = new SiblingPageNormalizer().getNormalizedPage(authToken);
         Collection<?> pages = wctx.getScriptSessionsByPage(currentPage);
 	    call(pages, call);	
 	}

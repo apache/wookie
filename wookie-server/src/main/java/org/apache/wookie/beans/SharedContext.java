@@ -17,7 +17,7 @@
 
 package org.apache.wookie.beans;
 
-import org.apache.wookie.helpers.SharedDataHelper;
+import org.apache.wookie.auth.AuthToken;
 import org.apache.wookie.services.SharedContextService;
 
 /**
@@ -35,11 +35,26 @@ import org.apache.wookie.services.SharedContextService;
  * tuple store or distributed keystore
  */
 public class SharedContext {
+	
+	private String apiKey;
+	private String widgetId;
+	private String contextId;
+	private String viewerId;
 
-	private IWidgetInstance widgetInstance;
-
+	@Deprecated
 	public SharedContext(IWidgetInstance widgetInstance){
-		this.widgetInstance = widgetInstance;
+		this.apiKey = widgetInstance.getApiKey();
+		this.widgetId = widgetInstance.getWidget().getIdentifier();
+		this.contextId = widgetInstance.getSharedDataKey();
+		this.viewerId = widgetInstance.getUserId();
+	}
+	
+	public SharedContext(AuthToken authToken){
+		this.apiKey = authToken.getApiKey();
+		this.widgetId = authToken.getWidgetId();
+		this.contextId = authToken.getContextId();
+		this.viewerId = authToken.getViewerId();
+		
 	}
 
 	/**
@@ -50,7 +65,7 @@ public class SharedContext {
 		//
 		// Obtain a persistence manager and return the results of executing a query of SharedData objects matching the sharedDataKey
 		//
-		return SharedContextService.Factory.getInstance().getSharedData(this.widgetInstance.getApiKey(), this.widgetInstance.getWidget().getIdentifier(), this.widgetInstance.getSharedDataKey());
+		return SharedContextService.Factory.getInstance().getSharedData(apiKey, widgetId, contextId);
 	}
 
 	/**
@@ -60,7 +75,7 @@ public class SharedContext {
 	 * @return a SharedData object, or null if no matches are found
 	 */
 	public ISharedData getSharedData(String key){
-		return SharedContextService.Factory.getInstance().getSharedData(this.widgetInstance.getApiKey(), this.widgetInstance.getWidget().getIdentifier(), this.widgetInstance.getSharedDataKey(), key);
+		return SharedContextService.Factory.getInstance().getSharedData(apiKey, widgetId, contextId, key);
 	}
 
 	/**
@@ -69,24 +84,7 @@ public class SharedContext {
 	 * @return true if a shared data object was located and deleted, false if no match was found
 	 */
 	public boolean removeSharedData(String key){
-		return SharedContextService.Factory.getInstance().removeSharedData(this.widgetInstance.getApiKey(), this.widgetInstance.getWidget().getIdentifier(), this.widgetInstance.getSharedDataKey(), key);
-	}
-
-	/**
-	 * Removes (deletes) the shared data object
-	 * @param sharedData
-	 */
-	private void removeSharedData(ISharedData sharedData){
-		SharedContextService.Factory.getInstance().removeSharedData(this.widgetInstance.getApiKey(), this.widgetInstance.getWidget().getIdentifier(), this.widgetInstance.getSharedDataKey(), sharedData.getDkey());
-	}
-
-	/**
-	 * Creates a new shared data object in this shared context
-	 * @param name
-	 * @param value
-	 */
-	private void addSharedData(String key, String value){ 
-		SharedContextService.Factory.getInstance().updateSharedData(this.widgetInstance.getApiKey(), this.widgetInstance.getWidget().getIdentifier(), this.widgetInstance.getSharedDataKey(), key, value, false);
+		return SharedContextService.Factory.getInstance().removeSharedData(apiKey, widgetId, contextId, key);
 	}
 
 	/**
@@ -97,7 +95,7 @@ public class SharedContext {
 	 * @return true if the value was updated, false if a new object was created
 	 */
 	public boolean updateSharedData(String key, String value, boolean append){
-		return SharedContextService.Factory.getInstance().updateSharedData(this.widgetInstance.getApiKey(), this.widgetInstance.getWidget().getIdentifier(), this.widgetInstance.getSharedDataKey(), key, value, append);
+		return SharedContextService.Factory.getInstance().updateSharedData(apiKey, widgetId, contextId, key, value, append);
 	}
 
 	/**
@@ -105,7 +103,7 @@ public class SharedContext {
 	 * @return an arry of Participant instances, or null if there are no participants
 	 */
 	public IParticipant[] getParticipants(){
-		return SharedContextService.Factory.getInstance().getParticipants(this.widgetInstance.getApiKey(), this.widgetInstance.getWidget().getIdentifier(), this.widgetInstance.getSharedDataKey());
+		return SharedContextService.Factory.getInstance().getParticipants(apiKey, widgetId, contextId);
 	}
 
 	/**
@@ -116,7 +114,7 @@ public class SharedContext {
 	 * @return true if the participant was successfully added, otherwise false
 	 */
 	public boolean addParticipant(String participantId, String participantDisplayName, String participantThumbnailUrl) {
-		return SharedContextService.Factory.getInstance().addParticipant(this.widgetInstance.getApiKey(), this.widgetInstance.getWidget().getIdentifier(), this.widgetInstance.getSharedDataKey(), participantId, participantDisplayName, participantThumbnailUrl);
+		return SharedContextService.Factory.getInstance().addParticipant(apiKey, widgetId, contextId, participantId, participantDisplayName, participantThumbnailUrl);
 	}
 
 	/**
@@ -127,7 +125,7 @@ public class SharedContext {
 	 * @return true if the participant was successfully added, otherwise false
 	 */
 	public boolean addParticipant(String participantId, String participantDisplayName, String participantThumbnailUrl, String role) {
-		return SharedContextService.Factory.getInstance().addParticipant(this.widgetInstance.getApiKey(), this.widgetInstance.getWidget().getIdentifier(), this.widgetInstance.getSharedDataKey(), participantId, participantDisplayName, participantThumbnailUrl, role);
+		return SharedContextService.Factory.getInstance().addParticipant(apiKey, widgetId, contextId, participantId, participantDisplayName, participantThumbnailUrl, role);
 	}
 
 	/**
@@ -135,7 +133,7 @@ public class SharedContext {
 	 * @param participant
 	 */
 	public void removeParticipant(IParticipant participant){
-		SharedContextService.Factory.getInstance().removeParticipant(this.widgetInstance.getApiKey(), this.widgetInstance.getWidget().getIdentifier(), this.widgetInstance.getSharedDataKey(), participant);
+		SharedContextService.Factory.getInstance().removeParticipant(apiKey, widgetId, contextId, participant);
 	}
 
 	/**
@@ -144,7 +142,7 @@ public class SharedContext {
 	 * @return true if the participant is successfully removed, otherwise false
 	 */
 	public boolean removeParticipant(String participantId) {
-		return SharedContextService.Factory.getInstance().removeParticipant(this.widgetInstance.getApiKey(), this.widgetInstance.getWidget().getIdentifier(), this.widgetInstance.getSharedDataKey(), participantId);
+		return SharedContextService.Factory.getInstance().removeParticipant(apiKey, widgetId, contextId, participantId);
 	}
 
 	/**
@@ -153,7 +151,7 @@ public class SharedContext {
 	 * @return the participant, or null if there is no participant with the given id in the context
 	 */
 	public IParticipant getParticipant(String participantId){
-		return SharedContextService.Factory.getInstance().getParticipant(this.widgetInstance.getApiKey(), this.widgetInstance.getWidget().getIdentifier(), this.widgetInstance.getSharedDataKey(), participantId);    
+		return SharedContextService.Factory.getInstance().getParticipant(apiKey, widgetId, contextId, participantId);    
 	}
 
 	/**
@@ -161,6 +159,7 @@ public class SharedContext {
 	 * @param widgetInstance
 	 * @return the IParticipant representing the viewer, or null if no match is found
 	 */
+	@Deprecated
 	public IParticipant getViewer(IWidgetInstance widgetInstance){
 		return SharedContextService.Factory.getInstance().getParticipant(widgetInstance.getApiKey(), widgetInstance.getWidget().getIdentifier(), widgetInstance.getSharedDataKey(), widgetInstance.getUserId());    
 	}
@@ -171,7 +170,7 @@ public class SharedContext {
 	 * @return the IParticipant representing the viewer, or null if no match is found
 	 */
 	public IParticipant getViewer(){
-		return SharedContextService.Factory.getInstance().getParticipant(widgetInstance.getApiKey(), widgetInstance.getWidget().getIdentifier(), widgetInstance.getSharedDataKey(), widgetInstance.getUserId());    
+		return SharedContextService.Factory.getInstance().getParticipant(apiKey, widgetId, contextId, viewerId);    
 	}
 
 	/**
@@ -180,10 +179,10 @@ public class SharedContext {
 	 * @return a participant designated the host, or null if no participant is host
 	 */
 	public IParticipant getHost(){
-		return SharedContextService.Factory.getInstance().getHost(widgetInstance.getApiKey(), widgetInstance.getWidget().getIdentifier(), widgetInstance.getSharedDataKey());    
+		return SharedContextService.Factory.getInstance().getHost(apiKey, widgetId, contextId);    
 	}
 
 	public IParticipant[] getHosts(){
-		return SharedContextService.Factory.getInstance().getHosts(widgetInstance.getApiKey(), widgetInstance.getWidget().getIdentifier(), widgetInstance.getSharedDataKey());    
+		return SharedContextService.Factory.getInstance().getHosts(apiKey, widgetId, contextId);    
 	}
 }
