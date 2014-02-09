@@ -41,7 +41,12 @@ public class DefaultPreferencesService implements PreferencesService {
 			widgetpreferences = new HashMap<String, IPreference>();
 			this.preferences.put(token, widgetpreferences);
 		}
-		return widgetpreferences.get(name).getValue();
+		IPreference pref = widgetpreferences.get(name);
+		if (pref != null){
+			return widgetpreferences.get(name).getValue();
+		} else {
+			return null;
+		}
 	}
 
 	@Override
