@@ -40,14 +40,6 @@ public class SharedContext {
 	private String widgetId;
 	private String contextId;
 	private String viewerId;
-
-	@Deprecated
-	public SharedContext(IWidgetInstance widgetInstance){
-		this.apiKey = widgetInstance.getApiKey();
-		this.widgetId = widgetInstance.getWidget().getIdentifier();
-		this.contextId = widgetInstance.getSharedDataKey();
-		this.viewerId = widgetInstance.getUserId();
-	}
 	
 	public SharedContext(AuthToken authToken){
 		this.apiKey = authToken.getApiKey();
