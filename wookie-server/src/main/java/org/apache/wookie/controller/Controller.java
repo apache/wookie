@@ -442,7 +442,7 @@ public abstract class Controller extends HttpServlet{
 			String userId = URLDecoder.decode(request.getParameter("userid"), "UTF-8"); //$NON-NLS-1$
 			String contextId = request.getParameter("shareddatakey");	 //$NON-NLS-1$;
 			String widgetId = request.getParameter("widgetid");
-			String lang = request.getParameter("lang");
+			String lang = request.getParameter("locale");
 			
             //
 			// The API Key MUST be valid
