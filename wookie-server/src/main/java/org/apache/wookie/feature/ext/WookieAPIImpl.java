@@ -21,17 +21,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
-import org.apache.wookie.beans.IPreference;
-import org.apache.wookie.beans.ISharedData;
-import org.apache.wookie.beans.IWidgetInstance;
+import org.apache.wookie.auth.AuthToken;
+import org.apache.wookie.auth.AuthTokenUtils;
+import org.apache.wookie.auth.InvalidAuthTokenException;
 import org.apache.wookie.beans.SharedContext;
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
-import org.apache.wookie.controller.WidgetInstancesController;
 import org.apache.wookie.helpers.Notifier;
-import org.apache.wookie.helpers.SharedDataHelper;
-import org.apache.wookie.queues.QueueManager;
-import org.apache.wookie.server.ContextListener;
 import org.apache.wookie.server.LocaleHandler;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.WebContext;
@@ -46,87 +40,21 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
   
   /*
    * (non-Javadoc)
-   * @see org.apache.wookie.ajaxmodel.IWidgetAPI#preferenceForKey(java.lang.String, java.lang.String)
-   * 
-   * DEPRECATED: This was replaced by the W3C Storage API
-   */
-  @Deprecated
-  public String preferenceForKey(String id_key, String key) {
-    HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-    Messages localizedMessages = LocaleHandler.localizeMessages(request);
-    if(id_key == null) return localizedMessages.getString("WidgetAPIImpl.0");
-    if(key == null)return localizedMessages.getString("WidgetAPIImpl.1");
-    // check if instance is valid
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
-    if (widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
-    //
-    IPreference preference = widgetInstance.getPreference(key);
-    if (preference == null) return localizedMessages.getString("WidgetAPIImpl.1");
-    return preference.getValue();
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see org.apache.wookie.ajaxmodel.IWidgetAPI#sharedDataForKey(java.lang.String, java.lang.String)
-   * 
-   * DEPRECATED: This was replaced by the Wave Gadget API
-   */
-  @Deprecated
-  public String sharedDataForKey(String id_key, String key) {
-    HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-    Messages localizedMessages = LocaleHandler.localizeMessages(request);
-    if(id_key==null) return localizedMessages.getString("WidgetAPIImpl.0");
-    if(key==null) return localizedMessages.getString("WidgetAPIImpl.1");
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
-    if (widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
-    ISharedData data = new SharedContext(widgetInstance).getSharedData(key);
-    if (data == null) return localizedMessages.getString("WidgetAPIImpl.1");
-    return data.getDvalue();
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see org.apache.wookie.ajaxmodel.IWidgetAPI#setSharedDataForKey(java.lang.String, java.lang.String, java.lang.String)
-   * 
-   * DEPRECATED: This was replaced by the Wave Gadget API
-   */
-  @Deprecated
-  @SuppressWarnings("static-access")
-  public String setSharedDataForKey(String id_key, String key, String value) {
-    HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-    Messages localizedMessages = LocaleHandler.localizeMessages(request);
-    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-    IWidgetInstance widgetInstance;//
-    widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
-    if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
-    if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2");
-    if(ContextListener.useSharedDataInstanceQueues){//  
-      QueueManager.getInstance().queueSetSharedDataRequest(id_key, SharedDataHelper.getInternalSharedDataKey(widgetInstance), key, value, false);
-    }
-    else{
-      new SharedContext(widgetInstance).updateSharedData(key, value, false);
-    }
-    Notifier.notifySiblings(widgetInstance);
-    return "okay"; //$NON-NLS-1$
-  }
-
-  /*
-   * (non-Javadoc)
    * @see org.apache.wookie.ajaxmodel.IWidgetAPI#lock(java.lang.String)
    */
   public String lock(String id_key) {
     HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
     Messages localizedMessages = LocaleHandler.localizeMessages(request);
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
-    if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
-    //
-    String sharedDataKey = SharedDataHelper.getInternalSharedDataKey(widgetInstance);
-    WidgetInstancesController.lockWidgetInstance(widgetInstance);
-    Notifier.callSiblings(widgetInstance,"Widget.onLocked(\""+sharedDataKey+"\");");//$NON-NLS-1$
+    
+    try {
+		AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
+	    Notifier.callSiblings(authToken,"Widget.onLocked(\""+authToken.getContextId()+"\");");//$NON-NLS-1$
+		//TODO
+	    //WidgetInstancesController.lockWidgetInstance(widgetInstance);
         return "okay"; //$NON-NLS-1$
+	} catch (InvalidAuthTokenException e) {
+		return localizedMessages.getString("WidgetAPIImpl.0");
+	}
   }
 
   /*
@@ -134,16 +62,17 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
    * @see org.apache.wookie.ajaxmodel.IWidgetAPI#unlock(java.lang.String)
    */
   public String unlock(String id_key) {
-    HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-    Messages localizedMessages = LocaleHandler.localizeMessages(request);
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
-    if(widgetInstance==null) return localizedMessages.getString("WidgetAPIImpl.0");
-    //
-    String sharedDataKey = SharedDataHelper.getInternalSharedDataKey(widgetInstance);
-    WidgetInstancesController.unlockWidgetInstance(widgetInstance);
-    Notifier.callSiblings(widgetInstance,"Widget.onUnlocked(\""+sharedDataKey+"\");");//$NON-NLS-1$
-        return "okay"; //$NON-NLS-1$
+	  HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+	  Messages localizedMessages = LocaleHandler.localizeMessages(request);
+	  try {
+		  AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
+		  Notifier.callSiblings(authToken,"Widget.onUnlocked(\""+authToken.getContextId()+"\");");//$NON-NLS-1$
+		  //TODO
+		  //WidgetInstancesController.unlocklockWidgetInstance(widgetInstance);
+		  return "okay"; //$NON-NLS-1$
+	  } catch (InvalidAuthTokenException e) {
+		  return localizedMessages.getString("WidgetAPIImpl.0");
+	  }
   }
 
   /*
@@ -151,14 +80,16 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
    * @see org.apache.wookie.ajaxmodel.IWidgetAPI#hide(java.lang.String)
    */
   public String hide(String id_key){
-    HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-    Messages localizedMessages = LocaleHandler.localizeMessages(request);
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
-    if (widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
-    //
-    Notifier.callSiblings(widgetInstance,"window.onHide()");//$NON-NLS-1$
-      return "okay"; //$NON-NLS-1$
+	  
+	  HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+	  Messages localizedMessages = LocaleHandler.localizeMessages(request);
+	  try {
+		  AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
+		    Notifier.callSiblings(authToken,"window.onHide()");//$NON-NLS-1$
+		  return "okay"; //$NON-NLS-1$
+	  } catch (InvalidAuthTokenException e) {
+		  return localizedMessages.getString("WidgetAPIImpl.0");
+	  }
   }
 
   /*
@@ -166,13 +97,15 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
    * @see org.apache.wookie.ajaxmodel.IWidgetAPI#show(java.lang.String)
    */
   public String show(String id_key){
-    HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-    Messages localizedMessages = LocaleHandler.localizeMessages(request);
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
-    if(widgetInstance==null) return localizedMessages.getString("WidgetAPIImpl.0");
-    Notifier.callSiblings(widgetInstance,"window.onShow()"); //$NON-NLS-1$
-      return "okay"; //$NON-NLS-1$
+	  HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+	  Messages localizedMessages = LocaleHandler.localizeMessages(request);
+	  try {
+		  AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
+		    Notifier.callSiblings(authToken,"window.onShow()");//$NON-NLS-1$
+		  return "okay"; //$NON-NLS-1$
+	  } catch (InvalidAuthTokenException e) {
+		  return localizedMessages.getString("WidgetAPIImpl.0");
+	  }
   }
 
   /*
@@ -198,22 +131,21 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
   /*
    * Note: this method may be deprecated in a future release 
    */
-  @SuppressWarnings("static-access")
   public String appendSharedDataForKey(String id_key, String key, String value) {
-    HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-    Messages localizedMessages = LocaleHandler.localizeMessages(request);               
-    IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();   
-    IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
-    if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0");
-    if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2");
-    if(ContextListener.useSharedDataInstanceQueues){//
-      QueueManager.getInstance().queueSetSharedDataRequest(id_key, SharedDataHelper.getInternalSharedDataKey(widgetInstance), key, value, true);
-    }
-    else{
-      new SharedContext(widgetInstance).updateSharedData(key, value, true);
-    }
-    Notifier.notifySiblings(widgetInstance);
-    return "okay"; //$NON-NLS-1$
+
+	  HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+	  Messages localizedMessages = LocaleHandler.localizeMessages(request);
+	  try {
+		  AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
+		  Notifier.callSiblings(authToken,"window.onHide()");//$NON-NLS-1$
+		  //TODO
+		  //if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2");
+		  new SharedContext(authToken).updateSharedData(key, value, true);
+		  Notifier.notifySiblings(authToken);
+		  return "okay"; //$NON-NLS-1$
+	  } catch (InvalidAuthTokenException e) {
+		  return localizedMessages.getString("WidgetAPIImpl.0");
+	  }
   }
 
 }

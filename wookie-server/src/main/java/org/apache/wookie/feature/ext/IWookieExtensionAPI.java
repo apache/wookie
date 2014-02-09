@@ -32,46 +32,7 @@ public interface IWookieExtensionAPI {
    */
   public String hide(String id_key);
   
-  /**
-   * Open a url in a window. DEPRECATED.
-   * @param url
-   * @return
-   */
-  @Deprecated
-  public String openURL(String url);
-  
-  /**
-   * Returns a string preference value from the DB, obtained
-   * from the given "key" . DEPRECATED: Use widget.preferences
-   * @param id_key - the unique instance id key for a widget instance
-   * @param key - key for the value to retrieve
-   * @return - a string value found in the DB or an error message
-   */
-   @Deprecated
-  public String preferenceForKey(String id_key, String key);
-    
-  /**
-   * Sets a string shared data value in the DB, obtained
-   * from the given "key". DEPRECATED: Use wave.getState().submitValue()
-   * @param id_key - the unique instance id key for a widget instance
-   * @param key - key for the value to change
-   * @param key - the value to change to
-   * @return - a string value marking status or an error message
-   */
-  @Deprecated
-  public String setSharedDataForKey(String id_key, String key, String value);
-  
-  /**
-   * Returns a string value from the DB, obtained
-   * from the given "key". This is a shared data value
-   * between widgets using the same data. DEPRECATED: Use wave.getState().get()
-   * @param id_key - the unique instance id key for a widget instance
-   * @param key - key for the value to retrieve
-   * @return - a string value found in the DB or an error message
-   */
-   @Deprecated
-  public String sharedDataForKey(String id_key, String key);  
-  
+
   /**
    * show a widget instance based on the id_key
    * 
