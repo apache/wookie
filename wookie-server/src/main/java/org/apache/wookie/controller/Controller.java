@@ -15,8 +15,10 @@ package org.apache.wookie.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,12 +27,18 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
+import org.apache.wookie.auth.AuthToken;
+import org.apache.wookie.auth.AuthTokenUtils;
+import org.apache.wookie.auth.InvalidAuthTokenException;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.ServiceUnavailableException;
 import org.apache.wookie.exceptions.SystemUnavailableException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
+import org.apache.wookie.server.security.ApiKeys;
+import org.apache.wookie.services.WidgetMetadataService;
+import org.apache.wookie.w3c.util.LocalizationUtils;
 
 /**
  * Base class of RESTful controllers with common utility methods
@@ -384,6 +392,97 @@ public abstract class Controller extends HttpServlet{
     // Construct and return URL
     //
     return new URL(scheme, serverName, serverPort, path);
+	}
+	
+	/**
+	 * Get an AuthToken from the request
+	 * @param request
+	 * @return
+	 */
+	protected static AuthToken getAuthTokenFromRequest(HttpServletRequest request){
+		
+		AuthToken authToken = null;
+
+		
+		//
+		// First, lets use idkey if present
+		//
+		String idkey = request.getParameter("idkey");
+		
+		if (idkey != null && !idkey.trim().equals("")){
+		try {
+			authToken = AuthTokenUtils.decryptAuthToken(idkey);
+			return authToken;
+		} catch (InvalidAuthTokenException e) {
+			return null;
+		}
+		}
+		
+		//
+		// Next, try the resource component of the URL, e.g. widgetinstances/xyz
+		//
+		idkey = getResourceId(request);
+		if (idkey != null && !idkey.trim().equals("")){
+			try {
+				authToken = AuthTokenUtils.decryptAuthToken(idkey);
+				return authToken;
+			} catch (InvalidAuthTokenException e) {
+				//
+				// Continue; the resource id wasn't used to identify the token, 
+				// but that doesn't mean the request is not valid
+				//
+			}
+		}
+		
+		//
+		// Finally, use components from the parameters
+		//
+		try {
+			String apiKey = URLDecoder.decode(request.getParameter("api_key"), "UTF-8"); //$NON-NLS-1$
+			String userId = URLDecoder.decode(request.getParameter("userid"), "UTF-8"); //$NON-NLS-1$
+			String contextId = request.getParameter("shareddatakey");	 //$NON-NLS-1$;
+			String widgetId = request.getParameter("widgetid");
+			String lang = request.getParameter("lang");
+			
+            //
+			// The API Key MUST be valid
+			//
+            if (!ApiKeys.getInstance().validate(apiKey)) return null;
+            
+            //
+            // The following properties MUST be provided
+            //
+            if (userId == null || userId.trim().equals("")) return null;
+            if (contextId == null || contextId.trim().equals("")) return null;	
+            if (widgetId == null || widgetId.trim().equals("")) return null;
+            
+            //
+            // The widget MUST be installed
+            //
+            if (WidgetMetadataService.Factory.getInstance().getWidget(widgetId) == null){
+            	return null;
+            }
+            
+			//
+			// If there is no valid language tag, we can use the default
+			//
+            if (!LocalizationUtils.isValidLanguageTag(lang)){
+            	lang = WidgetMetadataService.Factory.getInstance().getWidget(widgetId).getDefaultLocale() ;
+            }
+            
+            
+            authToken = new AuthToken();
+            authToken.setApiKey(ApiKeys.getInstance().getApiKey(apiKey));
+            authToken.setContextId(contextId);
+            authToken.setLang(lang);
+            authToken.setViewerId(userId);
+            authToken.setWidgetId(widgetId);
+    		return authToken;			
+		} catch (UnsupportedEncodingException e) {
+			return null;
+		}
+
+
 	}
 
 }
