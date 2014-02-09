@@ -19,8 +19,6 @@ import org.apache.wookie.auth.AuthToken;
 import org.apache.wookie.auth.AuthTokenUtils;
 import org.apache.wookie.auth.InvalidAuthTokenException;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.IWidgetInstance;
-import org.apache.wookie.helpers.SharedDataHelper;
 import org.apache.wookie.services.WidgetMetadataService;
 import org.directwebremoting.impl.DefaultPageNormalizer;
 
@@ -51,16 +49,6 @@ org.directwebremoting.extend.PageNormalizer {
 		return super.normalizePage(IWidget.Utilities.getUrl(widget, authToken.getLang()))+"?"+authToken.getApiKey()+"="+authToken.getContextId();
 	}
 	
-	/**
-	 * Return the normalized (sibling-friendly) URI for a given widget instance
-	 * @param instance the instance
-	 * @return the normalized URI of the widget instance
-	 */
-	public String getNormalizedPage(IWidgetInstance instance){
-		
-		return super.normalizePage(IWidget.Utilities.getUrl(instance.getWidget(), instance.getLang()))+"?"+instance.getApiKey()+"="+SharedDataHelper.getInternalSharedDataKey(instance);
-	}
-
 	/**
 	 * Note this method is called VERY often and needs to be fast
 	 */
