@@ -151,16 +151,6 @@ public class SharedContext {
 	 * @param widgetInstance
 	 * @return the IParticipant representing the viewer, or null if no match is found
 	 */
-	@Deprecated
-	public IParticipant getViewer(IWidgetInstance widgetInstance){
-		return SharedContextService.Factory.getInstance().getParticipant(widgetInstance.getApiKey(), widgetInstance.getWidget().getIdentifier(), widgetInstance.getSharedDataKey(), widgetInstance.getUserId());    
-	}
-
-	/**
-	 * Get the participant associated with the widget instance as the viewer
-	 * @param widgetInstance
-	 * @return the IParticipant representing the viewer, or null if no match is found
-	 */
 	public IParticipant getViewer(){
 		return SharedContextService.Factory.getInstance().getParticipant(apiKey, widgetId, contextId, viewerId);    
 	}
