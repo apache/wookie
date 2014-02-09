@@ -139,7 +139,6 @@ public class WidgetAPIImpl implements IWidgetAPI {
    * from invoking this method in client code.
    */
   @Deprecated
-  @SuppressWarnings("static-access")
   public String setPreferenceForKey(String id_key, String key, String value) {
     HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
     Messages localizedMessages = LocaleHandler.localizeMessages(request);   
