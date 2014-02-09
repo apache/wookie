@@ -126,20 +126,6 @@
 		<servlet-name>UpdatesServlet</servlet-name>
 		<url-pattern>/updates/*</url-pattern>
 	</servlet-mapping>
-	
-	<servlet>
-		<description></description>
-		<display-name>Flatpack</display-name>
-		<servlet-name>Flatpack</servlet-name>
-		<servlet-class>
-			org.apache.wookie.flatpack.FlatpackController
-		</servlet-class>
-		<load-on-startup>2</load-on-startup>
-	</servlet>	
-	<servlet-mapping>
-		<servlet-name>Flatpack</servlet-name>
-		<url-pattern>/flatpack/*</url-pattern>
-	</servlet-mapping>
 
 	<servlet>
 		<description></description>
