@@ -114,23 +114,6 @@ public class WidgetsControllerTest extends AbstractControllerTest {
   }
 
   /**
-   * Test we can GET a widget using its internal ID as a resource path
-   * @throws IOException 
-   * @throws HttpException 
-   */
-  @Test
-  public void getSpecificWidget() throws HttpException, IOException{
-    HttpClient client = new HttpClient();
-    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID+"/1");
-    client.executeMethod(get);
-    int code = get.getStatusCode();
-    assertEquals(200,code);
-    String response = get.getResponseBodyAsString();
-    assertTrue(response.contains("<widget id=\"http://notsupported\""));
-    get.releaseConnection();
-  }
-
-  /**
    * Test we can GET a widget using its URI as a resource path
    * @throws IOException 
    * @throws HttpException 
@@ -515,14 +498,14 @@ public class WidgetsControllerTest extends AbstractControllerTest {
   @Test
   public void deleteWidgetUnauthorized() throws HttpException, IOException{
     HttpClient client = new HttpClient();
-    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/1");
+    DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_WEATHER);
     client.executeMethod(delete);
     assertEquals(401, delete.getStatusCode());
 
     //
     // Check it wasn't deleted
     //
-    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/1");
+    GetMethod get = new GetMethod(TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_WEATHER);
     client.executeMethod(get);
     assertEquals(200, get.getStatusCode());
   }
