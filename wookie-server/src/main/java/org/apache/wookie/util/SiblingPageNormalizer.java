@@ -15,11 +15,13 @@ package org.apache.wookie.util;
 
 import java.util.HashMap;
 
+import org.apache.wookie.auth.AuthToken;
+import org.apache.wookie.auth.AuthTokenUtils;
+import org.apache.wookie.auth.InvalidAuthTokenException;
 import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.helpers.SharedDataHelper;
+import org.apache.wookie.services.WidgetMetadataService;
 import org.directwebremoting.impl.DefaultPageNormalizer;
 
 /**
@@ -39,6 +41,16 @@ org.directwebremoting.extend.PageNormalizer {
 		super();
 	}
 
+	/**
+	 * Return the normalized (sibling-friendly) URI for a given widget instance
+	 * @param instance the instance
+	 * @return the normalized URI of the widget instance
+	 */
+	public String getNormalizedPage(AuthToken authToken){
+		IWidget widget = WidgetMetadataService.Factory.getInstance().getWidget(authToken.getWidgetId());
+		return super.normalizePage(IWidget.Utilities.getUrl(widget, authToken.getLang()))+"?"+authToken.getApiKey()+"="+authToken.getContextId();
+	}
+	
 	/**
 	 * Return the normalized (sibling-friendly) URI for a given widget instance
 	 * @param instance the instance
@@ -68,17 +80,18 @@ org.directwebremoting.extend.PageNormalizer {
 		// API key and Shared Data Key: in combination with
 		// the Widget URL it uniquely identifies sibling instances
 		
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey((String)parmsMap.get("idkey"));
-		// Invalid instance
-		if(widgetInstance==null) return super.normalizePage(page);
-
-		// Strip off query and add on API key and shared data key
-		setNormalizeIncludesQueryString(false);
-		page = super.normalizePage(page);
-		page += "?"+widgetInstance.getApiKey()+"="+SharedDataHelper.getInternalSharedDataKey(widgetInstance);
-		setNormalizeIncludesQueryString(true);
-		return page;
+		try {
+			AuthToken authToken = AuthTokenUtils.decryptAuthToken(parmsMap.get("idkey"));
+			// Strip off query and add on API key and shared data key
+			setNormalizeIncludesQueryString(false);
+			page = super.normalizePage(page);
+			page += "?"+authToken.getApiKey()+"="+authToken.getContextId();
+			setNormalizeIncludesQueryString(true);
+			return page;
+		} catch (InvalidAuthTokenException e) {
+			// Invalid instance
+			return super.normalizePage(page);
+		}
 	}
 
 	private void initMap(String search) {
