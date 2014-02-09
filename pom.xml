@@ -43,7 +43,7 @@
         <module>wookie-connector/java</module>
         <module>wookie-features</module>
         <module>wookie-services/wookie-spi</module>
-        <module>wookie-services/wookie-jpa</module>
+        <!--  <module>wookie-services/wookie-jpa</module> -->
         <module>wookie-server</module>
     </modules>
   
