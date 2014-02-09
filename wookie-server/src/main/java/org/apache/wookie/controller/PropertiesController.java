@@ -22,17 +22,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.apache.wookie.beans.IPreference;
+import org.apache.wookie.auth.AuthToken;
 import org.apache.wookie.beans.ISharedData;
-import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.SharedContext;
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.Notifier;
+import org.apache.wookie.services.PreferencesService;
 
 /**
  * REST implementation for widgetInstance
@@ -80,16 +78,17 @@ public class PropertiesController extends Controller {
 	protected void show(String resourceId, HttpServletRequest request,
 			HttpServletResponse response) throws ResourceNotFoundException,
 			UnauthorizedAccessException, IOException {
-		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
-		if (instance == null) throw new ResourceNotFoundException();
+		
+		AuthToken authToken = getAuthTokenFromRequest(request);		
+		if (authToken == null) throw new ResourceNotFoundException();
 		String name = request.getParameter("propertyname"); //$NON-NLS-1$
 		if (name == null || name.trim().equals("")) throw new ResourceNotFoundException();
 		String value = null;
 		// Note that preferences and shared data keys may be the same!
 		// We let the shared data values override.
-		IPreference pref = instance.getPreference(name);
-		if (pref != null) value = pref.getValue();
-		ISharedData data = new SharedContext(instance).getSharedData(name);
+		
+		value = PreferencesService.Factory.getInstance().getPreference(authToken.toString(), name);
+		ISharedData data = new SharedContext(authToken).getSharedData(name);
 		if (data != null) value = data.getDvalue();
 		if (value == null) throw new ResourceNotFoundException();
 		PrintWriter out = response.getWriter();
@@ -101,16 +100,18 @@ public class PropertiesController extends Controller {
 			throws ResourceNotFoundException,UnauthorizedAccessException,InvalidParametersException {
 		if (request.getParameter("value") != null) throw new InvalidParametersException();//$NON-NLS-1$
 		String name = request.getParameter("propertyname"); //$NON-NLS-1$
-		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
-		if (instance == null) throw new InvalidParametersException();
+		
+		AuthToken authToken = getAuthTokenFromRequest(request);
+		if (authToken == null) throw new InvalidParametersException();
+		
 		if (name == null || name.trim().equals("")) throw new InvalidParametersException();
 		
 		boolean found = false;
 		if (isPublic(request)){ 
-			found = new SharedContext(instance).removeSharedData(name);
-			Notifier.notifyWidgets(request.getSession(), instance, Notifier.STATE_UPDATED);
+			found = new SharedContext(authToken).removeSharedData(name);
+			Notifier.notifyWidgets(request.getSession(), authToken, Notifier.STATE_UPDATED);
 		} else {
-			found = updatePreference(instance, name, null);
+			found = updatePreference(authToken, name, null);
 		}
 		if (!found) throw new ResourceNotFoundException();
 		return true;
@@ -141,15 +142,17 @@ public class PropertiesController extends Controller {
 	throws InvalidParametersException,UnauthorizedAccessException {
 		String name = request.getParameter("propertyname"); //$NON-NLS-1$
 		String value = request.getParameter("propertyvalue"); //$NON-NLS-1$
-		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
-		if (instance == null) throw new InvalidParametersException();
+		
+		AuthToken authToken = getAuthTokenFromRequest(request);
+		if (authToken == null) throw new InvalidParametersException();
+		
 		if (name == null || name.trim().equals("")) throw new InvalidParametersException();
 		
 		if (isPublic(request)){ 
-		  new SharedContext(instance).updateSharedData(name, value, false);
-			Notifier.notifyWidgets(request.getSession(), instance, Notifier.STATE_UPDATED);
+		    new SharedContext(authToken).updateSharedData(name, value, false);
+			Notifier.notifyWidgets(request.getSession(), authToken, Notifier.STATE_UPDATED);
 		} else {
-			updatePreference(instance, name, value);
+			updatePreference(authToken, name, value);
 		}
 	}
 
@@ -159,29 +162,11 @@ public class PropertiesController extends Controller {
 	 * @param name
 	 * @param value
 	 */
-	public static boolean updatePreference(IWidgetInstance widgetInstance, String name, String value){
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
+	public static boolean updatePreference(AuthToken authToken, String name, String value){
         boolean found=false;
-        IPreference preference = widgetInstance.getPreference(name);
-        if (preference != null)
-        {
-            if(value==null || value.equalsIgnoreCase("null")){  
-                widgetInstance.getPreferences().remove(preference);
-            }
-            else{    
-                preference.setValue(value);
-            }
-            found=true;
-        }
-        if(!found){  
-        	if (value != null){
-                preference = persistenceManager.newInstance(IPreference.class);
-        		preference.setName(name);
-        		preference.setValue(value);
-        		widgetInstance.getPreferences().add(preference);
-        	}
-        }  
-        persistenceManager.save(widgetInstance);
+        String preference = PreferencesService.Factory.getInstance().getPreference(authToken.toString(), name);        
+        if (preference != null) found=true;
+   	    PreferencesService.Factory.getInstance().setPreference(authToken.toString(), name, value);
         return found;
 	}
 

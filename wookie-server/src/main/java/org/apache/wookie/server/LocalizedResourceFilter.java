@@ -30,10 +30,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.wookie.auth.AuthToken;
+import org.apache.wookie.auth.AuthTokenUtils;
+import org.apache.wookie.auth.InvalidAuthTokenException;
 import org.apache.wookie.beans.IWidget;
-import org.apache.wookie.beans.IWidgetInstance;
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.services.WidgetMetadataService;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 import org.apache.wookie.w3c.util.WidgetPackageUtils;
@@ -244,14 +244,20 @@ public class LocalizedResourceFilter implements Filter {
     //
     String idkey = ((HttpServletRequest) request).getParameter("idkey");
     if (idkey != null){
-      IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-      IWidgetInstance instance = persistenceManager.findWidgetInstanceByIdKey(idkey);
-      if (instance != null) {
-        filterConfig.getServletContext().setAttribute("widget-id", instance.getWidget().getIdentifier());
-        filterConfig.getServletContext().setAttribute("widget-instance-locale", instance.getLang());
-        filterConfig.getServletContext().setAttribute("widget-default-locale", instance.getWidget().getDefaultLocale());
-        return instance.getWidget();
-      }
+    	AuthToken authToken;
+		try {
+			authToken = AuthTokenUtils.decryptAuthToken(idkey);
+	    	IWidget widget = WidgetMetadataService.Factory.getInstance().getWidget(authToken.getWidgetId());
+	        filterConfig.getServletContext().setAttribute("widget-id", widget.getIdentifier());
+	        filterConfig.getServletContext().setAttribute("widget-instance-locale", authToken.getLang());
+	        filterConfig.getServletContext().setAttribute("widget-default-locale", widget.getDefaultLocale());
+	        return widget;
+		} catch (InvalidAuthTokenException e) {
+			//
+			// A fake token was present in the request
+			//
+			return null;
+		}
     }
 
     //

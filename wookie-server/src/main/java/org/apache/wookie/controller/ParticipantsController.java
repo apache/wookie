@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.apache.wookie.auth.AuthToken;
 import org.apache.wookie.beans.IParticipant;
-import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.SharedContext;
 import org.apache.wookie.exceptions.InvalidParametersException;
 import org.apache.wookie.exceptions.ResourceDuplicationException;
@@ -31,6 +31,7 @@ import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.helpers.ParticipantHelper;
+import org.apache.wookie.services.WidgetMetadataService;
 
 /**
  * Implementation of the REST API for working with Participants. For a description of the methods implemented by this controller see 
@@ -68,14 +69,16 @@ public class ParticipantsController extends Controller {
 	
 	@Override
 	public void show(String resourceId,HttpServletRequest request, HttpServletResponse response) throws UnauthorizedAccessException,ResourceNotFoundException, IOException{
-		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
-		if (instance == null) throw new ResourceNotFoundException();
-		IParticipant[] participants = new SharedContext(instance).getParticipants();
-    switch (format(request)) {
-       case XML: returnXml(ParticipantHelper.createXMLParticipantsDocument(participants),response);break;
-       case JSON: returnJson(ParticipantHelper.createJSONParticipantsDocument(participants),response);break;
-       default: returnXml(ParticipantHelper.createXMLParticipantsDocument(participants),response);break;
-    }
+		
+		AuthToken authToken = getAuthTokenFromRequest(request);
+		if (authToken == null) throw new ResourceNotFoundException();
+		IParticipant[] participants = new SharedContext(authToken).getParticipants();
+		
+		switch (format(request)) {
+		case XML: returnXml(ParticipantHelper.createXMLParticipantsDocument(participants),response);break;
+		case JSON: returnJson(ParticipantHelper.createJSONParticipantsDocument(participants),response);break;
+		default: returnXml(ParticipantHelper.createXMLParticipantsDocument(participants),response);break;
+		}
 	}
 
 	@Override
@@ -98,8 +101,16 @@ public class ParticipantsController extends Controller {
 			throws ResourceDuplicationException, InvalidParametersException,
 			UnauthorizedAccessException {
 
-		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
-		if (instance == null) throw new InvalidParametersException();
+		//
+		// Verify the auth token
+		//
+		AuthToken authToken = getAuthTokenFromRequest(request);
+		if (authToken == null) throw new InvalidParametersException();
+		
+		//
+		// Check the widget is real
+		//
+		if (WidgetMetadataService.Factory.getInstance().getWidget(authToken.getWidgetId()) == null) throw new InvalidParametersException();
 		
 		HttpSession session = request.getSession(true);						
 		String participantId = request.getParameter("participant_id"); //$NON-NLS-1$
@@ -113,8 +124,8 @@ public class ParticipantsController extends Controller {
 			throw new InvalidParametersException();
 		}
 
-		if (new SharedContext(instance).addParticipant(participantId, participantDisplayName, participantThumbnailUrl, participantRole)){
-			Notifier.notifyWidgets(session, instance, Notifier.PARTICIPANTS_UPDATED);
+		if (new SharedContext(authToken).addParticipant(participantId, participantDisplayName, participantThumbnailUrl, participantRole)){
+			Notifier.notifyWidgets(session, authToken, Notifier.PARTICIPANTS_UPDATED);
 			_logger.debug("added user to widget instance: " + participantId);
 			return true;
 		} else {
@@ -132,12 +143,22 @@ public class ParticipantsController extends Controller {
 	public static boolean remove(HttpServletRequest request)
 			throws ResourceNotFoundException, UnauthorizedAccessException,
 			InvalidParametersException {
-		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
-		if (instance == null) throw new InvalidParametersException();
+		
+		//
+		// Verify the auth token
+		//
+		AuthToken authToken = getAuthTokenFromRequest(request);
+		if (authToken == null) throw new InvalidParametersException();
+		
+		//
+		// Check the widget is real
+		//
+		if (WidgetMetadataService.Factory.getInstance().getWidget(authToken.getWidgetId()) == null) throw new InvalidParametersException();
+		
 		HttpSession session = request.getSession(true);						
 		String participantId = request.getParameter("participant_id"); //$NON-NLS-1$
-		if(new SharedContext(instance).removeParticipant(participantId)){
-			Notifier.notifyWidgets(session, instance, Notifier.PARTICIPANTS_UPDATED);
+		if(new SharedContext(authToken).removeParticipant(participantId)){
+			Notifier.notifyWidgets(session, authToken, Notifier.PARTICIPANTS_UPDATED);
 			return true;
 		}else{
 			throw new ResourceNotFoundException();				

@@ -20,17 +20,18 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.wookie.Messages;
+import org.apache.wookie.auth.AuthToken;
+import org.apache.wookie.auth.AuthTokenUtils;
+import org.apache.wookie.auth.InvalidAuthTokenException;
 import org.apache.wookie.beans.IParticipant;
 import org.apache.wookie.beans.ISharedData;
-import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.SharedContext;
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.IFeature;
 import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.helpers.ParticipantHelper;
 import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.server.LocaleHandler;
+import org.apache.wookie.services.SharedContextService;
 import org.directwebremoting.WebContextFactory;
 
 /**
@@ -91,16 +92,16 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 			state.put("message", localizedMessages.getString("WidgetAPIImpl.0"));	 //$NON-NLS-1$
 			return state;
 		}
-		// check if instance is valid
-		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
-		if (widgetInstance == null){
+		// check if token is valid
+		try {
+			AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
+			for (ISharedData data: SharedContextService.Factory.getInstance().getSharedData(authToken.getApiKey(), authToken.getWidgetId(), authToken.getContextId())){
+				state.put(data.getDkey(), data.getDvalue());
+			}
+			
+		} catch (InvalidAuthTokenException e) {
 			state.put("message", localizedMessages.getString("WidgetAPIImpl.0"));	 //$NON-NLS-1$
-			return state;			
-		}
-		//
-		for(ISharedData data : new SharedContext(widgetInstance).getSharedData()){
-			state.put(data.getDkey(), data.getDvalue());
+			return state;
 		}
 		return state;
 	}
@@ -152,24 +153,29 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 	public String submitDelta(String id_key, Map<String,String>map){
 		HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
-		if(widgetInstance == null) return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
-		if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2"); //$NON-NLS-1$
-		//
-		for (String key: map.keySet())
-		  new SharedContext(widgetInstance).updateSharedData(key, map.get(key), false);
-		Notifier.notifySiblings(widgetInstance);
-		return "okay"; //$NON-NLS-1$
+		
+		try {
+			AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
+			
+			// TODO
+			// if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2"); //$NON-NLS-1$
+			for (String key: map.keySet())
+				  new SharedContext(authToken).updateSharedData(key, map.get(key), false);
+				Notifier.notifySiblings(authToken);
+				return "okay"; //$NON-NLS-1$
+		} catch (InvalidAuthTokenException e) {
+			return localizedMessages.getString("WidgetAPIImpl.0"); //$NON-NLS-1$
+		}
+
 	}
 	
-	private SharedContext getSharedContext(String id_key){
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-        IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(id_key);
-		if (widgetInstance != null){
-			return new SharedContext(widgetInstance);
+	private SharedContext getSharedContext(String id_key){		
+		try {
+			AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
+			return new SharedContext(authToken);
+		} catch (InvalidAuthTokenException e) {
+			return null;
 		}
-		return null;
 	}
 
 }

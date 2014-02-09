@@ -30,8 +30,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.apache.wookie.Messages;
+import org.apache.wookie.auth.AuthToken;
 import org.apache.wookie.beans.ISharedData;
-import org.apache.wookie.beans.IWidget;
 import org.apache.wookie.beans.IWidgetInstance;
 import org.apache.wookie.beans.SharedContext;
 import org.apache.wookie.beans.util.IPersistenceManager;
@@ -46,6 +46,7 @@ import org.apache.wookie.helpers.WidgetInstanceFactory;
 import org.apache.wookie.helpers.WidgetInstanceHelper;
 import org.apache.wookie.helpers.WidgetRuntimeHelper;
 import org.apache.wookie.server.LocaleHandler;
+import org.apache.wookie.services.SharedContextService;
 import org.apache.wookie.w3c.IContent;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 
@@ -196,14 +197,12 @@ public class WidgetInstancesController extends Controller {
 	 * @param request
 	 * @throws InvalidParametersException
 	 */
-	public static void doStopWidget(HttpServletRequest request) throws InvalidParametersException{				
-	  IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);	
-	  if(instance!=null){
-	    lockWidgetInstance(instance);
-	    Notifier.notifyWidgets(request.getSession(), instance, Notifier.STATE_UPDATED);
-	  }else{
-	    throw new InvalidParametersException();
-	  }
+	public static void doStopWidget(HttpServletRequest request) throws InvalidParametersException{
+		AuthToken authToken = getAuthTokenFromRequest(request);
+		if (authToken == null) throw new InvalidParametersException();
+		// TODO
+	    // lockWidgetInstance(instance);
+	    Notifier.notifyWidgets(request.getSession(), authToken, Notifier.STATE_UPDATED);
 	}
 
 	/**
@@ -212,13 +211,11 @@ public class WidgetInstancesController extends Controller {
 	 * @throws InvalidParametersException
 	 */
 	public static void doResumeWidget(HttpServletRequest request) throws InvalidParametersException{					
-	  IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);
-	  if(instance!=null){
-	    unlockWidgetInstance(instance);
-	    Notifier.notifyWidgets(request.getSession(), instance, Notifier.STATE_UPDATED);
-	  }else{
-	    throw new InvalidParametersException();
-	  }
+		AuthToken authToken = getAuthTokenFromRequest(request);
+		if (authToken == null) throw new InvalidParametersException();
+		// TODO
+	    // unlockWidgetInstance(instance);
+	    Notifier.notifyWidgets(request.getSession(), authToken, Notifier.STATE_UPDATED);
 	}
 	
 	public static boolean deleteWidgetInstance(String resourceId, HttpServletRequest request) throws InvalidParametersException, ResourceNotFoundException {
@@ -255,7 +252,6 @@ public class WidgetInstancesController extends Controller {
 		String apiKey = request.getParameter("api_key"); //$NON-NLS-1$
 		String serviceType = request.getParameter("servicetype"); //$NON-NLS-1$
 		String widgetId = request.getParameter("widgetid"); //$NON-NLS-1$
-		sharedDataKey = SharedDataHelper.getInternalSharedDataKey(apiKey, widgetId, sharedDataKey);
 		HttpSession session = request.getSession(true);						
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 					
@@ -309,28 +305,18 @@ public class WidgetInstancesController extends Controller {
 	 * @throws InvalidParametersException
 	 */
 	public static void cloneSharedData(HttpServletRequest request) throws InvalidParametersException{
-		IWidgetInstance instance = WidgetInstancesController.findWidgetInstance(request);	
-		if (instance == null){
-      throw new InvalidParametersException();		
-		}
+		AuthToken authToken = getAuthTokenFromRequest(request);	
+		if (authToken == null) throw new InvalidParametersException();		
+
 		String sharedDataKey = request.getParameter("shareddatakey");	 //$NON-NLS-1$;	
 		String cloneSharedDataKey = request.getParameter("cloneshareddatakey");
 		if (sharedDataKey == null || sharedDataKey.trim().equals("") || cloneSharedDataKey == null || cloneSharedDataKey.trim().equals("")){//$NON-NLS-1$ //$NON-NLS-2$
-      throw new InvalidParametersException();
+			throw new InvalidParametersException();
 		}
-		String cloneKey = SharedDataHelper.getInternalSharedDataKey(instance, cloneSharedDataKey);
-        IWidget widget = instance.getWidget();
-        IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		for (ISharedData sharedData : new SharedContext(instance).getSharedData())
-		{
-		    ISharedData clone = persistenceManager.newInstance(ISharedData.class);
-            clone.setDkey(sharedData.getDkey());
-            clone.setDvalue(sharedData.getDvalue());
-            clone.setSharedDataKey(cloneKey);
-            persistenceManager.save(clone);
+		for (ISharedData sharedData : new SharedContext(authToken).getSharedData())
+		{	
+			SharedContextService.Factory.getInstance().updateSharedData(authToken.getApiKey(), authToken.getWidgetId(), cloneSharedDataKey, sharedData.getDkey(), sharedData.getDvalue(), false);
 		}
-		boolean ok = persistenceManager.save(widget);
-		if (!ok) throw new InvalidParametersException();
 	}
 	
 	public synchronized static void lockWidgetInstance(IWidgetInstance instance){
