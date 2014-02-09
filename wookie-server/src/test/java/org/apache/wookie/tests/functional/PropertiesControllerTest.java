@@ -46,7 +46,7 @@ public class PropertiesControllerTest extends AbstractControllerTest {
         + WIDGET_ID_VALID + "&userid=test&shareddatakey=propstest");
     client.executeMethod(post);
     int code = post.getStatusCode();
-    assertEquals(201, code);
+    assertEquals(200, code);
     post.releaseConnection();
   }
   
