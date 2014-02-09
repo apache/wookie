@@ -27,11 +27,14 @@ import java.util.StringTokenizer;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.wookie.auth.AuthToken;
+import org.apache.wookie.auth.AuthTokenUtils;
+import org.apache.wookie.auth.InvalidAuthTokenException;
 import org.apache.wookie.beans.IOAuthToken;
+import org.apache.wookie.beans.IWidget;
+import org.apache.wookie.services.OAuthService;
+import org.apache.wookie.services.WidgetMetadataService;
 import org.apache.wookie.w3c.IParam;
-import org.apache.wookie.beans.IWidgetInstance;
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
 import org.apache.wookie.feature.IFeature;
 import org.apache.wookie.helpers.WidgetRuntimeHelper;
 
@@ -81,27 +84,31 @@ public class oAuthClient implements IFeature {
 	
 	public String queryToken(String idKey) {
 		if(idKey == null) return "invalid";
-		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(idKey);
-		if(widgetInstance==null) return "invalid";
 		
-		IOAuthToken oauthToken = persistenceManager.findOAuthToken(widgetInstance);
-		if (oauthToken != null) {
-			if (!oauthToken.isExpires())
-				return oauthToken.getAccessToken() ;
+		try {
+			AuthToken authToken = AuthTokenUtils.decryptAuthToken(idKey);
+			IOAuthToken oauthToken = OAuthService.Factory.getInstance().getOAuthToken(authToken.toString());
+			if (oauthToken != null) {
+				if (!oauthToken.isExpires())
+					return oauthToken.getAccessToken() ;
+			}
+		} catch (InvalidAuthTokenException e) {
+			return "invalid";
 		}
+		
 		return "invalid";
 	}
 	
 	public void invalidateToken(String idKey) {
 		if(idKey == null) return;
-		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(idKey);
-		if(widgetInstance==null) return;
-		
-		IOAuthToken oauthToken = persistenceManager.findOAuthToken(widgetInstance);
-		if (oauthToken != null) {
-			persistenceManager.delete(oauthToken);
+		try {
+			AuthToken authToken = AuthTokenUtils.decryptAuthToken(idKey);
+			IOAuthToken oauthToken = OAuthService.Factory.getInstance().getOAuthToken(authToken.toString());
+			if (oauthToken != null) {
+				OAuthService.Factory.getInstance().deleteOAuthToken(authToken.toString());
+			}
+		} catch (InvalidAuthTokenException e) {
+			return;
 		}
 	}
 
@@ -109,54 +116,59 @@ public class oAuthClient implements IFeature {
 		Map<String,String> params = parseParams(idKey_tokenBunch);		
 		String idKey = params.get("id_key");
 		
-		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(idKey);
-
-		if (widgetInstance==null) {
-			return "invalid";
-		}
-
-		Map<String, String> oAuthParams = queryXMLParams(idKey);
-		if (oAuthParams == null) {
-			return "invalid";			
-		}
-		
-		IOAuthToken oauthToken = persistenceManager.findOAuthToken(widgetInstance);
-		if (oauthToken == null) oauthToken = persistenceManager.newInstance(IOAuthToken.class);
+		AuthToken authToken;
 		try {
-			oauthToken.setAccessToken(params.get("access_token"));
-			oauthToken.setExpires(System.currentTimeMillis() + 1000 * Integer.parseInt(params.get("expires_in")));
-			oauthToken.setClientId(oAuthParams.get("clientId"));
-			oauthToken.setAuthzUrl(oAuthParams.get("authzServer"));
-			oauthToken.setWidgetInstance(widgetInstance);
-			persistenceManager.save(oauthToken);
-			return oauthToken.getAccessToken();
-		} catch (Exception ex) {
+			authToken = AuthTokenUtils.decryptAuthToken(idKey);
+			Map<String, String> oAuthParams = queryXMLParams(idKey);
+			if (oAuthParams == null) {
+				return "invalid";			
+			}
+			
+			IOAuthToken oauthToken = OAuthService.Factory.getInstance().getOAuthToken(authToken.toString());
+			if (oauthToken == null){
+				oauthToken = OAuthService.Factory.getInstance().createOAuthToken(authToken.toString());			
+			}
+			try {
+				oauthToken.setAccessToken(params.get("access_token"));
+				oauthToken.setExpires(System.currentTimeMillis() + 1000 * Integer.parseInt(params.get("expires_in")));
+				oauthToken.setClientId(oAuthParams.get("clientId"));
+				oauthToken.setAuthzUrl(oAuthParams.get("authzServer"));
+				OAuthService.Factory.getInstance().updateOAuthToken(authToken.toString(), oauthToken);
+				return oauthToken.getAccessToken();
+			} catch (Exception ex) {
+				return "invalid";
+			}
+		} catch (InvalidAuthTokenException e) {
 			return "invalid";
 		}
+
 	}
 	
 	public Map<String, String> queryXMLParams(String idKey) {
-		IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-		IWidgetInstance widgetInstance = persistenceManager.findWidgetInstanceByIdKey(idKey);
-		if(widgetInstance==null) return null;
-		
-		Collection<org.apache.wookie.w3c.IFeature> widgetFeatures = widgetInstance.getWidget().getFeatures();
-		org.apache.wookie.w3c.IFeature oAuthFeature = null;
-		for (org.apache.wookie.w3c.IFeature aFeature : widgetFeatures) {
-			if (getName().equals(aFeature.getName())) {
-				oAuthFeature = aFeature;
-				break;
+		try {
+			AuthToken authToken = AuthTokenUtils.decryptAuthToken(idKey);
+			IWidget widget = WidgetMetadataService.Factory.getInstance().getWidget(authToken.getWidgetId());
+
+			Collection<org.apache.wookie.w3c.IFeature> widgetFeatures = widget.getFeatures();
+			org.apache.wookie.w3c.IFeature oAuthFeature = null;
+			for (org.apache.wookie.w3c.IFeature aFeature : widgetFeatures) {
+				if (getName().equals(aFeature.getName())) {
+					oAuthFeature = aFeature;
+					break;
+				}
 			}
+			if (oAuthFeature == null) return null;
+			
+			Collection<IParam> oAuthParams = oAuthFeature.getParameters();
+			Map<String, String> oAuthParamMap = new HashMap<String, String>();
+			for (IParam aParam : oAuthParams) {
+				oAuthParamMap.put(aParam.getName(), aParam.getValue());
+			}
+			return oAuthParamMap;
+			
+		} catch (InvalidAuthTokenException e) {
+			return null;
 		}
-		if (oAuthFeature == null) return null;
-		
-		Collection<IParam> oAuthParams = oAuthFeature.getParameters();
-		Map<String, String> oAuthParamMap = new HashMap<String, String>();
-		for (IParam aParam : oAuthParams) {
-			oAuthParamMap.put(aParam.getName(), aParam.getValue());
-		}
-		return oAuthParamMap;
 	}
 	
 	public  Map<String, String> queryOAuthParams(Map<String, String> info) {
