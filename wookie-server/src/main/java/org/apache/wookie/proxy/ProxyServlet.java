@@ -33,9 +33,8 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.auth.AuthenticationException;
 import org.apache.log4j.Logger;
-import org.apache.wookie.beans.IWidgetInstance;
-import org.apache.wookie.beans.util.IPersistenceManager;
-import org.apache.wookie.beans.util.PersistenceManagerFactory;
+import org.apache.wookie.auth.AuthToken;
+import org.apache.wookie.auth.AuthTokenUtils;
 
 /**
  * A web proxy servlet which will translate calls for content and return them as if they came from
@@ -85,13 +84,16 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			//
 			// Check that the request is coming from a valid widget
 			//
-			IPersistenceManager persistenceManager = PersistenceManagerFactory.getPersistenceManager();
-			IWidgetInstance instance = persistenceManager.findWidgetInstanceByIdKey(request.getParameter("instanceid_key"));	
-			if(instance == null && !isDefaultGadget(request)){
-				response.sendError(HttpServletResponse.SC_FORBIDDEN,"<error>"+UNAUTHORISED_MESSAGE+"</error>");	
-				return;
+			AuthToken authToken = null;
+			try {
+				authToken = AuthTokenUtils.decryptAuthToken(request.getParameter("instanceid_key"));
+			} catch (Exception e1) {
+				if (!isDefaultGadget(request)){
+					response.sendError(HttpServletResponse.SC_FORBIDDEN,"<error>"+UNAUTHORISED_MESSAGE+"</error>");	
+					return;
+				}
 			}
-
+			
 			//
 			// Create the proxy bean for the request
 			//
@@ -106,9 +108,9 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			//
 			// should we filter urls?
 			//
-			if (properties.getBoolean("widget.proxy.usewhitelist") && !isAllowed(bean.getNewUrl().toURI(), instance)){
+			if (properties.getBoolean("widget.proxy.usewhitelist") && !isAllowed(bean.getNewUrl().toURI(), authToken.getWidgetId())){
 				response.sendError(HttpServletResponse.SC_FORBIDDEN,"<error>URL Blocked</error>");
-				fLogger.warn("URL " + bean.getNewUrl().toExternalForm() + " Blocked for scope "+instance.getWidget().getIdentifier());
+				fLogger.warn("URL " + bean.getNewUrl().toExternalForm() + " Blocked for scope "+ authToken.getWidgetId());
 				return;
 			}	
 
@@ -188,9 +190,9 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 	 * @param aUrl
 	 * @return
 	 */
-	public boolean isAllowed(URI requestedUri, IWidgetInstance instance){
+	public boolean isAllowed(URI requestedUri, String widgetId){
 	  try {
-      return Policies.getInstance().validate(requestedUri, instance.getWidget().getIdentifier());
+      return Policies.getInstance().validate(requestedUri, widgetId);
     } catch (ConfigurationException e) {
       fLogger.error("Problem with policies configuration", e);
       return false;
