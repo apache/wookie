@@ -1,24 +1,19 @@
-# New and Noteworthy: 0.15.0
+# New and Noteworthy: 1.0.0
 
-## Stability in production
+## Full version 1.0.0 release
 
-This is primarily a bug fix release with a few minor improvements.
+This version of wookie is considered mature and stable enough to be known as version 1.0.0, 
+rather than the next intended version (0.16.0). This release contains some minor improvements
+and bug fixes, but more importantly now marks version 1.* releases as separate to the main
+work being developed in the main trunk. (now known as version 2.*)
+ 
+## Fork in Wookie
 
-## Improvements in the php connector
+The code-base for versions 1.* are now contained in a separate branch of the 
+subversion repository.  This branch will be still maintained and releases made periodically
+to address bugs and other various issues.
+ 
+## Minor Improvements for 1.0.0
 
-A number of bug fixes and improvements have been made to the php connector 
-framework, including a new way to post new widgets to wookie via the connector.
-(similar to how the java connector already does the same)
-
-## Fixes to the simple chat widget for mobile users
-
-Improvements to the simple chat widget for mobile users.
-SimpleChat did not use a viewport tag, so scaled poorly on mobile. 
-Also, the input field did not work when using a virtual keyboard on Opera Mobile. 
-
-## Widget instances have a more configurable method for setting height and width
-
-When widget instances were requested, the API automatically filled in a default 
-height and width value for the instance in cases where no size is specified in 
-the widget itself. This is now configurable from within the widgetserver.properties 
-file.
+A number of bug fixes and improvements have been made concerning wookie running under
+Wildfire, JBoss and WebSphere platforms. 
