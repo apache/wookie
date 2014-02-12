@@ -1,0 +1,9 @@
+This is a Redis implementation of the Wookie SPI
+
+To use it, place a file called org.apache.wookie.services.PreferencesService in META-INF/services of swookie-server. 
+
+This file should just contain the line:
+
+org.apache.wookie.services.redis.RedisPreferencesService
+
+This will make wookie-server start up using the Redis preferences implemetnation instead of the default in-memory preferences store.
