@@ -32,6 +32,5 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.wst.common.modulecore.ModuleCoreNature</nature>
 		<nature>org.eclipse.jem.workbench.JavaEMFNature</nature>
-		<nature>org.apache.ivyde.eclipse.ivynature</nature>
 	</natures>
 </projectDescription>
