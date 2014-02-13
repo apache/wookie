@@ -388,9 +388,9 @@
 			transitive="false" log="download-only" module="commons-openpgp" revision="1.0-SNAPSHOT" 
 			inline="true" pathid="openpgp.classpath"/>
 		<ivy:cachepath organisation="org.bouncycastle" settingsRef="sign.settingsId" log="download-only" 
-			module="bcprov-jdk16" revision="1.45" inline="true" pathid="bouncycastle.bcprov.classpath"/>
+			module="bcprov-jdk15on" revision="1.50" inline="true" pathid="bouncycastle.bcprov.classpath"/>
 		<ivy:cachepath organisation="org.bouncycastle" settingsRef="sign.settingsId" transitive="false" 
-			log="download-only" module="bcpg-jdk16" revision="1.45" inline="true" pathid="bouncycastle.bcpg.classpath"/>
+			log="download-only" module="bcpg-jdk15on" revision="1.50" inline="true" pathid="bouncycastle.bcpg.classpath"/>
 		<!--
 		For some reason, if we use the openpgp:signer task here directly, the bouncycastle security
 		provider cannot be loaded. If we launch it as a forked process everything works fine !?!
