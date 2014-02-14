@@ -51,12 +51,14 @@ public class DefaultPreferencesService implements PreferencesService {
 
 	@Override
 	public void setPreference(String token, IPreference preference) {
-		HashMap<String, IPreference> widgetpreferences = preferences.get(token);
-		if (widgetpreferences == null){
-			widgetpreferences = new HashMap<String, IPreference>();
-			this.preferences.put(token, widgetpreferences);
+		if (preference != null){
+			HashMap<String, IPreference> widgetpreferences = preferences.get(token);
+			if (widgetpreferences == null){
+				widgetpreferences = new HashMap<String, IPreference>();
+				this.preferences.put(token, widgetpreferences);
+			}
+			widgetpreferences.put(preference.getName(), preference);
 		}
-		widgetpreferences.put(preference.getName(), preference);
 	}
 
 	@Override
@@ -77,11 +79,18 @@ public class DefaultPreferencesService implements PreferencesService {
 
 	@Override
 	public void setPreferences(String token, Collection<IPreference> preferences) {
-		HashMap<String, IPreference> widgetpreferences = new HashMap<String, IPreference>();
-		for (IPreference preference: preferences){
-			widgetpreferences.put(preference.getName(), preference);
-		}
-		this.preferences.put(token, widgetpreferences);
+		//
+		// Setting to null is the same as clearing the preferences
+		//
+		if (preferences == null){
+			this.removePreferences(token);
+		} else {
+			HashMap<String, IPreference> widgetpreferences = new HashMap<String, IPreference>();
+			for (IPreference preference: preferences){
+				widgetpreferences.put(preference.getName(), preference);
+			}
+			this.preferences.put(token, widgetpreferences);
+		} 
 	}
 
 	@Override

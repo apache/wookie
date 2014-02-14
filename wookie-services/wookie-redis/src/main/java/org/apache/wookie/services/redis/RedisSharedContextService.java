@@ -331,10 +331,14 @@ public class RedisSharedContextService implements SharedContextService {
 		String key = getParticipantKey(apiKey, widgetId, contextId, participant.getParticipantId());
 		
 		//
-		// If there is no existing tuple, add the key to the list of keys for this token
+		// If there is no existing tuple, add the key to the list of keys for this token, otherwise
+		// we return false as there is no overwriting of participants
 		//
 		if (this.getParticipant(apiKey, widgetId, contextId, participant.getParticipantId()) == null){
 			jedis.lpush(this.getContextKey(apiKey, widgetId, contextId), key);			
+		} else {
+			pool.returnResource(jedis);
+			return false;
 		}
 
 		//

@@ -127,10 +127,25 @@ public class DefaultSharedContextService implements SharedContextService {
 			String contextId, String key, String value, boolean append) {	
 		HashMap<String, ISharedData> sharedData = getSharedContextFromTree(apiKey,contextId, widgetId).getSharedData();
 		boolean existing = true;
+		
+		
+		//
+		// If the value is null, and we're not set to append, this is 
+		// actually the same as "remove"
+		//
+		if (value == null){
+			return this.removeSharedData(apiKey, widgetId, contextId, key);
+		}
+		
 		if (!sharedData.containsKey(key)) existing = false;
+		
+		//
+		// if it already exists, and the instruction is to append, prepend the 
+		// existing value to the new value to set
+		//
 		if (append && existing) value = sharedData.get(key).getDvalue() + value;
 		sharedData.put(key, new DefaultSharedDataImpl(key,value));
-		return existing;
+		return true;
 	}
 
 	@Override
@@ -154,7 +169,16 @@ public class DefaultSharedContextService implements SharedContextService {
 			String role) {
 		HashMap<String, IParticipant> participants = getSharedContextFromTree(apiKey,contextId, widgetId).getParticipants();
 		
+		//
+		// Already exists
+		//
 		if (participants.containsKey(participantId)) return false;
+		
+		//
+		// No id
+		//
+		if (participantId == null || participantId.trim().length() == 0) return false;
+		
 		participants.put(participantId, new DefaultParticipantImpl(participantId,participantDisplayName, participantThumbnailUrl, role));
 		return true;
 	}
@@ -162,8 +186,10 @@ public class DefaultSharedContextService implements SharedContextService {
 	@Override
 	public void removeParticipant(String apiKey, String widgetId,
 			String contextId, IParticipant participant) {
-		HashMap<String, IParticipant> participants = getSharedContextFromTree(apiKey,contextId, widgetId).getParticipants();
-		participants.remove(participant.getParticipantId());
+		if (participant != null){
+			HashMap<String, IParticipant> participants = getSharedContextFromTree(apiKey,contextId, widgetId).getParticipants();
+			participants.remove(participant.getParticipantId());
+		}
 	}
 
 	@Override
