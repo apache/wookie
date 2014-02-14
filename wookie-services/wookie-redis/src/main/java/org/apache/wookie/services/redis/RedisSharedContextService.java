@@ -124,11 +124,18 @@ public class RedisSharedContextService implements SharedContextService {
 	@Override
 	public boolean removeSharedData(String apiKey, String widgetId,
 			String contextId, String name) {
+
+		//
+		// If there is no key, return false
+		//
+		if (name == null) return false;
+		if (name.trim().length() == 0) return false;
+
 		//
 		// Get a Jedis from the pool
 		//
 		Jedis jedis = pool.getResource();
-		
+
 		//
 		// get the Redis key for the participant
 		//
@@ -137,26 +144,27 @@ public class RedisSharedContextService implements SharedContextService {
 		//
 		// if it doesn't exist, return false
 		//
-		if ( this.getSharedData(apiKey, widgetId, contextId, name) == null){
+		if ( !jedis.exists(key)){
+			pool.returnResource(jedis);
 			return false;
 		}
-				
+
 		//
 		// Delete the object
 		//
 		jedis.del(key);
-		
+
 		//
 		// Remove the key from the context list
 		//
 		String context = this.getContextKey(apiKey, widgetId, contextId);
 		jedis.lrem(context, 0, key);
-		
+
 		//
 		// Release Jedis back to the pool
 		//
 		pool.returnResource(jedis);
-		
+
 		//
 		// OK
 		//
@@ -169,6 +177,14 @@ public class RedisSharedContextService implements SharedContextService {
 		// Check if the data is null
 		//
 		if (data == null) return false;
+		
+		//
+		// If the value is null, and we're not set to append, this is 
+		// actually the same as "remove"
+		//
+		if (data.getDvalue() == null){
+			return this.removeSharedData(apiKey, widgetId, contextId, data.getDkey());
+		}
 		
 		//
 		// Get a Jedis from the pool
@@ -185,6 +201,7 @@ public class RedisSharedContextService implements SharedContextService {
 		// If there is no existing tuple, add the key to the list of keys for this token
 		//
 		ISharedData existing = getSharedData(apiKey, widgetId, contextId, data.getDkey());
+		
 		if (existing == null){
 			jedis.lpush(context, key);			
 		} else {
@@ -192,7 +209,7 @@ public class RedisSharedContextService implements SharedContextService {
 			// if it already exists, and the instruction is to append, prepend the 
 			// existing value to the new value to set
 			//
-			if (append && existing.getDvalue() != null && data.getDvalue() != null){
+			if (append){
 				data.setDvalue(existing.getDvalue() + data.getDvalue());
 			}
 		}
@@ -295,10 +312,13 @@ public class RedisSharedContextService implements SharedContextService {
 
 	private boolean addParticipant(String apiKey, String widgetId,
 			String contextId, IParticipant participant) {
+		
 		//
-		// Check if there is an object to add
+		// A participant must have an id at least
 		//
-		if (participant == null) return false;
+		if (participant.getParticipantId() == null || participant.getParticipantId().trim().length() == 0){
+			return false;
+		}
 		
 		//
 		// Get a Jedis from the pool
@@ -341,12 +361,18 @@ public class RedisSharedContextService implements SharedContextService {
 	@Override
 	public void removeParticipant(String apiKey, String widgetId,
 			String contextId, IParticipant participant) {
-		removeParticipant(apiKey, widgetId, contextId, participant.getParticipantId());
+		if (participant != null) removeParticipant(apiKey, widgetId, contextId, participant.getParticipantId());
 	}
 
 	@Override
 	public boolean removeParticipant(String apiKey, String widgetId,
 			String contextId, String participantId) {
+		
+		//
+		// Check participant id is valid
+		//
+		if (participantId == null) return false;
+		if (participantId.trim().length() == 0) return false;
 		
 		//
 		// Get a Jedis from the pool
@@ -357,11 +383,12 @@ public class RedisSharedContextService implements SharedContextService {
 		// get the Redis key for the participant
 		//
 		String key = this.getParticipantKey(apiKey, widgetId, contextId, participantId);
-		
+				
 		//
 		// if it doesn't exist, return false
 		//
-		if ( this.getParticipant(apiKey, widgetId, contextId, participantId) == null){
+		if (!jedis.exists(key)){
+			pool.returnResource(jedis);
 			return false;
 		}
 				
@@ -426,7 +453,7 @@ public class RedisSharedContextService implements SharedContextService {
 	@Override
 	public IParticipant getHost(String apiKey, String widgetId, String contextId) {
 		IParticipant[] hosts = getHosts(apiKey, widgetId, contextId);
-		if (hosts == null || hosts.length == 0) return null;
+		if (hosts.length == 0) return null;
 		return hosts[0];
 	}
 
@@ -443,7 +470,7 @@ public class RedisSharedContextService implements SharedContextService {
 		// Iterate over participants and add them if they have a host role
 		//
 		for (IParticipant participant: this.getParticipants(apiKey, widgetId, contextId)){
-			if (participant.getRole().equals(IParticipant.HOST_ROLE)){
+			if (participant.getRole() != null && participant.getRole().equals(IParticipant.HOST_ROLE)){
 				hosts.add(participant);
 			}
 		}
@@ -483,18 +510,25 @@ public class RedisSharedContextService implements SharedContextService {
 		json.put("role", participant.getRole());
 		return json.toString();
 	}
-	
+
 	private ISharedData rehydrateData(String input){
 		if (input == null) return null;
+		DefaultSharedDataImpl data;
 		JSONObject json = new JSONObject(input);
-		DefaultSharedDataImpl data = new DefaultSharedDataImpl(json.getString("name"), json.getString("value"));
+		String value = json.getString("value");
+		String name = json.getString("name");
+		data = new DefaultSharedDataImpl(name,value);
 		return data;
 	}
-	
+
 	private IParticipant rehydrateParticipant(String input){
 		if (input == null) return null;
 		JSONObject json = new JSONObject(input);
-		DefaultParticipantImpl participant = new DefaultParticipantImpl(json.getString("id"), json.getString("name"), json.getString("thumbnail"), json.getString("role"));
+		String id = json.getString("id");
+		String name = json.has("name") ? json.getString("name"): null;
+		String thumbnail = json.has("thumbnail") ? json.getString("thumbnail"): null;
+		String role =  json.has("role") ? json.getString("role") : null;
+		DefaultParticipantImpl participant = new DefaultParticipantImpl(id, name, thumbnail, role);
 		return participant;
 	}
 }
