@@ -15,7 +15,6 @@
 package org.apache.wookie.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
@@ -56,68 +55,32 @@ public class WidgetInstancesController extends Controller {
 	static Logger _logger = Logger.getLogger(WidgetInstancesController.class.getName());	
 	protected static final String CONTENT_TYPE = "text/xml;charset=\"UTF-8\""; 	 //$NON-NLS-1$
 	protected static URL urlWidgetProxyServer = null;	
-	
 
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.controller.Controller#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
-	/**
-	 * We override the default POST action as we need to support the legacy getOrCreate method
-	 */
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-			doGetOrCreateWidget(request, response);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.apache.wookie.controller.Controller#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
-	/**
-	 * We override the default GET method to support legacy clients tunneling through GET to send other types of
-	 * requests usually sent over POST and PUT.
-	 */
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{					
-	    try {
-	      String resourceId = getResourceId(request);
-	      String requestId = request.getParameter("requestid"); //$NON-NLS-1$
-	      if (requestId == null || requestId.equals("")){
-	        show(resourceId, request, response);
-	      } else {
-	        if(requestId.equals("getwidget")){ //$NON-NLS-1$
-	          doGetOrCreateWidget(request, response);
-	        } else if(requestId.equals("stopwidget")){ //$NON-NLS-1$
-	          doStopWidget(request);
-	        } else if(requestId.equals("resumewidget")){ //$NON-NLS-1$
-	          doResumeWidget(request);
-	        } else if(requestId.equals("clone")){ //$NON-NLS-1$
-	          cloneSharedData(request);
-	        } else {
-	          response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-	        }
-	      }
-      } catch (ResourceNotFoundException e) {
-        response.sendError(HttpServletResponse.SC_NOT_FOUND);
-      } catch (UnauthorizedAccessException e){
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-	    } catch (Exception ex) {					
-	      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-	    }
-	}
 	
 	/// Implementation
 	
 	/* (non-Javadoc)
-	 * @see org.apache.wookie.controller.Controller#show(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @see org.apache.wookie.controller.Controller#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	protected void show(String resourceId, HttpServletRequest request, HttpServletResponse response) throws ResourceNotFoundException, UnauthorizedAccessException, IOException {
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
 
-		AuthToken authToken = getAuthTokenFromRequest(request);
+	
 
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.controller.Controller#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	@Override
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		AuthToken authToken = getAuthTokenFromRequest(request, true);
+		
 		if (authToken == null){
-			throw new ResourceNotFoundException();
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		} else {
 			//
 			// Check the API key matches
@@ -132,8 +95,16 @@ public class WidgetInstancesController extends Controller {
 			} catch (Exception e1) {
 				throw new IOException(e1);
 			}
-
-			response.setStatus(HttpServletResponse.SC_OK);
+			
+			//
+			// If the widget was replaced by the not supported widget, return
+			// 404. Otherwise return 200.
+			//
+			if (authToken.getWidgetId().equals("http://notsupported")){
+				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			} else {
+				response.setStatus(HttpServletResponse.SC_OK);
+			}
 
 			//
 			// Use default sizes where none provided?
@@ -150,7 +121,7 @@ public class WidgetInstancesController extends Controller {
 
 			//
 			// Return XML or JSON 
-			//
+			//			
 			try {
 				switch(format(request)){
 				case XML: returnXml(WidgetInstanceHelper.createXMLWidgetInstanceDocument(authToken, url, useDefaultSizes), response); break;
@@ -164,7 +135,7 @@ public class WidgetInstancesController extends Controller {
 
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.controller.Controller#update(java.lang.String, javax.servlet.http.HttpServletRequest)
 	 */
@@ -185,15 +156,6 @@ public class WidgetInstancesController extends Controller {
 	    throw new InvalidParametersException();
 	  }
 
-	}
-	/*
-	 * (non-Javadoc)
-	 * @see org.apache.wookie.controller.Controller#remove(java.lang.String, javax.servlet.http.HttpServletRequest)
-	 */
-	@Override
-	protected boolean remove(String resourceId, HttpServletRequest request) 
-	throws ResourceNotFoundException,UnauthorizedAccessException,InvalidParametersException{	  
-	  return deleteWidgetInstance(resourceId, request);
 	}
 
 	/**
@@ -221,60 +183,6 @@ public class WidgetInstancesController extends Controller {
 	    // unlockWidgetInstance(instance);
 	    Notifier.notifyWidgets(request.getSession(), authToken, Notifier.STATE_UPDATED);
 	}
-	
-	//
-	// This is now meaningless
-	// TODO remove from API
-	//
-	public static boolean deleteWidgetInstance(String resourceId, HttpServletRequest request) throws InvalidParametersException, ResourceNotFoundException {
-		return false;
-	}
-
-	/**
-	 * This is the "legacy" get-or-create method accessed via POST or a tunnel through GET. This will be deprecated in future.
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
-	 */
-	public static void doGetOrCreateWidget(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		AuthToken authToken = getAuthTokenFromRequest(request);
-		if (authToken == null){
-		  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		  return;
-		}
-		checkProxy(request);		
-
-		response.setStatus(HttpServletResponse.SC_OK);			
-		
-	    //
-	    // Use default sizes where none provided?
-	    //
-	    boolean useDefaultSizes = true;
-	    Configuration properties = (Configuration) request.getSession().getServletContext().getAttribute("properties"); //$NON-NLS-1$
-	    if (properties.containsKey("widget.use_default_sizes")){
-	    	try {
-				useDefaultSizes = properties.getBoolean("widget.use_default_sizes");
-			} catch (Exception e) {
-				useDefaultSizes = true;
-			}
-	    }
-		
-		String url;
-		try {
-			url = getUrl(request, authToken);
-		} catch (Exception e) {
-			throw new IOException(e);
-		}
-		response.setContentType(CONTENT_TYPE);
-		PrintWriter out = response.getWriter();
-		try {
-			out.println(WidgetInstanceHelper.createXMLWidgetInstanceDocument(authToken, url, useDefaultSizes));
-		} catch (Exception e) {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		}
-	}  
 	
 	/**
 	 * Create a clone of the instance

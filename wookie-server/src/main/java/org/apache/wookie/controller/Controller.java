@@ -400,9 +400,17 @@ public abstract class Controller extends HttpServlet{
 	 * @return
 	 */
 	protected static AuthToken getAuthTokenFromRequest(HttpServletRequest request){
+		return getAuthTokenFromRequest(request, false);
+	}
+	
+	/**
+	 * Get an AuthToken from the request
+	 * @param request
+	 * @return
+	 */
+	protected static AuthToken getAuthTokenFromRequest(HttpServletRequest request, boolean useDefaultWidget){
 		
 		AuthToken authToken = null;
-
 		
 		//
 		// First, lets use idkey if present
@@ -457,10 +465,14 @@ public abstract class Controller extends HttpServlet{
             if (widgetId == null || widgetId.trim().equals("")) return null;
             
             //
-            // The widget MUST be installed
+            // The widget MUST be installed unless we're set to use the default
             //
             if (WidgetMetadataService.Factory.getInstance().getWidget(widgetId) == null){
-            	return null;
+            	if (useDefaultWidget){
+            		widgetId = "http://notsupported";
+            	} else {
+                	return null;            		
+            	}
             }
             
 			//
