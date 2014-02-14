@@ -13,21 +13,15 @@
  */
 package org.apache.wookie.services.impl;
 
-import org.apache.wookie.services.AbstractSharedContextServiceTest;
-import org.junit.AfterClass;
+import org.apache.wookie.services.AbstractPreferencesServiceTest;
 import org.junit.BeforeClass;
 
-public class DefaultSharedContextServiceTest extends AbstractSharedContextServiceTest{
+public class DefaultPreferencesServiceTest extends
+		AbstractPreferencesServiceTest {
 	
-
 	@BeforeClass
-	public static void setup(){
-		svc = new DefaultSharedContextService();
+	public static void setUp(){
+		svc = new DefaultPreferencesService();
 	}
-	
-	@AfterClass
-	public static void tearDown(){
-	}
-	
 
 }
