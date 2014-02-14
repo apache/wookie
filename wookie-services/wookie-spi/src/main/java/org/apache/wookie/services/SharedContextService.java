@@ -51,6 +51,15 @@ public interface SharedContextService {
 	 */
 	public abstract boolean updateSharedData(String apiKey, String widgetId, String contextId, String name, String value,
 			boolean append);
+	
+	/**
+	 * Update a single Shared Data object
+	 * @param data the IShared data object to update
+	 * @param append set to true to append the value to the current value
+	 * @return true if the value was updated, false if a new object was created
+	 */
+	public abstract boolean updateSharedData(String apiKey, String widgetId, String contextId, ISharedData data,
+			boolean append);
 
 	/**
 	 * get the participants belonging to this shared context

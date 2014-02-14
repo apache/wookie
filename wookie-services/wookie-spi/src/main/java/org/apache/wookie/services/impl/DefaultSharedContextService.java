@@ -212,4 +212,12 @@ public class DefaultSharedContextService implements SharedContextService {
 		return hosts.toArray(new IParticipant[hosts.size()]);
 	}
 
+	@Override
+	public boolean updateSharedData(String apiKey, String widgetId,
+			String contextId, ISharedData data, boolean append) {
+		if (data == null) return false;
+		if (data.getDkey() == null || data.getDkey().trim().length() == 0) return false;
+		return this.updateSharedData(apiKey, widgetId, contextId, data.getDkey(), data.getDvalue(), append);
+	}
+
 }
