@@ -280,10 +280,10 @@ public class AbstractSharedContextServiceTest {
 	@Test
 	public void overwriteParticipant(){
 		assertTrue(svc.addParticipant(API_KEY, WIDGET_ID, CONTEXT_ID, "alice", "Alice", "http://some.url", IParticipant.HOST_ROLE));
-		assertTrue(svc.addParticipant(API_KEY, WIDGET_ID, CONTEXT_ID, "alice", "Alicia", "http://some.url", IParticipant.HOST_ROLE));
+		assertFalse(svc.addParticipant(API_KEY, WIDGET_ID, CONTEXT_ID, "alice", "Alicia", "http://some.url", IParticipant.HOST_ROLE));
 		IParticipant[] participants = svc.getParticipants(API_KEY, WIDGET_ID, CONTEXT_ID);
 		assertEquals(1, participants.length);		
-		assertEquals("Alicia", participants[0].getParticipantDisplayName());
+		assertEquals("Alice", participants[0].getParticipantDisplayName());
 	}
 
 	@Test
