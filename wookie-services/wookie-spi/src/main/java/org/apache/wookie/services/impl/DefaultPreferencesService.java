@@ -35,7 +35,13 @@ public class DefaultPreferencesService implements PreferencesService {
 	}
 	
 	@Override
-	public String getPreference(String token, String name) {
+	public String getPreference(String apiKey, String widgetId, String contextId, String viewerId, String name) {
+		
+		//
+		// Get the token (key) to store the pref against
+		//
+		String token = getToken(apiKey, widgetId, contextId, viewerId);
+		
 		HashMap<String, IPreference> widgetpreferences = preferences.get(token);
 		if (widgetpreferences == null){
 			widgetpreferences = new HashMap<String, IPreference>();
@@ -50,8 +56,14 @@ public class DefaultPreferencesService implements PreferencesService {
 	}
 
 	@Override
-	public void setPreference(String token, IPreference preference) {
+	public void setPreference(String apiKey, String widgetId, String contextId, String viewerId, IPreference preference) {
 		if (preference != null){
+			
+			//
+			// Get the token (key) to store the pref against
+			//
+			String token = getToken(apiKey, widgetId, contextId, viewerId);
+			
 			HashMap<String, IPreference> widgetpreferences = preferences.get(token);
 			if (widgetpreferences == null){
 				widgetpreferences = new HashMap<String, IPreference>();
@@ -62,7 +74,13 @@ public class DefaultPreferencesService implements PreferencesService {
 	}
 
 	@Override
-	public Collection<IPreference> getPreferences(String token) {
+	public Collection<IPreference> getPreferences(String apiKey, String widgetId, String contextId, String viewerId) {
+		
+		//
+		// Get the token (key) to store the pref against
+		//
+		String token = getToken(apiKey, widgetId, contextId, viewerId);
+		
 		HashMap<String, IPreference> widgetpreferences = preferences.get(token);
 		if (widgetpreferences == null){
 			widgetpreferences = new HashMap<String, IPreference>();
@@ -72,18 +90,30 @@ public class DefaultPreferencesService implements PreferencesService {
 	}
 
 	@Override
-	public void removePreferences(String token) {
+	public void removePreferences(String apiKey, String widgetId, String contextId, String viewerId) {
+		
+		//
+		// Get the token (key) to store the pref against
+		//
+		String token = getToken(apiKey, widgetId, contextId, viewerId);
+		
 		HashMap<String, IPreference> widgetpreferences = new HashMap<String, IPreference>();
 		preferences.put(token, widgetpreferences);
 	}
 
 	@Override
-	public void setPreferences(String token, Collection<IPreference> preferences) {
+	public void setPreferences(String apiKey, String widgetId, String contextId, String viewerId, Collection<IPreference> preferences) {
+		
+		//
+		// Get the token (key) to store the pref against
+		//
+		String token = getToken(apiKey, widgetId, contextId, viewerId);
+		
 		//
 		// Setting to null is the same as clearing the preferences
 		//
 		if (preferences == null){
-			this.removePreferences(token);
+			this.removePreferences(apiKey, widgetId, contextId, viewerId);
 		} else {
 			HashMap<String, IPreference> widgetpreferences = new HashMap<String, IPreference>();
 			for (IPreference preference: preferences){
@@ -94,14 +124,18 @@ public class DefaultPreferencesService implements PreferencesService {
 	}
 
 	@Override
-	public void setPreference(String token, String name, String value) {
-		setPreference(token, name, value, false);
+	public void setPreference(String apiKey, String widgetId, String contextId, String viewerId, String name, String value) {
+		setPreference(apiKey, widgetId, contextId, viewerId, name, value, false);
 	}
 
 	@Override
-	public void setPreference(String token, String name, String value, boolean readOnly) {
+	public void setPreference(String apiKey, String widgetId, String contextId, String viewerId, String name, String value, boolean readOnly) {
 		IPreference preference = new DefaultPreferenceImpl(name, value, readOnly);
-		setPreference(token, preference);
+		setPreference(apiKey, widgetId, contextId, viewerId, preference);
+	}
+	
+	private String getToken(String apiKey, String widgetId, String contextId, String viewerId){
+		return apiKey + "-" + widgetId + "-" + contextId + "-" + viewerId;
 	}
 
 }

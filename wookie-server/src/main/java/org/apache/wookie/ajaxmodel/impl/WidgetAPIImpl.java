@@ -57,7 +57,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
 
 		try {
 			AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
-			for (IPreference pref: PreferencesService.Factory.getInstance().getPreferences(authToken.toString())){
+			for (IPreference pref: PreferencesService.Factory.getInstance().getPreferences(authToken.getApiKey(), authToken.getWidgetId(), authToken.getContextId(), authToken.getViewerId())){
 				prefs.add(new PreferenceDelegate(pref));		  
 			}
 			return prefs;
@@ -145,7 +145,7 @@ public class WidgetAPIImpl implements IWidgetAPI {
     
     try {
 		AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
-		PreferencesService.Factory.getInstance().setPreference(authToken.toString(), key, value);
+		PreferencesService.Factory.getInstance().setPreference(authToken.getApiKey(), authToken.getWidgetId(), authToken.getContextId(), authToken.getViewerId(), key, value);
 	    return "okay"; //$NON-NLS-1$
 	} catch (InvalidAuthTokenException e) {
 		return localizedMessages.getString("WidgetAPIImpl.0");

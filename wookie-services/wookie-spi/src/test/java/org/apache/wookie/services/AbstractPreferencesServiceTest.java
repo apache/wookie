@@ -29,36 +29,36 @@ public abstract class AbstractPreferencesServiceTest {
 	
 	@After
 	public void cleanUp(){
-		svc.removePreferences("token");
+		svc.removePreferences("test-api", "test-widget", "test-context", "test-viewer");
 	}
 	
 	@Test
 	public void getNull(){
-		String result = svc.getPreference("token", "test-null");
+		String result = svc.getPreference("test-api", "test-widget", "test-context", "test-viewer", "test-null");
 		assertEquals(null, result);
 	}
 	
 	@Test
 	public void setAndGet(){		
-		svc.setPreference("token", "test", "test");
-		String result = svc.getPreference("token", "test");
+		svc.setPreference("test-api", "test-widget", "test-context", "test-viewer", "test", "test");
+		String result = svc.getPreference("test-api", "test-widget", "test-context", "test-viewer", "test");
 		assertEquals("test", result);
 	}
 	
 	@Test
 	public void setAndUpdate(){		
-		svc.setPreference("token", "test", "test");
-		String result = svc.getPreference("token", "test");
+		svc.setPreference("test-api", "test-widget", "test-context", "test-viewer", "test", "test");
+		String result = svc.getPreference("test-api", "test-widget", "test-context", "test-viewer", "test");
 		assertEquals("test", result);
-		svc.setPreference("token", "test", "test-updated");
-		result = svc.getPreference("token", "test");
+		svc.setPreference("test-api", "test-widget", "test-context", "test-viewer", "test", "test-updated");
+		result = svc.getPreference("test-api", "test-widget", "test-context", "test-viewer", "test");
 		assertEquals("test-updated", result);
 	}
 	
 	@Test
 	public void setAndGetByString(){	
-		svc.setPreference("token", "test", "test-value", true);
-		Collection<IPreference> prefs = svc.getPreferences("token");
+		svc.setPreference("test-api", "test-widget", "test-context", "test-viewer", "test", "test-value", true);
+		Collection<IPreference> prefs = svc.getPreferences("test-api", "test-widget", "test-context", "test-viewer");
 		assertEquals(1, prefs.size());
 		IPreference pref = prefs.iterator().next();
 		
@@ -70,8 +70,8 @@ public abstract class AbstractPreferencesServiceTest {
 	@Test
 	public void setAndGetByObject(){	
 		IPreference pref = new DefaultPreferenceImpl("test", "test-value", true);
-		svc.setPreference("token", pref);
-		Collection<IPreference> prefs = svc.getPreferences("token");
+		svc.setPreference("test-api", "test-widget", "test-context", "test-viewer", pref);
+		Collection<IPreference> prefs = svc.getPreferences("test-api", "test-widget", "test-context", "test-viewer");
 		assertEquals(1, prefs.size());
 		pref = prefs.iterator().next();
 		
@@ -82,8 +82,8 @@ public abstract class AbstractPreferencesServiceTest {
 	
 	@Test
 	public void setAndGetByObjectNull(){	
-		svc.setPreference("token", null);
-		Collection<IPreference> prefs = svc.getPreferences("token");
+		svc.setPreference("test-api", "test-widget", "test-context", "test-viewer", null);
+		Collection<IPreference> prefs = svc.getPreferences("test-api", "test-widget", "test-context", "test-viewer");
 		assertEquals(0, prefs.size());
 	}
 	
@@ -95,9 +95,9 @@ public abstract class AbstractPreferencesServiceTest {
 		preferences.add(preference1);
 		preferences.add(preference2);
 		
-		svc.setPreferences("token", preferences);
+		svc.setPreferences("test-api", "test-widget", "test-context", "test-viewer", preferences);
 		
-		Collection<IPreference> returned = svc.getPreferences("token");
+		Collection<IPreference> returned = svc.getPreferences("test-api", "test-widget", "test-context", "test-viewer");
 		assertEquals(2, returned.size());
 	}
 	
@@ -109,23 +109,23 @@ public abstract class AbstractPreferencesServiceTest {
 		preferences.add(preference1);
 		preferences.add(preference2);
 		
-		svc.setPreferences("token", preferences);
+		svc.setPreferences("test-api", "test-widget", "test-context", "test-viewer", preferences);
 		
-		Collection<IPreference> returned = svc.getPreferences("token");
+		Collection<IPreference> returned = svc.getPreferences("test-api", "test-widget", "test-context", "test-viewer");
 		assertEquals(2, returned.size());
 		
 		preferences.remove(preference2);
-		svc.setPreferences("token", preferences);
-		returned = svc.getPreferences("token");
+		svc.setPreferences("test-api", "test-widget", "test-context", "test-viewer", preferences);
+		returned = svc.getPreferences("test-api", "test-widget", "test-context", "test-viewer");
 		assertEquals(1, returned.size());
 	}
 	
 	@Test
 	public void setCollectionNull(){
 		
-		svc.setPreferences("token", null);
+		svc.setPreferences("test-api", "test-widget", "test-context", "test-viewer", null);
 		
-		Collection<IPreference> returned = svc.getPreferences("token");
+		Collection<IPreference> returned = svc.getPreferences("test-api", "test-widget", "test-context", "test-viewer");
 		assertEquals(0, returned.size());
 	}
 	
@@ -137,13 +137,13 @@ public abstract class AbstractPreferencesServiceTest {
 		preferences.add(preference1);
 		preferences.add(preference2);
 		
-		svc.setPreferences("token", preferences);
+		svc.setPreferences("test-api", "test-widget", "test-context", "test-viewer", preferences);
 		
-		Collection<IPreference> returned = svc.getPreferences("token");
+		Collection<IPreference> returned = svc.getPreferences("test-api", "test-widget", "test-context", "test-viewer");
 		assertEquals(2, returned.size());
 		
-		svc.setPreferences("token", null);
-		returned = svc.getPreferences("token");
+		svc.setPreferences("test-api", "test-widget", "test-context", "test-viewer", null);
+		returned = svc.getPreferences("test-api", "test-widget", "test-context", "test-viewer");
 		assertEquals(0, returned.size());
 	}
 	
@@ -152,9 +152,9 @@ public abstract class AbstractPreferencesServiceTest {
 	public void setAndGetObject(){		
 		IPreference preference = new DefaultPreferenceImpl("test-name", "test-value", false);
 		
-		svc.setPreference("token", preference);
+		svc.setPreference("test-api", "test-widget", "test-context", "test-viewer", preference);
 		
-		String result = svc.getPreference("token", "test-name");
+		String result = svc.getPreference("test-api", "test-widget", "test-context", "test-viewer", "test-name");
 		
 		assertEquals("test-value", result);
 	}
@@ -165,20 +165,20 @@ public abstract class AbstractPreferencesServiceTest {
 		IPreference preference1 = new DefaultPreferenceImpl("test-name", "test-value", false);
 		IPreference preference2 = new DefaultPreferenceImpl("test-name2", "test-value2", false);
 
-		svc.setPreference("token", preference1);
-		svc.setPreference("token", preference2);
+		svc.setPreference("test-api", "test-widget", "test-context", "test-viewer", preference1);
+		svc.setPreference("test-api", "test-widget", "test-context", "test-viewer", preference2);
 		
-		String result = svc.getPreference("token", "test-name");
+		String result = svc.getPreference("test-api", "test-widget", "test-context", "test-viewer", "test-name");
 		assertEquals("test-value", result);
 		
-		result = svc.getPreference("token", "test-name2");
+		result = svc.getPreference("test-api", "test-widget", "test-context", "test-viewer", "test-name2");
 		assertEquals("test-value2", result);		
 	}
 	
 	@Test
 	public void getNothing(){
 						
-		String result = svc.getPreference("token", "test-name3");
+		String result = svc.getPreference("test-api", "test-widget", "test-context", "test-viewer", "test-name3");
 		
 		assertEquals(null, result);
 	}
@@ -186,13 +186,13 @@ public abstract class AbstractPreferencesServiceTest {
 	@Test
 	public void setAndReset(){
 
-		svc.setPreference("token", "test-reset", "1");
-		svc.setPreference("token", "test-reset", "2");
-		assertEquals("2", svc.getPreference("token", "test-reset"));
-		assertEquals("2", svc.getPreference("token", "test-reset"));
-		svc.setPreference("token", "test-reset", "1");
-		assertEquals("1", svc.getPreference("token", "test-reset"));
-		assertEquals("1", svc.getPreference("token", "test-reset"));
+		svc.setPreference("test-api", "test-widget", "test-context", "test-viewer", "test-reset", "1");
+		svc.setPreference("test-api", "test-widget", "test-context", "test-viewer", "test-reset", "2");
+		assertEquals("2", svc.getPreference("test-api", "test-widget", "test-context", "test-viewer", "test-reset"));
+		assertEquals("2", svc.getPreference("test-api", "test-widget", "test-context", "test-viewer", "test-reset"));
+		svc.setPreference("test-api", "test-widget", "test-context", "test-viewer", "test-reset", "1");
+		assertEquals("1", svc.getPreference("test-api", "test-widget", "test-context", "test-viewer", "test-reset"));
+		assertEquals("1", svc.getPreference("test-api", "test-widget", "test-context", "test-viewer", "test-reset"));
 	}
 
 

@@ -37,19 +37,19 @@ import org.apache.wookie.services.impl.DefaultPreferencesService;
  */
 public interface PreferencesService {
 	
-	public abstract String getPreference(String token, String name);
+	public abstract String getPreference(String apiKey, String widgetId, String contextId, String viewerId, String name);
 
-	public abstract void setPreference(String token, String name, String value);
+	public abstract void setPreference(String apiKey, String widgetId, String contextId, String viewerId, String name, String value);
 	
-	public abstract void setPreference(String token, String name, String value, boolean readOnly);
+	public abstract void setPreference(String apiKey, String widgetId, String contextId, String viewerId, String name, String value, boolean readOnly);
 	
-	public abstract void setPreference(String token, IPreference preference);
+	public abstract void setPreference(String apiKey, String widgetId, String contextId, String viewerId, IPreference preference);
 
-	public abstract Collection<IPreference> getPreferences(String token);
+	public abstract Collection<IPreference> getPreferences(String apiKey, String widgetId, String contextId, String viewerId);
 	
-	public abstract void setPreferences(String token, Collection<IPreference> preferences);
+	public abstract void setPreferences(String apiKey, String widgetId, String contextId, String viewerId, Collection<IPreference> preferences);
 	
-	public abstract void removePreferences(String token);
+	public abstract void removePreferences(String apiKey, String widgetId, String contextId, String viewerId);
 	
 	public static class Factory {
 		

@@ -40,11 +40,16 @@ public class RedisPreferencesService implements PreferencesService {
 		pool = new JedisPool(new JedisPoolConfig(), "localhost");
 	}
 
-	private IPreference getPreferenceObject(String token, String name){
+	private IPreference getPreferenceObject(String apiKey, String widgetId, String contextId, String viewerId, String name){
 		//
 		// Get a Jedis from the pool
 		//
 		Jedis jedis = pool.getResource();
+		
+		//
+		// Get the context token
+		//
+		String token = getToken(apiKey, widgetId, contextId, viewerId);
 		
 		//
 		// Get the jedis key for this pref object
@@ -68,7 +73,7 @@ public class RedisPreferencesService implements PreferencesService {
 	}
 	
 	@Override
-	public void setPreference(String token, IPreference preference) {
+	public void setPreference(String apiKey, String widgetId, String contextId, String viewerId, IPreference preference) {
 		
 		//
 		// Check if the preference is null - if so, do nothing
@@ -82,6 +87,11 @@ public class RedisPreferencesService implements PreferencesService {
 		Jedis jedis = pool.getResource();
 		
 		//
+		// Get the context token
+		//
+		String token = getToken(apiKey, widgetId, contextId, viewerId);
+		
+		//
 		// Get the redis key to use for this pref
 		//
 		String key = getKey(token, preference.getName());
@@ -89,7 +99,7 @@ public class RedisPreferencesService implements PreferencesService {
 		//
 		// If there is no existing tuple, add the key to the list of keys for this token
 		//
-		if (getPreference(token, preference.getName()) == null){
+		if (!jedis.exists(key)){
 			jedis.lpush(token, key);			
 		}
 
@@ -112,30 +122,36 @@ public class RedisPreferencesService implements PreferencesService {
 	//////
 	
 	@Override
-	public String getPreference(String token, String name) {
-		IPreference preference = getPreferenceObject(token, name);
+	public String getPreference(String apiKey, String widgetId, String contextId, String viewerId, String name) {
+		IPreference preference = getPreferenceObject(apiKey, widgetId, contextId, viewerId, name);
 		if (preference == null) return null;
 		return preference.getValue();
 	}
 
 	@Override
-	public void setPreference(String token, String name, String value) {
+	public void setPreference(String apiKey, String widgetId, String contextId, String viewerId,  String name, String value) {
 		DefaultPreferenceImpl pref = new DefaultPreferenceImpl(name, value, false);
-		setPreference(token, pref);
+		setPreference(apiKey, widgetId, contextId, viewerId, pref);
 	}
 
 	@Override
-	public void setPreference(String token, String name, String value,
+	public void setPreference(String apiKey, String widgetId, String contextId, String viewerId, String name, String value,
 			boolean readOnly) {
 		DefaultPreferenceImpl pref = new DefaultPreferenceImpl(name, value, readOnly);
-		setPreference(token, pref);
+		setPreference(apiKey, widgetId, contextId, viewerId, pref);
 	}
 
 	//////
 
 
 	@Override
-	public Collection<IPreference> getPreferences(String token) {
+	public Collection<IPreference> getPreferences(String apiKey, String widgetId, String contextId, String viewerId) {
+		
+		//
+		// Get the context token
+		//
+		String token = getToken(apiKey, widgetId, contextId, viewerId);
+		
 		//
 		// Get a Jedis from the pool
 		//
@@ -169,12 +185,12 @@ public class RedisPreferencesService implements PreferencesService {
 	}
 
 	@Override
-	public void setPreferences(String token, Collection<IPreference> preferences) {
+	public void setPreferences(String apiKey, String widgetId, String contextId, String viewerId, Collection<IPreference> preferences) {
 		
 		//
 		// Clear the token
 		//
-		removePreferences(token);
+		removePreferences(apiKey, widgetId, contextId, viewerId);
 		
 		//
 		// Get a Jedis from the pool
@@ -186,7 +202,7 @@ public class RedisPreferencesService implements PreferencesService {
 		//
 		if (preferences != null){
 			for (IPreference pref: preferences){
-				setPreference(token, pref);
+				setPreference(apiKey, widgetId, contextId, viewerId, pref);
 			}
 		}
 		
@@ -197,12 +213,17 @@ public class RedisPreferencesService implements PreferencesService {
 	}
 
 	@Override
-	public void removePreferences(String token) {
+	public void removePreferences(String apiKey, String widgetId, String contextId, String viewerId) {
 		//
 		// Get a Jedis from the pool
 		//
 		Jedis jedis = pool.getResource();
-
+		
+		//
+		// Get the context token
+		//
+		String token = getToken(apiKey, widgetId, contextId, viewerId);
+		
 		//
 		// Remove everything linked from the preferences list
 		//
@@ -252,7 +273,12 @@ public class RedisPreferencesService implements PreferencesService {
 	 * @return the redis key to use for getting and setting the pref
 	 */
 	private String getKey(String token, String name){
+		
 		return "pref::" + token + "::" + name;
+	}
+	
+	private String getToken(String apiKey, String widgetId, String contextId, String viewerId){
+		return apiKey+"-"+contextId+"-"+widgetId+"-"+viewerId;
 	}
 
 }

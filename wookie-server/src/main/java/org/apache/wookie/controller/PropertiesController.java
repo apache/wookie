@@ -87,7 +87,7 @@ public class PropertiesController extends Controller {
 		// Note that preferences and shared data keys may be the same!
 		// We let the shared data values override.
 		
-		value = PreferencesService.Factory.getInstance().getPreference(authToken.toString(), name);
+		value = PreferencesService.Factory.getInstance().getPreference(authToken.getApiKey(), authToken.getWidgetId(), authToken.getContextId(), authToken.getViewerId(), name);
 		ISharedData data = new SharedContext(authToken).getSharedData(name);
 		if (data != null) value = data.getDvalue();
 		if (value == null) throw new ResourceNotFoundException();
@@ -164,9 +164,9 @@ public class PropertiesController extends Controller {
 	 */
 	public static boolean updatePreference(AuthToken authToken, String name, String value){
         boolean found=false;
-        String preference = PreferencesService.Factory.getInstance().getPreference(authToken.toString(), name);        
+        String preference = PreferencesService.Factory.getInstance().getPreference(authToken.getApiKey(), authToken.getWidgetId(), authToken.getContextId(), authToken.getViewerId(), name);        
         if (preference != null) found=true;
-   	    PreferencesService.Factory.getInstance().setPreference(authToken.toString(), name, value);
+   	    PreferencesService.Factory.getInstance().setPreference(authToken.getApiKey(), authToken.getWidgetId(), authToken.getContextId(), authToken.getViewerId(), name, value);
         return found;
 	}
 
