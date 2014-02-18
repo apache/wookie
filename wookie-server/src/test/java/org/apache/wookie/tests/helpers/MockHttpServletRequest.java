@@ -617,6 +617,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	 * @see #getIntHeader
 	 */
 	public void addHeader(String name, Object value) {
+		this.headers.put(name, value);
 	}
 
 	public long getDateHeader(String name) {
@@ -624,7 +625,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	}
 
 	public String getHeader(String name) {
-		return null;
+		return (String) this.headers.get(name);
 	}
 
 	public Enumeration<Object> getHeaders(String name) {
