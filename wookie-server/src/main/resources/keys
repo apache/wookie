@@ -3,14 +3,21 @@
 ##
 ## This file is dynamically loaded by Wookie and configures
 ## API keys for accessing Wookie. Each application that will
-## request widget instances must have its own API key.
+## interact with the Wookie REST API will need its own key
+## and secret
 ## 
-## The format of entries is key = contact email address
+## The format of entries is key = secret
 ##
+## The key is sent over plaintext in API requests, however
+## the secret is only shared once with the application
+## and then used privately to generate secure hashes.
+##
+## If a secret is compromised, it can be changed here without
+## affecting existing data.
 ##
 ## Example:
 ##
-## mykey = me@example.org
+## mykey = somerandomvalue
 ##
 
 TEST=test@127.0.0.1

@@ -161,12 +161,11 @@ public class ApiKeys {
   private boolean addKeyToCollection(String key, String email) throws ConfigurationException{
     ApiKey apiKey = new ApiKey(key, email);
     if (keys.containsKey(apiKey.getValue())){
-      logger.debug("Duplicate key submitted for "+email);
+      logger.debug("Duplicate key submitted for "+apiKey.getValue());
       return false;
     } else {
       // Add
       keys.put(apiKey.getValue(), apiKey);
-      logger.debug("Key added for "+apiKey.getEmail());
       return true;
     }
   }

@@ -43,7 +43,7 @@ public class AuthTokenUtilsTest{
 	public void encrypt() throws Exception{
 		ApiKey apiKey = new ApiKey();
 		apiKey.setValue("ENC_TEST");
-		apiKey.setEmail("me@nowhere.com");
+		apiKey.setSecret("me@nowhere.com");
 
 		AuthToken authToken = new AuthToken();
 		authToken.setApiKey(apiKey);
@@ -67,7 +67,7 @@ public class AuthTokenUtilsTest{
 	public void validate() throws Exception{
 		ApiKey apiKey = new ApiKey();
 		apiKey.setValue("ENC_TEST");
-		apiKey.setEmail("me@nowhere.com");
+		apiKey.setSecret("me@nowhere.com");
 
 		AuthToken authToken = new AuthToken();
 		authToken.setApiKey(apiKey);
@@ -91,7 +91,7 @@ public class AuthTokenUtilsTest{
 	public void encryptExpiry() throws Exception{
 		ApiKey apiKey = new ApiKey();
 		apiKey.setValue("ENC_TEST");
-		apiKey.setEmail("me@nowhere.com");
+		apiKey.setSecret("me@nowhere.com");
 
 		AuthToken authToken = new AuthToken();
 		authToken.setApiKey(apiKey);
@@ -121,7 +121,7 @@ public class AuthTokenUtilsTest{
 	public void encryptExpiryWithValidation() throws Exception{
 		ApiKey apiKey = new ApiKey();
 		apiKey.setValue("ENC_TEST");
-		apiKey.setEmail("me@nowhere.com");
+		apiKey.setSecret("me@nowhere.com");
 
 		AuthToken authToken = new AuthToken();
 		authToken.setApiKey(apiKey);
@@ -151,7 +151,7 @@ public class AuthTokenUtilsTest{
 	public void encryptExpirySkew() throws Exception{
 		ApiKey apiKey = new ApiKey();
 		apiKey.setValue("ENC_TEST");
-		apiKey.setEmail("me@nowhere.com");
+		apiKey.setSecret("me@nowhere.com");
 
 		AuthToken authToken = new AuthToken();
 		authToken.setApiKey(apiKey);
@@ -178,7 +178,7 @@ public class AuthTokenUtilsTest{
 	public void encryptBadApiKey(){
 		ApiKey apiKey = new ApiKey();
 		apiKey.setValue("ENC_TEST_BAD");
-		apiKey.setEmail("me@nowhere.com");
+		apiKey.setSecret("me@nowhere.com");
 
 		AuthToken authToken = new AuthToken();
 		authToken.setApiKey(apiKey);

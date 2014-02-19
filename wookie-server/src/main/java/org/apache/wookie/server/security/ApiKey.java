@@ -22,25 +22,15 @@ package org.apache.wookie.server.security;
  */
 public class ApiKey {
   
-  private Object id;
   private String value;
-  private String email;
+  private String secret;
   
   public ApiKey(){
   }
   
-  public ApiKey(String key, String email){
+  public ApiKey(String key, String secret){
     setValue(key);
-    setEmail(email);
-    this.id = key;
-  }
-
-  /**
-   * Get the id of the key
-   * @return
-   */
-  public Object getId() {
-    return id;
+    setSecret(secret);
   }
 
   /**
@@ -63,16 +53,16 @@ public class ApiKey {
    * Get contact email associated with this key
    * @return
    */
-  public String getEmail() {
-    return email;
+  public String getSecret() {
+    return secret;
   }
 
   /**
    * Set the contact email address
    * @param email
    */
-  public void setEmail(String email) {
-    this.email = email;
+  public void setSecret(String secret) {
+    this.secret = secret;
   }
 
 }

@@ -100,7 +100,7 @@ public class Hmac {
 		// Get the header
 		//
 		String auth = request.getHeader("Authorization");
-		
+
 		//
 		// If no auth header, not valid.
 		//
@@ -114,17 +114,17 @@ public class Hmac {
 		String apiKey = getPublicKey(request);
 		String signature = getSignature(request);
 		if (apiKey == null || signature == null) return false;
-		
+
 		//
 		// Validate the api public key exists
 		//
 		if (!ApiKeys.getInstance().validate(apiKey)) return false;
-		
+
 		//
 		// Get the API key secret
 		//
-		String secret = ApiKeys.getInstance().getApiKey(apiKey).getEmail();
-		
+		String secret = ApiKeys.getInstance().getApiKey(apiKey).getSecret();
+
 		//
 		// Check the timestamp. If no timestamp is
 		// provided, the request is not valid
@@ -142,7 +142,6 @@ public class Hmac {
 		} catch (ParseException e1) {
 			return false;
 		}
-		
 		//
 		// Compute the window of validity for the timestamp,
 		// equivalent to now minus an allowance for clock
@@ -158,7 +157,7 @@ public class Hmac {
 		if ((timestampDate.getTime()) < window){
 			return false;
 		}
-		
+
 		//
 		// Get the nonce used. If there is no nonce, the
 		// request is not valid
@@ -170,7 +169,7 @@ public class Hmac {
 		// Check the nonce hasn't been reused lately
 		//
 		if (!NonceCache.getInstance().isValid(nonce)) return false;
-		
+
 		//
 		// Get the canonical request string to validate
 		//

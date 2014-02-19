@@ -44,9 +44,7 @@ public class ApiKeyHelper {
 
     for(ApiKey key: keys){
       Element keyElement = new Element("key");
-      keyElement.setAttribute("id", String.valueOf(key.getId()));
-      keyElement.setAttribute("value", key.getValue());
-      keyElement.setAttribute("email", key.getEmail());
+      keyElement.setText(key.getValue());
       keysElement.addContent(keyElement);
     }
     document.setRootElement(keysElement);
@@ -64,9 +62,7 @@ public class ApiKeyHelper {
     for(ApiKey key: keys){
       JSONObject jsonKey = new JSONObject();
       try {
-        jsonKey.put("id", key.getId());
-        jsonKey.put("value", key.getValue());
-        jsonKey.put("email", key.getEmail());
+        jsonKey.put("key", key.getValue());
       } catch (JSONException e) {
         logger.error("Problem rendering json for ApiKey object", e);
       }
