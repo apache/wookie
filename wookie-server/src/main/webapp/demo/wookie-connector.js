@@ -91,22 +91,29 @@ var Wookie = {
         
         var postdata = "api_key=";
         postdata = postdata + encodeURI(Wookie.connection.apiKey);
-        postdata = postdata + "&shareddatakey=";
-        postdata = postdata + encodeURI(Wookie.connection.sharedDataKey);
-        postdata = postdata + "&userid=";
-        postdata = postdata + encodeURI(Wookie.currentUser.loginName);
-        postdata = postdata + "&widgetid=";
-        postdata = postdata + encodeURI(id);
         postdata = postdata + "&is_public=false";
+        postdata = postdata + "&nonce="+Math.random();
         postdata = postdata + "&propertyname=";
         postdata = postdata + encodeURI(key);
         postdata = postdata + "&propertyvalue=";
         postdata = postdata + encodeURI(value);
-        var url = Wookie.connection.url + "/properties";
+        postdata = postdata + "&shareddatakey=";
+        postdata = postdata + encodeURI(Wookie.connection.sharedDataKey);
+        postdata = postdata + "&timestamp="+new Date().toISOString();
+        postdata = postdata + "&userid=";
+        postdata = postdata + encodeURI(Wookie.currentUser.loginName);
+        postdata = postdata + "&widgetid=";
+        postdata = postdata + encodeURI(id);
+        var uri = "/properties";
+        var url = Wookie.connection.url +uri;
+        var signature = Wookie.getSignature("POST", uri, "?" + postdata);
         $.ajax({
             type: 'POST',
             url: url,
             data: postdata,
+            headers: {
+                    "Authorization":signature
+            },
             async: false
         });
     },
@@ -132,17 +139,31 @@ var Wookie = {
         if (this.instances[key] === undefined) {
             var postdata = "api_key=";
             postdata = postdata + encodeURI(Wookie.connection.apiKey);
+            
+            postdata = postdata + "&nonce="+Math.random();
+            
             postdata = postdata + "&shareddatakey=";
             postdata = postdata + encodeURI(Wookie.connection.sharedDataKey);
+            
+            postdata = postdata + "&timestamp="+new Date().toISOString();
+            
             postdata = postdata + "&userid=";
             postdata = postdata + encodeURI(Wookie.currentUser.loginName);
             postdata = postdata + "&widgetid=";
             postdata = postdata + encodeURI(id);
-            var url = Wookie.connection.url + "/widgetinstances";
+            
+            var uri = "/widgetinstances";
+            var url = Wookie.connection.url + uri;
+            
+            var signature = Wookie.getSignature("POST", uri, "?" + postdata);
+            
             $.ajax({
                 type: 'POST',
                 url: url,
                 data: postdata,
+                headers: {
+                    "Authorization":signature
+                },
                 success: function(doc) {
                     url = $(doc).find("url").text();
                     title = $(doc).find("title").text();
@@ -162,31 +183,51 @@ var Wookie = {
             
             var postdata = "api_key=";
             postdata = postdata + encodeURI(Wookie.connection.apiKey);
-            postdata = postdata + "&shareddatakey=";
-            postdata = postdata + encodeURI(Wookie.connection.sharedDataKey);
-            postdata = postdata + "&userid=";
-            postdata = postdata + encodeURI(Wookie.currentUser.loginName);
-            postdata = postdata + "&widgetid=";
-            postdata = postdata + encodeURI(id);
-            postdata = postdata + "&participant_role=";
-            postdata = postdata + encodeURI(Wookie.currentUser.role);
+            postdata = postdata + "&nonce="+Math.random();
             postdata = postdata + "&participant_display_name=";
             postdata = postdata + encodeURI(Wookie.currentUser.screenName);
             postdata = postdata + "&participant_id=";
             postdata = postdata + encodeURI(Wookie.currentUser.loginName);
+            postdata = postdata + "&participant_role=";
+            postdata = postdata + encodeURI(Wookie.currentUser.role);
             postdata = postdata + "&participant_thumbnail_url=";
             postdata = postdata + encodeURI(Wookie.currentUser.thumbnailUrl);
-            var url = Wookie.connection.url + "/participants";
+            postdata = postdata + "&shareddatakey=";
+            postdata = postdata + encodeURI(Wookie.connection.sharedDataKey);
+            postdata = postdata + "&timestamp="+new Date().toISOString();
+            postdata = postdata + "&userid=";
+            postdata = postdata + encodeURI(Wookie.currentUser.loginName);
+            postdata = postdata + "&widgetid=";
+            postdata = postdata + encodeURI(id);
+            
+            var uri = "/participants";
+            var url = Wookie.connection.url + uri;
+            
+            var signature = Wookie.getSignature("POST", uri, "?" + postdata);
+
             $.ajax({
                 type: 'POST',
                 url: url,
                 data: postdata,
+                headers: {
+                    "Authorization":signature
+                },
                 success: function(data) {
                 },
                 async: false
             });
         }
         return Wookie.instances[key];
+    },
+    
+    getSignature: function(method, uri, query){
+        var host = Wookie.connection.host
+        var data = method + "\n";
+        data = data + host + "\n";
+        data = data + Wookie.connection.url + uri + "\n";
+        data = data + query.toLowerCase();
+        var hash = CryptoJS.HmacSHA256(data, Wookie.connection.secret).toString(CryptoJS.enc.Base64);
+        return Wookie.connection.apiKey + " " + hash;
     },
     
     setCurrentUser: function(loginName, screenName, thumbnailUrl, role){
@@ -202,8 +243,10 @@ var Wookie = {
         Wookie.currentUser = user;
     },
     
-    configureConnection: function(url, apiKey, sharedDataKey){
+    configureConnection: function(url, apiKey, sharedDataKey, secret, host){
         Wookie.connection = {};
+        
+        
         
         if (!url || typeof url === "undefined") {
             Wookie.connection.url = "/wookie";
@@ -215,6 +258,22 @@ var Wookie = {
             Wookie.connection.apiKey = "TEST";
         } else {
             Wookie.connection.apiKey = apiKey;
+        }
+        
+        if (!secret || typeof secret === "undefined"){
+            Wookie.connection.secret = "test@127.0.0.1";
+        } else {
+            Wookie.connection.secret = secret;
+        }
+        
+        if (!host || typeof host === "undefined"){
+            if (url.lastIndexOf("http://",0)===0){
+                Wookie.connection.host = url.split("http://")[1];
+            } else {
+                Wookie.connection.host = "localhost:8080";
+            }
+        } else {
+            Wookie.connection.host = host;
         }
         
         if (!sharedDataKey || typeof sharedDataKey === "undefined") {
