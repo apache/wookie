@@ -23,6 +23,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.wookie.tests.functional.AbstractControllerTest;
+import org.apache.wookie.tests.helpers.Request;
 import org.apache.wookie.tests.helpers.WidgetUploader;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -121,12 +122,13 @@ AbstractControllerTest {
 		// instantiate widget and parse results
 		//
 		try {
-			HttpClient client = new HttpClient();
-			PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-			post.setQueryString("api_key="+API_KEY_VALID+"&widgetid="+identifier+"&userid=test&shareddatakey=test");
-			client.executeMethod(post);
+			Request post = new Request("POST", TEST_INSTANCES_SERVICE_URL_VALID);
+			post.addParameter("api_key", API_KEY_VALID);
+			post.addParameter("widgetid", identifier);
+			post.addParameter("userid", "test");
+			post.addParameter("shareddatakey", "test");
+			post.execute(true, false);
 			response = IOUtils.toString(post.getResponseBodyAsStream());
-			post.releaseConnection();
 		}
 		catch (Exception e) {
 			fail("failed to instantiate widget");

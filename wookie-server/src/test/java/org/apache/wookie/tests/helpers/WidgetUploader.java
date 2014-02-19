@@ -23,10 +23,7 @@ import java.io.StringReader;
 import java.util.List;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
@@ -80,18 +77,12 @@ public class WidgetUploader {
 	 * @throws IOException
 	 */
 	public static String uploadWidget(File file) throws IOException{
-		HttpClient httpclient = new HttpClient();
-		httpclient.getState().setCredentials(
-				 new AuthScope("localhost", 8080, AuthScope.ANY_REALM),
-				 new UsernamePasswordCredentials("java", "java")
-				 );
-		PostMethod post = new PostMethod(SERVICE_URL);
+		Request post = new Request("POST", SERVICE_URL);
 		Part[] parts = { new FilePart(file.getName(), file) };
-		post.setRequestEntity(new MultipartRequestEntity(parts, post
+		post.setRequestEntity(new MultipartRequestEntity(parts, post.getClient()
 				.getParams()));
-		httpclient.executeMethod(post);
+		post.execute(true, false);
 		String response = IOUtils.toString(post.getResponseBodyAsStream());
-		post.releaseConnection();
 		return response;
 	}
 	
