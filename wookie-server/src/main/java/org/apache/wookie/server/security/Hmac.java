@@ -51,9 +51,9 @@ public class Hmac {
 	/**
 	 * Date formatter for ISO datetime
 	 */
-	private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ"){ 
+	private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"){ 
 		private static final long serialVersionUID = 7465240007718011363L;
-		public Date parse(String source,ParsePosition pos) {    
+		public Date parse(String source,ParsePosition pos) {  
 	        return super.parse(source.replaceFirst(":(?=[0-9]{2}$)",""),pos);
 	    }
 	};
@@ -137,6 +137,14 @@ public class Hmac {
 		// datetime, the request is not valid
 		//
 		Date timestampDate = null;
+		
+		//
+		// Check for Z instead of UTC
+		//
+		if (timestamp.endsWith("Z")){
+			timestamp = timestamp.replace("Z", "+0000");
+		}
+		
 		try {
 			timestampDate = dateFormat.parse(timestamp);
 		} catch (ParseException e1) {
