@@ -36,13 +36,19 @@ import org.apache.log4j.Logger;
 public class AuthorizationFilter implements Filter {
 
   static Logger _logger = Logger.getLogger(AuthorizationFilter.class.getName());
+  
+  private String scheme;
+  
+  private static final String HMAC_AUTH_SCHEME = "HMAC";
+  private static final String API_KEY_SCHEME = "APIKEY";
 
   /*
    * (non-Javadoc)
    * 
    * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
    */
-  public void init(FilterConfig filterConfig) throws ServletException {
+  public void init(FilterConfig filterConfig) throws ServletException { 
+	  scheme = filterConfig.getInitParameter("authorization-scheme");
   }
 
   /*
@@ -65,7 +71,13 @@ public class AuthorizationFilter implements Filter {
     //
     // Choose the authorization method required
     //
-    boolean isAuthorized = this.isAuthorizedUsingPlainMessaging((HttpServletRequest) request);
+    boolean isAuthorized = false;
+    if (scheme.equals(API_KEY_SCHEME)){
+    	isAuthorized = this.isAuthorizedUsingPlainMessaging((HttpServletRequest) request);
+    }
+    if (scheme.equals(HMAC_AUTH_SCHEME)){
+    	isAuthorized = this.isAuthorizedUsingHmac((HttpServletRequest)request);
+    }
     
     //
     // return 403 if not authorised, otherwise continue
@@ -95,10 +107,16 @@ public class AuthorizationFilter implements Filter {
    *         should be processed normally
    */
   private boolean isException(HttpServletRequest request) {
-    if (request.getServletPath().equalsIgnoreCase("flatpack")
-        && request.getMethod().equals("GET"))
-      return true;
-    return false;
+	  
+	  //
+	  // GET /widgets
+	  //
+	  if (request.getServletPath().equalsIgnoreCase("/widgets")
+			  && request.getMethod().equals("GET"))
+		  return true;
+	  
+	  
+	  return false;
   }
 
   /**
@@ -126,6 +144,29 @@ public class AuthorizationFilter implements Filter {
     // Look up the key
     //
     return isRegistered(key);
+  }
+  
+  private boolean isAuthorizedUsingHmac(HttpServletRequest request){
+
+	  //
+	  // Verify the message hash
+	  //
+	  if (Hmac.isValidSignedRequest(request)){
+
+		  //
+		  // if the request contains an API key parameter, ensure it matches the one
+		  // used to sign the message
+		  //
+		  String key = request.getParameter("api_key");
+		  if (key != null){
+			  if (!key.equals(Hmac.getPublicKey(request))){
+				  return false;
+			  }
+		  }
+
+		  return true;
+	  }
+	  return false;
   }
   
   /**

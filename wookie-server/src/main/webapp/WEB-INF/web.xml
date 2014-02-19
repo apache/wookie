@@ -182,10 +182,6 @@
 		<servlet-name>WidgetServlet</servlet-name>
 		<url-pattern>/widgets/*</url-pattern>
 	</servlet-mapping>	
-	<servlet-mapping>
-		<servlet-name>WidgetServlet</servlet-name>
-		<url-pattern>/advertise/*</url-pattern>
-	</servlet-mapping>	
 	
 	<servlet>
 		<description></description>
@@ -262,6 +258,11 @@
 	<filter>
    	    <filter-name>AuthorizationFilter</filter-name>
    	    <filter-class>org.apache.wookie.server.security.AuthorizationFilter</filter-class>
+   	    <init-param>
+   	    	<param-name>authorization-scheme</param-name>
+   	    	<param-value>HMAC</param-value>
+   	    	<description>Use HMAC for authenticating API calls</description>
+   	    </init-param>
   	</filter>
   	<filter-mapping>
     	<filter-name>AuthorizationFilter</filter-name>
@@ -277,102 +278,20 @@
   	</filter-mapping>
     <filter-mapping>
     	<filter-name>AuthorizationFilter</filter-name>
-		<servlet-name>Flatpack</servlet-name>
-  	</filter-mapping>
-  	
-		<security-constraint>		
-			<web-resource-collection>
-				<web-resource-name>Widget Admin Section</web-resource-name>
-				<url-pattern>/admin/*</url-pattern>
-			</web-resource-collection>		
-			<auth-constraint>
-				<role-name>widgetadmin</role-name>
-			</auth-constraint>
-		</security-constraint>	
-		
-		<security-constraint>		
-			<web-resource-collection>
-				<web-resource-name>WidgetServices Controller</web-resource-name>
-				<url-pattern>/services/*</url-pattern>
-				<http-method>DELETE</http-method>
-				<http-method>PUT</http-method>
-				<http-method>POST</http-method>
-			</web-resource-collection>		
-			<auth-constraint>
-				<role-name>widgetadmin</role-name>
-			</auth-constraint>
-		</security-constraint>
-		<security-constraint>		
-			<web-resource-collection>
-				<web-resource-name>Policies Controller</web-resource-name>
-				<url-pattern>/policies/*</url-pattern>
-				<http-method>GET</http-method>
-				<http-method>DELETE</http-method>
-				<http-method>PUT</http-method>
-				<http-method>POST</http-method>
-			</web-resource-collection>		
-			<auth-constraint>
-				<role-name>widgetadmin</role-name>
-			</auth-constraint>
-		</security-constraint>
-		<security-constraint>		
-			<web-resource-collection>
-				<web-resource-name>ApiKeyController</web-resource-name>
-				<url-pattern>/keys/*</url-pattern>
-				<http-method>GET</http-method>
-				<http-method>DELETE</http-method>
-				<http-method>PUT</http-method>
-				<http-method>POST</http-method>
-			</web-resource-collection>		
-			<auth-constraint>
-				<role-name>widgetadmin</role-name>
-			</auth-constraint>
-		</security-constraint>
-		<security-constraint>		
-			<web-resource-collection>
-				<web-resource-name>UpdatesController</web-resource-name>
-				<url-pattern>/updates/*</url-pattern>
-				<http-method>GET</http-method>
-				<http-method>DELETE</http-method>
-				<http-method>PUT</http-method>
-				<http-method>POST</http-method>
-			</web-resource-collection>		
-			<auth-constraint>
-				<role-name>widgetadmin</role-name>
-			</auth-constraint>
-		</security-constraint>
-		<security-constraint>		
-			<web-resource-collection>
-				<web-resource-name>WidgetServlet</web-resource-name>
-				<url-pattern>/widgets/*</url-pattern>
-				<http-method>POST</http-method>
-				<http-method>DELETE</http-method>
-				<http-method>PUT</http-method>
-			</web-resource-collection>		
-			<auth-constraint>
-				<role-name>widgetadmin</role-name>
-			</auth-constraint>
-		</security-constraint>
-		<security-constraint>
-			<web-resource-collection>
-				<web-resource-name>WidgetInstancesController</web-resource-name>
-				<url-pattern>/widgetinstances/*</url-pattern>
-				<http-method>DELETE</http-method>
-			</web-resource-collection>
-			<auth-constraint>
-				<role-name>widgetadmin</role-name>
-			</auth-constraint>
-		</security-constraint>
-
-		<login-config>
-			<auth-method>BASIC</auth-method>
-			<realm-name>Authentication Required</realm-name> 
-		</login-config>
-		
-		<security-role>
-			<description></description>
-			<role-name>widgetadmin</role-name>
-		</security-role>		
+		<servlet-name>PoliciesServlet</servlet-name>
+  	</filter-mapping>	
+  	<filter-mapping>
+    	<filter-name>AuthorizationFilter</filter-name>
+		<servlet-name>ApiKeyController</servlet-name>
+  	</filter-mapping>	
+  	 <filter-mapping>
+    	<filter-name>AuthorizationFilter</filter-name>
+		<servlet-name>UpdatesServlet</servlet-name>
+  	</filter-mapping>	
+  	<filter-mapping>
+    	<filter-name>AuthorizationFilter</filter-name>
+		<servlet-name>WidgetServlet</servlet-name>
+  	</filter-mapping>			
 		
 		<error-page>
   			<error-code>401</error-code>
