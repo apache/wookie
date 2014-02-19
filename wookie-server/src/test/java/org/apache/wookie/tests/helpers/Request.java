@@ -29,10 +29,12 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.wookie.server.security.Hmac;
 import org.apache.wookie.w3c.util.RandomGUID;
 
@@ -59,6 +61,10 @@ public class Request {
 	private String key;
 	private String secret;
 	
+	private RequestEntity requestEntity;
+	
+	private HttpClient client;
+	
 	/**
 	 * Construct a new request
 	 * @param method the HTTP method, e.g. POST
@@ -70,6 +76,24 @@ public class Request {
 		this.secret = "test@127.0.0.1";
 		this.url = url;
 		params = new HashMap<String, String>();
+	    client = new HttpClient();
+	    client.getParams().setCookiePolicy(CookiePolicy.RFC_2109);
+	}
+	
+	/**
+	 * Construct a new request, reusing an existing Client
+	 * Use for stateful tests using cookies for example
+	 * @param method
+	 * @param url
+	 * @param client
+	 */
+	public Request(String method, String url, HttpClient client){
+		this.method = method;
+		this.key = "TEST";
+		this.secret = "test@127.0.0.1";
+		this.url = url;
+		params = new HashMap<String, String>();
+	    this.client = client;
 	}
 	
 	/**
@@ -116,11 +140,19 @@ public class Request {
 		}
 	}
 	
+	/**
+	 * Get the HttpClient underlying the request for low-level interactions
+	 * @return the HttpClient
+	 */
+	public HttpClient getClient(){
+		return this.client;
+	}
+	
 	/*
 	 * Executes the request
 	 */
 	private void execute(HttpMethod method, boolean sign, boolean auth) throws HttpException, IOException{
-	    HttpClient client = new HttpClient();
+
 	    
 	    if (auth){
 	    	Credentials defaultcreds = new UsernamePasswordCredentials("java", "java");
@@ -129,15 +161,36 @@ public class Request {
         
 		this.host = method.getURI().getHost() + ":" +method.getURI().getPort();
 		this.uri = method.getURI().getPath();
+		//
+		// Double encode spaces in URLs; this is to handle some slightly odd DELETE methods.
+		//
+		this.uri = this.uri.replace(" ", "%20");
 		if (sign) method.setRequestHeader("Authorization", getAuthz());
 		if (accepts != null) method.setRequestHeader("Accept", accepts);
 
+		//
+		// POST and PUT can have request entities (body content)
+		// as well as parameters; however they can have only querystring
+		// params with a body.
+		// 
 		if (method instanceof PostMethod){
-			for (String name: this.params.keySet()){
-				  ((PostMethod)method).setParameter(name, this.params.get(name));	
+			if (this.requestEntity != null){
+				((PostMethod)method).setRequestEntity(requestEntity);
+				method.setQueryString(getParamsAsQueryString());
+			} else {
+				for (String name: this.params.keySet()){
+					((PostMethod)method).setParameter(name, this.params.get(name));	
+				}	
 			}
 		} else {
-			method.setQueryString(getParamsAsQueryString());
+			if (method instanceof PutMethod){
+				if (this.requestEntity != null){
+					((PutMethod)method).setRequestEntity(requestEntity);
+				} 
+				method.setQueryString(getParamsAsQueryString());
+			} else {
+				method.setQueryString(getParamsAsQueryString());
+			}
 		}
 		client.executeMethod(method);
 		this.statusCode = method.getStatusCode();
@@ -145,6 +198,10 @@ public class Request {
 		this.stream = method.getResponseBodyAsStream();
 	}
 	
+	/**
+	 * Get the response as a string
+	 * @return
+	 */
 	public String getResponseBodyAsString(){
 		return this.response;
 	}
@@ -196,16 +253,20 @@ public class Request {
 		return statusCode;
 	}
 	
-	public String getResponse(){
-		return response;
-	}
-	
 	/**
 	 * Get the response as a stream
 	 * @return the response stream
 	 */
-	public InputStream getResponseStream(){
+	public InputStream getResponseBodyAsStream(){
 		return stream;
+	}
+
+	/**
+	 * Set the request entity (body)
+	 * @param entity
+	 */
+	public void setRequestEntity(RequestEntity entity) {
+		this.requestEntity = entity;
 	}
 	
 	
