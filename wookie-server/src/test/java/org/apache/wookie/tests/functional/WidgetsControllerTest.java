@@ -62,15 +62,14 @@ public class WidgetsControllerTest extends AbstractControllerTest {
 	public static void tearDown() throws HttpException, IOException{
 		HttpClient client = new HttpClient();
 		setAuthenticationCredentials(client);
-		DeleteMethod delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_ACCESS_TEST));
-		client.executeMethod(delete);
-		delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
-		client.executeMethod(delete);
-		delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST_2));
-		client.executeMethod(delete);
-		delete = new DeleteMethod(TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_POLICIES_TEST));
-		client.executeMethod(delete);
-	}
+		Request delete = new Request("DELETE",TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_ACCESS_TEST));
+		delete.execute(true, false);
+		delete = new Request("DELETE",TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST));
+		delete.execute(true, false);
+		delete = new Request("DELETE",TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_TEST_2));
+		delete.execute(true, false);
+		delete = new Request("DELETE",TEST_WIDGETS_SERVICE_URL_VALID + encodeString("/" + WIDGET_ID_UPLOAD_POLICIES_TEST));
+		delete.execute(true, false);	}
 
 	/*
 	 * Utility method for creating a temp directory

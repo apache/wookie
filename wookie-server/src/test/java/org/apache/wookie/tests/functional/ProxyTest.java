@@ -131,10 +131,8 @@ public class ProxyTest extends AbstractControllerTest {
 		//
 		// Remove policy
 		//
-		HttpClient client = new HttpClient();
-		setAuthenticationCredentials(client);
-		DeleteMethod delete = new DeleteMethod(TEST_POLICIES_SERVICE_URL_VALID + "/" + encodeString("* http://localhost:8300 ALLOW"));
-		client.executeMethod(delete);
+		Request delete = new Request("DELETE", TEST_POLICIES_SERVICE_URL_VALID + "/" + encodeString("* http://localhost:8300 ALLOW"));
+		delete.execute(true, false);
 		assertEquals(200, delete.getStatusCode());
 	}
 

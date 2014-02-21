@@ -100,12 +100,13 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	 */
 	@Test
 	public void getLocalizedInstance() throws HttpException, IOException {
-		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-		post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_LOCALIZED
-				+ "&userid=localetest&shareddatakey=localetest&locale=fr");
-		client.executeMethod(post);
+		Request post = new Request("POST", TEST_INSTANCES_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_LOCALIZED);
+		post.addParameter("userid", "localetest");
+		post.addParameter("shareddatakey", "localetest");
+		post.addParameter("locale", "fr");
+		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(200, code);
 		assertTrue(post.getResponseBodyAsString().contains("locales/fr/index.htm"));
@@ -114,7 +115,6 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 		TEST_ID_KEY = post.getResponseBodyAsString().substring(
 				post.getResponseBodyAsString().indexOf("<identifier>") + 12,
 				post.getResponseBodyAsString().indexOf("</identifier>"));
-		post.releaseConnection();
 	}
 
 	/**
@@ -127,12 +127,13 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	@Test
 	public void getExistingInstanceByInstanceParams() throws HttpException,
 	IOException {
-		HttpClient client = new HttpClient();
-		GetMethod get = new GetMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-		get.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_LOCALIZED
-				+ "&userid=localetest&shareddatakey=localetest&locale=fr");
-		client.executeMethod(get);
+		Request get = new Request("GET", TEST_INSTANCES_SERVICE_URL_VALID);
+		get.addParameter("api_key", API_KEY_VALID);
+		get.addParameter("widgetid", WIDGET_ID_LOCALIZED);
+		get.addParameter("userid", "localetest");
+		get.addParameter("shareddatakey", "localetest");
+		get.addParameter("locale", "fr");
+		get.execute(true, false);
 		int code = get.getStatusCode();
 		assertEquals(200, code);
 		assertTrue(get.getResponseBodyAsString().contains("locales/fr/index.htm"));
@@ -148,10 +149,10 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	 */
 	@Test
 	public void getExistingInstanceByIdKey() throws HttpException, IOException {
-		HttpClient client = new HttpClient();
-		GetMethod get = new GetMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-		get.setQueryString("api_key=" + API_KEY_VALID + "&idkey=" + TEST_ID_KEY);
-		client.executeMethod(get);
+		Request get = new Request("GET", TEST_INSTANCES_SERVICE_URL_VALID);
+		get.addParameter("api_key", API_KEY_VALID);
+		get.addParameter("idkey", TEST_ID_KEY);
+		get.execute(true, false);
 		int code = get.getStatusCode();
 		assertEquals(200, code);
 		System.out.println(get.getResponseBodyAsString());
@@ -169,11 +170,10 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	@Test
 	public void getExistingInstanceByIdResource() throws HttpException,
 	IOException {
-		HttpClient client = new HttpClient();
-		GetMethod get = new GetMethod(TEST_INSTANCES_SERVICE_URL_VALID + "/"
+		Request get = new Request("GET", TEST_INSTANCES_SERVICE_URL_VALID + "/"
 				+ TEST_ID_KEY);
-		get.setQueryString("api_key=" + API_KEY_VALID);
-		client.executeMethod(get);
+		get.addParameter("api_key", API_KEY_VALID);
+		get.execute(true, false);
 		int code = get.getStatusCode();
 		assertEquals(200, code);
 		assertTrue(get.getResponseBodyAsString().contains("locales/fr/index.htm"));
@@ -190,19 +190,19 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	 */
 	@Test
 	public void getGracefulLocalizedInstance() throws HttpException, IOException {
-		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-		post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_LOCALIZED
-				+ "&userid=localetest1b&shareddatakey=localetest1b&locale=fr-1694acad");
-		client.executeMethod(post);
+		Request post = new Request("POST", TEST_INSTANCES_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_LOCALIZED);
+		post.addParameter("userid", "localetest");
+		post.addParameter("shareddatakey", "localetest1b");
+		post.addParameter("locale", "fr-1694acad");
+		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(200, code);
 		assertTrue(post.getResponseBodyAsString().contains("locales/fr/index.htm"));
 		assertFalse(post.getResponseBodyAsString().contains("locale test"));
 		assertTrue(post.getResponseBodyAsString().contains(
 		"tester les param&#232;tres r&#233;gionaux"));
-		post.releaseConnection();
 	}
 
 	/**
@@ -213,12 +213,13 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	 */
 	@Test
 	public void getNonLocalizedInstance() throws IOException {
-		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-		post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_LOCALIZED
-				+ "&userid=localetest2&shareddatakey=localetest2&locale=bu");
-		client.executeMethod(post);
+		Request post = new Request("POST", TEST_INSTANCES_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_LOCALIZED);
+		post.addParameter("userid", "localetest");
+		post.addParameter("shareddatakey", "localetest2");
+		post.addParameter("locale", "bu");
+		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(200, code);
 		assertFalse(post.getResponseBodyAsString().contains("locales/fr/index.htm"));
@@ -227,7 +228,6 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 		assertTrue(post.getResponseBodyAsString().contains("locale test"));
 		assertFalse(post.getResponseBodyAsString().contains(
 		"tester les param&#232;tres r&#233;gionaux"));
-		post.releaseConnection();
 	}
 
 	/**
@@ -239,18 +239,18 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	 */
 	@Test
 	public void getDefaultLocalizedInstance() throws HttpException, IOException {
-		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-		post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_LOCALIZED + "&userid=localetest3&shareddatakey=localetest3");
-		client.executeMethod(post);
+		Request post = new Request("POST", TEST_INSTANCES_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_LOCALIZED);
+		post.addParameter("userid", "localetest3");
+		post.addParameter("shareddatakey", "localetest4");
+		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(200, code);
 		assertTrue(post.getResponseBodyAsString().contains("locales/en/index.htm"));
 		assertTrue(post.getResponseBodyAsString().contains("locale test"));
 		assertFalse(post.getResponseBodyAsString().contains(
 		"tester les param&#232;tres r&#233;gionaux"));
-		post.releaseConnection();
 	}
 
 	/**
@@ -262,14 +262,14 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	 */
 	@Test
 	public void getInstanceById() throws HttpException, IOException {
-		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-		post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_VALID + "&userid=test&shareddatakey=test");
-		client.executeMethod(post);
+		Request post = new Request("POST", TEST_INSTANCES_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_LOCALIZED);
+		post.addParameter("userid", "test");
+		post.addParameter("shareddatakey", "test");
+		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(200, code);
-		post.releaseConnection();
 	}
 
 	/**
@@ -280,14 +280,14 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	 */
 	@Test
 	public void getInstanceById_AlreadyExists() throws HttpException, IOException {
-		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-		post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_VALID + "&userid=test&shareddatakey=test");
-		client.executeMethod(post);
+		Request post = new Request("POST", TEST_INSTANCES_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_LOCALIZED);
+		post.addParameter("userid", "test");
+		post.addParameter("shareddatakey", "test");
+		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(200, code);
-		post.releaseConnection();
 	}
 
 	/**
@@ -298,14 +298,14 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	 */
 	@Test
 	public void getInstance_InvalidAPIkey() throws HttpException, IOException {
-		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-		post.setQueryString("api_key=" + API_KEY_INVALID + "&widgetid="
-				+ WIDGET_ID_VALID + "&userid=test&shareddatakey=test");
-		client.executeMethod(post);
+		Request post = new Request("POST", TEST_INSTANCES_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_INVALID);
+		post.addParameter("widgetid", WIDGET_ID_LOCALIZED);
+		post.addParameter("userid", "test");
+		post.addParameter("shareddatakey", "test");
+		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(403, code);
-		post.releaseConnection();
 	}
 
 	/**
@@ -318,16 +318,16 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	 */
 	@Test
 	public void getInstanceById_InvalidWidget() throws HttpException, IOException {
-		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-		post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_INVALID + "&userid=test&shareddatakey=test");
-		client.executeMethod(post);
+		Request post = new Request("POST", TEST_INSTANCES_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_INVALID);
+		post.addParameter("userid", "test");
+		post.addParameter("shareddatakey", "test");
+		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(404, code); // but must return the "default widget"
 		assertTrue(post.getResponseBodyAsString().contains(
 		"Unsupported widget widget"));
-		post.releaseConnection();
 	}
 
 	/**
@@ -361,71 +361,70 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 		//
 		// Create an instance using POST
 		//
-		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-		post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_VALID + "&userid=test&shareddatakey=clonetestsrc");
-		client.executeMethod(post);
+		Request post = new Request("POST", TEST_INSTANCES_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_VALID);
+		post.addParameter("userid", "test");
+		post.addParameter("shareddatakey", "clonetestsrc");
+		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(200, code);
-		post.releaseConnection();
 
 		//
 		// Set some shared data
 		//
-		client = new HttpClient();
-		post = new PostMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-		post.setQueryString("api_key="
-				+ API_KEY_VALID
-				+ "&widgetid="
-				+ WIDGET_ID_VALID
-				+ "&userid=test&is_public=true&shareddatakey=clonetestsrc&propertyname=cat&propertyvalue=garfield");
-		client.executeMethod(post);
+		post = new Request("POST", TEST_PROPERTIES_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_VALID);
+		post.addParameter("userid", "test");
+		post.addParameter("shareddatakey", "clonetestsrc");
+		post.addParameter("propertyname", "cat");
+		post.addParameter("propertyvalue", "garfield");
+		post.addParameter("is_public", "true");
+		post.execute(true, false);
 		code = post.getStatusCode();
 		assertEquals(201, code);
-		post.releaseConnection();
 
 		//
 		// Clone it using PUT
 		//
-		client = new HttpClient();
-		PutMethod put = new PutMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-		put.setQueryString("api_key="
-				+ API_KEY_VALID
-				+ "&widgetid="
-				+ WIDGET_ID_VALID
-				+ "&userid=test&shareddatakey=clonetestsrc&requestid=clone&cloneshareddatakey=clonetestsync");
-		client.executeMethod(put);
+		Request put = new Request("PUT", TEST_INSTANCES_SERVICE_URL_VALID);
+		put.addParameter("api_key", API_KEY_VALID);
+		put.addParameter("widgetid", WIDGET_ID_VALID);
+		put.addParameter("userid", "test");
+		put.addParameter("shareddatakey", "clonetestsrc");
+		put.addParameter("requestid", "clone");
+		put.addParameter("cloneshareddatakey", "clonetestsync");
+		put.execute(true, false);
 		code = put.getStatusCode();
 		assertEquals(200, code);
-		put.releaseConnection();
 
 		//
 		// Create an instance for the clone
 		//
-		client = new HttpClient();
-		post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-		post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_VALID + "&userid=test&shareddatakey=clonetestsync");
-		client.executeMethod(post);
+		post = new Request("POST", TEST_INSTANCES_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_VALID);
+		post.addParameter("userid", "test");
+		post.addParameter("shareddatakey", "clonetestsync");
+		post.execute(true, false);
 		code = post.getStatusCode();
 		assertEquals(200, code);
-		post.releaseConnection();
 
 		//
 		// Get the data for the clone and check it is the same set for the original
 		//
-		client = new HttpClient();
-		GetMethod get = new GetMethod(TEST_PROPERTIES_SERVICE_URL_VALID);
-		get.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_VALID
-				+ "&userid=test&shareddatakey=clonetestsync&propertyname=cat");
-		client.executeMethod(get);
+		Request get = new Request("GET", TEST_PROPERTIES_SERVICE_URL_VALID);
+		get.addParameter("api_key", API_KEY_VALID);
+		get.addParameter("widgetid", WIDGET_ID_VALID);
+		get.addParameter("userid", "test");
+		get.addParameter("shareddatakey", "clonetestsync");
+		get.addParameter("propertyname", "cat");
+		get.execute(true, false);
 		code = get.getStatusCode();
 		assertEquals(200, code);
 		String resp = get.getResponseBodyAsString();
 		assertEquals("garfield", resp);
-		post.releaseConnection();
 	}
 
 }

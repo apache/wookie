@@ -18,11 +18,8 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.DeleteMethod;
+import org.apache.wookie.tests.helpers.Request;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,28 +38,30 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	 */
 	@BeforeClass
 	public static void setUp() throws Exception {
-		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(TEST_INSTANCES_SERVICE_URL_VALID);
-		post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_VALID + "&userid=test&shareddatakey=participantstest");
-		client.executeMethod(post);
+		Request post = new Request("POST", TEST_INSTANCES_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_VALID);
+		post.addParameter("userid", "test");
+		post.addParameter("shareddatakey", "participantstest");
+		post.execute(true, false);
+		int code = post.getStatusCode();
+		assertEquals(200, code);
 		String response = post.getResponseBodyAsString();
 		instance_id_key = response.substring(response.indexOf("<identifier>") + 12,
 				response.indexOf("</identifier>"));
-		post.releaseConnection();
 	}
 
 	@AfterClass
 	public static void tearDown() throws HttpException, IOException{
-		HttpClient client = new HttpClient();
-		DeleteMethod post = new DeleteMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
-		post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_VALID
-				+ "&userid=test&shareddatakey=participantstest&participant_id=80");
-		client.executeMethod(post);
-		int code = post.getStatusCode();
+		Request delete = new Request("DELETE", TEST_PARTICIPANTS_SERVICE_URL_VALID);
+		delete.addParameter("api_key", API_KEY_VALID);
+		delete.addParameter("widgetid", WIDGET_ID_VALID);
+		delete.addParameter("userid", "test");
+		delete.addParameter("shareddatakey", "participantstest");
+		delete.addParameter("participant_id", "80");
+		delete.execute(true, false);
+		int code = delete.getStatusCode();
 		assertEquals(200, code);
-		post.releaseConnection();
 	}
 
 	/**
@@ -77,33 +76,34 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 		//
 		// Create a new participant
 		//
-		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
-		post.setQueryString("api_key="
-				+ API_KEY_VALID
-				+ "&widgetid="
-				+ WIDGET_ID_VALID
-				+ "&userid=test&shareddatakey=participantstest&participant_id=1&participant_display_name=bob&participant_thumbnail_url=http://www.test.org");
-		client.executeMethod(post);
+		
+		Request post = new Request("POST", TEST_PARTICIPANTS_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_VALID);
+		post.addParameter("userid", "test");
+		post.addParameter("shareddatakey", "participantstest");
+		post.addParameter("participant_id", "1");
+		post.addParameter("participant_display_name", "bob");
+		post.addParameter("participant_thumbnail_url", "http://www.test.org");
+		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(201, code);
-		post.releaseConnection();
+		
 
 		//
 		// Now lets GET it to make sure it was added OK
 		//
-		client = new HttpClient();
-		GetMethod get = new GetMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
-		get.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_VALID + "&userid=test&shareddatakey=participantstest");
-		client.executeMethod(get);
+		Request get = new Request("GET", TEST_PARTICIPANTS_SERVICE_URL_VALID);
+		get.addParameter("api_key", API_KEY_VALID);
+		get.addParameter("widgetid", WIDGET_ID_VALID);
+		get.addParameter("userid", "test");
+		get.addParameter("shareddatakey", "participantstest");
+		get.execute(true, false);
 		code = get.getStatusCode();
 		assertEquals(200, code);
 		String response = get.getResponseBodyAsString();
 		assertTrue(response
 				.contains("<participant id=\"1\" display_name=\"bob\" thumbnail_url=\"http://www.test.org\" />"));
-		get.releaseConnection();
-
 	}
 
 	/**
@@ -114,17 +114,15 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	 */
 	@Test
 	public void getParticipant_usingIdKey() throws HttpException, IOException {
-		HttpClient client = new HttpClient();
-		GetMethod get = new GetMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
-		get.setQueryString("api_key=" + API_KEY_VALID + "&idkey="
-				+ instance_id_key);
-		client.executeMethod(get);
+		Request get = new Request("GET", TEST_PARTICIPANTS_SERVICE_URL_VALID);
+		get.addParameter("api_key", API_KEY_VALID);
+		get.addParameter("idkey", instance_id_key);
+		get.execute(true, false);
 		int code = get.getStatusCode();
 		assertEquals(200, code);
 		String response = get.getResponseBodyAsString();
 		assertTrue(response
 				.contains("<participant id=\"1\" display_name=\"bob\" thumbnail_url=\"http://www.test.org\" />"));
-		get.releaseConnection();
 	}
 
 	/**
@@ -135,17 +133,17 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	 */
 	@Test
 	public void addParticipant_AlreadyExists() throws HttpException, IOException {
-		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
-		post.setQueryString("api_key="
-				+ API_KEY_VALID
-				+ "&widgetid="
-				+ WIDGET_ID_VALID
-				+ "&userid=test&shareddatakey=participantstest&participant_id=1&participant_display_name=bob&participants_thumbnail_url=http://www.test.org");
-		client.executeMethod(post);
+		Request post = new Request("POST", TEST_PARTICIPANTS_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_VALID);
+		post.addParameter("userid", "test");
+		post.addParameter("shareddatakey", "participantstest");
+		post.addParameter("participant_id", "1");
+		post.addParameter("participant_display_name", "bob");
+		post.addParameter("participant_thumbnail_url", "http://www.test.org");
+		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(200, code);
-		post.releaseConnection();
 	}
 
 	/**
@@ -156,14 +154,17 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	 */
 	@Test
 	public void addParticipant_InvalidAPIkey() throws HttpException, IOException {
-		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
-		post.setQueryString("api_key=" + API_KEY_INVALID + "&widgetid="
-				+ WIDGET_ID_VALID + "&userid=test&shareddatakey=participantstest");
-		client.executeMethod(post);
+		Request post = new Request("POST", TEST_PARTICIPANTS_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_INVALID);
+		post.addParameter("widgetid", WIDGET_ID_VALID);
+		post.addParameter("userid", "test");
+		post.addParameter("shareddatakey", "participantstest");
+		post.addParameter("participant_id", "1");
+		post.addParameter("participant_display_name", "bob");
+		post.addParameter("participant_thumbnail_url", "http://www.test.org");
+		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(403, code);
-		post.releaseConnection();
 	}
 
 	/**
@@ -175,17 +176,17 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	@Test
 	public void addParticipant_InvalidParticipant() throws HttpException,
 	IOException {
-		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
-		post.setQueryString("api_key="
-				+ API_KEY_VALID
-				+ "&widgetid="
-				+ WIDGET_ID_VALID
-				+ "&userid=test&shareddatakey=participantstest&participant_id=&participant_display_name=bob&participants_thumbnail_url=http://www.test.org");
-		client.executeMethod(post);
+		Request post = new Request("POST", TEST_PARTICIPANTS_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_VALID);
+		post.addParameter("userid", "test");
+		post.addParameter("shareddatakey", "participantstest");
+		post.addParameter("participant_id", "");
+		post.addParameter("participant_display_name", "bob");
+		post.addParameter("participant_thumbnail_url", "http://www.test.org");
+		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(400, code);
-		post.releaseConnection();
 	}
 
 	/**
@@ -196,17 +197,17 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	 */
 	@Test
 	public void addParticipant_InvalidWidget() throws HttpException, IOException {
-		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
-		post.setQueryString("api_key="
-				+ API_KEY_VALID
-				+ "&widgetid="
-				+ WIDGET_ID_INVALID
-				+ "&userid=test&shareddatakey=participantstest&participant_id=1&participant_display_name=bob&participants_thumbnail_url=http://www.test.org");
-		client.executeMethod(post);
+		Request post = new Request("POST", TEST_PARTICIPANTS_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_INVALID);
+		post.addParameter("userid", "test");
+		post.addParameter("shareddatakey", "participantstest");
+		post.addParameter("participant_id", "1");
+		post.addParameter("participant_display_name", "bob");
+		post.addParameter("participant_thumbnail_url", "http://www.test.org");
+		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(400, code);
-		post.releaseConnection();
 	}
 
 	/**
@@ -220,32 +221,30 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 		//
 		// Delete the participant
 		//
-		HttpClient client = new HttpClient();
-		DeleteMethod post = new DeleteMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
-		post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_VALID
-				+ "&userid=test&shareddatakey=participantstest&participant_id=1");
-		client.executeMethod(post);
-		int code = post.getStatusCode();
+		Request delete = new Request("DELETE", TEST_PARTICIPANTS_SERVICE_URL_VALID);
+		delete.addParameter("api_key", API_KEY_VALID);
+		delete.addParameter("widgetid", WIDGET_ID_VALID);
+		delete.addParameter("userid", "test");
+		delete.addParameter("shareddatakey", "participantstest");
+		delete.addParameter("participant_id", "1");
+		delete.execute(true, false);
+		int code = delete.getStatusCode();
 		assertEquals(200, code);
-		post.releaseConnection();
 
 		//
 		// Now lets GET it to make sure it was deleted
 		//
-
-		client = new HttpClient();
-		GetMethod get = new GetMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
-		get.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_VALID + "&userid=test&shareddatakey=participantstest");
-		client.executeMethod(get);
+		Request get = new Request("GET", TEST_PARTICIPANTS_SERVICE_URL_VALID);
+		get.addParameter("api_key", API_KEY_VALID);
+		get.addParameter("widgetid", WIDGET_ID_VALID);
+		get.addParameter("userid", "test");
+		get.addParameter("shareddatakey", "participantstest");
+		get.execute(true, false);
 		code = get.getStatusCode();
 		assertEquals(200, code);
 		String response = get.getResponseBodyAsString();
 		assertFalse(response
 				.contains("<participant id=\"1\" display_name=\"bob\" thumbnail_url=\"http://www.test.org\" />"));
-		get.releaseConnection();
-
 	}
 
 	/**
@@ -257,14 +256,15 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	@Test
 	public void deleteParticipant_InvalidAPIKey() throws HttpException,
 	IOException {
-		HttpClient client = new HttpClient();
-		DeleteMethod post = new DeleteMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
-		post.setQueryString("api_key=" + API_KEY_INVALID + "&widgetid="
-				+ WIDGET_ID_VALID + "&userid=test&shareddatakey=participantstest");
-		client.executeMethod(post);
-		int code = post.getStatusCode();
+		Request delete = new Request("DELETE", TEST_PARTICIPANTS_SERVICE_URL_VALID);
+		delete.addParameter("api_key", API_KEY_INVALID);
+		delete.addParameter("widgetid", WIDGET_ID_VALID);
+		delete.addParameter("userid", "test");
+		delete.addParameter("shareddatakey", "participantstest");
+		delete.addParameter("participant_id", "99");
+		delete.execute(true, false);
+		int code = delete.getStatusCode();
 		assertEquals(403, code);
-		post.releaseConnection();
 	}
 
 	/**
@@ -276,15 +276,15 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	@Test
 	public void deleteParticipant_InvalidParticipant() throws HttpException,
 	IOException {
-		HttpClient client = new HttpClient();
-		DeleteMethod post = new DeleteMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
-		post.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_VALID
-				+ "&userid=test&shareddatakey=participantstest&participant_id=99");
-		client.executeMethod(post);
-		int code = post.getStatusCode();
+		Request delete = new Request("DELETE", TEST_PARTICIPANTS_SERVICE_URL_VALID);
+		delete.addParameter("api_key", API_KEY_VALID);
+		delete.addParameter("widgetid", WIDGET_ID_VALID);
+		delete.addParameter("userid", "test");
+		delete.addParameter("shareddatakey", "participantstest");
+		delete.addParameter("participant_id", "99");
+		delete.execute(true, false);
+		int code = delete.getStatusCode();
 		assertEquals(404, code);
-		post.releaseConnection();
 	}
 
 	/**
@@ -296,17 +296,15 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 	@Test
 	public void deleteParticipant_InvalidInstance() throws HttpException,
 	IOException {
-		HttpClient client = new HttpClient();
-		DeleteMethod post = new DeleteMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
-		post.setQueryString("api_key="
-				+ API_KEY_VALID
-				+ "&widgetid="
-				+ WIDGET_ID_VALID
-				+ "&userid=test&shareddatakey=participantstestinvalidkey&participant_id=1");
-		client.executeMethod(post);
-		int code = post.getStatusCode();
+		Request delete = new Request("DELETE", TEST_PARTICIPANTS_SERVICE_URL_VALID);
+		delete.addParameter("api_key", API_KEY_VALID);
+		delete.addParameter("widgetid", WIDGET_ID_VALID);
+		delete.addParameter("userid", "test");
+		delete.addParameter("shareddatakey", "participantstestinvalidkey");
+		delete.addParameter("participant_id", "1");
+		delete.execute(true, false);
+		int code = delete.getStatusCode();
 		assertEquals(404, code);
-		post.releaseConnection();
 	}
 
 	/**
@@ -321,33 +319,33 @@ public class ParticipantsControllerTest extends AbstractControllerTest {
 		//
 		// Create a new participant
 		//
-		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
-		post.setQueryString("api_key="
-				+ API_KEY_VALID
-				+ "&widgetid="
-				+ WIDGET_ID_VALID
-				+ "&userid=test&shareddatakey=participantstest&participant_id=80&participant_display_name=bob&participant_role=host&participant_thumbnail_url=http://www.test.org");
-		client.executeMethod(post);
+		Request post = new Request("POST", TEST_PARTICIPANTS_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_VALID);
+		post.addParameter("userid", "test");
+		post.addParameter("shareddatakey", "participantstest");
+		post.addParameter("participant_id", "80");
+		post.addParameter("participant_display_name", "bob");
+		post.addParameter("participant_role", "host");
+		post.addParameter("participant_thumbnail_url", "http://www.test.org");
+		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(201, code);
-		post.releaseConnection();
 
 		//
 		// Now lets GET it to make sure it was added OK
 		//
-		client = new HttpClient();
-		GetMethod get = new GetMethod(TEST_PARTICIPANTS_SERVICE_URL_VALID);
-		get.setQueryString("api_key=" + API_KEY_VALID + "&widgetid="
-				+ WIDGET_ID_VALID + "&userid=test&shareddatakey=participantstest");
-		client.executeMethod(get);
+		Request get = new Request("GET", TEST_PARTICIPANTS_SERVICE_URL_VALID);
+		get.addParameter("api_key", API_KEY_VALID);
+		get.addParameter("widgetid", WIDGET_ID_VALID);
+		get.addParameter("userid", "test");
+		get.addParameter("shareddatakey", "participantstest");
+		get.execute(true, false);
 		code = get.getStatusCode();
 		assertEquals(200, code);
 		String response = get.getResponseBodyAsString();
 		assertTrue(response
 				.contains("<participant id=\"80\" display_name=\"bob\" thumbnail_url=\"http://www.test.org\" role=\"host\" />"));
-		get.releaseConnection();
-
 	}
 
 }
