@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class WookieServerConnectionTest {
-  private static final String TEST_URL = "http://localhost:8888/wookie";
+  private static final String TEST_URL = "http://localhost:8080/wookie";
   private static final String TEST_API_KEY = "TEST";
   private static final String TEST_SHARED_DATA_KEY = "myshareddata";
   static WookieServerConnection conn;

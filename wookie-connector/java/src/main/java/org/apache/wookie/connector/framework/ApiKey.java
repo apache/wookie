@@ -15,31 +15,17 @@ package org.apache.wookie.connector.framework;
 
 public class ApiKey {
 	
-	private String id;
 	private String key;
-	private String email;
+	private String secret;
 
 	
 	
-	public ApiKey ( String id, String key, String email ) {
-		this.id = id;
+	public ApiKey ( String key, String secret ) {
 		this.key = key;
-		this.email = email;
+		this.secret = secret;
 	}
 	
 	
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
 	/**
 	 * @return the key
 	 */
@@ -53,16 +39,16 @@ public class ApiKey {
 		this.key = key;
 	}
 	/**
-	 * @return the email
+	 * @return the secret
 	 */
-	public String getEmail() {
-		return email;
+	public String getSecret() {
+		return secret;
 	}
 	/**
 	 * @param email the email to set
 	 */
-	public void setEmail(String email) {
-		this.email = email;
+	public void setSecret(String secret) {
+		this.secret = secret;
 	}
 	
 	

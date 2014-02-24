@@ -63,15 +63,13 @@ public class WookieConnectorService {
   
   @Test
   public void widgetHandling ( ) throws WookieConnectorException, IOException {
-	  File widgetFile = new File ( "connector/java/src/test/java/org/apache/wookie/tests/connector/framework/impl/empty.wgt" );
-	  String adminUsername = "java";
-	  String adminPassword = "java";
+	  File widgetFile = new File ( "src/test/java/org/apache/wookie/tests/connector/framework/impl/empty.wgt" );
 	  File saveWidgetFile = File.createTempFile("empty"+Long.toString(System.nanoTime()), "wgt");
-	  Widget uploadedWidget = service.postWidget(widgetFile, adminUsername, adminPassword);
+	  Widget uploadedWidget = service.postWidget(widgetFile);
 	  assertNotNull ( "Widget value from postWidget is null", uploadedWidget);
 	  String identifier = uploadedWidget.getIdentifier();
 	  
-	  uploadedWidget = service.updateWidget(widgetFile, identifier, adminUsername, adminPassword);
+	  uploadedWidget = service.updateWidget(widgetFile, identifier);
 	  uploadedWidget = service.getWidget(identifier);
 	  assertNotNull("Widget value from getWidget is null", uploadedWidget);
 	  
@@ -79,7 +77,7 @@ public class WookieConnectorService {
 	  assertTrue ( "Widget file has been deleted", saveWidgetFile.exists());
 	  assertTrue ( "Widget file has no data in it", saveWidgetFile.length() > 0 );
 	  
-	  service.deleteWidget(identifier, adminUsername, adminPassword);
+	  service.deleteWidget(identifier);
 	  
 	  uploadedWidget = service.getWidget(identifier);
 	  assertTrue ( "Widget file has not been deleted", uploadedWidget == null );
@@ -89,10 +87,8 @@ public class WookieConnectorService {
   
   @Test
   public void upload() throws WookieConnectorException{
-	  File widgetFile = new File ( "connector/java/src/test/java/org/apache/wookie/tests/connector/framework/impl/localetest.wgt" );
-	  String adminUsername = "java";
-	  String adminPassword = "java";
-	  Widget uploadedWidget = service.postWidget(widgetFile, adminUsername, adminPassword);
+	  File widgetFile = new File ( "src/test/java/org/apache/wookie/tests/connector/framework/impl/localetest.wgt" );
+	  Widget uploadedWidget = service.postWidget(widgetFile);
 	  assertNotNull ( "Widget value from postWidget is null", uploadedWidget);
 	  String identifier = uploadedWidget.getIdentifier();
 	  assertEquals("http://www.getwookie.org/widgets/localetest", identifier);
@@ -168,8 +164,21 @@ public class WookieConnectorService {
     service.addParticipant(instance, user);
     User[] users = service.getUsers(instance);
     assertTrue("Wrong number of users returned",users.length>1);
-    assertTrue("Wrong user returned", users[0].getLoginName().equals("testuser"));
-    assertTrue("Wrong user returned", users[1].getLoginName().equals("test1"));
+    
+    //
+    // We can't assume the order of the returned users!
+    //
+    User user1, user2;
+    if (users[0].getLoginName().equals("testuser")){
+    	user1 = users[0];
+    	user2 = users[1];
+    } else {
+    	user1 = users[1];
+    	user2 = users[0];
+    }
+    
+    assertTrue("Wrong user returned", user1.getLoginName().equals("testuser"));
+    assertTrue("Wrong user returned", user2.getLoginName().equals("test1"));
     service.removeParticipantFromWidget(instance, user);
     users = service.getUsers(instance);
     assertTrue("Wrong number of users returned",users.length==1);
@@ -183,7 +192,11 @@ public class WookieConnectorService {
     User user = new User("thumbnailtestuser","thumbnail test user","http://bar.com/icon.png");
     service.addParticipant(instance, user);
     User[] users = service.getUsers(instance);
-    user = users[users.length-1];
+    for (User u: users){
+    	if (u.getLoginName().equals("thumbnailtestuser")){
+    		user = u;
+    	}
+    }
     assertTrue("Incorrect thumbnail", user.getThumbnailUrl().equals("http://bar.com/icon.png"));
     service.removeParticipantFromWidget(instance, user);
   }
@@ -196,7 +209,11 @@ public class WookieConnectorService {
     User user = new User("roletestuser","role test user","http://bar.com/icon.png","OWNER");
     service.addParticipant(instance, user);
     User[] users = service.getUsers(instance);
-    user = users[users.length-1];
+    user = null;
+    for (User xuser: users){
+    	if (xuser.getLoginName().equals("roletestuser")) user = xuser;
+    }
+    assertNotNull(user);
     assertTrue("Incorrect user", user.getLoginName().equals("roletestuser"));
     assertTrue("Incorrect role", user.getRole().equals("OWNER"));
     service.removeParticipantFromWidget(instance, user);
@@ -207,7 +224,7 @@ public class WookieConnectorService {
 	    HashMap<String, Widget> widgets = service.getAvailableWidgets();
 	    WidgetInstance instance = service.getOrCreateInstance((Widget)widgets.values().toArray()[0]);
 	    assertNotNull("Retrieved widget instance is null", instance);
-	    service.setPropertyForInstance(instance, true, "test_property2", "test data");
+	    service.setPropertyForInstance(instance, true, "test_property2", "test_data");
 	    String data = service.getPropertyForInstance(instance, "test_property2");
 	    assertNotNull ( "Data from property is null", data );
 	    service.updatePropertyForInstance(instance, true, "test_property2", "new test data");
@@ -221,46 +238,41 @@ public class WookieConnectorService {
   
   @Test
   public void apikeys() throws IOException, WookieConnectorException {
-	  String adminPassword = "java";
-	  String adminUsername = "java";
 	  
-	  List<ApiKey> apikeys = service.getAPIKeys(adminUsername, adminPassword);
+	  List<ApiKey> apikeys = service.getAPIKeys();
 	  int apikeysLength = apikeys.size();
 	  assertTrue ( "Unable to get api keys", ( apikeysLength > 0));
-	  ApiKey newKey = new ApiKey ( null, "tester", "test@test.com" );
-	  service.createApiKey(newKey, adminUsername, adminPassword);
+	  ApiKey newKey = new ApiKey ("tester", "test@test.com" );
+	  service.createApiKey(newKey);
 	  
-	  apikeys = service.getAPIKeys(adminUsername, adminPassword);
+	  apikeys = service.getAPIKeys();
 	  
 	  boolean foundKey = false;
 	  ListIterator<ApiKey> li = apikeys.listIterator();
 	  while (li.hasNext()) {
 		  ApiKey akey = li.next();
-		  if ( akey.getEmail().equals("test@test.com") && akey.getKey().equals("tester")) {
-			  newKey.setId(akey.getId());
+		  if ( akey.getKey().equals("tester")) {
 			  foundKey = true;
 		  }
 	  }
 	  assertTrue ( "New key not created", foundKey );
 	  
-	  service.removeApiKey(newKey, adminUsername, adminPassword);
-	  assertEquals ( service.getAPIKeys(adminUsername, adminPassword).size(), apikeysLength);
+	  service.removeApiKey(newKey);
+	  assertEquals ( service.getAPIKeys().size(), apikeysLength);
   }
   
   
   @Test
   public void policyTest ( ) throws IOException, WookieConnectorException {
-	  String adminPassword = "java";
-	  String adminUsername = "java";
 	  
-	  List<Policy> policies = service.getPolicies(adminUsername, adminPassword, null);
+	  List<Policy> policies = service.getPolicies(null);
 	  int policyListSize = policies.size();
 	  assertTrue ( "Unable to get policies", (policyListSize > 0) );
 	  String scope = "http://test.scope/8475374";
 	  Policy policy = new Policy ( scope, "http://nowhere.com", "ALLOW" );
-	  service.createPolicy(policy, adminUsername, adminPassword);
-	  assertTrue ( "New policy not created", service.getPolicies(adminUsername, adminPassword, scope).size() > 0);
-	  service.deletePolicy(policy, adminUsername, adminPassword);
-	  assertEquals ( service.getPolicies(adminUsername, adminPassword, null).size(), policyListSize);
+	  service.createPolicy(policy);
+	  assertTrue ( "New policy not created", service.getPolicies(scope).size() > 0);
+	  service.deletePolicy(policy);
+	  assertEquals ( service.getPolicies(null).size(), policyListSize);
   }
 }

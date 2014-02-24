@@ -26,6 +26,7 @@ public class WookieServerConnection implements Serializable {
   private String url;
   private String apiKey = "TEST";
   private String sharedDataKey = "mysharedkey";
+  private String secret = "test@127.0.0.1";
 
   /**
    * Create a connection to a Wookie server at a given URL.
@@ -75,6 +76,10 @@ public class WookieServerConnection implements Serializable {
    */
   public void setApiKey(String newApiKey) {
     apiKey = newApiKey;
+  }
+  
+  public String getSecret(){
+	  return secret;
   }
 
   /**
