@@ -17,6 +17,8 @@
 -->
 <feature>
 	<name>http://oauth.net/2</name>
+    <script src="dwr/util.js"/>
+	<script src="dwr/engine.js"/>
 	<script src="dwr/interface/OAuthConnector.js"/>
 	<script src="oauth.js"/>
 </feature>

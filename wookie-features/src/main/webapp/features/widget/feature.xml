@@ -22,8 +22,5 @@
 	they will be automatically added when widgets are imported or updated  
 	-->
 	<name>http://wookie.apache.org/feature/default</name>
-	<script src="dwr/util.js"/>
-	<script src="dwr/engine.js"/>
-	<script src="dwr/interface/WidgetImpl.js"/>
 	<script src="wookie.js"/>
 </feature>
