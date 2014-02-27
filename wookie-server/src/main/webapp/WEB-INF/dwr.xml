@@ -36,17 +36,6 @@
       <include method="invalidateToken"/>
       <include method="queryOAuthParams"/>
     </create>
-        
-    <convert converter="object" match="org.apache.wookie.ajaxmodel.impl.PreferenceDelegate" javascript="Preference">
-        <param name="force" value="true"/>
-        <param name="include" value="dkey, dvalue, readOnly"/>
-    </convert>
-    <create creator="new" javascript="WidgetImpl" scope="application">
-      <param name="class" value="org.apache.wookie.ajaxmodel.impl.WidgetAPIImpl"/>
-      <include method="preferences"/> 
-      <include method="metadata"/> 
-      <include method="setPreferenceForKey"/>
-    </create>
     
     <create creator="new" javascript="WookieImpl" scope="application">
       <param name="class" value="org.apache.wookie.feature.ext.WookieAPIImpl"/>

@@ -221,6 +221,40 @@
 		<url-pattern>/policies/*</url-pattern>
 	</servlet-mapping>
 
+
+	
+	<!-- AJAX -->
+	<servlet>
+		<description>Preferences AJAX controller</description>
+		<display-name>PreferencesController</display-name>
+		<servlet-name>PreferencesController</servlet-name>
+		<servlet-class>org.apache.wookie.controller.PreferencesController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PreferencesController</servlet-name>
+		<url-pattern>/preferences</url-pattern>
+	</servlet-mapping>
+	
+		<servlet>
+		<description>Metadata AJAX controller</description>
+		<display-name>MetadataController</display-name>
+		<servlet-name>MetadataController</servlet-name>
+		<servlet-class>org.apache.wookie.controller.MetadataController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>MetadataController</servlet-name>
+		<url-pattern>/metadata</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet-mapping>
+		<servlet-name>dwr-invoker</servlet-name>
+		<url-pattern>/dwr/*</url-pattern>
+	</servlet-mapping>
+	
+	<!-- End AJAX -->
+
+	<!-- oAuth -->
 	<servlet>
 		<description>
 		</description>
@@ -228,12 +262,6 @@
 		<servlet-name>TokenHandler</servlet-name>
 		<servlet-class>org.apache.wookie.feature.oauth.TokenHandler</servlet-class>
 	</servlet>
-	
-	<servlet-mapping>
-		<servlet-name>dwr-invoker</servlet-name>
-		<url-pattern>/dwr/*</url-pattern>
-	</servlet-mapping>
-
 	<servlet-mapping>
 		<servlet-name>TokenHandler</servlet-name>
 		<url-pattern>/features/oauth/implicit</url-pattern>
@@ -242,6 +270,7 @@
 		<servlet-name>TokenHandler</servlet-name>
 		<url-pattern>/features/oauth/authz-code</url-pattern>
 	</servlet-mapping>
+	<!-- End oAuth -->
 
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
@@ -253,7 +282,21 @@
 	</welcome-file-list>
 
 	<!--****************** SECURITY SECTION ************************-->
-	
+
+	<!-- Use Authorization Filter for Widget AJAX API  -->
+	<filter>
+   	    <filter-name>WidgetAuthorizationFilter</filter-name>
+   	    <filter-class>org.apache.wookie.server.security.WidgetAuthorizationFilter</filter-class>
+  	</filter>
+  	<filter-mapping>
+    	<filter-name>WidgetAuthorizationFilter</filter-name>
+		<servlet-name>PreferencesController</servlet-name>
+  	</filter-mapping>
+  	<filter-mapping>
+    	<filter-name>WidgetAuthorizationFilter</filter-name>
+		<servlet-name>MetadataController</servlet-name>
+  	</filter-mapping>
+  			
 	<!-- Use Authorization Filter for REST API  -->
 	<filter>
    	    <filter-name>AuthorizationFilter</filter-name>
