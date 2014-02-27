@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.wookie.tests.functional.AbstractControllerTest;
 import org.apache.wookie.tests.helpers.Request;
