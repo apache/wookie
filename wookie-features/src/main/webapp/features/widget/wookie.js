@@ -304,10 +304,39 @@ var Widget = {
         // to ask for a handle on this as an onLoad() event
         //
         this.preferences = WidgetPreferences;
-        dwr.engine.beginBatch();
-        WidgetImpl.preferences(this.instanceid_key, this.setPrefs);
-        WidgetImpl.metadata(this.instanceid_key, this.setMetadata);
-        dwr.engine.endBatch({async: false}); 
+        
+            
+        //
+        // Load preferences using AJAX
+        //
+        var xml_request = new XMLHttpRequest();
+        xml_request.open("GET", "/wookie/preferences?idkey="+this.instanceid_key, false);
+        xml_request.onreadystatechange = function()
+        {
+            if(xml_request.readyState == 4 && xml_request.status == 200){
+              var json = (JSON.parse(xml_request.responseText));
+              Widget.setPrefs(json.Preferences);
+              
+            }
+        }
+        xml_request.setRequestHeader("Cache-Control", "no-cache");
+        xml_request.send(null);   
+        
+        //
+        // Load metadata using AJAX
+        //
+        var xml_request = new XMLHttpRequest();
+        xml_request.open("GET", "/wookie/metadata?idkey="+this.instanceid_key, false);
+        xml_request.onreadystatechange = function()
+        {
+            if(xml_request.readyState == 4 && xml_request.status == 200){
+              var json = (JSON.parse(xml_request.responseText));
+              Widget.setMetadata(json);
+              
+            }
+        }
+        xml_request.setRequestHeader("Cache-Control", "no-cache");
+        xml_request.send(null);   
     },
 
     /**
@@ -398,7 +427,10 @@ var Widget = {
      * Persist a preference object in the server backend
      */
     setPreferenceForKey : function (wName, wValue) {
-        WidgetImpl.setPreferenceForKey(this.instanceid_key, wName, wValue);    
+        var xml_request = new XMLHttpRequest();
+        xml_request.open("POST", "/wookie/preferences?idkey="+this.instanceid_key+"&name="+wName+"&value="+wValue, true);
+        xml_request.setRequestHeader("Cache-Control", "no-cache");
+        xml_request.send(null);   
     },
     
     /**
@@ -430,6 +462,13 @@ var Widget = {
         return "[object Widget]";
     }    
 };
+
+//
+// Utility for getting an XMLHTTP object across different browsers
+//
+Widget.createXMLHTTPObject = function(){
+    try{return new XMLHttpRequest();}catch(e){}try{return new ActiveXObject("Msxml3.XMLHTTP");}catch(e){}try{return new ActiveXObject("Msxml2.XMLHTTP.6.0");}catch(e){}try{return new ActiveXObject("Msxml2.XMLHTTP.3.0");}catch(e){}try{return new ActiveXObject("Msxml2.XMLHTTP");}catch(e){}try{return new ActiveXObject("Microsoft.XMLHTTP");}catch(e){}return null;
+}
 
 //
 // Initialize the widget object
