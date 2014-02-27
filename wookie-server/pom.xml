@@ -62,7 +62,13 @@
       <artifactId>wookie-spi</artifactId>
       <version>2.0.0-SNAPSHOT</version>
     </dependency>
-    <!--  
+
+    <!--      
+    <dependency>
+      <groupId>org.apache.wookie</groupId>
+      <artifactId>wookie-redis</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.wookie</groupId>
       <artifactId>wookie-jpa</artifactId>
@@ -102,21 +108,9 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-email</artifactId>
-      <version>1.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
       <version>3.2</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-compress</artifactId>
-      <version>1.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -144,21 +138,9 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.1.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>dom4j</groupId>
-      <artifactId>dom4j</artifactId>
-      <version>1.6.1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -217,44 +199,15 @@
     </dependency>
 
     <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty-naming</artifactId>
-      <version>6.1.3</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jsp-2.1</artifactId>
-      <version>6.1.3</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jsp-api-2.1</artifactId>
-      <version>6.1.3</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.7</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>directory-naming</groupId>
-      <artifactId>naming-java</artifactId>
-      <version>0.8</version>
       <optional>true</optional>
     </dependency>
 
 
 
     <!-- log4j logging -->
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>1.6.4</version>
-    </dependency>
     <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
