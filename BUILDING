@@ -48,10 +48,6 @@ Initial Setup
         wookie-widgets folder in the command prompt/console window and typing "ant deploy-all".  
 
 7) Additional Information
-	Note that by default, Wookie will clean the database each time it is run, this ensures that your development 
-	environment starts in a consistent state. However, any modifications you have made to the database during 
-	previous runs will be lost. To run the development server without cleaning the database you need to set initDB=false. 
-	
-	To access the administration menu (http://localhost:8080/wookie/admin) use the username 'java' and password 'java'.
-
-	If you want to start with a completely clean build then use "ant clean-build run" at the console/command prompt.
+	Note that by default, Wookie uses in-memory storage for things like widget preferences, which
+        are then lost when the server is restarted. For persistent storage, you can use Redis or JPA; 
+        to install a storage provider read the documentation in the relevant module, e.g. wookie-redis.
