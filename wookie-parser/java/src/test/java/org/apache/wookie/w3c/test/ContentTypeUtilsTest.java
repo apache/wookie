@@ -133,18 +133,18 @@ public class ContentTypeUtilsTest extends ContentTypeUtils {
 	@Test
 	public void sniff() throws IOException{
 		
-		assertEquals("image/bmp", ContentTypeUtils.sniffContentType(new File("parser/java/src/test/resources/icons/icon_bmp")));
-		assertEquals("image/gif", ContentTypeUtils.sniffContentType(new File("parser/java/src/test/resources/icons/icon_gif")));
-		assertEquals("image/jpeg", ContentTypeUtils.sniffContentType(new File("parser/java/src/test/resources/icons/icon_jpg")));
-		assertEquals("image/png", ContentTypeUtils.sniffContentType(new File("parser/java/src/test/resources/icons/icon_png")));
-		assertEquals("image/vnd.microsoft.icon", ContentTypeUtils.sniffContentType(new File("parser/java/src/test/resources/icons/icon_ico")));
-		assertEquals(null, ContentTypeUtils.sniffContentType(new File("parser/java/src/test/resources/icons/icon_exr")));
+		assertEquals("image/bmp", ContentTypeUtils.sniffContentType(new File("src/test/resources/icons/icon_bmp")));
+		assertEquals("image/gif", ContentTypeUtils.sniffContentType(new File("src/test/resources/icons/icon_gif")));
+		assertEquals("image/jpeg", ContentTypeUtils.sniffContentType(new File("src/test/resources/icons/icon_jpg")));
+		assertEquals("image/png", ContentTypeUtils.sniffContentType(new File("src/test/resources/icons/icon_png")));
+		assertEquals("image/vnd.microsoft.icon", ContentTypeUtils.sniffContentType(new File("src/test/resources/icons/icon_ico")));
+		assertEquals(null, ContentTypeUtils.sniffContentType(new File("src/test/resources/icons/icon_exr")));
 
-		assertFalse(ContentTypeUtils.isSupportedImageType(new File("parser/java/src/test/resources/icons/icon_bmp")));
-		assertTrue(ContentTypeUtils.isSupportedImageType(new File("parser/java/src/test/resources/icons/icon_ico")));
-		assertFalse(ContentTypeUtils.isSupportedImageType(new File("parser/java/src/test/resources/icons/icon_exr")));
-		assertTrue(ContentTypeUtils.isSupportedImageType(new File("parser/java/src/test/resources/icons/icon_gif")));
-		assertTrue(ContentTypeUtils.isSupportedImageType(new File("parser/java/src/test/resources/icons/icon_jpg")));
-		assertTrue(ContentTypeUtils.isSupportedImageType(new File("parser/java/src/test/resources/icons/icon_png")));
+		assertFalse(ContentTypeUtils.isSupportedImageType(new File("src/test/resources/icons/icon_bmp")));
+		assertTrue(ContentTypeUtils.isSupportedImageType(new File("src/test/resources/icons/icon_ico")));
+		assertFalse(ContentTypeUtils.isSupportedImageType(new File("src/test/resources/icons/icon_exr")));
+		assertTrue(ContentTypeUtils.isSupportedImageType(new File("src/test/resources/icons/icon_gif")));
+		assertTrue(ContentTypeUtils.isSupportedImageType(new File("src/test/resources/icons/icon_jpg")));
+		assertTrue(ContentTypeUtils.isSupportedImageType(new File("src/test/resources/icons/icon_png")));
 	}
 }

@@ -28,10 +28,10 @@ import org.junit.Test;
 
 public class W3CWidgetFactoryTest {
 	
-	final static File wgt = new File("parser/java/src/test/resources/test.wgt");
+	final static File wgt = new File("src/test/resources/test.wgt");
 	final static String widgetGuid = "http://www.getwookie.org/widgets/test";
-	final static File testfolder = new File("parser/java/test");	
-	final static File testfolderreadonly = new File("parser/java/testr");	
+	final static File testfolder = new File("test");	
+	final static File testfolderreadonly = new File("testr");	
 	
 	@BeforeClass
 	public static void setup(){
@@ -151,7 +151,7 @@ public class W3CWidgetFactoryTest {
 	    fac.setOutputDirectory(testfolder.getPath());
 	    fac.parse(wgt);
 	    File file = fac.getUnzippedWidgetDirectory();
-	    assertEquals("parser/java/test/www.getwookie.org/widgets/test", file.getPath());
+	    assertEquals("test/www.getwookie.org/widgets/test", file.getPath());
       assertTrue(file.isDirectory());
 	  }
 }
