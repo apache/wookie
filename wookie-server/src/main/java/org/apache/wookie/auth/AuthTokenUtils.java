@@ -35,6 +35,8 @@ public class AuthTokenUtils {
 	private static final String API_KEY_HASH_NAME = "apiKey";
 	private static final String EXPIRES_NAME = "expires";
 	private static final String LANG_NAME = "lang";	
+	private static final String SINGLE_USE_FLAG_NAME = "singleUse";
+	private static final String NONCE_NAME = "nonce";
 
 	/**
 	 * Validate a token, and return an AuthToken object if its valid
@@ -58,7 +60,7 @@ public class AuthTokenUtils {
 	 * @return an AuthToken, or null if the token is not valid
 	 * @throws Exception 
 	 */
-	public static AuthToken decryptAuthToken(String token) throws InvalidAuthTokenException{
+	protected static AuthToken decryptAuthToken(String token) throws InvalidAuthTokenException{
 		return createAuthToken(extractParametersFromToken(token));
 	}
 
@@ -84,11 +86,19 @@ public class AuthTokenUtils {
 	 * @throws Exception 
 	 */
 	private static AuthToken createAuthToken(Map<String, String> parameters) throws InvalidAuthTokenException{
-		AuthToken authToken = new AuthToken();
+		AuthToken authToken = AuthToken.STANDARD_LIFESPAN_TOKEN();
 		authToken.setWidgetId(parameters.get(WIDGET_ID_NAME));
 		authToken.setContextId(parameters.get(CONTEXT_ID_NAME));
 		authToken.setViewerId(parameters.get(VIEWER_ID_NAME));
 		authToken.setLang(parameters.get(LANG_NAME));
+		authToken.setNonce(parameters.get(NONCE_NAME));
+		if (parameters.get(SINGLE_USE_FLAG_NAME) != null){
+			if (parameters.get(SINGLE_USE_FLAG_NAME).equalsIgnoreCase("TRUE")){
+				authToken.setSingleUse(true);
+			} else {
+				authToken.setSingleUse(false);
+			}
+		}
 		if (parameters.get(EXPIRES_NAME) != null){
 			authToken.setExpiresAt(Long.valueOf(parameters.get(EXPIRES_NAME)));
 		} else {
@@ -126,6 +136,10 @@ public class AuthTokenUtils {
 		parameters.put(VIEWER_ID_NAME, authToken.getViewerId());
 		parameters.put(API_KEY_HASH_NAME, String.valueOf(authToken.getApiKey().hashCode()));
 		parameters.put(LANG_NAME, authToken.getLang());
+		parameters.put(NONCE_NAME, authToken.getNonce());
+		if (authToken.isSingleUse()){
+			parameters.put(SINGLE_USE_FLAG_NAME, "TRUE");
+		}
 		if (authToken.getExpiresAt() != null){
 			parameters.put(EXPIRES_NAME, String.valueOf(authToken.getExpiresAt()));
 		}
