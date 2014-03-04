@@ -28,8 +28,6 @@ import org.apache.wookie.w3c.W3CWidget;
  */
 public class StartPageProcessor implements IStartPageProcessor {
 	
-	static final String DEFAULT_FEATURE = "http://wookie.apache.org/feature/default";
-
 	/* (non-Javadoc)
 	 * @see org.apache.wookie.util.html.IStartPageProcessor#processStartFile(java.io.File, org.apache.wookie.w3c.IManifestModel)
 	 */
@@ -82,19 +80,6 @@ public class StartPageProcessor implements IStartPageProcessor {
 			}
 			
 		}
-	}
-	
-	/**
-	 * Instantiates a feature for a given feature name
-	 * @param featureName the name of the feature to be instantiated
-	 * @return an IFeature instance
-	 * @throws Exception if the feature cannot be instantiated
-	 */
-	@SuppressWarnings("unchecked")
-    private IFeature getFeatureInstanceForName(String featureName) throws Exception{
-		Class<? extends IFeature> klass = (Class<? extends IFeature>) Class.forName(featureName);
-		IFeature theFeature = (IFeature) klass.newInstance();
-		return theFeature;
 	}
 	
 	/**
