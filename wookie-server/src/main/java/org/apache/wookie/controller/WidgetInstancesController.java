@@ -87,11 +87,18 @@ public class WidgetInstancesController extends Controller {
 			//
 			String apiKey = request.getParameter("api_key");
 			if (!authToken.getApiKey().equals(apiKey)) throw new UnauthorizedAccessException();
-
+			
+			
+			//
+			// When this API is called, we create a new single-use token to return in the URL. 
+			// When the widget is rendered it will request a new standard token via AJAX.
+			//
+			AuthToken newToken = AuthToken.SINGLE_USE_TOKEN(authToken);
+			
 			checkProxy(request);
 			String url;
 			try {
-				url = getUrl(request, authToken);
+				url = getUrl(request, newToken);
 			} catch (Exception e1) {
 				throw new IOException(e1);
 			}
@@ -100,7 +107,7 @@ public class WidgetInstancesController extends Controller {
 			// If the widget was replaced by the not supported widget, return
 			// 404. Otherwise return 200.
 			//
-			if (authToken.getWidgetId().equals("http://notsupported")){
+			if (newToken.getWidgetId().equals("http://notsupported")){
 				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			} else {
 				response.setStatus(HttpServletResponse.SC_OK);
@@ -124,9 +131,9 @@ public class WidgetInstancesController extends Controller {
 			//			
 			try {
 				switch(format(request)){
-				case XML: returnXml(WidgetInstanceHelper.createXMLWidgetInstanceDocument(authToken, url, useDefaultSizes), response); break;
-				case JSON: returnJson(WidgetInstanceHelper.toJson(authToken, url, useDefaultSizes), response); break;
-				default: returnXml(WidgetInstanceHelper.createXMLWidgetInstanceDocument(authToken, url, useDefaultSizes), response); break;
+				case XML: returnXml(WidgetInstanceHelper.createXMLWidgetInstanceDocument(newToken, url, useDefaultSizes), response); break;
+				case JSON: returnJson(WidgetInstanceHelper.toJson(newToken, url, useDefaultSizes), response); break;
+				default: returnXml(WidgetInstanceHelper.createXMLWidgetInstanceDocument(newToken, url, useDefaultSizes), response); break;
 				}
 			} catch (Exception e) {
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
