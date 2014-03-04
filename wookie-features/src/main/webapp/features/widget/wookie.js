@@ -296,7 +296,13 @@ var Widget = {
                     this.proxyUrl = pairs[i].substring(pos + 1);
                 }
             }
-        }    
+        }
+        
+        //
+        // First, we need to refresh the security token. The initial token in the URL
+        // is only usable for a short while.
+        //
+        this.refreshToken(false);
         
         //
         // Instantiate a Widget Preferences object, and load all values
@@ -305,26 +311,22 @@ var Widget = {
         //
         this.preferences = WidgetPreferences;
         
-            
         //
         // Load preferences using AJAX
         //
-        var xml_request = new XMLHttpRequest();
-        xml_request.open("GET", "/wookie/preferences?idkey="+this.instanceid_key, false);
-        xml_request.onreadystatechange = function()
-        {
-            if(xml_request.readyState == 4 && xml_request.status == 200){
-              var json = (JSON.parse(xml_request.responseText));
-              Widget.setPrefs(json.Preferences);
-              
-            }
-        }
-        xml_request.setRequestHeader("Cache-Control", "no-cache");
-        xml_request.send(null);   
+        this.loadPreferences();
         
         //
         // Load metadata using AJAX
         //
+        this.loadMetadata();
+ 
+    },
+    
+    /**
+     * Load widget metadata from Wookie API
+     */
+    loadMetadata: function(){
         var xml_request = new XMLHttpRequest();
         xml_request.open("GET", "/wookie/metadata?idkey="+this.instanceid_key, false);
         xml_request.onreadystatechange = function()
@@ -332,11 +334,45 @@ var Widget = {
             if(xml_request.readyState == 4 && xml_request.status == 200){
               var json = (JSON.parse(xml_request.responseText));
               Widget.setMetadata(json);
-              
+            }
+        }
+        xml_request.setRequestHeader("Cache-Control", "no-cache");
+        xml_request.send(null);  
+    },
+    
+    /**
+     * Load preferences from Wookie API
+     */
+    loadPreferences: function(){
+        var xml_request = new XMLHttpRequest();
+        xml_request.open("GET", "/wookie/preferences?idkey="+this.instanceid_key, false);
+        xml_request.onreadystatechange = function()
+        {
+            if(xml_request.readyState == 4 && xml_request.status == 200){
+              var json = (JSON.parse(xml_request.responseText));
+              Widget.setPrefs(json.Preferences);
             }
         }
         xml_request.setRequestHeader("Cache-Control", "no-cache");
         xml_request.send(null);   
+    },
+    
+    /**
+     * Refreshes the widget security token from Wookie API
+     * @param async whether to refresh the token asynchronously
+     */
+    refreshToken: function(async){
+        var xml_request = new XMLHttpRequest();
+        xml_request.open("POST", "/wookie/token?idkey="+this.instanceid_key, async);
+        xml_request.onreadystatechange = function()
+        {
+            if(xml_request.readyState == 4 && xml_request.status == 201){
+              var json = (JSON.parse(xml_request.responseText));
+              Widget.instanceid_key = json.token;
+            }
+        }
+        xml_request.setRequestHeader("Cache-Control", "no-cache");
+        xml_request.send(null);  
     },
 
     /**
