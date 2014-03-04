@@ -94,7 +94,7 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 		}
 		// check if token is valid
 		try {
-			AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
+			AuthToken authToken = AuthTokenUtils.validateAuthToken(id_key);
 			for (ISharedData data: SharedContextService.Factory.getInstance().getSharedData(authToken.getApiKey(), authToken.getWidgetId(), authToken.getContextId())){
 				state.put(data.getDkey(), data.getDvalue());
 			}
@@ -155,7 +155,7 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 		Messages localizedMessages = LocaleHandler.localizeMessages(request);
 		
 		try {
-			AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
+			AuthToken authToken = AuthTokenUtils.validateAuthToken(id_key);
 			
 			// TODO
 			// if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2"); //$NON-NLS-1$
@@ -171,7 +171,7 @@ public class WaveAPIImpl implements IFeature, IWaveAPI{
 	
 	private SharedContext getSharedContext(String id_key){		
 		try {
-			AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
+			AuthToken authToken = AuthTokenUtils.validateAuthToken(id_key);
 			return new SharedContext(authToken);
 		} catch (InvalidAuthTokenException e) {
 			return null;

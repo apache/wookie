@@ -246,7 +246,7 @@ public class LocalizedResourceFilter implements Filter {
     if (idkey != null){
     	AuthToken authToken;
 		try {
-			authToken = AuthTokenUtils.decryptAuthToken(idkey);
+			authToken = AuthTokenUtils.validateAuthToken(idkey);
 	    	IWidget widget = WidgetMetadataService.Factory.getInstance().getWidget(authToken.getWidgetId());
 	        filterConfig.getServletContext().setAttribute("widget-id", widget.getIdentifier());
 	        filterConfig.getServletContext().setAttribute("widget-instance-locale", authToken.getLang());

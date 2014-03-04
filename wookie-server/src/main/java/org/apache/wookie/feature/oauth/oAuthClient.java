@@ -86,7 +86,7 @@ public class oAuthClient implements IFeature {
 		if(idKey == null) return "invalid";
 		
 		try {
-			AuthToken authToken = AuthTokenUtils.decryptAuthToken(idKey);
+			AuthToken authToken = AuthTokenUtils.validateAuthToken(idKey);
 			IOAuthToken oauthToken = OAuthService.Factory.getInstance().getOAuthToken(authToken.toString());
 			if (oauthToken != null) {
 				if (!oauthToken.isExpires())
@@ -102,7 +102,7 @@ public class oAuthClient implements IFeature {
 	public void invalidateToken(String idKey) {
 		if(idKey == null) return;
 		try {
-			AuthToken authToken = AuthTokenUtils.decryptAuthToken(idKey);
+			AuthToken authToken = AuthTokenUtils.validateAuthToken(idKey);
 			IOAuthToken oauthToken = OAuthService.Factory.getInstance().getOAuthToken(authToken.toString());
 			if (oauthToken != null) {
 				OAuthService.Factory.getInstance().deleteOAuthToken(authToken.toString());
@@ -118,7 +118,7 @@ public class oAuthClient implements IFeature {
 		
 		AuthToken authToken;
 		try {
-			authToken = AuthTokenUtils.decryptAuthToken(idKey);
+			authToken = AuthTokenUtils.validateAuthToken(idKey);
 			Map<String, String> oAuthParams = queryXMLParams(idKey);
 			if (oAuthParams == null) {
 				return "invalid";			
@@ -146,7 +146,7 @@ public class oAuthClient implements IFeature {
 	
 	public Map<String, String> queryXMLParams(String idKey) {
 		try {
-			AuthToken authToken = AuthTokenUtils.decryptAuthToken(idKey);
+			AuthToken authToken = AuthTokenUtils.validateAuthToken(idKey);
 			IWidget widget = WidgetMetadataService.Factory.getInstance().getWidget(authToken.getWidgetId());
 
 			Collection<org.apache.wookie.w3c.IFeature> widgetFeatures = widget.getFeatures();

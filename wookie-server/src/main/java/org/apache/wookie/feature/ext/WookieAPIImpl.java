@@ -47,7 +47,7 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
     Messages localizedMessages = LocaleHandler.localizeMessages(request);
     
     try {
-		AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
+		AuthToken authToken = AuthTokenUtils.validateAuthToken(id_key);
 	    Notifier.callSiblings(authToken,"Widget.onLocked(\""+authToken.getContextId()+"\");");//$NON-NLS-1$
 		//TODO
 	    //WidgetInstancesController.lockWidgetInstance(widgetInstance);
@@ -65,7 +65,7 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
 	  HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 	  Messages localizedMessages = LocaleHandler.localizeMessages(request);
 	  try {
-		  AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
+		  AuthToken authToken = AuthTokenUtils.validateAuthToken(id_key);
 		  Notifier.callSiblings(authToken,"Widget.onUnlocked(\""+authToken.getContextId()+"\");");//$NON-NLS-1$
 		  //TODO
 		  //WidgetInstancesController.unlocklockWidgetInstance(widgetInstance);
@@ -84,7 +84,7 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
 	  HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 	  Messages localizedMessages = LocaleHandler.localizeMessages(request);
 	  try {
-		  AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
+		  AuthToken authToken = AuthTokenUtils.validateAuthToken(id_key);
 		    Notifier.callSiblings(authToken,"window.onHide()");//$NON-NLS-1$
 		  return "okay"; //$NON-NLS-1$
 	  } catch (InvalidAuthTokenException e) {
@@ -100,7 +100,7 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
 	  HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 	  Messages localizedMessages = LocaleHandler.localizeMessages(request);
 	  try {
-		  AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
+		  AuthToken authToken = AuthTokenUtils.validateAuthToken(id_key);
 		    Notifier.callSiblings(authToken,"window.onShow()");//$NON-NLS-1$
 		  return "okay"; //$NON-NLS-1$
 	  } catch (InvalidAuthTokenException e) {
@@ -136,7 +136,7 @@ public class WookieAPIImpl implements IWookieExtensionAPI {
 	  HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 	  Messages localizedMessages = LocaleHandler.localizeMessages(request);
 	  try {
-		  AuthToken authToken = AuthTokenUtils.decryptAuthToken(id_key);
+		  AuthToken authToken = AuthTokenUtils.validateAuthToken(id_key);
 		  //TODO
 		  //if(widgetInstance.isLocked()) return localizedMessages.getString("WidgetAPIImpl.2");
 		  new SharedContext(authToken).updateSharedData(key, value, true);

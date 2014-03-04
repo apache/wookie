@@ -69,7 +69,7 @@ org.directwebremoting.extend.PageNormalizer {
 		// the Widget URL it uniquely identifies sibling instances
 		
 		try {
-			AuthToken authToken = AuthTokenUtils.decryptAuthToken(parmsMap.get("idkey"));
+			AuthToken authToken = AuthTokenUtils.validateAuthToken(parmsMap.get("idkey"));
 			// Strip off query and add on API key and shared data key
 			setNormalizeIncludesQueryString(false);
 			page = super.normalizePage(page);

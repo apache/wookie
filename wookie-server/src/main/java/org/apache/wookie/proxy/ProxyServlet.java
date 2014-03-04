@@ -86,7 +86,7 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 			//
 			AuthToken authToken = null;
 			try {
-				authToken = AuthTokenUtils.decryptAuthToken(request.getParameter("instanceid_key"));
+				authToken = AuthTokenUtils.validateAuthToken(request.getParameter("instanceid_key"));
 			} catch (Exception e1) {
 				if (!isDefaultGadget(request)){
 					response.sendError(HttpServletResponse.SC_FORBIDDEN,"<error>"+UNAUTHORISED_MESSAGE+"</error>");	
