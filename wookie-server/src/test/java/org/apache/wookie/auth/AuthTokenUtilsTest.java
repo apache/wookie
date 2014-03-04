@@ -45,7 +45,7 @@ public class AuthTokenUtilsTest{
 		apiKey.setValue("ENC_TEST");
 		apiKey.setSecret("me@nowhere.com");
 
-		AuthToken authToken = new AuthToken();
+		AuthToken authToken = AuthToken.STANDARD_LIFESPAN_TOKEN();
 		authToken.setApiKey(apiKey);
 		authToken.setContextId("shared");
 		authToken.setViewerId("user1");
@@ -69,7 +69,7 @@ public class AuthTokenUtilsTest{
 		apiKey.setValue("ENC_TEST");
 		apiKey.setSecret("me@nowhere.com");
 
-		AuthToken authToken = new AuthToken();
+		AuthToken authToken = AuthToken.STANDARD_LIFESPAN_TOKEN();
 		authToken.setApiKey(apiKey);
 		authToken.setContextId("shared");
 		authToken.setViewerId("user1");
@@ -93,7 +93,7 @@ public class AuthTokenUtilsTest{
 		apiKey.setValue("ENC_TEST");
 		apiKey.setSecret("me@nowhere.com");
 
-		AuthToken authToken = new AuthToken();
+		AuthToken authToken = AuthToken.STANDARD_LIFESPAN_TOKEN();
 		authToken.setApiKey(apiKey);
 		authToken.setContextId("shared");
 		authToken.setViewerId("user1");
@@ -123,7 +123,7 @@ public class AuthTokenUtilsTest{
 		apiKey.setValue("ENC_TEST");
 		apiKey.setSecret("me@nowhere.com");
 
-		AuthToken authToken = new AuthToken();
+		AuthToken authToken = AuthToken.STANDARD_LIFESPAN_TOKEN();
 		authToken.setApiKey(apiKey);
 		authToken.setContextId("shared");
 		authToken.setViewerId("user1");
@@ -153,7 +153,7 @@ public class AuthTokenUtilsTest{
 		apiKey.setValue("ENC_TEST");
 		apiKey.setSecret("me@nowhere.com");
 
-		AuthToken authToken = new AuthToken();
+		AuthToken authToken = AuthToken.STANDARD_LIFESPAN_TOKEN();
 		authToken.setApiKey(apiKey);
 		authToken.setContextId("shared");
 		authToken.setViewerId("user1");
@@ -180,7 +180,7 @@ public class AuthTokenUtilsTest{
 		apiKey.setValue("ENC_TEST_BAD");
 		apiKey.setSecret("me@nowhere.com");
 
-		AuthToken authToken = new AuthToken();
+		AuthToken authToken = AuthToken.STANDARD_LIFESPAN_TOKEN();
 		authToken.setApiKey(apiKey);
 		authToken.setContextId("shared");
 		authToken.setViewerId("user1");
@@ -204,9 +204,58 @@ public class AuthTokenUtilsTest{
 		assertEquals(InvalidAuthTokenException.INVALID_CONTENT, errorCode);
 	}
 	
+	@Test
+	public void singleUseToken() throws Exception{
+		ApiKey apiKey = new ApiKey();
+		apiKey.setValue("ENC_TEST");
+		apiKey.setSecret("me@nowhere.com");
+		AuthToken authToken1 = AuthToken.STANDARD_LIFESPAN_TOKEN();
+		authToken1.setApiKey(apiKey);
+		authToken1.setContextId("test");
+		authToken1.setViewerId("viewer");
+		authToken1.setWidgetId("http://apache.org/widgets/test");
+		authToken1.setLang("en");
+		
+		AuthToken authToken2 = AuthToken.SINGLE_USE_TOKEN(authToken1);
+		
+		// The two token core content are identical...
+		assertTrue(authToken1.toString().equals(authToken2.toString()));
+		
+		// but token 2 is single use
+		assertTrue(authToken2.isSingleUse());
+		
+	}
+	
+	// Make sure that we always get a new nonce, and therefore a new encrypted token string
+	@Test
+	public void copyOfToken() throws Exception{
+		ApiKey apiKey = new ApiKey();
+		apiKey.setValue("ENC_TEST");
+		apiKey.setSecret("me@nowhere.com");
+		AuthToken authToken1 = AuthToken.STANDARD_LIFESPAN_TOKEN();
+		authToken1.setApiKey(apiKey);
+		authToken1.setContextId("test");
+		authToken1.setViewerId("viewer");
+		authToken1.setWidgetId("http://apache.org/widgets/test");
+		authToken1.setLang("en");
+		
+		AuthToken authToken2 = AuthToken.STANDARD_LIFESPAN_TOKEN(authToken1);
+		
+		// The two token core content are identical...
+		assertTrue(authToken1.toString().equals(authToken2.toString()));
+		
+		// ... but MUST have a different nonce...
+		assertFalse(authToken1.getNonce().equals(authToken2.getNonce()));
+		
+		// ... and MUST results in a different string
+		String token1 = AuthTokenUtils.encryptAuthToken(authToken1);
+		String token2 = AuthTokenUtils.encryptAuthToken(authToken2);
+		assertFalse(token1.equals(token2));
+	}
+	
 	@Test(expected=Exception.class)
 	public void encryptNullApiKey() throws Exception{
-		AuthToken authToken = new AuthToken();
+		AuthToken authToken = AuthToken.STANDARD_LIFESPAN_TOKEN();
 		authToken.setApiKey(null);
 		authToken.setContextId("shared");
 		authToken.setViewerId("user1");
