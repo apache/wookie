@@ -25,9 +25,11 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.wookie.auth.AuthToken;
 import org.apache.wookie.auth.AuthTokenUtils;
+import org.apache.wookie.auth.ExpiredSingleUseTokenCache;
 import org.apache.wookie.auth.InvalidAuthTokenException;
 
 /**
@@ -49,12 +51,31 @@ public class WidgetAuthorizationFilter implements Filter{
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 
+		AuthToken authToken = getAuthToken(request);
+		
+		if (authToken == null){
+			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN);
+		} 
+		
+		else 
+			
+		{
+		//
+		// Add the decrypted AuthToken object into the request attributes  
+		//
+		request.setAttribute("org.apache.wookie.auth.AuthToken", authToken);
+		chain.doFilter(request, response);
+		}
+	}
+	
+	private AuthToken getAuthToken(ServletRequest request){
+
 		//
 		// Do we have an idkey parameter containing an access token?
 		//
 		String idkey = request.getParameter("idkey");
 		if (idkey == null || idkey.trim().equals("")){
-			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN);
+			return null;
 		}
 
 		//
@@ -62,19 +83,46 @@ public class WidgetAuthorizationFilter implements Filter{
 		//
 		AuthToken token = null;
 		try {
-			token = AuthTokenUtils.decryptAuthToken(idkey);
+			token = AuthTokenUtils.validateAuthToken(idkey);
 		} catch (InvalidAuthTokenException e) {
-			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN);
+			return null;
 		}	
 		if (token == null){
-			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN);
+			return null;
 		}
 		
 		//
-		// Add the decrypted AuthToken object into the request attributes  
+		// If the token has a single-use flag, we can only accept it once for requesting a new token
+		// by sending a POST to /token.
 		//
-		request.setAttribute("org.apache.wookie.auth.AuthToken", token);
-		chain.doFilter(request, response);
+		if (token.isSingleUse()){
+
+			//
+			// If the token has been used once already, reject the request
+			//
+			if (!ExpiredSingleUseTokenCache.getInstance().isValid(idkey)){
+				return null;
+			} 
+			
+			//
+			// If the token is being used for anything other than requesting a session use token, reject the request
+			//
+			if (
+					!((HttpServletRequest)request).getServletPath().equals("/token") || 
+					!((HttpServletRequest)request).getMethod().equalsIgnoreCase("POST")
+			   )
+			{
+				return null;
+
+			}
+			
+			//
+			// Add the token to the expiry cache
+			//
+			ExpiredSingleUseTokenCache.getInstance().addToken(idkey);
+		}
+		
+		return token;
 	}
 
 	@Override
