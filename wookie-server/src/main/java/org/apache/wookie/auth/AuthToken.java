@@ -18,6 +18,7 @@
 package org.apache.wookie.auth;
 
 import org.apache.wookie.server.security.ApiKey;
+import org.apache.wookie.w3c.util.RandomGUID;
 
 /**
  * An AuthToken used to pass contextual information about an instance of a
@@ -34,6 +35,7 @@ public class AuthToken {
 	private String contextId;
 	private String lang;
 	private boolean singleUse = false;
+	private String nonce;
 
 	public static final int DEFAULT_MAX_TOKEN_TTL = 3600; // 1 hour
 	private static final long CLOCK_SKEW_ALLOWANCE = 180; // allow three minutes for clock skew
@@ -43,7 +45,7 @@ public class AuthToken {
 	/**
 	 * Default constructor
 	 */
-	protected AuthToken(){
+	private AuthToken(){
 	}
 	
 	/**
@@ -56,6 +58,7 @@ public class AuthToken {
 		AuthToken authToken = new AuthToken();
 		authToken.setExpires(300); // 5 minutes
 		authToken.setSingleUse(true);
+		authToken.nonce = new RandomGUID(true).toString();
 		authToken.setApiKey(oldToken.getApiKeyInstance());
 		authToken.setContextId(oldToken.getContextId());
 		authToken.setWidgetId(oldToken.getWidgetId());
@@ -70,6 +73,7 @@ public class AuthToken {
 	 */
 	public static AuthToken SHORT_LIFESPAN_TOKEN(){
 		AuthToken authToken = new AuthToken();
+		authToken.nonce = new RandomGUID(true).toString();
 		authToken.setExpires(300); // 5 minutes
 		return authToken;
 	}
@@ -81,6 +85,7 @@ public class AuthToken {
 	 */
 	public static AuthToken SHORT_LIFESPAN_TOKEN(AuthToken oldToken){
 		AuthToken authToken = new AuthToken();
+		authToken.nonce = new RandomGUID(true).toString();
 		authToken.setExpires(300); // 5 minutes
 		authToken.setApiKey(oldToken.getApiKeyInstance());
 		authToken.setContextId(oldToken.getContextId());
@@ -96,6 +101,7 @@ public class AuthToken {
 	 */
 	public static AuthToken STANDARD_LIFESPAN_TOKEN(){
 		AuthToken authToken = new AuthToken();
+		authToken.nonce = new RandomGUID(true).toString();
 		authToken.setExpires();
 		return authToken;
 	}
@@ -107,6 +113,7 @@ public class AuthToken {
 	 */
 	public static AuthToken STANDARD_LIFESPAN_TOKEN(AuthToken oldToken){
 		AuthToken authToken = new AuthToken();
+		authToken.nonce = new RandomGUID(true).toString();
 		authToken.setExpires();
 		authToken.setApiKey(oldToken.getApiKeyInstance());
 		authToken.setContextId(oldToken.getContextId());
@@ -277,6 +284,20 @@ public class AuthToken {
 	 */
 	public void setSingleUse(boolean singleUse) {
 		this.singleUse = singleUse;
+	}
+
+	/**
+	 * @return the nonce
+	 */
+	public String getNonce() {
+		return nonce;
+	}
+
+	/**
+	 * @param nonce the nonce to set
+	 */
+	public void setNonce(String nonce) {
+		this.nonce = nonce;
 	}
 
 	/* (non-Javadoc)
