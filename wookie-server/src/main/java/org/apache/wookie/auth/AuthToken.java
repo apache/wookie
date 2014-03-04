@@ -33,15 +33,89 @@ public class AuthToken {
 	private String viewerId;
 	private String contextId;
 	private String lang;
+	private boolean singleUse = false;
 
 	public static final int DEFAULT_MAX_TOKEN_TTL = 3600; // 1 hour
 	private static final long CLOCK_SKEW_ALLOWANCE = 180; // allow three minutes for clock skew
 	private Long expiresAt;
 	private int tokenTTL;
 	
-	public AuthToken(){
+	/**
+	 * Default constructor
+	 */
+	protected AuthToken(){
+	}
+	
+	/**
+	 * Create a new single-use AuthToken from an existing
+	 * authtoken. This type of token can only be used to 
+	 * request a new token.
+	 * @return the authtoken
+	 */
+	public static AuthToken SINGLE_USE_TOKEN(AuthToken oldToken){
+		AuthToken authToken = new AuthToken();
+		authToken.setExpires(300); // 5 minutes
+		authToken.setSingleUse(true);
+		authToken.setApiKey(oldToken.getApiKeyInstance());
+		authToken.setContextId(oldToken.getContextId());
+		authToken.setWidgetId(oldToken.getWidgetId());
+		authToken.setViewerId(oldToken.getViewerId());
+		authToken.setLang(oldToken.getLang());
+		return authToken;
 	}
 
+	/**
+	 * Create a new AuthToken with a 5 minute lifespon.
+	 * @return the authtoken
+	 */
+	public static AuthToken SHORT_LIFESPAN_TOKEN(){
+		AuthToken authToken = new AuthToken();
+		authToken.setExpires(300); // 5 minutes
+		return authToken;
+	}
+	
+	/**
+	 * Create a new AuthToken with a 5 minute lifespon from an existing
+	 * authtoken
+	 * @return the authtoken
+	 */
+	public static AuthToken SHORT_LIFESPAN_TOKEN(AuthToken oldToken){
+		AuthToken authToken = new AuthToken();
+		authToken.setExpires(300); // 5 minutes
+		authToken.setApiKey(oldToken.getApiKeyInstance());
+		authToken.setContextId(oldToken.getContextId());
+		authToken.setWidgetId(oldToken.getWidgetId());
+		authToken.setViewerId(oldToken.getViewerId());
+		authToken.setLang(oldToken.getLang());
+		return authToken;
+	}
+	
+	/**
+	 * Create a new AuthToken with a standard lifespon
+	 * @return the authtoken
+	 */
+	public static AuthToken STANDARD_LIFESPAN_TOKEN(){
+		AuthToken authToken = new AuthToken();
+		authToken.setExpires();
+		return authToken;
+	}
+	
+	/**
+	 * Create a new AuthToken with a standard lifespon from an existing
+	 * authtoken
+	 * @return the authtoken
+	 */
+	public static AuthToken STANDARD_LIFESPAN_TOKEN(AuthToken oldToken){
+		AuthToken authToken = new AuthToken();
+		authToken.setExpires();
+		authToken.setApiKey(oldToken.getApiKeyInstance());
+		authToken.setContextId(oldToken.getContextId());
+		authToken.setWidgetId(oldToken.getWidgetId());
+		authToken.setViewerId(oldToken.getViewerId());
+		authToken.setLang(oldToken.getLang());
+		return authToken;
+	}
+	
 	/**
 	 * @return The time in seconds since epoc that this token expires or
 	 *         <code>null</code> if unknown or indeterminate.
@@ -187,6 +261,22 @@ public class AuthToken {
 	 */
 	protected int getMaxTokenTTL() {
 		return this.tokenTTL;
+	}
+	
+	/**
+	 * Returns whether this token is a single-use token
+	 * @return the singleUse
+	 */
+	public boolean isSingleUse() {
+		return singleUse;
+	}
+
+	/**
+	 * Set the token as single-use
+	 * @param singleUse the singleUse to set
+	 */
+	public void setSingleUse(boolean singleUse) {
+		this.singleUse = singleUse;
 	}
 
 	/* (non-Javadoc)
