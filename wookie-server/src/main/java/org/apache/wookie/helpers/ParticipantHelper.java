@@ -101,7 +101,7 @@ public class ParticipantHelper {
 	  Element element = new Element("participant");
 	  element.setAttribute("id", participant.getParticipantId());
 	  element.setAttribute("display_name", participant.getParticipantDisplayName());
-	  element.setAttribute("thumbnail_url", participant.getParticipantThumbnailUrl());
+	  if (participant.getParticipantThumbnailUrl() != null) element.setAttribute("thumbnail_url", participant.getParticipantThumbnailUrl());
 	  if (participant.getRole() != null) element.setAttribute("role", participant.getRole());
 	  return element;
 	}
