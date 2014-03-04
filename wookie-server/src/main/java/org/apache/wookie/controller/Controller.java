@@ -419,7 +419,7 @@ public abstract class Controller extends HttpServlet{
 		
 		if (idkey != null && !idkey.trim().equals("")){
 		try {
-			authToken = AuthTokenUtils.decryptAuthToken(idkey);
+			authToken = AuthTokenUtils.validateAuthToken(idkey);
 			return authToken;
 		} catch (InvalidAuthTokenException e) {
 			return null;
@@ -432,7 +432,7 @@ public abstract class Controller extends HttpServlet{
 		idkey = getResourceId(request);
 		if (idkey != null && !idkey.trim().equals("")){
 			try {
-				authToken = AuthTokenUtils.decryptAuthToken(idkey);
+				authToken = AuthTokenUtils.validateAuthToken(idkey);
 				return authToken;
 			} catch (InvalidAuthTokenException e) {
 				//
@@ -483,7 +483,7 @@ public abstract class Controller extends HttpServlet{
             }
             
             
-            authToken = new AuthToken();
+            authToken = AuthToken.STANDARD_LIFESPAN_TOKEN();
             authToken.setApiKey(ApiKeys.getInstance().getApiKey(apiKey));
             authToken.setContextId(contextId);
             authToken.setLang(lang);
