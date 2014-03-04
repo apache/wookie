@@ -235,7 +235,18 @@
 		<url-pattern>/preferences</url-pattern>
 	</servlet-mapping>
 	
-		<servlet>
+	<servlet>
+		<description>Security Tokens AJAX controller</description>
+		<display-name>SecurityTokenController</display-name>
+		<servlet-name>SecurityTokenController</servlet-name>
+		<servlet-class>org.apache.wookie.controller.SecurityTokenController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SecurityTokenController</servlet-name>
+		<url-pattern>/token</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
 		<description>Metadata AJAX controller</description>
 		<display-name>MetadataController</display-name>
 		<servlet-name>MetadataController</servlet-name>
@@ -295,6 +306,10 @@
   	<filter-mapping>
     	<filter-name>WidgetAuthorizationFilter</filter-name>
 		<servlet-name>MetadataController</servlet-name>
+  	</filter-mapping>
+  	  <filter-mapping>
+    	<filter-name>WidgetAuthorizationFilter</filter-name>
+		<servlet-name>SecurityTokenController</servlet-name>
   	</filter-mapping>
   			
 	<!-- Use Authorization Filter for REST API  -->
