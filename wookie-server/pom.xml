@@ -269,18 +269,6 @@
                         <systemProperties>
                             <net.sf.ehcache.skipUpdateCheck>true</net.sf.ehcache.skipUpdateCheck>
                         </systemProperties>
-                        <dependencies>
-                            <dependency>
-                                <groupId>javax.mail</groupId>
-                                <artifactId>mail</artifactId>
-                                <classpath>shared</classpath>
-                            </dependency>
-                            <dependency>
-                                <groupId>javax.activation</groupId>
-                                <artifactId>activation</artifactId>
-                                <classpath>shared</classpath>
-                            </dependency>
-                        </dependencies>
                     </container>
                 </configuration>
             </plugin>
