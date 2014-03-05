@@ -51,7 +51,7 @@ public class WidgetAuthorizationFilter implements Filter{
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 
-		AuthToken authToken = getAuthToken(request);
+		AuthToken authToken = getAuthToken((HttpServletRequest)request);
 		
 		if (authToken == null){
 			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN);
@@ -68,22 +68,20 @@ public class WidgetAuthorizationFilter implements Filter{
 		}
 	}
 	
-	private AuthToken getAuthToken(ServletRequest request){
+	private AuthToken getAuthToken(HttpServletRequest request){
 
 		//
-		// Do we have an idkey parameter containing an access token?
+		// Get the AUTH header
 		//
-		String idkey = request.getParameter("idkey");
-		if (idkey == null || idkey.trim().equals("")){
-			return null;
-		}
+		String tokenString = request.getHeader("Authorization");
+		if (tokenString == null) return null;
 
 		//
 		// Do we have a valid token?
 		//
 		AuthToken token = null;
 		try {
-			token = AuthTokenUtils.validateAuthToken(idkey);
+			token = AuthTokenUtils.validateAuthToken(tokenString);
 		} catch (InvalidAuthTokenException e) {
 			return null;
 		}	
@@ -100,7 +98,7 @@ public class WidgetAuthorizationFilter implements Filter{
 			//
 			// If the token has been used once already, reject the request
 			//
-			if (!ExpiredSingleUseTokenCache.getInstance().isValid(idkey)){
+			if (!ExpiredSingleUseTokenCache.getInstance().isValid(tokenString)){
 				return null;
 			} 
 			
@@ -119,7 +117,7 @@ public class WidgetAuthorizationFilter implements Filter{
 			//
 			// Add the token to the expiry cache
 			//
-			ExpiredSingleUseTokenCache.getInstance().addToken(idkey);
+			ExpiredSingleUseTokenCache.getInstance().addToken(tokenString);
 		}
 		
 		return token;

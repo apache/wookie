@@ -328,7 +328,8 @@ var Widget = {
      */
     loadMetadata: function(){
         var xml_request = new XMLHttpRequest();
-        xml_request.open("GET", "/wookie/metadata?idkey="+this.instanceid_key, false);
+        xml_request.open("GET", "/wookie/metadata", false);
+        xml_request.setRequestHeader("Authorization",this.instanceid_key);
         xml_request.onreadystatechange = function()
         {
             if(xml_request.readyState == 4 && xml_request.status == 200){
@@ -345,7 +346,8 @@ var Widget = {
      */
     loadPreferences: function(){
         var xml_request = new XMLHttpRequest();
-        xml_request.open("GET", "/wookie/preferences?idkey="+this.instanceid_key, false);
+        xml_request.open("GET", "/wookie/preferences", false);
+        xml_request.setRequestHeader("Authorization",this.instanceid_key);
         xml_request.onreadystatechange = function()
         {
             if(xml_request.readyState == 4 && xml_request.status == 200){
@@ -363,7 +365,8 @@ var Widget = {
      */
     refreshToken: function(async){
         var xml_request = new XMLHttpRequest();
-        xml_request.open("POST", "/wookie/token?idkey="+this.instanceid_key, async);
+        xml_request.open("POST", "/wookie/token", async);
+        xml_request.setRequestHeader("Authorization",this.instanceid_key);
         xml_request.onreadystatechange = function()
         {
             if(xml_request.readyState == 4 && xml_request.status == 201){
@@ -464,7 +467,8 @@ var Widget = {
      */
     setPreferenceForKey : function (wName, wValue) {
         var xml_request = new XMLHttpRequest();
-        xml_request.open("POST", "/wookie/preferences?idkey="+this.instanceid_key+"&name="+wName+"&value="+wValue, true);
+        xml_request.open("POST", "/wookie/preferences?name="+wName+"&value="+wValue, true);
+        xml_request.setRequestHeader("Authorization",this.instanceid_key);
         xml_request.setRequestHeader("Cache-Control", "no-cache");
         xml_request.send(null);   
     },
