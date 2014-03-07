@@ -21,6 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.wookie.auth.AuthToken;
 import org.apache.wookie.beans.ISharedData;
@@ -31,6 +32,8 @@ import org.apache.wookie.exceptions.ResourceNotFoundException;
 import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.services.PreferencesService;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * REST implementation for widgetInstance
@@ -45,34 +48,28 @@ public class PropertiesController extends Controller {
 	private static final long serialVersionUID = 308590474406800659L;		
 	static Logger _logger = Logger.getLogger(PropertiesController.class.getName());	
 
-	/**
-	 * We only override doGet to allow tunneling requests through GET 
-	 * for legacy clients
+	
+	
+	/* (non-Javadoc)
+	 * @see org.apache.wookie.controller.Controller#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		String requestId = request.getParameter("requestid");//$NON-NLS-1$
-		// If the request id is not null, show otherwise index
-		if (requestId != null && requestId.length() > 0) {
-			try {
-				createOrUpdate(request);
-			} catch (InvalidParametersException e) {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-			} catch (UnauthorizedAccessException e){
-				response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-			}
-		} else {
-			try {
-				show(null, request, response);
-				response.setStatus(HttpServletResponse.SC_OK);
-			} catch (ResourceNotFoundException e) {
-				response.sendError(HttpServletResponse.SC_NOT_FOUND);
-			} catch (UnauthorizedAccessException e){
-				response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-			}
+		//
+		// For now we just execute the show() method. In future we could return a JSON array of all properties
+		//
+		String name = request.getParameter("propertyname"); //$NON-NLS-1$
+		try {
+			show(name, request, response);
+		} catch (ResourceNotFoundException e) {
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+		} catch(UnauthorizedAccessException e1){
+			response.sendError(HttpServletResponse.SC_FORBIDDEN);
 		}
 	}
+
+
 
 	@Override
 	protected void show(String resourceId, HttpServletRequest request,
@@ -81,14 +78,13 @@ public class PropertiesController extends Controller {
 		
 		AuthToken authToken = getAuthTokenFromRequest(request);		
 		if (authToken == null) throw new ResourceNotFoundException();
-		String name = request.getParameter("propertyname"); //$NON-NLS-1$
-		if (name == null || name.trim().equals("")) throw new ResourceNotFoundException();
+		if (resourceId == null || resourceId.trim().equals("")) throw new ResourceNotFoundException();
 		String value = null;
 		// Note that preferences and shared data keys may be the same!
 		// We let the shared data values override.
 		
-		value = PreferencesService.Factory.getInstance().getPreference(authToken.getApiKey(), authToken.getWidgetId(), authToken.getContextId(), authToken.getViewerId(), name);
-		ISharedData data = new SharedContext(authToken).getSharedData(name);
+		value = PreferencesService.Factory.getInstance().getPreference(authToken.getApiKey(), authToken.getWidgetId(), authToken.getContextId(), authToken.getViewerId(), resourceId);
+		ISharedData data = new SharedContext(authToken).getSharedData(resourceId);
 		if (data != null) value = data.getDvalue();
 		if (value == null) throw new ResourceNotFoundException();
 		PrintWriter out = response.getWriter();
@@ -111,7 +107,7 @@ public class PropertiesController extends Controller {
 			found = new SharedContext(authToken).removeSharedData(name);
 			Notifier.notifyWidgets(request.getSession(), authToken, Notifier.STATE_UPDATED);
 		} else {
-			found = updatePreference(authToken, name, null);
+			found = updatePreference(authToken, name, null, false);
 		}
 		if (!found) throw new ResourceNotFoundException();
 		return true;
@@ -138,21 +134,68 @@ public class PropertiesController extends Controller {
 	 * @throws InvalidParametersException
 	 * @throws UnauthorizedAccessException
 	 */
-	public static void createOrUpdate(HttpServletRequest request)
+	private static void createOrUpdate(HttpServletRequest request)
 	throws InvalidParametersException,UnauthorizedAccessException {
-		String name = request.getParameter("propertyname"); //$NON-NLS-1$
-		String value = request.getParameter("propertyvalue"); //$NON-NLS-1$
-		
+
 		AuthToken authToken = getAuthTokenFromRequest(request);
 		if (authToken == null) throw new InvalidParametersException();
+
+		//
+		// The data we need is in JSON in the request body, structured as:
+		//
+		// {
+		//   {"preferences" {[
+		//      {"name":"pref1", "value":"pass", "readOnly":0}
+		//   ]},
+		//   {"shareddata" {[
+		//      {"name":"sd1", "value":"pass"}
+		//   ]}
+		// }
+		//
+		//
 		
-		if (name == null || name.trim().equals("")) throw new InvalidParametersException();
-		
-		if (isPublic(request)){ 
-		    new SharedContext(authToken).updateSharedData(name, value, false);
-			Notifier.notifyWidgets(request.getSession(), authToken, Notifier.STATE_UPDATED);
-		} else {
-			updatePreference(authToken, name, value);
+		try {
+			String body = IOUtils.toString(request.getInputStream());
+			JSONObject json = new JSONObject(body);
+			if (json != null){
+				if (json.has("preferences")){
+					JSONArray array = json.getJSONArray("preferences");
+					if (array != null){
+						for (int i=0;i<array.length();i++){
+							JSONObject property = array.getJSONObject(i);
+							if (!property.has("name")) throw new InvalidParametersException();
+							String name = property.getString("name");
+							if (name != null && !name.trim().equals("")){
+								String value = property.getString("value");
+								boolean readOnly = property.getBoolean("readOnly");
+								updatePreference(authToken, name, value, readOnly);
+							} else {
+								throw new InvalidParametersException();
+							}
+						}
+					}
+				}
+				if (json.has("shareddata")){
+					JSONArray array = json.getJSONArray("shareddata");
+					if (array != null){
+						for (int i=0;i<array.length();i++){
+							JSONObject property = array.getJSONObject(i);
+							if (!property.has("name")) throw new InvalidParametersException();
+							String name = property.getString("name");
+							if (name != null && !name.trim().equals("")){
+								String value = property.getString("value");
+								new SharedContext(authToken).updateSharedData(name, value, false);
+								Notifier.notifyWidgets(request.getSession(), authToken, Notifier.STATE_UPDATED);
+							} else {
+								throw new InvalidParametersException();
+							}
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new InvalidParametersException();
 		}
 	}
 
@@ -162,11 +205,11 @@ public class PropertiesController extends Controller {
 	 * @param name
 	 * @param value
 	 */
-	public static boolean updatePreference(AuthToken authToken, String name, String value){
+	private static boolean updatePreference(AuthToken authToken, String name, String value, boolean readOnly){
         boolean found=false;
         String preference = PreferencesService.Factory.getInstance().getPreference(authToken.getApiKey(), authToken.getWidgetId(), authToken.getContextId(), authToken.getViewerId(), name);        
         if (preference != null) found=true;
-   	    PreferencesService.Factory.getInstance().setPreference(authToken.getApiKey(), authToken.getWidgetId(), authToken.getContextId(), authToken.getViewerId(), name, value);
+   	    PreferencesService.Factory.getInstance().setPreference(authToken.getApiKey(), authToken.getWidgetId(), authToken.getContextId(), authToken.getViewerId(), name, value, readOnly);
         return found;
 	}
 

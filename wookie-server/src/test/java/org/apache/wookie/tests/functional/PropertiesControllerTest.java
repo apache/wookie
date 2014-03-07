@@ -18,7 +18,11 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.wookie.tests.helpers.Request;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -51,12 +55,12 @@ public class PropertiesControllerTest extends AbstractControllerTest {
 	}
 
 	/**
-	 * Test that we can set preferences using post parameters
+	 * Test that we can set preferences using POST
 	 * 
 	 * @throws Exception
 	 */
 	@Test
-	public void setPreferenceUsingPostParameters() throws Exception {
+	public void setPreferenceUsingPost() throws Exception {
 		//
 		// Set a property ("testpost=pass") using POST
 		//
@@ -64,10 +68,18 @@ public class PropertiesControllerTest extends AbstractControllerTest {
 		post.addParameter("api_key", API_KEY_VALID);
 		post.addParameter("widgetid", WIDGET_ID_VALID);
 		post.addParameter("userid", "test");
-		post.addParameter("is_public", "false");
 		post.addParameter("shareddatakey", "propstest");
-		post.addParameter("propertyname", "testpost");
-		post.addParameter("propertyvalue", "pass");
+
+		JSONObject pref = new JSONObject();
+		pref.put("name", "testpost");
+		pref.put("value", "pass");
+		pref.put("readOnly", false);
+		JSONObject json = new JSONObject();
+		JSONArray prefs = new JSONArray();
+		prefs.put(pref);
+		json.put("preferences", prefs);		
+		StringRequestEntity entity = new StringRequestEntity(json.toString(), "application/json", "UTF-8");
+		post.setRequestEntity(entity);
 		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(201, code);
@@ -88,14 +100,82 @@ public class PropertiesControllerTest extends AbstractControllerTest {
 		assertEquals("pass", resp);
 	}
 
+
+	/**
+	 * Test that we can set multiple preferences at the same time by POSTing JSON
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void setMultiplePreferencesUsingPost() throws Exception {
+		//
+		// Set a property ("testpost=pass") using POST
+		//
+		Request post = new Request("POST", TEST_PROPERTIES_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", WIDGET_ID_VALID);
+		post.addParameter("userid", "test");
+		post.addParameter("shareddatakey", "propstest");
+
+		JSONObject pref1 = new JSONObject();
+		pref1.put("name", "testpost1");
+		pref1.put("value", "pass1");
+		pref1.put("readOnly", false);
+		
+		JSONObject pref2 = new JSONObject();
+		pref2.put("name", "testpost2");
+		pref2.put("value", "pass2");
+		pref2.put("readOnly", false);
+		
+		JSONObject json = new JSONObject();
+		JSONArray prefs = new JSONArray();
+		prefs.put(pref1);
+		prefs.put(pref2);
+		json.put("preferences", prefs);		
+		StringRequestEntity entity = new StringRequestEntity(json.toString(), "application/json", "UTF-8");
+		post.setRequestEntity(entity);
+		post.execute(true, false);
+		int code = post.getStatusCode();
+		assertEquals(201, code);
+
+		//
+		// Read back each property using GET
+		//
+		Request get = new Request("GET", TEST_PROPERTIES_SERVICE_URL_VALID);
+		get.addParameter("api_key", API_KEY_VALID);
+		get.addParameter("widgetid", WIDGET_ID_VALID);
+		get.addParameter("userid", "test");
+		get.addParameter("shareddatakey", "propstest");
+		get.addParameter("propertyname", "testpost1");
+		get.execute(true, false);
+		code = get.getStatusCode();
+		assertEquals(200, code);
+		String resp = get.getResponseBodyAsString();
+		assertEquals("pass1", resp);
+		
+		get = new Request("GET", TEST_PROPERTIES_SERVICE_URL_VALID);
+		get.addParameter("api_key", API_KEY_VALID);
+		get.addParameter("widgetid", WIDGET_ID_VALID);
+		get.addParameter("userid", "test");
+		get.addParameter("shareddatakey", "propstest");
+		get.addParameter("propertyname", "testpost2");
+		get.execute(true, false);
+		code = get.getStatusCode();
+		assertEquals(200, code);
+		resp = get.getResponseBodyAsString();
+		assertEquals("pass2", resp);
+	}
+
+	
 	/**
 	 * Test we can set shared data values using querystring parameters
 	 * 
 	 * @throws IOException
 	 * @throws HttpException
+	 * @throws JSONException 
 	 */
 	@Test
-	public void setSharedData() throws HttpException, IOException {
+	public void setSharedData() throws HttpException, IOException, JSONException {
 
 		//
 		// Set some shared data with POST
@@ -104,10 +184,17 @@ public class PropertiesControllerTest extends AbstractControllerTest {
 		post.addParameter("api_key", API_KEY_VALID);
 		post.addParameter("widgetid", WIDGET_ID_VALID);
 		post.addParameter("userid", "test");
-		post.addParameter("is_public", "false");
 		post.addParameter("shareddatakey", "propstest");
-		post.addParameter("propertyname", "cat");
-		post.addParameter("propertyvalue", "garfield");
+
+		JSONObject data = new JSONObject();
+		data.put("name", "cat");
+		data.put("value", "garfield");
+		JSONObject json = new JSONObject();
+		JSONArray set = new JSONArray();
+		set.put(data);
+		json.put("shareddata", set);		
+		StringRequestEntity entity = new StringRequestEntity(json.toString(), "application/json", "UTF-8");
+		post.setRequestEntity(entity);
 		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(201, code);
@@ -134,9 +221,10 @@ public class PropertiesControllerTest extends AbstractControllerTest {
 	 * 
 	 * @throws IOException
 	 * @throws HttpException
+	 * @throws JSONException 
 	 */
 	@Test
-	public void updateProperty() throws HttpException, IOException {
+	public void updateProperty() throws HttpException, IOException, JSONException {
 
 		//
 		// Set cat=felix using POST
@@ -145,10 +233,18 @@ public class PropertiesControllerTest extends AbstractControllerTest {
 		put.addParameter("api_key", API_KEY_VALID);
 		put.addParameter("widgetid", WIDGET_ID_VALID);
 		put.addParameter("userid", "test");
-		put.addParameter("is_public", "false");
 		put.addParameter("shareddatakey", "propstest");
-		put.addParameter("propertyname", "cat");
-		put.addParameter("propertyvalue", "felix");
+		
+		JSONObject data = new JSONObject();
+		data.put("name", "cat");
+		data.put("value", "felix");
+		JSONObject json = new JSONObject();
+		JSONArray set = new JSONArray();
+		set.put(data);
+		json.put("shareddata", set);		
+		StringRequestEntity entity = new StringRequestEntity(json.toString(), "application/json", "UTF-8");
+		put.setRequestEntity(entity);
+		
 		put.execute(true, false);
 		int code = put.getStatusCode();
 		assertEquals(200, code);
@@ -186,6 +282,7 @@ public class PropertiesControllerTest extends AbstractControllerTest {
 		delete.addParameter("api_key", API_KEY_VALID);
 		delete.addParameter("widgetid", WIDGET_ID_VALID);
 		delete.addParameter("userid", "test");
+		delete.addParameter("is_public", "true");
 		delete.addParameter("shareddatakey", "propstest");
 		delete.addParameter("propertyname", "cat");
 		delete.execute(true, false);
@@ -217,16 +314,25 @@ public class PropertiesControllerTest extends AbstractControllerTest {
 	 * 
 	 * @throws IOException
 	 * @throws HttpException
+	 * @throws JSONException 
 	 */
 	@Test
-	public void setPropertyNoName() throws HttpException, IOException {
+	public void setPropertyNoName() throws HttpException, IOException, JSONException {
 		Request post = new Request("POST", TEST_PROPERTIES_SERVICE_URL_VALID);
 		post.addParameter("api_key", API_KEY_VALID);
 		post.addParameter("widgetid", WIDGET_ID_VALID);
 		post.addParameter("userid", "test");
-		post.addParameter("is_public", "false");
 		post.addParameter("shareddatakey", "propstest");
-		post.addParameter("propertyvalue", "garfield");
+		
+		JSONObject data = new JSONObject();
+		data.put("value", "garfield");
+		JSONObject json = new JSONObject();
+		JSONArray set = new JSONArray();
+		set.put(data);
+		json.put("shareddata", set);		
+		StringRequestEntity entity = new StringRequestEntity(json.toString(), "application/json", "UTF-8");
+		post.setRequestEntity(entity);
+		
 		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(400, code);
@@ -238,17 +344,26 @@ public class PropertiesControllerTest extends AbstractControllerTest {
 	 * 
 	 * @throws IOException
 	 * @throws HttpException
+	 * @throws JSONException 
 	 */
 	@Test
-	public void setPropertyEmptyName() throws HttpException, IOException {
+	public void setPropertyEmptyName() throws HttpException, IOException, JSONException {
 		Request post = new Request("POST", TEST_PROPERTIES_SERVICE_URL_VALID);
 		post.addParameter("api_key", API_KEY_VALID);
 		post.addParameter("widgetid", WIDGET_ID_VALID);
 		post.addParameter("userid", "test");
-		post.addParameter("is_public", "false");
 		post.addParameter("shareddatakey", "propstest");
-		post.addParameter("propertyname", "");
-		post.addParameter("propertyvalue", "garfield");
+		
+		JSONObject data = new JSONObject();
+		data.put("name", "");
+		data.put("value", "garfield");
+		JSONObject json = new JSONObject();
+		JSONArray set = new JSONArray();
+		set.put(data);
+		json.put("shareddata", set);		
+		StringRequestEntity entity = new StringRequestEntity(json.toString(), "application/json", "UTF-8");
+		post.setRequestEntity(entity);
+		
 		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(400, code);
@@ -259,17 +374,26 @@ public class PropertiesControllerTest extends AbstractControllerTest {
 	 * 
 	 * @throws IOException
 	 * @throws HttpException
+	 * @throws JSONException 
 	 */
 	@Test
-	public void setPropertyWhitespaceName() throws HttpException, IOException {
+	public void setPropertyWhitespaceName() throws HttpException, IOException, JSONException {
 		Request post = new Request("POST", TEST_PROPERTIES_SERVICE_URL_VALID);
 		post.addParameter("api_key", API_KEY_VALID);
 		post.addParameter("widgetid", WIDGET_ID_VALID);
 		post.addParameter("userid", "test");
-		post.addParameter("is_public", "false");
 		post.addParameter("shareddatakey", "propstest");
-		post.addParameter("propertyname", "  ");
-		post.addParameter("propertyvalue", "garfield");
+		
+		JSONObject data = new JSONObject();
+		data.put("name", " ");
+		data.put("value", "garfield");
+		JSONObject json = new JSONObject();
+		JSONArray set = new JSONArray();
+		set.put(data);
+		json.put("shareddata", set);		
+		StringRequestEntity entity = new StringRequestEntity(json.toString(), "application/json", "UTF-8");
+		post.setRequestEntity(entity);
+		
 		post.execute(true, false);
 		int code = post.getStatusCode();
 		assertEquals(400, code);

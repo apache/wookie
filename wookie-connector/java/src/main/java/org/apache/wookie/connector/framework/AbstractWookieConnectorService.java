@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -95,16 +94,18 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 		
 		SignedApiRequest request = SignedApiRequest.POST(conn.getURL()+"/properties", conn.getApiKey(), conn.getSecret());
 		createInstanceParams(request, instance.id);
+		
+		String json = "{";
 
 		if ( is_public ) {
-			request.addParameter("is_public", "true");
+			json += "\"shareddata\":[{\"name\":\""+fName+"\", \"value\":\""+fValue+"\"}]";
 		}
 		else {
-			request.addParameter("is_public", "false");
+			json += "\"preferences\":[{\"name\":\""+fName+"\", \"value\":\""+fValue+"\"}]";
 		}
-		request.addParameter("propertyname", fName);
-		request.addParameter("propertyvalue", fValue);
-
+		json += "}";
+		
+		request.setRequestEntity(json);
 		request.execute();
 
 		if (request.getStatusCode() > 201) {
@@ -132,20 +133,22 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 	}
 
 
-	public void updatePropertyForInstance (WidgetInstance instance, boolean is_public, String propertyName, String data ) throws WookieConnectorException, IOException {
+	public void updatePropertyForInstance (WidgetInstance instance, boolean is_public, String name, String value ) throws WookieConnectorException, IOException {
 		
 		SignedApiRequest request = SignedApiRequest.PUT(conn.getURL()+"/properties", conn.getApiKey(), conn.getSecret());
 		createInstanceParams(request, instance.id);
 		
+		String json = "{";
+
 		if ( is_public ) {
-			request.addParameter("is_public", "true");
+			json += "\"shareddata\":[{\"name\":\""+name+"\", \"value\":\""+value+"\"}]";
 		}
 		else {
-			request.addParameter("is_public", "false");
+			json += "\"preferences\":[{\"name\":\""+name+"\", \"value\":\""+value+"\"}]";
 		}
+		json += "}";
 		
-		request.addParameter("propertyname", propertyName);
-		request.addParameter("propertyvalue", data);
+		request.setRequestEntity(json);
 
 		request.execute();
 
@@ -702,7 +705,7 @@ public abstract class AbstractWookieConnectorService implements IWookieConnector
 	 * @throws IOException
 	 */
 	public void deletePolicy ( Policy policy ) throws WookieConnectorException, IOException {
-		SignedApiRequest request = SignedApiRequest.DELETE(conn.getURL()+"/policies"+URLEncoder.encode(policy.toString(), "UTF-8"), conn.getApiKey(), conn.getSecret());
+		SignedApiRequest request = SignedApiRequest.DELETE(conn.getURL()+"/policies/"+policy.toString(), conn.getApiKey(), conn.getSecret());
 		request.execute();
 		if (request.getStatusCode() != 200){
 			throw new WookieConnectorException("Problem DELETEing from /policies", new IOException("Error:"+request.getStatusCode()));
