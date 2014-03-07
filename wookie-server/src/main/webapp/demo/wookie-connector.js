@@ -91,12 +91,7 @@ var Wookie = {
         
         var postdata = "api_key=";
         postdata = postdata + encodeURI(Wookie.connection.apiKey);
-        postdata = postdata + "&is_public=false";
         postdata = postdata + "&nonce="+Math.random();
-        postdata = postdata + "&propertyname=";
-        postdata = postdata + encodeURI(key);
-        postdata = postdata + "&propertyvalue=";
-        postdata = postdata + encodeURI(value);
         postdata = postdata + "&shareddatakey=";
         postdata = postdata + encodeURI(Wookie.connection.sharedDataKey);
         postdata = postdata + "&timestamp="+new Date().toISOString();
@@ -104,13 +99,17 @@ var Wookie = {
         postdata = postdata + encodeURI(Wookie.currentUser.loginName);
         postdata = postdata + "&widgetid=";
         postdata = postdata + encodeURI(id);
+        
+        var payload = "{\"preferences\":[{\"name\": \""+key+"\", \"value\":\""+value+"\", \"readOnly\":false}]}";
         var uri = "/properties";
         var url = Wookie.connection.url +uri;
         var signature = Wookie.getSignature("POST", uri, "?" + postdata);
         $.ajax({
             type: 'POST',
-            url: url,
-            data: postdata,
+            url: url + "?" + postdata,
+            contentType: 'application/json',
+            processData: false,
+            data: payload,
             headers: {
                     "Authorization":signature
             },
