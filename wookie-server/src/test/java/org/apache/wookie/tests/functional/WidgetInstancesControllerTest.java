@@ -23,10 +23,14 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.wookie.tests.helpers.Request;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -351,9 +355,10 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	 * 
 	 * @throws IOException
 	 * @throws HttpException
+	 * @throws JSONException 
 	 */
 	@Test
-	public void cloneSharedData() throws HttpException, IOException {
+	public void cloneSharedData() throws HttpException, IOException, JSONException {
 		//
 		// Create an instance using POST
 		//
@@ -374,9 +379,17 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 		post.addParameter("widgetid", WIDGET_ID_VALID);
 		post.addParameter("userid", "test");
 		post.addParameter("shareddatakey", "clonetestsrc");
-		post.addParameter("propertyname", "cat");
-		post.addParameter("propertyvalue", "garfield");
-		post.addParameter("is_public", "true");
+		
+		JSONObject data = new JSONObject();
+		data.put("name", "cat");
+		data.put("value", "garfield");
+		JSONObject json = new JSONObject();
+		JSONArray set = new JSONArray();
+		set.put(data);
+		json.put("shareddata", set);		
+		StringRequestEntity entity = new StringRequestEntity(json.toString(), "application/json", "UTF-8");
+		post.setRequestEntity(entity);
+		
 		post.execute(true, false);
 		code = post.getStatusCode();
 		assertEquals(201, code);
