@@ -17,6 +17,8 @@ package org.apache.wookie.controller;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
@@ -36,9 +38,11 @@ import org.apache.wookie.exceptions.UnauthorizedAccessException;
 import org.apache.wookie.helpers.Notifier;
 import org.apache.wookie.helpers.WidgetInstanceHelper;
 import org.apache.wookie.helpers.WidgetRuntimeHelper;
+import org.apache.wookie.services.PreferencesService;
 import org.apache.wookie.services.SharedContextService;
 import org.apache.wookie.services.WidgetMetadataService;
 import org.apache.wookie.w3c.IContent;
+import org.apache.wookie.beans.IPreference;
 import org.apache.wookie.w3c.util.LocalizationUtils;
 
 /**
@@ -124,6 +128,17 @@ public class WidgetInstancesController extends Controller {
 				} catch (Exception e) {
 					useDefaultSizes = true;
 				}
+			}
+			
+			//
+			// Set default preferences if there are no preferences associated with this session
+			//
+			IWidget widget = WidgetMetadataService.Factory.getInstance().getWidget(authToken.getWidgetId());
+			Collection<IPreference> existingPreferences = PreferencesService.Factory.getInstance().getPreferences(newToken.getApiKey(), newToken.getWidgetId(), newToken.getContextId(), newToken.getViewerId());
+			if (existingPreferences == null || existingPreferences.size() == 0){
+				for (org.apache.wookie.w3c.IPreference preference: widget.getPreferences()){
+					PreferencesService.Factory.getInstance().setPreference(newToken.getApiKey(), newToken.getWidgetId(), newToken.getContextId(), newToken.getViewerId(), preference.getName(), preference.getValue(), preference.isReadOnly());
+				}				
 			}
 
 			//

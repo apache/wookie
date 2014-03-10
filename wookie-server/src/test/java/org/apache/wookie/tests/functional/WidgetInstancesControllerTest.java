@@ -42,7 +42,8 @@ import org.junit.Test;
 public class WidgetInstancesControllerTest extends AbstractControllerTest {
 
 	private static String TEST_ID_KEY = "";
-
+	private static final String TEST_DEFAULT_PREFS_WIDGET = "http://wookie.apache.org/defaultpreferences";
+	
 	@BeforeClass
 	public static void setup() throws HttpException, IOException {
 
@@ -70,6 +71,26 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 		post.execute(true, false); 
 		int code = post.getStatusCode();
 		assertEquals(201,code);
+		
+		//
+		// Get the prefs test widget
+		//
+		file = new File("src/test/resources/default-preferences.wgt");
+		assertTrue(file.exists());
+
+		//
+		// Add test wgt file to POST
+		//
+		Part[] parts2 = { new FilePart(file.getName(), file) };
+		post.setRequestEntity(new MultipartRequestEntity(parts2, post.getClient()
+				.getParams()));
+
+		//
+		// POST the file to /widgets and check we get 201 (Created)
+		//
+		post.execute(true, false); 
+		code = post.getStatusCode();
+		assertEquals(201,code);
 	}
 
 	@AfterClass
@@ -89,6 +110,9 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 		delete.execute(true, false);            
 
 		delete = new Request("DELETE", TEST_WIDGETS_SERVICE_URL_VALID + "/" + WIDGET_ID_LOCALIZED);
+		delete.execute(true, false);
+		
+		delete = new Request("DELETE", TEST_WIDGETS_SERVICE_URL_VALID + "/" + TEST_DEFAULT_PREFS_WIDGET);
 		delete.execute(true, false);
 	}
 
@@ -348,6 +372,37 @@ public class WidgetInstancesControllerTest extends AbstractControllerTest {
 	@Ignore
 	public void resume() {
 		fail("test not written");
+	}
+	
+	/**
+	 * Tests that a new instance has the default preferences set from config.xml
+	 * @throws HttpException
+	 * @throws IOException
+	 */
+	@Test
+	public void getInstanceWithDefaultPreferences() throws HttpException, IOException{
+		Request post = new Request("POST", TEST_INSTANCES_SERVICE_URL_VALID);
+		post.addParameter("api_key", API_KEY_VALID);
+		post.addParameter("widgetid", TEST_DEFAULT_PREFS_WIDGET);
+		post.addParameter("userid", "test");
+		post.addParameter("shareddatakey", "test");
+		post.execute(true, false);
+		int code = post.getStatusCode();
+		assertEquals(200, code);
+		
+		//
+		// Get pref
+		//
+		Request get = new Request("GET", TEST_PROPERTIES_SERVICE_URL_VALID);
+		get.addParameter("api_key", API_KEY_VALID);
+		get.addParameter("widgetid", TEST_DEFAULT_PREFS_WIDGET);
+		get.addParameter("userid", "test");
+		get.addParameter("shareddatakey", "test");	
+		get.addParameter("propertyname", "default");
+		get.execute(true, false);
+		code = get.getStatusCode();
+		assertEquals(200,code);
+		assertEquals("yes", get.getResponseBodyAsString());
 	}
 
 	/**
