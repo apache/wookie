@@ -21,9 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 
-import org.apache.wookie.connector.framework.ApiKey;
 import org.apache.wookie.connector.framework.Policy;
 import org.apache.wookie.connector.framework.User;
 import org.apache.wookie.connector.framework.Widget;
@@ -233,32 +231,6 @@ public class WookieConnectorService {
 	    service.deletePropertyForInstance(instance, true, "test_property2");
 	    data = service.getPropertyForInstance(instance, "test_property2");
 	    assertTrue("The property was not deleted", (data == null));
-  }
-  
-  
-  @Test
-  public void apikeys() throws IOException, WookieConnectorException {
-	  
-	  List<ApiKey> apikeys = service.getAPIKeys();
-	  int apikeysLength = apikeys.size();
-	  assertTrue ( "Unable to get api keys", ( apikeysLength > 0));
-	  ApiKey newKey = new ApiKey ("tester", "test@test.com" );
-	  service.createApiKey(newKey);
-	  
-	  apikeys = service.getAPIKeys();
-	  
-	  boolean foundKey = false;
-	  ListIterator<ApiKey> li = apikeys.listIterator();
-	  while (li.hasNext()) {
-		  ApiKey akey = li.next();
-		  if ( akey.getKey().equals("tester")) {
-			  foundKey = true;
-		  }
-	  }
-	  assertTrue ( "New key not created", foundKey );
-	  
-	  service.removeApiKey(newKey);
-	  assertEquals ( service.getAPIKeys().size(), apikeysLength);
   }
   
   

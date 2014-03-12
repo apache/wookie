@@ -140,20 +140,6 @@
 		<servlet-name>PropertiesServlet</servlet-name>
 		<url-pattern>/properties</url-pattern>
 	</servlet-mapping>
-	
-	<servlet>
-		<description></description>
-		<display-name>ApiKeys</display-name>
-		<servlet-name>ApiKeyController</servlet-name>
-		<servlet-class>
-			org.apache.wookie.controller.ApiKeyController
-		</servlet-class>
-		<load-on-startup>2</load-on-startup>
-	</servlet>	
-	<servlet-mapping>
-		<servlet-name>ApiKeyController</servlet-name>
-		<url-pattern>/keys/*</url-pattern>
-	</servlet-mapping>
 
 	<servlet>
 		<description></description>
@@ -337,10 +323,6 @@
     <filter-mapping>
     	<filter-name>AuthorizationFilter</filter-name>
 		<servlet-name>PoliciesServlet</servlet-name>
-  	</filter-mapping>	
-  	<filter-mapping>
-    	<filter-name>AuthorizationFilter</filter-name>
-		<servlet-name>ApiKeyController</servlet-name>
   	</filter-mapping>	
   	 <filter-mapping>
     	<filter-name>AuthorizationFilter</filter-name>
