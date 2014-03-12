@@ -21,7 +21,9 @@ import static org.junit.Assert.*;
 
 import org.apache.wookie.exceptions.ResourceDuplicationException;
 import org.apache.wookie.exceptions.ResourceNotFoundException;
+import org.apache.wookie.server.security.ApiKey;
 import org.apache.wookie.server.security.ApiKeys;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -29,11 +31,25 @@ import org.junit.Test;
  *
  */
 public class ApiKeysTest {
+	
+	private static ApiKey[] keys;
   
   @BeforeClass
   public static void setup() throws ResourceDuplicationException{
+	keys = ApiKeys.getInstance().getKeys();
     ApiKeys.getInstance().clear();
     ApiKeys.getInstance().addKey("KEYS_TEST_1", "test@apache.org");
+  }
+  
+  //
+  // Restore state from before the tests
+  //
+  @AfterClass
+  public static void teardown() throws ResourceDuplicationException{
+	  ApiKeys.getInstance().clear();
+	  for (ApiKey key:keys){
+		  ApiKeys.getInstance().addKey(key.getValue(), key.getSecret());
+	  }
   }
   
   @Test
