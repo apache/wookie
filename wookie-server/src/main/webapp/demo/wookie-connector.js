@@ -117,7 +117,7 @@ var Wookie = {
         });
     },
 
-    getOrCreateInstance: function(id) {
+    getOrCreateInstance: function(id, callback, element) {
     
         //
         // Use default connection if not set
@@ -130,7 +130,7 @@ var Wookie = {
         // Use default user if not set
         //
         if (Wookie.currentUser === null){
-            Wookie.setCurrentUser("test","test user",null);
+            Wookie.setCurrentUser("test","test user",null,null);
         }
         
         var key = id + ":" + Wookie.currentUser.loginName;
@@ -176,10 +176,16 @@ var Wookie = {
                     instance.height = height;
                     instance.width = width;
                     Wookie.instances[key]=instance;
+                    
+                    Wookie.setParticipant(id, callback, instance, element);
                 },
                 async: false
             });
-            
+        }
+        return Wookie.instances[key];
+    },
+    
+    setParticipant: function(id, callback, instance, element){
             var postdata = "api_key=";
             postdata = postdata + encodeURI(Wookie.connection.apiKey);
             postdata = postdata + "&nonce="+Math.random();
@@ -212,11 +218,10 @@ var Wookie = {
                     "Authorization":signature
                 },
                 success: function(data) {
+                   callback(instance, element);
                 },
                 async: false
             });
-        }
-        return Wookie.instances[key];
     },
     
     getSignature: function(method, uri, query){
