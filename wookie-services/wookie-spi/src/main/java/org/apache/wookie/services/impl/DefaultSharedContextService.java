@@ -73,8 +73,6 @@ public class DefaultSharedContextService implements SharedContextService {
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) widgets.nextElement();
 			if (node.getUserObject().equals(widgetId)){
 				widgetNode = node;
-			} else {
-				System.out.println(node.getUserObject());
 			}
 		}
 		if (widgetNode == null){
