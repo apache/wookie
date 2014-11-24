@@ -21,6 +21,7 @@ import java.io.StringWriter;
 import org.apache.wookie.util.html.HtmlSerializer;
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.SimpleHtmlSerializer;
 import org.htmlcleaner.TagNode;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,14 +40,15 @@ public class HtmlSerializerTest {
 		properties.setOmitXmlDeclaration(true);
 		properties.setUseCdataForScriptAndStyle(true);
 		properties.setUseEmptyElementTags(false);	
+		properties.setAddNewlineToHeadAndBody(false);
 	}
 	
 	private String parse(String content){
 		StringWriter writer = new StringWriter();
-		HtmlSerializer ser = new HtmlSerializer(properties);
+		SimpleHtmlSerializer ser = new SimpleHtmlSerializer(properties);
 		try {
 			TagNode html = cleaner.clean(content);
-			ser.writeXml(html, writer, "UTF-8");
+			ser.write(html, writer, "UTF-8");
 			return writer.getBuffer().toString();
 		} catch (IOException e) {
 			return null;
