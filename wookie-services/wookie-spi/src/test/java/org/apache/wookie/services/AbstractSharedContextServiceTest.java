@@ -8,8 +8,11 @@ import static org.junit.Assert.assertTrue;
 import org.apache.wookie.beans.IParticipant;
 import org.apache.wookie.beans.ISharedData;
 import org.apache.wookie.services.impl.DefaultParticipantImpl;
+import org.apache.wookie.services.impl.DefaultSharedContextService;
 import org.apache.wookie.services.impl.DefaultSharedDataImpl;
 import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -20,6 +23,15 @@ public class AbstractSharedContextServiceTest {
 	protected static final String API_KEY = "testapikey";
 	protected static final String CONTEXT_ID = "23";
 	protected static final String WIDGET_ID = "http://test.widget/";
+	
+	@BeforeClass
+	public static void setup(){
+		svc = new DefaultSharedContextService();
+	}
+	
+	@AfterClass
+	public static void tearDown(){
+	}
 
 	@After
 	public void cleanUp(){
