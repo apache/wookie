@@ -251,7 +251,7 @@ public class RedisPreferencesService implements PreferencesService {
 	private IPreference rehydrate(String input){
 		if (input == null) return null;
 		JSONObject json = new JSONObject(input);
-		DefaultPreferenceImpl pref = new DefaultPreferenceImpl(json.getString("name"), json.getString("value"), json.getBoolean("readOnly"));
+		DefaultPreferenceImpl pref = new DefaultPreferenceImpl(json.optString("name"), json.optString("value"), json.getBoolean("readOnly"));
 		return pref;
 	}
 	
