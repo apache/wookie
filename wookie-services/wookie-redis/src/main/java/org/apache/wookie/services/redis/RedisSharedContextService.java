@@ -519,8 +519,8 @@ public class RedisSharedContextService implements SharedContextService {
 		if (input == null) return null;
 		DefaultSharedDataImpl data;
 		JSONObject json = new JSONObject(input);
-		String value = json.getString("value");
-		String name = json.getString("name");
+		String value = json.optString("value");
+		String name = json.optString("name");
 		data = new DefaultSharedDataImpl(name,value);
 		return data;
 	}
@@ -528,7 +528,7 @@ public class RedisSharedContextService implements SharedContextService {
 	private IParticipant rehydrateParticipant(String input){
 		if (input == null) return null;
 		JSONObject json = new JSONObject(input);
-		String id = json.getString("id");
+		String id = json.optString("id");
 		String name = json.has("name") ? json.getString("name"): null;
 		String thumbnail = json.has("thumbnail") ? json.getString("thumbnail"): null;
 		String role =  json.has("role") ? json.getString("role") : null;
